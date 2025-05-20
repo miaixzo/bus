@@ -24,8 +24,8 @@
 #                                                                               #
 #################################################################################
 
-org.miaixz.bus.mapper.provider.NormalNamingProvider
-org.miaixz.bus.mapper.provider.LowerNamingProvider
-org.miaixz.bus.mapper.provider.LowerUnderscoreNamingProvider
-org.miaixz.bus.mapper.provider.UpperNamingProvider
-org.miaixz.bus.mapper.provider.UpperUnderscoreNamingProvider
+org.miaixz.bus.mapper.provider.DirectNamingProvider
+org.miaixz.bus.mapper.provider.LowerCaseNamingProvider
+org.miaixz.bus.mapper.provider.UpperCaseNamingProvider
+org.miaixz.bus.mapper.provider.SnakeCaseNamingProvider
+org.miaixz.bus.mapper.provider.UpperSnakeNamingProvider

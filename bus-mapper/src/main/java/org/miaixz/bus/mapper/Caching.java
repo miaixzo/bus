@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -41,9 +41,9 @@ import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.mapping.KeySqlSource;
-import org.miaixz.bus.mapper.mapping.MapperTable;
-import org.miaixz.bus.mapper.mapping.SqlCache;
+import org.miaixz.bus.mapper.parsing.KeySqlSource;
+import org.miaixz.bus.mapper.parsing.SqlMetaCache;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 缓存 XML 形式的 SqlSource，避免重复解析。
@@ -59,7 +59,7 @@ public class Caching extends XMLLanguageDriver {
      * 对于单一数据源，缓存最终可被清除；对于多数据源，必须保留缓存，因为无法确定清理时机。
      * </p>
      */
-    private static final Map<String, SqlCache> CACHE_SQL = new ConcurrentHashMap<>(
+    private static final Map<String, SqlMetaCache> CACHE_SQL = new ConcurrentHashMap<>(
             Keys.getInt(Args.DEFAULT_INITSIZE_KEY, 1024));
 
     /**
@@ -112,14 +112,13 @@ public class Caching extends XMLLanguageDriver {
      * @param sqlScriptSupplier SQL 脚本提供者
      * @return 缓存键
      */
-    public static String cache(ProviderContext providerContext, MapperTable entity,
-            Supplier<String> sqlScriptSupplier) {
+    public static String cache(ProviderContext providerContext, TableMeta entity, Supplier<String> sqlScriptSupplier) {
         String cacheKey = cacheKey(providerContext);
         if (!CACHE_SQL.containsKey(cacheKey)) {
             isAnnotationPresentLang(providerContext);
             synchronized (cacheKey) {
                 if (!CACHE_SQL.containsKey(cacheKey)) {
-                    CACHE_SQL.put(cacheKey, new SqlCache(Objects.requireNonNull(providerContext),
+                    CACHE_SQL.put(cacheKey, new SqlMetaCache(Objects.requireNonNull(providerContext),
                             Objects.requireNonNull(entity), Objects.requireNonNull(sqlScriptSupplier)));
                 }
             }
@@ -144,8 +143,8 @@ public class Caching extends XMLLanguageDriver {
                 synchronized (cacheKey) {
                     if (!(CONFIGURATION_CACHE_KEY_MAP.containsKey(configuration)
                             && CONFIGURATION_CACHE_KEY_MAP.get(configuration).containsKey(cacheKey))) {
-                        SqlCache cache = CACHE_SQL.get(cacheKey);
-                        if (cache == SqlCache.NULL) {
+                        SqlMetaCache cache = CACHE_SQL.get(cacheKey);
+                        if (cache == SqlMetaCache.NULL) {
                             throw new RuntimeException(script
                                     + " => CACHE_SQL is NULL, you need to configure mybatis.provider.cacheSql.useOnce=false");
                         }
@@ -163,7 +162,7 @@ public class Caching extends XMLLanguageDriver {
                                 cache.getProviderContext());
                         cachekeyMap.put(cacheKey, sqlSource);
                         if (USE_ONCE) {
-                            CACHE_SQL.put(cacheKey, SqlCache.NULL);
+                            CACHE_SQL.put(cacheKey, SqlMetaCache.NULL);
                         }
                     }
                 }

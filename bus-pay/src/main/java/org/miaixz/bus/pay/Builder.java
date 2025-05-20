@@ -54,6 +54,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.resource.ClassPathResource;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -473,7 +474,7 @@ public class Builder {
         params.put("nonce_str", nonceStr);
         params.put("timestamp", timestamp);
         params.put("signature", signature);
-        return authType.concat(" ").concat(createLinkString(params, ",", false, true));
+        return authType.concat(Symbol.SPACE).concat(createLinkString(params, Symbol.COMMA, false, true));
     }
 
     /**

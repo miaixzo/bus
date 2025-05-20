@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -35,9 +35,9 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.annotation.Logical;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
-import org.miaixz.bus.mapper.mapping.SqlScript;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.SqlScript;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 支持逻辑删除的动态 SQL 操作实现。
@@ -59,7 +59,7 @@ public class LogicalProvider {
     public static String select(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
                         + where(() -> entity.whereColumns().stream().map(
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
@@ -79,7 +79,7 @@ public class LogicalProvider {
     public static String selectColumns(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT " + choose(
                         () -> whenTest("fns != null and fns.isNotEmpty()", () -> "${fns.baseColumnAsPropertyList()}")
                                 + otherwise(() -> entity.baseColumnAsPropertyList()))
@@ -104,7 +104,7 @@ public class LogicalProvider {
     public static String selectByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT "
                         + ifTest("distinct", () -> "distinct ")
                         + ifTest("selectColumns != null and selectColumns != ''", () -> "${selectColumns}")
@@ -129,7 +129,7 @@ public class LogicalProvider {
     public static String countByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT COUNT("
                         + ifTest("distinct", () -> "distinct ")
                         + ifTest("simpleSelectColumns != null and simpleSelectColumns != ''",
@@ -153,9 +153,9 @@ public class LogicalProvider {
     public static String selectByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
-                        + where(() -> entity.idColumns().stream().map(MapperColumn::columnEqualsProperty)
+                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
                                 .collect(Collectors.joining(" AND ")))
                         + logicalNotEqualCondition(entity);
             }
@@ -171,7 +171,7 @@ public class LogicalProvider {
     public static String selectCount(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT COUNT(*)  FROM " + entity.tableName() + Symbol.LF
                         + where(() -> entity.whereColumns().stream().map(
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
@@ -189,11 +189,12 @@ public class LogicalProvider {
     public static String updateByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + "UPDATE " + entity.tableName()
                         + set(() -> entity.updateColumns().stream()
-                                .map(column -> column.columnEqualsProperty("entity.")).collect(Collectors.joining(",")))
+                                .map(column -> column.columnEqualsProperty("entity."))
+                                .collect(Collectors.joining(Symbol.COMMA)))
                         + variableNotNull("condition", "Condition cannot be null")
                         + (entity.getPropBoolean("updateByCondition.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
@@ -213,12 +214,12 @@ public class LogicalProvider {
     public static String updateByConditionSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + "UPDATE " + entity.tableName()
                         + set(() -> entity.updateColumns().stream()
                                 .map(column -> ifTest(column.notNullTest("entity."),
-                                        () -> column.columnEqualsProperty("entity.") + ","))
+                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA))
                                 .collect(Collectors.joining(Symbol.LF)))
                         + variableNotNull("condition", "Condition cannot be null")
                         + (entity.getPropBoolean("updateByConditionSelective.allowEmpty", true) ? ""
@@ -239,7 +240,7 @@ public class LogicalProvider {
     public static String updateByConditionSetValues(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + variableNotEmpty("condition.setValues", "Condition setValues cannot be empty") + "UPDATE "
                         + entity.tableName() + Args.CONDITION_SET_CLAUSE_INNER_WHEN
@@ -262,11 +263,11 @@ public class LogicalProvider {
     public static String updateByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "UPDATE " + entity.tableName() + " SET "
-                        + entity.updateColumns().stream().map(MapperColumn::columnEqualsProperty)
-                                .collect(Collectors.joining(","))
-                        + where(() -> entity.idColumns().stream().map(MapperColumn::columnEqualsProperty)
+                        + entity.updateColumns().stream().map(ColumnMeta::columnEqualsProperty)
+                                .collect(Collectors.joining(Symbol.COMMA))
+                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
                                 .collect(Collectors.joining(" AND ")))
                         + logicalNotEqualCondition(entity);
             }
@@ -282,12 +283,11 @@ public class LogicalProvider {
     public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                return "UPDATE " + entity.tableName()
-                        + set(() -> entity.updateColumns().stream()
-                                .map(column -> ifTest(column.notNullTest(), () -> column.columnEqualsProperty() + ","))
-                                .collect(Collectors.joining(Symbol.LF)))
-                        + where(() -> entity.idColumns().stream().map(MapperColumn::columnEqualsProperty)
+            public String getSql(TableMeta entity) {
+                return "UPDATE " + entity.tableName() + set(() -> entity.updateColumns().stream()
+                        .map(column -> ifTest(column.notNullTest(), () -> column.columnEqualsProperty() + Symbol.COMMA))
+                        .collect(Collectors.joining(Symbol.LF)))
+                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
                                 .collect(Collectors.joining(" AND ")))
                         + logicalNotEqualCondition(entity);
             }
@@ -303,18 +303,15 @@ public class LogicalProvider {
     public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                return "UPDATE "
-                        + entity.tableName() + set(
-                                () -> entity
-                                        .updateColumns().stream().map(
-                                                column -> choose(() -> whenTest(
-                                                        "fns != null and fns.fieldNames().contains('"
-                                                                + column.property() + "')",
-                                                        () -> column.columnEqualsProperty("entity.") + ",")
-                                                        + whenTest(column.notNullTest("entity."),
-                                                                () -> column.columnEqualsProperty("entity.") + ",")))
-                                        .collect(Collectors.joining(Symbol.LF)))
+            public String getSql(TableMeta entity) {
+                return "UPDATE " + entity.tableName()
+                        + set(() -> entity.updateColumns().stream()
+                                .map(column -> choose(() -> whenTest(
+                                        "fns != null and fns.fieldNames().contains('" + column.property() + "')",
+                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)
+                                        + whenTest(column.notNullTest("entity."),
+                                                () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)))
+                                .collect(Collectors.joining(Symbol.LF)))
                         + where(() -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
                                 .collect(Collectors.joining(" AND ")))
                         + logicalNotEqualCondition(entity);
@@ -331,8 +328,8 @@ public class LogicalProvider {
     public static String delete(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                MapperColumn logicColumn = getLogical(entity);
+            public String getSql(TableMeta entity) {
+                ColumnMeta logicColumn = getLogical(entity);
                 return "UPDATE " + entity.tableName() + " SET "
                         + columnEqualsValue(logicColumn, deleteValue(logicColumn))
                         + parameterNotNull("Parameter cannot be null")
@@ -352,11 +349,11 @@ public class LogicalProvider {
     public static String deleteByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new LogicalSqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                MapperColumn logicColumn = getLogical(entity);
+            public String getSql(TableMeta entity) {
+                ColumnMeta logicColumn = getLogical(entity);
                 return "UPDATE " + entity.tableName() + " SET "
                         + columnEqualsValue(logicColumn, deleteValue(logicColumn)) + " WHERE " + entity.idColumns()
-                                .stream().map(MapperColumn::columnEqualsProperty).collect(Collectors.joining(" AND "))
+                                .stream().map(ColumnMeta::columnEqualsProperty).collect(Collectors.joining(" AND "))
                         + logicalNotEqualCondition(entity);
             }
         });
@@ -370,7 +367,7 @@ public class LogicalProvider {
      */
     public static String deleteByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, (entity, util) -> {
-            MapperColumn logicColumn = getLogical(entity);
+            ColumnMeta logicColumn = getLogical(entity);
             return util.ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "UPDATE "
                     + entity.tableName() + " SET " + columnEqualsValue(logicColumn, deleteValue(logicColumn))
                     + util.parameterNotNull("Condition cannot be null")
@@ -389,8 +386,8 @@ public class LogicalProvider {
      * @return 逻辑删除字段
      * @throws IllegalStateException 如果没有或存在多个 @Logical 注解字段
      */
-    private static MapperColumn getLogical(MapperTable entity) {
-        List<MapperColumn> logicColumns = entity.columns().stream()
+    private static ColumnMeta getLogical(TableMeta entity) {
+        List<ColumnMeta> logicColumns = entity.columns().stream()
                 .filter(c -> c.field().isAnnotationPresent(Logical.class)).collect(Collectors.toList());
         Assert.isTrue(logicColumns.size() == 1, "There are no or multiple fields marked with @Logical");
         return logicColumns.get(0);
@@ -402,8 +399,8 @@ public class LogicalProvider {
      * @param logicColumn 逻辑删除字段
      * @return 删除值
      */
-    private static String deleteValue(MapperColumn logicColumn) {
-        return logicColumn.field().getAnnotation(Logical.class).delete();
+    private static String deleteValue(ColumnMeta logicColumn) {
+        return logicColumn.field().getAnnotation(Logical.class).value();
     }
 
     /**
@@ -413,8 +410,8 @@ public class LogicalProvider {
      * @param value 值
      * @return 条件字符串
      */
-    private static String columnEqualsValueCondition(MapperColumn c, String value) {
-        return " " + c.column() + choiceEqualsOperator(value) + value + " ";
+    private static String columnEqualsValueCondition(ColumnMeta c, String value) {
+        return Symbol.SPACE + c.column() + choiceEqualsOperator(value) + value + Symbol.SPACE;
     }
 
     /**
@@ -424,8 +421,8 @@ public class LogicalProvider {
      * @param value 值
      * @return SET 子句字符串
      */
-    private static String columnEqualsValue(MapperColumn c, String value) {
-        return " " + c.column() + " = " + value + " ";
+    private static String columnEqualsValue(ColumnMeta c, String value) {
+        return Symbol.SPACE + c.column() + " = " + value + Symbol.SPACE;
     }
 
     /**
@@ -435,8 +432,8 @@ public class LogicalProvider {
      * @param value 值
      * @return 条件字符串
      */
-    private static String columnNotEqualsValueCondition(MapperColumn c, String value) {
-        return " " + c.column() + choiceNotEqualsOperator(value) + value;
+    private static String columnNotEqualsValueCondition(ColumnMeta c, String value) {
+        return Symbol.SPACE + c.column() + choiceNotEqualsOperator(value) + value;
     }
 
     /**
@@ -475,8 +472,8 @@ public class LogicalProvider {
          * @param entity 实体表信息
          * @return 逻辑删除条件
          */
-        default String logicalNotEqualCondition(MapperTable entity) {
-            MapperColumn logicalColumn = getLogical(entity);
+        default String logicalNotEqualCondition(TableMeta entity) {
+            ColumnMeta logicalColumn = getLogical(entity);
             return " AND " + columnNotEqualsValueCondition(logicalColumn, deleteValue(logicalColumn)) + Symbol.LF;
         }
     }

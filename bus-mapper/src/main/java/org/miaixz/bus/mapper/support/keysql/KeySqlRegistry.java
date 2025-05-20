@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -47,8 +47,8 @@ import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.Registry;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 处理实体类上的主键策略，自动配置主键生成逻辑。
@@ -70,10 +70,10 @@ public class KeySqlRegistry implements Registry {
      * @throws RuntimeException 如果存在多个字段配置了主键策略
      */
     @Override
-    public void customize(MapperTable entity, MappedStatement ms, ProviderContext context) {
+    public void customize(TableMeta entity, MappedStatement ms, ProviderContext context) {
         Method mapperMethod = context.getMapperMethod();
         if (mapperMethod.isAnnotationPresent(InsertProvider.class)) {
-            List<MapperColumn> ids = entity.idColumns().stream().filter(MapperColumn::hasPrimaryKeyStrategy)
+            List<ColumnMeta> ids = entity.idColumns().stream().filter(ColumnMeta::hasPrimaryKeyStrategy)
                     .collect(Collectors.toList());
             if (ids.size() > 1) {
                 throw new RuntimeException("Only one field can be configured with a primary key strategy");
@@ -94,7 +94,7 @@ public class KeySqlRegistry implements Registry {
                         + " uses @SelectKey, ignoring entity primary key strategy");
                 return;
             }
-            MapperColumn id = ids.get(0);
+            ColumnMeta id = ids.get(0);
             if (id.useGeneratedKeys()) {
                 MetaObject metaObject = ms.getConfiguration().newMetaObject(ms);
                 metaObject.setValue("keyGenerator", Jdbc3KeyGenerator.INSTANCE);
@@ -131,7 +131,7 @@ public class KeySqlRegistry implements Registry {
      * @param executeBefore 是否在插入前执行
      * @return 配置好的 SelectKeyGenerator
      */
-    private KeyGenerator handleSelectKeyGenerator(MappedStatement ms, MapperColumn column, String sql,
+    private KeyGenerator handleSelectKeyGenerator(MappedStatement ms, ColumnMeta column, String sql,
             boolean executeBefore) {
         String id = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         Configuration configuration = ms.getConfiguration();

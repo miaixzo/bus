@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.mapper.mapping.MapperTable;
-import org.miaixz.bus.mapper.mapping.SqlScript;
+import org.miaixz.bus.mapper.parsing.SqlScript;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 提供基于指定字段的动态 SQL 操作。
@@ -51,18 +51,15 @@ public class FunctionProvider {
     public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                return "UPDATE "
-                        + entity.tableName() + set(
-                                () -> entity
-                                        .updateColumns().stream().map(
-                                                column -> choose(() -> whenTest(
-                                                        "fns != null and fns.fieldNames().contains('"
-                                                                + column.property() + "')",
-                                                        () -> column.columnEqualsProperty("entity.") + ",")
-                                                        + whenTest(column.notNullTest("entity."),
-                                                                () -> column.columnEqualsProperty("entity.") + ",")))
-                                        .collect(Collectors.joining(Symbol.LF)))
+            public String getSql(TableMeta entity) {
+                return "UPDATE " + entity.tableName()
+                        + set(() -> entity.updateColumns().stream()
+                                .map(column -> choose(() -> whenTest(
+                                        "fns != null and fns.fieldNames().contains('" + column.property() + "')",
+                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)
+                                        + whenTest(column.notNullTest("entity."),
+                                                () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)))
+                                .collect(Collectors.joining(Symbol.LF)))
                         + where(() -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
                                 .collect(Collectors.joining(" AND ")));
             }
@@ -78,16 +75,13 @@ public class FunctionProvider {
     public static String updateForFieldListByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                return "UPDATE "
-                        + entity.tableName() + set(
-                                () -> entity
-                                        .updateColumns().stream().map(
-                                                column -> choose(() -> whenTest(
-                                                        "fns != null and fns.fieldNames().contains('"
-                                                                + column.property() + "')",
-                                                        () -> column.columnEqualsProperty("entity.") + ",")))
-                                        .collect(Collectors.joining(Symbol.LF)))
+            public String getSql(TableMeta entity) {
+                return "UPDATE " + entity.tableName()
+                        + set(() -> entity.updateColumns().stream()
+                                .map(column -> choose(() -> whenTest(
+                                        "fns != null and fns.fieldNames().contains('" + column.property() + "')",
+                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)))
+                                .collect(Collectors.joining(Symbol.LF)))
                         + where(() -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
                                 .collect(Collectors.joining(" AND ")));
             }
@@ -103,7 +97,7 @@ public class FunctionProvider {
     public static String selectColumns(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT "
                         + choose(
                                 () -> whenTest("fns != null and fns.isNotEmpty()",

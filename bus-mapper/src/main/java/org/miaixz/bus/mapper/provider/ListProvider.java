@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -32,9 +32,10 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
-import org.miaixz.bus.mapper.mapping.SqlScript;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.SqlScript;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 提供批量操作的动态 SQL 生成方法。
@@ -58,11 +59,12 @@ public class ListProvider {
         }
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "INSERT INTO " + entity.tableName() + "(" + entity.insertColumnList() + ")" + " VALUES "
-                        + foreach("entityList", "entity", ",",
-                                () -> trimSuffixOverrides("(", ")", ",", () -> entity.insertColumns().stream()
-                                        .map(column -> column.variables("entity.")).collect(Collectors.joining(","))));
+                        + foreach("entityList", "entity", Symbol.COMMA,
+                                () -> trimSuffixOverrides("(", ")", Symbol.COMMA,
+                                        () -> entity.insertColumns().stream().map(column -> column.variables("entity."))
+                                                .collect(Collectors.joining(Symbol.COMMA))));
             }
         });
     }
@@ -81,14 +83,14 @@ public class ListProvider {
         }
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                List<MapperColumn> idColumns = entity.idColumns();
+            public String getSql(TableMeta entity) {
+                List<ColumnMeta> idColumns = entity.idColumns();
                 String sql = "UPDATE " + entity.tableName()
-                        + trimSuffixOverrides("SET", " ", ",",
+                        + trimSuffixOverrides("SET", Symbol.SPACE, Symbol.COMMA,
                                 () -> entity
                                         .updateColumns().stream().map(
                                                 column -> trimSuffixOverrides(column.column() + " = CASE ", "end, ", "",
-                                                        () -> foreach("entityList", "entity", " ",
+                                                        () -> foreach("entityList", "entity", Symbol.SPACE,
                                                                 () -> "WHEN ( "
                                                                         + idColumns.stream()
                                                                                 .map(id -> id.columnEqualsProperty(
@@ -98,9 +100,10 @@ public class ListProvider {
 
                                                         ))).collect(Collectors.joining("")))
                         + where(() -> "("
-                                + idColumns.stream().map(MapperColumn::column).collect(Collectors.joining(","))
-                                + ") in " + " (" + foreach("entityList", "entity", "),(", "(", ")", () -> idColumns
-                                        .stream().map(id -> id.variables("entity.")).collect(Collectors.joining(",")))
+                                + idColumns.stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
+                                + ") in " + " ("
+                                + foreach("entityList", "entity", "),(", "(", ")", () -> idColumns.stream()
+                                        .map(id -> id.variables("entity.")).collect(Collectors.joining(Symbol.COMMA)))
                                 + ")");
                 return sql;
             }
@@ -121,13 +124,13 @@ public class ListProvider {
         }
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                List<MapperColumn> idColumns = entity.idColumns();
+            public String getSql(TableMeta entity) {
+                List<ColumnMeta> idColumns = entity.idColumns();
                 String sql = "UPDATE " + entity.tableName()
-                        + trimSuffixOverrides("SET", " ", ",", () -> entity
+                        + trimSuffixOverrides("SET", Symbol.SPACE, Symbol.COMMA, () -> entity
                                 .updateColumns().stream().map(
                                         column -> trimSuffixOverrides(column.column() + " = CASE ", "end, ", "",
-                                                () -> foreach("entityList", "entity", " ",
+                                                () -> foreach("entityList", "entity", Symbol.SPACE,
                                                         () -> choose(() -> whenTest(column.notNullTest("entity."),
                                                                 () -> "WHEN ( "
                                                                         + idColumns.stream()
@@ -144,9 +147,10 @@ public class ListProvider {
                                 .collect(Collectors.joining("")))
 
                         + where(() -> "("
-                                + idColumns.stream().map(MapperColumn::column).collect(Collectors.joining(","))
-                                + ") in " + " (" + foreach("entityList", "entity", "),(", "(", ")", () -> idColumns
-                                        .stream().map(id -> id.variables("entity.")).collect(Collectors.joining(",")))
+                                + idColumns.stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
+                                + ") in " + " ("
+                                + foreach("entityList", "entity", "),(", "(", ")", () -> idColumns.stream()
+                                        .map(id -> id.variables("entity.")).collect(Collectors.joining(Symbol.COMMA)))
                                 + ")"
 
                         );

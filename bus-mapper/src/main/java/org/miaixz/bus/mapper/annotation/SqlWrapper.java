@@ -32,7 +32,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.miaixz.bus.mapper.mapping.AnnotationSqlWrapper;
+import org.miaixz.bus.mapper.builder.SchemaSqlBuilder;
 
 /**
  * 用于对 SQL 进行二次加工的注解，可应用于接口、方法、参数及注解，仅支持一层搜索
@@ -49,6 +49,6 @@ public @interface SqlWrapper {
      *
      * @return 处理器类数组，默认为空
      */
-    Class<? extends AnnotationSqlWrapper>[] value() default {};
+    Class<? extends SchemaSqlBuilder>[] value() default {};
 
 }

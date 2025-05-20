@@ -33,6 +33,7 @@ import org.miaixz.bus.core.basic.entity.Tracer;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.mapper.annotation.Logical;
 
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -59,6 +60,7 @@ public class BaseEntity extends Tracer {
     /**
      * 数据状态:-1删除,0无效,1正常
      */
+    @Logical
     protected Integer status;
 
     /**

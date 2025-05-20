@@ -293,7 +293,7 @@ public class Status {
         if (e != null) {
             hasFailed = true;
             if (msg.length() > 0) {
-                msg.append(" ");
+                msg.append(Symbol.SPACE);
             }
             msg.append(e.getMessage());
             state.setErrorMessage(e.getMessage());

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -30,12 +30,12 @@ package org.miaixz.bus.mapper.binding.basic;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.mapper.mapping.GenericTypeResolver;
-import org.miaixz.bus.mapper.mapping.MapperFactory;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.builder.TypeResolver;
+import org.miaixz.bus.mapper.parsing.MapperFactory;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 实体类信息接口，实现此接口可便捷获取当前接口对应的实体类类型 {@link Class} 和实体表信息 {@link MapperTable}
+ * 实体类信息接口，实现此接口可便捷获取当前接口对应的实体类类型 {@link Class} 和实体表信息 {@link TableMeta}
  *
  * @param <T> 实体类泛型
  * @author Kimi Liu
@@ -57,7 +57,7 @@ public interface ClassMapper<T> {
      *
      * @return 实体表信息
      */
-    default MapperTable entityTable() {
+    default TableMeta entityTable() {
         return MapperFactory.create(entityClass());
     }
 
@@ -78,8 +78,8 @@ public interface ClassMapper<T> {
          */
         private static Class<?> getEntityClass(Class<?> clazz) {
             if (!entityClassMap.containsKey(clazz)) {
-                entityClassMap.put(clazz, GenericTypeResolver.resolveTypeToClass(GenericTypeResolver
-                        .resolveType(ClassMapper.class.getTypeParameters()[0], clazz, ClassMapper.class)));
+                entityClassMap.put(clazz, TypeResolver.resolveTypeToClass(
+                        TypeResolver.resolveType(ClassMapper.class.getTypeParameters()[0], clazz, ClassMapper.class)));
             }
             return entityClassMap.get(clazz);
         }

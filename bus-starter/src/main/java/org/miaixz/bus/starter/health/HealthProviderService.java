@@ -36,6 +36,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Provider;
@@ -97,12 +98,12 @@ public class HealthProviderService {
     public Object healthz(String tid) {
         try {
             // 设置 tid：优先使用输入，次选配置 type，否则默认 liveness,readiness
-            String defaultTids = TID.LIVENESS + "," + TID.READINESS;
+            String defaultTids = TID.LIVENESS + Symbol.COMMA + TID.READINESS;
             tid = StringKit.isEmpty(tid) ? (properties == null || StringKit.isEmpty(properties.getType()) ? defaultTids
                     : properties.getType().toLowerCase()) : tid.toLowerCase();
 
             // 若 tid 无效，设为 liveness,readiness
-            List<String> tidList = Arrays.asList(tid.split(","));
+            List<String> tidList = Arrays.asList(tid.split(Symbol.COMMA));
             if (tidList.stream().noneMatch(TID.ALL_TID::contains)) {
                 tidList = Arrays.asList(TID.LIVENESS, TID.READINESS);
                 Logger.debug("Invalid tid '{}', defaulting to liveness,readiness", tid);

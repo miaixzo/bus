@@ -34,6 +34,7 @@ import java.util.Map;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -79,7 +80,8 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
         }
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put("Authorization", accessToken.getTokenType().concat(" ").concat(accessToken.getAccessToken()));
+        headers.put("Authorization",
+                accessToken.getTokenType().concat(Symbol.SPACE).concat(accessToken.getAccessToken()));
         if (StringKit.isNotEmpty(payPalRequestId)) {
             headers.put("PayPal-Request-Id", payPalRequestId);
         }

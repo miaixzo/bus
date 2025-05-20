@@ -32,19 +32,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * 标记该字段为逻辑状态列
- * <p>
- * NOTE: 单张表中仅支持标记一个字段
- * </p>
  */
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Logical {
 
     /**
      * 表示逻辑删除的值，比如null、-1
      */
-    String delete();
+    String value() default Normal.EMPTY + Normal.__1;
 
 }

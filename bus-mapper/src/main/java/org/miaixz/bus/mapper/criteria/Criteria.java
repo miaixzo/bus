@@ -34,7 +34,7 @@ import java.util.List;
 import org.apache.ibatis.type.TypeHandler;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.mapper.binding.function.Fn;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -143,7 +143,7 @@ public class Criteria<T> {
      * @param value     条件值
      * @param column    列信息
      */
-    public void addCriterion(String condition, Object value, MapperColumn column) {
+    public void addCriterion(String condition, Object value, ColumnMeta column) {
         if (value == null) {
             throw new RuntimeException("Value for " + condition + " cannot be null");
         }
@@ -172,7 +172,7 @@ public class Criteria<T> {
      * @param value2    结束值
      * @param column    列信息
      */
-    public void addCriterion(String condition, Object value1, Object value2, MapperColumn column) {
+    public void addCriterion(String condition, Object value1, Object value2, ColumnMeta column) {
         if (value1 == null || value2 == null) {
             throw new RuntimeException("Between values for " + condition + " cannot be null");
         }

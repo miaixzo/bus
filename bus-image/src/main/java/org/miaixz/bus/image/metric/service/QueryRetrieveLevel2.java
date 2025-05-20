@@ -29,6 +29,7 @@ package org.miaixz.bus.image.metric.service;
 
 import java.util.EnumSet;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
@@ -102,12 +103,12 @@ public enum QueryRetrieveLevel2 {
     }
 
     private static ImageServiceException missingAttribute(int tag) {
-        return identifierDoesNotMatchSOPClass("Missing " + DICT.keywordOf(tag) + " " + Tag.toString(tag), tag);
+        return identifierDoesNotMatchSOPClass("Missing " + DICT.keywordOf(tag) + Symbol.SPACE + Tag.toString(tag), tag);
     }
 
     private static ImageServiceException invalidAttributeValue(int tag, String value) {
         return identifierDoesNotMatchSOPClass(
-                "Invalid " + DICT.keywordOf(tag) + " " + Tag.toString(tag) + " - " + value, tag);
+                "Invalid " + DICT.keywordOf(tag) + Symbol.SPACE + Tag.toString(tag) + " - " + value, tag);
     }
 
     private static ImageServiceException identifierDoesNotMatchSOPClass(String comment, int tag) {
@@ -130,7 +131,8 @@ public enum QueryRetrieveLevel2 {
         if (ids == null || ids.length == 0 || ids[0].indexOf('*') >= 0 || ids[0].indexOf('?') >= 0) {
             if (!optional)
                 if (lenient)
-                    Logger.info("Missing or wildcard " + DICT.keywordOf(uniqueKey) + " " + Tag.toString(uniqueKey)
+                    Logger.info("Missing or wildcard " + DICT.keywordOf(uniqueKey) + Symbol.SPACE
+                            + Tag.toString(uniqueKey)
                             + " in Query/Retrieve Identifier");
                 else
                     throw ids == null || ids.length == 0 ? missingAttribute(uniqueKey)

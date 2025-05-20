@@ -32,6 +32,7 @@ import org.miaixz.bus.core.center.date.culture.cn.Direction;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * 逐日胎神
@@ -111,7 +112,7 @@ public class FetusDay extends Tradition {
             s = "占" + s;
         }
 
-        s += " ";
+        s += Symbol.SPACE;
 
         String directionName = direction.getName();
         if (0 == side) {

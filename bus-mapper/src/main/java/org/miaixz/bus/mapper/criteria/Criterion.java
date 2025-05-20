@@ -29,7 +29,7 @@ package org.miaixz.bus.mapper.criteria;
 
 import java.util.Collection;
 
-import org.miaixz.bus.mapper.mapping.MapperColumn;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -124,7 +124,7 @@ public class Criterion {
      * @param value     条件值
      * @param column    列信息
      */
-    public Criterion(String condition, Object value, MapperColumn column) {
+    public Criterion(String condition, Object value, ColumnMeta column) {
         super();
         this.condition = condition;
         this.value = value;
@@ -167,7 +167,7 @@ public class Criterion {
      * @param secondValue 结束值
      * @param column      列信息
      */
-    protected Criterion(String condition, Object value, Object secondValue, MapperColumn column) {
+    protected Criterion(String condition, Object value, Object secondValue, ColumnMeta column) {
         super();
         this.condition = condition;
         this.value = value;

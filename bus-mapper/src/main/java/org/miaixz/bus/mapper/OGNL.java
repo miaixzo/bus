@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -66,7 +67,7 @@ public class OGNL {
      */
     public static void registerSimpleType(String classes) {
         if (StringKit.isNotEmpty(classes)) {
-            String[] cls = classes.split(",");
+            String[] cls = classes.split(Symbol.COMMA);
             for (String c : cls) {
                 try {
                     Args.SIMPLE_TYPE_SET.add(Class.forName(c));
@@ -110,7 +111,7 @@ public class OGNL {
     public static <T> List<T> getInstances(Class<T> clazz) {
         List<T> list = NormalSpiLoader.loadList(false, clazz);
         if (list.size() > 1 && ORDER.class.isAssignableFrom(clazz)) {
-            list.sort(Comparator.comparing(f -> ((ORDER) f).getOrder()).reversed());
+            list.sort(Comparator.comparing(f -> ((ORDER) f).order()).reversed());
         }
         return list;
     }

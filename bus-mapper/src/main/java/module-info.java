@@ -47,9 +47,10 @@ module bus.mapper {
     exports org.miaixz.bus.mapper;
     exports org.miaixz.bus.mapper.annotation;
     exports org.miaixz.bus.mapper.binding;
+    exports org.miaixz.bus.mapper.builder;
     exports org.miaixz.bus.mapper.criteria;
     exports org.miaixz.bus.mapper.handler;
-    exports org.miaixz.bus.mapper.mapping;
+    exports org.miaixz.bus.mapper.parsing;
     exports org.miaixz.bus.mapper.provider;
     exports org.miaixz.bus.mapper.support;
     exports org.miaixz.bus.mapper.binding.basic;

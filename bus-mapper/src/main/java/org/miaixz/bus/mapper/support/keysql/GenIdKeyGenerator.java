@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -41,8 +41,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 主键生成器，负责在插入操作前或后生成主键值。
@@ -65,12 +65,12 @@ public class GenIdKeyGenerator implements KeyGenerator {
     /**
      * 实体表信息
      */
-    private final MapperTable table;
+    private final TableMeta table;
 
     /**
      * 主键列信息
      */
-    private final MapperColumn column;
+    private final ColumnMeta column;
 
     /**
      * MyBatis 配置对象
@@ -96,7 +96,7 @@ public class GenIdKeyGenerator implements KeyGenerator {
      * @param configuration MyBatis 配置对象
      * @param executeBefore 是否在插入前生成主键
      */
-    public GenIdKeyGenerator(GenId<?> genId, MapperTable table, MapperColumn column, Configuration configuration,
+    public GenIdKeyGenerator(GenId<?> genId, TableMeta table, ColumnMeta column, Configuration configuration,
             boolean executeBefore) {
         this.genId = genId;
         this.table = table;

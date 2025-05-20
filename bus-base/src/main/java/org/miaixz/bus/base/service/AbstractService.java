@@ -41,8 +41,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.binding.condition.Condition;
 import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.PageContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -404,8 +404,8 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
      */
     @Override
     public boolean pkHasValue(T entity) {
-        MapperTable entityTable = mapper.entityTable();
-        List<MapperColumn> idColumns = entityTable.idColumns();
+        TableMeta entityTable = mapper.entityTable();
+        List<ColumnMeta> idColumns = entityTable.idColumns();
         return idColumns.get(0).field().get(entity) != null;
     }
 

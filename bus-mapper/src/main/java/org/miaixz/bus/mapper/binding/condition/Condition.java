@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -37,13 +37,14 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.criteria.Criteria;
 import org.miaixz.bus.mapper.criteria.Criterion;
 import org.miaixz.bus.mapper.criteria.OrCriteria;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -202,15 +203,15 @@ public class Condition<T> {
      *
      * @param columns 查询列列表
      */
-    private void selectColumns(List<MapperColumn> columns) {
+    private void selectColumns(List<ColumnMeta> columns) {
         StringBuilder sb = new StringBuilder(columns.size() * 16);
         StringBuilder simple = new StringBuilder(columns.size() * 16);
-        for (MapperColumn entityColumn : columns) {
+        for (ColumnMeta entityColumn : columns) {
             String column = entityColumn.column();
             String field = entityColumn.field().getName();
             if (sb.length() != 0) {
-                sb.append(",");
-                simple.append(",");
+                sb.append(Symbol.COMMA);
+                simple.append(Symbol.COMMA);
             }
             if (column.equals(field) || entityColumn.entityTable().useResultMaps()) {
                 sb.append(column);
@@ -242,7 +243,7 @@ public class Condition<T> {
         if (fns == null || fns.length == 0) {
             return this;
         }
-        MapperTable table = fns[0].toEntityColumn().entityTable();
+        TableMeta table = fns[0].toEntityColumn().entityTable();
         Set<String> excludeColumnSet = Arrays.stream(fns).map(Fn::toColumn).collect(Collectors.toSet());
         selectColumns(table.selectColumns().stream().filter(c -> !excludeColumnSet.contains(c.column()))
                 .collect(Collectors.toList()));
@@ -342,7 +343,7 @@ public class Condition<T> {
         } else {
             orderByClause += ", ";
         }
-        orderByClause += fn.toColumn() + " " + order;
+        orderByClause += fn.toColumn() + Symbol.SPACE + order;
         return this;
     }
 
@@ -495,7 +496,7 @@ public class Condition<T> {
      * @return 当前条件对象
      */
     public Condition<T> set(Fn<T, Object> fn, Object value) {
-        MapperColumn column = fn.toEntityColumn();
+        ColumnMeta column = fn.toEntityColumn();
         this.setValues.add(new Criterion(column.column(), value, column));
         return this;
     }

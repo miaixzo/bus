@@ -38,6 +38,7 @@ import javax.naming.*;
 import javax.naming.directory.*;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
@@ -1030,7 +1031,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             if (!ne.hasMore())
                 return false;
 
-            setConfigurationDN(ne.next().getName() + "," + baseDN);
+            setConfigurationDN(ne.next().getName() + Symbol.COMMA + baseDN);
             return true;
         } catch (NamingException e) {
             throw new InternalException(e);

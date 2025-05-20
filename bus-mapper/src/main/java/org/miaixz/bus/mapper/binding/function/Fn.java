@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -34,9 +34,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.mapper.OGNL;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperFactory;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.MapperFactory;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.support.ClassField;
 
 /**
@@ -52,7 +52,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
     /**
      * 缓存方法引用与对应的列信息
      */
-    Map<Fn<?, ?>, MapperColumn> FN_COLUMN_MAP = new ConcurrentHashMap<>();
+    Map<Fn<?, ?>, ColumnMeta> FN_COLUMN_MAP = new ConcurrentHashMap<>();
 
     /**
      * 缓存方法引用与对应的字段信息
@@ -93,9 +93,9 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      * @return 虚拟表对象
      */
     static <E> FnArray<E> of(Class<E> entityClass, String... columnNames) {
-        MapperTable entityTable = MapperFactory.create(entityClass);
+        TableMeta entityTable = MapperFactory.create(entityClass);
         Set<String> columnNameSet = Arrays.stream(columnNames).collect(Collectors.toSet());
-        List<MapperColumn> columns = entityTable.columns().stream()
+        List<ColumnMeta> columns = entityTable.columns().stream()
                 .filter(column -> columnNameSet.contains(column.property())).collect(Collectors.toList());
         return new FnArray<>(entityClass, entityTable.tableName(), columns);
     }
@@ -178,10 +178,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      *
      * @return 列信息对象
      */
-    default MapperColumn toEntityColumn() {
+    default ColumnMeta toEntityColumn() {
         return FN_COLUMN_MAP.computeIfAbsent(this, key -> {
             ClassField classField = toClassField();
-            List<MapperColumn> columns = MapperFactory.create(classField.getClazz()).columns();
+            List<ColumnMeta> columns = MapperFactory.create(classField.getClazz()).columns();
             return columns.stream().filter(column -> column.property().equals(classField.getField())).findFirst()
                     .orElseGet(() -> columns.stream().filter(classField).findFirst()
                             .orElseThrow(() -> new RuntimeException(classField.getField()
@@ -341,7 +341,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      *
      * @param <E> 实体类型
      */
-    class FnArray<E> extends MapperTable {
+    class FnArray<E> extends TableMeta {
         /**
          * 通过列信息构造虚拟表
          *
@@ -349,7 +349,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
          * @param table       表名
          * @param columns     列信息列表
          */
-        private FnArray(Class<E> entityClass, String table, List<MapperColumn> columns) {
+        private FnArray(Class<E> entityClass, String table, List<ColumnMeta> columns) {
             super(entityClass);
             this.table = table;
             this.columns = columns;
@@ -372,7 +372,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
                     this.columns.add(fns[i].toEntityColumn());
                 }
                 if (i == 0) {
-                    MapperTable entityTable = this.columns.get(i).entityTable();
+                    TableMeta entityTable = this.columns.get(i).entityTable();
                     this.table = entityTable.tableName();
                     this.style = entityTable.style();
                     this.entityClass = entityTable.entityClass();

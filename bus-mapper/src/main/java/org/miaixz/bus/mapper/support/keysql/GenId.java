@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,8 +27,8 @@
 */
 package org.miaixz.bus.mapper.support.keysql;
 
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 主键生成器接口，用于通过接口生成主键值。
@@ -46,7 +46,7 @@ public interface GenId<T> {
      * @param column 主键列信息
      * @return 生成的主键值
      */
-    T genId(MapperTable table, MapperColumn column);
+    T genId(TableMeta table, ColumnMeta column);
 
     /**
      * 默认空实现，抛出不支持操作异常。
@@ -61,7 +61,7 @@ public interface GenId<T> {
          * @throws UnsupportedOperationException 不支持的主键生成操作
          */
         @Override
-        public Object genId(MapperTable table, MapperColumn column) {
+        public Object genId(TableMeta table, ColumnMeta column) {
             throw new UnsupportedOperationException();
         }
     }

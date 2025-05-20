@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
@@ -55,7 +56,8 @@ import org.miaixz.bus.health.linux.SysPath;
 final class LinuxSensors extends AbstractSensors {
 
     private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
-            .of(Config.get(Config._LINUX_THERMAL_ZONE_TYPE_PRIORITY, "").split(",")).filter((s) -> !s.isEmpty())
+            .of(Config.get(Config._LINUX_THERMAL_ZONE_TYPE_PRIORITY, "").split(Symbol.COMMA))
+            .filter((s) -> !s.isEmpty())
             .collect(Collectors.toList());
 
     private static final String TYPE = "type";

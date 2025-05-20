@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.mapper.support;
 
-import org.miaixz.bus.mapper.mapping.MapperColumn;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
  * 记录字段对应的类和列名，用于匹配实体类字段与数据库列。
@@ -54,7 +54,7 @@ public class ClassColumn extends ClassField {
      * @return 如果列名匹配则返回 true，否则返回 false
      */
     @Override
-    public boolean test(MapperColumn column) {
+    public boolean test(ColumnMeta column) {
         return getField().equalsIgnoreCase(column.column());
     }
 

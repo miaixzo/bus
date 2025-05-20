@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,7 +29,7 @@ package org.miaixz.bus.mapper.support;
 
 import java.util.function.Predicate;
 
-import org.miaixz.bus.mapper.mapping.MapperColumn;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
  * 记录字段对应的类和字段名，用于匹配实体类字段与数据库列的属性。
@@ -37,7 +37,7 @@ import org.miaixz.bus.mapper.mapping.MapperColumn;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ClassField implements Predicate<MapperColumn> {
+public class ClassField implements Predicate<ColumnMeta> {
 
     /**
      * 实体类
@@ -67,7 +67,7 @@ public class ClassField implements Predicate<MapperColumn> {
      * @return 如果属性名匹配则返回 true，否则返回 false
      */
     @Override
-    public boolean test(MapperColumn column) {
+    public boolean test(ColumnMeta column) {
         return getField().equalsIgnoreCase(column.property());
     }
 

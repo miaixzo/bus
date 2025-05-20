@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -35,8 +35,8 @@ import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.mapping.MapperFields;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.FieldMeta;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 提供命名样式的接口，支持通过 SPI 扩展自定义命名规则。
@@ -90,13 +90,6 @@ public interface NamingProvider extends Provider {
     }
 
     /**
-     * 获取命名样式名称。
-     *
-     * @return 命名样式标识
-     */
-    Object type();
-
-    /**
      * 转换实体类为表名。
      *
      * @param entityClass 实体类
@@ -111,6 +104,6 @@ public interface NamingProvider extends Provider {
      * @param field       实体字段信息
      * @return 对应的列名
      */
-    String columnName(MapperTable entityTable, MapperFields field);
+    String columnName(TableMeta entityTable, FieldMeta field);
 
 }

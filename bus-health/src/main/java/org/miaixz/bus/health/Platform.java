@@ -528,7 +528,7 @@ public class Platform {
         case com.sun.jna.Platform.AIX:
             return "aix-" + arch;
         default:
-            String osPrefix = name.toLowerCase().split(" ")[0];
+            String osPrefix = name.toLowerCase().split(Symbol.SPACE)[0];
             return osPrefix + Symbol.MINUS + arch;
         }
     }

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.mapping.MapperTable;
-import org.miaixz.bus.mapper.mapping.SqlScript;
+import org.miaixz.bus.mapper.parsing.SqlScript;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 提供基于条件的动态SQL生成，用于基本的增删改查操作。
@@ -69,11 +69,12 @@ public class ConditionProvider {
     public static String updateByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + "UPDATE " + entity.tableName()
                         + set(() -> entity.updateColumns().stream()
-                                .map(column -> column.columnEqualsProperty("entity.")).collect(Collectors.joining(",")))
+                                .map(column -> column.columnEqualsProperty("entity."))
+                                .collect(Collectors.joining(Symbol.COMMA)))
                         + variableNotNull("condition", "Condition cannot be null")
                 // 是否允许空条件，默认允许，允许时不检查查询条件
                         + (entity.getPropBoolean("updateByCondition.allowEmpty", true) ? ""
@@ -93,7 +94,7 @@ public class ConditionProvider {
     public static String updateByConditionSetValues(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + variableNotEmpty("condition.setValues", "Condition setValues cannot be empty") + "UPDATE "
                         + entity.tableName() + Args.CONDITION_SET_CLAUSE_INNER_WHEN
@@ -116,12 +117,12 @@ public class ConditionProvider {
     public static String updateByConditionSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + "UPDATE " + entity.tableName()
                         + set(() -> entity.updateColumns().stream()
                                 .map(column -> ifTest(column.notNullTest("entity."),
-                                        () -> column.columnEqualsProperty("entity.") + ","))
+                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA))
                                 .collect(Collectors.joining(Symbol.LF)))
                         + variableNotNull("condition", "Condition cannot be null")
                 // 是否允许空条件，默认允许，允许时不检查查询条件
@@ -142,7 +143,7 @@ public class ConditionProvider {
     public static String selectByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT "
                         + ifTest("distinct", () -> "distinct ")
                         + ifTest("selectColumns != null and selectColumns != ''", () -> "${selectColumns}")
@@ -164,7 +165,7 @@ public class ConditionProvider {
     public static String countByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT COUNT("
                         + ifTest("distinct", () -> "distinct ")
                         + ifTest("simpleSelectColumns != null and simpleSelectColumns != ''",

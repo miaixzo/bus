@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.mapper.mapping.MapperColumn;
-import org.miaixz.bus.mapper.mapping.MapperTable;
-import org.miaixz.bus.mapper.mapping.SqlScript;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.SqlScript;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 提供基本的增删改查操作，生成动态 SQL。
@@ -61,10 +61,10 @@ public class EntityProvider {
      * @return 缓存键
      */
     public static String insert(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext,
-                entity -> "INSERT INTO " + entity.tableName() + "(" + entity.insertColumnList() + ")" + " VALUES ("
-                        + entity.insertColumns().stream().map(MapperColumn::variables).collect(Collectors.joining(","))
-                        + ")");
+        return SqlScript.caching(providerContext, entity -> "INSERT INTO " + entity.tableName() + "("
+                + entity.insertColumnList() + ")" + " VALUES ("
+                + entity.insertColumns().stream().map(ColumnMeta::variables).collect(Collectors.joining(Symbol.COMMA))
+                + ")");
     }
 
     /**
@@ -76,15 +76,14 @@ public class EntityProvider {
     public static String insertSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                return "INSERT INTO " + entity.tableName()
-                        + trimSuffixOverrides("(", ")", ",",
-                                () -> entity.insertColumns().stream()
-                                        .map(column -> ifTest(column.notNullTest(), () -> column.column() + ","))
-                                        .collect(Collectors.joining(Symbol.LF)))
-                        + trimSuffixOverrides(" VALUES (", ")", ",",
-                                () -> entity.insertColumns().stream()
-                                        .map(column -> ifTest(column.notNullTest(), () -> column.variables() + ","))
+            public String getSql(TableMeta entity) {
+                return "INSERT INTO " + entity.tableName() + trimSuffixOverrides("(", ")", Symbol.COMMA,
+                        () -> entity.insertColumns().stream()
+                                .map(column -> ifTest(column.notNullTest(), () -> column.column() + Symbol.COMMA))
+                                .collect(Collectors.joining(Symbol.LF)))
+                        + trimSuffixOverrides(" VALUES (", ")", Symbol.COMMA,
+                                () -> entity.insertColumns().stream().map(
+                                        column -> ifTest(column.notNullTest(), () -> column.variables() + Symbol.COMMA))
                                         .collect(Collectors.joining(Symbol.LF)));
             }
         });
@@ -98,7 +97,7 @@ public class EntityProvider {
      */
     public static String deleteByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, entity -> "DELETE FROM " + entity.tableName() + " WHERE " + entity
-                .idColumns().stream().map(MapperColumn::columnEqualsProperty).collect(Collectors.joining(" AND ")));
+                .idColumns().stream().map(ColumnMeta::columnEqualsProperty).collect(Collectors.joining(" AND ")));
     }
 
     /**
@@ -110,7 +109,7 @@ public class EntityProvider {
     public static String delete(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "DELETE FROM " + entity.tableName() + parameterNotNull("Parameter cannot be null")
                         + where(() -> entity.columns().stream().map(
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
@@ -128,11 +127,11 @@ public class EntityProvider {
     public static String updateByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "UPDATE " + entity.tableName() + " SET "
-                        + entity.updateColumns().stream().map(MapperColumn::columnEqualsProperty)
-                                .collect(Collectors.joining(","))
-                        + where(() -> entity.idColumns().stream().map(MapperColumn::columnEqualsProperty)
+                        + entity.updateColumns().stream().map(ColumnMeta::columnEqualsProperty)
+                                .collect(Collectors.joining(Symbol.COMMA))
+                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
                                 .collect(Collectors.joining(" AND ")));
             }
         });
@@ -147,12 +146,11 @@ public class EntityProvider {
     public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
-                return "UPDATE " + entity.tableName()
-                        + set(() -> entity.updateColumns().stream()
-                                .map(column -> ifTest(column.notNullTest(), () -> column.columnEqualsProperty() + ","))
-                                .collect(Collectors.joining(Symbol.LF)))
-                        + where(() -> entity.idColumns().stream().map(MapperColumn::columnEqualsProperty)
+            public String getSql(TableMeta entity) {
+                return "UPDATE " + entity.tableName() + set(() -> entity.updateColumns().stream()
+                        .map(column -> ifTest(column.notNullTest(), () -> column.columnEqualsProperty() + Symbol.COMMA))
+                        .collect(Collectors.joining(Symbol.LF)))
+                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
                                 .collect(Collectors.joining(" AND ")));
             }
         });
@@ -167,9 +165,9 @@ public class EntityProvider {
     public static String selectByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
-                        + where(() -> entity.idColumns().stream().map(MapperColumn::columnEqualsProperty)
+                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
                                 .collect(Collectors.joining(" AND ")));
             }
         });
@@ -184,7 +182,7 @@ public class EntityProvider {
     public static String select(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
                         + ifParameterNotNull(() -> where(() -> entity.whereColumns().stream().map(
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
@@ -204,7 +202,7 @@ public class EntityProvider {
     public static String selectCount(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
             @Override
-            public String getSql(MapperTable entity) {
+            public String getSql(TableMeta entity) {
                 return "SELECT COUNT(*)  FROM " + entity.tableName() + Symbol.LF
                         + ifParameterNotNull(() -> where(() -> entity.whereColumns().stream().map(
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))

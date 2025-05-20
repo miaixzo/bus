@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.mapper.criteria;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.binding.function.Fn;
 
 import lombok.Getter;
@@ -567,7 +568,7 @@ public class OrCriteria<T> extends Criteria<T> {
      * @return 当前 OR 条件对象
      */
     public OrCriteria<T> contains(Fn<T, Object> fn, String value) {
-        super.andLike(fn, "%" + value + "%");
+        super.andLike(fn, Symbol.PERCENT + value + Symbol.PERCENT);
         return this;
     }
 
@@ -591,7 +592,7 @@ public class OrCriteria<T> extends Criteria<T> {
      * @return 当前 OR 条件对象
      */
     public OrCriteria<T> startsWith(Fn<T, Object> fn, String value) {
-        super.andLike(fn, value + "%");
+        super.andLike(fn, value + Symbol.PERCENT);
         return this;
     }
 
@@ -615,7 +616,7 @@ public class OrCriteria<T> extends Criteria<T> {
      * @return 当前 OR 条件对象
      */
     public OrCriteria<T> endsWith(Fn<T, Object> fn, String value) {
-        super.andLike(fn, "%" + value);
+        super.andLike(fn, Symbol.PERCENT + value);
         return this;
     }
 

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -39,6 +39,7 @@ import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.binding.BasicMapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.criteria.Criteria;
@@ -727,7 +728,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @return 当前包装器对象
      */
     public ConditionWrapper<T, I> contains(Fn<T, Object> fn, String value) {
-        this.current.addCriterion(fn.toColumn() + " LIKE", "%" + value + "%");
+        this.current.addCriterion(fn.toColumn() + " LIKE", Symbol.PERCENT + value + Symbol.PERCENT);
         return this;
     }
 
@@ -763,7 +764,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @return 当前包装器对象
      */
     public ConditionWrapper<T, I> startsWith(Fn<T, Object> fn, String value) {
-        this.current.addCriterion(fn.toColumn() + " LIKE", value + "%");
+        this.current.addCriterion(fn.toColumn() + " LIKE", value + Symbol.PERCENT);
         return this;
     }
 
@@ -799,7 +800,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @return 当前包装器对象
      */
     public ConditionWrapper<T, I> endsWith(Fn<T, Object> fn, String value) {
-        this.current.addCriterion(fn.toColumn() + " LIKE", "%" + value);
+        this.current.addCriterion(fn.toColumn() + " LIKE", Symbol.PERCENT + value);
         return this;
     }
 

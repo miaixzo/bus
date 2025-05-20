@@ -30,6 +30,7 @@ package org.miaixz.bus.notify.metric.cloopen;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -52,7 +53,7 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenMaterial, Contex
     @Override
     public Message send(CloopenMaterial entity) {
         Map<String, String> bodys = MapKit.newHashMap(4, true);
-        bodys.put("to", String.join(",", entity.getReceive()));
+        bodys.put("to", String.join(Symbol.COMMA, entity.getReceive()));
         bodys.put("appId", this.context.getAppKey());
         bodys.put("templateId", entity.getTemplate());
         bodys.put("datas", entity.getContent());

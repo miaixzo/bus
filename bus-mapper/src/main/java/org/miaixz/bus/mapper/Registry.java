@@ -34,7 +34,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * 支持定制化处理 {@link MappedStatement} 的接口。
@@ -51,7 +51,7 @@ public interface Registry {
         private final List<Registry> registries = ListKit.of(NormalSpiLoader.loadList(Registry.class));
 
         @Override
-        public void customize(MapperTable entity, MappedStatement ms, ProviderContext context) {
+        public void customize(TableMeta entity, MappedStatement ms, ProviderContext context) {
             for (Registry registry : registries) {
                 Logger.debug("Applying customization from registry: " + registry.getClass().getName());
                 registry.customize(entity, ms, context);
@@ -66,6 +66,6 @@ public interface Registry {
      * @param ms      MappedStatement 对象
      * @param context 提供者上下文，包含方法和接口信息
      */
-    void customize(MapperTable entity, MappedStatement ms, ProviderContext context);
+    void customize(TableMeta entity, MappedStatement ms, ProviderContext context);
 
 }

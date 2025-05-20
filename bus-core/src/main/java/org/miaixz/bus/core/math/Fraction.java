@@ -30,6 +30,7 @@ package org.miaixz.bus.core.math;
 import java.math.BigInteger;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MathKit;
 
 /**
@@ -672,7 +673,7 @@ public final class Fraction extends Number implements Comparable<Fraction> {
                 if (properNumerator == 0) {
                     toProperString = Integer.toString(getProperWhole());
                 } else {
-                    toProperString = getProperWhole() + " " + properNumerator + "/" + getDenominator();
+                    toProperString = getProperWhole() + Symbol.SPACE + properNumerator + "/" + getDenominator();
                 }
             } else {
                 toProperString = getNumerator() + "/" + getDenominator();
