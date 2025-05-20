@@ -50,6 +50,7 @@ jobs:
           cd ../bus-starter && mvn clean
           cd ../bus-bom && mvn clean
           cd ../bus-all && mvn clean
+          cd ../bus-parent && mvn clean
 
 
 
