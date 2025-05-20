@@ -85,21 +85,22 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <jakarta.json.api.version>2.1.3</jakarta.json.api.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-health</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-opencv</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

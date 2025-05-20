@@ -85,6 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
         <jersey.version>3.1.10</jersey.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jackson.version>2.19.0</jackson.version>

@@ -85,148 +85,149 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-base</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-cache</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-cron</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-extra</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-gitlab</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-goalie</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-health</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-http</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-image</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-limiter</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-logger</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-mapper</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-notify</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-oauth</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-office</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-pager</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-pay</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-proxy</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-sensitive</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-setting</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-shade</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-socket</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-starter</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-tracer</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-validate</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
     </dependencies>
 

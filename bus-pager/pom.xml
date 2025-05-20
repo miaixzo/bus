@@ -85,6 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
         <mybatis.version>3.5.19</mybatis.version>
         <guava.version>33.4.8-jre</guava.version>
         <jsqlparser.version>5.1</jsqlparser.version>
@@ -95,19 +96,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-cache</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-mapper</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>

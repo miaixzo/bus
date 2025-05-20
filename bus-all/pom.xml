@@ -85,13 +85,15 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
+        <bus.version>8.1.8</bus.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-bom</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -163,7 +165,7 @@
                             <createSourcesJar>true</createSourcesJar>
                             <artifactSet>
                                 <includes>
-                                    <include>${project.groupId}:*:*</include>
+                                    <include>org.miaixz:*:*</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -224,10 +226,10 @@
                     </formats>
                     <java>
                         <licenseHeader>
-                            <file>../.github/spotless/spotless_miaixz.org</file>
+                            <file>../.github/scripts/miaixz.org</file>
                         </licenseHeader>
                         <eclipse>
-                            <file>../.github/spotless/spotless_format.xml</file>
+                            <file>../.github/scripts/format.xml</file>
                         </eclipse>
                         <removeUnusedImports />
                     </java>

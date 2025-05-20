@@ -85,6 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <spring.boot.version>3.4.5</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
@@ -93,14 +94,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-pager</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-validate</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

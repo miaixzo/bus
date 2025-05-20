@@ -85,6 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
         <commons.logging.version>1.3.5</commons.logging.version>
         <jboss.version>3.6.1.Final</jboss.version>
         <logback.version>1.5.18</logback.version>
@@ -95,9 +96,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>

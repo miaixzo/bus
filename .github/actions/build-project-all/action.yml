@@ -1,0 +1,3 @@
+name: Build
+description: 'Builds the project, optionally publishing it to a local deployment repository'
+inputs:

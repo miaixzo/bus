@@ -85,6 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jakarta.xml.soap.version>3.0.2</jakarta.xml.soap.version>
@@ -92,9 +93,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-logger</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
