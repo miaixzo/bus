@@ -50,6 +50,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/${objectName}")
 public class ${entityName}Controller extends BaseController
-<${entityName}Service, ${entityName}> {
+<${entityName}, ${entityName}Service> {
 
 }

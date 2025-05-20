@@ -29,8 +29,8 @@ package org.miaixz.bus.extra.template;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.ReflectKit;
-import org.miaixz.bus.core.xyz.SPIKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -87,7 +87,7 @@ public class TemplateFactory {
             engine = ReflectKit.newInstance(customEngineClass);
         } else {
             // SPI引擎查找
-            engine = SPIKit.loadFirstAvailable(TemplateProvider.class);
+            engine = NormalSpiLoader.loadFirstAvailable(TemplateProvider.class);
         }
         if (null != engine) {
             return engine.init(config);

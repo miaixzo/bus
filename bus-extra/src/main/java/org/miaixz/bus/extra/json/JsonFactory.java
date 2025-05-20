@@ -29,7 +29,7 @@ package org.miaixz.bus.extra.json;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.SPIKit;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -56,7 +56,7 @@ public class JsonFactory {
      * @return {@link JsonProvider}
      */
     public static JsonProvider create() {
-        final JsonProvider engine = SPIKit.loadFirstAvailable(JsonProvider.class);
+        final JsonProvider engine = NormalSpiLoader.loadFirstAvailable(JsonProvider.class);
         if (null == engine) {
             throw new InternalException("No json jar found ! Please add one of it to your project !");
         }

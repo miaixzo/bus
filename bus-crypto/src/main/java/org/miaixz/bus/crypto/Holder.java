@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.xyz.SPIKit;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
 
 /**
@@ -67,7 +67,7 @@ public class Holder {
      * @return {@link java.security.Provider} or {@code null}
      */
     private static java.security.Provider _createProvider() {
-        final BouncyCastleProvider factory = SPIKit.loadFirstAvailable(BouncyCastleProvider.class);
+        final BouncyCastleProvider factory = NormalSpiLoader.loadFirstAvailable(BouncyCastleProvider.class);
         if (null == factory) {
             // 默认JCE
             return null;

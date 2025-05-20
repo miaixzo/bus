@@ -30,9 +30,9 @@ package org.miaixz.bus.logger;
 import java.net.URL;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
-import org.miaixz.bus.core.xyz.SPIKit;
 import org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory;
 import org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory;
 import org.miaixz.bus.logger.metric.console.NormalLoggingFactory;
@@ -123,7 +123,7 @@ public class Holder {
      * @return 日志实现类
      */
     private static Factory doFactory() {
-        final Factory factory = SPIKit.loadFirstAvailable(Factory.class);
+        final Factory factory = NormalSpiLoader.loadFirstAvailable(Factory.class);
         if (null != factory) {
             return factory;
         }

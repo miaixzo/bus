@@ -29,6 +29,7 @@ package org.miaixz.bus.core.basic.spring;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -46,6 +47,19 @@ public class Controller {
      * @return body 返回值
      */
     public static Object write(Object data) {
+        return write(data, false);
+    }
+
+    /**
+     * 返回值:数据处理
+     *
+     * @param data 数据信息
+     * @return body 返回值
+     */
+    public static Object write(Object data, boolean id) {
+        if (id) {
+            return write(ErrorCode.EM_SUCCESS, FieldKit.getFieldValue(data, "id"));
+        }
         return write(ErrorCode.EM_SUCCESS, data);
     }
 

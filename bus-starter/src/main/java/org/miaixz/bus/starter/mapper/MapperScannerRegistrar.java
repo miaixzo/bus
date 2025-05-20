@@ -98,44 +98,34 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         scanner.setSqlSessionTemplateBeanName(annoAttrs.getString("sqlSessionTemplateRef"));
         scanner.setSqlSessionFactoryBeanName(annoAttrs.getString("sqlSessionFactoryRef"));
 
-        List<String> basePackages = new ArrayList<>();
+        List<String> basePackage = new ArrayList<>();
         for (String pkg : annoAttrs.getStringArray("value")) {
             if (StringKit.hasText(pkg)) {
-                basePackages.add(pkg);
+                basePackage.add(pkg);
             }
         }
-        for (String pkg : annoAttrs.getStringArray("basePackages")) {
+        for (String pkg : annoAttrs.getStringArray("basePackage")) {
             if (StringKit.hasText(pkg)) {
-                basePackages.add(pkg);
+                basePackage.add(pkg);
             }
         }
         for (Class<?> clazz : annoAttrs.getClassArray("basePackageClasses")) {
-            basePackages.add(ClassKit.getPackageName(clazz));
+            basePackage.add(ClassKit.getPackageName(clazz));
         }
 
-        if (CollKit.isEmpty(basePackages)) {
+        if (CollKit.isEmpty(basePackage)) {
             MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
                     GeniusBuilder.MYBATIS);
-            if (properties != null && properties.getBasePackages() != null && properties.getBasePackages().length > 0) {
-                basePackages.addAll(Arrays.asList(properties.getBasePackages()));
+            if (properties != null && properties.getBasePackage() != null && properties.getBasePackage().length > 0) {
+                basePackage.addAll(Arrays.asList(properties.getBasePackage()));
             } else {
                 // 未设置任何package的前提下，扫描@Mapper注解
                 scanner.setAnnotationClass(Mapper.class);
             }
         }
 
-        // 优先级 mapperBuilderRef > properties > springboot
-        String mapperBuilderRef = annoAttrs.getString("mapperBuilderRef");
-        String[] properties = annoAttrs.getStringArray("properties");
-        if (StringKit.hasText(mapperBuilderRef)) {
-            scanner.setMapperBuilderBeanName(mapperBuilderRef);
-        } else if (properties != null && properties.length > 0) {
-            scanner.setMapperProperties(properties);
-        } else {
-            scanner.setMapperProperties(environment);
-        }
         scanner.registerFilters();
-        scanner.doScan(ArrayKit.ofArray(basePackages, String.class));
+        scanner.doScan(ArrayKit.ofArray(basePackage, String.class));
     }
 
     @Override

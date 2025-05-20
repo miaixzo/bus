@@ -94,7 +94,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>bus-logger</artifactId>
+            <artifactId>bus-setting</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -227,6 +227,9 @@
                         </format>
                     </formats>
                     <java>
+                        <licenseHeader>
+                            <file>../.github/spotless/spotless_miaixz.org</file>
+                        </licenseHeader>
                         <eclipse>
                             <file>../.github/spotless/spotless_format.xml</file>
                         </eclipse>

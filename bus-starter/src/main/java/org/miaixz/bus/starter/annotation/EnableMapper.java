@@ -51,7 +51,7 @@ import org.springframework.context.annotation.Import;
 public @interface EnableMapper {
 
     /**
-     * {@link #basePackages()} 属性的别名，与basePackages有相同效果
+     * {@link #basePackage()} 属性的别名，与basePackage有相同效果
      *
      * @return the array
      */
@@ -62,10 +62,10 @@ public @interface EnableMapper {
      *
      * @return the string
      */
-    String[] basePackages() default {};
+    String[] basePackage() default {};
 
     /**
-     * 类型安全的替代{@link #basePackages()} 用于指定要扫描的包以查找带注释的组件,每个指定类的包将被扫描 考虑在每个包中创建一个特殊的无操作标记类或接口，它除了被该属性引用之外没有其他用途。
+     * 类型安全的替代{@link #basePackage()} 用于指定要扫描的包以查找带注释的组件,每个指定类的包将被扫描 考虑在每个包中创建一个特殊的无操作标记类或接口，它除了被该属性引用之外没有其他用途。
      *
      * @return the class
      */

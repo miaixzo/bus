@@ -505,6 +505,25 @@ public class Optional<T> {
     }
 
     /**
+     * 返回值流中的第一个非空值，如果没有非空值则返回空的 Optional
+     * 
+     * @param values 要搜索的值
+     * @param <T>    值的类型
+     * @return 包含第一个非空值的 Optional，如果没有非空值则返回空
+     */
+    public static <T> Optional<T> findFirst(T... values) {
+        if (values == null || values.length == 0) {
+            return empty();
+        }
+        for (T value : values) {
+            if (value != null) {
+                return of(value);
+            }
+        }
+        return empty();
+    }
+
+    /**
      * 判断传入参数是否与 {@code Optional}相等 在以下情况下返回true
      * <ul>
      * <li>它也是一个 {@code Optional} 并且

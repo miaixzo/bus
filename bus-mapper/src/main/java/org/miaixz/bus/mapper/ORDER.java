@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -28,22 +28,30 @@
 package org.miaixz.bus.mapper;
 
 /**
- * 执行 SQL 的时机
+ * 定义排序顺序和优先级的接口，用于控制执行顺序。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum ORDER {
+public interface ORDER {
+
     /**
-     * insert 后执行 SQL
+     * 升序排序
      */
-    AFTER,
+    String ASC = "ASC";
+
     /**
-     * insert 前执行 SQL
+     * 降序排序
      */
-    BEFORE,
+    String DESC = "DESC";
+
     /**
-     * 使用全局配置
+     * 获取执行优先级。
+     *
+     * @return 优先级，数值越大优先级越高，越早执行，默认为 0
      */
-    DEFAULT
+    default int getOrder() {
+        return 0;
+    }
+
 }

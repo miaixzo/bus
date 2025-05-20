@@ -233,25 +233,25 @@ the```lazyStream()``` method on the```Pager``` instance to create a lazy evaluat
 the```Pager``` instance to page through the available items. **A lazy Stream does NOT support parallel operations or
 skipping.**
 
-#### **Eager evaluation example usage:**
+#### **Eager evaluation condition usage:**
 
 ```
 // Stream the visible projects printing out the project name.
 Stream<Project> projectStream = gitlabApi.getProjectApi().getProjectsStream();
 projectStream.map(Project::getName).forEach(name -> System.out.println(name));
 
-// Operate on the stream in parallel, this example sorts User instances by username
+// Operate on the stream in parallel, this condition sorts User instances by username
 // NOTE: Fetching of the users is not done in parallel,
 // only the sorting of the users is a parallel operation.
 Stream<User> stream = gitlabApi.getUserApi().getUsersStream();
 List<User> users = stream.parallel().sorted(comparing(User::getUsername)).collect(toList());
 ```
 
-#### **Lazy evaluation example usage:**
+#### **Lazy evaluation condition usage:**
 
 ```
 // Get a Pager instance to that will be used to lazily stream Project instances.
-// In this example, 10 Projects per page will be pre-fetched.
+// In this condition, 10 Projects per page will be pre-fetched.
 Pager<Project> projectPager = gitlabApi.getProjectApi().getProjects(10);
 
 // Lazily stream the Projects, printing out each project name, limit the output to 5 project names
@@ -263,7 +263,7 @@ projectPager.lazyStream().limit(5).map(Project::getName).forEach(name -> System.
 ### **Java 8 Optional Support**
 
 GitLab-API supports Java 8 Optional&lt;T&gt; for API calls that result in the return of a single item. Here is an
-example on how to use the Java 8 Optional&lt;T&gt; API calls:
+condition on how to use the Java 8 Optional&lt;T&gt; API calls:
 
 ```
 Optional<Group> optionalGroup =  gitlabApi.getGroupApi().getOptionalGroup("my-group-path");
@@ -361,7 +361,7 @@ available methods for each sub API.
 ```
 // Add an OAUTH Application to GitLab
 ApplicationScope[] scopes = {ApplicationScope.SUDO, ApplicationScope.PROFILE};
-gitLabApi.getApplicationsApi().createApplication("My OAUTH Application", "https//example.com/myapp/callback", scopes);
+gitLabApi.getApplicationsApi().createApplication("My OAUTH Application", "https//condition.com/myapp/callback", scopes);
 ```
 
 #### ApplicationSettingsApi
@@ -677,7 +677,7 @@ User user = gitLabApi.getUserApi().getUser(1);
 
 // Create a new user with no password who will recieve a reset password email
 User userConfig = new User()
-    .withEmail("jdoe@example.com")
+    .withEmail("jdoe@condition.com")
     .withName("Jane Doe")
     .withUsername("jdoe");
 String password = null;

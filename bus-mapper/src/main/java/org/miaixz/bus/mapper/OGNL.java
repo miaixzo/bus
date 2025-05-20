@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,264 +27,142 @@
 */
 package org.miaixz.bus.mapper;
 
+import java.beans.Introspector;
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Matcher;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.MapperException;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.annotation.LogicDelete;
-import org.miaixz.bus.mapper.builder.EntityBuilder;
-import org.miaixz.bus.mapper.builder.SqlBuilder;
-import org.miaixz.bus.mapper.entity.Condition;
-import org.miaixz.bus.mapper.entity.EntityColumn;
-import org.miaixz.bus.mapper.entity.TableNames;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.binding.function.Fn;
+import org.miaixz.bus.mapper.support.ClassColumn;
+import org.miaixz.bus.mapper.support.ClassField;
 
 /**
- * OGNL静态方法
+ * OGNL 静态方法工具类，提供类型注册、SPI 实例获取及函数式字段名转换功能。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class OGNL {
-
-    public static final String SAFE_DELETE_ERROR = "通用 Mapper 安全检查: 对查询条件参数进行检查时出错!";
-    public static final String SAFE_DELETE_EXCEPTION = "通用 Mapper 安全检查: 当前操作的方法没有指定查询条件，不允许执行该操作!";
+public class OGNL {
 
     /**
-     * 校验通用 Condition 的 entityClass 和当前方法是否匹配
+     * 注册新的简单类型。
      *
-     * @param parameter      参数
-     * @param entityFullName 对象全称
-     * @return true支持，false不支持
+     * @param clazz 要注册的类型
      */
-    public static boolean checkConditionEntityClass(Object parameter, String entityFullName) {
-        if (parameter != null && parameter instanceof Condition && StringKit.isNotEmpty(entityFullName)) {
-            Condition condition = (Condition) parameter;
-            Class<?> entityClass = condition.getEntityClass();
-            if (!entityClass.getName().equals(entityFullName)) {
-                throw new MapperException("当前 Condition 方法对应实体为:" + entityFullName
-                        + ", 但是参数 Condition 中的 entityClass 为:" + entityClass.getName());
-            }
-        }
-        return true;
+    public static void registerSimpleType(Class<?> clazz) {
+        Args.SIMPLE_TYPE_SET.add(clazz);
     }
 
     /**
-     * 检查 parameter 对象中指定的 fields 是否全是 null，如果是则抛出异常
+     * 批量注册简单类型，通过逗号分隔的类名字符串。
      *
-     * @param parameter 参数
-     * @param fields    字段信息
-     * @return true支持，false不支持
+     * @param classes 类名字符串，格式为全限定类名，逗号分隔
+     * @throws RuntimeException 如果类名无效或无法找到
      */
-    public static boolean notAllNullParameterCheck(Object parameter, String fields) {
-        if (parameter != null) {
-            try {
-                Set<EntityColumn> columns = EntityBuilder.getColumns(parameter.getClass());
-                Set<String> fieldSet = new HashSet<>(Arrays.asList(fields.split(Symbol.COMMA)));
-                for (EntityColumn column : columns) {
-                    if (fieldSet.contains(column.getProperty())) {
-                        Object value = column.getEntityField().getValue(parameter);
-                        if (value != null) {
-                            return true;
-                        }
-                    }
+    public static void registerSimpleType(String classes) {
+        if (StringKit.isNotEmpty(classes)) {
+            String[] cls = classes.split(",");
+            for (String c : cls) {
+                try {
+                    Args.SIMPLE_TYPE_SET.add(Class.forName(c));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException("Failed to register type: " + c, e);
                 }
-            } catch (Exception e) {
-                throw new MapperException(SAFE_DELETE_ERROR, e);
             }
         }
-        throw new MapperException(SAFE_DELETE_EXCEPTION);
     }
 
     /**
-     * 校验集合类型参数不能为空
+     * 静默注册简单类型，忽略类不存在的异常。
      *
-     * @param parameter 参数
-     * @param error     错误
-     * @return true支持，false不支持
+     * @param clazz 类名
      */
-    public static boolean notEmptyCollectionCheck(Object parameter, String error) {
-        if (parameter == null || (parameter instanceof Collection && ((Collection) parameter).size() == 0)) {
-            throw new IllegalArgumentException(error);
+    public static void registerSimpleTypeSilence(String clazz) {
+        try {
+            Args.SIMPLE_TYPE_SET.add(Class.forName(clazz));
+        } catch (ClassNotFoundException e) {
+            Logger.debug("Class not found, ignored: " + clazz);
         }
-        return true;
     }
 
     /**
-     * 检查 parameter 对象中指定的 fields 是否全是 null，如果是则抛出异常
+     * 判断指定类是否为已知的简单类型。
      *
-     * @param parameter 参数
-     * @return true支持，false不支持
+     * @param clazz 要检查的类
+     * @return 如果是简单类型则返回 true，否则返回 false
      */
-    public static boolean conditionHasAtLeastOneCriteriaCheck(Object parameter) {
-        if (parameter != null) {
-            try {
-                if (parameter instanceof Condition) {
-                    List<Condition.Criteria> criteriaList = ((Condition) parameter).getOredCriteria();
-                    if (criteriaList != null && criteriaList.size() > 0) {
-                        return true;
-                    }
+    public static boolean isSimpleType(Class<?> clazz) {
+        return Args.SIMPLE_TYPE_SET.contains(clazz);
+    }
+
+    /**
+     * 获取指定接口或类的所有 SPI 实现实例，并按 ORDER 接口的顺序排序（如果适用）。
+     *
+     * @param clazz 接口或类
+     * @param <T>   类型参数
+     * @return 按顺序排列的实现实例列表
+     */
+    public static <T> List<T> getInstances(Class<T> clazz) {
+        List<T> list = NormalSpiLoader.loadList(false, clazz);
+        if (list.size() > 1 && ORDER.class.isAssignableFrom(clazz)) {
+            list.sort(Comparator.comparing(f -> ((ORDER) f).getOrder()).reversed());
+        }
+        return list;
+    }
+
+    /**
+     * 将函数式接口 Fn 转换为对应的字段名或列名。
+     *
+     * @param fn 函数式接口实例
+     * @return 包含类和字段名/列名的 ClassField 或 ClassColumn 对象
+     * @throws RuntimeException 如果反射操作失败
+     */
+    public static ClassField fnToFieldName(Fn<?, ?> fn) {
+        try {
+            Class<?> clazz = null;
+            if (fn instanceof Fn.FnName<?, ?> field) {
+                if (field.column) {
+                    return new ClassColumn(field.entityClass, field.name);
                 } else {
-                    Method getter = parameter.getClass().getDeclaredMethod("getOredCriteria");
-                    Object list = getter.invoke(parameter);
-                    if (list != null && list instanceof List && ((List) list).size() > 0) {
-                        return true;
-                    }
-                }
-            } catch (Exception e) {
-                throw new MapperException(SAFE_DELETE_ERROR, e);
-            }
-        }
-        throw new MapperException(SAFE_DELETE_EXCEPTION);
-    }
-
-    /**
-     * 是否包含自定义查询列
-     *
-     * @param parameter 参数
-     * @return true支持，false不支持
-     */
-    public static boolean hasSelectColumns(Object parameter) {
-        if (parameter != null && parameter instanceof Condition) {
-            Condition condition = (Condition) parameter;
-            if (condition.getSelectColumns() != null && condition.getSelectColumns().size() > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 是否包含自定义 Count 列
-     *
-     * @param parameter 参数
-     * @return true支持，false不支持
-     */
-    public static boolean hasCountColumn(Object parameter) {
-        if (parameter != null && parameter instanceof Condition) {
-            Condition condition = (Condition) parameter;
-            return StringKit.isNotEmpty(condition.getCountColumn());
-        }
-        return false;
-    }
-
-    /**
-     * 是否包含 forUpdate
-     *
-     * @param parameter 参数
-     * @return true支持，false不支持
-     */
-    public static boolean hasForUpdate(Object parameter) {
-        if (parameter != null && parameter instanceof Condition) {
-            Condition condition = (Condition) parameter;
-            return condition.isForUpdate();
-        }
-        return false;
-    }
-
-    /**
-     * 不包含自定义查询列
-     *
-     * @param parameter 参数
-     * @return true支持，false不支持
-     */
-    public static boolean hasNoSelectColumns(Object parameter) {
-        return !hasSelectColumns(parameter);
-    }
-
-    /**
-     * 判断参数是否支持动态表名
-     *
-     * @param parameter 参数
-     * @return true支持，false不支持
-     */
-    public static boolean isDynamicParameter(Object parameter) {
-        if (parameter != null && parameter instanceof TableNames) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 判断参数是否b支持动态表名
-     *
-     * @param parameter 参数
-     * @return true不支持，false支持
-     */
-    public static boolean isNotDynamicParameter(Object parameter) {
-        return !isDynamicParameter(parameter);
-    }
-
-    /**
-     * 判断条件是 and 还是 or
-     *
-     * @param parameter 参数
-     * @return the string
-     */
-    public static String andOr(Object parameter) {
-        if (parameter instanceof Condition.Criteria) {
-            return ((Condition.Criteria) parameter).getAndOr();
-        } else if (parameter instanceof Condition.Criterion) {
-            return ((Condition.Criterion) parameter).getAndOr();
-        } else if (parameter.getClass().getName().endsWith("Criteria")) {
-            return "or";
-        } else {
-            return "and";
-        }
-    }
-
-    /**
-     * 拼接逻辑删除字段的未删除查询条件
-     *
-     * @param parameter 参数
-     * @return the string
-     */
-    public static String andNotLogicDelete(Object parameter) {
-        String result = Normal.EMPTY;
-        if (parameter instanceof Condition) {
-            Condition condition = (Condition) parameter;
-            Map<String, EntityColumn> propertyMap = condition.getPropertyMap();
-
-            for (Map.Entry<String, EntityColumn> entry : propertyMap.entrySet()) {
-                EntityColumn column = entry.getValue();
-                if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
-                    // 未逻辑删除的条件
-                    Integer logicDeletedValue = SqlBuilder.getLogicDeletedValue(column, false);
-                    if (logicDeletedValue == null) {
-                        result = column.getColumn() + " is null ";
-                    } else {
-                        result = column.getColumn() + " = " + logicDeletedValue;
-                    }
-
-                    // 如果 Condition 中有条件，则拼接" and "，
-                    // 如果是空的oredCriteria，则where中只有逻辑删除注解的未删除条件
-                    if (hasWhereCause(condition)) {
-                        result += " and ";
-                    }
+                    return new ClassField(field.entityClass, field.name);
                 }
             }
-        }
-        return result;
-    }
-
-    /**
-     * 检查是否存在where条件，存在返回true，不存在返回false.
-     *
-     * @param condition 参数
-     * @return the boolean
-     */
-    private static boolean hasWhereCause(Condition condition) {
-        if (condition.getOredCriteria() == null || condition.getOredCriteria().size() == 0) {
-            return false;
-        }
-        for (Condition.Criteria oredCriterion : condition.getOredCriteria()) {
-            if (oredCriterion.getAllCriteria().size() != 0) {
-                return true;
+            if (fn instanceof Fn.FnType) {
+                clazz = ((Fn.FnType<?, ?>) fn).entityClass;
+                fn = ((Fn.FnType<?, ?>) fn).fn;
+                while (fn instanceof Fn.FnType) {
+                    fn = ((Fn.FnType<?, ?>) fn).fn;
+                }
             }
+            Method method = fn.getClass().getDeclaredMethod("writeReplace");
+            method.setAccessible(Boolean.TRUE);
+            SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
+            String getter = serializedLambda.getImplMethodName();
+            if (Args.GET_PATTERN.matcher(getter).matches()) {
+                getter = getter.substring(3);
+            } else if (Args.IS_PATTERN.matcher(getter).matches()) {
+                getter = getter.substring(2);
+            }
+            String field = Introspector.decapitalize(getter);
+            if (clazz == null) {
+                Matcher matcher = Args.INSTANTIATED_CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
+                String implClass;
+                if (matcher.find()) {
+                    implClass = matcher.group("cls").replaceAll("/", "\\.");
+                } else {
+                    implClass = serializedLambda.getImplClass().replaceAll("/", "\\.");
+                }
+                clazz = Class.forName(implClass);
+            }
+            return new ClassField(clazz, field);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Failed to convert Fn to field name", e);
         }
-        return false;
     }
 
 }

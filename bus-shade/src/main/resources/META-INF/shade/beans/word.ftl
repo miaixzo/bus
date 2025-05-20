@@ -397,7 +397,7 @@
                                     </w:r>
                                 </w:p>
                             </w:tc>
-                        </w:tr><#--列--><#list t.columns><#items as c>
+                        </w:tr><#--列--><#list t.mapperColumn><#items as c>
                             <w:tr w:rsidR="005153C0" w14:paraId="6AEC5B4C" w14:textId="77777777">
                             <w:trPr>
                                 <w:trHeight w:val="359"/>

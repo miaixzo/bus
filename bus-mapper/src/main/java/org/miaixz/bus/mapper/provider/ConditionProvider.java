@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,159 +27,153 @@
 */
 package org.miaixz.bus.mapper.provider;
 
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.miaixz.bus.mapper.builder.MapperBuilder;
-import org.miaixz.bus.mapper.builder.MapperTemplate;
-import org.miaixz.bus.mapper.builder.SqlBuilder;
-import org.miaixz.bus.mapper.support.MetaObject;
+import java.util.stream.Collectors;
+
+import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.mapping.MapperTable;
+import org.miaixz.bus.mapper.mapping.SqlScript;
 
 /**
- * ConditionProvider实现类，基础方法实现类
+ * 提供基于条件的动态SQL生成，用于基本的增删改查操作。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConditionProvider extends MapperTemplate {
+public class ConditionProvider {
 
-    public ConditionProvider(Class<?> mapperClass, MapperBuilder mapperBuilder) {
-        super(mapperClass, mapperBuilder);
+    /**
+     * 根据Condition对象删除记录。
+     *
+     * @param providerContext 提供者上下文，包含方法和接口信息
+     * @return 生成的SQL缓存键
+     */
+    public static String deleteByCondition(ProviderContext providerContext) {
+        return SqlScript.caching(providerContext,
+                (entity, util) -> util.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
+                        + "DELETE FROM " + entity.tableName() + util.parameterNotNull("Condition cannot be null")
+                        // 是否允许空条件，默认允许，允许时不检查查询条件
+                        + (entity.getPropBoolean("deleteByCondition.allowEmpty", true) ? ""
+                                : util.variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
+                        + Args.CONDITION_WHERE_CLAUSE
+                        + util.ifTest("endSql != null and endSql != ''", () -> "${endSql}"));
     }
 
     /**
-     * 根据Condition查询总数
+     * 根据Condition对象批量更新实体信息，更新所有字段。
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param providerContext 提供者上下文，包含方法和接口信息
+     * @return 生成的SQL缓存键
      */
-    public String selectCountByCondition(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder("SELECT ");
-        if (isCheckConditionEntityClass()) {
-            sql.append(SqlBuilder.conditionCheck(entityClass));
-        }
-        sql.append(SqlBuilder.conditionCountColumn(entityClass));
-        sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
-        sql.append(SqlBuilder.conditionWhereClause());
-        sql.append(SqlBuilder.conditionForUpdate());
-        return sql.toString();
+    public static String updateByCondition(ProviderContext providerContext) {
+        return SqlScript.caching(providerContext, new SqlScript() {
+            @Override
+            public String getSql(MapperTable entity) {
+                return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
+                        + "UPDATE " + entity.tableName()
+                        + set(() -> entity.updateColumns().stream()
+                                .map(column -> column.columnEqualsProperty("entity.")).collect(Collectors.joining(",")))
+                        + variableNotNull("condition", "Condition cannot be null")
+                // 是否允许空条件，默认允许，允许时不检查查询条件
+                        + (entity.getPropBoolean("updateByCondition.allowEmpty", true) ? ""
+                                : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
+                        + Args.UPDATE_BY_CONDITION_WHERE_CLAUSE
+                        + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
+            }
+        });
     }
 
     /**
-     * 根据Condition删除
+     * 根据Condition对象批量更新实体信息，使用指定的设置值。
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param providerContext 提供者上下文，包含方法和接口信息
+     * @return 生成的SQL缓存键
      */
-    public String deleteByCondition(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        if (isCheckConditionEntityClass()) {
-            sql.append(SqlBuilder.conditionCheck(entityClass));
-        }
-        // 如果设置了安全删除，就不允许执行不带查询条件的 delete 方法
-        if (getConfig().isSafeDelete()) {
-            sql.append(SqlBuilder.conditionHasAtLeastOneCriteriaCheck("_parameter"));
-        }
-        if (SqlBuilder.hasLogicDeleteColumn(entityClass)) {
-            sql.append(SqlBuilder.updateTable(entityClass, tableName(entityClass)));
-            sql.append("<set>");
-            sql.append(SqlBuilder.logicDeleteColumnEqualsValue(entityClass, true));
-            sql.append("</set>");
-            MetaObject.forObject(ms).setValue("sqlCommandType", SqlCommandType.UPDATE);
-        } else {
-            sql.append(SqlBuilder.deleteFromTable(entityClass, tableName(entityClass)));
-        }
-        sql.append(SqlBuilder.conditionWhereClause());
-        return sql.toString();
+    public static String updateByConditionSetValues(ProviderContext providerContext) {
+        return SqlScript.caching(providerContext, new SqlScript() {
+            @Override
+            public String getSql(MapperTable entity) {
+                return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
+                        + variableNotEmpty("condition.setValues", "Condition setValues cannot be empty") + "UPDATE "
+                        + entity.tableName() + Args.CONDITION_SET_CLAUSE_INNER_WHEN
+                        + variableNotNull("condition", "Condition cannot be null")
+                // 是否允许空条件，默认允许，允许时不检查查询条件
+                        + (entity.getPropBoolean("updateByCondition.allowEmpty", true) ? ""
+                                : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
+                        + Args.UPDATE_BY_CONDITION_WHERE_CLAUSE
+                        + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
+            }
+        });
     }
 
     /**
-     * 根据Condition查询
+     * 根据Condition对象批量更新实体非空字段。
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param providerContext 提供者上下文，包含方法和接口信息
+     * @return 生成的SQL缓存键
      */
-    public String selectByCondition(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        // 将返回值修改为实体类型
-        setResultType(ms, entityClass);
-        StringBuilder sql = new StringBuilder("SELECT ");
-        if (isCheckConditionEntityClass()) {
-            sql.append(SqlBuilder.conditionCheck(entityClass));
-        }
-        sql.append("<if test=\"distinct\">distinct</if>");
-        // 支持查询指定列
-        sql.append(SqlBuilder.conditionSelectColumns(entityClass));
-        sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
-        sql.append(SqlBuilder.conditionWhereClause());
-        sql.append(SqlBuilder.conditionOrderBy(entityClass));
-        sql.append(SqlBuilder.conditionForUpdate());
-        return sql.toString();
+    public static String updateByConditionSelective(ProviderContext providerContext) {
+        return SqlScript.caching(providerContext, new SqlScript() {
+            @Override
+            public String getSql(MapperTable entity) {
+                return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
+                        + "UPDATE " + entity.tableName()
+                        + set(() -> entity.updateColumns().stream()
+                                .map(column -> ifTest(column.notNullTest("entity."),
+                                        () -> column.columnEqualsProperty("entity.") + ","))
+                                .collect(Collectors.joining(Symbol.LF)))
+                        + variableNotNull("condition", "Condition cannot be null")
+                // 是否允许空条件，默认允许，允许时不检查查询条件
+                        + (entity.getPropBoolean("updateByConditionSelective.allowEmpty", true) ? ""
+                                : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
+                        + Args.UPDATE_BY_CONDITION_WHERE_CLAUSE
+                        + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
+            }
+        });
     }
 
     /**
-     * 根据Condition查询
+     * 根据Condition对象批量查询记录，结果数量由方法定义。
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param providerContext 提供者上下文，包含方法和接口信息
+     * @return 生成的SQL缓存键
      */
-    public String selectByConditionAndRowBounds(MappedStatement ms) {
-        return selectByCondition(ms);
+    public static String selectByCondition(ProviderContext providerContext) {
+        return SqlScript.caching(providerContext, new SqlScript() {
+            @Override
+            public String getSql(MapperTable entity) {
+                return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT "
+                        + ifTest("distinct", () -> "distinct ")
+                        + ifTest("selectColumns != null and selectColumns != ''", () -> "${selectColumns}")
+                        + ifTest("selectColumns == null or selectColumns == ''", entity::baseColumnAsPropertyList)
+                        + " FROM " + entity.tableName() + ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)
+                        + ifTest("orderByClause != null", () -> " ORDER BY ${orderByClause}")
+                        + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(""))
+                        + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
+            }
+        });
     }
 
     /**
-     * 根据Condition更新非null字段
+     * 根据Condition对象查询记录总数。
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param providerContext 提供者上下文，包含方法和接口信息
+     * @return 生成的SQL缓存键
      */
-    public String updateByConditionSelective(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        if (isCheckConditionEntityClass()) {
-            sql.append(SqlBuilder.conditionCheck(entityClass));
-        }
-        // 安全更新，Condition 必须包含条件
-        if (getConfig().isSafeUpdate()) {
-            sql.append(SqlBuilder.conditionHasAtLeastOneCriteriaCheck("condition"));
-        }
-        sql.append(SqlBuilder.updateTable(entityClass, tableName(entityClass), "condition"));
-        sql.append(SqlBuilder.updateSetColumnsIgnoreVersion(entityClass, "record", true, isNotEmpty()));
-        sql.append(SqlBuilder.updateByConditionWhereClause());
-        return sql.toString();
-    }
-
-    /**
-     * 根据Condition更新
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String updateByCondition(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        if (isCheckConditionEntityClass()) {
-            sql.append(SqlBuilder.conditionCheck(entityClass));
-        }
-        // 安全更新，Condition 必须包含条件
-        if (getConfig().isSafeUpdate()) {
-            sql.append(SqlBuilder.conditionHasAtLeastOneCriteriaCheck("condition"));
-        }
-        sql.append(SqlBuilder.updateTable(entityClass, tableName(entityClass), "condition"));
-        sql.append(SqlBuilder.updateSetColumnsIgnoreVersion(entityClass, "record", false, false));
-        sql.append(SqlBuilder.updateByConditionWhereClause());
-        return sql.toString();
-    }
-
-    /**
-     * 根据Condition查询一个结果
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String selectOneByCondition(MappedStatement ms) {
-        return selectByCondition(ms);
+    public static String countByCondition(ProviderContext providerContext) {
+        return SqlScript.caching(providerContext, new SqlScript() {
+            @Override
+            public String getSql(MapperTable entity) {
+                return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT COUNT("
+                        + ifTest("distinct", () -> "distinct ")
+                        + ifTest("simpleSelectColumns != null and simpleSelectColumns != ''",
+                                () -> "${simpleSelectColumns}")
+                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> "*") + ") FROM "
+                        + entity.tableName() + ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)
+                        + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
+            }
+        });
     }
 
 }

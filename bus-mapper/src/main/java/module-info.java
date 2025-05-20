@@ -37,39 +37,27 @@ module bus.mapper {
 
     requires bus.core;
     requires bus.logger;
+    requires bus.setting;
 
-    requires static org.mybatis;
+    requires static lombok;
     requires static jakarta.persistence;
+    requires static org.mybatis;
+    requires static org.mybatis.spring;
 
     exports org.miaixz.bus.mapper;
-    exports org.miaixz.bus.mapper.additional.aggregation;
-    exports org.miaixz.bus.mapper.additional.delete;
-    exports org.miaixz.bus.mapper.additional.dialect.oracle;
-    exports org.miaixz.bus.mapper.additional.idlist;
-    exports org.miaixz.bus.mapper.additional.insert;
-    exports org.miaixz.bus.mapper.additional.select;
-    exports org.miaixz.bus.mapper.additional.update.batch;
-    exports org.miaixz.bus.mapper.additional.update.differ;
-    exports org.miaixz.bus.mapper.additional.update.force;
-    exports org.miaixz.bus.mapper.additional.upsert;
     exports org.miaixz.bus.mapper.annotation;
-    exports org.miaixz.bus.mapper.builder;
-    exports org.miaixz.bus.mapper.builder.resolve;
-    exports org.miaixz.bus.mapper.common;
-    exports org.miaixz.bus.mapper.common.basic;
-    exports org.miaixz.bus.mapper.common.basic.delete;
-    exports org.miaixz.bus.mapper.common.basic.insert;
-    exports org.miaixz.bus.mapper.common.basic.select;
-    exports org.miaixz.bus.mapper.common.basic.update;
-    exports org.miaixz.bus.mapper.common.condition;
-    exports org.miaixz.bus.mapper.common.ids;
-    exports org.miaixz.bus.mapper.common.rowbounds;
-    exports org.miaixz.bus.mapper.common.special;
-    exports org.miaixz.bus.mapper.common.sqlserver;
+    exports org.miaixz.bus.mapper.binding;
     exports org.miaixz.bus.mapper.criteria;
-    exports org.miaixz.bus.mapper.entity;
     exports org.miaixz.bus.mapper.handler;
+    exports org.miaixz.bus.mapper.mapping;
     exports org.miaixz.bus.mapper.provider;
     exports org.miaixz.bus.mapper.support;
+    exports org.miaixz.bus.mapper.binding.basic;
+    exports org.miaixz.bus.mapper.binding.condition;
+    exports org.miaixz.bus.mapper.binding.cursor;
+    exports org.miaixz.bus.mapper.binding.function;
+    exports org.miaixz.bus.mapper.binding.list;
+    exports org.miaixz.bus.mapper.binding.logical;
+    exports org.miaixz.bus.mapper.support.keysql;
 
 }

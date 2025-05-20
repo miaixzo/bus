@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -37,6 +37,7 @@ import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.mapper.Handler;
 
 /**
  * SQL 拦截处理器
@@ -44,16 +45,35 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractSqlHandler implements SQLHandler {
+public abstract class AbstractSqlHandler implements Handler {
 
+    /**
+     * 代理对象的 boundSql
+     */
     public static final String DELEGATE_BOUNDSQL = "delegate.boundSql";
+
+    /**
+     * 代理对象的 boundSql.sql
+     */
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
+
+    /**
+     * 代理对象的 mappedStatement
+     */
     public static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
+
+    /**
+     * mappedStatement
+     */
     public static final String MAPPEDSTATEMENT = "mappedStatement";
+
+    /**
+     * 默认反射工厂
+     */
     public static final DefaultReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
     /**
-     * SQL 解析缓存 key 可能是 mappedStatement 的 ID,也可能是 class 的 name
+     * SQL 解析缓存，key 可能是 mappedStatement 的 ID 或 class 的 name
      */
     private static final Map<String, Boolean> SQL_PARSER_CACHE = new ConcurrentHashMap<>();
 
@@ -61,7 +81,7 @@ public abstract class AbstractSqlHandler implements SQLHandler {
      * 获取 SqlParser 注解信息
      *
      * @param metaObject 元数据对象
-     * @return the true/false
+     * @return true 表示存在 SqlParser 注解，false 表示不存在
      */
     protected static boolean getSqlParserInfo(MetaObject metaObject) {
         String id = getMappedStatement(metaObject).getId();
@@ -74,7 +94,7 @@ public abstract class AbstractSqlHandler implements SQLHandler {
     }
 
     /**
-     * 获取当前执行 MappedStatement
+     * 获取当前执行的 MappedStatement
      *
      * @param metaObject 元对象
      * @return 映射语句
@@ -84,10 +104,10 @@ public abstract class AbstractSqlHandler implements SQLHandler {
     }
 
     /**
-     * 获取当前执行 MappedStatement
+     * 获取当前执行的 MappedStatement
      *
      * @param metaObject 元对象
-     * @param property   元素属性
+     * @param property
      * @return 映射语句
      */
     protected static MappedStatement getMappedStatement(MetaObject metaObject, String property) {
@@ -95,11 +115,11 @@ public abstract class AbstractSqlHandler implements SQLHandler {
     }
 
     /**
-     * 获得真正的处理对象,可能多层代理
+     * 获得真正的处理对象，可能多层代理
      *
      * @param <T>    泛型
      * @param target 对象
-     * @return the object
+     * @return 真实的目标对象
      */
     protected static <T> T realTarget(Object target) {
         if (Proxy.isProxyClass(target.getClass())) {
@@ -111,7 +131,7 @@ public abstract class AbstractSqlHandler implements SQLHandler {
     }
 
     /**
-     * 获取对象元数据信息
+     * 获取对象的元数据信息
      *
      * @param object 参数
      * @return 元数据信息

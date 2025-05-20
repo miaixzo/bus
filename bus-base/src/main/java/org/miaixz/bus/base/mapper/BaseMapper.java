@@ -27,15 +27,12 @@
 */
 package org.miaixz.bus.base.mapper;
 
-import org.miaixz.bus.mapper.annotation.RegisterMapper;
-
 /**
  * BaseMapper 接口
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@RegisterMapper
-public interface BaseMapper<T> extends Mapper<T> {
+public interface BaseMapper<T> extends SharedMapper<T, String> {
 
 }

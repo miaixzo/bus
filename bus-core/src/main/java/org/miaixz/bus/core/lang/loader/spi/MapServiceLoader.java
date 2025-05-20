@@ -54,7 +54,6 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
 
-    // TODO update const
     private static final String PREFIX = Normal.META_INF + "/bus/";
     private final SimpleCache<String, S> serviceCache;
     private Properties serviceProperties;
@@ -153,7 +152,7 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
 
     @Override
     public Iterator<S> iterator() {
-        return new Iterator<S>() {
+        return new Iterator<>() {
             private final Iterator<String> nameIter = serviceProperties.stringPropertyNames().iterator();
 
             @Override
