@@ -49,7 +49,7 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MemcachedCache implements CacheX {
+public class MemcachedCache<K, V> implements CacheX<K, V> {
 
     private static final int _30_DAYS = 30 * 24 * 60 * 60;
 
@@ -67,9 +67,9 @@ public class MemcachedCache implements CacheX {
     }
 
     @Override
-    public Object read(String key) {
+    public V read(K key) {
         try {
-            byte[] bytes = client.get(key);
+            byte[] bytes = client.get((String) key);
             return serializer.deserialize(bytes);
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
             throw new RuntimeException(e);
@@ -77,13 +77,13 @@ public class MemcachedCache implements CacheX {
     }
 
     @Override
-    public void write(String key, Object value, long expire) {
+    public void write(K key, V value, long expire) {
         byte[] byteValue = serializer.serialize(value);
         try {
             if (expire == CacheExpire.FOREVER) {
-                client.set(key, _30_DAYS, byteValue);
+                client.set((String) key, _30_DAYS, byteValue);
             } else {
-                client.set(key, (int) (expire / 1000), byteValue);
+                client.set((String) key, (int) (expire / 1000), byteValue);
             }
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
             throw new RuntimeException(e);
@@ -91,15 +91,15 @@ public class MemcachedCache implements CacheX {
     }
 
     @Override
-    public Map<String, Object> read(Collection<String> keys) {
+    public Map<K, V> read(Collection<K> keys) {
         try {
-            Map<String, byte[]> byteMap = client.get(keys);
-            Map<String, Object> resultMap = new HashMap<>(byteMap.size());
+            Map<String, byte[]> byteMap = client.get((Collection<String>) keys);
+            Map<K, V> resultMap = new HashMap<>(byteMap.size());
             for (Map.Entry<String, byte[]> entry : byteMap.entrySet()) {
                 String key = entry.getKey();
                 Object value = serializer.deserialize(entry.getValue());
 
-                resultMap.put(key, value);
+                resultMap.put((K) key, (V) value);
             }
 
             return resultMap;
@@ -109,17 +109,17 @@ public class MemcachedCache implements CacheX {
     }
 
     @Override
-    public void write(Map<String, Object> keyValueMap, long expire) {
-        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
+    public void write(Map<K, V> keyValueMap, long expire) {
+        for (Map.Entry<K, V> entry : keyValueMap.entrySet()) {
             this.write(entry.getKey(), entry.getValue(), expire);
         }
     }
 
     @Override
-    public void remove(String... keys) {
+    public void remove(K... keys) {
         try {
-            for (String key : keys) {
-                client.delete(key);
+            for (K key : keys) {
+                client.delete((String) key);
             }
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
             throw new RuntimeException(e);

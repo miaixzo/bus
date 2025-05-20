@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring;
 
+import java.io.File;
+import java.time.Duration;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -35,9 +38,6 @@ import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-
-import java.io.File;
-import java.time.Duration;
 
 /**
  * 全局常量配置
@@ -58,16 +58,6 @@ public class GeniusBuilder {
             " ██║ ╚═╝ ██║██║██║  ██║██║██╔╝ ██╗███████╗██╗╚██████╔╝██║  ██║╚██████╔╝ ",
             " ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  " };
 
-    /**
-     * Bus key
-     */
-    public static final String BUS = "bus";
-
-    /**
-     * Bus version property key
-     */
-    public static final String VERSION = BUS + Symbol.DOT + "version";
-
     /***
      * Bus boot banner
      */
@@ -77,6 +67,21 @@ public class GeniusBuilder {
      * Spring boot banner
      */
     public static final String SPRING_BOOT_BANNER = " :: Spring Boot :: ";
+
+    public static final String BUS_MODULE_FILE = "bus-module.properties";
+
+    public static final String SPRING_CONTEXT_PATH = "META-INF/spring";
+
+    public static final String DEFAULT_PROFILE_VALUE = "default";
+
+    /** module.properties keywords **/
+    public static final String SPRING_PARENT = "Spring-Parent";
+
+    public static final String MODULE_NAME = "Module-Name";
+
+    public static final String REQUIRE_MODULE = "Require-Module";
+
+    public static final String MODULE_PROFILE = "Module-Profile";
 
     /**
      * Bus config property source key
@@ -91,12 +96,12 @@ public class GeniusBuilder {
     /**
      * Bus scenes key
      */
-    public static final String BUS_SCENES = BUS + Symbol.DOT + "scenes";
+    public static final String BUS_SCENES = Keys.BUS + Symbol.DOT + "scenes";
 
     /**
      * Bus scenes path
      */
-    public static final String BUS_SCENES_PATH = BUS + File.separator + "scenes";
+    public static final String BUS_SCENES_PATH = Keys.BUS + File.separator + "scenes";
 
     /**
      * Bus logging path
@@ -134,6 +139,16 @@ public class GeniusBuilder {
     public static final String LOGGING_PATTERN_FILE = "logging.pattern.file";
 
     /**
+     * Spring banner file
+     */
+    public static final String SPRING_BANNER_TXT = "banner.txt";
+
+    /**
+     * Spring banner location
+     */
+    public static final String SPRING_BANNER_LOCATION = "spring.banner.location";
+
+    /**
      * bus startup logging extra info
      */
     public static final String BUS_SWITCH_LISTENER_PREFIX_ = "bus.switch.listener.";
@@ -141,117 +156,122 @@ public class GeniusBuilder {
     /**
      * Bus banner key
      */
-    public static final String BANNER = BUS + Symbol.DOT + "banner";
+    public static final String BANNER = Keys.BUS + Symbol.DOT + "banner";
 
     /**
      * Bus cache key
      */
-    public static final String CACHE = BUS + Symbol.DOT + "cache";
+    public static final String CACHE = Keys.BUS + Symbol.DOT + "cache";
 
     /**
      * Bus bridge key
      */
-    public static final String BRIDGE = BUS + Symbol.DOT + "bridge";
+    public static final String BRIDGE = Keys.BUS + Symbol.DOT + "bridge";
 
     /**
      * Bus cors key
      */
-    public static final String CORS = BUS + Symbol.DOT + "cors";
+    public static final String CORS = Keys.BUS + Symbol.DOT + "cors";
 
     /**
      * Bus druid key
      */
-    public static final String DRUID = BUS + Symbol.DOT + "druid";
+    public static final String DRUID = Keys.BUS + Symbol.DOT + "druid";
 
     /**
      * Bus dubbo key
      */
-    public static final String DUBBO = BUS + Symbol.DOT + "dubbo";
+    public static final String DUBBO = Keys.BUS + Symbol.DOT + "dubbo";
 
     /**
      * Bus elastic key
      */
-    public static final String ELASTIC = BUS + Symbol.DOT + "elastic";
+    public static final String ELASTIC = Keys.BUS + Symbol.DOT + "elastic";
 
     /**
      * Bus goalie key
      */
-    public static final String GOALIE = BUS + Symbol.DOT + "goalie";
+    public static final String GOALIE = Keys.BUS + Symbol.DOT + "goalie";
+
+    /**
+     * Bus goalie key
+     */
+    public static final String HEALTH = Keys.BUS + Symbol.DOT + "health";
 
     /**
      * Bus i18n key
      */
-    public static final String I18N = BUS + Symbol.DOT + "i18n";
+    public static final String I18N = Keys.BUS + Symbol.DOT + "i18n";
 
     /**
      * Bus image key
      */
-    public static final String IMAGE = BUS + Symbol.DOT + "image";
+    public static final String IMAGE = Keys.BUS + Symbol.DOT + "image";
 
     /**
      * Bus limiter key
      */
-    public static final String LIMITER = BUS + Symbol.DOT + "limiter";
+    public static final String LIMITER = Keys.BUS + Symbol.DOT + "limiter";
 
     /**
      * Bus mongo key
      */
-    public static final String MONGO = BUS + Symbol.DOT + "mongo";
+    public static final String MONGO = Keys.BUS + Symbol.DOT + "mongo";
 
     /**
      * Bus mybatis key
      */
-    public static final String MYBATIS = BUS + Symbol.DOT + "mybatis";
+    public static final String MYBATIS = Keys.BUS + Symbol.DOT + "mybatis";
 
     /**
      * Bus notify key
      */
-    public static final String NOTIFY = BUS + Symbol.DOT + "notify";
+    public static final String NOTIFY = Keys.BUS + Symbol.DOT + "notify";
 
     /**
      * Bus oauth key
      */
-    public static final String OAUTH = BUS + Symbol.DOT + "oauth";
+    public static final String OAUTH = Keys.BUS + Symbol.DOT + "oauth";
 
     /**
      * Bus office key
      */
-    public static final String OFFICE = BUS + Symbol.DOT + "office";
+    public static final String OFFICE = Keys.BUS + Symbol.DOT + "office";
 
     /**
      * Bus pay key
      */
-    public static final String PAY = BUS + Symbol.DOT + "pay";
+    public static final String PAY = Keys.BUS + Symbol.DOT + "pay";
 
     /**
      * Bus sensitive key
      */
-    public static final String SENSITIVE = BUS + Symbol.DOT + "sensitive";
+    public static final String SENSITIVE = Keys.BUS + Symbol.DOT + "sensitive";
 
     /**
      * Bus socket key
      */
-    public static final String SOCKET = BUS + Symbol.DOT + "socket";
+    public static final String SOCKET = Keys.BUS + Symbol.DOT + "socket";
 
     /**
      * Bus storage key
      */
-    public static final String STORAGE = BUS + Symbol.DOT + "storage";
+    public static final String STORAGE = Keys.BUS + Symbol.DOT + "storage";
 
     /**
      * Bus wrapper key
      */
-    public static final String WRAPPER = BUS + Symbol.DOT + "wrapper";
+    public static final String WRAPPER = Keys.BUS + Symbol.DOT + "wrapper";
 
     /**
      * Bus zookeeper key
      */
-    public static final String ZOOKEEPER = BUS + Symbol.DOT + "zookeeper";
+    public static final String ZOOKEEPER = Keys.BUS + Symbol.DOT + "zookeeper";
 
     /**
      * Bus temp work key
      */
-    public static final String WORK = BUS + Symbol.DOT + "work";
+    public static final String WORK = Keys.BUS + Symbol.DOT + "work";
 
     /***
      * Spring application name key

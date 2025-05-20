@@ -27,10 +27,14 @@
 */
 package org.miaixz.bus.spring.boot;
 
+import java.lang.management.ManagementFactory;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.banner.TextBanner;
 import org.miaixz.bus.spring.boot.statics.BaseStatics;
 import org.miaixz.bus.spring.boot.statics.ChildrenStatics;
 import org.miaixz.bus.spring.boot.statics.ModuleStatics;
@@ -42,11 +46,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
-
-import java.lang.management.ManagementFactory;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 实现 {@link SpringApplicationRunListener} 和 {@link ApplicationListener}，计算启动阶段时间。 支持动态加载和性能统计，记录 JVM 启动、环境准备、上下文初始化等阶段。
@@ -112,7 +111,6 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     @Override
     public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
             ConfigurableEnvironment environment) {
-        application.setBanner(new TextBanner());
         environmentPrepareStage = new BaseStatics();
         environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
         environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());

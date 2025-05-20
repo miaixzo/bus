@@ -39,6 +39,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.ImageAdapter;
@@ -73,7 +74,7 @@ public class PresetWindowLevel {
             throw new IllegalArgumentException("Null parameter");
         }
 
-        String dicomKeyWord = " " + type;
+        String dicomKeyWord = Symbol.SPACE + type;
 
         ArrayList<PresetWindowLevel> presetList = new ArrayList<>();
         ImageDescriptor desc = adapter.getImageDescriptor();
@@ -129,7 +130,7 @@ public class PresetWindowLevel {
             String defaultExplanation = "VOI LUT";
 
             for (int i = 0; i < voiLUTsData.size(); i++) {
-                String explanation = getPresetExplanation(voiLUTsExplanation, i, defaultExplanation + " " + i);
+                String explanation = getPresetExplanation(voiLUTsExplanation, i, defaultExplanation + Symbol.SPACE + i);
                 PresetWindowLevel preset = buildPresetFromLutData(adapter, voiLUTsData.get(i), wl,
                         explanation + dicomKeyWord);
                 if (preset == null) {
@@ -165,7 +166,7 @@ public class PresetWindowLevel {
 
             int k = 1;
             for (int i = 0; i < levelList.size(); i++) {
-                String explanation = defaultExplanation + " " + k;
+                String explanation = defaultExplanation + Symbol.SPACE + k;
                 explanation = getPresetExplanation(wlExplanationList, i, explanation);
                 PresetWindowLevel preset = new PresetWindowLevel(explanation + dicomKeyWord, windowList.get(i),
                         levelList.get(i), defaultLutShape);

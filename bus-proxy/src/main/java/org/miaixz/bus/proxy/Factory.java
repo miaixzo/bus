@@ -28,7 +28,7 @@
 package org.miaixz.bus.proxy;
 
 import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.xyz.SPIKit;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -58,7 +58,7 @@ public class Factory {
      * @return 代理工厂
      */
     public static Provider createEngine() {
-        return SPIKit.loadFirstAvailable(Provider.class);
+        return NormalSpiLoader.loadFirstAvailable(Provider.class);
     }
 
 }

@@ -52,6 +52,21 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Keys {
 
     /**
+     * 框架本体
+     */
+    public static final String BUS = "bus";
+
+    /**
+     * 框架名称
+     */
+    public static final String NAME = "bus.name";
+
+    /**
+     * 框架版本
+     */
+    public static final String VERSION = "bus.version";
+
+    /**
      * 操作系统名称
      */
     public static final String OS_NAME = "os.name";

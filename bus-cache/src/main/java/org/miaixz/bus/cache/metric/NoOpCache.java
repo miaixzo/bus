@@ -39,30 +39,30 @@ import org.miaixz.bus.cache.CacheX;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NoOpCache implements CacheX {
+public class NoOpCache<K, V> implements CacheX<K, V> {
 
     @Override
-    public Object read(String key) {
+    public V read(K key) {
         return null;
     }
 
     @Override
-    public void write(String key, Object value, long expire) {
+    public void write(K key, V value, long expire) {
         // no op
     }
 
     @Override
-    public Map<String, Object> read(Collection<String> keys) {
+    public Map<K, V> read(Collection<K> keys) {
         return Collections.emptyMap();
     }
 
     @Override
-    public void write(Map<String, Object> keyValueMap, long expire) {
+    public void write(Map<K, V> keyValueMap, long expire) {
         // no op
     }
 
     @Override
-    public void remove(String... keys) {
+    public void remove(K... keys) {
         // no op
     }
 

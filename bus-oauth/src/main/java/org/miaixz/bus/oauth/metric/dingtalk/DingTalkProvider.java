@@ -27,7 +27,11 @@
 */
 package org.miaixz.bus.oauth.metric.dingtalk;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -37,9 +41,6 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 钉钉 二维码登录
@@ -61,7 +62,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
     public String authorize(String state) {
         return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
-                .queryParam("scope", this.getScopes(",", true, getDefaultScopes(DingTalkScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, true, getDefaultScopes(DingTalkScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri()).queryParam("prompt", "consent")
                 .queryParam("org_type", context.getType()).queryParam("corpId", context.getUnionId())
                 .queryParam("exclusiveLogin", context.getLoginType()).queryParam("exclusiveCorpId", context.getExtId())

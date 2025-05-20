@@ -44,7 +44,10 @@ import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.secure.CipherSuite;
 
 /**
- * TLS握手的记录。对于HTTPS客户机，客户机是local，远程服务器 此值对象描述完成的握手。使用{@link ConnectionSuite}设置新的握手策略
+ * TLS 握手记录
+ * <p>
+ * 记录 HTTPS 连接的 TLS 握手信息，包括 TLS 版本、密码套件、远程和本地证书。 用于描述已完成的握手，可通过 {@link ConnectionSuite} 配置新的握手策略。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,22 +55,30 @@ import org.miaixz.bus.http.secure.CipherSuite;
 public class Handshake {
 
     /**
-     * 用于此连接的TLS版本。在Httpd 3.0之前没有跟踪这个值。 对于之前版本缓存的响应，它返回{@link TlsVersion#SSLv3}
+     * TLS 版本
      */
     private final TlsVersion tlsVersion;
     /**
-     * 用于连接的密码套件
+     * 密码套件
      */
     private final CipherSuite cipherSuite;
     /**
-     * 标识远程对等点的证书列表，该列表可能为空
+     * 远程对等点证书列表
      */
     private final List<Certificate> peerCertificates;
     /**
-     * 标识此对等点的证书列表，该列表可能为空
+     * 本地证书列表
      */
     private final List<Certificate> localCertificates;
 
+    /**
+     * 构造函数，初始化 Handshake 实例
+     *
+     * @param tlsVersion        TLS 版本
+     * @param cipherSuite       密码套件
+     * @param peerCertificates  远程对等点证书列表
+     * @param localCertificates 本地证书列表
+     */
     private Handshake(TlsVersion tlsVersion, CipherSuite cipherSuite, List<Certificate> peerCertificates,
             List<Certificate> localCertificates) {
         this.tlsVersion = tlsVersion;
@@ -76,6 +87,13 @@ public class Handshake {
         this.localCertificates = localCertificates;
     }
 
+    /**
+     * 从 SSL 会话创建 Handshake 实例
+     *
+     * @param session SSL 会话
+     * @return Handshake 实例
+     * @throws IOException 如果会话无效或解析失败
+     */
     public static Handshake get(SSLSession session) throws IOException {
         String cipherSuiteString = session.getCipherSuite();
         if (null == cipherSuiteString) {
@@ -110,6 +128,16 @@ public class Handshake {
         return new Handshake(tlsVersion, cipherSuite, peerCertificatesList, localCertificatesList);
     }
 
+    /**
+     * 创建 Handshake 实例
+     *
+     * @param tlsVersion        TLS 版本
+     * @param cipherSuite       密码套件
+     * @param peerCertificates  远程对等点证书列表
+     * @param localCertificates 本地证书列表
+     * @return Handshake 实例
+     * @throws NullPointerException 如果 tlsVersion 或 cipherSuite 为 null
+     */
     public static Handshake get(TlsVersion tlsVersion, CipherSuite cipherSuite, List<Certificate> peerCertificates,
             List<Certificate> localCertificates) {
         if (tlsVersion == null)
@@ -121,29 +149,36 @@ public class Handshake {
     }
 
     /**
-     * Returns the TLS version used for this connection. This value wasn't tracked prior to Http 3.0. For responses
-     * cached by preceding versions this returns {@link TlsVersion#SSLv3}.
+     * 获取 TLS 版本
+     *
+     * @return TLS 版本
      */
     public TlsVersion tlsVersion() {
         return tlsVersion;
     }
 
     /**
-     * Returns the cipher suite used for the connection.
+     * 获取密码套件
+     *
+     * @return 密码套件
      */
     public CipherSuite cipherSuite() {
         return cipherSuite;
     }
 
     /**
-     * Returns a possibly-empty list of certificates that identify the remote peer.
+     * 获取远程对等点证书列表
+     *
+     * @return 不可修改的证书列表（可能为空）
      */
     public List<Certificate> peerCertificates() {
         return peerCertificates;
     }
 
     /**
-     * Returns the remote peer's principle, or null if that peer is anonymous.
+     * 获取远程对等点主体
+     *
+     * @return 主体（匿名时为 null）
      */
     public Principal peerPrincipal() {
         return !peerCertificates.isEmpty() ? ((X509Certificate) peerCertificates.get(0)).getSubjectX500Principal()
@@ -151,20 +186,30 @@ public class Handshake {
     }
 
     /**
-     * Returns a possibly-empty list of certificates that identify this peer.
+     * 获取本地证书列表
+     *
+     * @return 不可修改的证书列表（可能为空）
      */
     public List<Certificate> localCertificates() {
         return localCertificates;
     }
 
     /**
-     * Returns the local principle, or null if this peer is anonymous.
+     * 获取本地主体
+     *
+     * @return 主体（匿名时为 null）
      */
     public Principal localPrincipal() {
         return !localCertificates.isEmpty() ? ((X509Certificate) localCertificates.get(0)).getSubjectX500Principal()
                 : null;
     }
 
+    /**
+     * 比较两个 Handshake 对象是否相等
+     *
+     * @param other 另一个对象
+     * @return true 如果两个 Handshake 对象相等
+     */
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof Handshake))
@@ -174,6 +219,11 @@ public class Handshake {
                 && peerCertificates.equals(that.peerCertificates) && localCertificates.equals(that.localCertificates);
     }
 
+    /**
+     * 计算 Handshake 对象的哈希码
+     *
+     * @return 哈希码值
+     */
     @Override
     public int hashCode() {
         int result = 17;
@@ -184,12 +234,23 @@ public class Handshake {
         return result;
     }
 
+    /**
+     * 返回 Handshake 的字符串表示
+     *
+     * @return 包含 TLS 版本、密码套件和证书信息的字符串
+     */
     @Override
     public String toString() {
         return "Handshake{" + "tlsVersion=" + tlsVersion + " cipherSuite=" + cipherSuite + " peerCertificates="
                 + names(peerCertificates) + " localCertificates=" + names(localCertificates) + '}';
     }
 
+    /**
+     * 将证书列表转换为名称列表
+     *
+     * @param certificates 证书列表
+     * @return 名称列表
+     */
     private List<String> names(List<Certificate> certificates) {
         List<String> strings = new ArrayList<>();
 

@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.spring.web;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.SpringBuilder;
@@ -34,10 +38,6 @@ import org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * 配置 Spring MVC 消息转换器，支持字符串和 JSON 序列化/反序列化。 支持默认 JSON 框架（Jackson、Fastjson）和通过 JsonConverterConfigurer 配置的自定义框架。 确保
@@ -108,7 +108,7 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
      * @param name       转换器名称（用于日志）
      */
     private void configureConverter(List<HttpMessageConverter<?>> converters,
-                                    Consumer<List<HttpMessageConverter<?>>> configurer, String name) {
+            Consumer<List<HttpMessageConverter<?>>> configurer, String name) {
         try {
             configurer.accept(converters);
             Logger.info("Successfully configured {} message converter", name);
@@ -124,7 +124,7 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
      * @param configurers 要应用的 JsonConverterConfigurer 实例列表
      */
     private void configureJsonConverters(List<HttpMessageConverter<?>> converters,
-                                         List<JsonConverterConfigurer> configurers) {
+            List<JsonConverterConfigurer> configurers) {
         for (JsonConverterConfigurer configurer : configurers) {
             configureConverter(converters, configurer::configure, configurer.name());
         }

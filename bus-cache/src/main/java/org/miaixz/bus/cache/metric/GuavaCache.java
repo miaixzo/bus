@@ -44,7 +44,7 @@ import com.google.common.cache.LoadingCache;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GuavaCache implements CacheX {
+public class GuavaCache<K, V> implements CacheX<K, V> {
 
     private LoadingCache<String, Object> guavaCache;
 
@@ -59,27 +59,27 @@ public class GuavaCache implements CacheX {
     }
 
     @Override
-    public Object read(String key) {
-        return guavaCache.getIfPresent(key);
+    public V read(K key) {
+        return (V) guavaCache.getIfPresent(key);
     }
 
     @Override
-    public Map<String, Object> read(Collection<String> keys) {
-        return guavaCache.getAllPresent(keys);
+    public Map<K, V> read(Collection<K> keys) {
+        return (Map<K, V>) guavaCache.getAllPresent(keys);
     }
 
     @Override
-    public void write(String key, Object value, long expire) {
-        guavaCache.put(key, value);
+    public void write(K key, V value, long expire) {
+        guavaCache.put((String) key, value);
     }
 
     @Override
-    public void write(Map<String, Object> keyValueMap, long expire) {
-        guavaCache.putAll(keyValueMap);
+    public void write(Map<K, V> keyValueMap, long expire) {
+        guavaCache.putAll((Map<? extends String, ?>) keyValueMap);
     }
 
     @Override
-    public void remove(String... keys) {
+    public void remove(K... keys) {
         guavaCache.invalidateAll(Arrays.asList(keys));
     }
 

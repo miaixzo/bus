@@ -29,62 +29,78 @@ package org.miaixz.bus.http;
 
 import java.io.IOException;
 
-import org.miaixz.bus.http.bodys.ResponseBody;
-
 /**
- * 异步回调信息
+ * HTTP 请求的异步回调接口
+ * <p>
+ * 定义了处理 HTTP 请求失败和成功的回调方法，支持异步请求的响应处理。 实现类需确保响应体的正确关闭，并处理可能的异常情况。
+ * </p>
  *
+ * @param <T> 回调数据的类型
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Callback<T> {
 
     /**
-     * 当请求由于取消、连接问题或超时而无法执行时调用 因为网络可能在交换期间失败，所以远程服务器可能在失败之前接受了请求
+     * 请求失败时的回调
+     * <p>
+     * 当请求因取消、连接问题或超时等原因失败时调用。 注意：失败前远程服务器可能已接收到请求。
+     * </p>
      *
-     * @param call 调用者信息
+     * @param call 请求调用者
      * @param ex   异常信息
      */
     default void onFailure(NewCall call, IOException ex) {
-
     }
 
     /**
-     * 失败回调信息
+     * 请求失败时的回调（带请求标识）
+     * <p>
+     * 当请求失败时调用，包含请求标识以区分多个请求。
+     * </p>
      *
-     * @param newCall   回调信息
-     * @param exception 异常
-     * @param id        当前请求标识
+     * @param newCall   请求调用者
+     * @param exception 异常信息
+     * @param id        请求标识
      */
     default void onFailure(NewCall newCall, Exception exception, String id) {
-
     }
 
     /**
-     * 当远程服务器成功返回HTTP响应时调用。回调可以继续使用{@link Response#body}读取响应体响应仍然是 活动的直到它的响应体是{@linkplain ResponseBody closed}
-     * 回调的接收者可以使用另一个线程上的响应体 注意，传输层的成功(接收HTTP响应代码、报头和正文)不一定表示应用程序层的 成功:{@code response}可能仍然表示不满意的HTTP响应代码，如404或500
+     * 请求成功时的回调
+     * <p>
+     * 当远程服务器成功返回 HTTP 响应时调用。 实现类需确保 {@link Response#body} 被正确关闭。 注意：传输层成功不代表应用层成功（如 404、500 状态码）。
+     * </p>
      *
-     * @param call     调用者信息
+     * @param call     请求调用者
      * @param response 响应体
-     * @throws IOException 异常信息
+     * @throws IOException 如果处理响应失败
      */
     default void onResponse(NewCall call, Response response) throws IOException {
-
     }
 
     /**
-     * 响应回调信息
+     * 请求成功时的回调（带请求标识）
+     * <p>
+     * 当请求成功时调用，包含请求标识以区分多个请求。
+     * </p>
      *
-     * @param newCall  回调信息
+     * @param newCall  请求调用者
      * @param response 响应信息
-     * @param id       当前请求标识
+     * @param id       请求标识
      */
     default void onResponse(NewCall newCall, Response response, String id) {
-
     }
 
+    /**
+     * 通用数据回调
+     * <p>
+     * 用于处理特定类型的回调数据。
+     * </p>
+     *
+     * @param data 回调数据
+     */
     default void on(T data) {
-
     }
 
 }

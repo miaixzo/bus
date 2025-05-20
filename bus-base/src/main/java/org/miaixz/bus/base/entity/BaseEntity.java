@@ -27,18 +27,20 @@
 */
 package org.miaixz.bus.base.entity;
 
+import java.util.List;
+
+import org.miaixz.bus.core.basic.entity.Tracer;
+import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.mapper.annotation.Logical;
+
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.core.basic.entity.Tracer;
-import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.xyz.*;
-
-import java.util.List;
 
 /**
  * Entity 基本信息
@@ -58,7 +60,8 @@ public class BaseEntity extends Tracer {
     /**
      * 数据状态:-1删除,0无效,1正常
      */
-    protected String status;
+    @Logical
+    protected Integer status;
 
     /**
      * 创建者
@@ -68,7 +71,7 @@ public class BaseEntity extends Tracer {
     /**
      * 创建时间
      */
-    protected String created;
+    protected Long created;
 
     /**
      * 修改者
@@ -78,7 +81,7 @@ public class BaseEntity extends Tracer {
     /**
      * 修改时间
      */
-    protected String modified;
+    protected Long modified;
 
     /**
      * 搜索参数

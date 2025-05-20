@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -220,7 +220,7 @@ public interface CentralProcessor {
         long toWait = delay - (System.nanoTime() - start) / 1_000_000;
         // protect against IllegalArgumentException
         if (toWait > 0L) {
-            Builder.sleep(delay);
+            ThreadKit.sleep(delay);
         }
         return getSystemCpuLoadBetweenTicks(oldTicks);
     }
@@ -243,7 +243,7 @@ public interface CentralProcessor {
         long toWait = delay - (System.nanoTime() - start) / 1_000_000;
         // protect against IllegalArgumentException
         if (toWait > 0L) {
-            Builder.sleep(delay);
+            ThreadKit.sleep(delay);
         }
         return getProcessorCpuLoadBetweenTicks(oldTicks);
     }

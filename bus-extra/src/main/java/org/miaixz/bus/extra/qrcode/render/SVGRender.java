@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -108,7 +109,8 @@ public class SVGRender implements BitMatrixRender {
                 final Color back = new Color(backColor, true);
                 writer.append("style=\"background-color:").append(ColorKit.toCssRgba(back)).append("\"\n");
             }
-            writer.append("viewBox=\"0 0 ").append(String.valueOf(qrWidth)).append(" ").append(String.valueOf(qrHeight))
+            writer.append("viewBox=\"0 0 ").append(String.valueOf(qrWidth)).append(Symbol.SPACE)
+                    .append(String.valueOf(qrHeight))
                     .append("\" \n");
             writer.append("xmlns=\"http://www.w3.org/2000/svg\" \n");
             writer.append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" >\n");
@@ -118,7 +120,7 @@ public class SVGRender implements BitMatrixRender {
             for (int y = 0; y < qrHeight; y++) {
                 for (int x = 0; x < qrWidth; x++) {
                     if (matrix.get(x, y)) {
-                        writer.append(" M").append(String.valueOf(x)).append(",").append(String.valueOf(y))
+                        writer.append(" M").append(String.valueOf(x)).append(Symbol.COMMA).append(String.valueOf(y))
                                 .append("h1v").append(String.valueOf(moduleHeight)).append("h-1z");
                     }
                 }

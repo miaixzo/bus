@@ -122,7 +122,7 @@ public class Builder {
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
             // 设置模板路径
             configuration.setClassForTemplateLoading(org.miaixz.bus.shade.beans.Builder.class,
-                    Symbol.C_SLASH + Normal.META_INF + "/template");
+                    Symbol.C_SLASH + Normal.META_INF + "/shade/beans");
             // 设置默认字体
             configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);
             // 获取模板

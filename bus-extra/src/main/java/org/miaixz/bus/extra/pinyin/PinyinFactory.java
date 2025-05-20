@@ -29,8 +29,8 @@ package org.miaixz.bus.extra.pinyin;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
-import org.miaixz.bus.core.xyz.SPIKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -74,7 +74,7 @@ public class PinyinFactory {
         if (!StringKit.endWithIgnoreCase(name, "Provider")) {
             name = name + "Provider";
         }
-        final ServiceLoader<PinyinProvider> list = SPIKit.loadList(PinyinProvider.class);
+        final ServiceLoader<PinyinProvider> list = NormalSpiLoader.loadList(PinyinProvider.class);
         for (final String serviceName : list.getServiceNames()) {
             if (StringKit.endWithIgnoreCase(serviceName, name)) {
                 return list.getService(serviceName);
@@ -89,7 +89,7 @@ public class PinyinFactory {
      * @return {@link PinyinProvider}
      */
     private static PinyinProvider doCreate() {
-        final PinyinProvider engine = SPIKit.loadFirstAvailable(PinyinProvider.class);
+        final PinyinProvider engine = NormalSpiLoader.loadFirstAvailable(PinyinProvider.class);
         if (null != engine) {
             return engine;
         }

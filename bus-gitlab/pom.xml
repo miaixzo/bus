@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-gitlab</artifactId>
-    <version>8.1.6</version>
+    <version>8.1.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -91,12 +91,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-logger</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>

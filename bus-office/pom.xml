@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-office</artifactId>
-    <version>8.1.6</version>
+    <version>8.1.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -125,6 +125,10 @@
             <version>${ofdrw.version}</version>
             <optional>true</optional>
             <exclusions>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>xmlgraphics-commons</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcpkix-jdk15on</artifactId>

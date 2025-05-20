@@ -48,6 +48,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.stream.StreamResult;
 
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -537,11 +538,11 @@ public class StowRS {
 
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
         Logger.info("> POST " + url.toString());
-        headerFields.forEach((k, v) -> Logger.info("> " + k + " : " + String.join(",", v)));
+        headerFields.forEach((k, v) -> Logger.info("> " + k + " : " + String.join(Symbol.COMMA, v)));
     }
 
     private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields, InputStream is) {
-        Logger.info("< HTTP/1.1 Response: " + respCode + " " + respMsg);
+        Logger.info("< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
                 Logger.info("< " + header.getKey() + " : " + String.join(";", header.getValue()));

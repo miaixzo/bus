@@ -26,7 +26,6 @@
 
 org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider
 org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider
-org.miaixz.bus.extra.nlp.provider.ikanalyzer.IKAnalyzerProvider
 org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider
 org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider
 org.miaixz.bus.extra.nlp.provider.mmseg.MmsegProvider

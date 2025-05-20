@@ -56,14 +56,14 @@ html_docs
 /tmp/
 eclipse-build
 
-# VisualStudioCode #
+# VisualStudioCode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# WebStorm #
+# WebStorm
 
 # User-specific stuff
 .idea/**/workspace.xml
@@ -128,7 +128,7 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
-# VisualStudio #
+# VisualStudio
 # User-specific files
 *.suo
 *.user
@@ -210,7 +210,7 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
-# Chutzpah Test files
+# Chutzpah org.miaixz.bus.gitlab.org.miaixz.Test files
 _Chutzpah*
 
 # Visual C++ cache files

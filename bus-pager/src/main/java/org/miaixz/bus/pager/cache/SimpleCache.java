@@ -27,11 +27,14 @@
 */
 package org.miaixz.bus.pager.cache;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.ibatis.cache.decorators.FifoCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.CacheBuilder;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -40,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SimpleCache<K, V> implements Cache<K, V> {
+public class SimpleCache<K, V> implements CacheX<K, V> {
 
     private final org.apache.ibatis.cache.Cache CACHE;
 
@@ -80,7 +83,7 @@ public class SimpleCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public V get(K key) {
+    public V read(K key) {
         Object value = CACHE.getObject(key);
         if (null != value) {
             return (V) value;
@@ -89,8 +92,28 @@ public class SimpleCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public void put(K key, V value) {
+    public Map<K, V> read(Collection<K> keys) {
+        return Map.of();
+    }
+
+    @Override
+    public void write(K key, V value, long expire) {
         CACHE.putObject(key, value);
+    }
+
+    @Override
+    public void write(Map<K, V> map, long expire) {
+
+    }
+
+    @Override
+    public void remove(K... keys) {
+
+    }
+
+    @Override
+    public void clear() {
+
     }
 
 }

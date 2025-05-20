@@ -45,7 +45,7 @@ import org.springframework.stereotype.Service;
 </#if>
 @Service
 public class ${entityName}ServiceImpl extends BaseServiceImpl
-<${entityName}Mapper, ${entityName}>
+<${entityName}, ${entityName}Mapper>
 implements ${entityName}Service  {
 
 }

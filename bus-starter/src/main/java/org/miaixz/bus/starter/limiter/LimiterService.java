@@ -39,7 +39,7 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class LimiterService implements InitializingBean {
 
-    private final Context context;
+    public Context context;
 
     public LimiterService(Context context) {
         this.context = context;

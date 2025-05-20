@@ -73,7 +73,7 @@
             <td>默认值</td>
             <td>说明</td>
         </tr>
-        </thead><#list t.columns><#items as c>
+        </thead><#list t.columnMeta><#items as c>
             <tr>
             <td style='text-align:center;'>${c?index+1}</td>
             <td>${c.columnName!''}</td>

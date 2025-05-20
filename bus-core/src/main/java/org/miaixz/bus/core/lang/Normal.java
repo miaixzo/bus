@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.Date;
 
@@ -44,6 +45,71 @@ public class Normal {
      * The number 1024 1.二进制计数的基本计量单位 2.广大程序员的共同节日 3.由于特殊性置顶
      */
     public static final int _1024 = 2 << 10;
+
+    /**
+     * 1024 字节，二进制前缀 KiB
+     */
+    public static final long KIBI = 1L << 10;
+
+    /**
+     * 1024^2 字节，二进制前缀 MiB
+     */
+    public static final long MEBI = 1L << 20;
+
+    /**
+     * 1024^3 字节，二进制前缀 GiB
+     */
+    public static final long GIBI = 1L << 30;
+
+    /**
+     * 1024^4 字节，二进制前缀 TiB
+     */
+    public static final long TEBI = 1L << 40;
+
+    /**
+     * 1024^5 字节，二进制前缀 PiB
+     */
+    public static final long PEBI = 1L << 50;
+
+    /**
+     * 1024^6 字节，二进制前缀 EiB
+     */
+    public static final long EXBI = 1L << 60;
+
+    /**
+     * 10^6，十进制前缀 M
+     */
+    public static final long MEGA = 1_000_000L;
+
+    /**
+     * 10^9，十进制前缀 G
+     */
+    public static final long GIGA = 1_000_000_000L;
+
+    /**
+     * 10^12，十进制前缀 T
+     */
+    public static final long TERA = 1_000_000_000_000L;
+
+    /**
+     * 10^15，十进制前缀 P
+     */
+    public static final long PETA = 1_000_000_000_000_000L;
+
+    /**
+     * 10^18，十进制前缀 E
+     */
+    public static final long EXA = 1_000_000_000_000_000_000L;
+
+    /**
+     * 1000，十进制前缀 K
+     */
+    public static final long KILO = 1_000L;
+
+    /**
+     * 2^64，用于二进制补码的参考值
+     */
+    public static final BigInteger TWOS_COMPLEMENT_REF = BigInteger.ONE.shiftLeft(64);
 
     /**
      * The number 32768

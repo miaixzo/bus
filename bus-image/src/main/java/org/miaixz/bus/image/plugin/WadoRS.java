@@ -47,6 +47,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.galaxy.media.MultipartInputStream;
@@ -100,7 +101,7 @@ public class WadoRS {
         StringBuilder sb = new StringBuilder();
         sb.append(!header ? accept[0].replace("+", "%2B") : accept[0]);
         for (int i = 1; i < accept.length; i++)
-            sb.append(",").append(!header ? accept[i].replace("+", "%2B") : accept[i]);
+            sb.append(Symbol.COMMA).append(!header ? accept[i].replace("+", "%2B") : accept[i]);
 
         WadoRS.accept = sb.toString();
     }
@@ -174,7 +175,7 @@ public class WadoRS {
 
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
         Logger.info("> GET " + url.toString());
-        headerFields.forEach((k, v) -> Logger.info("> " + k + " : " + String.join(",", v)));
+        headerFields.forEach((k, v) -> Logger.info("> " + k + " : " + String.join(Symbol.COMMA, v)));
     }
 
     private void processWadoResp(HttpURLConnection connection, String uid) throws Exception {
@@ -196,7 +197,7 @@ public class WadoRS {
     }
 
     private void logIncoming(int respCode, String respMsg, Map<String, List<String>> headerFields) {
-        Logger.info("< HTTP/1.1 Response: " + respCode + " " + respMsg);
+        Logger.info("< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
                 Logger.info("< " + header.getKey() + " : " + String.join(";", header.getValue()));
@@ -248,7 +249,7 @@ public class WadoRS {
     private String boundary(String contentType) {
         String[] respContentTypeParams = contentType.split(";");
         for (String respContentTypeParam : respContentTypeParams)
-            if (respContentTypeParam.replace(" ", "").startsWith("boundary="))
+            if (respContentTypeParam.replace(Symbol.SPACE, "").startsWith("boundary="))
                 return respContentTypeParam.substring(respContentTypeParam.indexOf("=") + 1).replaceAll("\"", "");
 
         return null;

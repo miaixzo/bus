@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.pager.parser.defaults;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.pager.Builder;
+import org.miaixz.bus.pager.builtin.PageMethod;
+import org.miaixz.bus.pager.parser.CountSqlParser;
+
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -35,14 +45,6 @@ import net.sf.jsqlparser.parser.Token;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.miaixz.bus.pager.Builder;
-import org.miaixz.bus.pager.builtin.PageMethod;
-import org.miaixz.bus.pager.parser.CountSqlParser;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * sql解析类，提供更智能的count查询sql
@@ -99,7 +101,7 @@ public class DefaultCountSqlParser implements CountSqlParser {
                 if (token != null && token.specialToken != null) {
                     String hints = token.specialToken.toString().trim();
                     if (hints.startsWith("/*") && hints.endsWith("*/") && !result.startsWith("/*")) {
-                        result = hints + " " + result;
+                        result = hints + Symbol.SPACE + result;
                     }
                 }
             }

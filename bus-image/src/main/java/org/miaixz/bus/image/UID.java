@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -757,7 +758,7 @@ public enum UID {
             return new String[] { "*" };
         }
 
-        String[] uids = StringKit.splitToArray(s, ",");
+        String[] uids = StringKit.splitToArray(s, Symbol.COMMA);
         for (int i = 0; i < uids.length; i++) {
             uids[i] = toUID(uids[i]);
         }

@@ -31,7 +31,7 @@ import org.miaixz.bus.base.service.BaseService;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.magic.annotation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BaseController<Service extends BaseService<T>, T> extends Controller {
+public class BaseController<T, Service extends BaseService<T>> extends Controller {
 
     @Autowired
     protected Service service;
@@ -58,9 +58,9 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Object add(T entity) {
-        String id = service.insertSelective(entity);
-        if (StringKit.isNotBlank(id)) {
-            return write(MapKit.of("id", id));
+        T t = (T) service.insertSelective(entity);
+        if (ObjectKit.isNotEmpty(t)) {
+            return write(t);
         }
         return write(ErrorCode.EM_100513);
     }
@@ -74,7 +74,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     public Object remove(T entity) {
-        int total = service.remove(entity);
+        long total = service.remove(entity);
         if (total >= 0) {
             return write(MapKit.of("total", total));
         }
@@ -90,7 +90,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Object delete(T entity) {
-        int total = service.delete(entity);
+        long total = service.delete(entity);
         if (total >= 0) {
             return write(MapKit.of("total", total));
         }
@@ -106,9 +106,9 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Object update(T entity) {
-        int total = service.updateSelectiveById(entity);
-        if (total >= 0) {
-            return write(MapKit.of("total", total));
+        T t = (T) service.updateSelective(entity);
+        if (ObjectKit.isNotEmpty(t)) {
+            return write(t);
         }
         return write(ErrorCode.EM_100513);
     }
@@ -122,7 +122,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public Object get(T entity) {
-        return write(service.selectById(entity));
+        return write(service.selectOne(entity));
     }
 
     /**

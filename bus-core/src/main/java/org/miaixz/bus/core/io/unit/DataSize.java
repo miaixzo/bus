@@ -301,7 +301,7 @@ public final class DataSize implements Comparable<DataSize> {
             return Symbol.ZERO;
         }
         final int digitGroups = ArrayKit.indexOf(Normal.CAPACITY_NAMES, fileDataUnit.getSuffix());
-        return new DecimalFormat("##0.##").format(size / Math.pow(1024, digitGroups)) + " "
+        return new DecimalFormat("##0.##").format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE
                 + Normal.CAPACITY_NAMES[digitGroups];
     }
 

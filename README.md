@@ -2,11 +2,8 @@
   <a href="https://www.miaixz.org"><img src="LOGO.svg" width="45%"></a>
 </p>
 <p align="center">
-  <a href="http://www.miaixz.org">http://www.miaixz.org</a>
-</p>
-<p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.1.6-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.1.8-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://travis-ci.org/839128/bus">
     <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
@@ -15,7 +12,7 @@
     <img src="https://img.shields.io/badge/Java-17+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-3.0.5-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-3.4.5-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.mysql.com">
     <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
@@ -53,7 +50,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | 版本  | jdk    | Maven仓库                                                                            | 主要特点                                |
 |-----|--------|------------------------------------------------------------------------------------|-------------------------------------|
 | 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)  | jdk1.8编译                            |
-| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9) | jdk1.8编译,使用JavaEE,适配JDK11、17        |
+| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9) | jdk1.8编译                            |
 | 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0) | jdk 17编译,使用Jakarta EE,适配JDK11、17    |
 | 8.x | jdk 21 | [org.miaixz/bus-all/8.x ](https://mvnrepository.com/artifact/org.miaixz/bus-all)   | jdk 21编译,使用Jakarta EE,适配JDK11、17、21 |
 

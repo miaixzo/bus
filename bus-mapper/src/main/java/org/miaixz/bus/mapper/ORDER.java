@@ -27,23 +27,24 @@
 */
 package org.miaixz.bus.mapper;
 
+import org.miaixz.bus.core.Order;
+
 /**
- * 执行 SQL 的时机
+ * 定义排序顺序和优先级的接口，用于控制执行顺序。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum ORDER {
+public interface ORDER extends Order {
+
     /**
-     * insert 后执行 SQL
+     * 升序排序
      */
-    AFTER,
+    String ASC = "ASC";
+
     /**
-     * insert 前执行 SQL
+     * 降序排序
      */
-    BEFORE,
-    /**
-     * 使用全局配置
-     */
-    DEFAULT
+    String DESC = "DESC";
+
 }

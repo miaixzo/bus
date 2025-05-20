@@ -27,10 +27,16 @@
 */
 package org.miaixz.bus.oauth.metric.apple;
 
-import lombok.Data;
+import java.io.IOException;
+import java.io.StringReader;
+import java.security.PrivateKey;
+import java.util.Base64;
+import java.util.Map;
+
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -44,11 +50,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.security.PrivateKey;
-import java.util.Base64;
-import java.util.Map;
+import lombok.Data;
 
 /**
  * Apple 登录
@@ -73,7 +75,8 @@ public class AppleProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state)).queryParam("response_mode", "form_post")
-                .queryParam("scope", this.getScopes(" ", false, getDefaultScopes(AppleScope.values()))).build();
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, getDefaultScopes(AppleScope.values())))
+                .build();
     }
 
     @Override
@@ -112,7 +115,7 @@ public class AppleProvider extends AbstractProvider {
                             String firstName = (String) nameMap.get("firstName");
                             String lastName = (String) nameMap.get("lastName");
                             if (firstName != null && lastName != null) {
-                                builder.username(firstName + " " + lastName);
+                                builder.username(firstName + Symbol.SPACE + lastName);
                             }
                         }
                     }

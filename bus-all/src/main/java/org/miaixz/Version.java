@@ -27,6 +27,8 @@
 */
 package org.miaixz;
 
+import org.miaixz.bus.core.lang.Keys;
+
 /**
  * <p>
  * Version (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有 框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用
@@ -62,7 +64,7 @@ public class Version extends org.miaixz.bus.core.Version {
     }
 
     public String name() {
-        return "Bus";
+        return Keys.BUS;
     }
 
 }

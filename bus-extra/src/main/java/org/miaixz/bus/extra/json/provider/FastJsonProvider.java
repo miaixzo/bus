@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.extra.json.provider;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.filter.Filter;
-import com.alibaba.fastjson2.filter.ValueFilter;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.filter.Filter;
+import com.alibaba.fastjson2.filter.ValueFilter;
 
 /**
  * FastJson 解析器
@@ -47,11 +48,11 @@ import java.util.Map;
  */
 public class FastJsonProvider extends AbstractJsonProvider {
 
-    private static final JSONWriter.Feature[] WRITER_FEATURES = {JSONWriter.Feature.FieldBased,
-            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls};
+    private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
+            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls };
 
-    private static final Filter[] FILTERS = {(ValueFilter) (object, name,
-                                                            value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value};
+    private static final Filter[] FILTERS = { (ValueFilter) (object, name,
+            value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value };
 
     /**
      * 构造

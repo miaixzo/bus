@@ -29,8 +29,8 @@ package org.miaixz.bus.extra.nlp;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
-import org.miaixz.bus.core.xyz.SPIKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -74,7 +74,7 @@ public class NLPFactory {
         if (!StringKit.endWithIgnoreCase(engineName, "Engine")) {
             engineName = engineName + "Engine";
         }
-        final ServiceLoader<NLPProvider> list = SPIKit.loadList(NLPProvider.class);
+        final ServiceLoader<NLPProvider> list = NormalSpiLoader.loadList(NLPProvider.class);
         for (final String serviceName : list.getServiceNames()) {
             if (StringKit.endWithIgnoreCase(serviceName, engineName)) {
                 return list.getService(serviceName);
@@ -89,7 +89,7 @@ public class NLPFactory {
      * @return {@link NLPProvider}
      */
     private static NLPProvider doCreateEngine() {
-        final NLPProvider engine = SPIKit.loadFirstAvailable(NLPProvider.class);
+        final NLPProvider engine = NormalSpiLoader.loadFirstAvailable(NLPProvider.class);
         if (null != engine) {
             return engine;
         }

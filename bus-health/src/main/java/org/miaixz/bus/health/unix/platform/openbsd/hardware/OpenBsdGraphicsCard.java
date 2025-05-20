@@ -68,7 +68,7 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
     /**
      * public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
      *
-     * @return List of {@link oshi.hardware.platform.unix.freebsd.OpenBsdGraphicsCard} objects.
+     * @return List of {@link OpenBsdGraphicsCard} objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
         List<GraphicsCard> cardList = new ArrayList<>();

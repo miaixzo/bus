@@ -110,7 +110,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         String key = DataSourceHolder.getKey();
         if (!keySet.contains(key)) {
-            logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource",
+            Logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource",
                     key));
         }
         Logger.debug("The current datasource key ：{}", Objects.requireNonNullElse(key, "dataSource"));

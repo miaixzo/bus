@@ -31,7 +31,10 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.MediaType;
 
 /**
- * 响应体只能使用一次
+ * HTTP 响应体
+ * <p>
+ * 表示 HTTP 响应的内容，仅能使用一次。提供对响应内容的媒体类型、长度和数据源的访问。 使用字符串存储媒体类型以避免解析错误。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,28 +42,56 @@ import org.miaixz.bus.core.lang.MediaType;
 public class RealResponseBody extends ResponseBody {
 
     /**
-     * 使用字符串避免在需要时才解析内容类型 这也避免了由格式不正确的内容类型引起的问题
+     * 媒体类型字符串
      */
     private final String mediaType;
+    /**
+     * 内容长度
+     */
     private final long length;
+    /**
+     * 数据源
+     */
     private final BufferSource source;
 
+    /**
+     * 构造函数，初始化 RealResponseBody 实例
+     *
+     * @param mediaType 媒体类型字符串（可能为 null）
+     * @param length    内容长度
+     * @param source    数据源
+     */
     public RealResponseBody(String mediaType, long length, BufferSource source) {
         this.mediaType = mediaType;
         this.length = length;
         this.source = source;
     }
 
+    /**
+     * 获取媒体类型
+     *
+     * @return 媒体类型（不存在时为 null）
+     */
     @Override
     public MediaType mediaType() {
         return null != mediaType ? MediaType.valueOf(mediaType) : null;
     }
 
+    /**
+     * 获取内容长度
+     *
+     * @return 内容长度
+     */
     @Override
     public long length() {
         return length;
     }
 
+    /**
+     * 获取数据源
+     *
+     * @return 数据源
+     */
     @Override
     public BufferSource source() {
         return source;

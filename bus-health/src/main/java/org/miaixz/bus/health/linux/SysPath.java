@@ -31,6 +31,7 @@ import java.io.File;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.health.Config;
 
 /**
@@ -62,7 +63,7 @@ public final class SysPath {
         // Ensure prefix begins with path separator, but doesn't end with one
         sysPath = '/' + sysPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(sysPath).exists()) {
-            throw new Config.PropertyException(Config._UTIL_SYS_PATH, "The path does not exist");
+            throw new NotFoundException("The path does not exist " + Config._UTIL_SYS_PATH);
         }
         return sysPath;
     }

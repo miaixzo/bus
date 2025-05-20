@@ -27,16 +27,19 @@
 */
 package org.miaixz.bus.pay.metric.alipay;
 
+import java.io.ByteArrayInputStream;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
-
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayConstants;
-import com.alipay.api.internal.util.AlipaySignature;
-import com.alipay.api.internal.util.AntCertificationUtil;
 
 /**
  * 支付宝配置
@@ -46,30 +49,31 @@ import com.alipay.api.internal.util.AntCertificationUtil;
  */
 public class AliPayBuilder {
 
+    private static final String CHARSET_UTF8 = "UTF-8";
+
     /**
      * 生成签名结果
      *
      * @param params   要签名的数组
      * @param key      签名密钥
-     * @param signType 签名类型
+     * @param signType 签名类型 (MD5, RSA, RSA2)
      * @return 签名结果字符串
      */
     public static String buildRequestMySign(Map<String, String> params, String key, String signType)
-            throws AlipayApiException {
-        // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+            throws IllegalArgumentException {
         String preStr = createLinkString(params);
         if (Algorithm.MD5.getValue().equals(signType)) {
             return Builder.md5(preStr.concat(key));
         } else if (Algorithm.RSA2.getValue().equals(signType)) {
-            return AlipaySignature.rsa256Sign(preStr, key, AlipayConstants.CHARSET_UTF8);
+            return rsaSign(preStr, key, "SHA256withRSA");
         } else if (Algorithm.RSA.getValue().equals(signType)) {
-            return AlipaySignature.rsaSign(preStr, key, AlipayConstants.CHARSET_UTF8);
+            return rsaSign(preStr, key, "SHA1withRSA");
         }
-        return null;
+        throw new IllegalArgumentException("Unsupported sign_type: " + signType);
     }
 
     /**
-     * 生成要请求给支付宝的参数数组
+     * 生成要请求的参数数组
      *
      * @param params   请求前的参数数组
      * @param key      商户的私钥
@@ -77,17 +81,14 @@ public class AliPayBuilder {
      * @return 要请求的参数数组
      */
     public static Map<String, String> buildRequestPara(Map<String, String> params, String key, String signType) {
-        // 除去数组中的空值和签名参数
         Map<String, String> tempMap = paraFilter(params);
-        // 生成签名结果
         String mySign;
         try {
             mySign = buildRequestMySign(params, key, signType);
-        } catch (AlipayApiException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return null;
         }
-        // 签名结果与签名方式加入请求提交参数组中
         tempMap.put("sign", mySign);
         tempMap.put("sign_type", signType);
         return tempMap;
@@ -130,7 +131,6 @@ public class AliPayBuilder {
         StringBuilder content = new StringBuilder();
         for (String key : keys) {
             String value = params.get(key);
-            // 拼接时，不包括最后一个&字符
             content.append(key).append("=").append(value).append("&");
         }
         if (content.lastIndexOf("&") == content.length() - 1) {
@@ -142,19 +142,61 @@ public class AliPayBuilder {
     /**
      * 从证书内容验签
      *
-     * @param params                  待验签的从支付宝接收到的参数Map
+     * @param params                  待验签的参数Map
      * @param alipayPublicCertContent 支付宝公钥证书内容
      * @param charset                 参数内容编码集
      * @param signType                指定采用的签名方式，RSA或RSA2
      * @return true：验签通过；false：验签不通过
-     * @throws AlipayApiException
      */
     public static boolean rsaCertCheckV1ByContent(Map<String, String> params, String alipayPublicCertContent,
-            String charset, String signType) throws AlipayApiException {
+            String charset, String signType) {
+        try {
+            // Extract public key from certificate content
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            Certificate cert = cf.generateCertificate(new ByteArrayInputStream(alipayPublicCertContent.getBytes()));
+            PublicKey publicKey = cert.getPublicKey();
+            String publicKeyEncoded = Base64.encode(publicKey.getEncoded());
 
-        String publicKey = Base64
-                .encode(AntCertificationUtil.getCertFromContent(alipayPublicCertContent).getPublicKey().getEncoded());
-        return AlipaySignature.rsaCheckV1(params, publicKey, charset, signType);
+            // Prepare data for verification
+            String content = createLinkString(paraFilter(params));
+            String sign = params.get("sign");
+            if (StringKit.isEmpty(sign)) {
+                return false;
+            }
+
+            // Verify signature
+            String algorithm = Algorithm.RSA2.getValue().equals(signType) ? "SHA256withRSA" : "SHA1withRSA";
+            Signature signature = Signature.getInstance(algorithm);
+            signature.initVerify(publicKey);
+            signature.update(content.getBytes(charset != null ? charset : CHARSET_UTF8));
+            return signature.verify(Base64.decode(sign));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * RSA or RSA2 signing
+     *
+     * @param content    Data to sign
+     * @param privateKey Private key
+     * @param algorithm  Signature algorithm (SHA1withRSA or SHA256withRSA)
+     * @return Base64-encoded signature
+     */
+    private static String rsaSign(String content, String privateKey, String algorithm) {
+        try {
+            byte[] keyBytes = Base64.decode(privateKey);
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            java.security.PrivateKey priKey = keyFactory.generatePrivate(keySpec);
+            Signature signature = Signature.getInstance(algorithm);
+            signature.initSign(priKey);
+            signature.update(content.getBytes(CHARSET_UTF8));
+            return Base64.encode(signature.sign());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("RSA signing failed: " + e.getMessage());
+        }
     }
 
 }

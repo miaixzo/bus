@@ -48,6 +48,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pager.Builder;
@@ -57,7 +58,6 @@ import org.miaixz.bus.pager.builtin.CountExecutor;
 import org.miaixz.bus.pager.builtin.CountMappedStatement;
 import org.miaixz.bus.pager.builtin.CountMsId;
 import org.miaixz.bus.pager.builtin.PageMethod;
-import org.miaixz.bus.pager.cache.Cache;
 import org.miaixz.bus.pager.cache.CacheFactory;
 
 /**
@@ -74,7 +74,7 @@ import org.miaixz.bus.pager.cache.CacheFactory;
 public class PageSqlHandler extends SqlParserHandler implements Interceptor {
 
     private static boolean debug = false;
-    protected Cache<String, MappedStatement> msCountMap = null;
+    protected CacheX<String, MappedStatement> msCountMap = null;
     protected CountMsId countMsId = CountMsId.DEFAULT;
     private volatile Dialect dialect;
     private String countSuffix = "_COUNT";
@@ -219,14 +219,14 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
             count = CountExecutor.executeManualCount(executor, countMs, parameter, boundSql, resultHandler);
         } else {
             if (msCountMap != null) {
-                countMs = msCountMap.get(countMsId);
+                countMs = msCountMap.read(countMsId);
             }
             // 自动创建
             if (countMs == null) {
                 // 根据当前的 ms 创建一个返回值为 Long 类型的 ms
                 countMs = CountMappedStatement.newCountMappedStatement(ms, countMsId);
                 if (msCountMap != null) {
-                    msCountMap.put(countMsId, countMs);
+                    msCountMap.write(countMsId, countMs, 60);
                 }
             }
             count = CountExecutor.executeAutoCount(this.dialect, executor, countMs, parameter, boundSql, rowBounds,

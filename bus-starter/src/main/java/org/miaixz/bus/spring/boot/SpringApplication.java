@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring.boot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.boot.statics.BaseStatics;
@@ -34,9 +37,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.io.ResourceLoader;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 扩展 {@link org.springframework.boot.SpringApplication}，计算 {@link ApplicationContextInitializer} 初始化时间。
@@ -57,7 +57,7 @@ public class SpringApplication extends org.springframework.boot.SpringApplicatio
     }
 
     public static ConfigurableApplicationContext run(Class<?> primarySource, String... args) {
-        return run(new Class<?>[]{primarySource}, args);
+        return run(new Class<?>[] { primarySource }, args);
     }
 
     public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {

@@ -30,6 +30,7 @@ package org.miaixz.bus.image.galaxy;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.metric.pdu.CommonExtended;
@@ -45,7 +46,8 @@ public class RelatedSOPClasses {
     public void init(Properties props) {
         for (String cuid : props.stringPropertyNames()) {
             commonExtNegs.put(cuid,
-                    new CommonExtended(cuid, UID.Storage.uid, StringKit.splitToArray(props.getProperty(cuid), ",")));
+                    new CommonExtended(cuid, UID.Storage.uid,
+                            StringKit.splitToArray(props.getProperty(cuid), Symbol.COMMA)));
         }
     }
 

@@ -52,7 +52,7 @@ import lombok.Setter;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MemoryCache implements CacheX {
+public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
      * 默认缓存过期时间：3分钟 鉴于授权过程中,根据个人的操作习惯,或者授权平台的不同(google等),每个授权流程的耗时也有差异,不过单个授权流程一般不会太长
@@ -83,24 +83,24 @@ public class MemoryCache implements CacheX {
      * @return 缓存内容
      */
     @Override
-    public Object read(String key) {
+    public V read(K key) {
         readLock.lock();
         try {
             CacheState cacheState = map.get(key);
             if (null == cacheState || cacheState.isExpired()) {
                 return null;
             }
-            return cacheState.getState();
+            return (V) cacheState.getState();
         } finally {
             readLock.unlock();
         }
     }
 
     @Override
-    public Map<String, Object> read(Collection<String> keys) {
-        Map<String, Object> subCache = new HashMap<>(keys.size());
-        for (String key : keys) {
-            subCache.put(key, read(key));
+    public Map<K, V> read(Collection<K> keys) {
+        Map<K, V> subCache = new HashMap<>(keys.size());
+        for (K key : keys) {
+            subCache.put(key, (V) read(key));
         }
         return subCache;
     }
@@ -112,7 +112,7 @@ public class MemoryCache implements CacheX {
      * @param expire      指定缓存过期时间(毫秒)
      */
     @Override
-    public void write(Map<String, Object> keyValueMap, long expire) {
+    public void write(Map<K, V> keyValueMap, long expire) {
         if (MapKit.isNotEmpty(keyValueMap)) {
             keyValueMap.forEach((key, value) -> write(key, value, expire));
         }
@@ -126,17 +126,17 @@ public class MemoryCache implements CacheX {
      * @param expire 指定缓存过期时间(毫秒)
      */
     @Override
-    public void write(String key, Object value, long expire) {
+    public void write(K key, V value, long expire) {
         writeLock.lock();
         try {
-            map.put(key, new CacheState(value, expire));
+            map.put((String) key, new CacheState(value, expire));
         } finally {
             writeLock.unlock();
         }
     }
 
     @Override
-    public boolean containsKey(String key) {
+    public boolean containsKey(K key) {
         return map.containsKey(key);
     }
 
@@ -158,8 +158,8 @@ public class MemoryCache implements CacheX {
      * 清理过期的缓存
      */
     @Override
-    public void remove(String... keys) {
-        for (String key : keys) {
+    public void remove(K... keys) {
+        for (K key : keys) {
             map.remove(key);
         }
     }
@@ -207,7 +207,7 @@ public class MemoryCache implements CacheX {
 
     @Getter
     @Setter
-    private class CacheState implements Serializable {
+    private static class CacheState implements Serializable {
         private Object state;
         private long expire;
 

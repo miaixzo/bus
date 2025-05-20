@@ -29,7 +29,4 @@ org.springframework.boot.SpringApplicationRunListener=\
 # Application Listeners
 org.springframework.context.ApplicationListener=\
   org.miaixz.bus.spring.listener.SpringCloudConfigListener,\
-  org.miaixz.bus.spring.listener.ConfigSourceSupportListener
-# Application Context Initializers
-org.springframework.context.ApplicationContextInitializer=\
-  org.miaixz.bus.spring.Initializer.BannerApplicationContextInitializer
+  org.miaixz.bus.spring.listener.SpringBootConfigListener

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,89 +27,68 @@
 */
 package org.miaixz.bus.health.builtin;
 
-import java.io.Serializable;
-
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Platform;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 代表Java Virtual Machine Implementation的信息
- *
+ * JVM 信息
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Jvm implements Serializable {
-
-    private static final long serialVersionUID = -1L;
+@Getter
+@Setter
+@Builder
+public class Jvm {
+    /**
+     * JDK 版本
+     */
+    private String jdkVersion;
 
     /**
-     * 取得当前JVM impl.的名称(取自系统属性：<code>java.vm.name</code>)
-     *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"Java HotSpot(TM) Client VM"</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * JDK 安装路径
      */
-    public final String getName() {
-        return Platform.get(Keys.JAVA_VM_NAME, false);
-    }
+    private String jdkHome;
 
     /**
-     * 取得当前JVM impl.的版本(取自系统属性：<code>java.vm.version</code>)
-     *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"1.4.2-b28"</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * JDK 名称
      */
-    public final String getVersion() {
-        return Platform.get(Keys.JAVA_VM_VERSION, false);
-    }
+    private String jdkName;
 
     /**
-     * 取得当前JVM impl.的厂商(取自系统属性：<code>java.vm.vendor</code>)
-     *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * JVM 总内存
      */
-    public final String getVendor() {
-        return Platform.get(Keys.JAVA_VM_VENDOR, false);
-    }
+    private long totalMemory;
 
     /**
-     * 取得当前JVM impl.的信息(取自系统属性：<code>java.vm.info</code>)
-     *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"mixed mode"</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * JVM 最大内存
      */
-    public final String getInfo() {
-        return Platform.get(Keys.JAVA_VM_INFO, false);
-    }
+    private long maxMemory;
 
     /**
-     * 将Java Virutal Machine Implementation的信息转换成字符串
-     *
-     * @return JVM impl.的字符串表示
+     * JVM 空闲内存
      */
-    @Override
-    public final String toString() {
-        StringBuilder builder = new StringBuilder();
+    private long freeMemory;
 
-        Builder.append(builder, "JavaVM Name:    ", getName());
-        Builder.append(builder, "JavaVM Version: ", getVersion());
-        Builder.append(builder, "JavaVM Vendor:  ", getVendor());
-        Builder.append(builder, "JavaVM Info:    ", getInfo());
+    /**
+     * JVM 已用内存
+     */
+    private long usedMemory;
 
-        return builder.toString();
-    }
+    /**
+     * JVM 内存使用率
+     */
+    private double usagePercent;
+
+    /**
+     * JVM 启动时间（毫秒）
+     */
+    private long startTime;
+
+    /**
+     * JVM 运行时间（毫秒）
+     */
+    private long uptime;
 
 }

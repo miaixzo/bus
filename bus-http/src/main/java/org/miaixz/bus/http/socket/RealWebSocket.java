@@ -54,112 +54,133 @@ import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.Internal;
 
 /**
+ * WebSocket 客户端实现
+ * <p>
+ * 实现 WebSocket 协议（RFC 6455），支持消息发送、接收、ping/pong 和优雅关闭。 管理消息队列和连接生命周期，使用回调通知监听器处理事件。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
+    /**
+     * 仅支持 HTTP/1.1 协议
+     */
     private static final List<Protocol> ONLY_HTTP1 = Collections.singletonList(Protocol.HTTP_1_1);
 
     /**
-     * 要加入队列的最大字节数。而不是排队超过这个限制，我们拆掉web套接字!有可能我们写得比别人读得快 16 MiB
+     * 队列最大字节数（16 MiB）
      */
     private static final long MAX_QUEUE_SIZE = Normal._16 * Normal._1024 * Normal._1024;
 
     /**
-     * 客户端调用{@link #close}以等待适当关闭的最大时间量。如果服务器没有响应，websocket将被取消
+     * 关闭后等待服务器响应的最大时间（60秒）
      */
     private static final long CANCEL_AFTER_CLOSE_MILLIS = 60 * 1000;
+
+    /**
+     * WebSocket 监听器
+     */
     final WebSocketListener listener;
     /**
-     * 应用程序的原始请求未受web套接字头的影响
+     * 原始请求
      */
     private final Request originalRequest;
+    /**
+     * 随机数生成器
+     */
     private final Random random;
+    /**
+     * ping 间隔（毫秒）
+     */
     private final long pingIntervalMillis;
+    /**
+     * WebSocket 密钥
+     */
     private final String key;
     /**
-     * 这个runnable处理传出队列。在进入队列后调用{@link #runWriter()}.
+     * 写入器运行任务
      */
     private final Runnable writerRunnable;
     /**
-     * 发出的ping信号的顺序应该是写出来的
+     * pong 队列
      */
     private final ArrayDeque<ByteString> pongQueue = new ArrayDeque<>();
     /**
-     * 发送消息和关闭帧的顺序应该是它们被写入的顺序
+     * 消息和关闭帧队列
      */
     private final ArrayDeque<Object> messageAndCloseQueue = new ArrayDeque<>();
     /**
-     * 客户端web套接字是非空的。这些可以被取消.
+     * WebSocket 调用
      */
     private NewCall call;
     /**
-     * 在连接此web套接字之前为空。仅由读线程访问
+     * 帧读取器
      */
     private WebSocketReader reader;
     /**
-     * 在连接此web套接字之前为空。注意，消息可能在此之前排队
+     * 帧写入器
      */
     private WebSocketWriter writer;
     /**
-     * 在连接此web套接字之前为空。用于写、ping和关闭超时
+     * 线程池
      */
     private ScheduledExecutorService executor;
     /**
-     * 此web套接字持有的流。在读取所有传入消息和写入所有传出消息之前，这是非空的 当读者和作者都精疲力尽，或者出现任何失败时，它就关闭了
+     * 数据流
      */
     private Streams streams;
     /**
-     * 排队但尚未传输的消息的总大小(以字节为单位)
+     * 队列大小
      */
     private long queueSize;
-
     /**
-     * 如果我们加入了一个闭帧，则为真。不再有消息帧进入队列
+     * 是否已排队关闭
      */
     private boolean enqueuedClose;
-
     /**
-     * 执行时将取消此websocket。如果不必要的话，应该取消这个future本身，因为web套接字已经关闭或取消了
+     * 取消任务
      */
     private ScheduledFuture<?> cancelFuture;
-
     /**
-     * 来自对等端的关闭代码，如果此web套接字尚未读取关闭帧，则为-1
+     * 接收的关闭代码
      */
     private int receivedCloseCode = -1;
-
     /**
-     * 来自对等方的关闭原因，如果此web套接字尚未读取关闭帧，则为null
+     * 接收的关闭原因
      */
     private String receivedCloseReason;
-
     /**
-     * 如果此web套接字失败且侦听器已被通知，则为
+     * 是否已失败
      */
     private boolean failed;
-
     /**
-     * 此web套接字发送的ping的总数
+     * 发送的 ping 计数
      */
     private int sentPingCount;
-
     /**
-     * 此web套接字接收的ping的总数
+     * 接收的 ping 计数
      */
     private int receivedPingCount;
-
     /**
-     * 此web套接字接收的ping总数
+     * 接收的 pong 计数
      */
     private int receivedPongCount;
-
     /**
-     * 如果我们发送了一个仍在等待回复的ping，则为真
+     * 是否等待 pong
      */
     private boolean awaitingPong;
 
+    /**
+     * 构造函数，初始化 WebSocket 实例
+     *
+     * @param request            原始请求（必须为 GET）
+     * @param listener           WebSocket 监听器
+     * @param random             随机数生成器
+     * @param pingIntervalMillis ping 间隔（毫秒）
+     * @throws IllegalArgumentException 如果请求方法不是 GET
+     */
     public RealWebSocket(Request request, WebSocketListener listener, Random random, long pingIntervalMillis) {
         if (!HTTP.GET.equals(request.method())) {
             throw new IllegalArgumentException("Request must be GET: " + request.method());
@@ -183,21 +204,39 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         };
     }
 
+    /**
+     * 获取原始请求
+     *
+     * @return 原始请求
+     */
     @Override
     public Request request() {
         return originalRequest;
     }
 
+    /**
+     * 获取队列大小
+     *
+     * @return 队列中的字节数
+     */
     @Override
     public synchronized long queueSize() {
         return queueSize;
     }
 
+    /**
+     * 取消 WebSocket 连接
+     */
     @Override
     public void cancel() {
         call.cancel();
     }
 
+    /**
+     * 建立 WebSocket 连接
+     *
+     * @param client HTTP 客户端
+     */
     public void connect(Httpd client) {
         client = client.newBuilder().eventListener(EventListener.NONE).protocols(ONLY_HTTP1).build();
         final Request request = originalRequest.newBuilder().header(HTTP.UPGRADE, "websocket")
@@ -238,6 +277,13 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         });
     }
 
+    /**
+     * 检查 WebSocket 升级是否成功
+     *
+     * @param response 响应
+     * @param exchange 交换对象
+     * @throws IOException 如果升级失败
+     */
     void checkUpgradeSuccess(Response response, Exchange exchange) throws IOException {
         if (response.code() != 101) {
             throw new ProtocolException("Expected HTTP 101 response but was '" + response.code() + Symbol.SPACE
@@ -268,6 +314,12 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
+    /**
+     * 初始化帧读取器和写入器
+     *
+     * @param name    线程名称
+     * @param streams 数据流
+     */
     public void initReaderAndWriter(String name, Streams streams) {
         synchronized (this) {
             this.streams = streams;
@@ -286,7 +338,9 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     }
 
     /**
-     * Receive frames until there are no more. Invoked only by the reader thread.
+     * 循环读取帧
+     *
+     * @throws IOException 如果读取失败
      */
     public void loopReader() throws IOException {
         while (receivedCloseCode == -1) {
@@ -296,8 +350,9 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     }
 
     /**
-     * For testing: receive a single frame and return true if there are more frames to read. Invoked only by the reader
-     * thread.
+     * 处理单个帧（用于测试）
+     *
+     * @return true 如果还有更多帧可读
      */
     boolean processNextFrame() {
         try {
@@ -310,14 +365,20 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     }
 
     /**
-     * For testing: wait until the web socket's executor has terminated.
+     * 等待线程池终止（用于测试）
+     *
+     * @param timeout  超时时间
+     * @param timeUnit 时间单位
+     * @throws InterruptedException 如果等待被中断
      */
     void awaitTermination(int timeout, TimeUnit timeUnit) throws InterruptedException {
         executor.awaitTermination(timeout, timeUnit);
     }
 
     /**
-     * For testing: force this web socket to release its threads.
+     * 释放线程（用于测试）
+     *
+     * @throws InterruptedException 如果等待被中断
      */
     void tearDown() throws InterruptedException {
         if (cancelFuture != null) {
@@ -327,28 +388,58 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         executor.awaitTermination(10, TimeUnit.SECONDS);
     }
 
+    /**
+     * 获取发送的 ping 计数
+     *
+     * @return ping 计数
+     */
     synchronized int sentPingCount() {
         return sentPingCount;
     }
 
+    /**
+     * 获取接收的 ping 计数
+     *
+     * @return ping 计数
+     */
     synchronized int receivedPingCount() {
         return receivedPingCount;
     }
 
+    /**
+     * 获取接收的 pong 计数
+     *
+     * @return pong 计数
+     */
     synchronized int receivedPongCount() {
         return receivedPongCount;
     }
 
+    /**
+     * 接收文本消息
+     *
+     * @param text 文本内容
+     */
     @Override
     public void onReadMessage(String text) {
         listener.onMessage(this, text);
     }
 
+    /**
+     * 接收二进制消息
+     *
+     * @param bytes 二进制内容
+     */
     @Override
     public void onReadMessage(ByteString bytes) {
         listener.onMessage(this, bytes);
     }
 
+    /**
+     * 接收 ping 帧
+     *
+     * @param payload ping 数据
+     */
     @Override
     public synchronized void onReadPing(ByteString payload) {
         // Don't respond to pings after we've failed or sent the close frame.
@@ -360,6 +451,11 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         receivedPingCount++;
     }
 
+    /**
+     * 接收 pong 帧
+     *
+     * @param buffer pong 数据
+     */
     @Override
     public synchronized void onReadPong(ByteString buffer) {
         // This API doesn't expose pings.
@@ -367,6 +463,13 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         awaitingPong = false;
     }
 
+    /**
+     * 接收 close 帧
+     *
+     * @param code   关闭代码
+     * @param reason 关闭原因
+     * @throws IllegalArgumentException 如果 code 无效
+     */
     @Override
     public void onReadClose(int code, String reason) {
         if (code == -1)
@@ -398,8 +501,13 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
-    // Writer methods to enqueue frames. They'll be sent asynchronously by the writer thread.
-
+    /**
+     * 发送文本消息
+     *
+     * @param text 文本内容
+     * @return true 如果发送成功
+     * @throws NullPointerException 如果 text 为 null
+     */
     @Override
     public boolean send(String text) {
         if (text == null)
@@ -407,6 +515,13 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         return send(ByteString.encodeUtf8(text), WebSocketProtocol.OPCODE_TEXT);
     }
 
+    /**
+     * 发送二进制消息
+     *
+     * @param bytes 二进制内容
+     * @return true 如果发送成功
+     * @throws NullPointerException 如果 bytes 为 null
+     */
     @Override
     public boolean send(ByteString bytes) {
         if (bytes == null)
@@ -414,6 +529,13 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         return send(bytes, WebSocketProtocol.OPCODE_BINARY);
     }
 
+    /**
+     * 发送消息
+     *
+     * @param data         数据
+     * @param formatOpcode 操作码
+     * @return true 如果发送成功
+     */
     private synchronized boolean send(ByteString data, int formatOpcode) {
         // Don't send new frames after we've failed or enqueued a close frame.
         if (failed || enqueuedClose)
@@ -432,6 +554,12 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         return true;
     }
 
+    /**
+     * 发送 pong 帧
+     *
+     * @param payload pong 数据
+     * @return true 如果发送成功
+     */
     synchronized boolean pong(ByteString payload) {
         // Don't send pongs after we've failed or sent the close frame.
         if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty()))
@@ -442,11 +570,27 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         return true;
     }
 
+    /**
+     * 关闭 WebSocket 连接
+     *
+     * @param code   关闭代码
+     * @param reason 关闭原因
+     * @return true 如果关闭成功
+     */
     @Override
     public boolean close(int code, String reason) {
         return close(code, reason, CANCEL_AFTER_CLOSE_MILLIS);
     }
 
+    /**
+     * 关闭 WebSocket 连接（指定超时）
+     *
+     * @param code                   关闭代码
+     * @param reason                 关闭原因
+     * @param cancelAfterCloseMillis 关闭后取消超时（毫秒）
+     * @return true 如果关闭成功
+     * @throws IllegalArgumentException 如果原因长度超限
+     */
     synchronized boolean close(int code, String reason, long cancelAfterCloseMillis) {
         WebSocketProtocol.validateCloseCode(code);
 
@@ -471,6 +615,9 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         return true;
     }
 
+    /**
+     * 运行写入任务
+     */
     private void runWriter() {
         assert (Thread.holdsLock(this));
 
@@ -480,12 +627,13 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     }
 
     /**
-     * 尝试从队列中删除单个帧并发送它。这种写法更倾向于在不太紧急的信息和较短的框架前 例如，可能调用者将对后面跟着ping的消息进行排队，但这会发送后面跟着消息的ping
-     * 如果无法发送帧因为没有任何帧进入队列，或者因为web套接字没有连接不执行任何操作并返回false。 否则，该方法将返回true，调用者应立即再次调用该方法，直到它返回false为止.
-     * 此方法只能由写线程调用。一次可能只有一个线程调用这个方法
+     * 写入单个帧
+     * <p>
+     * 从队列中取出一个帧（pong、消息或关闭）并写入，优先处理控制帧。 如果队列为空或未连接，返回 false；否则返回 true 表示需继续写入。 仅由写入线程调用。
+     * </p>
      *
-     * @return the true/false
-     * @throws IOException 异常信息
+     * @return true 如果成功写入且需继续处理
+     * @throws IOException 如果写入失败
      */
     boolean writeOneFrame() throws IOException {
         WebSocketWriter writer;
@@ -554,6 +702,9 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
+    /**
+     * 写入 ping 帧
+     */
     void writePingFrame() {
         WebSocketWriter writer;
         int failedPing;
@@ -579,6 +730,12 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
+    /**
+     * 处理 WebSocket 失败
+     *
+     * @param e        异常
+     * @param response 响应（可能为 null）
+     */
     public void failWebSocket(Exception e, Response response) {
         Streams streamsToClose;
         synchronized (this) {
@@ -600,21 +757,50 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
+    /**
+     * 消息结构
+     */
     static class Message {
+
+        /**
+         * 操作码
+         */
         final int formatOpcode;
+        /**
+         * 数据
+         */
         final ByteString data;
 
+        /**
+         * 构造函数
+         *
+         * @param formatOpcode 操作码
+         * @param data         数据
+         */
         Message(int formatOpcode, ByteString data) {
             this.formatOpcode = formatOpcode;
             this.data = data;
         }
     }
 
+    /**
+     * 关闭结构
+     */
     static class Close {
+        /** 关闭代码 */
         final int code;
+        /** 关闭原因 */
         final ByteString reason;
+        /** 取消超时 */
         final long cancelAfterCloseMillis;
 
+        /**
+         * 构造函数
+         *
+         * @param code                   关闭代码
+         * @param reason                 关闭原因
+         * @param cancelAfterCloseMillis 取消超时
+         */
         Close(int code, ByteString reason, long cancelAfterCloseMillis) {
             this.code = code;
             this.reason = reason;
@@ -622,12 +808,25 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
+    /**
+     * WebSocket 数据流
+     */
     public abstract static class Streams implements Closeable {
 
+        /** 是否为客户端 */
         public final boolean client;
+        /** 数据源 */
         public final BufferSource source;
+        /** 输出流 */
         public final BufferSink sink;
 
+        /**
+         * 构造函数
+         *
+         * @param client 是否为客户端
+         * @param source 数据源
+         * @param sink   输出流
+         */
         public Streams(boolean client, BufferSource source, BufferSink sink) {
             this.client = client;
             this.source = source;
@@ -635,6 +834,9 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
+    /**
+     * ping 任务
+     */
     private class PingRunnable implements Runnable {
         PingRunnable() {
         }
@@ -645,6 +847,9 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
     }
 
+    /**
+     * 取消任务
+     */
     class CancelRunnable implements Runnable {
         @Override
         public void run() {

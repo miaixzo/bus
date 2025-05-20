@@ -29,18 +29,11 @@ package org.miaixz.bus.starter.mapper;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.builder.MapperBuilder;
-import org.miaixz.bus.mapper.entity.Property;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -50,7 +43,6 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
@@ -63,8 +55,6 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
  */
 public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
-    private boolean addToConfig = true;
-
     private SqlSessionFactory sqlSessionFactory;
 
     private SqlSessionTemplate sqlSessionTemplate;
@@ -76,8 +66,6 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     private Class<? extends Annotation> annotationClass;
 
     private Class<?> markerInterface;
-
-    private MapperBuilder mapperBuilder;
 
     private String mapperBuilderBeanName;
 
@@ -129,14 +117,14 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     /**
      * 调用将搜索和注册进行处理，将它们设置为mapperFactoryBean
      *
-     * @param basePackages 扫描路径
+     * @param basePackage 扫描路径
      */
     @Override
-    public Set<BeanDefinitionHolder> doScan(String... basePackages) {
-        Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
+    public Set<BeanDefinitionHolder> doScan(String... basePackage) {
+        Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackage);
 
         if (beanDefinitions.isEmpty()) {
-            Logger.warn("No MyBatis mapper was found in '" + Arrays.toString(basePackages)
+            Logger.warn("No MyBatis mapper was found in '" + Arrays.toString(basePackage)
                     + "' package. Please check your configuration.");
         } else {
             processBeanDefinitions(beanDefinitions);
@@ -162,14 +150,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             if (StringKit.hasText(this.mapperBuilderBeanName)) {
                 definition.getPropertyValues().add("mapperBuilder",
                         new RuntimeBeanReference(this.mapperBuilderBeanName));
-            } else {
-                // 不做任何配置的时候使用默认方式
-                if (this.mapperBuilder == null) {
-                    this.mapperBuilder = new MapperBuilder();
-                }
-                definition.getPropertyValues().add("mapperBuilder", this.mapperBuilder);
             }
-            definition.getPropertyValues().add("addToConfig", this.addToConfig);
 
             boolean explicitFactoryUsed = false;
             if (StringKit.hasText(this.sqlSessionFactoryBeanName)) {
@@ -223,32 +204,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         }
     }
 
-    public MapperBuilder getMapperBuilder() {
-        return mapperBuilder;
-    }
-
-    public void setMapperBuilder(MapperBuilder mapperBuilder) {
-        this.mapperBuilder = mapperBuilder;
-    }
-
-    public void setAddToConfig(boolean addToConfig) {
-        this.addToConfig = addToConfig;
-    }
-
     public void setAnnotationClass(Class<? extends Annotation> annotationClass) {
         this.annotationClass = annotationClass;
-    }
-
-    /**
-     * 配置通用 Mapper
-     *
-     * @param property 配置信息
-     */
-    public void setConfig(Property property) {
-        if (mapperBuilder == null) {
-            mapperBuilder = new MapperBuilder();
-        }
-        mapperBuilder.setConfig(property);
     }
 
     public void setMapperFactoryBean(MapperFactoryBean<?> mapperFactoryBean) {
@@ -257,50 +214,6 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
     public void setMapperBuilderBeanName(String mapperBuilderBeanName) {
         this.mapperBuilderBeanName = mapperBuilderBeanName;
-    }
-
-    /**
-     * 从环境变量中获取 mapper 配置信息
-     *
-     * @param environment 环境配置信息
-     */
-    public void setMapperProperties(Environment environment) {
-        try {
-            Property property = PlaceHolderBinder.bind(environment, Property.class, GeniusBuilder.MYBATIS);
-            if (mapperBuilder == null) {
-                mapperBuilder = new MapperBuilder();
-            }
-            if (property != null) {
-                mapperBuilder.setConfig(property);
-            }
-        } catch (Exception e) {
-            Logger.warn("只有 Spring Boot 环境中可以通过 Environment(配置文件,环境变量,运行参数等方式) 配置通用 Mapper，"
-                    + "其他环境请通过 @EnableMapper 注解中的 mapperBuilderRef 或 properties 参数进行配置!"
-                    + "当然,如果你使用 org.miaixz.bus..mapper.Property 配置的通用 Mapper，可以忽略该警告!", e);
-        }
-    }
-
-    /**
-     * 从 properties 数组获取 mapper 配置信息
-     *
-     * @param properties 属性配置信息
-     */
-    public void setMapperProperties(String[] properties) {
-        if (mapperBuilder == null) {
-            mapperBuilder = new MapperBuilder();
-        }
-        Properties props = new Properties();
-        for (String property : properties) {
-            property = property.trim();
-            int index = property.indexOf(Symbol.EQUAL);
-            if (index < 0) {
-                throw new InternalException("通过 @EnableMapper 注解的 properties 参数配置出错:" + property + " !\n"
-                        + "请保证配置项按 properties 文件格式要求进行配置，例如：\n" + "properties = {\n"
-                        + "\t\"mappers=org.miaixz.bus.mapper.Mapper\",\n" + "\t\"notEmpty=true\"\n" + "}");
-            }
-            props.put(property.substring(0, index).trim(), property.substring(index + 1).trim());
-        }
-        mapperBuilder.setProperties(props);
     }
 
     public void setMarkerInterface(Class<?> markerInterface) {

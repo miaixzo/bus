@@ -30,6 +30,7 @@ package org.miaixz.bus.pager.cache;
 import java.lang.reflect.Constructor;
 import java.util.Properties;
 
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Property;
@@ -52,22 +53,21 @@ public abstract class CacheFactory {
      * @param properties    属性
      * @return the object
      */
-    public static <K, V> Cache<K, V> createCache(String sqlCacheClass, String prefix, Properties properties) {
+    public static <K, V> CacheX<K, V> createCache(String sqlCacheClass, String prefix, Properties properties) {
         if (StringKit.isEmpty(sqlCacheClass)) {
             try {
-                Class.forName("com.google.common.cache.Cache");
                 return new GuavaCache<>(properties, prefix);
             } catch (Throwable t) {
                 return new SimpleCache<>(properties, prefix);
             }
         } else {
             try {
-                Class<? extends Cache> clazz = (Class<? extends Cache>) Class.forName(sqlCacheClass);
+                Class<? extends CacheX> clazz = (Class<? extends CacheX>) Class.forName(sqlCacheClass);
                 try {
-                    Constructor<? extends Cache> constructor = clazz.getConstructor(Properties.class, String.class);
+                    Constructor<? extends CacheX> constructor = clazz.getConstructor(Properties.class, String.class);
                     return constructor.newInstance(properties, prefix);
                 } catch (Exception e) {
-                    Cache cache = clazz.newInstance();
+                    CacheX cache = clazz.newInstance();
                     if (cache instanceof Property) {
                         ((Property) cache).setProperties(properties);
                     }

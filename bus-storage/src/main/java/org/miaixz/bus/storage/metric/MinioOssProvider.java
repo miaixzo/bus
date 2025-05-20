@@ -28,181 +28,403 @@
 package org.miaixz.bus.storage.metric;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Path;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
-import io.minio.*;
-import io.minio.errors.*;
-import io.minio.messages.Item;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
+import software.amazon.awssdk.core.exception.SdkException;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 /**
- * 存储服务-MinIO
+ * 存储服务- MinIO
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MinioOssProvider extends AbstractProvider {
 
-    private volatile MinioClient client;
+    private final S3Client client;
+    private final S3Presigner presigner;
 
+    /**
+     * 构造 S3 提供者，初始化 S3 客户端和预签名器。
+     *
+     * @param context 存储上下文，包含端点、存储桶、访问密钥等配置
+     * @throws IllegalArgumentException 如果缺少或无效的必需配置
+     */
     public MinioOssProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
-        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
-        Assert.notNull(this.context.isSecure(), "[secure] not defined");
-        Assert.notBlank(StringKit.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
-        Assert.notBlank(StringKit.toString(this.context.getConnectTimeout()), "[connectTimeout] not defined");
-        Assert.notBlank(StringKit.toString(this.context.getWriteTimeout()), "[writeTimeout] not defined");
 
-        this.client = MinioClient.builder().endpoint(this.context.getEndpoint())
-                .credentials(this.context.getAccessKey(), this.context.getSecretKey()).build();
+        Assert.notBlank(this.context.getEndpoint(), "[endpoint] cannot be blank");
+        Assert.notBlank(this.context.getBucket(), "[bucket] cannot be blank");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] cannot be blank");
+        Assert.notBlank(this.context.getSecretKey(), "[secretKey] cannot be blank");
 
-        this.client.setTimeout(
-                Duration.ofSeconds(this.context.getConnectTimeout() != 0 ? this.context.getConnectTimeout() : 10)
-                        .toMillis(),
-                Duration.ofSeconds(this.context.getWriteTimeout() != 60 ? this.context.getWriteTimeout() : 60)
-                        .toMillis(),
-                Duration.ofSeconds(this.context.getReadTimeout() != 0 ? this.context.getReadTimeout() : 10).toMillis());
+        long readTimeout = this.context.getReadTimeout() != 0 ? this.context.getReadTimeout() : 10;
+        long writeTimeout = this.context.getWriteTimeout() != 0 ? this.context.getWriteTimeout() : 60;
+
+        ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
+                .apiCallTimeout(Duration.ofSeconds(writeTimeout)).apiCallAttemptTimeout(Duration.ofSeconds(readTimeout))
+                .build();
+
+        AwsBasicCredentials credentials = AwsBasicCredentials.create(this.context.getAccessKey(),
+                this.context.getSecretKey());
+
+        this.client = S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
+                .endpointOverride(URI.create(this.context.getEndpoint()))
+                .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
+                .overrideConfiguration(overrideConfig)
+                .serviceConfiguration(s -> s.pathStyleAccessEnabled(this.context.isPathStyle())).build();
+
+        this.presigner = S3Presigner.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
+                .endpointOverride(URI.create(this.context.getEndpoint()))
+                .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
+                .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(this.context.isPathStyle())
+                        .chunkedEncodingEnabled(false).build())
+                .build();
     }
 
+    /**
+     * 从默认存储桶下载文件。
+     *
+     * @param fileName 文件名
+     * @return 处理结果 {@link Message}
+     */
     @Override
     public Message download(String fileName) {
-        return download(this.context.getBucket(), fileName);
+        return download(context.getBucket(), fileName);
     }
 
+    /**
+     * 从指定存储桶下载文件。
+     *
+     * @param bucket   存储桶
+     * @param fileName 文件名
+     * @return 处理结果 {@link Message}
+     */
     @Override
     public Message download(String bucket, String fileName) {
         try {
-            InputStream inputStream = this.client
-                    .getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+            String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
+            GetObjectRequest request = GetObjectRequest.builder().bucket(bucket).key(objectKey).build();
+            InputStream inputStream = client.getObject(request);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(bufferedReader).build();
+                    .data(reader).build();
         } catch (Exception e) {
-            Logger.error("file download failed", e.getMessage());
+            Logger.error("Failed to download file: {} from bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
         }
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
+    /**
+     * 从指定存储桶下载文件并保存到本地。
+     *
+     * @param bucket   存储桶
+     * @param fileName 文件名
+     * @param file     文件
+     * @return 处理结果 {@link Message}
+     */
     @Override
     public Message download(String bucket, String fileName, File file) {
         try {
-            InputStream inputStream = this.client
-                    .getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
-            OutputStream outputStream = new FileOutputStream(file);
-            IoKit.copy(inputStream, outputStream);
+            String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+            String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
+            GetObjectRequest request = GetObjectRequest.builder().bucket(bucket).key(objectKey).build();
+            InputStream inputStream = client.getObject(request);
+            try (OutputStream outputStream = new FileOutputStream(file)) {
+                IoKit.copy(inputStream, outputStream);
+            }
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (Exception e) {
-            Logger.error("file download failed", e.getMessage());
+            Logger.error("Failed to download file: {} from bucket: {} to local file: {}, error: {}", fileName, bucket,
+                    file.getAbsolutePath(), e.getMessage(), e);
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
         }
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
+    /**
+     * 从默认存储桶下载文件并保存到本地。
+     *
+     * @param fileName 文件名
+     * @param file     文件
+     * @return 处理结果 {@link Message}
+     */
     @Override
     public Message download(String fileName, File file) {
-        return download(this.context.getBucket(), fileName, file);
+        return download(context.getBucket(), fileName, file);
     }
 
+    /**
+     * 列出默认存储桶中的文件。
+     *
+     * @return 处理结果 {@link Message}
+     */
     @Override
     public Message list() {
-        Iterable<Result<Item>> iterable = this.client
-                .listObjects(ListObjectsArgs.builder().bucket(this.context.getBucket()).build());
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
-                .data(StreamSupport.stream(iterable.spliterator(), true).map(itemResult -> {
-                    try {
-                        Item item = itemResult.get();
+        try {
+            ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(context.getBucket())
+                    .prefix(StringKit.isBlank(context.getPrefix()) ? null
+                            : Builder.buildNormalizedPrefix(context.getPrefix()) + "/")
+                    .build();
+            ListObjectsV2Response response = client.listObjectsV2(request);
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(response.contents().stream().map(item -> {
                         Map<String, Object> extend = new HashMap<>();
-                        extend.put("tag", item.etag());
-                        extend.put("storageClass", item.storageClass());
+                        extend.put("tag", item.eTag());
+                        extend.put("storageClass", item.storageClassAsString());
                         extend.put("lastModified", item.lastModified());
-                        return Material.builder().name(item.objectName()).size(StringKit.toString(item.size()))
-                                .extend(extend).build();
-                    } catch (NoSuchAlgorithmException | InsufficientDataException | IOException | InvalidKeyException
-                            | ErrorResponseException | InternalException e) {
-                        return Message.builder().errcode(ErrorCode.FAILURE.getCode())
-                                .errmsg(ErrorCode.FAILURE.getDesc()).build();
-                    } catch (ServerException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvalidResponseException e) {
-                        throw new RuntimeException(e);
-                    } catch (XmlParserException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).collect(Collectors.toList())).build();
+                        return Material.builder().name(item.key()).size(StringKit.toString(item.size())).extend(extend)
+                                .build();
+                    }).collect(Collectors.toList())).build();
+        } catch (SdkException e) {
+            Logger.error("Failed to list objects in bucket: {}, error: {}", context.getBucket(), e.getMessage(), e);
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        }
     }
 
+    /**
+     * 重命名文件。
+     *
+     * @param oldName 原文件名
+     * @param newName 新文件名
+     * @return 处理结果 {@link Message}
+     */
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return rename(context.getBucket(), oldName, newName);
     }
 
+    /**
+     * 在默认存储桶中重命名文件。
+     *
+     * @param path    路径
+     * @param oldName 原文件名
+     * @param newName 新文件名
+     * @return 处理结果 {@link Message}
+     */
     @Override
-    public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+    public Message rename(String path, String oldName, String newName) {
+        return rename(context.getBucket(), path, oldName, newName);
     }
 
+    /**
+     * 在指定存储桶和路径中重命名文件。
+     *
+     * @param bucket  存储桶
+     * @param path    路径
+     * @param oldName 原文件名
+     * @param newName 新文件名
+     * @return 处理结果 {@link Message}
+     */
     @Override
-    public Message upload(String bucket, byte[] content) {
-        InputStream stream = new ByteArrayInputStream(content);
-        return upload(this.context.getBucket(), bucket, stream);
-    }
-
-    @Override
-    public Message upload(String bucket, String fileName, InputStream content) {
+    public Message rename(String bucket, String path, String oldName, String newName) {
         try {
-            this.client.putObject(PutObjectArgs.builder().bucket(bucket).object(fileName)
-                    .stream(content, content.available(), -1).contentType(MediaType.APPLICATION_OCTET_STREAM).build());
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Material.builder().name(fileName).path(this.context.getPrefix() + fileName)).build();
-        } catch (Exception e) {
-            Logger.error("file upload failed", e.getMessage());
-        }
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
-    }
-
-    @Override
-    public Message upload(String bucket, String fileName, byte[] content) {
-        return upload(bucket, fileName, new ByteArrayInputStream(content));
-    }
-
-    @Override
-    public Message remove(String fileName) {
-        return remove(this.context.getBucket(), fileName);
-    }
-
-    @Override
-    public Message remove(String bucket, String fileName) {
-        try {
-            this.client.removeObject(RemoveObjectArgs.builder().bucket(bucket).object(fileName).build());
+            String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+            String oldObjectKey = Builder.buildObjectKey(prefix, path, oldName);
+            String newObjectKey = Builder.buildObjectKey(prefix, path, newName);
+            boolean keyExists = true;
+            try {
+                HeadObjectRequest headRequest = HeadObjectRequest.builder().bucket(bucket).key(oldObjectKey).build();
+                client.headObject(headRequest);
+            } catch (Exception e) {
+                keyExists = false;
+            }
+            if (keyExists) {
+                CopyObjectRequest copyRequest = CopyObjectRequest.builder().sourceBucket(bucket).sourceKey(oldObjectKey)
+                        .destinationBucket(bucket).destinationKey(newObjectKey).build();
+                client.copyObject(copyRequest);
+                DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(bucket).key(oldObjectKey)
+                        .build();
+                client.deleteObject(deleteRequest);
+            }
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (Exception e) {
-            Logger.error("file remove failed ", e.getMessage());
+            Logger.error("Failed to rename file from {} to {} in bucket: {} with path: {}, error: {}", oldName, newName,
+                    bucket, path, e.getMessage(), e);
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
         }
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
+    /**
+     * 上传字节数组到默认存储桶。
+     *
+     * @param fileName 文件名
+     * @param content  字节数组
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message upload(String fileName, byte[] content) {
+        return upload(context.getBucket(), Normal.EMPTY, fileName, new ByteArrayInputStream(content));
+    }
+
+    /**
+     * 上传字节数组到默认存储桶指定路径。
+     *
+     * @param path     路径
+     * @param fileName 文件名
+     * @param content  字节数组
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message upload(String path, String fileName, byte[] content) {
+        return upload(context.getBucket(), path, fileName, new ByteArrayInputStream(content));
+    }
+
+    /**
+     * 上传字节数组到指定存储桶和路径。
+     *
+     * @param bucket   存储桶
+     * @param path     路径
+     * @param fileName 文件名
+     * @param content  字节数组
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message upload(String bucket, String path, String fileName, byte[] content) {
+        return upload(bucket, path, fileName, new ByteArrayInputStream(content));
+    }
+
+    /**
+     * 上传输入流到默认存储桶。
+     *
+     * @param fileName 文件名
+     * @param content  输入流
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message upload(String fileName, InputStream content) {
+        return upload(context.getBucket(), Normal.EMPTY, fileName, content);
+    }
+
+    /**
+     * 上传输入流到默认存储桶指定路径。
+     *
+     * @param path     路径
+     * @param fileName 文件名
+     * @param content  输入流
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message upload(String path, String fileName, InputStream content) {
+        return upload(context.getBucket(), path, fileName, content);
+    }
+
+    /**
+     * 上传输入流到指定存储桶和路径。
+     *
+     * @param bucket   存储桶
+     * @param path     路径
+     * @param fileName 文件名
+     * @param content  输入流
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message upload(String bucket, String path, String fileName, InputStream content) {
+        try {
+            String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+            String objectKey = Builder.buildObjectKey(prefix, path, fileName);
+            PutObjectRequest request = PutObjectRequest.builder().bucket(bucket).key(objectKey)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM).build();
+            client.putObject(request, RequestBody.fromInputStream(content, content.available()));
+
+            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofDays(7)).getObjectRequest(r -> r.bucket(bucket).key(objectKey))
+                    .build();
+            PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+            String presignedUrl = presignedRequest.url().toString();
+
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(Material.builder().name(fileName).url(presignedUrl).path(objectKey).build()).build();
+        } catch (Exception e) {
+            Logger.error("Failed to upload file: {} to bucket: {} with path: {}, error: {}", fileName, bucket, path,
+                    e.getMessage(), e);
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        }
+    }
+
+    /**
+     * 从默认存储桶删除文件。
+     *
+     * @param fileName 文件名
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message remove(String fileName) {
+        return remove(context.getBucket(), Normal.EMPTY, fileName);
+    }
+
+    /**
+     * 从指定存储桶删除文件。
+     *
+     * @param path     路径
+     * @param fileName 文件名
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message remove(String path, String fileName) {
+        return remove(context.getBucket(), path, fileName);
+    }
+
+    /**
+     * 从指定存储桶删除文件。
+     *
+     * @param bucket   存储桶
+     * @param path     路径
+     * @param fileName 文件名
+     * @return 处理结果 {@link Message}
+     */
+    @Override
+    public Message remove(String bucket, String path, String fileName) {
+        try {
+            String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
+            String objectKey = Builder.buildObjectKey(prefix, path, fileName);
+            DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(bucket).key(objectKey).build();
+            client.deleteObject(request);
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        } catch (Exception e) {
+            Logger.error("Failed to delete file: {} from bucket: {} with path: {}, error: {}", fileName, bucket, path,
+                    e.getMessage(), e);
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        }
+    }
+
+    /**
+     * 从指定存储桶删除文件（基于路径）。
+     *
+     * @param bucket 存储桶
+     * @param path   目标路径
+     * @return 处理结果 {@link Message}
+     */
     @Override
     public Message remove(String bucket, Path path) {
-        return remove(bucket, path.toString());
+        return remove(bucket, path.toString(), Normal.EMPTY);
     }
 
 }

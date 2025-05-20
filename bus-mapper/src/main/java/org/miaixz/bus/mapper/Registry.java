@@ -27,55 +27,45 @@
 */
 package org.miaixz.bus.mapper;
 
-import org.miaixz.bus.core.lang.Normal;
+import java.util.List;
+
+import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 主键处理
+ * 支持定制化处理 {@link MappedStatement} 的接口。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum Registry {
+public interface Registry {
 
-    DB2("VALUES IDENTITY_VAL_LOCAL()"), MYSQL("SELECT LAST_INSERT_ID()"), SQLSERVER("SELECT SCOPE_IDENTITY()"),
-    CLOUDSCAPE("VALUES IDENTITY_VAL_LOCAL()"), DERBY("VALUES IDENTITY_VAL_LOCAL()"), HSQLDB("CALL IDENTITY()"),
-    SYBASE("SELECT @@IDENTITY"), DB2_MF("SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1"),
-    INFORMIX("select dbinfo('sqlca.sqlerrd1') from systables where tabid=1"), DEFAULT(Normal.EMPTY), NULL(Normal.EMPTY);
+    /**
+     * 默认 SPI 扩展实现，加载并执行所有注册的 Registry 实现。
+     */
+    Registry SPI = new Registry() {
+        private final List<Registry> registries = ListKit.of(NormalSpiLoader.loadList(Registry.class));
 
-    private String identityRetrievalStatement;
-
-    Registry(String identityRetrievalStatement) {
-        this.identityRetrievalStatement = identityRetrievalStatement;
-    }
-
-    public static Registry getDatabaseDialect(String database) {
-        Registry returnValue = null;
-        if ("DB2".equalsIgnoreCase(database)) {
-            returnValue = DB2;
-        } else if ("MySQL".equalsIgnoreCase(database)) {
-            returnValue = MYSQL;
-        } else if ("SqlServer".equalsIgnoreCase(database)) {
-            returnValue = SQLSERVER;
-        } else if ("Cloudscape".equalsIgnoreCase(database)) {
-            returnValue = CLOUDSCAPE;
-        } else if ("Derby".equalsIgnoreCase(database)) {
-            returnValue = DERBY;
-        } else if ("HSQLDB".equalsIgnoreCase(database)) {
-            returnValue = HSQLDB;
-        } else if ("SYBASE".equalsIgnoreCase(database)) {
-            returnValue = SYBASE;
-        } else if ("DB2_MF".equalsIgnoreCase(database)) {
-            returnValue = DB2_MF;
-        } else if ("Informix".equalsIgnoreCase(database)) {
-            returnValue = INFORMIX;
-        } else if (Normal.EMPTY.equals(database)) {
-            return DEFAULT;
+        @Override
+        public void customize(TableMeta entity, MappedStatement ms, ProviderContext context) {
+            for (Registry registry : registries) {
+                Logger.debug("Applying customization from registry: " + registry.getClass().getName());
+                registry.customize(entity, ms, context);
+            }
         }
-        return returnValue;
-    }
+    };
 
-    public String getIdentityRetrievalStatement() {
-        return identityRetrievalStatement;
-    }
+    /**
+     * 定制化处理 MappedStatement。
+     *
+     * @param entity  实体表信息
+     * @param ms      MappedStatement 对象
+     * @param context 提供者上下文，包含方法和接口信息
+     */
+    void customize(TableMeta entity, MappedStatement ms, ProviderContext context);
 
 }

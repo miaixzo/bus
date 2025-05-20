@@ -37,19 +37,16 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
-import javax.xml.xpath.XPathConstants;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.exception.PaymentException;
 import org.miaixz.bus.core.lang.exception.SignatureException;
-import org.miaixz.bus.core.xml.XPath;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
-import org.w3c.dom.Document;
 
 import lombok.SneakyThrows;
 
@@ -101,16 +98,30 @@ public class JdPayBuilder {
             return null;
         }
         Map<String, String> map = new HashMap<>(3);
-        Document docResult = XmlKit.parseXml(xml);
-        String code = (String) XPath.getByXPath("//jdpay/result/code", docResult, XPathConstants.STRING);
-        String desc = (String) XPath.getByXPath("//jdpay/result/desc", docResult, XPathConstants.STRING);
+        xml = XmlKit.cleanInvalid(xml); // Clean invalid XML characters
+        String code = extractTagValue(xml, "code");
+        String desc = extractTagValue(xml, "desc");
         map.put("code", code);
         map.put("desc", desc);
         if ("000000".equals(code)) {
-            String encrypt = (String) XPath.getByXPath("//jdpay/encrypt", docResult, XPathConstants.STRING);
+            String encrypt = extractTagValue(xml, "encrypt");
             map.put("encrypt", encrypt);
         }
         return map;
+    }
+
+    /**
+     * Helper method to extract value between XML tags
+     */
+    private static String extractTagValue(String xml, String tagName) {
+        String startTag = "<" + tagName + ">";
+        String endTag = "</" + tagName + ">";
+        int startIndex = xml.indexOf(startTag);
+        int endIndex = xml.indexOf(endTag);
+        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+            return xml.substring(startIndex + startTag.length(), endIndex);
+        }
+        return null;
     }
 
     public static String fomatXml(String xml) {
