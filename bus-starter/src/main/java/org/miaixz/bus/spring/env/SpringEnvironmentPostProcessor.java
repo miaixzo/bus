@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.spring.env;
 
+import java.util.Properties;
+
 import org.miaixz.bus.core.Version;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
-
-import java.util.Properties;
 
 /**
  *
@@ -53,7 +54,7 @@ public class SpringEnvironmentPostProcessor implements org.springframework.boot.
 
         // 版本配置
         Properties properties = new Properties();
-        properties.setProperty(GeniusBuilder.VERSION, Version._VERSION);
+        properties.setProperty(Keys.VERSION, Version._VERSION);
 
         // 默认配置
         PropertiesPropertySource propertySource = new PropertiesPropertySource(GeniusBuilder.BUS_PROPERTY_SOURCE,

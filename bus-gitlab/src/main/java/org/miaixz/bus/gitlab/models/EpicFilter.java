@@ -245,7 +245,7 @@ public class EpicFilter implements Serializable {
      * @return the reference to this EpicFilter instance
      */
     public EpicFilter withoutLabels(String... labels) {
-        return withNot(EpicField.LABELS, String.join(Symbol.COMMA, labels));
+        return withNot(EpicField.LABELS, String.join(",", labels));
     }
 
     /**

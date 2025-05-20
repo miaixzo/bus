@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-validate</artifactId>
-    <version>8.1.6</version>
+    <version>8.1.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

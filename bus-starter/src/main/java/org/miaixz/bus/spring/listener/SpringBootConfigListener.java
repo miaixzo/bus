@@ -30,6 +30,8 @@ package org.miaixz.bus.spring.listener;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.Version;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.spring.banner.BannerPrinter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -90,7 +92,7 @@ public class SpringBootConfigListener implements ApplicationListener<Application
     public void registerConfigs(ConfigurableEnvironment environment) {
         // 注册bus.version属性
         Properties props = new Properties();
-        props.setProperty("bus.version", "8.1.6");
+        props.setProperty(Keys.VERSION, Version._VERSION);
         MutablePropertySources sources = environment.getPropertySources();
         sources.addLast(new PropertiesPropertySource("bus", props));
 

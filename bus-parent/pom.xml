@@ -38,7 +38,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.1.6</version>
+    <version>8.1.8</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -152,7 +152,7 @@
         <sardine.version>5.13</sardine.version>
         <httpclient.version>4.5.14</httpclient.version>
         <amazon.s3.version>2.31.33</amazon.s3.version>
-        <miaixz.bus.version>8.1.6</miaixz.bus.version>
+        <miaixz.bus.version>8.1.8</miaixz.bus.version>
         <spring.boot.version>3.4.5</spring.boot.version>
     </properties>
 
