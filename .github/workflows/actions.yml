@@ -18,7 +18,7 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: |
-          cd ../bus-core && mvn clean
+          cd bus-core && mvn clean
           cd ../bus-logger && mvn clean
           cd ../bus-setting && mvn clean
           cd ../bus-opencv && mvn clean
