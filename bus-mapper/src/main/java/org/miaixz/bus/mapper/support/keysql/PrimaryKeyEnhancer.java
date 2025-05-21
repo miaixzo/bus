@@ -25,59 +25,37 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.mapper.parsing;
-
-import java.util.List;
+package org.miaixz.bus.mapper.support.keysql;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
-import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
+import org.miaixz.bus.mapper.parsing.SqlSourceEnhancer;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 支持定制化处理 {@link SqlSource} 的接口
+ * 默认的主键生成器，处理插入前的主键生成逻辑。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface KeySqlSource {
+public class PrimaryKeyEnhancer implements SqlSourceEnhancer {
 
     /**
-     * 默认 SPI 实现，加载并依次调用所有 KeySqlSource 实现类
-     */
-    KeySqlSource SPI = new KeySqlSource() {
-        /**
-         * 通过 SPI 加载的定制化 KeySqlSource 实现列表
-         */
-        private final List<KeySqlSource> customizes = NormalSpiLoader.loadList(false, KeySqlSource.class);
-
-        /**
-         * 依次调用所有定制化实现对 SqlSource 进行处理
-         *
-         * @param sqlSource 原始 SqlSource
-         * @param entity    实体表信息
-         * @param ms        MappedStatement
-         * @param context   调用方法上下文
-         * @return 定制化后的 SqlSource
-         */
-        @Override
-        public SqlSource customize(SqlSource sqlSource, TableMeta entity, MappedStatement ms, ProviderContext context) {
-            for (KeySqlSource customize : customizes) {
-                sqlSource = customize.customize(sqlSource, entity, ms, context);
-            }
-            return sqlSource;
-        }
-    };
-
-    /**
-     * 定制化处理 SqlSource
+     * 自定义 SQL 源，根据主键生成器类型进行处理。
      *
-     * @param sqlSource 原始 SqlSource
+     * @param sqlSource 原始 SQL 源
      * @param entity    实体表信息
-     * @param ms        MappedStatement
-     * @param context   调用方法上下文
-     * @return 定制化后的 SqlSource
+     * @param ms        MappedStatement 对象
+     * @param context   提供者上下文，包含方法和接口信息
+     * @return 自定义后的 SQL 源
      */
-    SqlSource customize(SqlSource sqlSource, TableMeta entity, MappedStatement ms, ProviderContext context);
+    @Override
+    public SqlSource customize(SqlSource sqlSource, TableMeta entity, MappedStatement ms, ProviderContext context) {
+        if (ms.getKeyGenerator() != null && ms.getKeyGenerator() instanceof GenIdKeyGenerator) {
+            return new GenIdSqlSource(sqlSource, (GenIdKeyGenerator) ms.getKeyGenerator());
+        }
+        return sqlSource;
+    }
 
 }

@@ -41,8 +41,8 @@ import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.parsing.KeySqlSource;
 import org.miaixz.bus.mapper.parsing.SqlMetaCache;
+import org.miaixz.bus.mapper.parsing.SqlSourceEnhancer;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
@@ -158,7 +158,7 @@ public class Caching extends XMLLanguageDriver {
                             Logger.trace("cacheKey - " + cacheKey + " :\n" + sqlScript + "\n");
                         }
                         SqlSource sqlSource = super.createSqlSource(configuration, sqlScript, parameterType);
-                        sqlSource = KeySqlSource.SPI.customize(sqlSource, cache.getEntity(), ms,
+                        sqlSource = SqlSourceEnhancer.SPI.customize(sqlSource, cache.getEntity(), ms,
                                 cache.getProviderContext());
                         cachekeyMap.put(cacheKey, sqlSource);
                         if (USE_ONCE) {
