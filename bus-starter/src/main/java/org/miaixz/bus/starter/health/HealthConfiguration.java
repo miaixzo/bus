@@ -110,7 +110,13 @@ public class HealthConfiguration {
     @Bean
     @Conditional(EnableHealthCondition.class)
     public ApplicationEventPublisher publisher(ApplicationContext applicationContext) {
-        return applicationContext;
+        return event -> {
+            if (event != null) {
+                applicationContext.publishEvent(event);
+            } else {
+                Logger.warn("Null event received");
+            }
+        };
     }
 
     /**
