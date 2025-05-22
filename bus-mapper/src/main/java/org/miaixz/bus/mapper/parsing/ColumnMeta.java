@@ -52,7 +52,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class ColumnMeta extends ConfigMeta<ColumnMeta> {
+public class ColumnMeta extends PropertyMeta<ColumnMeta> {
 
     /**
      * 实体类字段

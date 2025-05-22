@@ -48,20 +48,27 @@ import org.miaixz.bus.core.lang.EnumValue;
 public class Args {
 
     /**
-     * 简单类型集合，包含基本类型及其包装类、日期类型等。
-     * <p>
-     * 注意：由于基本类型有默认值，建议在实体类中避免使用基本类型作为数据库字段类型。
-     * </p>
+     * Getter 方法正则表达式
      */
-    public static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>(Arrays.asList(byte.class, short.class, char.class,
-            int.class, long.class, float.class, double.class, boolean.class, byte[].class, String.class, Byte.class,
-            Short.class, Character.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
-            Date.class, Timestamp.class, Class.class, BigInteger.class, BigDecimal.class, Instant.class,
-            LocalDateTime.class, LocalDate.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class,
-            ZonedDateTime.class, Year.class, Month.class, YearMonth.class));
+    public static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
 
     /**
-     * 不进行命名转换
+     * is 方法正则表达式
+     */
+    public static final Pattern IS_PATTERN = Pattern.compile("^is[A-Z].*");
+
+    /**
+     * 实例化类正则表达式
+     */
+    public static final Pattern CLASS_PATTERN = Pattern.compile("\\(L(?<cls>.+);\\).+");
+
+    /**
+     * 字段分隔符正则表达式
+     */
+    public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
+
+    /**
+     * 默认名转换
      */
     public static final String NORMAL = EnumValue.Naming.NORMAL.name().toLowerCase();
 
@@ -88,29 +95,34 @@ public class Args {
             .toLowerCase();
 
     /**
-     * Getter 方法正则表达式
+     * 表前缀
      */
-    public static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
+    public static final String TABLE_PREFIX_KEY = "table.prefix";
 
     /**
-     * is 方法正则表达式
+     * 命名规则
      */
-    public static final Pattern IS_PATTERN = Pattern.compile("^is[A-Z].*");
+    public static final String NAMING_KEY = "provider.naming";
 
     /**
-     * 实例化类正则表达式
+     * 是否一次缓存
      */
-    public static final Pattern INSTANTIATED_CLASS_PATTERN = Pattern.compile("\\(L(?<cls>.+);\\).+");
+    public static final String USEONCE_KEY = "provider.useOnce";
 
     /**
-     * 字段分隔符正则表达式
+     * 缓存初始大小
      */
-    public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
+    public static final String INITSIZE_KEY = "provider.initSize";
+
+    /**
+     * 主键生成并发
+     */
+    public static final String CONCURRENCY_KEY = "provider.concurrency";
 
     /**
      * 默认结果映射名称
      */
-    public static final String RESULT_MAP_NAME = "BaseProviderResultMap";
+    public static final String RESULT_MAP_NAME = "SuperResultMap";
 
     /**
      * Condition 结构动态 SET 子句 SQL 片段
@@ -174,23 +186,16 @@ public class Args {
             + "</where>\n";
 
     /**
-     * 默认命名风格
+     * 简单类型集合，包含基本类型及其包装类、日期类型等。
+     * <p>
+     * 注意：由于基本类型有默认值，建议在实体类中避免使用基本类型作为数据库字段类型。
+     * </p>
      */
-    public static final String DEFAULT_STYLE_KEY = "bus.mybatis.provider.naming";
-
-    /**
-     * 是否仅使用一次缓存
-     */
-    public static final String DEFAULT_USEONCE_KEY = "bus.mybatis.provider.useOnce";
-
-    /**
-     * 缓存初始大小
-     */
-    public static final String DEFAULT_INITSIZE_KEY = "bus.mybatis.provider.initSize";
-
-    /**
-     * 主键生成并发
-     */
-    public static final String DEFAULT_CONCURRENCY_KEY = "bus.mybatis.provider.concurrency";
+    public static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>(Arrays.asList(byte.class, short.class, char.class,
+            int.class, long.class, float.class, double.class, boolean.class, byte[].class, String.class, Byte.class,
+            Short.class, Character.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
+            Date.class, Timestamp.class, Class.class, BigInteger.class, BigDecimal.class, Instant.class,
+            LocalDateTime.class, LocalDate.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class,
+            ZonedDateTime.class, Year.class, Month.class, YearMonth.class));
 
 }

@@ -46,7 +46,7 @@ public class SchemaClassParser extends SchemaTypeParser {
      * @return true 表示是实体类，false 表示不是
      */
     @Override
-    public boolean isEntityClass(Class<?> clazz) {
+    public boolean isClass(Class<?> clazz) {
         // 带 @Table 注解或不是简单类型、接口、数组、注解、枚举的类都视为实体类
         return clazz.isAnnotationPresent(Table.class) || (!clazz.isPrimitive() && !clazz.isInterface()
                 && !clazz.isArray() && !clazz.isAnnotation() && !clazz.isEnum() && !OGNL.isSimpleType(clazz));

@@ -30,14 +30,17 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.xyz.BooleanKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.mapper.Context;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * 属性映射基类，提供扩展属性的存储和操作功能
+ * 属性映射基类，提供属性的存储和操作
  *
  * @param <T> 子类类型，用于支持链式调用
  * @author Kimi Liu
@@ -46,7 +49,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class ConfigMeta<T extends ConfigMeta> {
+public class PropertyMeta<T extends PropertyMeta> {
 
     /**
      * 附加属性，用于扩展
@@ -56,17 +59,17 @@ public class ConfigMeta<T extends ConfigMeta> {
     /**
      * 获取属性值
      *
-     * @param prop 属性名
+     * @param key 属性名
      * @return 属性值，若不存在则返回 null
      */
-    public String getProp(String prop) {
-        if (prop == null || prop.isEmpty()) {
+    public String getProp(String key) {
+        if (key == null || key.isEmpty()) {
             return null;
         }
-        String val = props != null ? props.get(prop) : null;
+        String val = props != null ? props.get(key) : null;
         // 如果配置值不存在，从全局获取配置
         if (val == null) {
-            val = Keys.get(prop);
+            val = Context.INSTANCE.getProperty(key);
         }
         return val;
     }
@@ -74,13 +77,12 @@ public class ConfigMeta<T extends ConfigMeta> {
     /**
      * 获取属性值，支持默认值
      *
-     * @param prop         属性名
+     * @param key          属性名
      * @param defaultValue 默认值
      * @return 属性值，若不存在则返回默认值
      */
-    public String getProp(String prop, String defaultValue) {
-        String val = getProp(prop);
-        return val != null ? val : defaultValue;
+    public String getProp(String key, String defaultValue) {
+        return ObjectKit.defaultIfNull(getProp(key), defaultValue);
     }
 
     /**
@@ -89,47 +91,44 @@ public class ConfigMeta<T extends ConfigMeta> {
      * @param prop 属性名
      * @return 整型属性值，若不存在或无法解析则返回 null
      */
-    public Integer getPropInt(String prop) {
-        String val = getProp(prop);
-        if (val != null) {
-            return Integer.parseInt(val);
-        }
-        return null;
+    public Integer getInt(String prop) {
+        return Convert.toInt(getProp(prop));
     }
 
     /**
      * 获取整型属性值，支持默认值
      *
-     * @param prop         属性名
+     * @param key          属性名
      * @param defaultValue 默认值
      * @return 整型属性值，若不存在或无法解析则返回默认值
      */
-    public Integer getPropInt(String prop, Integer defaultValue) {
-        Integer val = getPropInt(prop);
-        return val != null ? val : defaultValue;
+    public Integer getInt(String key, Integer defaultValue) {
+        return Convert.toInt(getInt(key), defaultValue);
     }
 
     /**
      * 获取布尔型属性值
      *
-     * @param prop 属性名
+     * @param key 属性名
      * @return 布尔型属性值，若不存在则返回 null
      */
-    public Boolean getPropBoolean(String prop) {
-        String val = getProp(prop);
-        return Boolean.parseBoolean(val);
+    public Boolean getBoolean(String key) {
+        return BooleanKit.toBoolean(getProp(key));
     }
 
     /**
      * 获取布尔型属性值，支持默认值
      *
-     * @param prop         属性名
+     * @param key          属性名
      * @param defaultValue 默认值
      * @return 布尔型属性值，若不存在则返回默认值
      */
-    public Boolean getPropBoolean(String prop, Boolean defaultValue) {
-        String val = getProp(prop);
-        return val != null ? Boolean.parseBoolean(val) : defaultValue;
+    public Boolean getBoolean(String key, Boolean defaultValue) {
+        final String value = getProp(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        return BooleanKit.toBoolean(value);
     }
 
     /**
@@ -139,7 +138,7 @@ public class ConfigMeta<T extends ConfigMeta> {
      * @param value 属性值
      * @return 当前实例，支持链式调用
      */
-    public T setProp(String prop, String value) {
+    public T put(String prop, String value) {
         if (this.props == null) {
             synchronized (this) {
                 if (this.props == null) {
@@ -157,10 +156,10 @@ public class ConfigMeta<T extends ConfigMeta> {
      * @param props 属性映射
      * @return 当前实例，支持链式调用
      */
-    public T setProps(Map<String, String> props) {
+    public T put(Map<String, String> props) {
         if (props != null && !props.isEmpty()) {
             for (Map.Entry<String, String> entry : props.entrySet()) {
-                setProp(entry.getKey(), entry.getValue());
+                put(entry.getKey(), entry.getValue());
             }
         }
         return (T) this;
@@ -172,7 +171,7 @@ public class ConfigMeta<T extends ConfigMeta> {
      * @param prop 属性名
      * @return 被删除的属性值，若不存在则返回 null
      */
-    public String removeProp(String prop) {
+    public String remove(String prop) {
         if (props != null) {
             String value = getProp(prop);
             props.remove(prop);

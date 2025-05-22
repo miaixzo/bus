@@ -61,7 +61,7 @@ public interface SqlScript {
      * @param sqlScript       XML SQL 脚本实现
      * @return 缓存 key
      */
-    static String caching(ProviderContext providerContext, SqlScript2 sqlScript) {
+    static String caching(ProviderContext providerContext, EasySqlScript sqlScript) {
         TableMeta entity = MapperFactory.create(providerContext.getMapperType(), providerContext.getMapperMethod());
         return Caching.cache(providerContext, entity, () -> String.format("<script>\n%s\n</script>",
                 SqlScriptWrapper.wrapSqlScript(providerContext, entity, sqlScript).getSql(entity)));
@@ -338,33 +338,6 @@ public interface SqlScript {
             }
             return Symbol.LF + txt;
         }
-
-    }
-
-    /**
-     * 支持简便写法的 SQL 脚本接口
-     */
-    interface SqlScript2 extends SqlScript {
-
-        /**
-         * 默认实现，委托给 getSql(entity, util)
-         *
-         * @param entity 实体类信息
-         * @return XML SQL 脚本
-         */
-        @Override
-        default String getSql(TableMeta entity) {
-            return getSql(entity, this);
-        }
-
-        /**
-         * 生成对应的 SQL，支持动态标签
-         *
-         * @param entity 实体类信息
-         * @param util   当前对象的引用，便于在 lambda 中使用当前对象的方法
-         * @return XML SQL 脚本
-         */
-        String getSql(TableMeta entity, SqlScript util);
 
     }
 

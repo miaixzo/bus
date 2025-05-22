@@ -533,10 +533,10 @@
                     </formats>
                     <java>
                         <licenseHeader>
-                            <file>../.github/spotless/spotless_miaixz.org</file>
+                            <file>../.github/scripts/miaixz.org</file>
                         </licenseHeader>
                         <eclipse>
-                            <file>../.github/spotless/spotless_format.xml</file>
+                            <file>../.github/scripts/format.xml</file>
                         </eclipse>
                         <removeUnusedImports />
                     </java>

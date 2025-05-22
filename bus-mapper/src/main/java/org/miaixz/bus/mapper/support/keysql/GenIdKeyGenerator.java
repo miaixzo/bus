@@ -39,8 +39,8 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
-import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
@@ -114,7 +114,7 @@ public class GenIdKeyGenerator implements KeyGenerator {
         if (CONCURRENCY == null) {
             synchronized (GenIdKeyGenerator.class) {
                 if (CONCURRENCY == null) {
-                    CONCURRENCY = Keys.getInt(Args.DEFAULT_CONCURRENCY_KEY, 1000);
+                    CONCURRENCY = Context.INSTANCE.getInt(Args.CONCURRENCY_KEY, 1000);
                 }
             }
         }

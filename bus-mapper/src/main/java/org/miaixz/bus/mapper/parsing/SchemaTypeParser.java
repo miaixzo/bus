@@ -50,26 +50,26 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @return 实体类类型的 Optional 包装对象
      */
     @Override
-    public Optional<Class<?>> findEntityClass(Class<?> mapperType, Method mapperMethod) {
+    public Optional<Class<?>> findClass(Class<?> mapperType, Method mapperMethod) {
         // 先判断返回值
         Optional<Class<?>> optionalClass;
         if (mapperMethod != null) {
-            optionalClass = getEntityClassByMapperMethodReturnType(mapperType, mapperMethod);
+            optionalClass = getClassByMapperMethodReturnType(mapperType, mapperMethod);
             if (optionalClass.isPresent()) {
                 return optionalClass;
             }
             // 再判断参数
-            optionalClass = getEntityClassByMapperMethodParamTypes(mapperType, mapperMethod);
+            optionalClass = getClassByMapperMethodParamTypes(mapperType, mapperMethod);
             if (optionalClass.isPresent()) {
                 return optionalClass;
             }
             // 最后从接口泛型中获取
-            optionalClass = getEntityClassByMapperMethodAndMapperType(mapperType, mapperMethod);
+            optionalClass = getClassByMapperMethodAndMapperType(mapperType, mapperMethod);
             if (optionalClass.isPresent()) {
                 return optionalClass;
             }
         }
-        return getEntityClassByMapperType(mapperType);
+        return getClassByMapperType(mapperType);
     }
 
     /**
@@ -79,9 +79,9 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @param mapperMethod 方法
      * @return 实体类类型的 Optional 包装对象
      */
-    protected Optional<Class<?>> getEntityClassByMapperMethodReturnType(Class<?> mapperType, Method mapperMethod) {
+    protected Optional<Class<?>> getClassByMapperMethodReturnType(Class<?> mapperType, Method mapperMethod) {
         Class<?> returnType = TypeResolver.getReturnType(mapperMethod, mapperType);
-        return isEntityClass(returnType) ? Optional.of(returnType) : Optional.empty();
+        return isClass(returnType) ? Optional.of(returnType) : Optional.empty();
     }
 
     /**
@@ -91,8 +91,8 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @param mapperMethod 方法
      * @return 实体类类型的 Optional 包装对象
      */
-    protected Optional<Class<?>> getEntityClassByMapperMethodParamTypes(Class<?> mapperType, Method mapperMethod) {
-        return getEntityClassByTypes(TypeResolver.resolveParamTypes(mapperMethod, mapperType));
+    protected Optional<Class<?>> getClassByMapperMethodParamTypes(Class<?> mapperType, Method mapperMethod) {
+        return getClassByTypes(TypeResolver.resolveParamTypes(mapperMethod, mapperType));
     }
 
     /**
@@ -102,8 +102,8 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @param mapperMethod 方法
      * @return 实体类类型的 Optional 包装对象
      */
-    protected Optional<Class<?>> getEntityClassByMapperMethodAndMapperType(Class<?> mapperType, Method mapperMethod) {
-        return getEntityClassByTypes(TypeResolver.resolveMapperTypes(mapperMethod, mapperType));
+    protected Optional<Class<?>> getClassByMapperMethodAndMapperType(Class<?> mapperType, Method mapperMethod) {
+        return getClassByTypes(TypeResolver.resolveMapperTypes(mapperMethod, mapperType));
     }
 
     /**
@@ -112,8 +112,8 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @param mapperType Mapper 接口
      * @return 实体类类型的 Optional 包装对象
      */
-    protected Optional<Class<?>> getEntityClassByMapperType(Class<?> mapperType) {
-        return getEntityClassByTypes(TypeResolver.resolveMapperTypes(mapperType));
+    protected Optional<Class<?>> getClassByMapperType(Class<?> mapperType) {
+        return getClassByTypes(TypeResolver.resolveMapperTypes(mapperType));
     }
 
     /**
@@ -122,20 +122,19 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @param type 类型
      * @return 实体类类型的 Optional 包装对象
      */
-    protected Optional<Class<?>> getEntityClassByType(Type type) {
+    protected Optional<Class<?>> getClassByType(Type type) {
         if (type instanceof Class) {
             return Optional.of((Class<?>) type);
         } else if (type instanceof TypeResolver.ParameterizedTypes) {
-            return getEntityClassByTypes(((TypeResolver.ParameterizedTypes) type).getActualTypeArguments());
+            return getClassByTypes(((TypeResolver.ParameterizedTypes) type).getActualTypeArguments());
         } else if (type instanceof TypeResolver.WildcardTypes) {
-            Optional<Class<?>> optionalClass = getEntityClassByTypes(
-                    ((TypeResolver.WildcardTypes) type).getLowerBounds());
+            Optional<Class<?>> optionalClass = getClassByTypes(((TypeResolver.WildcardTypes) type).getLowerBounds());
             if (optionalClass.isPresent()) {
                 return optionalClass;
             }
-            return getEntityClassByTypes(((TypeResolver.WildcardTypes) type).getUpperBounds());
+            return getClassByTypes(((TypeResolver.WildcardTypes) type).getUpperBounds());
         } else if (type instanceof TypeResolver.GenericArrayTypes) {
-            return getEntityClassByType(((TypeResolver.GenericArrayTypes) type).getGenericComponentType());
+            return getClassByType(((TypeResolver.GenericArrayTypes) type).getGenericComponentType());
         }
         return Optional.empty();
     }
@@ -146,10 +145,10 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @param types 类型数组
      * @return 实体类类型的 Optional 包装对象
      */
-    protected Optional<Class<?>> getEntityClassByTypes(Type[] types) {
+    protected Optional<Class<?>> getClassByTypes(Type[] types) {
         for (Type type : types) {
-            Optional<Class<?>> optionalClass = getEntityClassByType(type);
-            if (optionalClass.isPresent() && isEntityClass(optionalClass.getOrNull())) {
+            Optional<Class<?>> optionalClass = getClassByType(type);
+            if (optionalClass.isPresent() && isClass(optionalClass.getOrNull())) {
                 return optionalClass;
             }
         }

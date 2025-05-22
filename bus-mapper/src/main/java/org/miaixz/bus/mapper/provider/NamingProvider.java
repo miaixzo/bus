@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
@@ -76,7 +76,7 @@ public interface NamingProvider extends Provider {
      */
     static NamingProvider type(String style) {
         if (style == null || style.isEmpty()) {
-            style = Keys.get(Args.DEFAULT_STYLE_KEY, Args.CAMEL_UNDERLINE_LOWER_CASE);
+            style = Context.INSTANCE.getProperty(Args.NAMING_KEY, Args.CAMEL_UNDERLINE_LOWER_CASE);
         }
         if (style == null || style.isEmpty()) {
             style = Args.CAMEL_UNDERLINE_LOWER_CASE;

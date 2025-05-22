@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 支持定制化处理 {@link MappedStatement} 的接口。
+ * 支持定制化处理 {@link MappedStatement} 的接口。 实现此接口，通过SPI形式注册，实现customize方法即可
  *
  * @author Kimi Liu
  * @since Java 17+

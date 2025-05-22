@@ -24,4 +24,4 @@
 #                                                                               #
 #################################################################################
 
-org.miaixz.bus.mapper.support.keysql.TableKeyGenerator
+org.miaixz.bus.mapper.support.keysql.PrimaryKeyEnhancer

@@ -39,7 +39,6 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
-import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.parsing.SqlMetaCache;
 import org.miaixz.bus.mapper.parsing.SqlSourceEnhancer;
@@ -60,7 +59,7 @@ public class Caching extends XMLLanguageDriver {
      * </p>
      */
     private static final Map<String, SqlMetaCache> CACHE_SQL = new ConcurrentHashMap<>(
-            Keys.getInt(Args.DEFAULT_INITSIZE_KEY, 1024));
+            Context.INSTANCE.getInt(Args.INITSIZE_KEY, 1024));
 
     /**
      * 按 Configuration 缓存 SqlSource，处理多数据源或多配置场景（如单元测试），确保一致性。
@@ -74,7 +73,7 @@ public class Caching extends XMLLanguageDriver {
      * 当使用 SqlSessionFactory 配置多数据源时，必须设为 false，避免 GC 清理影响新数据源。 对于单一 SqlSessionFactory 的多数据源场景，可设为 true。
      * </p>
      */
-    private static final boolean USE_ONCE = Keys.getBoolean(Args.DEFAULT_USEONCE_KEY, false);
+    private static final boolean USE_ONCE = Context.INSTANCE.getBoolean(Args.USEONCE_KEY, false);
 
     /**
      * 根据接口和方法生成缓存键。
@@ -148,17 +147,17 @@ public class Caching extends XMLLanguageDriver {
                             throw new RuntimeException(script
                                     + " => CACHE_SQL is NULL, you need to configure mybatis.provider.cacheSql.useOnce=false");
                         }
-                        cache.getEntity().initRuntimeContext(configuration, cache.getProviderContext(), cacheKey);
+                        cache.getTableMeta().initRuntimeContext(configuration, cache.getProviderContext(), cacheKey);
                         Map<String, SqlSource> cachekeyMap = CONFIGURATION_CACHE_KEY_MAP.computeIfAbsent(configuration,
                                 k -> new ConcurrentHashMap<>());
                         MappedStatement ms = configuration.getMappedStatement(cacheKey);
-                        Registry.SPI.customize(cache.getEntity(), ms, cache.getProviderContext());
+                        Registry.SPI.customize(cache.getTableMeta(), ms, cache.getProviderContext());
                         String sqlScript = cache.getSqlScript();
                         if (Logger.isTraceEnabled()) {
                             Logger.trace("cacheKey - " + cacheKey + " :\n" + sqlScript + "\n");
                         }
                         SqlSource sqlSource = super.createSqlSource(configuration, sqlScript, parameterType);
-                        sqlSource = SqlSourceEnhancer.SPI.customize(sqlSource, cache.getEntity(), ms,
+                        sqlSource = SqlSourceEnhancer.SPI.customize(sqlSource, cache.getTableMeta(), ms,
                                 cache.getProviderContext());
                         cachekeyMap.put(cacheKey, sqlSource);
                         if (USE_ONCE) {

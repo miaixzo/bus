@@ -45,6 +45,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.Context;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.InitializingBean;
@@ -124,6 +125,7 @@ public class MapperConfiguration implements InitializingBean {
         factory.setConfiguration(configuration);
         if (this.properties.getConfigurationProperties() != null) {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
+            Context.INSTANCE.setProperties(this.properties.getConfigurationProperties());
         }
         if (ArrayKit.isNotEmpty(this.interceptors)) {
             factory.setPlugins(this.interceptors);

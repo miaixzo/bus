@@ -24,10 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
+ */
 package org.miaixz.bus.mapper.builder;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 import org.miaixz.bus.mapper.provider.NamingProvider;
 
@@ -35,7 +38,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
- * 默认表工厂实现，支持处理 jakarta.persistence 注解的实体类表信息
+ * 默认表构建器，支持处理 jakarta.persistence 注解的实体类
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,38 +46,58 @@ import jakarta.persistence.Table;
 public class TableAnnotationBuilder implements TableSchemaBuilder {
 
     /**
-     * 创建实体表信息，基于注解或默认命名规则
+     * 根据注解或默认命名规则为实体类创建表元数据
      *
      * @param entityClass 实体类
-     * @param chain       表工厂处理链
-     * @return 实体表信息
+     * @param chain       表结构构建器链
+     * @return 表元数据
      */
     @Override
-    public TableMeta createEntityTable(Class<?> entityClass, Chain chain) {
-        TableMeta entityTable = chain.createEntityTable(entityClass);
-        if (entityTable == null) {
-            entityTable = TableMeta.of(entityClass);
+    public TableMeta createTable(Class<?> entityClass, Chain chain) {
+        TableMeta tableMeta = chain.createTable(entityClass);
+        if (tableMeta == null) {
+            tableMeta = TableMeta.of(entityClass);
         }
+
+        // 处理表相关注解及默认表名
+        processTableAnnotations(tableMeta, entityClass);
+
+        // 为 @Entity 注解的类启用自动结果映射
+        if (entityClass.isAnnotationPresent(Entity.class)) {
+            tableMeta.autoResultMap(true);
+        }
+
+        // 表名不为空时，添加表前缀
+        if (StringKit.isNotEmpty(tableMeta.table())) {
+            String prefix = Context.INSTANCE.getProperty(Args.TABLE_PREFIX_KEY, Normal.EMPTY);
+            tableMeta.table(prefix + tableMeta.table());
+        }
+
+        return tableMeta;
+    }
+
+    /**
+     * 处理 @Table 注解，设置表名、目录和模式，或使用默认命名规则
+     *
+     * @param entityClass 实体类
+     * @param tableMeta   表元数据
+     */
+    protected void processTableAnnotations(TableMeta tableMeta, Class<?> entityClass) {
         if (entityClass.isAnnotationPresent(Table.class)) {
             Table table = entityClass.getAnnotation(Table.class);
-            if (!table.name().isEmpty()) {
-                entityTable.table(table.name());
+            if (StringKit.isNotEmpty(table.name())) {
+                tableMeta.table(table.name());
             }
-            if (!table.catalog().isEmpty()) {
-                entityTable.catalog(table.catalog());
+            if (StringKit.isNotEmpty(table.catalog())) {
+                tableMeta.catalog(table.catalog());
             }
-            if (!table.schema().isEmpty()) {
-                entityTable.schema(table.schema());
+            if (StringKit.isNotEmpty(table.schema())) {
+                tableMeta.schema(table.schema());
             }
-        } else if (StringKit.isEmpty(entityTable.table())) {
-            // 没有设置表名时，默认类名转下划线
-            entityTable.table(NamingProvider.getDefaultStyle().tableName(entityClass));
+        } else if (StringKit.isEmpty(tableMeta.table())) {
+            // 未设置表名时，使用默认命名规则（类名转为下划线格式）
+            tableMeta.table(NamingProvider.getDefaultStyle().tableName(entityClass));
         }
-        // 使用 JPA 的 @Entity 注解作为开启 autoResultMap 的标志，可配合字段的 @Convert 注解使用
-        if (entityClass.isAnnotationPresent(Entity.class)) {
-            entityTable.autoResultMap(true);
-        }
-        return entityTable;
     }
 
 }

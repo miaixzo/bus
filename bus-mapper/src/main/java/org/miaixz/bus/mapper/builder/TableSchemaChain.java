@@ -86,9 +86,9 @@ public class TableSchemaChain implements TableSchemaBuilder.Chain {
      * @return 实体表信息，若无工厂处理则返回 null
      */
     @Override
-    public TableMeta createEntityTable(Class<?> entityClass) {
+    public TableMeta createTable(Class<?> entityClass) {
         if (index < factories.size()) {
-            return factories.get(index).createEntityTable(entityClass, next);
+            return factories.get(index).createTable(entityClass, next);
         }
         return null;
     }

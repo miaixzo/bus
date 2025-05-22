@@ -34,6 +34,7 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.mapper.annotation.Logical;
+import org.miaixz.bus.validate.magic.annotation.NotBlank;
 
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -61,6 +62,7 @@ public class BaseEntity extends Tracer {
      * 数据状态:-1删除,0无效,1正常
      */
     @Logical
+    @NotBlank
     protected Integer status;
 
     /**
@@ -93,12 +95,14 @@ public class BaseEntity extends Tracer {
      * 分页页码
      */
     @Transient
+    @NotBlank
     protected transient Integer pageNo;
 
     /**
      * 分页大小
      */
     @Transient
+    @NotBlank
     protected transient Integer pageSize;
 
     /**

@@ -57,7 +57,7 @@ public interface ColumnSchemaBuilder extends ORDER {
      * @param chain       工厂链，用于调用下一个处理逻辑
      * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
      */
-    Optional<List<ColumnMeta>> createEntityColumn(TableMeta entityTable, FieldMeta field, Chain chain);
+    Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field, Chain chain);
 
     /**
      * 工厂链接口，用于链式调用列信息创建逻辑
@@ -70,7 +70,7 @@ public interface ColumnSchemaBuilder extends ORDER {
          * @param field       字段信息
          * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
          */
-        Optional<List<ColumnMeta>> createEntityColumn(TableMeta entityTable, FieldMeta field);
+        Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field);
     }
 
 }
