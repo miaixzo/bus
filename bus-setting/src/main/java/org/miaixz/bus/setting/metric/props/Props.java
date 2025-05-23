@@ -64,6 +64,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
 
     @Serial
     private static final long serialVersionUID = 2852778898398L;
+
     /**
      * 配置文件缓存
      */
