@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.lang.reflect.Type;
 import java.time.ZoneId;
 import java.util.TimeZone;
@@ -41,11 +42,13 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  */
 public class ZoneIdConverter extends AbstractConverter implements MatcherConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852280626197L;
+
     /**
      * 单例
      */
     public static final ZoneIdConverter INSTANCE = new ZoneIdConverter();
-    private static final long serialVersionUID = -1L;
 
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {

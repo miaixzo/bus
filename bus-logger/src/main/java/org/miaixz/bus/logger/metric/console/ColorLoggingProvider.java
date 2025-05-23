@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.logger.metric.console;
 
+import java.io.Serial;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
@@ -44,7 +45,8 @@ import org.miaixz.bus.logger.Level;
  */
 public class ColorLoggingProvider extends NormalLoggingProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852702092107L;
 
     /**
      * 控制台打印类名的颜色代码

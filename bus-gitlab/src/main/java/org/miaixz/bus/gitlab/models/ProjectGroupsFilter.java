@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -37,7 +38,8 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
  */
 public class ProjectGroupsFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852382595529L;
 
     private String search;
     private AccessLevel sharedMinAccessLevel;

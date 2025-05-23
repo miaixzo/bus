@@ -33,7 +33,8 @@ package org.miaixz.bus.gitlab.models;
  */
 public class Contributor extends AbstractUser<Contributor> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852375286289L;
 
     private Integer commits;
     private Integer additions;

@@ -29,6 +29,7 @@ package org.miaixz.bus.core.io.resource;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
@@ -48,7 +49,8 @@ import org.miaixz.bus.core.xyz.UrlKit;
  */
 public class UrlResource implements Resource, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852290276915L;
 
     /**
      * URL

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,7 +50,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Result<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852233710561L;
 
     /**
      * 总数据

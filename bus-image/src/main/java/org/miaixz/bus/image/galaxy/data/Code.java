@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,7 +41,8 @@ import org.miaixz.bus.image.Tag;
  */
 public class Code implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852550785925L;
 
     private static final String NO_CODE_MEANING = "<none>";
     private transient final Key key = new Key();

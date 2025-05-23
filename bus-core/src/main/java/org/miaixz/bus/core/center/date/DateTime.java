@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date;
 
+import java.io.Serial;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -66,7 +67,8 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  */
 public class DateTime extends Date {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852250731138L;
 
     private static boolean useJdkToStringStyle = false;
     /**

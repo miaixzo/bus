@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.crypto.builtin.digest;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.security.MessageDigest;
 import java.security.Provider;
 
@@ -52,7 +49,8 @@ import org.miaixz.bus.crypto.Holder;
  */
 public class Digester extends SimpleWrapper<MessageDigest> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852335771506L;
 
     /**
      * 盐值

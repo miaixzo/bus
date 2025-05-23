@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.logger.metric.console;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Console;
@@ -44,7 +46,8 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  */
 public class NormalLoggingProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852702191112L;
 
     /**
      * 日志级别

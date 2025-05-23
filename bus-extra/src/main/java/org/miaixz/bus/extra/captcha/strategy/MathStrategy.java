@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.captcha.strategy;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.math.Calculator;
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -40,7 +42,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class MathStrategy implements CodeStrategy {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852350650377L;
 
     private static final String operators = "+-*";
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
@@ -50,7 +51,8 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public abstract class AbstractConverter implements Converter, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852277119155L;
 
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {

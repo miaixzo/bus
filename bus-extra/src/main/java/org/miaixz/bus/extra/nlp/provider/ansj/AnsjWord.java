@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.nlp.provider.ansj;
 
+import java.io.Serial;
+
 import org.ansj.domain.Term;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
@@ -38,7 +40,8 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  */
 public class AnsjWord implements NLPWord {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852355919755L;
 
     private final Term term;
 

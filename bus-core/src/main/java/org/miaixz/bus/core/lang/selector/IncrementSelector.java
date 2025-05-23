@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.selector;
 
+import java.io.Serial;
 import java.util.ArrayList;
 
 /**
@@ -38,7 +39,8 @@ import java.util.ArrayList;
  */
 public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852312153937L;
 
     private int position;
 

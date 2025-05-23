@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -41,7 +42,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class DeploymentFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852375779796L;
 
     /**
      * Return deployments ordered by either one of id, iid, created_at, updated_at or ref fields. Default is id.

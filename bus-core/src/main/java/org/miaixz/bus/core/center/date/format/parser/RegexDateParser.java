@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,7 +56,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class RegexDateParser implements DateParser, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852262010105L;
 
     private static final int[] NSS = { 100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1 };
     private static final Pattern ZONE_OFFSET_PATTERN = Pattern.compile("[-+]\\d{1,2}:?(?:\\d{2})?");

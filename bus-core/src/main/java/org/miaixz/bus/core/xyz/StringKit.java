@@ -31,7 +31,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 
-import org.miaixz.bus.core.center.function.FunctionPool;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -167,17 +166,6 @@ public class StringKit extends CharsBacker {
             charset = java.nio.charset.Charset.defaultCharset();
         }
         return charset.decode(data).toString();
-    }
-
-    /**
-     * JDK8中，通过{@code String(char[] value, boolean share)}这个内部构造创建String对象。
-     * 此函数通过传入char[]，实现zero-copy的String创建，效率很高。但是要求传入的char[]不可以在其他地方修改。
-     *
-     * @param value char[]值，注意这个数组不可修改！！
-     * @return String
-     */
-    public static String stringFast(final char[] value) {
-        return FunctionPool.createString(value);
     }
 
     /**

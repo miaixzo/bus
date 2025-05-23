@@ -33,7 +33,8 @@ public class PushEvent extends AbstractPushEvent implements Event {
 
     public static final String X_GITLAB_EVENT = "Push Hook";
     public static final String OBJECT_KIND = "push";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852370792392L;
 
     @Override
     public String getObjectKind() {

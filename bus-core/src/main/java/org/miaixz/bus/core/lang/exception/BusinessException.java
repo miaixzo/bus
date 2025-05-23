@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
+import java.io.Serial;
+
 import lombok.ToString;
 
 /**
@@ -35,7 +37,8 @@ import lombok.ToString;
 @ToString
 public class BusinessException extends UncheckedException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852300583560L;
 
     /**
      * 构造

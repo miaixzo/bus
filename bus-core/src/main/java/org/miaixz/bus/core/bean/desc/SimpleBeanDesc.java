@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.bean.desc;
 
 import java.beans.Introspector;
+import java.io.Serial;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -50,7 +51,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class SimpleBeanDesc extends AbstractBeanDesc {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852237132866L;
 
     /**
      * 构造

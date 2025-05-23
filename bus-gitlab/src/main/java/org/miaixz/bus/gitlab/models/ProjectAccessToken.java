@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ProjectAccessToken implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852382170657L;
 
     private Long userId;
     private List<Constants.ProjectAccessTokenScope> scopes;

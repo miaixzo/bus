@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.cache.file;
 
 import java.io.File;
+import java.io.Serial;
 
 import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.cache.provider.LRUCache;
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.cache.provider.LRUCache;
  */
 public class LRUFileCache extends AbstractFileCache {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238651961L;
 
     /**
      * 构造 最大文件大小为缓存容量的一半 默认无超时
@@ -76,7 +78,8 @@ public class LRUFileCache extends AbstractFileCache {
     protected Cache<File, byte[]> initCache() {
         return new LRUCache<>(LRUFileCache.this.capacity, super.timeout) {
 
-            private static final long serialVersionUID = -1L;
+            @Serial
+            private static final long serialVersionUID = 2852551020813L;
 
             @Override
             public boolean isFull() {

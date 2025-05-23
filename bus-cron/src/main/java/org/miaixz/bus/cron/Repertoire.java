@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -48,13 +49,14 @@ import org.miaixz.bus.cron.pattern.CronPattern;
  */
 public class Repertoire implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852330910737L;
+
     /**
      * 默认任务表大小：10
      */
     public static final int DEFAULT_CAPACITY = 10;
-    private static final long serialVersionUID = -1L;
     private final ReadWriteLock lock;
-
     private final TripleTable<String, CronPattern, Crontab> table;
 
     /**

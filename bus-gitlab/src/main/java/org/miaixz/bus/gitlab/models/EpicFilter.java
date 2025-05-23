@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -47,7 +48,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public class EpicFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852376569057L;
 
     private Long authorId;
     private String authorUsername;

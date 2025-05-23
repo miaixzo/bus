@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,12 +46,14 @@ import org.miaixz.bus.core.xyz.CompareKit;
  */
 public class Version implements Comparable<Version>, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852233262576L;
+
     /**
      * 版本信息
      */
     public static final String _VERSION = "8.1.8";
 
-    private static final long serialVersionUID = -1L;
     private final String version;
     private final List<Object> sequence;
     private final List<Object> pre;

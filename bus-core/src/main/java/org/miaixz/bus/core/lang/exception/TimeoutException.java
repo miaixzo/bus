@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
+import java.io.Serial;
+
 /**
  * 类型: 超时异常
  *
@@ -35,7 +37,8 @@ package org.miaixz.bus.core.lang.exception;
  */
 public class TimeoutException extends UncheckedException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852302350153L;
 
     /**
      * 构造

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
@@ -53,7 +55,8 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  */
 public class SM4 extends Crypto {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337978261L;
 
     /**
      * 构造，使用随机密钥

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric.net;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -35,7 +36,8 @@ import java.io.Serializable;
  */
 public class AEExtension implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852678185703L;
 
     protected ApplicationEntity ae;
 

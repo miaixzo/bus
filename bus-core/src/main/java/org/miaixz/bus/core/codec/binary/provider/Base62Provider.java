@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.codec.binary.provider;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -44,7 +45,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
-    public static final long serialVersionUID = -1L;
+    @Serial
+    public static final long serialVersionUID = 2852273910002L;
 
     /**
      * 单例

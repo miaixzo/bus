@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
+import java.io.Serial;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public abstract class AbstractBeanDesc implements BeanDesc {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852236812088L;
 
     /**
      * Bean类

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,8 @@ import java.util.List;
  */
 public class Supervisor implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852331080367L;
     /**
      * 启动器列表
      */

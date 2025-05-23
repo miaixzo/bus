@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map.concurrent;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -259,7 +260,10 @@ public final class Weighers {
     }
 
     static final class EntryWeigherView<K, V> implements EntryWeigher<K, V>, Serializable {
-        private static final long serialVersionUID = -1L;;
+
+        @Serial
+        private static final long serialVersionUID = 2852268568889L;
+
         final Weigher<? super V> weigher;
 
         EntryWeigherView(final Weigher<? super V> weigher) {

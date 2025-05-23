@@ -27,9 +27,12 @@
 */
 package org.opencv.core;
 
+import java.io.Serial;
+
 public class CvException extends RuntimeException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852737568757L;
 
     public CvException(String msg) {
         super(msg);
@@ -39,4 +42,5 @@ public class CvException extends RuntimeException {
     public String toString() {
         return "CvException [" + super.toString() + "]";
     }
+
 }

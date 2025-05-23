@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.nlp.provider.jcseg;
 
+import java.io.Serial;
+
 import org.lionsoul.jcseg.IWord;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
@@ -38,7 +40,8 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  */
 public class JcsegWord implements NLPWord {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852356508531L;
 
     private final IWord word;
 

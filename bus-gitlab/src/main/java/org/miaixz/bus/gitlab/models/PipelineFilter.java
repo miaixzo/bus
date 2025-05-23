@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -44,7 +45,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class PipelineFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852381769138L;
 
     /** {@link Constants.PipelineScope} The scope of pipelines, one of: running, pending, finished, branches, tags */
     private PipelineScope scope;

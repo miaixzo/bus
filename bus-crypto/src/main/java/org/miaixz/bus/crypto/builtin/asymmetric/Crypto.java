@@ -28,6 +28,7 @@
 package org.miaixz.bus.crypto.builtin.asymmetric;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.security.*;
 import java.security.spec.AlgorithmParameterSpec;
 
@@ -56,7 +57,8 @@ import org.miaixz.bus.crypto.cipher.JceCipher;
  */
 public class Crypto extends AbstractCrypto<Crypto> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852335331758L;
 
     /**
      * Cipher负责完成加密或解密工作

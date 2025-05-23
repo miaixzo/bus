@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.bloom;
 
+import java.io.Serial;
 import java.util.function.Function;
 
 /**
@@ -37,7 +38,9 @@ import java.util.function.Function;
  */
 public class FunctionFilter extends AbstractFilter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852319772305L;
+
     private final Function<String, Number> hashFunc;
 
     /**

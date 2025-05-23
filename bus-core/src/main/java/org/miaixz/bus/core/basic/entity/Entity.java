@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -52,7 +53,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Entity implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852233535921L;
 
     /**
      * 数据主键

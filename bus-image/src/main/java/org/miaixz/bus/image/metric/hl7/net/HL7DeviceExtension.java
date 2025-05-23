@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.io.Serial;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -42,7 +43,8 @@ import org.miaixz.bus.image.metric.net.DeviceExtension;
  */
 public class HL7DeviceExtension extends DeviceExtension {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852676388925L;
 
     static {
         Connection.registerTCPProtocolHandler(Connection.Protocol.HL7, HL7ProtocolHandler.INSTANCE);

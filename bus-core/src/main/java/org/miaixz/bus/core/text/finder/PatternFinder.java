@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.finder;
 
+import java.io.Serial;
 import java.util.regex.Matcher;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class PatternFinder extends TextFinder {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852321127150L;
 
     private final java.util.regex.Pattern pattern;
     private Matcher matcher;

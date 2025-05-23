@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
+import java.io.Serial;
 import java.util.concurrent.*;
 
 import org.miaixz.bus.core.Builder;
@@ -47,11 +48,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
+    @Serial
+    private static final long serialVersionUID = 2852312913592L;
+
     /**
      * 默认的等待队列容量
      */
     public static final int DEFAULT_QUEUE_CAPACITY = Integer.MAX_VALUE;
-    private static final long serialVersionUID = -1L;
     /**
      * 初始池大小
      */

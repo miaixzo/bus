@@ -40,7 +40,8 @@ public class NoteEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Note Hook";
     public static final String OBJECT_KIND = "note";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852370699895L;
     private EventUser user;
     private Long projectId;
     private EventProject project;

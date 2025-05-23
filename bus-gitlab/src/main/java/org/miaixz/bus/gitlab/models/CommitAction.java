@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -45,7 +42,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class CommitAction implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852373931266L;
 
     private Action action;
     private String filePath;

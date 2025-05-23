@@ -397,6 +397,15 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     @Override
+    public boolean rename(String oldPath, String newPath) {
+        try {
+            return this.client.rename(oldPath, newPath);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    @Override
     public boolean mkdir(final String dir) throws InternalException {
         try {
             return this.client.makeDirectory(dir);
@@ -630,18 +639,18 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * 递归下载FTP服务器上文件到本地(文件目录和服务器同步)
      *
-     * @param sourcePath ftp服务器目录
-     * @param destDir    本地目录
+     * @param sourceDir ftp服务器目录
+     * @param targetDir 本地目录
      */
     @Override
-    public void recursiveDownloadFolder(final String sourcePath, final File destDir) {
+    public void recursiveDownloadFolder(final String sourceDir, final File targetDir) {
         String fileName;
         String srcFile;
         File destFile;
-        for (final FTPFile ftpFile : lsFiles(sourcePath, null)) {
+        for (final FTPFile ftpFile : lsFiles(sourceDir, null)) {
             fileName = ftpFile.getName();
-            srcFile = StringKit.format("{}/{}", sourcePath, fileName);
-            destFile = FileKit.file(destDir, fileName);
+            srcFile = StringKit.format("{}/{}", sourceDir, fileName);
+            destFile = FileKit.file(targetDir, fileName);
 
             if (!ftpFile.isDirectory()) {
                 // 本地不存在文件或者ftp上文件有修改则下载
@@ -782,4 +791,5 @@ public class CommonsFtp extends AbstractFtp {
             this.client = null;
         }
     }
+
 }

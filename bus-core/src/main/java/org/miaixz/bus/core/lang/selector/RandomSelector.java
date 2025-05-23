@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.selector;
 
+import java.io.Serial;
 import java.util.ArrayList;
 
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.xyz.RandomKit;
  */
 public class RandomSelector<T> extends ArrayList<T> implements Selector<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852312218059L;
 
     /**
      * 构造

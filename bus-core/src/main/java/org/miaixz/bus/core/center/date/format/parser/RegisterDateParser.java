@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -42,11 +43,14 @@ import org.miaixz.bus.core.xyz.ListKit;
  */
 public class RegisterDateParser implements DateParser, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852262087012L;
+
     /**
      * 单例
      */
     public static final RegisterDateParser INSTANCE = new RegisterDateParser();
-    private static final long serialVersionUID = -1L;
+
     private final List<PredicateDateParser> list;
 
     /**

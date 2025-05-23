@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -35,7 +36,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class IssuesStatistics implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852378577233L;
 
     private Statistics statistics;
 
@@ -58,7 +60,8 @@ public class IssuesStatistics implements Serializable {
     }
 
     public static class Statistics implements Serializable {
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852381997183L;
 
         private Counts counts;
 
@@ -73,7 +76,8 @@ public class IssuesStatistics implements Serializable {
 
     public static class Counts implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852381997183L;
 
         private Integer all;
         private Integer closed;

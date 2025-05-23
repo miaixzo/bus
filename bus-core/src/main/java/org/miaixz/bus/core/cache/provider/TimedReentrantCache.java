@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,7 +46,8 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
  */
 public class TimedReentrantCache<K, V> extends LockedCache<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852239395599L;
 
     /** 正在执行的定时任务 */
     private ScheduledFuture<?> pruneJobFuture;

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.nlp.provider.jieba;
 
+import java.io.Serial;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 import com.huaban.analysis.jieba.SegToken;
@@ -39,7 +41,8 @@ import com.huaban.analysis.jieba.SegToken;
  */
 public class JiebaWord implements NLPWord {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852356769526L;
 
     private final SegToken segToken;
 

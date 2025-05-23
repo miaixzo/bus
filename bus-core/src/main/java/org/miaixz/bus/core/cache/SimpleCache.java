@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.core.cache;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -41,7 +43,6 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.iterator.TransIterator;
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.Mutable;
@@ -57,12 +58,13 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
  */
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238397005L;
 
     /**
      * 写的时候每个key一把锁，降低锁的粒度
      */
-    protected final Map<K, Lock> keyLockMap = new SafeConcurrentHashMap<>();
+    protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
     /**
      * 池
      */

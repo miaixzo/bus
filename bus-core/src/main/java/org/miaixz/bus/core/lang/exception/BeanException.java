@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
+import java.io.Serial;
+
 /**
  * Bean异常
  *
@@ -35,7 +37,8 @@ package org.miaixz.bus.core.lang.exception;
  */
 public class BeanException extends InternalException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852300578333L;
 
     /**
      * 构造

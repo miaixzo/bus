@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -52,7 +49,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class MapWrapper<K, V>
         implements Map<K, V>, Iterable<Map.Entry<K, V>>, Wrapper<Map<K, V>>, Serializable, Cloneable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267777760L;
     /**
      * 原始集合
      */

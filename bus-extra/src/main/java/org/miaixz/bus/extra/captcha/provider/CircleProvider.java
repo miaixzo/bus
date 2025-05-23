@@ -29,6 +29,7 @@ package org.miaixz.bus.extra.captcha.provider;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serial;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.miaixz.bus.core.xyz.ColorKit;
@@ -46,7 +47,8 @@ import org.miaixz.bus.extra.image.ImageKit;
  */
 public class CircleProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852339956651L;
 
     /**
      * 构造

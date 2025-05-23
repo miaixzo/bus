@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.io.resource;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.ZipKit;
  */
 public class JarResource extends UrlResource {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852289895933L;
 
     /**
      * 构造

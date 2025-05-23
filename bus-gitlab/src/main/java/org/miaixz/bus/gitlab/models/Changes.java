@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -36,7 +37,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Changes implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852373673857L;
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("a_mode")

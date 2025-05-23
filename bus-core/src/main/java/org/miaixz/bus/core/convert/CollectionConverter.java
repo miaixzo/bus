@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class CollectionConverter implements MatcherConverter, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278092821L;
 
     /**
      * 单例实体

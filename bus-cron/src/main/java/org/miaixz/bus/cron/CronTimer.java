@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.center.date.culture.en.Units;
@@ -41,7 +42,8 @@ import org.miaixz.bus.logger.Logger;
  */
 public class CronTimer extends Thread implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852330583278L;
 
     /**
      * 定时单元：秒

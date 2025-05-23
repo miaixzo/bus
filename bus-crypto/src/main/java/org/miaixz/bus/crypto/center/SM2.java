@@ -28,6 +28,7 @@
 package org.miaixz.bus.crypto.center;
 
 import java.io.InputStream;
+import java.io.Serial;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.KeyPair;
@@ -76,7 +77,8 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
  */
 public class SM2 extends AbstractCrypto<SM2> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337891917L;
 
     /**
      * SM2引擎

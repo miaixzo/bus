@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.office.csv;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -37,7 +38,8 @@ import java.io.Serializable;
  */
 public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852729110720L;
 
     /**
      * 指定标题行号，-1表示无标题行

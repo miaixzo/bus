@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class AtomicReferenceConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852277379917L;
 
     private final Converter converter;
 

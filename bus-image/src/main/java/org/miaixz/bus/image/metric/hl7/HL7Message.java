@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
+import java.io.Serial;
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class HL7Message extends ArrayList<HL7Segment> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852673836750L;
 
     public HL7Message() {
 

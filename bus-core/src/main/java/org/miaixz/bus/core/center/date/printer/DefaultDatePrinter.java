@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.printer;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -44,7 +45,8 @@ import java.util.TimeZone;
  */
 public class DefaultDatePrinter implements DatePrinter, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852262386039L;
 
     @Override
     public String getPattern() {

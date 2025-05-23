@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class OauthTokenResponse implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852381060636L;
 
     private String accessToken;
     private String tokenType;

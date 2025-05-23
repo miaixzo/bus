@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.builtin.ldap;
 
+import java.io.Serial;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -37,7 +38,8 @@ import javax.naming.Context;
  */
 public class LdapEnv extends Hashtable<String, Object> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852539112558L;
 
     public LdapEnv() {
         put(Context.INITIAL_CONTEXT_FACTORY,

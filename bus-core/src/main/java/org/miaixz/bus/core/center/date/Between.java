@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -48,7 +49,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class Between implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852250261063L;
 
     /**
      * 开始日期

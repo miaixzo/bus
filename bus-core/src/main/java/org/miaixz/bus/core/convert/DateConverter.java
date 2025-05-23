@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.lang.reflect.Type;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
@@ -46,11 +47,14 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class DateConverter extends AbstractConverter implements MatcherConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852278559136L;
+
     /**
      * 单例
      */
     public static final DateConverter INSTANCE = new DateConverter();
-    private static final long serialVersionUID = -1L;
+
     /**
      * 日期格式化
      */

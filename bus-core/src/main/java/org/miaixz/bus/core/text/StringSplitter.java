@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class StringSplitter extends ComputeIterator<String> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852319202796L;
 
     private final String text;
     private final TextFinder finder;

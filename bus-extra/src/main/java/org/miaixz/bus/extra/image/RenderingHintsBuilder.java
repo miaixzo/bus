@@ -28,6 +28,7 @@
 package org.miaixz.bus.extra.image;
 
 import java.awt.*;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +55,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class RenderingHintsBuilder implements Builder<RenderingHints> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852352608575L;
 
     private final Map<RenderingHints.Key, Object> hintsMap;
 

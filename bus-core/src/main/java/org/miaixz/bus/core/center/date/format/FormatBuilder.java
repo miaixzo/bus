@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.format;
 
+import java.io.Serial;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -58,7 +59,8 @@ import org.miaixz.bus.core.lang.exception.DateException;
  */
 public class FormatBuilder extends Format implements PositionDateParser, FormatPrinter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852261179270L;
 
     private static final FormatCache<FormatBuilder> CACHE = new FormatCache<>() {
         @Override

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.codec.binary.decoder;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852273361173L;
 
     /**
      * 单例对象

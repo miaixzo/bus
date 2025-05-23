@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CamelCaseMap<K, V> extends FunctionKeyMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852266625709L;
 
     /**
      * 构造

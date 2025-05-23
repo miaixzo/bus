@@ -35,7 +35,8 @@ public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
     public static final String KEY_CREATE_EVENT = "key_create";
     public static final String KEY_DESTROY_EVENT = "key_destroy";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852367957965L;
     private Date createdAt;
     private Date updatedAt;
     private String eventName;

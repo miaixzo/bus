@@ -37,7 +37,8 @@ public class MergeRequestEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Merge Request Hook";
     public static final String OBJECT_KIND = "merge_request";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852370601631L;
     private EventUser user;
     private EventProject project;
     private EventRepository repository;

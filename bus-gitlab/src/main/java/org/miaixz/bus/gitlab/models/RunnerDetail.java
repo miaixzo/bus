@@ -38,7 +38,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class RunnerDetail extends Runner {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852385197303L;
 
     private String architecture;
     private String platform;

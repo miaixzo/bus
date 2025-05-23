@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.logger.metric.jboss;
 
+import java.io.Serial;
+
 import org.jboss.logging.Logger;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -41,7 +43,8 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  */
 public class JbossLoggingProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852702579908L;
 
     /**
      * 日志门面

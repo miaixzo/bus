@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.io.watch;
 
 import java.io.Closeable;
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class WatchMonitor extends Thread implements Closeable, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852293157619L;
 
     private final WatchServiceWrapper watchService;
 

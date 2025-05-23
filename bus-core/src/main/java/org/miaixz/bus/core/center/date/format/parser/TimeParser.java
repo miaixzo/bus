@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -50,11 +51,14 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 17+
  */
 public class TimeParser implements PredicateDateParser, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2852262129992L;
+
     /**
      * 单例
      */
     public static final TimeParser INSTANCE = new TimeParser();
-    private static final long serialVersionUID = -1L;
 
     @Override
     public boolean test(final CharSequence date) {

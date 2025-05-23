@@ -30,9 +30,9 @@ package org.miaixz.bus.core.center.date.format;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -52,8 +52,8 @@ public class FormatManager {
      * 构造
      */
     public FormatManager() {
-        formatterMap = new SafeConcurrentHashMap<>();
-        parserMap = new SafeConcurrentHashMap<>();
+        formatterMap = new ConcurrentHashMap<>();
+        parserMap = new ConcurrentHashMap<>();
 
         // 预设的几种自定义格式
         registerFormatter(Fields.FORMAT_SECONDS, (date) -> String.valueOf(Math.floorDiv(date.getTime(), 1000L)));

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.setting.magic;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -44,7 +45,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852777607985L;
 
     private final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock();
     private final ReadLock readLock = cacheLock.readLock();

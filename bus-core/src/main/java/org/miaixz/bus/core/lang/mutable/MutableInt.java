@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
@@ -38,7 +40,8 @@ import org.miaixz.bus.core.xyz.CompareKit;
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852307082691L;
 
     private int value;
 

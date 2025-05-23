@@ -33,7 +33,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class RelatedEpic extends AbstractEpic<RelatedEpic> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852383320770L;
 
     private Boolean startDateIsFixed;
     private Boolean dueDateIsFixed;

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -39,7 +41,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class SearchReplacer extends StringReplacer {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852322892728L;
 
     private final int fromIndex;
     private final CharSequence searchText;

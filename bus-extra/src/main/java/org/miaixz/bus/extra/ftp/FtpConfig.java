@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.extra.ftp;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 
@@ -40,7 +41,8 @@ import org.miaixz.bus.extra.ssh.Connector;
  */
 public class FtpConfig implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852351976985L;
 
     private Connector connector;
     /**

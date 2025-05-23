@@ -28,6 +28,7 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -47,7 +48,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Todo implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852386022531L;
 
     private Long id;
     private Project project;

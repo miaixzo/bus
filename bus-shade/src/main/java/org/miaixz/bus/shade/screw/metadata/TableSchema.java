@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.shade.screw.metadata;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -43,7 +44,8 @@ import lombok.Setter;
 @Setter
 public class TableSchema implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852791390850L;
     /**
      * 表名
      */

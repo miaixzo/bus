@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.metric.hl7.net;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
@@ -48,7 +49,9 @@ import org.miaixz.bus.image.metric.hl7.MLLPConnection;
  */
 public class HL7Application implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852676022125L;
+
     private final LinkedHashSet<String> acceptedSendingApplications = new LinkedHashSet<>();
     private final LinkedHashSet<String> otherApplicationNames = new LinkedHashSet<>();
     private final LinkedHashSet<String> acceptedMessageTypes = new LinkedHashSet<>();

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.tuple.Pair;
 
 /**
@@ -39,7 +41,8 @@ import org.miaixz.bus.core.lang.tuple.Pair;
  */
 public class MutablePair<L, R> extends Pair<L, R> implements Mutable<MutablePair<L, R>> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852307339863L;
 
     /**
      * 构造

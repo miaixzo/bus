@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.lang.exception;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 
 import lombok.Getter;
@@ -40,7 +41,8 @@ import lombok.Setter;
 @Setter
 public class RelevantException extends IOException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852301961078L;
 
     /**
      * 错误码

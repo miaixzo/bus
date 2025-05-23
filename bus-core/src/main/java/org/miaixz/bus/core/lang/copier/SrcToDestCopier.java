@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.copier;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Predicate;
 
@@ -40,7 +41,8 @@ import java.util.function.Predicate;
  */
 public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implements Copier<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852299736181L;
 
     /**
      * 源

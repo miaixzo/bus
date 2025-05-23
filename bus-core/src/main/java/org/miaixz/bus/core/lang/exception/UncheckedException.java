@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +39,8 @@ import lombok.Setter;
 @Setter
 public class UncheckedException extends RuntimeException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852302528719L;
 
     /**
      * 错误码

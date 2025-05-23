@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.office.excel.style;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.temporal.TemporalAccessor;
@@ -46,7 +47,8 @@ import org.miaixz.bus.office.excel.xyz.StyleKit;
  */
 public class DefaultStyleSet implements StyleSet, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852735121052L;
 
     /**
      * 工作簿引用

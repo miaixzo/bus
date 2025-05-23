@@ -132,8 +132,7 @@ public enum QueryRetrieveLevel2 {
             if (!optional)
                 if (lenient)
                     Logger.info("Missing or wildcard " + DICT.keywordOf(uniqueKey) + Symbol.SPACE
-                            + Tag.toString(uniqueKey)
-                            + " in Query/Retrieve Identifier");
+                            + Tag.toString(uniqueKey) + " in Query/Retrieve Identifier");
                 else
                     throw ids == null || ids.length == 0 ? missingAttribute(uniqueKey)
                             : invalidAttributeValue(uniqueKey, ids[0]);

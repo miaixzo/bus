@@ -39,7 +39,8 @@ public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
     public static final String PROJECT_RENAME_EVENT = "project_rename";
     public static final String PROJECT_TRANSFER_EVENT = "project_transfer";
     public static final String PROJECT_UPDATE_EVENT = "project_update";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852368092365L;
     private Date createdAt;
     private Date updatedAt;
     private String eventName;

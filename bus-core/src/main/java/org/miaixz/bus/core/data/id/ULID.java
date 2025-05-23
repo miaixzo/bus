@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.data.id;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.ByteOrder;
 import java.util.Objects;
@@ -65,7 +66,8 @@ import org.miaixz.bus.core.xyz.RandomKit;
  */
 public class ULID implements Comparable<ULID>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852281779165L;
 
     /**
      * Timestamp component mask

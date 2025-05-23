@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
+
 import javax.crypto.spec.IvParameterSpec;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -42,7 +44,8 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  */
 public class ZUC extends Crypto {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852338352679L;
 
     /**
      * 构造

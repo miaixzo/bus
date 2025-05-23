@@ -29,6 +29,7 @@ package org.miaixz.bus.crypto.center;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serial;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.Signature;
@@ -56,7 +57,8 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
  */
 public class Sign extends Asymmetric<Sign> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852338020252L;
 
     /**
      * 签名，用于签名和验证

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -104,7 +105,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
      * @param <V> 值类型
      */
     private static class SimpleCell<R, C, V> implements Cell<R, C, V>, Serializable {
-        private static final long serialVersionUID = -1L;
+
+        @Serial
+        private static final long serialVersionUID = 2852268750831L;
 
         private final R rowKey;
         private final C columnKey;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
@@ -37,7 +38,8 @@ import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
  */
 public class StorageOptions implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852672236733L;
 
     private LevelOfSupport levelOfSupport;
 

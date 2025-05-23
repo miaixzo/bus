@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
+
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,7 +49,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class OAuth2 extends Entity {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852233658815L;
 
     /**
      * 当前租户

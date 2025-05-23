@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class MutableObject<T> implements Mutable<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852307257785L;
 
     private T value;
 

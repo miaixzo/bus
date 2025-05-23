@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class MarkdownRequest implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852379977910L;
 
     private String text;
     private boolean gfm;

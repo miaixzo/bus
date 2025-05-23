@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.setting.magic;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
@@ -50,6 +51,9 @@ import org.miaixz.bus.core.xyz.*;
 public abstract class AbstractSetting
         implements TypeGetter<CharSequence>, GroupedTypeGetter<CharSequence, CharSequence>, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852777511686L;
+
     /**
      * 数组类型值默认分隔符
      */
@@ -58,7 +62,6 @@ public abstract class AbstractSetting
      * 默认分组
      */
     public static final String DEFAULT_GROUP = Normal.EMPTY;
-    private static final long serialVersionUID = -1L;
 
     @Override
     public Object getObject(final CharSequence key, final Object defaultValue) {

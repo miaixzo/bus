@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.logger.metric.jdk;
 
+import java.io.Serial;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -43,7 +44,8 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  */
 public class JdkLoggingProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852702717703L;
 
     /**
      * 日志门面

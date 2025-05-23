@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.check.crc16;
 
+import java.io.Serial;
+
 /**
  * CRC16_X25：多项式x16+x12+x5+1（0x1021），初始值0xffff，低位在前，高位在后，结果与0xFFFF异或 0x8408是0x1021按位颠倒后的结果。
  *
@@ -34,7 +36,9 @@ package org.miaixz.bus.core.io.check.crc16;
  * @since Java 17+
  */
 public class CRC16X25 extends CRC16Checksum {
-    private static final long serialVersionUID = -1L;
+
+    @Serial
+    private static final long serialVersionUID = 2852285783695L;
 
     private static final int WC_POLY = 0x8408;
 
@@ -61,4 +65,5 @@ public class CRC16X25 extends CRC16Checksum {
             }
         }
     }
+
 }

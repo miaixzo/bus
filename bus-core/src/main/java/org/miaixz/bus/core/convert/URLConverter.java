@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.convert;
 
 import java.io.File;
+import java.io.Serial;
 import java.net.URI;
 import java.net.URL;
 
@@ -39,7 +40,8 @@ import java.net.URL;
  */
 public class URLConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852280262575L;
 
     @Override
     protected URL convertInternal(final Class<?> targetClass, final Object value) {

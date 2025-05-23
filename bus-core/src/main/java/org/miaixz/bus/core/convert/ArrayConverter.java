@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -46,11 +47,14 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class ArrayConverter extends AbstractConverter implements MatcherConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852277156932L;
+
     /**
      * 单例
      */
     public static final ArrayConverter INSTANCE = new ArrayConverter();
-    private static final long serialVersionUID = -1L;
+
     /**
      * 是否忽略元素转换错误
      */

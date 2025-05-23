@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.UnaryOperator;
 
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public abstract class StringReplacer implements UnaryOperator<CharSequence>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852322990618L;
 
     /**
      * 抽象的字符串替换方法，通过传入原字符串和当前位置，执行替换逻辑，返回处理或替换的字符串长度部分。

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -44,7 +45,8 @@ import java.util.LinkedHashMap;
  */
 public class FIFOCache<K, V> extends LockedCache<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852239028559L;
 
     /**
      * 构造，默认对象不过期

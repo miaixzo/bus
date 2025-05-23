@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +48,8 @@ import org.miaixz.bus.cron.crontab.Crontab;
  */
 public class Manager implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852330830511L;
 
     /**
      * 执行器列表

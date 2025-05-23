@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.queue;
 
+import java.io.Serial;
 import java.util.*;
 
 import org.miaixz.bus.core.center.BoundedCollection;
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.center.BoundedCollection;
  */
 public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements BoundedCollection<E> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852269850893L;
 
     /**
      * 容量

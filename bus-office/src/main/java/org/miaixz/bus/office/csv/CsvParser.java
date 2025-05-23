@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.office.csv;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
@@ -49,7 +46,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public final class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852729008891L;
 
     private static final int DEFAULT_ROW_CAPACITY = 10;
 

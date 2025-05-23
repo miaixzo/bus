@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.metric.service;
 
 import java.io.File;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,7 +39,8 @@ import java.net.URISyntaxException;
  */
 public class InstanceLocator implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852681896578L;
 
     public final String cuid;
     public final String iuid;

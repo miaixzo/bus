@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.office.excel;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.xyz.CollKit;
  */
 public class RowGroup implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852729880199L;
 
     private String name;
     private CellStyle style;

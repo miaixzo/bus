@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -47,7 +48,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class AnnotationProxy<T extends Annotation> implements Annotation, InvocationHandler, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852298156988L;
 
     /**
      * 注解

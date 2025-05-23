@@ -29,6 +29,7 @@ package org.miaixz.bus.core.lang.reflect;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -58,7 +59,8 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class ClassScanner implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852310185783L;
 
     /**
      * 包名

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -42,6 +43,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852319313071L;
+
     /**
      * 去除两边空白符
      */
@@ -54,7 +58,7 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
      * 去除尾部空白符
      */
     public static final StringTrimer TRIM_SUFFIX_BLANK = new StringTrimer(TrimMode.SUFFIX, CharKit::isBlankChar);
-    private static final long serialVersionUID = -1L;
+
     private final TrimMode mode;
     private final Predicate<Character> predicate;
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -41,7 +42,8 @@ import java.util.Objects;
  */
 public class TolerantMap<K, V> extends MapWrapper<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267996567L;
 
     private final V defaultValue;
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.extra.mail;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,8 @@ public class MailAccount implements Serializable {
      */
     public static final String[] MAIL_SETTING_PATHS = new String[] { "config/mail.setting",
             "config/mailAccount.setting", "mail.setting" };
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852353835399L;
     private static final String MAIL_PROTOCOL = "mail.transport.protocol";
     private static final String SMTP_HOST = "mail.smtp.host";
     private static final String SMTP_PORT = "mail.smtp.port";

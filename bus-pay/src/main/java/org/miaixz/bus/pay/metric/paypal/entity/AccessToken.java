@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.pay.metric.paypal.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -42,7 +43,9 @@ import org.miaixz.bus.pay.magic.Callback;
  */
 public class AccessToken implements Serializable, Callback {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852762067769L;
+
     private String access_token;
     private String token_type;
     private String app_id;

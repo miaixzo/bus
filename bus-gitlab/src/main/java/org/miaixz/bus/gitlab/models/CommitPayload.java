@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class CommitPayload implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852373986881L;
 
     private String branch;
     private String commitMessage;

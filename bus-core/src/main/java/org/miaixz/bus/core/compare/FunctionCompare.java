@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serial;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.xyz.CompareKit;
  */
 public class FunctionCompare<T> extends NullCompare<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276399898L;
 
     /**
      * 构造

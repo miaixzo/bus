@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.tuple;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
@@ -45,7 +46,8 @@ import org.miaixz.bus.core.xyz.ListKit;
  */
 public class Tuple implements Iterable<Object>, Serializable, Cloneable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852315582957L;
 
     /**
      * 多值信息

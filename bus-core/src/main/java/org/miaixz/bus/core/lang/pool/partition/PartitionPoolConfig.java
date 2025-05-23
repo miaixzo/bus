@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.pool.partition;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.pool.PoolConfig;
 
 /**
@@ -37,7 +39,8 @@ import org.miaixz.bus.core.lang.pool.PoolConfig;
  */
 public class PartitionPoolConfig extends PoolConfig {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852308371202L;
     private int partitionSize = 4;
 
     /**

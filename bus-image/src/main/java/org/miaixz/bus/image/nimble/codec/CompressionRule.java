@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.nimble.codec;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.EnumSet;
 
@@ -40,7 +41,8 @@ import org.miaixz.bus.image.nimble.Photometric;
  */
 public class CompressionRule implements Comparable<CompressionRule>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852686050288L;
 
     private final String commonName;
     private final Condition condition;
@@ -103,7 +105,8 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
 
     private static class Condition implements Comparable<Condition>, Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852710999698L;
 
         final EnumSet<Photometric> pmis;
         final int bitsStoredMask;

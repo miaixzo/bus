@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -45,7 +42,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  */
 public class InputStreamResource implements Resource, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852289837532L;
 
     private final InputStream in;
     private final String name;

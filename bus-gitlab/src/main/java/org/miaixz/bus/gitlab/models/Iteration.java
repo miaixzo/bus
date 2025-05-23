@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -37,7 +38,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Iteration implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852378722197L;
 
     private Long id;
     private Long iid;

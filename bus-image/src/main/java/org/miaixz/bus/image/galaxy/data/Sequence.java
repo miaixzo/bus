@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.galaxy.data;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ListIterator;
@@ -41,7 +42,8 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  */
 public class Sequence extends ArrayList<Attributes> implements Value {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852552061339L;
 
     private final Attributes parent;
     private final String privateCreator;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.math;
 
+import java.io.Serial;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -51,6 +52,9 @@ import org.miaixz.bus.core.xyz.MathKit;
  */
 public final class Fraction extends Number implements Comparable<Fraction> {
 
+    @Serial
+    private static final long serialVersionUID = 2852316539536L;
+
     /**
      * {@link Fraction} 表示 0.
      */
@@ -59,7 +63,6 @@ public final class Fraction extends Number implements Comparable<Fraction> {
      * {@link Fraction} 表示 1.
      */
     public static final Fraction ONE = new Fraction(1, 1);
-    private static final long serialVersionUID = 1L;
     /**
      * 分子数部分（三个七分之三的 3）。
      */

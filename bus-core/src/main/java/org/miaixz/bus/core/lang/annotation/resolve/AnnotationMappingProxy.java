@@ -35,11 +35,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -78,7 +78,7 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
     private AnnotationMappingProxy(final AnnotationMapping<T> annotation) {
         final int methodCount = annotation.getAttributes().length;
         this.methods = new HashMap<>(methodCount + 5);
-        this.valueCache = new SafeConcurrentHashMap<>(methodCount);
+        this.valueCache = new ConcurrentHashMap<>(methodCount);
         this.mapping = annotation;
         loadMethods();
     }

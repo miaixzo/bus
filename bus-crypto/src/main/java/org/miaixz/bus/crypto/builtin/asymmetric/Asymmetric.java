@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.crypto.builtin.asymmetric;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.security.Key;
 import java.security.KeyPair;
@@ -51,7 +52,8 @@ import org.miaixz.bus.crypto.Keeper;
  */
 public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852335263027L;
 
     /**
      * 算法

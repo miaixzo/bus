@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.Constants.PackageOrderBy;
@@ -39,7 +40,8 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
  */
 public class PackageFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852381332635L;
 
     private Boolean excludeSubgroups;
     private PackageOrderBy orderBy;

@@ -39,7 +39,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Group extends AbstractGroup<Group> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852377586329L;
 
     private String path;
     private String description;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.io.check;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.zip.Checksum;
 
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.io.check.crc16.CRC16IBM;
  */
 public class CRC16 implements Checksum, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852283966133L;
 
     private final CRC16Checksum crc16;
 

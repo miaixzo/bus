@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.io.resource;
 
+import java.io.Serial;
 import java.net.URL;
 
 import org.miaixz.bus.core.io.file.FileName;
@@ -44,7 +45,8 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class ClassPathResource extends UrlResource {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852289551026L;
 
     private final String path;
     private final ClassLoader classLoader;

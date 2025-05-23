@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.util.UUID;
 
 /**
@@ -37,7 +38,8 @@ import java.util.UUID;
  */
 public class UUIDConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852280313059L;
 
     @Override
     protected UUID convertInternal(final Class<?> targetClass, final Object value) {

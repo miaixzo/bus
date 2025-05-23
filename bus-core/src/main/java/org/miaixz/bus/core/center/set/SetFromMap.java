@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.center.set;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
@@ -43,7 +44,8 @@ import java.util.stream.Stream;
  */
 public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852270772188L;
 
     private final Map<E, Boolean> m; // The backing map
     private transient Set<E> s; // Its keySet

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.finder;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -39,7 +40,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public abstract class TextFinder implements Finder, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852321237728L;
 
     /**
      * 文本

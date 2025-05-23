@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.center.map.AbstractEntry;
  */
 public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<Map.Entry<K, V>>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852306966167L;
 
     /**
      * 键

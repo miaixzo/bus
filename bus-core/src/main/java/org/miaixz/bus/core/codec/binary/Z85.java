@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.codec.binary;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.codec.Encoder;
  */
 public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852273153673L;
 
     private static final char[] encodeTable = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
             'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.data.id;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -53,11 +54,13 @@ import org.miaixz.bus.core.xyz.RandomKit;
  */
 public class Snowflake implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852281706622L;
+
     /**
      * 默认的起始时间，为Thu, 04 Nov 2010 01:42:54 GMT
      */
     public static final long DEFAULT_TWEPOCH = 1288834974657L;
-    private static final long serialVersionUID = -1L;
     private static final long WORKER_ID_BITS = 5L;
     /**
      * 最大支持机器节点数0~31，一共32个

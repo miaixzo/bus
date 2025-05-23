@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.event;
 
+import java.io.Serial;
 import java.util.EventObject;
 
 /**
@@ -37,7 +38,8 @@ import java.util.EventObject;
  */
 public class SourceEvent extends EventObject implements Event {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852300056900L;
 
     /**
      * 构造

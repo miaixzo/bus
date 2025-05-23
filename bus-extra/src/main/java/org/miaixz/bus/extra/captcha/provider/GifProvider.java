@@ -30,6 +30,7 @@ package org.miaixz.bus.extra.captcha.provider;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.Serial;
 
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.extra.captcha.AbstractProvider;
@@ -46,7 +47,8 @@ import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
  */
 public class GifProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852350135712L;
 
     /**
      * 量化器取样间隔 - 默认是10ms

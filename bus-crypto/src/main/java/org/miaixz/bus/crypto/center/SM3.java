@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.crypto.builtin.digest.Digester;
 
@@ -46,7 +48,8 @@ import org.miaixz.bus.crypto.builtin.digest.Digester;
  */
 public class SM3 extends Digester {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337959873L;
 
     /**
      * 构造

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -47,7 +48,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class Range<T> implements Iterable<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852309219066L;
     /**
      * 起始对象
      */

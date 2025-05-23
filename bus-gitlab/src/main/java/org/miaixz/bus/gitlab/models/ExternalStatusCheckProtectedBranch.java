@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -34,7 +35,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ExternalStatusCheckProtectedBranch implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852377075930L;
 
     private Long id;
     private Long projectId;

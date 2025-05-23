@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,7 +42,8 @@ import com.fasterxml.jackson.databind.node.*;
 
 public class ApplicationSettings implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852372097502L;
 
     private Long id;
     private Date createdAt;

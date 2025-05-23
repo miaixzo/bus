@@ -45,9 +45,8 @@ public class RelatedSOPClasses {
 
     public void init(Properties props) {
         for (String cuid : props.stringPropertyNames()) {
-            commonExtNegs.put(cuid,
-                    new CommonExtended(cuid, UID.Storage.uid,
-                            StringKit.splitToArray(props.getProperty(cuid), Symbol.COMMA)));
+            commonExtNegs.put(cuid, new CommonExtended(cuid, UID.Storage.uid,
+                    StringKit.splitToArray(props.getProperty(cuid), Symbol.COMMA)));
         }
     }
 

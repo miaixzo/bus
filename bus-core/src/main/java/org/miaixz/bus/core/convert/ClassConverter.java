@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.lang.reflect.Type;
 
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -39,7 +40,8 @@ import org.miaixz.bus.core.xyz.ClassKit;
  */
 public class ClassConverter extends AbstractConverter implements MatcherConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278079597L;
 
     /**
      * 单例

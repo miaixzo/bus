@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.galaxy.data;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,7 +60,8 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  */
 public class Fragments extends ArrayList<Object> implements Value {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852551095596L;
 
     private final VR vr;
     private final boolean bigEndian;

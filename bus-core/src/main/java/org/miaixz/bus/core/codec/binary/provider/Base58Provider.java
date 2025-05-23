@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.codec.binary.provider;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
  */
 public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852273838309L;
 
     /**
      * 单例

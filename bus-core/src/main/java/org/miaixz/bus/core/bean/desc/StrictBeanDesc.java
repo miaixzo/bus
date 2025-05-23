@@ -27,10 +27,12 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
+import java.io.Serial;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 
@@ -49,7 +51,8 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class StrictBeanDesc extends AbstractBeanDesc {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852237166958L;
 
     /**
      * 方法和字段匹配是否忽略大小写
@@ -107,7 +110,7 @@ public class StrictBeanDesc extends AbstractBeanDesc {
                 return false;
             }
 
-            if (StringKit.startWith(fieldName, "is", ignoreCase)) {
+            if (StringKit.startWith(fieldName, Normal.IS, ignoreCase)) {
                 // isName -》 isName
                 if (StringKit.equals(fieldName, m.getName(), ignoreCase)) {
                     return true;
@@ -116,7 +119,7 @@ public class StrictBeanDesc extends AbstractBeanDesc {
 
             // name - isName
             // isName - isIsName
-            return StringKit.equals(StringKit.upperFirstAndAddPre(fieldName, "is"), m.getName(), ignoreCase);
+            return StringKit.equals(StringKit.upperFirstAndAddPre(fieldName, Normal.IS), m.getName(), ignoreCase);
         });
     }
 
@@ -141,10 +144,10 @@ public class StrictBeanDesc extends AbstractBeanDesc {
                 return false;
             }
 
-            if (StringKit.startWith(fieldName, "is", ignoreCase)) {
-                // isName -》 setName
-                return StringKit.equals("set" + StringKit.removePrefix(fieldName, "is", ignoreCase), m.getName(),
-                        ignoreCase);
+            if (StringKit.startWith(fieldName, Normal.IS, ignoreCase)) {
+                // isName - setName
+                return StringKit.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS, ignoreCase),
+                        m.getName(), ignoreCase);
             }
 
             // 其它不匹配
@@ -153,42 +156,9 @@ public class StrictBeanDesc extends AbstractBeanDesc {
     }
 
     /**
-     * 初始化 只有与属性关联的相关Getter和Setter方法才会被读取，无关的getXXX和setXXX都被忽略
+     * 普通Bean初始化 只有与属性关联的相关Getter和Setter方法才会被读取，无关的getXXX和setXXX都被忽略
      */
     private void init() {
-        if (RecordKit.isRecord(getBeanClass())) {
-            initForRecord();
-        } else {
-            initForBean();
-        }
-    }
-
-    /**
-     * 针对Record类的反射初始化
-     */
-    private void initForRecord() {
-        final Class<?> beanClass = this.beanClass;
-        final Map<String, PropDesc> propMap = this.propMap;
-
-        final Method[] getters = MethodKit.getPublicMethods(beanClass, method -> 0 == method.getParameterCount());
-        // 排除静态属性和对象子类
-        final Field[] fields = FieldKit.getFields(beanClass,
-                field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
-        for (final Field field : fields) {
-            for (final Method getter : getters) {
-                if (field.getName().equals(getter.getName())) {
-                    // record对象，getter方法与字段同名
-                    final PropDesc prop = new PropDesc(field, getter, null);
-                    propMap.putIfAbsent(prop.getFieldName(), prop);
-                }
-            }
-        }
-    }
-
-    /**
-     * 普通Bean初始化
-     */
-    private void initForBean() {
         final Class<?> beanClass = this.beanClass;
         final Map<String, PropDesc> propMap = this.propMap;
 

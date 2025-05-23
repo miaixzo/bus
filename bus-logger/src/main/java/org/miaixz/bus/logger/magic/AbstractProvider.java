@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.logger.magic;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.xyz.ExceptionKit;
@@ -42,7 +43,8 @@ import org.miaixz.bus.logger.Provider;
  */
 public abstract class AbstractProvider implements Provider, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852701056510L;
 
     private static final String FQCN = AbstractProvider.class.getName();
 

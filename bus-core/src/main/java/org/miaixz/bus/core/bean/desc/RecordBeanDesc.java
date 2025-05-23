@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
+import java.io.Serial;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.ModifierKit;
  */
 public class RecordBeanDesc extends AbstractBeanDesc {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852237098559L;
 
     /**
      * 构造

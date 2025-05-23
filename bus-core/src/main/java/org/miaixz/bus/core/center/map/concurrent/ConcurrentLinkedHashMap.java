@@ -29,6 +29,7 @@ package org.miaixz.bus.core.center.map.concurrent;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,6 +88,9 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
 public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         implements ConcurrentMap<K, V>, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852268251008L;
+
     /**
      * The number of CPUs
      */
@@ -131,7 +135,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * The maximum number of write operations to perform per amortized drain.
      */
     static final int WRITE_BUFFER_DRAIN_THRESHOLD = 16;
-    private static final long serialVersionUID = -1L;
 
     // The backing data store holding the data-value associations
     final ConcurrentMap<K, Node<K, V>> data;
@@ -168,7 +171,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         // The data store and its maximum capacity
         concurrencyLevel = builder.concurrencyLevel;
         capacity = new AtomicLong(Math.min(builder.capacity, MAXIMUM_CAPACITY));
-        data = new SafeConcurrentHashMap<>(builder.initialCapacity, Normal.DEFAULT_LOAD_FACTOR, concurrencyLevel);
+        data = new ConcurrentHashMap<>(builder.initialCapacity, Normal.DEFAULT_LOAD_FACTOR, concurrencyLevel);
 
         // The eviction support
         weigher = builder.weigher;
@@ -1057,7 +1060,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * A weigher that enforces that the selector falls within a valid range.
      */
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
-        private static final long serialVersionUID = -1L;;
+        @Serial
+        private static final long serialVersionUID = 2853159653136L;;
         final EntryWeigher<? super K, ? super V> weigher;
 
         BoundedEntryWeigher(final EntryWeigher<? super K, ? super V> weigher) {
@@ -1083,7 +1087,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * data that is recomputable and serialization would tend to be used as a fast warm-up process.
      */
     static final class SerializationProxy<K, V> implements Serializable {
-        private static final long serialVersionUID = -1L;;
+        @Serial
+        private static final long serialVersionUID = 2853159653136L;;
         final EntryWeigher<? super K, ? super V> weigher;
         final BiConsumer<K, V> listener;
         final int concurrencyLevel;
@@ -1493,7 +1498,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * An entry that allows updates to write through to the map.
      */
     final class WriteThroughEntry extends SimpleEntry<K, V> {
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2853159653136L;
 
         WriteThroughEntry(final Node<K, V> node) {
             super(node.key, node.getValue());

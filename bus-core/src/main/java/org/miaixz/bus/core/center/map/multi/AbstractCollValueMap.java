@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,11 +54,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collection<V>> implements MultiValueMap<K, V> {
 
+    @Serial
+    private static final long serialVersionUID = 2852268699398L;
+
     /**
      * 默认集合初始大小
      */
     protected static final int DEFAULT_COLLECTION_INITIAL_CAPACITY = 3;
-    private static final long serialVersionUID = -1L;
 
     /**
      * 使用{@code mapFactory}创建的集合构造一个多值映射Map集合

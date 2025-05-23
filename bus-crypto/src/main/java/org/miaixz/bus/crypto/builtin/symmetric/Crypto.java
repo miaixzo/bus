@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.crypto.builtin.symmetric;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.concurrent.locks.Lock;
@@ -66,7 +63,8 @@ import org.miaixz.bus.crypto.cipher.JceCipher;
  */
 public class Crypto implements Encryptor, Decryptor, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852336671079L;
 
     /**
      * 锁操作

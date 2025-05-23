@@ -29,6 +29,7 @@ package org.miaixz.bus.core.io.file;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class FileAppender implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852287703209L;
 
     private final FileWriter writer;
     /**

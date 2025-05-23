@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.xyz.CollKit;
  */
 public class Graph<T> extends SetValueMap<T, T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852268867311L;
 
     /**
      * 添加边

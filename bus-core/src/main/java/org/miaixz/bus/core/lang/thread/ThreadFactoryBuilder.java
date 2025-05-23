@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
+import java.io.Serial;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852313681926L;
 
     /**
      * 用于线程创建的线程工厂类

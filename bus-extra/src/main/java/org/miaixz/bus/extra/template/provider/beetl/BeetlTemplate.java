@@ -28,6 +28,7 @@
 package org.miaixz.bus.extra.template.provider.beetl;
 
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Map;
@@ -42,7 +43,8 @@ import org.miaixz.bus.extra.template.Template;
  */
 public class BeetlTemplate implements Template, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852361269976L;
 
     private final org.beetl.core.Template rawTemplate;
 

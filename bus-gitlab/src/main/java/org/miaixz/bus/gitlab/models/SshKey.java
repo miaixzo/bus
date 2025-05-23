@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -36,7 +37,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class SshKey implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852385710978L;
 
     private Long id;
     private String title;

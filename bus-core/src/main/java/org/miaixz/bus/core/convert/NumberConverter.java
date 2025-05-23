@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -62,11 +63,13 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class NumberConverter extends AbstractConverter implements MatcherConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852279075735L;
+
     /**
      * 单例
      */
     public static final NumberConverter INSTANCE = new NumberConverter();
-    private static final long serialVersionUID = -1L;
 
     /**
      * 转换对象为数字，支持的对象包括：

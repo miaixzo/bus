@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.XmlKit;
  */
 public class StringConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279902193L;
 
     private Map<Class<?>, Function<Object, String>> stringer;
 

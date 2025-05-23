@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,7 +50,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class PartitionIterator<T> implements IterableIterator<List<T>>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852265650768L;
 
     /**
      * 被分批的迭代器

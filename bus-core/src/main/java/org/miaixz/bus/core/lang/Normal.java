@@ -620,6 +620,11 @@ public class Normal {
     public static final String CLASSPATH = "classpath:";
 
     /**
+     * 针对project路径的伪协议前缀: "project:"
+     */
+    public static final String PROJECT_URL_PREFIX = "project:";
+
+    /**
      * 元数据: "META-INF"
      */
     public static final String META_INF = "META-INF";

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.util.Currency;
 
 /**
@@ -37,7 +38,8 @@ import java.util.Currency;
  */
 public class CurrencyConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278385316L;
 
     @Override
     protected Currency convertInternal(final Class<?> targetClass, final Object value) {

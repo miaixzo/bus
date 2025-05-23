@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serial;
 import java.text.Collator;
 import java.util.Locale;
 
@@ -38,7 +39,8 @@ import java.util.Locale;
  */
 public class LocaleCompare extends NullCompare<String> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276757153L;
 
     /**
      * 构造

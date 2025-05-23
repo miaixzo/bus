@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -40,7 +41,8 @@ import org.miaixz.bus.image.Tag;
  */
 public class Issuer implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852551509083L;
 
     private String localNamespaceEntityID;
     private String universalEntityID;

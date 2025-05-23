@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -41,7 +42,8 @@ import java.util.NoSuchElementException;
  */
 public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238923080L;
 
     private final Iterator<CacheObject<K, V>> iterator;
     private CacheObject<K, V> nextValue;

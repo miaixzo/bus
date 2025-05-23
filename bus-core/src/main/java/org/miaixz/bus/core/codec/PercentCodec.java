@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.core.codec;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.BitSet;
@@ -63,7 +60,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852272588297L;
 
     /**
      * 存放安全编码
@@ -186,7 +184,8 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
      * {@link PercentCodec}构建器 由于{@link PercentCodec}本身应该是只读对象，因此将此对象的构建放在Builder中
      */
     public static class Builder implements org.miaixz.bus.core.Builder<PercentCodec> {
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852739331089L;
         private final PercentCodec codec;
 
         private Builder(final PercentCodec codec) {

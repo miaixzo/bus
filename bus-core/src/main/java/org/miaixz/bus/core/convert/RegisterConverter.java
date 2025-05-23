@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -38,6 +39,7 @@ import java.nio.file.Path;
 import java.time.*;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLongArray;
@@ -45,7 +47,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.center.set.ConcurrentHashSet;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -67,7 +68,9 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class RegisterConverter extends ConverterWithRoot implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279718306L;
+
     /**
      * 默认类型转换器
      */
@@ -97,7 +100,7 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
      * @return 默认转换器
      */
     private static Map<Class<?>, Converter> initDefault(final Converter rootConverter) {
-        final Map<Class<?>, Converter> converterMap = new SafeConcurrentHashMap<>(64);
+        final Map<Class<?>, Converter> converterMap = new ConcurrentHashMap<>(64);
 
         // 包装类转换器
         converterMap.put(Character.class, CharacterConverter.INSTANCE);
@@ -248,7 +251,7 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
         if (null == customConverterMap) {
             synchronized (this) {
                 if (null == customConverterMap) {
-                    customConverterMap = new SafeConcurrentHashMap<>();
+                    customConverterMap = new ConcurrentHashMap<>();
                 }
             }
         }

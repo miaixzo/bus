@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.extra.template;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -40,12 +41,14 @@ import org.miaixz.bus.core.lang.Charset;
  */
 public class TemplateConfig implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852360909562L;
+
     /**
      * 默认配置
      */
     public static final TemplateConfig DEFAULT = new TemplateConfig();
 
-    private static final long serialVersionUID = -1L;
     /**
      * 编码
      */
@@ -78,6 +81,11 @@ public class TemplateConfig implements Serializable {
     public TemplateConfig(final String path) {
         this(path, ResourceMode.STRING);
     }
+
+    /**
+     * 是否使用缓存
+     */
+    private boolean useCache = true;
 
     /**
      * 构造，默认UTF-8编码
@@ -188,6 +196,26 @@ public class TemplateConfig implements Serializable {
         return this;
     }
 
+    /**
+     * 是否使用缓存
+     *
+     * @return 是否使用缓存
+     */
+    public boolean isUseCache() {
+        return useCache;
+    }
+
+    /**
+     * 设置是否使用缓存
+     *
+     * @param useCache 是否使用缓存
+     * @return this
+     */
+    public TemplateConfig setUseCache(boolean useCache) {
+        this.useCache = useCache;
+        return this;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -231,4 +259,5 @@ public class TemplateConfig implements Serializable {
          */
         COMPOSITE
     }
+
 }

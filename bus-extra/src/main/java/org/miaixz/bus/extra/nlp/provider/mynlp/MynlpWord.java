@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mynlp;
 
+import java.io.Serial;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 import com.mayabot.nlp.segment.WordTerm;
@@ -39,7 +41,8 @@ import com.mayabot.nlp.segment.WordTerm;
  */
 public class MynlpWord implements NLPWord {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852357305297L;
 
     private final WordTerm word;
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.pool;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -43,7 +44,8 @@ import java.io.Serializable;
  */
 public class PoolConfig implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852308013627L;
     /**
      * 最小（初始）池大小
      */

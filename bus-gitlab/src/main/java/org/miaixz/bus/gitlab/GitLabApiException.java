@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -44,7 +45,8 @@ import jakarta.ws.rs.core.Response.StatusType;
  */
 public class GitLabApiException extends Exception {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852363301899L;
 
     private StatusType statusInfo;
     private int httpStatus;

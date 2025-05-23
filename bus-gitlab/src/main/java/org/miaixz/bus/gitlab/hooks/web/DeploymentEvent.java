@@ -33,7 +33,8 @@ public class DeploymentEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Deployment Hook";
     public static final String OBJECT_KIND = "deployment";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852369078887L;
     private String status;
     private String statusChangedAt;
     private Long deployableId;

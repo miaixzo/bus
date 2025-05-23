@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.check.crc16;
 
+import java.io.Serial;
+
 /**
  * CRC16_ANSI
  *
@@ -35,7 +37,8 @@ package org.miaixz.bus.core.io.check.crc16;
  */
 public class CRC16Ansi extends CRC16Checksum {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852285109971L;
 
     private static final int WC_POLY = 0xa001;
 

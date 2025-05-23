@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,7 +42,8 @@ import java.util.TreeMap;
  */
 public class CaseInsensitiveTreeMap<K, V> extends CaseInsensitiveMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852266827666L;
 
     /**
      * 构造

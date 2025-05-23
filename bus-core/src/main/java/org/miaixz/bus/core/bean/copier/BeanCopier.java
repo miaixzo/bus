@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.bean.copier;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -50,7 +51,8 @@ import org.miaixz.bus.core.lang.copier.Copier;
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852235816032L;
 
     private final Copier<T> copier;
 

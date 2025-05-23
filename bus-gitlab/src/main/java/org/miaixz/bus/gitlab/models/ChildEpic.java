@@ -31,7 +31,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ChildEpic extends AbstractEpic<ChildEpic> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852373750559L;
 
     public String toString() {
         return (JacksonJson.toJsonString(this));

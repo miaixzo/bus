@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.dfa;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -55,7 +56,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class WordTree extends HashMap<Character, WordTree> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852320167021L;
 
     /**
      * 单词字符末尾标识，用于标识单词末尾字符

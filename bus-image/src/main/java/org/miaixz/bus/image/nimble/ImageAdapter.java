@@ -30,8 +30,8 @@ package org.miaixz.bus.image.nimble;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferUShort;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
@@ -48,7 +48,7 @@ import org.opencv.core.CvType;
  */
 public class ImageAdapter {
 
-    private static final Map<LutParameters, LookupTableCV> LUT_Cache = MapKit.newSafeConcurrentHashMap();
+    private static final Map<LutParameters, LookupTableCV> LUT_Cache = new ConcurrentHashMap();
 
     private final ImageDescriptor desc;
     private final MinMaxLocResult minMax;

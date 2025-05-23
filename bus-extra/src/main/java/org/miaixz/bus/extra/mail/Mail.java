@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.extra.mail;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Date;
 
@@ -57,7 +54,8 @@ import jakarta.mail.util.ByteArrayDataSource;
  */
 public class Mail implements Builder<MimeMessage> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852353795275L;
 
     /**
      * 邮箱帐户信息以及一些客户端配置信息

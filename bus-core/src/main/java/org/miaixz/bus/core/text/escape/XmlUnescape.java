@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.escape;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.text.replacer.LookupReplacer;
 import org.miaixz.bus.core.text.replacer.ReplacerChain;
 
@@ -38,11 +40,13 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  */
 public class XmlUnescape extends ReplacerChain {
 
+    @Serial
+    private static final long serialVersionUID = 2852320639723L;
+
     /**
      * 基础反转义符
      */
     protected static final String[][] BASIC_UNESCAPE = invert(XmlEscape.BASIC_ESCAPE);
-    private static final long serialVersionUID = -1L;
 
     /**
      * 构造

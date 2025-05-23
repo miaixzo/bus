@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,7 +41,8 @@ import java.util.Set;
  */
 public class LookupReplacer extends StringReplacer {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852322730555L;
 
     private final Map<String, String> lookupMap;
     private final Set<Character> keyPrefixSkeyet;

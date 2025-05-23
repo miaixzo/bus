@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.cache.CacheListener;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Optional;
@@ -43,7 +45,8 @@ import org.miaixz.bus.core.lang.ref.Ref;
  */
 public class WeakCache<K, V> extends TimedCache<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852239535183L;
 
     /**
      * 构造

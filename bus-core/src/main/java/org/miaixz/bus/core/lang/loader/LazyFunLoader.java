@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
+import java.io.Serial;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class LazyFunLoader<T> extends LazyLoader<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852305112970L;
 
     /**
      * 用于生成对象的函数

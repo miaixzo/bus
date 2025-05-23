@@ -29,17 +29,18 @@ package org.miaixz.bus.setting.metric.props;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.io.watch.SimpleWatcher;
@@ -61,16 +62,12 @@ import org.miaixz.bus.setting.Setting;
  */
 public final class Props extends java.util.Properties implements TypeGetter<CharSequence> {
 
-    /**
-     * 默认配置文件扩展名
-     */
-    public static final String EXT_NAME = "properties";
-
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852778898398L;
     /**
      * 配置文件缓存
      */
-    private static final Map<String, Props> CACHE_PROPS = new SafeConcurrentHashMap<>();
+    private static final Map<String, Props> CACHE_PROPS = new ConcurrentHashMap<>();
     /**
      * 属性文件的Resource
      */
@@ -301,7 +298,8 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
             // 先关闭之前的监听
             IoKit.closeQuietly(this.watchMonitor);
             this.watchMonitor = WatchKit.ofModify(this.resource.getUrl(), new SimpleWatcher() {
-                private static final long serialVersionUID = -1L;
+                @Serial
+                private static final long serialVersionUID = 2853080953378L;
 
                 @Override
                 public void onModify(final WatchEvent<?> event, final WatchKey key) {

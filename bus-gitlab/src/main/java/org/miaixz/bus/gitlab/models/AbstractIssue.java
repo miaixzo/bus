@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +44,8 @@ import com.fasterxml.jackson.databind.node.ValueNode;
 
 public abstract class AbstractIssue implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852371517217L;
 
     private Assignee assignee;
     private List<Assignee> assignees;
@@ -351,7 +353,8 @@ public abstract class AbstractIssue implements Serializable {
 
     public static class TaskCompletionStatus implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852680213999L;
 
         private Integer count;
         private Integer completedCount;

@@ -495,7 +495,7 @@ public abstract class SegmentLock<L> {
      * 填充锁，避免缓存行干扰。
      */
     private static class PaddedLock extends ReentrantLock {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2852313959201L;
 
         long unused1;
         long unused2;
@@ -510,7 +510,7 @@ public abstract class SegmentLock<L> {
      * 填充信号量，避免缓存行干扰。
      */
     private static class PaddedSemaphore extends Semaphore {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2852852007265L;
 
         long unused1;
         long unused2;

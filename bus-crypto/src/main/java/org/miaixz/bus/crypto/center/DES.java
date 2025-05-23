@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
@@ -44,7 +46,8 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  */
 public class DES extends Crypto {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337233027L;
 
     /**
      * 构造，默认DES/ECB/PKCS5Padding，使用随机密钥

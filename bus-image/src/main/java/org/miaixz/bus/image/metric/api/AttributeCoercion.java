@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric.api;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -43,7 +44,8 @@ import org.miaixz.bus.image.metric.TransferCapability;
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852672660882L;
 
     private final String commonName;
     private final Condition condition;
@@ -134,7 +136,8 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     private static class Condition implements Serializable, Comparable<Condition> {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852253190918L;
 
         final String[] sopClasses;
         final Dimse dimse;

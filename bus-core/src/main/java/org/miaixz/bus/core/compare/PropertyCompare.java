@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
@@ -38,7 +40,8 @@ import org.miaixz.bus.core.xyz.BeanKit;
  */
 public class PropertyCompare<T> extends FunctionCompare<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276917303L;
 
     /**
      * 构造，默认{@code null}排在后（从小到大排序）

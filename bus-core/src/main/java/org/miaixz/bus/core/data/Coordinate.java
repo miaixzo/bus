@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -247,7 +248,8 @@ public class Coordinate {
      */
     public static class Point implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852281072302L;
 
         /**
          * 经度

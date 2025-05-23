@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.services;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class NotificationService implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2852387311385L;
 
     public static final String WEBHOOK_PROP = "webhook";
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";
@@ -59,7 +63,7 @@ public abstract class NotificationService implements Serializable {
     public static final String ISSUES_URL_PROP = "issues_url";
     public static final String PROJECT_URL_PROP = "project_url";
     public static final String PUSH_EVENTS_PROP = "push_events";
-    private static final long serialVersionUID = -1L;
+
     private Long id;
     private String title;
     private String slug;

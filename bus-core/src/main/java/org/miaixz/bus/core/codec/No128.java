@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.codec;
 
+import java.io.Serial;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
@@ -42,7 +43,8 @@ import java.util.Objects;
  */
 public class No128 extends Number implements Comparable<No128> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852272509611L;
 
     /**
      * 最高有效位（Most Significant Bit），64 bit（8 bytes）

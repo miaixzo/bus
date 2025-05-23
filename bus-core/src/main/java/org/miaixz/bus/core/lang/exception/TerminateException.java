@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
+import java.io.Serial;
+
 /**
  * 类型: 终止/结束
  * 
@@ -35,7 +37,8 @@ package org.miaixz.bus.core.lang.exception;
  */
 public class TerminateException extends UncheckedException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852302269015L;
 
     /**
      * 构造

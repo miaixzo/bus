@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.check.crc16;
 
+import java.io.Serial;
+
 /**
  * CRC16_CCITT_FALSE：多项式x16+x12+x5+1（0x1021），初始值0xFFFF，低位在后，高位在前，结果与0x0000异或
  *
@@ -34,7 +36,9 @@ package org.miaixz.bus.core.io.check.crc16;
  * @since Java 17+
  */
 public class CRC16CCITTFalse extends CRC16Checksum {
-    private static final long serialVersionUID = -1L;
+
+    @Serial
+    private static final long serialVersionUID = 2852285221823L;
 
     private static final int WC_POLY = 0x1021;
 
@@ -59,4 +63,5 @@ public class CRC16CCITTFalse extends CRC16Checksum {
                 wCRCin ^= WC_POLY;
         }
     }
+
 }

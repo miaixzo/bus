@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -36,7 +37,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class SharedGroup implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852385551856L;
 
     private Long groupId;
     private String groupName;

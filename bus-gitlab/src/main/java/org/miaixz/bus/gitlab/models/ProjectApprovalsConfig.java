@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -35,7 +36,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ProjectApprovalsConfig implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852382180673L;
 
     private Integer approvalsBeforeMerge;
     private Boolean resetApprovalsOnPush;

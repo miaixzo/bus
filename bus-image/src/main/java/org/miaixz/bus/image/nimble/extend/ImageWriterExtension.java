@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.image.nimble.extend;
 
+import java.io.Serial;
+
 import org.miaixz.bus.image.metric.net.DeviceExtension;
 import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
 
@@ -36,7 +38,8 @@ import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
  */
 public class ImageWriterExtension extends DeviceExtension {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852688237827L;
 
     public volatile ImageWriterFactory factory;
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.bouncycastle.crypto.AlphabetMapper;
@@ -56,7 +57,8 @@ import org.miaixz.bus.crypto.Padding;
  */
 public class FPE implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337350165L;
 
     /**
      * 映射字符表，规定了明文和密文的字符范围

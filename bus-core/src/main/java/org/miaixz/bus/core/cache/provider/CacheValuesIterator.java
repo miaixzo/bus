@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 
@@ -39,7 +40,8 @@ import java.util.Iterator;
  */
 public class CacheValuesIterator<V> implements Iterator<V>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238965701L;
 
     private final CacheObjectIterator<?, V> cacheObjIter;
 

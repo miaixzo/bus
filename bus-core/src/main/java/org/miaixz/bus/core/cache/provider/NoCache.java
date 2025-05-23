@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.util.Iterator;
 
 import org.miaixz.bus.core.cache.Cache;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.center.function.SupplierX;
  */
 public class NoCache<K, V> implements Cache<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852239261111L;
 
     @Override
     public int capacity() {

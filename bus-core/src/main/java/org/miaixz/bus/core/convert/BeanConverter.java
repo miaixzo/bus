@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -53,7 +54,8 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class BeanConverter implements Converter, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852277629867L;
 
     /**
      * 单例对象

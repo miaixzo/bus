@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -37,7 +39,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CharRangeReplacer extends StringReplacer {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852322599131L;
 
     private final int beginInclude;
     private final int endExclude;

@@ -28,6 +28,7 @@
 package org.miaixz.bus.image;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
@@ -62,7 +63,8 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
  */
 public class Device implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852536836780L;
 
     /**
      * AE可以发起的最大开放关联数

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.proxy.invoker;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.proxy.Aspect;
@@ -39,7 +40,8 @@ import org.miaixz.bus.proxy.Aspect;
  */
 public class Interceptor implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852772639126L;
 
     protected final Object target;
     protected final Aspect aspect;

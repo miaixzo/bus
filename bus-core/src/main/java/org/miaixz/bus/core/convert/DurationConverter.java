@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 
@@ -38,7 +39,8 @@ import java.time.temporal.TemporalAmount;
  */
 public class DurationConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278572609L;
 
     @Override
     protected Duration convertInternal(final Class<?> targetClass, final Object value) {

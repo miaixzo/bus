@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.crypto.center;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.security.MessageDigest;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -52,7 +49,8 @@ import org.miaixz.bus.core.xyz.IoKit;
  */
 public class Mac implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337666506L;
     /**
      * Mac引擎
      */

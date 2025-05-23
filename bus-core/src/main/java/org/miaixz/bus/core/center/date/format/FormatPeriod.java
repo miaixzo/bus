@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.format;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Function;
 
@@ -47,7 +48,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class FormatPeriod implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852261393090L;
 
     /**
      * 格式化级别的最大个数

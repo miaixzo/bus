@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.xyz.BooleanKit;
 
 /**
@@ -46,11 +48,13 @@ import org.miaixz.bus.core.xyz.BooleanKit;
  */
 public class BooleanConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852277710089L;
+
     /**
      * 单例
      */
     public static final BooleanConverter INSTANCE = new BooleanConverter();
-    private static final long serialVersionUID = -1L;
 
     @Override
     protected Boolean convertInternal(final Class<?> targetClass, final Object value) {

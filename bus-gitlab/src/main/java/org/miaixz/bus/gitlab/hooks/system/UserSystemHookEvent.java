@@ -37,7 +37,8 @@ public class UserSystemHookEvent extends AbstractSystemHookEvent {
     public static final String USER_DESTROY_EVENT = "user_destroy";
     public static final String USER_RENAME_EVENT = "user_rename";
     public static final String USER_FAILED_LOGIN_EVENT = "user_failed_login";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852368686239L;
     private String eventName;
     private Date createdAt;
     private Date updatedAt;

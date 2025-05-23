@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.escape;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.replacer.StringReplacer;
 import org.miaixz.bus.core.xyz.CharKit;
@@ -39,7 +41,8 @@ import org.miaixz.bus.core.xyz.CharKit;
  */
 public class NumericEntityUnescaper extends StringReplacer {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852320516557L;
 
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {

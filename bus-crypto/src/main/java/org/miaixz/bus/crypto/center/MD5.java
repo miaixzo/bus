@@ -29,6 +29,7 @@ package org.miaixz.bus.crypto.center;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serial;
 import java.nio.charset.Charset;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -44,7 +45,8 @@ import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
  */
 public class MD5 extends Digester {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337615762L;
 
     /**
      * MD5算法不使用BC库，使用JDK默认以提高初始性能

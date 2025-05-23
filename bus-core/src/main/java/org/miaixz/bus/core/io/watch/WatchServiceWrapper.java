@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.io.watch;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.file.*;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +53,8 @@ import org.miaixz.bus.core.xyz.IoKit;
  */
 public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements WatchService, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852293217297L;
 
     /**
      * 监听事件列表，如新建、修改、删除等

@@ -28,6 +28,7 @@
 package org.miaixz.bus.setting;
 
 import java.io.File;
+import java.io.Serial;
 import java.net.URL;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -37,6 +38,7 @@ import java.util.function.Consumer;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.io.watch.DelayWatcher;
 import org.miaixz.bus.core.io.watch.SimpleWatcher;
 import org.miaixz.bus.core.io.watch.WatchMonitor;
 import org.miaixz.bus.core.lang.Assert;
@@ -63,6 +65,9 @@ import org.miaixz.bus.setting.metric.props.Props;
  */
 public class Setting extends AbstractSetting implements Map<String, String> {
 
+    @Serial
+    private static final long serialVersionUID = 2852776815029L;
+
     /**
      * 默认字符集
      */
@@ -71,7 +76,6 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * 默认配置文件扩展名
      */
     public static final String EXT_NAME = "setting";
-    private static final long serialVersionUID = -1L;
     /**
      * 本设置对象的字符集
      */
@@ -206,8 +210,9 @@ public class Setting extends AbstractSetting implements Map<String, String> {
         Assert.notNull(this.resource, "Setting resource must be not null !");
         // 先关闭之前的监听
         IoKit.closeQuietly(this.watchMonitor);
-        this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new SimpleWatcher() {
-            private static final long serialVersionUID = -1L;
+        this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new DelayWatcher(new SimpleWatcher() {
+            @Serial
+            private static final long serialVersionUID = 2852560512835L;
 
             @Override
             public void onModify(final WatchEvent<?> event, final WatchKey key) {
@@ -217,7 +222,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
                     callback.accept(Setting.this);
                 }
             }
-        });
+        }, 600));
         this.watchMonitor.start();
         Logger.debug("Auto load for [{}] listenning...", this.resource.getUrl());
     }

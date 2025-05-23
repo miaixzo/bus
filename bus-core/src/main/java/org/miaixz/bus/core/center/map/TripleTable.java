@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.ListKit;
  */
 public class TripleTable<L, M, R> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852268196092L;
 
     private final List<L> lefts;
     private final List<M> middles;

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
@@ -45,7 +47,8 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  */
 public class TDEA extends Crypto {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852338132697L;
 
     /**
      * 构造，默认DESede/ECB/PKCS5Padding，使用随机密钥

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.office.csv;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.xyz.ListKit;
  */
 public class CsvData implements Iterable<CsvRow>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852728895310L;
 
     private final List<String> header;
     private final List<CsvRow> rows;

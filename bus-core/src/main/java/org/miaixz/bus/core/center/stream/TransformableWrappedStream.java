@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.center.stream;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
@@ -35,7 +36,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.mutable.MutableInt;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
@@ -238,7 +238,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     default <F> EasyStream<T> distinct(final Function<? super T, F> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
         if (isParallel()) {
-            final SafeConcurrentHashMap<F, Boolean> exists = new SafeConcurrentHashMap<>();
+            final ConcurrentHashMap<F, Boolean> exists = new ConcurrentHashMap<>();
             // 标记是否出现过null值，用于保留第一个出现的null
             // 由于ConcurrentHashMap的key不能为null，所以用此变量来标记
             final AtomicBoolean hasNull = new AtomicBoolean(false);

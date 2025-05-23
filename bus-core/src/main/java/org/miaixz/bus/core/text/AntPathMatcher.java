@@ -28,10 +28,10 @@
 package org.miaixz.bus.core.text;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -79,8 +79,8 @@ public class AntPathMatcher {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{[^/]+?}");
 
     private static final char[] WILDCARD_CHARS = { Symbol.C_STAR, Symbol.C_QUESTION_MARK, '{' };
-    private final Map<String, String[]> tokenizedPatternCache = new SafeConcurrentHashMap<>(256);
-    private final Map<String, AntPathStringMatcher> stringMatcherCache = new SafeConcurrentHashMap<>(256);
+    private final Map<String, String[]> tokenizedPatternCache = new ConcurrentHashMap<>(256);
+    private final Map<String, AntPathStringMatcher> stringMatcherCache = new ConcurrentHashMap<>(256);
     private String pathSeparator;
     private PathSeparatorPatternCache pathSeparatorPatternCache;
     private boolean caseSensitive = true;

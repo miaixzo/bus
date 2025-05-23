@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -38,7 +39,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class Assets implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852372720531L;
 
     private Integer count;
     private List<Source> sources;
@@ -83,7 +85,8 @@ public class Assets implements Serializable {
     }
 
     public static class Source implements Serializable {
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852891112165L;
 
         private ArchiveFormat format;
         private String url;
@@ -112,7 +115,8 @@ public class Assets implements Serializable {
 
     public static class Link implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852891112165L;
 
         private Long id;
         private String name;

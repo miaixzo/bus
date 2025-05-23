@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.pager;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -38,7 +39,8 @@ import java.util.List;
  */
 public class Serialize<T> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852752281686L;
 
     /**
      * 总记录数

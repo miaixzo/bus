@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.util.Map;
 
 import org.miaixz.bus.core.xyz.MapKit;
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class StackTraceElementConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279876385L;
 
     @Override
     protected StackTraceElement convertInternal(final Class<?> targetClass, final Object value) {

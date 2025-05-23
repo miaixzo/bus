@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -41,7 +42,8 @@ import java.util.function.Consumer;
  */
 public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267036797L;
 
     /**
      * 容量，超过此容量自动删除末尾元素

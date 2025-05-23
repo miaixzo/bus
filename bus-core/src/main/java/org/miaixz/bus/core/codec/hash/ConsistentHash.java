@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.codec.hash;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.SortedMap;
@@ -46,7 +47,9 @@ import org.miaixz.bus.core.xyz.HashKit;
  */
 public class ConsistentHash<T> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852275030272L;
+
     /**
      * 复制的节点个数
      */

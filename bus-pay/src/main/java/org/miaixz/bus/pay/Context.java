@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.pay;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -47,7 +48,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Context implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852759136135L;
 
     /**
      * 应用编号

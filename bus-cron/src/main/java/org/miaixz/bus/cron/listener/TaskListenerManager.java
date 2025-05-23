@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cron.listener;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,8 @@ import org.miaixz.bus.logger.Logger;
  */
 public class TaskListenerManager implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852331855306L;
 
     private final List<TaskListener> listeners = new ArrayList<>();
 

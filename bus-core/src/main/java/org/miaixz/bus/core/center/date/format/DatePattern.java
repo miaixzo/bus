@@ -30,9 +30,9 @@ package org.miaixz.bus.core.center.date.format;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.DateException;
 
@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
  */
 public class DatePattern {
 
-    private static final ConcurrentMap<TimeZoneDisplayKey, String> C_TIME_ZONE_DISPLAY_CACHE = new SafeConcurrentHashMap<>(
+    private static final ConcurrentMap<TimeZoneDisplayKey, String> C_TIME_ZONE_DISPLAY_CACHE = new ConcurrentHashMap<>(
             7);
     /**
      * 规则列表
@@ -131,14 +131,11 @@ public class DatePattern {
      * @return a new rule with the correct padding
      */
     protected static NumberRule selectNumberRule(final int field, final int padding) {
-        switch (padding) {
-        case 1:
-            return new UnpaddedNumberField(field);
-        case 2:
-            return new TwoDigitNumberField(field);
-        default:
-            return new PaddedNumberField(field, padding);
-        }
+        return switch (padding) {
+        case 1 -> new UnpaddedNumberField(field);
+        case 2 -> new TwoDigitNumberField(field);
+        default -> new PaddedNumberField(field, padding);
+        };
     }
 
     /**
@@ -986,16 +983,12 @@ public class DatePattern {
          *         IllegalArgumentException will be thrown.
          */
         static Iso8601_Rule getRule(final int tokenLen) {
-            switch (tokenLen) {
-            case 1:
-                return Iso8601_Rule.ISO8601_HOURS;
-            case 2:
-                return Iso8601_Rule.ISO8601_HOURS_MINUTES;
-            case 3:
-                return Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
-            default:
-                throw new IllegalArgumentException("invalid number of X");
-            }
+            return switch (tokenLen) {
+            case 1 -> Iso8601_Rule.ISO8601_HOURS;
+            case 2 -> Iso8601_Rule.ISO8601_HOURS_MINUTES;
+            case 3 -> Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
+            default -> throw new IllegalArgumentException("invalid number of X");
+            };
         }
 
         @Override
@@ -1070,8 +1063,7 @@ public class DatePattern {
             if (this == obj) {
                 return true;
             }
-            if (obj instanceof TimeZoneDisplayKey) {
-                final TimeZoneDisplayKey other = (TimeZoneDisplayKey) obj;
+            if (obj instanceof TimeZoneDisplayKey other) {
                 return mTimeZone.equals(other.mTimeZone) && mStyle == other.mStyle && mLocale.equals(other.mLocale);
             }
             return false;

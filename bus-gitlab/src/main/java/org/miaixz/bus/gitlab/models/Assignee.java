@@ -31,7 +31,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Assignee extends AbstractUser<Assignee> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852372776030L;
 
     @Override
     public String toString() {

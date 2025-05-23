@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
@@ -42,6 +43,9 @@ import org.miaixz.bus.core.xyz.DateKit;
  */
 public final class Expression implements Serializable, Cloneable {
 
+    @Serial
+    private static final long serialVersionUID = 2852330703289L;
+
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     protected static final int SECOND = 0;
     protected static final int MINUTE = 1;
@@ -56,7 +60,6 @@ public final class Expression implements Serializable, Cloneable {
     protected static final Integer NO_SPEC = NO_SPEC_INT;
     protected static final Map<String, Integer> monthMap = new HashMap<>(20);
     protected static final Map<String, Integer> dayMap = new HashMap<>(60);
-    private static final long serialVersionUID = -1L;
 
     static {
         monthMap.put("JAN", 0);

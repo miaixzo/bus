@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.lang.Chain;
  */
 public class ReplacerChain extends StringReplacer implements Chain<StringReplacer, ReplacerChain> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852322831266L;
 
     private final List<StringReplacer> replacers = new LinkedList<>();
 

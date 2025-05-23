@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serial;
 import java.util.Locale;
 
 /**
@@ -37,7 +38,8 @@ import java.util.Locale;
  */
 public class PinyinCompare extends LocaleCompare {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276829000L;
 
     /**
      * 构造，{@code null}最大，排在最后

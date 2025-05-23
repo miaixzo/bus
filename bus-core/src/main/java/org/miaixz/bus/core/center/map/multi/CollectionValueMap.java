@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +48,8 @@ import org.miaixz.bus.core.center.function.SupplierX;
  */
 public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852268787096L;
 
     private final SupplierX<Collection<V>> collFactory;
 

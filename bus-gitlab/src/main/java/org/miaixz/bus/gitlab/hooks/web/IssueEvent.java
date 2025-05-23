@@ -36,7 +36,8 @@ public class IssueEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Issue Hook";
     public static final String OBJECT_KIND = "issue";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852370335788L;
     private EventUser user;
     private EventProject project;
     private EventRepository repository;

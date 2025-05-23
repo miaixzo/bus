@@ -28,6 +28,7 @@
 package org.miaixz.bus.extra.template.provider.thymeleaf;
 
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.Writer;
 import java.util.Locale;
@@ -50,7 +51,8 @@ import org.thymeleaf.context.Context;
  */
 public class ThymeleafTemplate implements Template, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852361867506L;
 
     private final TemplateEngine engine;
     private final String template;
@@ -85,7 +87,7 @@ public class ThymeleafTemplate implements Template, Serializable {
 
     @Override
     public void render(final Map<?, ?> bindingMap, final Writer writer) {
-        final Map<String, Object> map = Convert.convert(new TypeReference<Map<String, Object>>() {
+        final Map<String, Object> map = Convert.convert(new TypeReference<>() {
         }, bindingMap);
         final Context context = new Context(Locale.getDefault(), map);
         this.engine.process(this.template, context, writer);

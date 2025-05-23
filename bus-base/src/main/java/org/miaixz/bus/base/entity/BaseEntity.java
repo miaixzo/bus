@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.base.entity;
 
+import java.io.Serial;
 import java.util.List;
 
 import org.miaixz.bus.core.basic.entity.Tracer;
@@ -56,7 +57,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class BaseEntity extends Tracer {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852227757913L;
 
     /**
      * 数据状态:-1删除,0无效,1正常

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
@@ -49,7 +50,8 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class CompositeConverter implements Converter, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278158995L;
 
     private RegisterConverter registerConverter;
     private SpecialConverter specialConverter;

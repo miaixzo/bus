@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.tree;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,7 +40,8 @@ import java.util.Objects;
  */
 public class TreeNode<T> implements Node<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852323685700L;
 
     /**
      * ID

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.check.crc16;
 
+import java.io.Serial;
+
 /**
  * CRC16_DNP：多项式x16+x13+x12+x11+x10+x8+x6+x5+x2+1（0x3D65），初始值0x0000，低位在前，高位在后，结果与0xFFFF异或 0xA6BC是0x3D65按位颠倒后的结果
  *
@@ -34,7 +36,9 @@ package org.miaixz.bus.core.io.check.crc16;
  * @since Java 17+
  */
 public class CRC16DNP extends CRC16Checksum {
-    private static final long serialVersionUID = -1L;
+
+    @Serial
+    private static final long serialVersionUID = 2852285367508L;
 
     private static final int WC_POLY = 0xA6BC;
 
@@ -56,4 +60,5 @@ public class CRC16DNP extends CRC16Checksum {
             }
         }
     }
+
 }

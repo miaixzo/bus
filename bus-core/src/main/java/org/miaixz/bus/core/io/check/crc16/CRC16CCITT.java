@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.check.crc16;
 
+import java.io.Serial;
+
 /**
  * CRC16_CCITT：多项式x16+x12+x5+1（0x1021），初始值0x0000，低位在前，高位在后，结果与0x0000异或 0x8408是0x1021按位颠倒后的结果。
  *
@@ -34,7 +36,9 @@ package org.miaixz.bus.core.io.check.crc16;
  * @since Java 17+
  */
 public class CRC16CCITT extends CRC16Checksum {
-    private static final long serialVersionUID = -1L;
+
+    @Serial
+    private static final long serialVersionUID = 2852285212781L;
 
     private static final int WC_POLY = 0x8408;
 
@@ -50,4 +54,5 @@ public class CRC16CCITT extends CRC16Checksum {
             }
         }
     }
+
 }

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Normal;
 
 /**
@@ -35,10 +37,12 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class HL7Exception extends Exception {
 
+    @Serial
+    private static final long serialVersionUID = 2852673750607L;
+
     public static final String AA = "AA";
     public static final String AR = "AR";
     public static final String AE = "AE";
-    private static final long serialVersionUID = -1L;
     private final String ack;
     private final HL7Segment err;
 

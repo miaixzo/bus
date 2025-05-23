@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -54,7 +55,8 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
  */
 public class RSA extends Crypto {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337808009L;
 
     /**
      * 构造，生成新的私钥公钥对

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.tree;
 
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,7 +49,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class TreeBuilder<E> implements Builder<MapTree<E>> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852323655060L;
 
     private final Map<E, MapTree<E>> idTreeMap;
     private boolean isBuild;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric.api;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +43,8 @@ import org.miaixz.bus.image.metric.TransferCapability;
  */
 public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852672757181L;
 
     private final List<AttributeCoercion> list = new ArrayList<>();
 

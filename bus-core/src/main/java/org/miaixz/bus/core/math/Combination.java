@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.math;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class Combination implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852316272819L;
 
     private final String[] datas;
 

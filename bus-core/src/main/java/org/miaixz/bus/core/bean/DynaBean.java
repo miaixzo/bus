@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.bean;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +48,9 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class DynaBean implements Cloneable, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852235609071L;
+
     /**
      * bean类
      */

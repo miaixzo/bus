@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.lang.pool.partition;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -47,7 +48,8 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  */
 public class PartitionObjectPool<T> implements ObjectPool<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852308281891L;
 
     private final PartitionPoolConfig config;
     /**

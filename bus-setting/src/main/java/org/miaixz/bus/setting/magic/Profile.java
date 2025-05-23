@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.setting.magic;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -52,15 +53,13 @@ import org.miaixz.bus.setting.Setting;
  */
 public class Profile implements Serializable {
 
-    /**
-     * 默认环境
-     */
-    public static final String DEFAULT_PROFILE = "default";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852777705978L;
+
     /**
      * 配置文件缓存
      */
-    private final Map<String, Setting> settingMap = new SafeConcurrentHashMap<>();
+    private final Map<String, Setting> settingMap = new ConcurrentHashMap<>();
     /**
      * 条件
      */
@@ -78,7 +77,7 @@ public class Profile implements Serializable {
      * 默认构造，环境使用默认的：default，编码UTF-8，不使用变量
      */
     public Profile() {
-        this(DEFAULT_PROFILE);
+        this("default");
     }
 
     /**

@@ -27,13 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852371612695L;
 
     private Long id;
     private Long iid;

@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.models;
 import static org.miaixz.bus.gitlab.Constants.MergeRequestScope.ALL;
 import static org.miaixz.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -51,7 +52,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public class MergeRequestFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852380537985L;
 
     private Long projectId;
     private Long groupId;

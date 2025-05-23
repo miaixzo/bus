@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.convert;
 
 import java.io.File;
+import java.io.Serial;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
@@ -41,7 +42,8 @@ import java.nio.file.Paths;
  */
 public class PathConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279306568L;
 
     @Override
     protected Path convertInternal(final Class<?> targetClass, final Object value) {

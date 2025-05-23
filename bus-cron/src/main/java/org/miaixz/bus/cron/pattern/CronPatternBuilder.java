@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.cron.pattern;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -42,7 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CronPatternBuilder implements Builder<String> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852332096080L;
 
     final String[] parts = new String[7];
 

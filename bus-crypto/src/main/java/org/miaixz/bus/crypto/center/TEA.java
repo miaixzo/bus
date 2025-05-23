@@ -29,6 +29,7 @@ package org.miaixz.bus.crypto.center;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -43,7 +44,8 @@ import org.miaixz.bus.crypto.builtin.symmetric.Encryptor;
  */
 public class TEA implements Encryptor, Decryptor, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852338197783L;
 
     /**
      * 密钥调度常数

@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.tree;
 
 import java.io.PrintWriter;
+import java.io.Serial;
 import java.io.StringWriter;
 import java.util.*;
 import java.util.function.Consumer;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852323397993L;
 
     private final NodeConfig nodeConfig;
     private MapTree<T> parent;

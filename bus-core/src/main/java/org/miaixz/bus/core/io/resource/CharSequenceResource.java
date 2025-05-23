@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.resource;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ByteKit;
 
@@ -38,7 +40,8 @@ import org.miaixz.bus.core.xyz.ByteKit;
  */
 public class CharSequenceResource extends BytesResource {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852289395123L;
 
     /**
      * 由于{@link java.nio.charset.Charset} 无法序列化，此处使用编码名称

@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.metric.net;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
@@ -57,7 +58,9 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ApplicationEntity implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852678253961L;
+
     private final LinkedHashSet<String> acceptedCallingAETs = new LinkedHashSet<>();
     private final LinkedHashSet<String> otherAETs = new LinkedHashSet<>();
     private final LinkedHashSet<String> noAsyncModeCalledAETs = new LinkedHashSet<>();

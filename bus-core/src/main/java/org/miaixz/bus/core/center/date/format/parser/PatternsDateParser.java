@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.lang.exception.DateException;
  */
 public class PatternsDateParser implements DateParser, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852261771592L;
 
     private String[] patterns;
     private Locale locale;

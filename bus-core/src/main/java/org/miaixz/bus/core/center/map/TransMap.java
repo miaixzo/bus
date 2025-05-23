@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -42,7 +43,8 @@ import java.util.function.Supplier;
  */
 public abstract class TransMap<K, V> extends MapWrapper<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852268059836L;
 
     /**
      * 构造 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改

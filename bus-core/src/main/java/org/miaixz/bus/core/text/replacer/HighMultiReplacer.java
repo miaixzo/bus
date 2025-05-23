@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -40,7 +41,8 @@ import java.util.Map;
  */
 public class HighMultiReplacer extends StringReplacer {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852322629385L;
 
     private final AhoCorasickAutomaton ahoCorasickAutomaton;
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -51,7 +52,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, InvocationHandler, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267691505L;
 
     Map map;
 

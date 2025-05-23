@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -37,7 +38,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class IssueEvent implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852378297370L;
 
     private Long id;
     private User user;

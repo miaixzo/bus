@@ -27,9 +27,11 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -38,7 +40,6 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.cache.CacheListener;
 import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
 
@@ -56,11 +57,13 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
  */
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238806525L;
+
     /**
      * 写的时候每个key一把锁，降低锁的粒度
      */
-    protected final Map<K, Lock> keyLockMap = new SafeConcurrentHashMap<>();
+    protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
     /**
      * Map缓存
      */

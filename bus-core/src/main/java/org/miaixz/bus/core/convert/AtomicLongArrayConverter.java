@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.util.concurrent.atomic.AtomicLongArray;
 
 /**
@@ -37,7 +38,8 @@ import java.util.concurrent.atomic.AtomicLongArray;
  */
 public class AtomicLongArrayConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852277318916L;
 
     @Override
     protected AtomicLongArray convertInternal(final Class<?> targetClass, final Object value) {

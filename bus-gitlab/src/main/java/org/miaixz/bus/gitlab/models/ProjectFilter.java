@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -41,7 +42,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class ProjectFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852382375215L;
 
     private Boolean archived;
     private Visibility visibility;

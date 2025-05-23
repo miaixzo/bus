@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.UnaryOperator;
 
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class StringStripper implements UnaryOperator<CharSequence>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852319273650L;
 
     private final CharSequence prefix;
     private final CharSequence suffix;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
@@ -41,7 +42,8 @@ import java.util.Objects;
  */
 public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator<E>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852263931881L;
 
     /**
      * 数组

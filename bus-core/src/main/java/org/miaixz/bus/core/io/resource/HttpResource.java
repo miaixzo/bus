@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.io.resource;
 
 import java.io.InputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.URL;
 
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class HttpResource implements Resource, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852289758963L;
 
     private final Resource resource;
     private final String contentType;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852266719586L;
 
     /**
      * 构造

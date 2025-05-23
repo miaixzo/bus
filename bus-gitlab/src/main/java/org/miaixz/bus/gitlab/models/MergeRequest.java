@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class MergeRequest implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852380289258L;
 
     private Boolean allowCollaboration;
     private Boolean allowMaintainerToPush;

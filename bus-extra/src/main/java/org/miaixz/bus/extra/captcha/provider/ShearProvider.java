@@ -29,6 +29,7 @@ package org.miaixz.bus.extra.captcha.provider;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serial;
 
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -46,7 +47,8 @@ import org.miaixz.bus.extra.image.ImageKit;
  */
 public class ShearProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852350261738L;
 
     /**
      * 构造

@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.metric.net;
 
 import java.io.IOException;
+import java.io.Serial;
 
 import org.miaixz.bus.image.UID;
 
@@ -37,7 +38,8 @@ import org.miaixz.bus.image.UID;
  */
 public class NoPresentationException extends IOException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852679071588L;
 
     public NoPresentationException(String cuid) {
         super(toMessage(cuid));

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class DeployToken implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852375596679L;
 
     private Long id;
     private String name;

@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.office.csv;
 
-import java.io.File;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +50,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class CsvBaseReader implements Serializable {
 
-    /**
-     * 默认编码
-     */
-    protected static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852728795162L;
+
     private final CsvReadConfig config;
 
     /**
@@ -129,7 +124,7 @@ public class CsvBaseReader implements Serializable {
      * @throws InternalException IO异常
      */
     public CsvData read(final File file) throws InternalException {
-        return read(file, DEFAULT_CHARSET);
+        return read(file, Charset.UTF_8);
     }
 
     /**
@@ -172,7 +167,7 @@ public class CsvBaseReader implements Serializable {
      * @throws InternalException IO异常
      */
     public CsvData read(final Path path) throws InternalException {
-        return read(path, DEFAULT_CHARSET);
+        return read(path, Charset.UTF_8);
     }
 
     /**

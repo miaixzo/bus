@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +38,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class ProjectFetches implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852382357122L;
 
     private Fetches fetches;
 
@@ -56,7 +58,8 @@ public class ProjectFetches implements Serializable {
 
     public static class DateCount implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852232572173L;
 
         private Integer count;
 
@@ -81,7 +84,8 @@ public class ProjectFetches implements Serializable {
     }
 
     public static class Fetches implements Serializable {
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852232572173L;
 
         private Integer total;
         private List<DateCount> days;

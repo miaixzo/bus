@@ -281,8 +281,8 @@ public class FileKit extends PathResolve {
         }
 
         // 如果用户需要相对项目路径，则使用project:前缀
-        if (path.startsWith("project:")) {
-            return new File(path);
+        if (path.startsWith(Normal.PROJECT_URL_PREFIX)) {
+            return new File(StringKit.subSuf(path, Normal.PROJECT_URL_PREFIX.length()));
         }
 
         return new File(getAbsolutePath(path));

@@ -176,7 +176,7 @@ public class ObjectValidator {
         if (null == object) {
             return true;
         } else if (object instanceof CharSequence) {
-            return 0 == ((CharSequence) object).length();
+            return ((CharSequence) object).isEmpty();
         }
         return false;
     }

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.printer;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852262579598L;
 
     private final DatePattern datePattern;
     /**

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.codec.binary.provider;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -42,6 +43,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]>, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852273750818L;
+
     /**
      * 编码解码器：小写
      */
@@ -50,7 +54,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * 编码解码器：大写
      */
     public static final Base16Provider CODEC_UPPER = new Base16Provider(false);
-    private static final long serialVersionUID = -1L;
+
     private final char[] alphabets;
 
     /**

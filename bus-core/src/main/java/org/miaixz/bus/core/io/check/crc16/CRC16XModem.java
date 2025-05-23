@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.check.crc16;
 
+import java.io.Serial;
+
 /**
  * CRC-CCITT (XModem) CRC16_XMODEM：多项式x16+x12+x5+1（0x1021），初始值0x0000，低位在后，高位在前，结果与0x0000异或
  *
@@ -34,7 +36,9 @@ package org.miaixz.bus.core.io.check.crc16;
  * @since Java 17+
  */
 public class CRC16XModem extends CRC16Checksum {
-    private static final long serialVersionUID = -1L;
+
+    @Serial
+    private static final long serialVersionUID = 2852285899695L;
 
     // 0001 0000 0010 0001 (0, 5, 12)
     private static final int WC_POLY = 0x1021;
@@ -55,4 +59,5 @@ public class CRC16XModem extends CRC16Checksum {
                 wCRCin ^= WC_POLY;
         }
     }
+
 }

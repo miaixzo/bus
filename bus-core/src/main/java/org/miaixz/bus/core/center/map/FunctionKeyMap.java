@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -40,7 +41,8 @@ import java.util.function.Function;
  */
 public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267150621L;
 
     private final Function<Object, K> keyFunc;
 

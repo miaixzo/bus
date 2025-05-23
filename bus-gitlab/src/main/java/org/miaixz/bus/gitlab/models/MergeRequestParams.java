@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +40,8 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
  */
 public class MergeRequestParams implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852380586885L;
 
     private String sourceBranch;
     private String targetBranch;

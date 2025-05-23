@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.core.io.file;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.Stack;
@@ -57,11 +54,14 @@ import org.miaixz.bus.core.xyz.WatchKit;
  */
 public class FileTailer implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852288072893L;
+
     /**
      * 控制台打印的处理类
      */
     public static final ConsumerX<String> CONSOLE_HANDLER = new ConsoleLineHandler();
-    private static final long serialVersionUID = -1L;
+
     /**
      * 编码
      */
@@ -191,7 +191,8 @@ public class FileTailer implements Serializable {
             fileWatchMonitor = WatchKit.of(this.filePath, WatchKind.DELETE.getValue());
             fileWatchMonitor.setWatcher(new SimpleWatcher() {
 
-                private static final long serialVersionUID = -1L;
+                @Serial
+                private static final long serialVersionUID = 2852571830580L;
 
                 @Override
                 public void onDelete(final WatchEvent<?> event, final WatchKey key) {
@@ -291,7 +292,8 @@ public class FileTailer implements Serializable {
      * 命令行打印的行处理器
      */
     public static class ConsoleLineHandler implements ConsumerX<String> {
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852571830580L;
 
         @Override
         public void accepting(final String line) {

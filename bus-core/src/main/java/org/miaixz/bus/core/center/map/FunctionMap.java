@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -41,7 +42,8 @@ import java.util.function.Supplier;
  */
 public class FunctionMap<K, V> extends TransMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267188216L;
 
     private final Function<Object, K> keyFunc;
     private final Function<Object, V> valueFunc;

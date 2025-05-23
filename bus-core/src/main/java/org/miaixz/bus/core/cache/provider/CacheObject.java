@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.DateKit;
  */
 public class CacheObject<K, V> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238899708L;
 
     /**
      * 键

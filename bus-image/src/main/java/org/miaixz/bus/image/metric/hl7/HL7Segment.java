@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class HL7Segment implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852673931789L;
 
     private static final AtomicInteger nextMessageControlID = new AtomicInteger(new Random().nextInt());
 

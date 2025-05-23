@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.caller;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -39,7 +40,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  */
 public class StackTraceCaller implements Caller, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852299505765L;
+
     private static final int OFFSET = 2;
 
     @Override

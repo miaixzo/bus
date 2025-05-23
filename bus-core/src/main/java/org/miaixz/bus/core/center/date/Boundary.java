@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.date;
 
+import java.io.Serial;
 import java.util.Date;
 
 import org.miaixz.bus.core.center.date.culture.en.Various;
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.xyz.DateKit;
  */
 public class Boundary extends Range<DateTime> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852250313703L;
 
     /**
      * 构造，包含开始和结束日期时间

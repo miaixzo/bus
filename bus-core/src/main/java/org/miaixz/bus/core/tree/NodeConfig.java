@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.tree;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -37,11 +38,14 @@ import java.io.Serializable;
  */
 public class NodeConfig implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852323580692L;
+
     /**
      * 默认属性配置对象
      */
     public static final NodeConfig DEFAULT_CONFIG = new NodeConfig();
-    private static final long serialVersionUID = -1L;
+
     /**
      * 属性名配置字段
      */

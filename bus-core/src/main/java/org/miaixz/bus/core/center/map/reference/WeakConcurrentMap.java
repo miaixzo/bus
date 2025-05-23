@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.core.center.map.reference;
 
+import java.io.Serial;
 import java.lang.ref.ReferenceQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.ref.Ref;
 import org.miaixz.bus.core.lang.ref.WeakObject;
 
@@ -44,13 +45,14 @@ import org.miaixz.bus.core.lang.ref.WeakObject;
  */
 public class WeakConcurrentMap<K, V> extends ReferenceConcurrentMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852269530263L;
 
     /**
      * 构造
      */
     public WeakConcurrentMap() {
-        this(new SafeConcurrentHashMap<>());
+        this(new ConcurrentHashMap<>());
     }
 
     /**

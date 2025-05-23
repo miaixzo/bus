@@ -29,6 +29,7 @@ package org.miaixz.bus.core.io.resource;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.file.Path;
@@ -47,7 +48,8 @@ import org.miaixz.bus.core.xyz.UrlKit;
  */
 public class FileResource implements Resource, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852289670390L;
 
     private final File file;
     private final long lastModified;

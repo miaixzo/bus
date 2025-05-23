@@ -33,7 +33,8 @@ public class ReleaseEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Release Hook";
     public static final String OBJECT_KIND = "release";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852370929806L;
     private Long id;
     private String createdAt;
     private String description;

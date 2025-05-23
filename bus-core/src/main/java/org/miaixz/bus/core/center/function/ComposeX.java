@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.function;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.Function;
 
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class ComposeX<A, B, C> implements Function<A, C>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852263020893L;
 
     private final Function<B, C> g;
     private final Function<A, ? extends B> f;

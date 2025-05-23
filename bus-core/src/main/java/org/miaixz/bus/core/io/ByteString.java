@@ -54,11 +54,13 @@ import org.miaixz.bus.core.xyz.IoKit;
  */
 public class ByteString implements Serializable, Comparable<ByteString> {
 
+    @Serial
+    private static final long serialVersionUID = 2852282672175L;
+
     /**
      * A singleton empty {@code ByteString}.
      */
     public static final ByteString EMPTY = ByteString.of();
-    private static final long serialVersionUID = -1L;
     public final byte[] data;
     public transient int hashCode; // Lazily computed; 0 if unknown.
     public transient String utf8; // Lazily computed.

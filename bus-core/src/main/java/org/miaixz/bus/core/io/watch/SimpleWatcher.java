@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.io.watch;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -39,7 +40,8 @@ import java.nio.file.WatchKey;
  */
 public class SimpleWatcher implements Watcher, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852293076583L;
 
     @Override
     public void onCreate(final WatchEvent<?> event, final WatchKey key) {

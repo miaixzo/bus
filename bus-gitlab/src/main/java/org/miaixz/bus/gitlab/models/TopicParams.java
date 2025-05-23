@@ -28,6 +28,7 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.File;
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -41,7 +42,8 @@ import org.miaixz.bus.gitlab.TopicsApi;
  */
 public class TopicParams implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852386173087L;
 
     private String name;
     private String title;

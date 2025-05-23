@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.nimble.codec;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +40,8 @@ import java.util.List;
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852686105370L;
 
     private final List<CompressionRule> list = new ArrayList<>();
 

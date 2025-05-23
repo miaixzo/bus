@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.bloom;
 
+import java.io.Serial;
+
 /**
  * 组合BloomFilter 实现 1.构建hash算法 2.散列hash映射到数组的bit位置 3.验证 此实现方式可以指定Hash算法
  *
@@ -35,7 +37,8 @@ package org.miaixz.bus.core.text.bloom;
  */
 public class CombinedBloomFilter implements BloomFilter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852319692172L;
 
     private final BloomFilter[] filters;
 

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -46,11 +47,13 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class EnumConverter extends AbstractConverter implements MatcherConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852278797878L;
+
     /**
      * 单例
      */
     public static final EnumConverter INSTANCE = new EnumConverter();
-    private static final long serialVersionUID = -1L;
     private static final WeakConcurrentMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakConcurrentMap<>();
 
     /**

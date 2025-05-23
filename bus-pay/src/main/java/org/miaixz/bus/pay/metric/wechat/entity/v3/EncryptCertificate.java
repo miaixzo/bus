@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +49,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class EncryptCertificate implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852771057399L;
 
     private String algorithm;
     private String nonce;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
@@ -50,11 +51,13 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
  */
 public class PrimitiveConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852279552707L;
+
     /**
      * 单例对象
      */
     public static final PrimitiveConverter INSTANCE = new PrimitiveConverter();
-    private static final long serialVersionUID = -1L;
 
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {

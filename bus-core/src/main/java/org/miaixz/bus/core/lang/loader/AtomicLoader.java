@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -48,7 +49,8 @@ import org.miaixz.bus.core.Loader;
  */
 public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852303673669L;
 
     /**
      * 被加载对象的引用

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -53,7 +54,8 @@ import org.miaixz.bus.core.xyz.SetKit;
  */
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852266972060L;
     /**
      * 是否大小写不敏感
      */

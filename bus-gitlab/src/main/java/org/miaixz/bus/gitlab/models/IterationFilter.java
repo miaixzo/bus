@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -41,7 +42,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class IterationFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852378763063L;
 
     /**
      * Return opened, upcoming, current, closed, or all iterations.

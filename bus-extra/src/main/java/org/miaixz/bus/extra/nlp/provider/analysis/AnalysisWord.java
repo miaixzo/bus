@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.nlp.provider.analysis;
 
+import java.io.Serial;
+
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.util.Attribute;
@@ -40,7 +42,8 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  */
 public class AnalysisWord implements NLPWord {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852355653777L;
 
     private final Attribute word;
 

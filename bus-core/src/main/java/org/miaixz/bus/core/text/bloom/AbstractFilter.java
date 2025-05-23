@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.bloom;
 
+import java.io.Serial;
 import java.util.BitSet;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -39,7 +40,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public abstract class AbstractFilter implements BloomFilter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852319597252L;
 
     /**
      * 增长向量

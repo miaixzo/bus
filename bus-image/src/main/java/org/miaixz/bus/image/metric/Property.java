@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
@@ -37,7 +38,8 @@ import java.util.Locale;
  */
 public class Property implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852672139737L;
 
     private final String name;
     private final Object value;

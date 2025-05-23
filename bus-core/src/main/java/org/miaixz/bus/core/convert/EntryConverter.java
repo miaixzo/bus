@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -52,7 +53,8 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class EntryConverter extends ConverterWithRoot implements MatcherConverter, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278703325L;
 
     /**
      * 构造

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -40,7 +41,8 @@ import java.util.Iterator;
  */
 public class EnumerationIterator<E> implements IterableIterator<E>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852265115163L;
 
     private final Enumeration<E> e;
 

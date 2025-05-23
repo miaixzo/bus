@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.time.*;
 import java.time.chrono.Era;
 import java.time.chrono.IsoEra;
@@ -61,8 +62,11 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class TemporalAccessorConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852279967573L;
+
     public static final TemporalAccessorConverter INSTANCE = new TemporalAccessorConverter();
-    private static final long serialVersionUID = -1L;
+
     /**
      * 日期格式化
      */

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CalendarConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852277808165L;
 
     /**
      * 日期格式化

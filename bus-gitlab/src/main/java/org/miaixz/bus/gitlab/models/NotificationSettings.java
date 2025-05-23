@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -37,7 +38,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class NotificationSettings implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852381009976L;
 
     private Level level;
     private String email;
@@ -99,7 +101,8 @@ public class NotificationSettings implements Serializable {
 
     public static class Events implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852228655517L;
 
         private Boolean newNote;
         private Boolean newIssue;

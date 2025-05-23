@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -34,7 +35,8 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 
 public class ApprovalRuleParams implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852372169965L;
 
     private Integer approvalsRequired;
     private String name;

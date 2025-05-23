@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.math;
 
 import java.io.File;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -57,7 +58,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class Money implements Serializable, Comparable<Money> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852316565858L;
     /**
      * 一组可能的元/分换算比例。 此处，“分”是指货币的最小单位，“元”是货币的最常用单位， 不同的币种有不同的元/分换算比例，如人民币是100，而日元为1。
      */

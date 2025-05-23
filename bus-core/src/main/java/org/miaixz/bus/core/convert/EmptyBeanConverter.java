@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
@@ -41,11 +42,13 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  */
 public class EmptyBeanConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852278651832L;
+
     /**
      * 单例
      */
     public static final EmptyBeanConverter INSTANCE = new EmptyBeanConverter();
-    private static final long serialVersionUID = -1L;
 
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {

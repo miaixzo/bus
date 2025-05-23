@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.metric.pdu;
 
 import java.io.IOException;
+import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Normal;
 
@@ -36,6 +37,9 @@ import org.miaixz.bus.core.lang.Normal;
  * @since Java 17+
  */
 public class AAssociateRJ extends IOException {
+
+    @Serial
+    private static final long serialVersionUID = 2852680119797L;
 
     public static final int RESULT_REJECTED_PERMANENT = 1;
     public static final int RESULT_REJECTED_TRANSIENT = 2;
@@ -49,7 +53,6 @@ public class AAssociateRJ extends IOException {
     public static final int REASON_PROTOCOL_VERSION_NOT_SUPPORTED = 2;
     public static final int REASON_TEMPORARY_CONGESTION = 1;
     public static final int REASON_LOCAL_LIMIT_EXCEEDED = 2;
-    private static final long serialVersionUID = -1L;
     private static final String[] RESULTS = { "0", "1 - rejected-permanent", "2 - rejected-transient" };
 
     private static final String[] SOURCES = { "0", "1 - service-user", "2 - service-provider (ACSE related function)",

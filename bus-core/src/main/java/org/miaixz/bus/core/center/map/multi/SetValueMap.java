@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -40,7 +41,8 @@ import java.util.function.Supplier;
  */
 public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852269085050L;
 
     /**
      * 基于{@code mapFactory}创建一个值为{@link Set}的多值映射集合

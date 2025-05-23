@@ -33,7 +33,8 @@ public class WikiPageEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Wiki Page Hook";
     public static final String OBJECT_KIND = "wiki_page";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852371153356L;
     private EventUser user;
     private EventProject project;
     private Wiki wiki;

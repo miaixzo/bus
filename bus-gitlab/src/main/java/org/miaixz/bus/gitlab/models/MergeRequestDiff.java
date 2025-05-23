@@ -33,7 +33,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class MergeRequestDiff extends MergeRequestVersion {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852380370238L;
 
     private List<Commit> commits;
     private List<Diff> diffs;

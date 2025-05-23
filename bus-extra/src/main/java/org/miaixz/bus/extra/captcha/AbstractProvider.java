@@ -29,10 +29,7 @@ package org.miaixz.bus.extra.captcha;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Normal;
@@ -52,7 +49,8 @@ import org.miaixz.bus.extra.image.ImageKit;
  */
 public abstract class AbstractProvider implements CaptchaProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852339731031L;
 
     /**
      * 图片的宽度

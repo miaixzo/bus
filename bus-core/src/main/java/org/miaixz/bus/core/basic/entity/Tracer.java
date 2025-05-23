@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
+
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,7 +49,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Tracer extends OAuth2 {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852233770066L;
 
     /**
      * 当前主链ID

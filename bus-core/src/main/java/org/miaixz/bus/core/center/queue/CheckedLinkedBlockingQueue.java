@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.queue;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +42,8 @@ import java.util.function.Predicate;
  */
 public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852269876916L;
 
     /**
      * 检查函数

@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.io.resource;
 
 import java.io.File;
+import java.io.Serial;
 
 import org.miaixz.bus.core.xyz.FileKit;
 
@@ -39,7 +40,8 @@ import org.miaixz.bus.core.xyz.FileKit;
  */
 public class WebAppResource extends FileResource {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852290517022L;
 
     /**
      * 构造

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
@@ -45,7 +46,8 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class SpecialConverter extends ConverterWithRoot implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279785339L;
 
     /**
      * 类型转换器集合 此集合初始化后不再加入新值，因此单例使用线程安全

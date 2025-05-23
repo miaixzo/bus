@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.tree;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.LambdaKit;
  */
 public class LambdaNodeConfig<T, R> extends NodeConfig {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852323328178L;
 
     private FunctionX<T, R> idKeyFun;
     private FunctionX<T, R> parentIdKeyFun;

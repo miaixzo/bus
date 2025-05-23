@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 
@@ -46,7 +47,8 @@ import org.miaixz.bus.crypto.builtin.digest.mac.MacFactory;
  */
 public class HMac extends org.miaixz.bus.crypto.center.Mac {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852337501198L;
 
     /**
      * 构造，自动生成密钥

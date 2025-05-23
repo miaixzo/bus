@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.set;
 
+import java.io.Serial;
 import java.util.Collection;
 
 import org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap;
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852270718169L;
 
     /**
      * 构造

@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.nimble;
 
 import java.awt.color.ColorSpace;
+import java.io.Serial;
 
 /**
  * @author Kimi Liu
@@ -35,7 +36,8 @@ import java.awt.color.ColorSpace;
  */
 public final class YBRColorSpace extends ColorSpace {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852685780817L;
 
     private final ColorSpace csRGB;
     private final YBR ybr;

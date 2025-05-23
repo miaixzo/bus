@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.xyz.MapKit;
  */
 public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267359622L;
 
     private final Map<K, V> map;
 

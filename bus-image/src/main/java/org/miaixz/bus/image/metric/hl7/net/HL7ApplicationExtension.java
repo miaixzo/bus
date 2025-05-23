@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -35,7 +36,8 @@ import java.io.Serializable;
  */
 public class HL7ApplicationExtension implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852676065507L;
 
     protected HL7Application hl7App;
 

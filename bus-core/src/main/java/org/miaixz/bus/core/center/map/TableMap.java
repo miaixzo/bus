@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -47,7 +48,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267903600L;
 
     private static final int DEFAULT_CAPACITY = 10;
 

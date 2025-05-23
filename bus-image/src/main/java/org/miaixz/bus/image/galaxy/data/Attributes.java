@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.time.*;
 import java.time.temporal.Temporal;
 import java.util.*;
@@ -51,9 +48,11 @@ import org.miaixz.bus.logger.Logger;
  */
 public class Attributes implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852550507615L;
+
     public static final String COERCE = "COERCE";
     public static final String CORRECT = "CORRECT";
-    private static final long serialVersionUID = -1L;
     private static final int INIT_CAPACITY = 16;
     private static final int TO_STRING_LIMIT = 50;
     private static final int TO_STRING_WIDTH = 78;

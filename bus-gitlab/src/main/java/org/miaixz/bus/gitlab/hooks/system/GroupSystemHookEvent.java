@@ -36,7 +36,8 @@ public class GroupSystemHookEvent extends AbstractSystemHookEvent {
     public static final String GROUP_CREATE_EVENT = "group_create";
     public static final String GROUP_DESTROY_EVENT = "group_destroy";
     public static final String GROUP_RENAME_EVENT = "group_rename";
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852367859563L;
     private Date createdAt;
     private Date updatedAt;
     private String eventName;

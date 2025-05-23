@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.io.file;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.nio.file.*;
 
 import org.miaixz.bus.core.io.file.visitor.CopyVisitor;
@@ -44,7 +45,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852288723311L;
+
     private final CopyOption[] options;
 
     /**

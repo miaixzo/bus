@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,7 +39,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ChangelogPayload implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852373636612L;
 
     private String version;
     private String from;

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.set;
 
+import java.io.Serial;
 import java.util.Collection;
-
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 通过{@link SafeConcurrentHashMap}实现的线程安全HashSet
+ * 通过{@link ConcurrentHashMap}实现的线程安全HashSet
  *
  * @param <E> 元素类型
  * @author Kimi Liu
@@ -40,13 +40,14 @@ import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
  */
 public class ConcurrentHashSet<E> extends SetFromMap<E> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852270679599L;
 
     /**
      * 构造 触发因子为默认的0.75
      */
     public ConcurrentHashSet() {
-        super(new SafeConcurrentHashMap<>());
+        super(new ConcurrentHashMap<>());
     }
 
     /**
@@ -55,7 +56,7 @@ public class ConcurrentHashSet<E> extends SetFromMap<E> {
      * @param initialCapacity 初始大小
      */
     public ConcurrentHashSet(final int initialCapacity) {
-        super(new SafeConcurrentHashMap<>(initialCapacity));
+        super(new ConcurrentHashMap<>(initialCapacity));
     }
 
     /**
@@ -65,7 +66,7 @@ public class ConcurrentHashSet<E> extends SetFromMap<E> {
      * @param loadFactor      加载因子。此参数决定数据增长时触发的百分比
      */
     public ConcurrentHashSet(final int initialCapacity, final float loadFactor) {
-        super(new SafeConcurrentHashMap<>(initialCapacity, loadFactor));
+        super(new ConcurrentHashMap<>(initialCapacity, loadFactor));
     }
 
     /**
@@ -76,7 +77,7 @@ public class ConcurrentHashSet<E> extends SetFromMap<E> {
      * @param concurrencyLevel 线程并发度
      */
     public ConcurrentHashSet(final int initialCapacity, final float loadFactor, final int concurrencyLevel) {
-        super(new SafeConcurrentHashMap<>(initialCapacity, loadFactor, concurrencyLevel));
+        super(new ConcurrentHashMap<>(initialCapacity, loadFactor, concurrencyLevel));
     }
 
     /**
@@ -85,8 +86,8 @@ public class ConcurrentHashSet<E> extends SetFromMap<E> {
      * @param iter {@link Iterable}
      */
     public ConcurrentHashSet(final Iterable<E> iter) {
-        super(iter instanceof Collection ? new SafeConcurrentHashMap<>(((Collection<E>) iter).size())
-                : new SafeConcurrentHashMap<>());
+        super(iter instanceof Collection ? new ConcurrentHashMap<>(((Collection<E>) iter).size())
+                : new ConcurrentHashMap<>());
         if (iter instanceof Collection) {
             this.addAll((Collection<E>) iter);
         } else {

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serial;
 import java.security.spec.AlgorithmParameterSpec;
 
 import javax.crypto.SecretKey;
@@ -60,7 +61,8 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
  */
 public class AES extends Crypto {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852336912591L;
 
     /**
      * 构造，默认AES/ECB/PKCS5Padding，使用随机密钥

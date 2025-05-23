@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.builder;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -85,7 +86,8 @@ import org.miaixz.bus.core.center.function.Consumer3X;
  */
 public class GenericBuilder<T> implements Builder<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238060916L;
 
     /**
      * 实例化器

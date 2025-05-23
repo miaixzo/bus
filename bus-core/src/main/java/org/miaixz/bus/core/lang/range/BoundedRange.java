@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -107,7 +108,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class BoundedRange<T extends Comparable<? super T>> implements PredicateX<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852308803829L;
 
     /**
      * 双向无界的区间

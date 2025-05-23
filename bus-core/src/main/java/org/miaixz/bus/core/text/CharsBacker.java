@@ -3364,8 +3364,8 @@ public class CharsBacker extends CharsValidator {
      * @return 转换后的字符串
      * @see String#toLowerCase()
      */
-    public static String toLoweCase(final CharSequence text) {
-        return toLoweCase(text, Locale.getDefault());
+    public static String toLowerCase(final CharSequence text) {
+        return toLowerCase(text, Locale.getDefault());
     }
 
     /**
@@ -3376,7 +3376,7 @@ public class CharsBacker extends CharsValidator {
      * @return 转换后的字符串
      * @see String#toLowerCase()
      */
-    public static String toLoweCase(final CharSequence text, final Locale locale) {
+    public static String toLowerCase(final CharSequence text, final Locale locale) {
         if (null == text) {
             return null;
         }

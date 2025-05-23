@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.io.check;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.zip.Checksum;
 
@@ -38,7 +39,8 @@ import java.util.zip.Checksum;
  */
 public class CRC8 implements Checksum, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852285077312L;
 
     private final short init;
     private final short[] crcTable = new short[256];

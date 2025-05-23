@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.selector;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,7 +53,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852312517020L;
 
     /**
      * 随机元素池

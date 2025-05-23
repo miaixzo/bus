@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -36,7 +37,8 @@ import java.util.Objects;
  */
 public class ValueSelector implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852553003166L;
 
     private final AttributeSelector attributeSelector;
     private final int valueIndex;

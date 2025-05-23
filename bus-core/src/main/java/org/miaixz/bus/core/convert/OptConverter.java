@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Optional;
 
 /**
@@ -37,7 +39,8 @@ import org.miaixz.bus.core.lang.Optional;
  */
 public class OptConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279100706L;
 
     @Override
     protected Optional<?> convertInternal(final Class<?> targetClass, final Object value) {

@@ -61,7 +61,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class Images implements Flushable, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852352560300L;
 
     private final BufferedImage srcImage;
     private Image targetImage;

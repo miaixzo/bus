@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.Serial;
 import java.util.Iterator;
 
 import org.miaixz.bus.core.center.map.FixedLinkedHashMap;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
  */
 public class LRUCache<K, V> extends LockedCache<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852239159766L;
 
     /**
      * 构造 默认无超时

@@ -28,6 +28,7 @@
 package org.miaixz.bus.office.excel.style;
 
 import java.awt.*;
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.apache.poi.sl.usermodel.ShapeType;
@@ -40,7 +41,8 @@ import org.apache.poi.sl.usermodel.ShapeType;
  */
 public class ShapeConfig implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852735298353L;
 
     /**
      * 形状类型，如矩形、圆形等，默认直线

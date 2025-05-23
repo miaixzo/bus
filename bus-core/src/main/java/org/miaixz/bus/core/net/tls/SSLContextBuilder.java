@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.net.tls;
 
+import java.io.Serial;
 import java.security.*;
 import java.util.Arrays;
 
@@ -53,7 +54,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class SSLContextBuilder implements Builder<SSLContext> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852317756805L;
 
     private String protocol = Protocol.TLS.name;
     private KeyManager[] keyManagers;

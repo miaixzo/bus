@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
@@ -37,7 +39,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  */
 public class QrCodeException extends InternalException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852358925635L;
 
     /**
      * 构造

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serial;
 import java.lang.reflect.Field;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.xyz.FieldKit;
  */
 public class FieldsCompare<T> extends NullCompare<T> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276331587L;
 
     /**
      * 构造

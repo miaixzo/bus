@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.crypto.builtin;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -70,7 +71,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Certificate implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852335057563L;
 
     /**
      * 证书编号

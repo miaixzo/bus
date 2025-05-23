@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.net.url;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -53,7 +54,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class UrlDecoder implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852318132208L;
 
     /**
      * 解码，不对+解码

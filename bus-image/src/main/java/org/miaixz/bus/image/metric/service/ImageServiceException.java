@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.metric.service;
 
 import java.io.IOException;
+import java.io.Serial;
 
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Status;
@@ -42,7 +43,8 @@ import org.miaixz.bus.image.galaxy.data.ValidationResult;
  */
 public class ImageServiceException extends IOException {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852681787613L;
 
     private final Attributes rsp;
     private Attributes data;

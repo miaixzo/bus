@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.escape;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.text.replacer.LookupReplacer;
 import org.miaixz.bus.core.text.replacer.ReplacerChain;
 
@@ -37,6 +39,9 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  * @since Java 17+
  */
 public class Html4Escape extends ReplacerChain {
+
+    @Serial
+    private static final long serialVersionUID = 2852320282323L;
 
     /**
      * ISO8859_1 转义字符
@@ -335,7 +340,6 @@ public class Html4Escape extends ReplacerChain {
             // <!-- rsaquo is proposed but not yet ISO standardized -->
             { "\u20AC", "&euro;" }, // -- euro sign, U+20AC NEW -->
     };
-    private static final long serialVersionUID = -1L;
 
     /**
      * 构造

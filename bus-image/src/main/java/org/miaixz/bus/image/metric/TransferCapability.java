@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -49,7 +50,9 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
  */
 public class TransferCapability implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852672366502L;
+
     private ApplicationEntity ae;
     private String commonName;
     private String sopClass;

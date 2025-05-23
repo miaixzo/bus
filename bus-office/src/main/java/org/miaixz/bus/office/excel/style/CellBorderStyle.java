@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.office.excel.style;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class CellBorderStyle implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852735060977L;
 
     private BorderStyle topStyle;
     private Short topColor;

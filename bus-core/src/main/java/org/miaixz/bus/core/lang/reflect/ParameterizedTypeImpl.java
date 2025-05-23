@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.reflect;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852310593802L;
 
     private final Type[] actualTypeArguments;
     private final Type ownerType;

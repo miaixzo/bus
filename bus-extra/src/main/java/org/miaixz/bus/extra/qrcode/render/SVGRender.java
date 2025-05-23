@@ -110,8 +110,7 @@ public class SVGRender implements BitMatrixRender {
                 writer.append("style=\"background-color:").append(ColorKit.toCssRgba(back)).append("\"\n");
             }
             writer.append("viewBox=\"0 0 ").append(String.valueOf(qrWidth)).append(Symbol.SPACE)
-                    .append(String.valueOf(qrHeight))
-                    .append("\" \n");
+                    .append(String.valueOf(qrHeight)).append("\" \n");
             writer.append("xmlns=\"http://www.w3.org/2000/svg\" \n");
             writer.append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" >\n");
             writer.append("<path d=\"");

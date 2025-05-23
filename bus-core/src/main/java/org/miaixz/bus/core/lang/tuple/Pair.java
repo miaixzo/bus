@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.tuple;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.lang.exception.CloneException;
  */
 public class Pair<L, R> implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852315358279L;
 
     /**
      * 左值（第一个值）

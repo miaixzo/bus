@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -38,11 +40,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CharacterConverter extends AbstractConverter {
 
+    @Serial
+    private static final long serialVersionUID = 2852277951137L;
+
     /**
      * 单例
      */
     public static final CharacterConverter INSTANCE = new CharacterConverter();
-    private static final long serialVersionUID = -1L;
 
     @Override
     protected Character convertInternal(final Class<?> targetClass, final Object value) {

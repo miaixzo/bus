@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -37,7 +38,8 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
  */
 public class AllowedTo implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852371925666L;
 
     private AccessLevel accessLevel;
     private Long userId;

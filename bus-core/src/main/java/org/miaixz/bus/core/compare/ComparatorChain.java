@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -40,7 +41,9 @@ import org.miaixz.bus.core.lang.Chain;
  * @since Java 17+
  */
 public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<E>>, Comparator<E>, Serializable {
-    private static final long serialVersionUID = -1L;
+
+    @Serial
+    private static final long serialVersionUID = 2852276122138L;
 
     /**
      * 比较器链.

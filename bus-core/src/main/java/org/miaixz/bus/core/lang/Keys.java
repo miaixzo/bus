@@ -249,15 +249,10 @@ public class Keys {
      * 自定义系统属性：是否解析日期字符串采用严格模式
      */
     public static final String DATE_LENIENT = "bus.date.lenient";
-
     /**
      * JDK版本
      */
     public static final int JVM_VERSION;
-    /**
-     * 是否JDK8
-     */
-    public static final boolean IS_JDK8;
     /**
      * 是否大于等于JDK17
      */
@@ -279,7 +274,6 @@ public class Keys {
     static {
         // JVM版本
         JVM_VERSION = _getJvmVersion();
-        IS_JDK8 = 8 == JVM_VERSION;
         IS_AT_LEAST_JDK17 = JVM_VERSION >= 17;
 
         // JVM名称

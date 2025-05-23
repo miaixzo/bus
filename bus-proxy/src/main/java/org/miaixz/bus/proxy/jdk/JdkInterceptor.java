@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.proxy.jdk;
 
+import java.io.Serial;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,7 +45,8 @@ import org.miaixz.bus.proxy.invoker.Interceptor;
  */
 public class JdkInterceptor extends Interceptor implements InvocationHandler {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852772958766L;
 
     /**
      * 构造

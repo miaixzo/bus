@@ -44,8 +44,10 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
  */
 public class BulkData implements Value, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852550717860L;
+
     public static final int MAGIC_LEN = 0xfbfb;
-    private static final long serialVersionUID = -1L;
     private String uuid;
     private String uri;
     private int uriPathEnd;

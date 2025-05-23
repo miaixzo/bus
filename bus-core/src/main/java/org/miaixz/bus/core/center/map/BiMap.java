@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -44,7 +45,8 @@ import org.miaixz.bus.core.xyz.MapKit;
  */
 public class BiMap<K, V> extends MapWrapper<K, V> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852266515815L;
 
     private Map<V, K> inverse;
 

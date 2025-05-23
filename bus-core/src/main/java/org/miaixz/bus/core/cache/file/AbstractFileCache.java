@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.cache.file;
 
 import java.io.File;
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.cache.Cache;
@@ -42,7 +43,8 @@ import org.miaixz.bus.core.xyz.FileKit;
  */
 public abstract class AbstractFileCache implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238502210L;
 
     /**
      * 容量

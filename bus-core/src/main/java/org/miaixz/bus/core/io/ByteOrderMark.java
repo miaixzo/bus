@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.io;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -56,12 +57,14 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  */
 public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMark>, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852282581887L;
+
     /**
      * UTF-8 BOM.
      */
     public static final ByteOrderMark UTF_8 = new ByteOrderMark(Charset.DEFAULT_UTF_8, (byte) 0xEF, (byte) 0xBB,
             (byte) 0xBF);
-
     /**
      * UTF-16BE BOM (Big-Endian).
      */
@@ -84,7 +87,6 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
      * 预定义的所有BOM信息
      */
     public static final ByteOrderMark[] ALL = new ByteOrderMark[] { UTF_32BE, UTF_32LE, UTF_8, UTF_16BE, UTF_16LE };
-    private static final long serialVersionUID = -1L;
 
     private final String charsetName;
     private final byte[] bytes;

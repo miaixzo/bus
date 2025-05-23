@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.nimble.codec;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
@@ -51,7 +52,8 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ImageWriterFactory implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852686673838L;
 
     private static volatile ImageWriterFactory defaultFactory;
     private final TreeMap<String, ImageWriterParam> map = new TreeMap<>();
@@ -185,7 +187,8 @@ public class ImageWriterFactory implements Serializable {
 
     public static class ImageWriterParam implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852517857691L;
 
         public final String formatName;
         public final String className;

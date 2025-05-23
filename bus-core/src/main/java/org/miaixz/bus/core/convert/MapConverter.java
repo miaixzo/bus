@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
@@ -51,11 +52,13 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class MapConverter extends ConverterWithRoot implements MatcherConverter, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 2852278926052L;
+
     /**
      * 单例
      */
     public static final MapConverter INSTANCE = new MapConverter(CompositeConverter.getInstance());
-    private static final long serialVersionUID = -1L;
 
     /**
      * 构造

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
@@ -43,7 +44,8 @@ import java.util.Objects;
  */
 public class NullCompare<T> implements Comparator<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276777531L;
 
     /**
      * 是否{@code null}最大，排在最后

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve.elements;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
@@ -48,7 +49,8 @@ import org.miaixz.bus.core.xyz.SetKit;
  */
 public class CombinationAnnotatedElement implements AnnotatedElement, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852298396706L;
 
     /**
      * 元注解

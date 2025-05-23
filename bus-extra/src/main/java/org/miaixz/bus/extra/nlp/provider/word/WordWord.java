@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.nlp.provider.word;
 
+import java.io.Serial;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
@@ -37,7 +39,8 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  */
 public class WordWord implements NLPWord {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852357759106L;
 
     private final org.apdplat.word.segmentation.Word word;
 

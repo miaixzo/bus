@@ -33,7 +33,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Member extends AbstractUser<Member> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852380086163L;
 
     private AccessLevel accessLevel;
     private Date expiresAt;

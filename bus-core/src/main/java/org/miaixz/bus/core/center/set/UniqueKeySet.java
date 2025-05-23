@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.set;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
@@ -51,7 +52,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class UniqueKeySet<K, V> extends AbstractSet<V> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852271016731L;
+
     private final Function<V, K> uniqueGenerator;
     private Map<K, V> map;
 

@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.text;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,7 +56,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class StringJoiner implements Appendable, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852319111232L;
 
     private Appendable appendable;
     private CharSequence delimiter;

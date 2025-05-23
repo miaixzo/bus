@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text.finder;
 
+import java.io.Serial;
 import java.util.function.Predicate;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -39,7 +40,8 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class MatcherFinder extends TextFinder {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852320988673L;
 
     private final Predicate<Character> matcher;
 

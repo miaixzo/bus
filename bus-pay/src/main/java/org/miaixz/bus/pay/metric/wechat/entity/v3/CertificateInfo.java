@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +49,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class CertificateInfo implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852770975923L;
 
     private String serial_no;
     private String effective_time;

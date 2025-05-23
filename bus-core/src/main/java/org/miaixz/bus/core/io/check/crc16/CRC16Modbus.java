@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.check.crc16;
 
+import java.io.Serial;
+
 /**
  * CRC-16 (Modbus) CRC16_MODBUS：多项式x16+x15+x2+1（0x8005），初始值0xFFFF，低位在前，高位在后，结果与0x0000异或 0xA001是0x8005按位颠倒后的结果
  *
@@ -34,7 +36,9 @@ package org.miaixz.bus.core.io.check.crc16;
  * @since Java 17+
  */
 public class CRC16Modbus extends CRC16Checksum {
-    private static final long serialVersionUID = -1L;
+
+    @Serial
+    private static final long serialVersionUID = 2852285691307L;
 
     private static final int WC_POLY = 0xa001;
 
@@ -55,4 +59,5 @@ public class CRC16Modbus extends CRC16Checksum {
             }
         }
     }
+
 }

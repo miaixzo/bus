@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.setting.magic;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -59,7 +56,8 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852777665011L;
 
     /**
      * 分组行识别的环绕标记

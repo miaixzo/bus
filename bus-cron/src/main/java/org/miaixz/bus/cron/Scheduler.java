@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cron;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
@@ -83,7 +84,8 @@ import org.miaixz.bus.setting.Setting;
  */
 public class Scheduler implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852331039663L;
 
     private final Lock lock = new ReentrantLock();
 

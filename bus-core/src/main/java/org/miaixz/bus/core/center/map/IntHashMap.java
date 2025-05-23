@@ -29,6 +29,7 @@ package org.miaixz.bus.core.center.map;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -43,7 +44,8 @@ import java.util.Arrays;
  */
 public class IntHashMap<V> implements Cloneable, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267255695L;
 
     private static final int DEFAULT_CAPACITY = 32;
     private static final int MINIMUM_CAPACITY = 4;

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mmseg;
 
+import java.io.Serial;
+
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
@@ -37,7 +39,8 @@ import org.miaixz.bus.extra.nlp.NLPWord;
  */
 public class MmsegWord implements NLPWord {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852357013663L;
 
     private final com.chenlb.mmseg4j.Word word;
 

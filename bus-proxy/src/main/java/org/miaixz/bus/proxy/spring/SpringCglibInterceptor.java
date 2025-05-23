@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.proxy.spring;
 
+import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -43,7 +44,8 @@ import org.springframework.cglib.proxy.MethodProxy;
  */
 public class SpringCglibInterceptor extends Interceptor implements MethodInterceptor {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852773036187L;
 
     /**
      * 构造

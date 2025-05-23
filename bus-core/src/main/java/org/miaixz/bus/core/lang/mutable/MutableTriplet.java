@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.tuple.Triplet;
 
 /**
@@ -40,7 +42,8 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
  */
 public class MutableTriplet<L, M, R> extends Triplet<L, M, R> implements Mutable<MutableTriplet<L, M, R>> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852307656563L;
 
     /**
      * 构造

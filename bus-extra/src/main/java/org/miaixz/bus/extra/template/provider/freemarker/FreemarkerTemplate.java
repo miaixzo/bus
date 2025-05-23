@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.extra.template.provider.freemarker;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -46,7 +43,8 @@ import org.miaixz.bus.extra.template.Template;
  */
 public class FreemarkerTemplate implements Template, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852361575510L;
 
     freemarker.template.Template rawTemplate;
 

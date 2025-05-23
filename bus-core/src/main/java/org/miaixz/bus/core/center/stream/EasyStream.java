@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.stream;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -92,7 +93,10 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      */
     public static <T> Builder<T> builder() {
         return new Builder<>() {
-            private static final long serialVersionUID = -1L;
+
+            @Serial
+            private static final long serialVersionUID = 2852271123932L;
+
             private final Stream.Builder<T> streamBuilder = Stream.builder();
 
             @Override

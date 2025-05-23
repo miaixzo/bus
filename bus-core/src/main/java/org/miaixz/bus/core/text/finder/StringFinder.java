@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.finder;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -39,7 +41,8 @@ import org.miaixz.bus.core.text.CharsBacker;
  */
 public class StringFinder extends TextFinder {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852321169707L;
 
     private final CharSequence strToFind;
     private final boolean caseInsensitive;

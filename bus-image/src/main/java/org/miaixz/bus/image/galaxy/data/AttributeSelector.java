@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -38,7 +39,8 @@ import org.miaixz.bus.image.Tag;
  */
 public class AttributeSelector implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852550371266L;
 
     private static final int MIN_ITEM_POINTER_STR_LEN = 30;
 

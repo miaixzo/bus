@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.function.BiPredicate;
 
@@ -46,7 +47,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852319008966L;
 
     private final boolean ignoreCase;
     private final boolean ignoreEquals;

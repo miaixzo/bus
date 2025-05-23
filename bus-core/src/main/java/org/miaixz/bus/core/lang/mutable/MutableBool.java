@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -38,7 +39,8 @@ import java.io.Serializable;
  */
 public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852306767037L;
 
     private boolean value;
 

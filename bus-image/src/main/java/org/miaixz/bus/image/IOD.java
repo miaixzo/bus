@@ -27,10 +27,7 @@
 */
 package org.miaixz.bus.image;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -54,7 +51,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class IOD extends ArrayList<IOD.DataElement> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852537127008L;
 
     private DataElementType type;
     private Condition condition;
@@ -132,7 +130,8 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
     public static class DataElement implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852939671733L;
 
         public final int tag;
         public final VR vr;

@@ -28,6 +28,7 @@
 package org.miaixz.bus.extra.image;
 
 import java.awt.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -39,7 +40,8 @@ import java.util.Objects;
  */
 public class ImageText implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852352359022L;
     private String pressText;
     private Color color;
     private Font font;

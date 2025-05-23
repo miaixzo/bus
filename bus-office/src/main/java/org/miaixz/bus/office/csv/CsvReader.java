@@ -30,7 +30,7 @@ package org.miaixz.bus.office.csv;
 import java.io.Closeable;
 import java.io.File;
 import java.io.Reader;
-import java.nio.charset.Charset;
+import java.io.Serial;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -38,6 +38,7 @@ import java.util.stream.StreamSupport;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.file.PathResolve;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -50,7 +51,8 @@ import org.miaixz.bus.core.xyz.IoKit;
  */
 public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closeable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852729191098L;
 
     private final Reader reader;
 
@@ -71,23 +73,23 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
     }
 
     /**
-     * 构造，默认{@link #DEFAULT_CHARSET}编码
+     * 构造
      *
      * @param file   CSV文件路径，null表示不设置路径
      * @param config 配置项，null表示默认配置
      */
     public CsvReader(final File file, final CsvReadConfig config) {
-        this(file, DEFAULT_CHARSET, config);
+        this(file, Charset.UTF_8, config);
     }
 
     /**
-     * 构造，默认{@link #DEFAULT_CHARSET}编码
+     * 构造
      *
      * @param path   CSV文件路径，null表示不设置路径
      * @param config 配置项，null表示默认配置
      */
     public CsvReader(final Path path, final CsvReadConfig config) {
-        this(path, DEFAULT_CHARSET, config);
+        this(path, Charset.UTF_8, config);
     }
 
     /**
@@ -97,7 +99,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
      * @param charset 编码
      * @param config  配置项，null表示默认配置
      */
-    public CsvReader(final File file, final Charset charset, final CsvReadConfig config) {
+    public CsvReader(final File file, final java.nio.charset.Charset charset, final CsvReadConfig config) {
         this(FileKit.getReader(file, charset), config);
     }
 
@@ -108,7 +110,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
      * @param charset 编码
      * @param config  配置项，null表示默认配置
      */
-    public CsvReader(final Path path, final Charset charset, final CsvReadConfig config) {
+    public CsvReader(final Path path, final java.nio.charset.Charset charset, final CsvReadConfig config) {
         this(PathResolve.getReader(path, charset), config);
     }
 

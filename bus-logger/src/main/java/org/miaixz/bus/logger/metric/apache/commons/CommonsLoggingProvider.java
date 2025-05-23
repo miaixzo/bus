@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.logger.metric.apache.commons;
 
+import java.io.Serial;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.miaixz.bus.core.lang.Normal;
@@ -42,7 +44,8 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
  */
 public class CommonsLoggingProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852701687625L;
 
     /**
      * 日志门面
