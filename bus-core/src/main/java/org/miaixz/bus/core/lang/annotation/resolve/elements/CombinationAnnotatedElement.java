@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.SetKit;
 public class CombinationAnnotatedElement implements AnnotatedElement, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852298396706L;
+    private static final long serialVersionUID = 2852263225120L;
 
     /**
      * 元注解

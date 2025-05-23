@@ -196,4 +196,5 @@ public class StreamExtractor implements Extractor {
     public void close() {
         IoKit.closeQuietly(this.in);
     }
+
 }

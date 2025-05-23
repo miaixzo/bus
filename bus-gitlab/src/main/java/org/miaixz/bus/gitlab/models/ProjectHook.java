@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class ProjectHook implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852382626331L;
+    private static final long serialVersionUID = 2852289183109L;
 
     private Boolean buildEvents;
     private Date createdAt;

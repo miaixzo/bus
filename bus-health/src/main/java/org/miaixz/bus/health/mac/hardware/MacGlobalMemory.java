@@ -169,4 +169,5 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     private VirtualMemory createVirtualMemory() {
         return new MacVirtualMemory(this);
     }
+
 }

@@ -80,4 +80,5 @@ public enum MySQLColumnType implements ColumnType {
     public String getPkg() {
         return pkg;
     }
+
 }

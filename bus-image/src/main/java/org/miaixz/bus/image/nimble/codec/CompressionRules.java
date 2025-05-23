@@ -41,7 +41,7 @@ import java.util.List;
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852686105370L;
+    private static final long serialVersionUID = 2852252710256L;
 
     private final List<CompressionRule> list = new ArrayList<>();
 

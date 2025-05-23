@@ -44,7 +44,7 @@ import org.miaixz.bus.extra.template.Template;
 public class FreemarkerTemplate implements Template, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852361575510L;
+    private static final long serialVersionUID = 2852257531387L;
 
     freemarker.template.Template rawTemplate;
 

@@ -342,4 +342,5 @@ public interface SolarisLibc extends CLibrary {
             this.tv_nsec = Builder.readNativeLongFromBuffer(buff);
         }
     }
+
 }

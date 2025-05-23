@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CalendarConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852277808165L;
+    private static final long serialVersionUID = 2852258393091L;
 
     /**
      * 日期格式化

@@ -42,7 +42,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class StringFinder extends TextFinder {
 
     @Serial
-    private static final long serialVersionUID = 2852321169707L;
+    private static final long serialVersionUID = 2852275731133L;
 
     private final CharSequence strToFind;
     private final boolean caseInsensitive;

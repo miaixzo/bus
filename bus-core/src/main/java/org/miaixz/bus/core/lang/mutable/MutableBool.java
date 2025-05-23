@@ -40,7 +40,7 @@ import java.io.Serializable;
 public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852306767037L;
+    private static final long serialVersionUID = 2852228193821L;
 
     private boolean value;
 

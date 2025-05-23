@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class FileAppender implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287703209L;
+    private static final long serialVersionUID = 2852287509818L;
 
     private final FileWriter writer;
     /**

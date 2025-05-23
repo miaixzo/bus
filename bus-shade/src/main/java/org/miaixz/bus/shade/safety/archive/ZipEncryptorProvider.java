@@ -100,4 +100,5 @@ public class ZipEncryptorProvider extends EntryEncryptorProvider<ZipArchiveEntry
             Builder.close(zos);
         }
     }
+
 }

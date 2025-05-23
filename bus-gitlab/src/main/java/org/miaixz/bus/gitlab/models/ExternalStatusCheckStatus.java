@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -35,16 +34,38 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class ExternalStatusCheckStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852377195127L;
+    private static final long serialVersionUID = 2852276832522L;
 
     private Long id;
     private String name;
     private String externalUrl;
     private Status status;
+
+    public enum Status {
+        PASSED, FAILED, PENDING;
+
+        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
+
+        @JsonCreator
+        public static Status forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 
     public Long getId() {
         return id;
@@ -81,27 +102,6 @@ public class ExternalStatusCheckStatus implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    public enum Status {
-        PASSED, FAILED, PENDING;
-
-        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
-
-        @JsonCreator
-        public static Status forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

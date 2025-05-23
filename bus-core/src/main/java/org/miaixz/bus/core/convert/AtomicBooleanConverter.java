@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.BooleanKit;
 public class AtomicBooleanConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852277200663L;
+    private static final long serialVersionUID = 2852257393335L;
 
     /**
      * 单例

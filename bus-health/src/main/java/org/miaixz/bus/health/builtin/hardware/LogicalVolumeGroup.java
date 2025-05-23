@@ -65,4 +65,5 @@ public interface LogicalVolumeGroup {
      *         value.
      */
     Map<String, Set<String>> getLogicalVolumes();
+
 }

@@ -28,22 +28,23 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.miaixz.bus.gitlab.GitLabApiException;
+import java.io.Serial;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.*;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.*;
 
 public class ApplicationSettings implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852372097502L;
+    private static final long serialVersionUID = 2852253081239L;
 
     private Long id;
     private Date createdAt;
@@ -103,7 +104,7 @@ public class ApplicationSettings implements Serializable {
         return (settings.get(setting));
     }
 
-    public Object addSetting(String setting, Object value) throws GitLabApiException {
+    public Object addSetting(String setting, Object value) {
 
         Setting appSetting = Setting.forValue(setting);
         if (appSetting != null) {
@@ -114,10 +115,10 @@ public class ApplicationSettings implements Serializable {
         return (value);
     }
 
-    public Object addSetting(Setting setting, Object value) throws GitLabApiException {
+    public Object addSetting(Setting setting, Object value) {
 
         if (value instanceof JsonNode) {
-            value = jsonNodeToValue((JsonNode) value);
+            value = jsonNodeToValue((JsonNode) value, setting);
         }
 
         setting.validate(value);
@@ -137,7 +138,7 @@ public class ApplicationSettings implements Serializable {
         settings.clear();
     }
 
-    private Object jsonNodeToValue(JsonNode node) {
+    private Object jsonNodeToValue(JsonNode node, Setting setting) {
 
         Object value = node;
         if (node instanceof NullNode) {
@@ -149,18 +150,24 @@ public class ApplicationSettings implements Serializable {
         } else if (node instanceof IntNode) {
             value = node.asInt();
         } else if (node instanceof FloatNode) {
-            value = (float) ((FloatNode) node).asDouble();
+            value = (float) node.asDouble();
         } else if (node instanceof DoubleNode) {
-            value = (float) ((DoubleNode) node).asDouble();
+            value = (float) node.asDouble();
         } else if (node instanceof ArrayNode) {
-
-            int numItems = node.size();
-            String[] values = new String[numItems];
-            for (int i = 0; i < numItems; i++) {
-                values[i] = node.path(i).asText();
+            if (node.isEmpty()) {
+                value = setting.emptyArrayValue();
+            } else {
+                List<Object> values = new ArrayList<>(node.size());
+                node.forEach(element -> values.add(jsonNodeToValue(element, setting)));
+                Class<?> type = values.get(0).getClass();
+                value = Array.newInstance(type, values.size());
+                for (int i = 0; i < values.size(); i++) {
+                    Array.set(value, i, type.cast(values.get(i)));
+                }
             }
-
-            value = values;
+        } else if (node instanceof ObjectNode) {
+            ObjectMapper mapper = new ObjectMapper();
+            value = mapper.convertValue(node, HashMap.class);
         }
 
         return (value);

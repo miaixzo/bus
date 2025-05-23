@@ -42,7 +42,7 @@ import com.mayabot.nlp.segment.WordTerm;
 public class MynlpWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852357305297L;
+    private static final long serialVersionUID = 2852253361005L;
 
     private final WordTerm word;
 

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public final class Expression implements Serializable, Cloneable {
 
     @Serial
-    private static final long serialVersionUID = 2852330703289L;
+    private static final long serialVersionUID = 2852293019099L;
 
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     protected static final int SECOND = 0;

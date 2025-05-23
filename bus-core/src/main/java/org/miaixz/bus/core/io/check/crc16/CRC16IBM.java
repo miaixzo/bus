@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CRC16IBM extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852285570560L;
+    private static final long serialVersionUID = 2852285658593L;
 
     private static final int WC_POLY = 0xa001;
 
@@ -54,4 +54,5 @@ public class CRC16IBM extends CRC16Checksum {
             }
         }
     }
+
 }

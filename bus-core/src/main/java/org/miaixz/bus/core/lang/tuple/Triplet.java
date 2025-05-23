@@ -42,7 +42,7 @@ import java.util.Objects;
 public class Triplet<L, M, R> extends Pair<L, R> {
 
     @Serial
-    private static final long serialVersionUID = 2852315576095L;
+    private static final long serialVersionUID = 2852238170795L;
 
     /**
      * 中值

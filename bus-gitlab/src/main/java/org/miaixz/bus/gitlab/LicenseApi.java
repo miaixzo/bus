@@ -118,7 +118,7 @@ public class LicenseApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<License> getAllLicenses(int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, License.class, itemsPerPage, null, "licenses"));
+        return (new Pager<License>(this, License.class, itemsPerPage, null, "licenses"));
     }
 
     /**

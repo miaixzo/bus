@@ -40,7 +40,29 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class EventLabel implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852369530755L;
+    private static final long serialVersionUID = 2852268669115L;
+
+    public enum LabelType {
+        PROJECT_LABEL, GROUP_LABEL;
+
+        private static JacksonJsonEnumHelper<LabelType> enumHelper = new JacksonJsonEnumHelper<>(LabelType.class, true,
+                true);
+
+        @JsonCreator
+        public static LabelType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 
     private Long id;
     private String title;
@@ -136,29 +158,6 @@ public class EventLabel implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    public enum LabelType {
-
-        PROJECT_LABEL;
-
-        private static JacksonJsonEnumHelper<LabelType> enumHelper = new JacksonJsonEnumHelper<>(LabelType.class, true,
-                true);
-
-        @JsonCreator
-        public static LabelType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

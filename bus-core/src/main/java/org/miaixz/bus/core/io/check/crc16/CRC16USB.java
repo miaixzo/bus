@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CRC16USB extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852285711155L;
+    private static final long serialVersionUID = 2852285973526L;
 
     private static final int WC_POLY = 0xa001;
 

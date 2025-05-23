@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class FileWrapper implements Wrapper<File>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288177830L;
+    private static final long serialVersionUID = 2852288287728L;
 
     /**
      * 被包装的文件

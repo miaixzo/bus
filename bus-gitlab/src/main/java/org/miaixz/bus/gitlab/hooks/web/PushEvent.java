@@ -29,12 +29,15 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import java.io.Serial;
+
 public class PushEvent extends AbstractPushEvent implements Event {
+
+    @Serial
+    private static final long serialVersionUID = 2852251731352L;
 
     public static final String X_GITLAB_EVENT = "Push Hook";
     public static final String OBJECT_KIND = "push";
-    @Serial
-    private static final long serialVersionUID = 2852370792392L;
 
     @Override
     public String getObjectKind() {

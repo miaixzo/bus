@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serial;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.models.Assignee;
@@ -35,10 +36,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class MergeRequestEvent extends AbstractEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852251511176L;
+
     public static final String X_GITLAB_EVENT = "Merge Request Hook";
     public static final String OBJECT_KIND = "merge_request";
-    @Serial
-    private static final long serialVersionUID = 2852370601631L;
+
     private EventUser user;
     private EventProject project;
     private EventRepository repository;
@@ -121,12 +124,12 @@ public class MergeRequestEvent extends AbstractEvent {
         this.reviewers = reviewers;
     }
 
+    public static class ObjectAttributes extends EventMergeRequest {
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    public static class ObjectAttributes extends EventMergeRequest {
     }
 
 }

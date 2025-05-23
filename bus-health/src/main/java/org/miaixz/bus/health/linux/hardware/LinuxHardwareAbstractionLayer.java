@@ -102,4 +102,5 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     public List<GraphicsCard> getGraphicsCards() {
         return LinuxGraphicsCard.getGraphicsCards();
     }
+
 }

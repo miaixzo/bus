@@ -33,4 +33,5 @@ package org.miaixz.bus.image.metric.hl7;
  */
 public enum MLLPRelease {
     MLLP1, MLLP2
+
 }

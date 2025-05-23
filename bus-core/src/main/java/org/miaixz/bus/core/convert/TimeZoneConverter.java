@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class TimeZoneConverter extends AbstractConverter implements MatcherConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852280057517L;
+    private static final long serialVersionUID = 2852277303079L;
 
     /**
      * 单例

@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -36,11 +35,80 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class Note implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852380937578L;
+    private static final long serialVersionUID = 2852286728897L;
+
+    /** Enum to use for ordering the results. */
+    public static enum OrderBy {
+        CREATED_AT, UPDATED_AT;
+
+        private static JacksonJsonEnumHelper<OrderBy> enumHelper = new JacksonJsonEnumHelper<>(OrderBy.class);
+
+        @JsonCreator
+        public static OrderBy forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
+    // ("Merge request").
+    // Once they fix the bug, the notableType field can be changed from String to NotableType.
+    public static enum NoteableType {
+        COMMIT, EPIC, ISSUE, MERGE_REQUEST, SNIPPET;
+
+        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
+                true, true);
+
+        @JsonCreator
+        public static NoteableType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    public static enum Type {
+        DISCUSSION_NOTE, DIFF_NOTE;
+
+        private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class, true, true);
+
+        @JsonCreator
+        public static Type forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 
     private String attachment;
     private Author author;
@@ -248,77 +316,6 @@ public class Note implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    /** Enum to use for ordering the results. */
-    public static enum OrderBy {
-
-        CREATED_AT, UPDATED_AT;
-
-        private static JacksonJsonEnumHelper<OrderBy> enumHelper = new JacksonJsonEnumHelper<>(OrderBy.class);
-
-        @JsonCreator
-        public static OrderBy forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
-    // ("Merge request").
-    // Once they fix the bug, the notableType field can be changed from String to NotableType.
-    public static enum NoteableType {
-
-        COMMIT, EPIC, ISSUE, MERGE_REQUEST, SNIPPET;
-
-        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
-                true, true);
-
-        @JsonCreator
-        public static NoteableType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    public static enum Type {
-
-        DISCUSSION_NOTE, DIFF_NOTE;
-
-        private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class, true, true);
-
-        @JsonCreator
-        public static Type forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

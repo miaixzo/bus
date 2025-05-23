@@ -48,7 +48,7 @@ import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
 public class GifProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852350135712L;
+    private static final long serialVersionUID = 2852275039810L;
 
     /**
      * 量化器取样间隔 - 默认是10ms

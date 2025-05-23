@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852371612695L;
+    private static final long serialVersionUID = 2852252379079L;
 
     private Long id;
     private Long iid;
@@ -43,6 +43,7 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
     private Long parentId;
     private String title;
     private String reference;
+    private String url;
 
     public Long getId() {
         return id;
@@ -95,6 +96,14 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String toString() {

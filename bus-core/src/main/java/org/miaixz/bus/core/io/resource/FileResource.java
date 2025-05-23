@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
 public class FileResource implements Resource, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289670390L;
+    private static final long serialVersionUID = 2852289863156L;
 
     private final File file;
     private final long lastModified;

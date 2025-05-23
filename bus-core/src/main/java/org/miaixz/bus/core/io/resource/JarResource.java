@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.ZipKit;
 public class JarResource extends UrlResource {
 
     @Serial
-    private static final long serialVersionUID = 2852289895933L;
+    private static final long serialVersionUID = 2852290226231L;
 
     /**
      * 构造

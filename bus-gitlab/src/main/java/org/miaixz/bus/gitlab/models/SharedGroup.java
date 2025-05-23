@@ -27,23 +27,24 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serial;
 
 public class SharedGroup implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852385551856L;
+    private static final long serialVersionUID = 2852231958586L;
 
     private Long groupId;
     private String groupName;
     private String groupFullPath;
     private AccessLevel groupAccessLevel;
+
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
 

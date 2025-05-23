@@ -50,7 +50,7 @@ import lombok.experimental.SuperBuilder;
 public class CertificateInfo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852770975923L;
+    private static final long serialVersionUID = 2852239507270L;
 
     private String serial_no;
     private String effective_time;

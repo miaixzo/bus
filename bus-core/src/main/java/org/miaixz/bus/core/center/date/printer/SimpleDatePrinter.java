@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class SimpleDatePrinter implements DatePrinter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852262665267L;
+    private static final long serialVersionUID = 2852292363363L;
 
     /**
      * The pattern

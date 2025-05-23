@@ -36,4 +36,5 @@ public interface BaseSerializer {
     <T> byte[] serialize(T object);
 
     <T> T deserialize(byte[] bytes);
+
 }

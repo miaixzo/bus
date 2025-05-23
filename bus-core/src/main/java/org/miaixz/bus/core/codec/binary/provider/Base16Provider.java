@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273750818L;
+    private static final long serialVersionUID = 2852239163560L;
 
     /**
      * 编码解码器：小写

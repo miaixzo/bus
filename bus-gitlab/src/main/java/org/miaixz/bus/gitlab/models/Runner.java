@@ -27,28 +27,39 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class Runner implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852385121665L;
+    private static final long serialVersionUID = 2852230807930L;
 
     private Long id;
     private String description;
+    private RunnerType runnerType;
     private Boolean active;
     private Boolean isShared;
+    private List<String> tags;
     private String name;
     private Boolean online;
     private RunnerStatus status;
     private String ipAddress;
+
+    public RunnerType getRunnerType() {
+        return runnerType;
+    }
+
+    public void setRunnerType(RunnerType runnerType) {
+        this.runnerType = runnerType;
+    }
 
     public Long getId() {
         return id;
@@ -66,6 +77,14 @@ public class Runner implements Serializable {
         this.description = description;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
     public Boolean getActive() {
         return active;
     }
@@ -80,6 +99,54 @@ public class Runner implements Serializable {
 
     public void setIs_shared(Boolean is_shared) {
         this.isShared = is_shared;
+    }
+
+    /**
+     * Enum to use for RunnersApi filtering on status.
+     */
+    public enum RunnerStatus {
+        ACTIVE, ONLINE, PAUSED, OFFLINE;
+
+        private static JacksonJsonEnumHelper<RunnerStatus> enumHelper = new JacksonJsonEnumHelper<>(RunnerStatus.class);
+
+        @JsonCreator
+        public static RunnerStatus forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for RunnersApi filtering on type.
+     */
+    public enum RunnerType {
+        INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE;
+
+        private static JacksonJsonEnumHelper<RunnerType> enumHelper = new JacksonJsonEnumHelper<>(RunnerType.class);
+
+        @JsonCreator
+        public static RunnerType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 
     public String getName() {
@@ -157,55 +224,6 @@ public class Runner implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    /**
-     * Enum to use for RunnersApi filtering on status.
-     */
-    public enum RunnerStatus {
-
-        ACTIVE, ONLINE, PAUSED, OFFLINE;
-
-        private static JacksonJsonEnumHelper<RunnerStatus> enumHelper = new JacksonJsonEnumHelper<>(RunnerStatus.class);
-
-        @JsonCreator
-        public static RunnerStatus forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    /**
-     * Enum to use for RunnersApi filtering on type.
-     */
-    public enum RunnerType {
-        INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE;
-
-        private static JacksonJsonEnumHelper<RunnerType> enumHelper = new JacksonJsonEnumHelper<>(RunnerType.class);
-
-        @JsonCreator
-        public static RunnerType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

@@ -72,4 +72,5 @@ public interface Firmware {
      * @return The release date.
      */
     String getReleaseDate();
+
 }

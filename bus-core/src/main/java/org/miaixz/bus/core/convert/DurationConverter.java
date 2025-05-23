@@ -40,7 +40,7 @@ import java.time.temporal.TemporalAmount;
 public class DurationConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852278572609L;
+    private static final long serialVersionUID = 2852260215650L;
 
     @Override
     protected Duration convertInternal(final Class<?> targetClass, final Object value) {

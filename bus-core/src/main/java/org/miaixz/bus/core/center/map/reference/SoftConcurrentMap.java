@@ -46,7 +46,7 @@ import org.miaixz.bus.core.lang.ref.SoftObject;
 public class SoftConcurrentMap<K, V> extends ReferenceConcurrentMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852269385082L;
+    private static final long serialVersionUID = 2852236612368L;
 
     /**
      * 构造

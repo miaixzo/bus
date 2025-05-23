@@ -63,4 +63,5 @@ final class AixFirmware extends AbstractFirmware {
     public String getVersion() {
         return version;
     }
+
 }

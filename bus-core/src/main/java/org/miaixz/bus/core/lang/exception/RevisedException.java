@@ -38,7 +38,7 @@ import java.io.Serial;
 public class RevisedException extends RelevantException {
 
     @Serial
-    private static final long serialVersionUID = 2852302021216L;
+    private static final long serialVersionUID = 2852272852239L;
 
     /**
      * 构造

@@ -38,7 +38,7 @@ import java.io.Serial;
 public class TerminateException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852302269015L;
+    private static final long serialVersionUID = 2852275251607L;
 
     /**
      * 构造

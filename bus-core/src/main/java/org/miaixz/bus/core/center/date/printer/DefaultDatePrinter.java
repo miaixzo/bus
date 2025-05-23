@@ -46,7 +46,7 @@ import java.util.TimeZone;
 public class DefaultDatePrinter implements DatePrinter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852262386039L;
+    private static final long serialVersionUID = 2852292215008L;
 
     @Override
     public String getPattern() {

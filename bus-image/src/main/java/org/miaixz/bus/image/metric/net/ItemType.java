@@ -48,4 +48,5 @@ public class ItemType {
     public static final int COMMON_EXT_NEG = 0x57;
     public static final int RQ_USER_IDENTITY = 0x58;
     public static final int AC_USER_IDENTITY = 0x59;
+
 }

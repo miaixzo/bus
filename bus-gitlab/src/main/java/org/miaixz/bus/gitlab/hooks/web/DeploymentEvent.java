@@ -29,15 +29,20 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import java.io.Serial;
+
 public class DeploymentEvent extends AbstractEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852268007239L;
 
     public static final String X_GITLAB_EVENT = "Deployment Hook";
     public static final String OBJECT_KIND = "deployment";
-    @Serial
-    private static final long serialVersionUID = 2852369078887L;
+
     private String status;
     private String statusChangedAt;
     private Long deployableId;
+    private Long deploymentId;
     private String deployableUrl;
     private String environment;
     private EventProject project;
@@ -79,6 +84,14 @@ public class DeploymentEvent extends AbstractEvent {
 
     public void setDeployableId(Long deployableId) {
         this.deployableId = deployableId;
+    }
+
+    public Long getDeploymentId() {
+        return deploymentId;
+    }
+
+    public void setDeploymentId(Long deploymentId) {
+        this.deploymentId = deploymentId;
     }
 
     public String getDeployableUrl() {

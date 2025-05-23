@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
 public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852270189857L;
+    private static final long serialVersionUID = 2852237105197L;
 
     /**
      * 构造

@@ -42,7 +42,7 @@ import java.util.Map;
 public class HighMultiReplacer extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852322629385L;
+    private static final long serialVersionUID = 2852278738592L;
 
     private final AhoCorasickAutomaton ahoCorasickAutomaton;
 

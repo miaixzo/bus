@@ -46,7 +46,7 @@ import java.util.LinkedHashMap;
 public class FIFOCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852239028559L;
+    private static final long serialVersionUID = 2852292800017L;
 
     /**
      * 构造，默认对象不过期

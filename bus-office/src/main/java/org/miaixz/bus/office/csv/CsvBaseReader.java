@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class CsvBaseReader implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852728795162L;
+    private static final long serialVersionUID = 2852262307162L;
 
     private final CsvReadConfig config;
 

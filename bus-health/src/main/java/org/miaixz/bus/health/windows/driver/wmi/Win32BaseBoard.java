@@ -62,4 +62,5 @@ public final class Win32BaseBoard {
     public enum BaseBoardProperty {
         MANUFACTURER, MODEL, PRODUCT, VERSION, SERIALNUMBER
     }
+
 }

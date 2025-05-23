@@ -119,4 +119,5 @@ public interface LinuxLibc extends LibC, CLibrary {
         public int tv_sec; // seconds
         public int tv_usec; // microseconds
     }
+
 }

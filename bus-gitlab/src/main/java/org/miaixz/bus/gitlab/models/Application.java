@@ -28,17 +28,23 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Application implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852371982858L;
+    private static final long serialVersionUID = 2852253052257L;
 
     private Long id;
     private String applicationId;
     private String applicationName;
     private String callbackUrl;
+    private Boolean confidential;
+    private String secret;
 
     public Long getId() {
         return id;
@@ -70,6 +76,27 @@ public class Application implements Serializable {
 
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
+    }
+
+    public Boolean getConfidential() {
+        return confidential;
+    }
+
+    public void setConfidential(Boolean confidential) {
+        this.confidential = confidential;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
 }

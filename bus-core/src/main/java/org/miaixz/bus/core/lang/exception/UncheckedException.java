@@ -40,7 +40,7 @@ import lombok.Setter;
 public class UncheckedException extends RuntimeException {
 
     @Serial
-    private static final long serialVersionUID = 2852302528719L;
+    private static final long serialVersionUID = 2852275937099L;
 
     /**
      * 错误码

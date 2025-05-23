@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
 
     @Serial
-    private static final long serialVersionUID = 2852313681926L;
+    private static final long serialVersionUID = 2852237755302L;
 
     /**
      * 用于线程创建的线程工厂类

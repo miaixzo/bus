@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Job implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852378838880L;
+    private static final long serialVersionUID = 2852280519122L;
 
     private Long id;
     private Commit commit;
@@ -58,6 +58,7 @@ public class Job implements Serializable {
     private String webUrl;
     private String stage;
     private JobStatus status;
+    private String failureReason;
     private String when;
     private Boolean manual;
     private Boolean allowFailure;
@@ -101,7 +102,7 @@ public class Job implements Serializable {
      * When someone deletes job using <a href="https://docs.gitlab.com/ee/api/jobs.html#erase-a-job">job erase api</a>,
      * you can detect it using this field. Normally erasing job does mean only that job artifacts and a job logs gets
      * removed. Job metadata (started_at, duration, ....) stays in place.
-     *
+     * <p>
      * You can use this attribute to filter out such jobs, that have erased at non-null if you need to.
      */
     public Date getErasedAt() {
@@ -190,6 +191,14 @@ public class Job implements Serializable {
 
     public void setStatus(JobStatus status) {
         this.status = status;
+    }
+
+    public String getFailureReason() {
+        return this.failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 
     public String getCoverage() {

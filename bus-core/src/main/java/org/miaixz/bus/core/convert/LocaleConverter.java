@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class LocaleConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852278876958L;
+    private static final long serialVersionUID = 2852272358886L;
 
     @Override
     protected Locale convertInternal(final Class<?> targetClass, final Object value) {

@@ -44,4 +44,5 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @Import({ ElasticConfiguration.class })
 public @interface EnableElastic {
+
 }

@@ -29,12 +29,15 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import java.io.Serial;
+
 public class TagPushEvent extends AbstractPushEvent implements Event {
+
+    @Serial
+    private static final long serialVersionUID = 2852251812211L;
 
     public static final String X_GITLAB_EVENT = "Tag Push Hook";
     public static final String OBJECT_KIND = "tag_push";
-    @Serial
-    private static final long serialVersionUID = 2852370978813L;
 
     @Override
     public String getObjectKind() {

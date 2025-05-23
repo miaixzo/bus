@@ -47,4 +47,5 @@ public interface ColumnType {
      * @return 字段类型完整名
      */
     String getPkg();
+
 }

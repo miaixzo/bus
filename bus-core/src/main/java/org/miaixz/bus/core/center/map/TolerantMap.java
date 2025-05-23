@@ -43,7 +43,7 @@ import java.util.Objects;
 public class TolerantMap<K, V> extends MapWrapper<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852267996567L;
+    private static final long serialVersionUID = 2852232972160L;
 
     private final V defaultValue;
 

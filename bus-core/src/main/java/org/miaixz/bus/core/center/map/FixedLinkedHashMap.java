@@ -43,7 +43,7 @@ import java.util.function.Consumer;
 public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852267036797L;
+    private static final long serialVersionUID = 2852231113581L;
 
     /**
      * 容量，超过此容量自动删除末尾元素

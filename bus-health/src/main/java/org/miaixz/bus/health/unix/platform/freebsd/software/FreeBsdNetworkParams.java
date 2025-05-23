@@ -90,4 +90,5 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
     public String getIpv6DefaultGateway() {
         return searchGateway(Executor.runNative("route -6 get default"));
     }
+
 }

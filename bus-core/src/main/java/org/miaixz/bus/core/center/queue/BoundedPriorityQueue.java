@@ -42,7 +42,7 @@ import org.miaixz.bus.core.center.BoundedCollection;
 public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements BoundedCollection<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852269850893L;
+    private static final long serialVersionUID = 2852236817752L;
 
     /**
      * 容量

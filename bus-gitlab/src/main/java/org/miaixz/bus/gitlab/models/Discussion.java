@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Discussion implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376115090L;
+    private static final long serialVersionUID = 2852260103116L;
 
     private String id;
     private Boolean individualNote;
@@ -46,20 +46,20 @@ public class Discussion implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public Boolean getIndividualNote() {
         return individualNote;
     }
 
-    public void setIndividualNote(Boolean individualNote) {
-        this.individualNote = individualNote;
-    }
-
     public List<Note> getNotes() {
         return notes;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setIndividualNote(Boolean individualNote) {
+        this.individualNote = individualNote;
     }
 
     public void setNotes(List<Note> notes) {

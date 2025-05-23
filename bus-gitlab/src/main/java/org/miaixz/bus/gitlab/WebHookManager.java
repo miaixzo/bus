@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.gitlab.hooks.web;
+package org.miaixz.bus.gitlab;
 
 import java.io.InputStreamReader;
 import java.util.List;
@@ -33,9 +33,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.miaixz.bus.gitlab.GitLabApiException;
-import org.miaixz.bus.gitlab.HookManager;
-import org.miaixz.bus.gitlab.support.HttpRequest;
+import org.miaixz.bus.gitlab.hooks.web.*;
+import org.miaixz.bus.gitlab.support.GitlabRequest;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,11 +44,11 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class WebHookManager implements HookManager {
 
-    private final static Logger LOGGER = Logger.getLogger(WebHookManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WebHookManager.class.getName());
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for WebHook events.
-    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<>();
+    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<WebHookListener>();
 
     private String secretToken;
 
@@ -119,7 +118,6 @@ public class WebHookManager implements HookManager {
 
         LOGGER.info("handleEvent: X-Gitlab-Event=" + eventName);
         switch (eventName) {
-
         case IssueEvent.X_GITLAB_EVENT:
         case JobEvent.JOB_HOOK_X_GITLAB_EVENT:
         case MergeRequestEvent.X_GITLAB_EVENT:
@@ -142,8 +140,8 @@ public class WebHookManager implements HookManager {
         try {
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(HttpRequest.getShortRequestDump(eventName + " webhook", true, request));
-                String postData = HttpRequest.getPostDataAsString(request);
+                LOGGER.fine(GitlabRequest.getShortRequestDump(eventName + " webhook", true, request));
+                String postData = GitlabRequest.getPostDataAsString(request);
                 LOGGER.fine("Raw POST data:\n" + postData);
                 event = jacksonJson.unmarshal(Event.class, postData);
                 LOGGER.fine(event.getObjectKind() + " event:\n" + jacksonJson.marshal(event) + "\n");
@@ -198,6 +196,7 @@ public class WebHookManager implements HookManager {
         case WikiPageEvent.OBJECT_KIND:
         case ReleaseEvent.OBJECT_KIND:
         case DeploymentEvent.OBJECT_KIND:
+        case WorkItemEvent.OBJECT_KIND:
             fireEvent(event);
             break;
 
@@ -282,6 +281,10 @@ public class WebHookManager implements HookManager {
             fireDeploymentEvent((DeploymentEvent) event);
             break;
 
+        case WorkItemEvent.OBJECT_KIND:
+            fireWorkItemEvent((WorkItemEvent) event);
+            break;
+
         default:
             String message = "Unsupported event object_kind, object_kind=" + event.getObjectKind();
             LOGGER.warning(message);
@@ -346,6 +349,12 @@ public class WebHookManager implements HookManager {
     protected void fireDeploymentEvent(DeploymentEvent deploymentEvent) {
         for (WebHookListener listener : webhookListeners) {
             listener.onDeploymentEvent(deploymentEvent);
+        }
+    }
+
+    protected void fireWorkItemEvent(WorkItemEvent workItemEvent) {
+        for (WebHookListener listener : webhookListeners) {
+            listener.onWorkItemEvent(workItemEvent);
         }
     }
 

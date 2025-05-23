@@ -45,7 +45,7 @@ import org.miaixz.bus.core.center.iterator.CopiedIterator;
 public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852239218067L;
+    private static final long serialVersionUID = 2852293093850L;
 
     /**
      * 一些特殊缓存，例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，导致无法使用读写锁

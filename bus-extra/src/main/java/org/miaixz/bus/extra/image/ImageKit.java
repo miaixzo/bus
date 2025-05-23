@@ -2394,4 +2394,5 @@ public class ImageKit {
     public static Rectangle2D getRectangle(final String text, final Font font) {
         return font.getStringBounds(text, new FontRenderContext(AffineTransform.getScaleInstance(1, 1), false, false));
     }
+
 }

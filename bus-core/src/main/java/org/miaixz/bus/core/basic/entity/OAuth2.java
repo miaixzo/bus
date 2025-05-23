@@ -50,7 +50,7 @@ import lombok.experimental.SuperBuilder;
 public class OAuth2 extends Entity {
 
     @Serial
-    private static final long serialVersionUID = 2852233658815L;
+    private static final long serialVersionUID = 2852289819530L;
 
     /**
      * 当前租户

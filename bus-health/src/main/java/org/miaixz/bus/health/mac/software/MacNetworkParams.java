@@ -116,4 +116,5 @@ final class MacNetworkParams extends AbstractNetworkParams {
         }
         return Normal.EMPTY;
     }
+
 }

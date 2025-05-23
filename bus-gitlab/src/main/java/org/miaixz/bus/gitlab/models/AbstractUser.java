@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serial;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractUser<U extends AbstractUser<U>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852371695596L;
+    private static final long serialVersionUID = 2852252597172L;
 
     private String avatarUrl;
     private Date createdAt;
@@ -47,6 +47,7 @@ public abstract class AbstractUser<U extends AbstractUser<U>> implements Seriali
     private Long id;
     private String name;
     private String state;
+    private Boolean locked;
     private String username;
     private String webUrl;
 
@@ -88,6 +89,14 @@ public abstract class AbstractUser<U extends AbstractUser<U>> implements Seriali
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
     }
 
     public String getState() {

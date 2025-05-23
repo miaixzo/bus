@@ -76,4 +76,5 @@ public interface GlobalMemory {
      * @return A list of PhysicalMemory objects.
      */
     List<PhysicalMemory> getPhysicalMemory();
+
 }

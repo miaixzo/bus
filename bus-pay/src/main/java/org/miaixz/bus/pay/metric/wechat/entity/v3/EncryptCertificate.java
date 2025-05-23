@@ -50,7 +50,7 @@ import lombok.experimental.SuperBuilder;
 public class EncryptCertificate implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852771057399L;
+    private static final long serialVersionUID = 2852239758852L;
 
     private String algorithm;
     private String nonce;

@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class NotificationService implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852387311385L;
+    private static final long serialVersionUID = 2852236507733L;
 
     public static final String WEBHOOK_PROP = "webhook";
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";
@@ -85,7 +85,7 @@ public abstract class NotificationService implements Serializable {
 
     private Map<String, Object> properties;
 
-    public abstract GitLabApiForm servicePropertiesForm();
+    public abstract GitLabForm servicePropertiesForm();
 
     public Long getId() {
         return id;

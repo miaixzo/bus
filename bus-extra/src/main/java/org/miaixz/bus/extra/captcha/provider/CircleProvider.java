@@ -48,7 +48,7 @@ import org.miaixz.bus.extra.image.ImageKit;
 public class CircleProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852339956651L;
+    private static final long serialVersionUID = 2852273393683L;
 
     /**
      * 构造

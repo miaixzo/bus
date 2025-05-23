@@ -38,7 +38,7 @@ import java.io.Serial;
 public class AlreadyExistsException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852300230796L;
+    private static final long serialVersionUID = 2852267783535L;
 
     /**
      * 构造

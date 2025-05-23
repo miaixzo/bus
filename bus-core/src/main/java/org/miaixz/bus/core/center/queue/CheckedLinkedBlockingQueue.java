@@ -43,7 +43,7 @@ import java.util.function.Predicate;
 public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852269876916L;
+    private static final long serialVersionUID = 2852236937538L;
 
     /**
      * 检查函数

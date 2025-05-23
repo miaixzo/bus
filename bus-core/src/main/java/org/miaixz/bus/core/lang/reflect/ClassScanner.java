@@ -60,7 +60,7 @@ import org.miaixz.bus.core.xyz.*;
 public class ClassScanner implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852310185783L;
+    private static final long serialVersionUID = 2852235259736L;
 
     /**
      * 包名

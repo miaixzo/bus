@@ -132,4 +132,5 @@ public class ApplicationInfo {
         return "AppInfo{" + "name=" + name + ", version=" + version + ", vendor=" + vendor + ", timestamp=" + timestamp
                 + ", additionalInfo=" + additionalInfo + '}';
     }
+
 }

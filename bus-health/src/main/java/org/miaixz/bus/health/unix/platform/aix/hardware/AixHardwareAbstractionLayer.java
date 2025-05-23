@@ -109,4 +109,5 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
     public List<GraphicsCard> getGraphicsCards() {
         return AixGraphicsCard.getGraphicsCards(lscfg);
     }
+
 }

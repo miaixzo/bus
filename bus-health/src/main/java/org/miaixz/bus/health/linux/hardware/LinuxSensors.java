@@ -279,4 +279,5 @@ final class LinuxSensors extends AbstractSensors {
         }
         return 0d;
     }
+
 }

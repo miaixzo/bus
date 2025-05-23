@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.exception.CloneException;
 public class Pair<L, R> implements Serializable, Cloneable {
 
     @Serial
-    private static final long serialVersionUID = 2852315358279L;
+    private static final long serialVersionUID = 2852238086000L;
 
     /**
      * 左值（第一个值）

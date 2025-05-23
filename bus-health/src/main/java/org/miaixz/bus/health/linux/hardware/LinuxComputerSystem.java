@@ -119,4 +119,5 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     public Baseboard createBaseboard() {
         return new LinuxBaseboard();
     }
+
 }

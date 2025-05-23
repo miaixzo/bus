@@ -68,4 +68,5 @@ public class OraclePrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;
+
 }

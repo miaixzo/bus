@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public class Boundary extends Range<DateTime> {
 
     @Serial
-    private static final long serialVersionUID = 2852250313703L;
+    private static final long serialVersionUID = 2852285531696L;
 
     /**
      * 构造，包含开始和结束日期时间

@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class XMLGregorianCalendarConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852280392105L;
+    private static final long serialVersionUID = 2852277720925L;
 
     private final DatatypeFactory datatypeFactory;
     /**

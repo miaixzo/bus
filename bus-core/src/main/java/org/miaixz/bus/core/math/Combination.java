@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Combination implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852316272819L;
+    private static final long serialVersionUID = 2852238810879L;
 
     private final String[] datas;
 

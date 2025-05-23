@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class QrCodeException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852358925635L;
+    private static final long serialVersionUID = 2852255758636L;
 
     /**
      * 构造

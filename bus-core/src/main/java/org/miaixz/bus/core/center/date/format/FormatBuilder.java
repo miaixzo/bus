@@ -60,7 +60,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
 public class FormatBuilder extends Format implements PositionDateParser, FormatPrinter {
 
     @Serial
-    private static final long serialVersionUID = 2852261179270L;
+    private static final long serialVersionUID = 2852291286713L;
 
     private static final FormatCache<FormatBuilder> CACHE = new FormatCache<>() {
         @Override

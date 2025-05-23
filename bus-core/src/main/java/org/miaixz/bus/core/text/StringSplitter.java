@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringSplitter extends ComputeIterator<String> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852319202796L;
+    private static final long serialVersionUID = 2852269277226L;
 
     private final String text;
     private final TextFinder finder;

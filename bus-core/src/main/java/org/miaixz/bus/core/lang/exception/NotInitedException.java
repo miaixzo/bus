@@ -38,7 +38,7 @@ import java.io.Serial;
 public class NotInitedException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852301778167L;
+    private static final long serialVersionUID = 2852271778571L;
 
     /**
      * 构造

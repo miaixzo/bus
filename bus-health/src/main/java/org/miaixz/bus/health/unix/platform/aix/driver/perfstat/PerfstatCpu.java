@@ -94,4 +94,5 @@ public final class PerfstatCpu {
         }
         return cpus == 63 ? Long.MAX_VALUE : -1L;
     }
+
 }

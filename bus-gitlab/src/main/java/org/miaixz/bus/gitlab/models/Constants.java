@@ -25,10 +25,14 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.gitlab;
+package org.miaixz.bus.gitlab.models;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
@@ -37,33 +41,51 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public interface Constants {
 
-    /** The total number of items HTTP header key. */
+    /**
+     * The total number of items HTTP header key.
+     */
     public static final String TOTAL_HEADER = "X-Total";
 
-    /** The total number of pages HTTP header key. */
+    /**
+     * The total number of pages HTTP header key.
+     */
     public static final String TOTAL_PAGES_HEADER = "X-Total-Pages";
 
-    /** The number of items per page HTTP header key. */
+    /**
+     * The number of items per page HTTP header key.
+     */
     public static final String PER_PAGE = "X-Per-Page";
 
-    /** The index of the current page (starting at 1) HTTP header key. */
+    /**
+     * The index of the current page (starting at 1) HTTP header key.
+     */
     public static final String PAGE_HEADER = "X-Page";
 
-    /** The index of the next page HTTP header key. */
+    /**
+     * The index of the next page HTTP header key.
+     */
     public static final String NEXT_PAGE_HEADER = "X-Next-Page";
 
-    /** The index of the previous page HTTP header key. */
+    /**
+     * The index of the previous page HTTP header key.
+     */
     public static final String PREV_PAGE_HEADER = "X-Prev-Page";
 
-    /** Items per page param HTTP header key. */
+    /**
+     * Items per page param HTTP header key.
+     */
     public static final String PER_PAGE_PARAM = "per_page";
 
-    /** Page param HTTP header key. */
+    /**
+     * Page param HTTP header key.
+     */
     public static final String PAGE_PARAM = "page";
 
-    /** Used to specify the type of authentication token. */
+    /**
+     * Used to specify the type of authentication token.
+     */
     public enum TokenType {
-        ACCESS, OAUTH2_ACCESS, PRIVATE;
+        ACCESS, OAUTH2_ACCESS, JOB_TOKEN, PRIVATE;
     }
 
     /**
@@ -94,7 +116,6 @@ public interface Constants {
      * Enum to use for ordering the results of various API calls.
      */
     public enum SortOrder {
-
         ASC, DESC;
 
         private static JacksonJsonEnumHelper<SortOrder> enumHelper = new JacksonJsonEnumHelper<>(SortOrder.class);
@@ -119,7 +140,6 @@ public interface Constants {
      * Enum to use for ordering the results of getEpics().
      */
     public enum EpicOrderBy {
-
         CREATED_AT, UPDATED_AT;
 
         private static JacksonJsonEnumHelper<EpicOrderBy> enumHelper = new JacksonJsonEnumHelper<>(EpicOrderBy.class);
@@ -140,9 +160,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for ordering the results of getIssues(). */
+    /**
+     * Enum to use for ordering the results of getIssues().
+     */
     public enum IssueOrderBy {
-
         CREATED_AT, UPDATED_AT;
 
         private static JacksonJsonEnumHelper<IssueOrderBy> enumHelper = new JacksonJsonEnumHelper<>(IssueOrderBy.class);
@@ -163,9 +184,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for ordering the results of getPackages(). */
+    /**
+     * Enum to use for ordering the results of getPackages().
+     */
     public enum PackageOrderBy {
-
         NAME, CREATED_AT, VERSION, TYPE, PROJECT_PATH;
 
         private static JacksonJsonEnumHelper<PackageOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
@@ -187,9 +209,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for filtering the results of getPackages(). */
+    /**
+     * Enum to use for filtering the results of getPackages().
+     */
     public enum PackageStatus {
-
         DEFAULT, HIDDEN, PROCESSING;
 
         private static JacksonJsonEnumHelper<PackageStatus> enumHelper = new JacksonJsonEnumHelper<>(
@@ -211,9 +234,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for ordering the results of getProjects(). */
+    /**
+     * Enum to use for ordering the results of getProjects().
+     */
     public enum ProjectOrderBy {
-
         ID, NAME, PATH, CREATED_AT, UPDATED_AT, LAST_ACTIVITY_AT;
 
         private static JacksonJsonEnumHelper<ProjectOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
@@ -235,9 +259,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for ordering the results of getPipelines(). */
+    /**
+     * Enum to use for ordering the results of getPipelines().
+     */
     public enum PipelineOrderBy {
-
         ID, STATUS, REF, UPDATED_AT, USER_ID;
 
         private static JacksonJsonEnumHelper<PipelineOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
@@ -263,7 +288,6 @@ public interface Constants {
      * Enum to use for ordering the results of getMergeRequests().
      */
     public enum MergeRequestOrderBy {
-
         CREATED_AT, UPDATED_AT;
 
         private static JacksonJsonEnumHelper<MergeRequestOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
@@ -285,9 +309,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for ordering the results of getGroups() and getSubGroups(). */
+    /**
+     * Enum to use for ordering the results of getGroups() and getSubGroups().
+     */
     public enum GroupOrderBy {
-
         NAME, PATH, ID, SIMILARITY;
 
         private static JacksonJsonEnumHelper<GroupOrderBy> enumHelper = new JacksonJsonEnumHelper<>(GroupOrderBy.class);
@@ -308,9 +333,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for ordering the results of getTags(). */
+    /**
+     * Enum to use for ordering the results of getTags().
+     */
     public enum TagOrderBy {
-
         NAME, UPDATED;
 
         private static JacksonJsonEnumHelper<TagOrderBy> enumHelper = new JacksonJsonEnumHelper<>(TagOrderBy.class);
@@ -335,7 +361,6 @@ public interface Constants {
      * Enum to use for ordering the results of getDeployments.
      */
     public static enum DeploymentOrderBy {
-
         ID, IID, CREATED_AT, UPDATED_AT, REF;
 
         private static JacksonJsonEnumHelper<DeploymentOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
@@ -357,9 +382,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for ordering the results of getContibutors(). */
+    /**
+     * Enum to use for ordering the results of getContibutors().
+     */
     public enum ContributorOrderBy {
-
         NAME, EMAIL, COMMITS;
 
         private static JacksonJsonEnumHelper<ContributorOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
@@ -381,9 +407,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the scope when calling getPipelines(). */
+    /**
+     * Enum to use for specifying the scope when calling getPipelines().
+     */
     public enum PipelineScope {
-
         RUNNING, PENDING, FINISHED, BRANCHES, TAGS;
 
         private static JacksonJsonEnumHelper<PipelineScope> enumHelper = new JacksonJsonEnumHelper<>(
@@ -405,10 +432,37 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the scope when calling getJobs(). */
-    public enum JobScope {
+    /**
+     * Enum to use for specifying the source when calling getPipelines().
+     */
+    public enum PipelineSource {
+        PUSH, WEB, TRIGGER, SCHEDULE, API, EXTERNAL, PIPELINE, CHAT, WEBIDE, MERGE_REQUEST_EVENT,
+        EXTERNAL_PULL_REQUEST_EVENT;
 
-        CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL;
+        private static JacksonJsonEnumHelper<PipelineSource> enumHelper = new JacksonJsonEnumHelper<>(
+                PipelineSource.class);
+
+        @JsonCreator
+        public static PipelineSource forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for specifying the scope when calling getJobs().
+     */
+    public enum JobScope {
+        CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL, WAITING_FOR_RESOURCE;
 
         private static JacksonJsonEnumHelper<JobScope> enumHelper = new JacksonJsonEnumHelper<>(JobScope.class);
 
@@ -428,9 +482,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the scope when calling the various get issue methods. */
+    /**
+     * Enum to use for specifying the scope when calling the various get issue methods.
+     */
     public enum IssueScope {
-
         CREATED_BY_ME, ASSIGNED_TO_ME, ALL;
 
         private static JacksonJsonEnumHelper<IssueScope> enumHelper = new JacksonJsonEnumHelper<>(IssueScope.class);
@@ -451,9 +506,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the scope for getMergeRequests methods. */
+    /**
+     * Enum to use for specifying the scope for getMergeRequests methods.
+     */
     public enum MergeRequestScope {
-
         CREATED_BY_ME, ASSIGNED_TO_ME, ALL;
 
         private static JacksonJsonEnumHelper<MergeRequestScope> enumHelper = new JacksonJsonEnumHelper<>(
@@ -475,9 +531,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for querying the state of a MergeRequest */
+    /**
+     * Enum to use for querying the state of a MergeRequest
+     */
     public enum MergeRequestState {
-
         OPENED, CLOSED, LOCKED, MERGED, ALL;
 
         private static JacksonJsonEnumHelper<MergeRequestState> enumHelper = new JacksonJsonEnumHelper<>(
@@ -499,9 +556,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the scope of the search attribute when calling getMergeRequests(). */
+    /**
+     * Enum to use for specifying the scope of the search attribute when calling getMergeRequests().
+     */
     public enum MergeRequestSearchIn {
-
         TITLE, DESCRIPTION;
 
         private static JacksonJsonEnumHelper<MergeRequestSearchIn> enumHelper = new JacksonJsonEnumHelper<>(
@@ -523,9 +581,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the state of a merge request or issue update. */
+    /**
+     * Enum to use for specifying the state of a merge request or issue update.
+     */
     public enum StateEvent {
-
         CLOSE, REOPEN;
 
         private static JacksonJsonEnumHelper<StateEvent> enumHelper = new JacksonJsonEnumHelper<>(StateEvent.class);
@@ -546,9 +605,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to used to store the state of an issue. */
+    /**
+     * Enum to used to store the state of an issue.
+     */
     public enum IssueState {
-
         OPENED, CLOSED, REOPENED;
 
         private static JacksonJsonEnumHelper<IssueState> enumHelper = new JacksonJsonEnumHelper<>(IssueState.class);
@@ -570,7 +630,6 @@ public interface Constants {
     }
 
     public enum MilestoneState {
-
         ACTIVE, CLOSED, ACTIVATE, CLOSE;
 
         private static JacksonJsonEnumHelper<MilestoneState> enumHelper = new JacksonJsonEnumHelper<>(
@@ -592,9 +651,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the event action_type. */
+    /**
+     * Enum to use for specifying the event action_type.
+     */
     public enum ActionType {
-
         CREATED, UPDATED, OPENED, CLOSED, REOPENED, PUSHED, COMMENTED, MERGED, JOINED, LEFT, DESTROYED, EXPIRED,
         REMOVED, DELETED, APPROVED, ACCEPTED, IMPORTED;
 
@@ -616,9 +676,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the event target_type. */
+    /**
+     * Enum to use for specifying the event target_type.
+     */
     public enum TargetType {
-
         ISSUE, MILESTONE, MERGE_REQUEST, NOTE, PROJECT, SNIPPET, USER;
 
         private static JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class,
@@ -640,9 +701,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the line type for a commit comment. */
+    /**
+     * Enum to use for specifying the line type for a commit comment.
+     */
     public enum LineType {
-
         OLD, NEW;
 
         private static JacksonJsonEnumHelper<LineType> enumHelper = new JacksonJsonEnumHelper<>(LineType.class);
@@ -663,9 +725,10 @@ public interface Constants {
         }
     }
 
-    /** Enum to specify the state of an ImpersonationToken. */
+    /**
+     * Enum to specify the state of an ImpersonationToken.
+     */
     public enum ImpersonationState {
-
         ALL, ACTIVE, INACTIVE;
 
         private static JacksonJsonEnumHelper<ImpersonationState> enumHelper = new JacksonJsonEnumHelper<>(
@@ -691,8 +754,13 @@ public interface Constants {
      * Enum to specify the format of a downloaded archive.
      */
     public enum ArchiveFormat {
-
         BZ2, TAR, TAR_BZ2, TAR_GZ, TB2, TBZ, TBZ2, ZIP;
+
+        private final String value;
+
+        ArchiveFormat() {
+            this.value = name().toLowerCase().replace('_', '.');
+        }
 
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
 
@@ -701,13 +769,7 @@ public interface Constants {
                 valuesMap.put(archiveFormat.value, archiveFormat);
         }
 
-        private final String value;
-
-        ArchiveFormat() {
-            this.value = name().toLowerCase().replace('_', '.');
-        }
-
-        public static ArchiveFormat forValue(String value) throws GitLabApiException {
+        public static ArchiveFormat forValue(String value) {
 
             if (value == null || value.trim().isEmpty()) {
                 return (null);
@@ -718,7 +780,7 @@ public interface Constants {
                 return (archiveFormat);
             }
 
-            throw new GitLabApiException(
+            throw new IllegalArgumentException(
                     "Invalid format! Options are tar.gz, tar.bz2, tbz, tbz2, tb2, bz2, tar, and zip.");
         }
 
@@ -732,7 +794,6 @@ public interface Constants {
      * Enum for the various Commit build status values.
      */
     public enum CommitBuildState {
-
         PENDING, RUNNING, SUCCESS, FAILED, CANCELED, SKIPPED;
 
         private static JacksonJsonEnumHelper<CommitBuildState> enumHelper = new JacksonJsonEnumHelper<>(
@@ -758,33 +819,92 @@ public interface Constants {
      * Enum for the various Application scope values.
      */
     public enum ApplicationScope {
-
         /**
-         * Access the authenticated user's API
+         * Grants complete read/write access to the API, including all groups and projects, the container registry, the
+         * dependency proxy, and the package registry.
          */
         API,
 
-        /** Read the authenticated user's personal information */
+        /**
+         * Grants read access to the API, including all groups and projects, the container registry, and the package
+         * registry.
+         */
+        READ_API,
+
+        /**
+         * Grants read-only access to your profile through the /user API endpoint, which includes username, public
+         * email, and full name. Also grants access to read-only API endpoints under /users.
+         */
         READ_USER,
 
-        /** Perform API actions as any user in the system */
-        SUDO,
+        /**
+         * Grants create access to the runners.
+         */
+        CREATE_RUNNER,
 
-        /** Allows read-access to the repository */
+        /**
+         * Grants access to manage the runners.
+         */
+        MANAGE_RUNNER,
+
+        /**
+         * Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+         */
+        K8S_PROXY,
+
+        /**
+         * Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.
+         */
         READ_REPOSITORY,
 
         /**
-         * Authenticate using OpenID Connect
+         * Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
+         */
+        WRITE_REPOSITORY,
+
+        /**
+         * Grants read-only access to GitLab Observability.
+         */
+        READ_OBSERVABILITY,
+
+        /**
+         * Grants write access to GitLab Observability.
+         */
+        WRITE_OBSERVABILITY,
+
+        /**
+         * Grants access to GitLab Duo related API endpoints.
+         */
+        AI_FEATURES,
+
+        /**
+         * Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
+         */
+        SUDO,
+
+        /**
+         * Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
+         */
+        ADMIN_MODE,
+
+        /**
+         * Grant access to download Service Ping payload via API when authenticated as an admin user.
+         */
+        READ_SERVICE_PING,
+
+        /**
+         * Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's
+         * profile and group memberships.
          */
         OPENID,
 
         /**
-         * Allows read-only access to the user's personal information using OpenID Connect
+         * Grants read-only access to the user's profile data using OpenID Connect.
          */
         PROFILE,
 
         /**
-         * Allows read-only access to the user's primary email address using OpenID Connect
+         * Grants read-only access to the user's primary email address using OpenID Connect.
          */
         EMAIL;
 
@@ -808,110 +928,9 @@ public interface Constants {
     }
 
     /**
-     * Enum for the search scope when doing a globalSearch() with the SearchApi.
-     */
-    public enum SearchScope {
-
-        PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS, USERS, BLOBS, COMMITS, WIKI_BLOBS;
-
-        private static JacksonJsonEnumHelper<SearchScope> enumHelper = new JacksonJsonEnumHelper<>(SearchScope.class);
-
-        @JsonCreator
-        public static SearchScope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    /**
-     * Enum for the search scope when doing a groupSearch() with the SearchApi.
-     */
-    public enum GroupSearchScope {
-
-        PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, WIKI_BLOBS, COMMITS, BLOBS, NOTES, USERS;
-
-        private static JacksonJsonEnumHelper<GroupSearchScope> enumHelper = new JacksonJsonEnumHelper<>(
-                GroupSearchScope.class);
-
-        @JsonCreator
-        public static GroupSearchScope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    /**
-     * Enum for the search scope when doing a projectSearch() with the SearchApi.
-     */
-    public enum ProjectSearchScope {
-
-        BLOBS, COMMITS, ISSUES, MERGE_REQUESTS, MILESTONES, NOTES, WIKI_BLOBS, USERS;
-
-        private static JacksonJsonEnumHelper<ProjectSearchScope> enumHelper = new JacksonJsonEnumHelper<>(
-                ProjectSearchScope.class);
-
-        @JsonCreator
-        public static ProjectSearchScope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    /** Enum to use for specifying the action when doing a getTodos() with the TodosApi. */
-    public enum TodoAction {
-
-        ASSIGNED, MENTIONED, BUILD_FAILED, MARKED, APPROVAL_REQUIRED, UNMERGEABLE, DIRECTLY_ADDRESSED;
-
-        private static JacksonJsonEnumHelper<TodoAction> enumHelper = new JacksonJsonEnumHelper<>(TodoAction.class);
-
-        @JsonCreator
-        public static TodoAction forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    /**
      * Enum to use for specifying the state when doing a getTodos() with the TodosApi.
      */
     public enum TodoState {
-
         PENDING, DONE;
 
         private static JacksonJsonEnumHelper<TodoState> enumHelper = new JacksonJsonEnumHelper<>(TodoState.class);
@@ -936,7 +955,6 @@ public interface Constants {
      * Enum to use for specifying the type when doing a getTodos() with the TodosApi.
      */
     public enum TodoType {
-
         ISSUE, MERGE_REQUEST;
 
         private static JacksonJsonEnumHelper<TodoType> enumHelper = new JacksonJsonEnumHelper<>(TodoType.class, true,
@@ -944,32 +962,6 @@ public interface Constants {
 
         @JsonCreator
         public static TodoType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    /** Enum to use for specifying the status of a deployment. */
-    public enum DeploymentStatus {
-        /**
-         * After some tests, {@link #CREATED} value is not a valid value.
-         */
-        CREATED, RUNNING, SUCCESS, FAILED, CANCELED;
-
-        private static JacksonJsonEnumHelper<DeploymentStatus> enumHelper = new JacksonJsonEnumHelper<>(
-                DeploymentStatus.class);
-
-        @JsonCreator
-        public static DeploymentStatus forValue(String value) {
             return enumHelper.forValue(value);
         }
 
@@ -1009,7 +1001,129 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the project token scope. */
+    /**
+     * Enum to use for specifying the action when doing a getTodos() with the TodosApi.
+     */
+    public enum TodoAction {
+        ASSIGNED, MENTIONED, BUILD_FAILED, MARKED, APPROVAL_REQUIRED, UNMERGEABLE, DIRECTLY_ADDRESSED;
+
+        private static JacksonJsonEnumHelper<TodoAction> enumHelper = new JacksonJsonEnumHelper<>(TodoAction.class);
+
+        @JsonCreator
+        public static TodoAction forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum for the build_git_strategy of the project instance.
+     */
+    enum SquashOption {
+        NEVER, ALWAYS, DEFAULT_ON, DEFAULT_OFF;
+
+        private static JacksonJsonEnumHelper<SquashOption> enumHelper = new JacksonJsonEnumHelper<>(SquashOption.class);
+
+        @JsonCreator
+        public static SquashOption forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    public enum ProjectFeatureVisibilityAccessLevel {
+        DISABLED, PRIVATE, ENABLED, PUBLIC;
+
+        private static final JacksonJsonEnumHelper<ProjectFeatureVisibilityAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
+                ProjectFeatureVisibilityAccessLevel.class);
+
+        @JsonCreator
+        public static ProjectFeatureVisibilityAccessLevel forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for specifying the status of a deployment.
+     */
+    public enum DeploymentStatus {
+        /**
+         * After some tests, {@link #CREATED} value is not a valid value.
+         */
+        CREATED, RUNNING, SUCCESS, FAILED, CANCELED;
+
+        private static JacksonJsonEnumHelper<DeploymentStatus> enumHelper = new JacksonJsonEnumHelper<>(
+                DeploymentStatus.class);
+
+        @JsonCreator
+        public static DeploymentStatus forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    public enum AutoCancelPendingPipelines {
+        DISABLED, ENABLED;
+
+        private static final JacksonJsonEnumHelper<AutoCancelPendingPipelines> enumHelper = new JacksonJsonEnumHelper<>(
+                AutoCancelPendingPipelines.class);
+
+        @JsonCreator
+        public static AutoCancelPendingPipelines forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for specifying the project token scope.
+     */
     public enum ProjectAccessTokenScope {
         API, READ_API, READ_REGISTRY, WRITE_REGISTRY, READ_REPOSITORY, WRITE_REPOSITORY, CREATE_RUNNER;
 
@@ -1033,33 +1147,61 @@ public interface Constants {
     }
 
     /**
-     * Enum for the build_git_strategy of the project instance.
+     * Enum for the search scope when doing a globalSearch() with the SearchApi.
      */
-    enum SquashOption {
+    public static class SearchScope<T> {
 
-        NEVER, ALWAYS, DEFAULT_ON, DEFAULT_OFF;
+        public static final SearchScope<Project> PROJECTS = new SearchScope<>("projects", Project.class);
+        public static final SearchScope<Issue> ISSUES = new SearchScope<>("issues", Issue.class);
+        public static final SearchScope<MergeRequest> MERGE_REQUESTS = new SearchScope<>("merge_requests",
+                MergeRequest.class);
+        public static final SearchScope<Milestone> MILESTONES = new SearchScope<>("milestones", Milestone.class);
+        public static final SearchScope<Snippet> SNIPPET_TITLES = new SearchScope<>("snippet_titles", Snippet.class);
+        public static final SearchScope<Snippet> SNIPPET_BLOBS = new SearchScope<>("snippet_blobs", Snippet.class);
+        public static final SearchScope<User> USERS = new SearchScope<>("users", User.class);
+        public static final SearchScope<SearchBlob> BLOBS = new SearchScope<>("blobs", SearchBlob.class);
+        public static final SearchScope<Commit> COMMITS = new SearchScope<>("commits", Commit.class);
+        public static final SearchScope<SearchBlob> WIKI_BLOBS = new SearchScope<>("wiki_blobs", SearchBlob.class);
+        private static final Map jsonLookup = Arrays
+                .stream(new SearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS,
+                        USERS, BLOBS, COMMITS, WIKI_BLOBS })
+                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, Function.identity()));
+        private final String jsonName;
+        private final Class<T> resultType;
 
-        private static JacksonJsonEnumHelper<SquashOption> enumHelper = new JacksonJsonEnumHelper<>(SquashOption.class);
+        private SearchScope(String jsonName, Class<T> resultType) {
+            this.jsonName = jsonName;
+            this.resultType = resultType;
+        }
 
         @JsonCreator
-        public static SquashOption forValue(String value) {
-            return enumHelper.forValue(value);
+        public static <T> SearchScope<T> forValue(String value) {
+            return (SearchScope<T>) jsonLookup.get(value);
+        }
+
+        public static Set<String> values() {
+            return jsonLookup.keySet();
+        }
+
+        public Class<T> getResultType() {
+            return resultType;
         }
 
         @JsonValue
         public String toValue() {
-            return (enumHelper.toString(this));
+            return jsonName;
         }
 
         @Override
         public String toString() {
-            return (enumHelper.toString(this));
+            return jsonName;
         }
     }
 
-    /** Enum for the build_git_strategy of the project instance. */
+    /**
+     * Enum for the build_git_strategy of the project instance.
+     */
     enum BuildGitStrategy {
-
         FETCH, CLONE;
 
         private static JacksonJsonEnumHelper<BuildGitStrategy> enumHelper = new JacksonJsonEnumHelper<>(
@@ -1103,7 +1245,9 @@ public interface Constants {
         }
     }
 
-    /** Enum to use for specifying the Event scope. */
+    /**
+     * Enum to use for specifying the Event scope.
+     */
     public enum EventScope {
         ALL;
 
@@ -1189,6 +1333,111 @@ public interface Constants {
         @Override
         public String toString() {
             return Integer.toString(value);
+        }
+    }
+
+    /**
+     * Enum for the search scope when doing a groupSearch() with the SearchApi.
+     */
+    public static class GroupSearchScope<T> {
+
+        public static final GroupSearchScope<Project> PROJECTS = new GroupSearchScope<>("projects", Project.class);
+        public static final GroupSearchScope<Issue> ISSUES = new GroupSearchScope<>("issues", Issue.class);
+        public static final GroupSearchScope<MergeRequest> MERGE_REQUESTS = new GroupSearchScope<>("merge_requests",
+                MergeRequest.class);
+        public static final GroupSearchScope<Milestone> MILESTONES = new GroupSearchScope<>("milestones",
+                Milestone.class);
+        public static final GroupSearchScope<SearchBlob> WIKI_BLOBS = new GroupSearchScope<>("wiki_blobs",
+                SearchBlob.class);
+        public static final GroupSearchScope<Commit> COMMITS = new GroupSearchScope<>("commits", Commit.class);
+        public static final GroupSearchScope<SearchBlob> BLOBS = new GroupSearchScope<>("blobs", SearchBlob.class);
+        public static final GroupSearchScope<Note> NOTES = new GroupSearchScope<>("notes", Note.class);
+        public static final GroupSearchScope<User> USERS = new GroupSearchScope<>("users", User.class);
+        private static final Map jsonLookup = Arrays
+                .stream(new GroupSearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, WIKI_BLOBS, COMMITS,
+                        BLOBS, NOTES, USERS, })
+                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, Function.identity()));
+        private final String jsonName;
+        private final Class<T> resultType;
+
+        public GroupSearchScope(String jsonName, Class<T> resultType) {
+            this.jsonName = jsonName;
+            this.resultType = resultType;
+        }
+
+        @JsonCreator
+        public static <T> GroupSearchScope<T> forValue(String value) {
+            return (GroupSearchScope<T>) jsonLookup.get(value);
+        }
+
+        public static Set<String> values() {
+            return jsonLookup.keySet();
+        }
+
+        public Class<T> getResultType() {
+            return resultType;
+        }
+
+        @JsonValue
+        public String toValue() {
+            return jsonName;
+        }
+
+        @Override
+        public String toString() {
+            return jsonName;
+        }
+    }
+
+    /**
+     * Enum for the search scope when doing a projectSearch() with the SearchApi.
+     */
+    public static class ProjectSearchScope<T> {
+
+        public static final ProjectSearchScope<SearchBlob> BLOBS = new ProjectSearchScope<>("blobs", SearchBlob.class);
+        public static final ProjectSearchScope<Commit> COMMITS = new ProjectSearchScope<>("commits", Commit.class);
+        public static final ProjectSearchScope<Issue> ISSUES = new ProjectSearchScope<>("issues", Issue.class);
+        public static final ProjectSearchScope<MergeRequest> MERGE_REQUESTS = new ProjectSearchScope<>("merge_requests",
+                MergeRequest.class);
+        public static final ProjectSearchScope<Milestone> MILESTONES = new ProjectSearchScope<>("milestones",
+                Milestone.class);
+        public static final ProjectSearchScope<Note> NOTES = new ProjectSearchScope<>("notes", Note.class);
+        public static final ProjectSearchScope<SearchBlob> WIKI_BLOBS = new ProjectSearchScope<>("wiki_blobs",
+                SearchBlob.class);
+        public static final ProjectSearchScope<User> USERS = new ProjectSearchScope<>("users", User.class);
+        private static final Map jsonLookup = Arrays
+                .stream(new ProjectSearchScope[] { BLOBS, COMMITS, ISSUES, MERGE_REQUESTS, MILESTONES, NOTES,
+                        WIKI_BLOBS, USERS })
+                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, Function.identity()));
+        private final String jsonName;
+        private final Class<T> resultType;
+
+        public ProjectSearchScope(String jsonName, Class<T> resultType) {
+            this.jsonName = jsonName;
+            this.resultType = resultType;
+        }
+
+        @JsonCreator
+        public static <T> ProjectSearchScope<T> forValue(String value) {
+            return (ProjectSearchScope<T>) jsonLookup.get(value);
+        }
+
+        public static Set<String> values() {
+            return jsonLookup.keySet();
+        }
+
+        public Class<T> getResultType() {
+            return resultType;
+        }
+
+        @JsonValue
+        public String toValue() {
+            return jsonName;
+        }
+
+        @Override
+        public String toString() {
+            return jsonName;
         }
     }
 

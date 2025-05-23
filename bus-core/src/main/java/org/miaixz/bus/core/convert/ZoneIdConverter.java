@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class ZoneIdConverter extends AbstractConverter implements MatcherConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852280626197L;
+    private static final long serialVersionUID = 2852277966103L;
 
     /**
      * 单例

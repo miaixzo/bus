@@ -41,6 +41,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class DataSchema extends DatabaseSchema {
+
     /**
      * 标题
      */
@@ -61,4 +62,5 @@ public class DataSchema extends DatabaseSchema {
      * 描述
      */
     private String description;
+
 }

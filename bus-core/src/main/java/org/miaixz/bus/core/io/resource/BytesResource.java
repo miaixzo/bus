@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class BytesResource implements Resource, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289337373L;
+    private static final long serialVersionUID = 2852289366928L;
 
     private final byte[] bytes;
     private final String name;

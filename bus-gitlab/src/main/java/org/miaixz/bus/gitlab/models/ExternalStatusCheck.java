@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class ExternalStatusCheck implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376987881L;
+    private static final long serialVersionUID = 2852276612677L;
 
     private Long id;
     private String name;

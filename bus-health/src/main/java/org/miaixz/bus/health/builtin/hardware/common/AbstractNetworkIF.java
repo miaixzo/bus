@@ -265,4 +265,5 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 .append(getCollisions() + " coll);");
         return sb.toString();
     }
+
 }

@@ -98,4 +98,5 @@ public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstr
     public List<GraphicsCard> getGraphicsCards() {
         return OpenBsdGraphicsCard.getGraphicsCards();
     }
+
 }

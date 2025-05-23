@@ -27,25 +27,23 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.Constants.IssueOrderBy;
-import org.miaixz.bus.gitlab.Constants.IssueScope;
-import org.miaixz.bus.gitlab.Constants.IssueState;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.IssueOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.IssueScope;
+import org.miaixz.bus.gitlab.models.Constants.IssueState;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 /**
  * This class is used to filter issues when getting lists of them.
@@ -53,17 +51,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class IssueFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852378378200L;
+    private static final long serialVersionUID = 2852279759531L;
 
     /**
-     * Return only the milestone having the given iid.
+     * Return only the issues having the given iid.
      */
-    private List<String> iids;
+    private List<Long> iids;
 
     /**
      * {@link Constants.IssueState} Return all issues or just those that are opened or closed.
      */
     private IssueState state;
+
+    /**
+     * Modify the scope of the search attribute. title, description, or a string joining them with comma. Default is
+     * title,description
+     */
+    private List<String> in;
 
     /**
      * Comma-separated list of label names, issues must have all labels to be returned. No+Label lists all issues with
@@ -143,12 +147,16 @@ public class IssueFilter implements Serializable {
     private Map<IssueField, Object> not;
 
     /*- properties -*/
-    public List<String> getIids() {
+    public List<Long> getIids() {
         return iids;
     }
 
-    public void setIids(List<String> iids) {
+    public void setIids(List<Long> iids) {
         this.iids = iids;
+    }
+
+    public List<String> getIn() {
+        return in;
     }
 
     public IssueState getState() {
@@ -157,6 +165,16 @@ public class IssueFilter implements Serializable {
 
     public void setState(IssueState state) {
         this.state = state;
+    }
+
+    public void setIn(List<String> in) {
+        this.in = in;
+    }
+
+    /*- builder -*/
+    public IssueFilter withIids(List<Long> iids) {
+        this.iids = iids;
+        return (this);
     }
 
     public List<String> getLabels() {
@@ -279,10 +297,10 @@ public class IssueFilter implements Serializable {
         this.not = not;
     }
 
-    /*- builder -*/
-    public IssueFilter withIids(List<String> iids) {
-        this.iids = iids;
-        return (this);
+    /*- params generator -*/
+    @JsonIgnore
+    public GitLabForm getQueryParams(int page, int perPage) {
+        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
     public IssueFilter withState(IssueState state) {
@@ -487,35 +505,18 @@ public class IssueFilter implements Serializable {
         return withNot(IssueField.MILESTONE, milestone);
     }
 
-    /*- params generator -*/
     @JsonIgnore
-    public GitLabApiForm getQueryParams(int page, int perPage) {
-        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
-    }
-
-    @JsonIgnore
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("iids", iids).withParam("state", state)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("iids", iids).withParam("state", state)
                 .withParam("labels", (labels != null ? String.join(",", labels) : null))
-                .withParam("milestone", milestone).withParam("scope", scope).withParam("author_id", authorId)
-                .withParam("assignee_id", assigneeId).withParam("my_reaction_emoji", myReactionEmoji)
-                .withParam("order_by", orderBy).withParam("sort", sort).withParam("search", search)
-                .withParam("created_after", ISO8601.toString(createdAfter, false))
+                .withParam("in", (in != null ? String.join(",", in) : null)).withParam("milestone", milestone)
+                .withParam("scope", scope).withParam("author_id", authorId).withParam("assignee_id", assigneeId)
+                .withParam("my_reaction_emoji", myReactionEmoji).withParam("order_by", orderBy).withParam("sort", sort)
+                .withParam("search", search).withParam("created_after", ISO8601.toString(createdAfter, false))
                 .withParam("created_before", ISO8601.toString(createdBefore, false))
                 .withParam("updated_after", ISO8601.toString(updatedAfter, false))
                 .withParam("updated_before", ISO8601.toString(updatedBefore, false)))
                         .withParam("iteration_title", iterationTitle).withParam("not", toStringMap(not), false);
-    }
-
-    private Map<String, Object> toStringMap(Map<IssueField, Object> map) {
-        if (map == null) {
-            return null;
-        }
-        Map<String, Object> result = new LinkedHashMap<>();
-        for (Map.Entry<IssueField, Object> entry : map.entrySet()) {
-            result.put(entry.getKey().toString(), entry.getValue());
-        }
-        return result;
     }
 
     public enum IssueField {
@@ -538,6 +539,17 @@ public class IssueFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+    }
+
+    private Map<String, Object> toStringMap(Map<IssueField, Object> map) {
+        if (map == null) {
+            return null;
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<IssueField, Object> entry : map.entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue());
+        }
+        return result;
     }
 
 }

@@ -28,6 +28,8 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -36,7 +38,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class AuditEvent implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852372879978L;
+    private static final long serialVersionUID = 2852255962621L;
 
     private Long id;
     private Long authorId;

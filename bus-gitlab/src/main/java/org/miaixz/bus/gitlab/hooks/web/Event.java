@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, visible = true, property = "object_kind")
 @JsonSubTypes({ @JsonSubTypes.Type(value = BuildEvent.class, name = BuildEvent.OBJECT_KIND),
         @JsonSubTypes.Type(value = IssueEvent.class, name = IssueEvent.OBJECT_KIND),
+        @JsonSubTypes.Type(value = WorkItemEvent.class, name = WorkItemEvent.OBJECT_KIND),
         @JsonSubTypes.Type(value = JobEvent.class, name = JobEvent.OBJECT_KIND),
         @JsonSubTypes.Type(value = MergeRequestEvent.class, name = MergeRequestEvent.OBJECT_KIND),
         @JsonSubTypes.Type(value = NoteEvent.class, name = NoteEvent.OBJECT_KIND),
@@ -49,19 +50,19 @@ public interface Event extends Serializable {
 
     String getObjectKind();
 
-    @JsonIgnore
-    String getRequestUrl();
-
     void setRequestUrl(String url);
 
     @JsonIgnore
-    String getRequestQueryString();
+    String getRequestUrl();
 
     void setRequestQueryString(String queryString);
 
     @JsonIgnore
-    String getRequestSecretToken();
+    String getRequestQueryString();
 
     void setRequestSecretToken(String secretToken);
+
+    @JsonIgnore
+    String getRequestSecretToken();
 
 }

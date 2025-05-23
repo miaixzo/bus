@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CharacterConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852277951137L;
+    private static final long serialVersionUID = 2852258590633L;
 
     /**
      * 单例

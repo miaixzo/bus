@@ -27,23 +27,22 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.Constants.DefaultBranchProtectionLevel;
-import org.miaixz.bus.gitlab.Constants.ProjectCreationLevel;
-import org.miaixz.bus.gitlab.Constants.SubgroupCreationLevel;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.GroupApi;
+import org.miaixz.bus.gitlab.models.Constants.DefaultBranchProtectionLevel;
+import org.miaixz.bus.gitlab.models.Constants.ProjectCreationLevel;
+import org.miaixz.bus.gitlab.models.Constants.SubgroupCreationLevel;
+import java.io.Serial;
 
 /**
- * This class is utilized by the {@link GroupApi#createGroup(GroupParams)} and
- * {@link GroupApi#updateGroup(Object, GroupParams)} methods to set the parameters for the call to the GitLab API.
+ * This class is utilized by the <code>org.miaixz.bus.gitlab.GroupApi#createGroup(GroupParams)</code> and
+ * <code>org.miaixz.bus.gitlab.GroupApi#updateGroup(Object, GroupParams)</code> methods to set the parameters for the
+ * call to the GitLab API.
  */
 public class GroupParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852377779998L;
+    private static final long serialVersionUID = 2852278620350L;
 
     private String name;
     private String path;
@@ -197,9 +196,9 @@ public class GroupParams implements Serializable {
      * @return a GitLabApiForm instance holding the parameters for the group create or update operation
      * @throws RuntimeException if required parameters are missing
      */
-    public GitLabApiForm getForm(boolean isCreate) {
+    public GitLabForm getForm(boolean isCreate) {
 
-        GitLabApiForm form = new GitLabApiForm().withParam("name", name, isCreate).withParam("path", path, isCreate)
+        GitLabForm form = new GitLabForm().withParam("name", name, isCreate).withParam("path", path, isCreate)
                 .withParam("description", description).withParam("visibility", visibility)
                 .withParam("share_with_group_lock", shareWithGroupLock)
                 .withParam("require_two_factor_authentication", requireTwoFactorAuthentication)

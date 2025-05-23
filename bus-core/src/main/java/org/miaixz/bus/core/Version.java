@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class Version implements Comparable<Version>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233262576L;
+    private static final long serialVersionUID = 2852289327177L;
 
     /**
      * 版本信息

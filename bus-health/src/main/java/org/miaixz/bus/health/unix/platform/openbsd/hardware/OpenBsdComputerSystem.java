@@ -101,4 +101,5 @@ public class OpenBsdComputerSystem extends AbstractComputerSystem {
         return new UnixBaseboard(manufacturer.get(), model.get(), serialNumber.get(),
                 OpenBsdSysctlKit.sysctl("hw.product", Normal.UNKNOWN));
     }
+
 }

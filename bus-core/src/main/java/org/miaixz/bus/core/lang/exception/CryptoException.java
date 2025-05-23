@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CryptoException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852300871708L;
+    private static final long serialVersionUID = 2852268737398L;
 
     /**
      * 构造

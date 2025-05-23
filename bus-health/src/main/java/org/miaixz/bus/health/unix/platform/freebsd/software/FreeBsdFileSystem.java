@@ -176,4 +176,5 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
         // On FreeBsd there is no process specific system-wide limit, so the general limit is returned
         return getMaxFileDescriptors();
     }
+
 }

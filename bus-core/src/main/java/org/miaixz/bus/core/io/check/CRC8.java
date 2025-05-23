@@ -40,7 +40,7 @@ import java.util.zip.Checksum;
 public class CRC8 implements Checksum, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852285077312L;
+    private static final long serialVersionUID = 2852282953375L;
 
     private final short init;
     private final short[] crcTable = new short[256];

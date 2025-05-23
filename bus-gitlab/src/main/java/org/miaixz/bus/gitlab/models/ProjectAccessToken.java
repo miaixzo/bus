@@ -27,23 +27,27 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serial;
 
 public class ProjectAccessToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852382170657L;
+    private static final long serialVersionUID = 2852288635272L;
 
     private Long userId;
     private List<Constants.ProjectAccessTokenScope> scopes;
     private String name;
+
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
+
     private Long id;
     private Boolean active;
     private Date createdAt;

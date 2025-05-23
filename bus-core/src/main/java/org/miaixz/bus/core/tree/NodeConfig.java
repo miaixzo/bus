@@ -39,7 +39,7 @@ import java.io.Serializable;
 public class NodeConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852323580692L;
+    private static final long serialVersionUID = 2852283325162L;
 
     /**
      * 默认属性配置对象

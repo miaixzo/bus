@@ -28,10 +28,11 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
@@ -40,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ChangelogPayload implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852373636612L;
+    private static final long serialVersionUID = 2852256863930L;
 
     private String version;
     private String from;
@@ -56,8 +57,8 @@ public class ChangelogPayload implements Serializable {
     }
 
     @JsonIgnore
-    public GitLabApiForm getFormData() {
-        return new GitLabApiForm().withParam("version", version, true).withParam("from", from).withParam("to", to)
+    public GitLabForm getFormData() {
+        return new GitLabForm().withParam("version", version, true).withParam("from", from).withParam("to", to)
                 .withParam("date", ISO8601.dateOnly(date)).withParam("branch", branch).withParam("trailer", trailer)
                 .withParam("file", file).withParam("message", message);
     }

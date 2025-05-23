@@ -27,15 +27,14 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.Constants.GroupOrderBy;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.GroupOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of groups.
@@ -43,9 +42,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852377730989L;
+    private static final long serialVersionUID = 2852278261702L;
 
-    private List<Integer> skipGroups;
+    private List<Long> skipGroups;
     private Boolean allAvailable;
     private String search;
     private GroupOrderBy orderBy;
@@ -63,7 +62,7 @@ public class GroupFilter implements Serializable {
      * @param skipGroups List of group IDs to not include in the search
      * @return the reference to this GroupFilter instance
      */
-    public GroupFilter withSkipGroups(List<Integer> skipGroups) {
+    public GroupFilter withSkipGroups(List<Long> skipGroups) {
         this.skipGroups = skipGroups;
         return (this);
     }
@@ -186,12 +185,12 @@ public class GroupFilter implements Serializable {
      *
      * @return a GitLabApiForm instance holding the query parameters for this GroupFilter instance
      */
-    public GitLabApiForm getQueryParams() {
-        GitLabApiForm form = new GitLabApiForm().withParam("skip_groups", skipGroups)
-                .withParam("all_available", allAvailable).withParam("search", search).withParam("order_by", orderBy)
-                .withParam("sort", sort).withParam("statistics", statistics)
-                .withParam("with_custom_attributes", withCustomAttributes).withParam("owned", owned)
-                .withParam("min_access_level", accessLevel).withParam("top_level_only", topLevelOnly);
+    public GitLabForm getQueryParams() {
+        GitLabForm form = new GitLabForm().withParam("skip_groups", skipGroups).withParam("all_available", allAvailable)
+                .withParam("search", search).withParam("order_by", orderBy).withParam("sort", sort)
+                .withParam("statistics", statistics).withParam("with_custom_attributes", withCustomAttributes)
+                .withParam("owned", owned).withParam("min_access_level", accessLevel)
+                .withParam("top_level_only", topLevelOnly);
         for (CustomAttribute customAttribute : customAttributesFilter) {
             form.withParam(String.format("custom_attributes[%s]", customAttribute.getKey()),
                     customAttribute.getValue());

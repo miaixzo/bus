@@ -67,7 +67,7 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Label> getProjectLabels(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Label.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+        return (new Pager<Label>(this, Label.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "labels"));
     }
 
@@ -102,8 +102,10 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
      * @return a Optional instance with a Label instance as its value
+     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Label> getOptionalProjectLabel(Object projectIdOrPath, Object labelIdOrName) {
+    public Optional<Label> getOptionalProjectLabel(Object projectIdOrPath, Object labelIdOrName)
+            throws GitLabApiException {
         try {
             return (Optional.ofNullable(getProjectLabel(projectIdOrPath, labelIdOrName)));
         } catch (GitLabApiException glae) {
@@ -137,7 +139,7 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label createProjectLabel(Object projectIdOrPath, Label labelProperties) throws GitLabApiException {
-        GitLabApiForm formData = labelProperties.getForm(true);
+        GitLabApiForm formData = new GitLabApiForm(labelProperties.getForm(true));
         Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
                 "labels");
         return (response.readEntity(Label.class));
@@ -169,7 +171,7 @@ public class LabelsApi extends AbstractApi {
      */
     public Label updateProjectLabel(Object projectIdOrPath, Object labelIdOrName, Label labelConfig)
             throws GitLabApiException {
-        GitLabApiForm formData = labelConfig.getForm(false);
+        GitLabApiForm formData = new GitLabApiForm(labelConfig.getForm(false));
         Response response = putWithFormData(Response.Status.OK, formData, "projects",
                 getProjectIdOrPath(projectIdOrPath), "labels", getLabelIdOrName(labelIdOrName));
         return (response.readEntity(Label.class));
@@ -235,7 +237,7 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Label> getGroupLabels(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Label.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
+        return (new Pager<Label>(this, Label.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "labels"));
     }
 
@@ -304,7 +306,7 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label createGroupLabel(Object groupIdOrPath, Label labelProperties) throws GitLabApiException {
-        GitLabApiForm formData = labelProperties.getForm(true);
+        GitLabApiForm formData = new GitLabApiForm(labelProperties.getForm(true));
         Response response = post(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath),
                 "labels");
         return (response.readEntity(Label.class));
@@ -336,7 +338,7 @@ public class LabelsApi extends AbstractApi {
      */
     public Label updateGroupLabel(Object groupIdOrPath, Object labelIdOrName, Label labelConfig)
             throws GitLabApiException {
-        GitLabApiForm formData = labelConfig.getForm(false);
+        GitLabApiForm formData = new GitLabApiForm(labelConfig.getForm(false));
         Response response = putWithFormData(Response.Status.OK, formData, "groups", getGroupIdOrPath(groupIdOrPath),
                 "labels", getLabelIdOrName(labelIdOrName));
         return (response.readEntity(Label.class));

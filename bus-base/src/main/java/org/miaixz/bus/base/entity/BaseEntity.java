@@ -58,7 +58,7 @@ import lombok.experimental.SuperBuilder;
 public class BaseEntity extends Tracer {
 
     @Serial
-    private static final long serialVersionUID = 2852227757913L;
+    private static final long serialVersionUID = 2852286296868L;
 
     /**
      * 数据状态:-1删除,0无效,1正常

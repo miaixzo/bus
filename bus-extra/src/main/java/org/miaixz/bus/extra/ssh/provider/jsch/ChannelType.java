@@ -93,4 +93,5 @@ public enum ChannelType {
     public String getValue() {
         return this.value;
     }
+
 }

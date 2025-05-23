@@ -27,9 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
+
 public class ProjectGroup extends AbstractGroup<ProjectGroup> {
 
     @Serial
-    private static final long serialVersionUID = 2852382502828L;
+    private static final long serialVersionUID = 2852289116990L;
 
 }

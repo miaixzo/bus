@@ -175,4 +175,5 @@ public class HWPartition {
         sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : " @ " + getMountPoint());
         return sb.toString();
     }
+
 }

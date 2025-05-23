@@ -50,7 +50,7 @@ import org.miaixz.bus.cron.pattern.CronPattern;
 public class Repertoire implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852330910737L;
+    private static final long serialVersionUID = 2852293319011L;
 
     /**
      * 默认任务表大小：10

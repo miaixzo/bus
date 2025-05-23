@@ -28,6 +28,8 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -36,13 +38,19 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Board implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852373197712L;
+    private static final long serialVersionUID = 2852256506295L;
 
     private Long id;
     private String name;
+    private Boolean hideBacklogList;
+    private Boolean hideClosedList;
     private Project project;
-    private Milestone milestone;
     private List<BoardList> lists;
+    private Group group;
+    private Milestone milestone;
+    private Assignee assignee;
+    private List<Label> labels;
+    private Integer weight;
 
     public Long getId() {
         return id;
@@ -58,6 +66,22 @@ public class Board implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getHideBacklogList() {
+        return hideBacklogList;
+    }
+
+    public void setHideBacklogList(Boolean hideBacklogList) {
+        this.hideBacklogList = hideBacklogList;
+    }
+
+    public Boolean getHideClosedList() {
+        return hideClosedList;
+    }
+
+    public void setHideClosedList(Boolean hideClosedList) {
+        this.hideClosedList = hideClosedList;
     }
 
     public Project getProject() {
@@ -82,6 +106,38 @@ public class Board implements Serializable {
 
     public void setLists(List<BoardList> lists) {
         this.lists = lists;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Assignee getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(Assignee assignee) {
+        this.assignee = assignee;
+    }
+
+    public List<Label> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 
     @Override

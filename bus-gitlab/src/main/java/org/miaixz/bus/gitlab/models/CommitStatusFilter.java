@@ -27,13 +27,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 /**
  * This class is used to filter commit status when getting lists of them.
@@ -41,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class CommitStatusFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852375216727L;
+    private static final long serialVersionUID = 2852258177628L;
 
     private String ref;
     private String stage;
@@ -69,13 +66,13 @@ public class CommitStatusFilter implements Serializable {
     }
 
     @JsonIgnore
-    public GitLabApiForm getQueryParams(int page, int perPage) {
+    public GitLabForm getQueryParams(int page, int perPage) {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
     @JsonIgnore
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("ref", ref).withParam("stage", stage).withParam("name", name)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("ref", ref).withParam("stage", stage).withParam("name", name)
                 .withParam("all", all));
     }
 

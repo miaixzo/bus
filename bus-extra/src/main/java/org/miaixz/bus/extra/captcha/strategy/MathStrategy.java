@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class MathStrategy implements CodeStrategy {
 
     @Serial
-    private static final long serialVersionUID = 2852350650377L;
+    private static final long serialVersionUID = 2852276531270L;
 
     private static final String operators = "+-*";
 
@@ -111,4 +111,5 @@ public class MathStrategy implements CodeStrategy {
     private int getLimit() {
         return Integer.parseInt("1" + StringKit.repeat('0', this.numberLength));
     }
+
 }

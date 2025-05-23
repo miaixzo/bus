@@ -31,11 +31,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.Constants.PipelineOrderBy;
-import org.miaixz.bus.gitlab.Constants.PipelineScope;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.PipelineOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.PipelineScope;
+import org.miaixz.bus.gitlab.models.Constants.PipelineSource;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -46,9 +45,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PipelineFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852381769138L;
+    private static final long serialVersionUID = 2852287705261L;
 
-    /** {@link Constants.PipelineScope} The scope of pipelines, one of: running, pending, finished, branches, tags */
+    /** pipelines, one of: running, pending, finished, branches, tags */
     private PipelineScope scope;
 
     /**
@@ -56,6 +55,9 @@ public class PipelineFilter implements Serializable {
      * skipped, created
      */
     private PipelineStatus status;
+
+    /** The ref of pipelines */
+    private PipelineSource source;
 
     /** The ref of pipelines. */
     private String ref;
@@ -94,6 +96,10 @@ public class PipelineFilter implements Serializable {
 
     public void setStatus(PipelineStatus status) {
         this.status = status;
+    }
+
+    public void setSource(PipelineSource source) {
+        this.source = source;
     }
 
     public void setRef(String ref) {
@@ -139,6 +145,11 @@ public class PipelineFilter implements Serializable {
 
     public PipelineFilter withStatus(PipelineStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public PipelineFilter withSource(PipelineSource source) {
+        this.source = source;
         return this;
     }
 
@@ -188,10 +199,10 @@ public class PipelineFilter implements Serializable {
     }
 
     @JsonIgnore
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("scope", scope).withParam("status", status).withParam("ref", ref)
-                .withParam("sha", sha).withParam("yaml_errors", yamlErrors).withParam("name", name)
-                .withParam("username", username).withParam("updated_after", updatedAfter)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("scope", scope).withParam("status", status).withParam("source", source)
+                .withParam("ref", ref).withParam("sha", sha).withParam("yaml_errors", yamlErrors)
+                .withParam("name", name).withParam("username", username).withParam("updated_after", updatedAfter)
                 .withParam("updated_before", updatedBefore).withParam("order_by", orderBy).withParam("sort", sort));
     }
 

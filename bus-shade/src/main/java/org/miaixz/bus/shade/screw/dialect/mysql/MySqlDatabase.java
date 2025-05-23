@@ -46,4 +46,5 @@ public class MySqlDatabase implements Database {
      * 数据库名称
      */
     private String database;
+
 }

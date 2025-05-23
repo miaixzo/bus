@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FileWriter extends FileWrapper {
 
     @Serial
-    private static final long serialVersionUID = 2852288303126L;
+    private static final long serialVersionUID = 2852288559191L;
 
     /**
      * 构造

@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.*;
 public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852323397993L;
+    private static final long serialVersionUID = 2852283058009L;
 
     private final NodeConfig nodeConfig;
     private MapTree<T> parent;

@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class HL7Message extends ArrayList<HL7Segment> {
 
     @Serial
-    private static final long serialVersionUID = 2852673836750L;
+    private static final long serialVersionUID = 2852261978752L;
 
     public HL7Message() {
 

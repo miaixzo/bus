@@ -31,11 +31,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class User extends AbstractUser<User> {
 
     @Serial
-    private static final long serialVersionUID = 2852386389298L;
+    private static final long serialVersionUID = 2852233730862L;
 
     private String bio;
     private Boolean bot;
@@ -133,12 +134,12 @@ public class User extends AbstractUser<User> {
         this.external = external;
     }
 
-    public String getExternUid() {
-        return this.externUid;
-    }
-
     public void setExternUid(String externUid) {
         this.externUid = externUid;
+    }
+
+    public String getExternUid() {
+        return this.externUid;
     }
 
     public Integer getExtraSharedRunnersMinutesLimit() {

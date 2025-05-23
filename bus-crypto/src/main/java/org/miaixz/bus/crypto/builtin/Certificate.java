@@ -72,7 +72,7 @@ import lombok.experimental.SuperBuilder;
 public class Certificate implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852335057563L;
+    private static final long serialVersionUID = 2852262066235L;
 
     /**
      * 证书编号

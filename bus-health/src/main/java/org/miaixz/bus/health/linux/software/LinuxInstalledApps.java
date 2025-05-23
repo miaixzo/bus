@@ -123,4 +123,5 @@ public final class LinuxInstalledApps {
 
         return appInfoList;
     }
+
 }

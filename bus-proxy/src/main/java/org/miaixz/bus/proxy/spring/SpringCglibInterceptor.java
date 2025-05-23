@@ -45,7 +45,7 @@ import org.springframework.cglib.proxy.MethodProxy;
 public class SpringCglibInterceptor extends Interceptor implements MethodInterceptor {
 
     @Serial
-    private static final long serialVersionUID = 2852773036187L;
+    private static final long serialVersionUID = 2852250212688L;
 
     /**
      * 构造

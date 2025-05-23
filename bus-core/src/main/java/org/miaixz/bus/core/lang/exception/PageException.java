@@ -38,7 +38,7 @@ import java.io.Serial;
 public class PageException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852301803930L;
+    private static final long serialVersionUID = 2852271839383L;
 
     /**
      * 构造

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class DownstreamPipeline implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376129533L;
+    private static final long serialVersionUID = 2852260313130L;
 
     private Long id;
     private String sha;

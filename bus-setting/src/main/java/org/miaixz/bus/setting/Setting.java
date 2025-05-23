@@ -66,7 +66,7 @@ import org.miaixz.bus.setting.metric.props.Props;
 public class Setting extends AbstractSetting implements Map<String, String> {
 
     @Serial
-    private static final long serialVersionUID = 2852776815029L;
+    private static final long serialVersionUID = 2852251052119L;
 
     /**
      * 默认字符集

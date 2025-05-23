@@ -42,7 +42,7 @@ import org.miaixz.bus.core.cache.provider.LRUCache;
 public class LRUFileCache extends AbstractFileCache {
 
     @Serial
-    private static final long serialVersionUID = 2852238651961L;
+    private static final long serialVersionUID = 2852292039623L;
 
     /**
      * 构造 最大文件大小为缓存容量的一半 默认无超时

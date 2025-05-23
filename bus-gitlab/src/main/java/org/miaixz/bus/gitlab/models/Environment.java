@@ -27,34 +27,32 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class Environment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376318301L;
+    private static final long serialVersionUID = 2852260587576L;
     private String tier;
 
     private Long id;
     private String name;
     private String slug;
     private String externalUrl;
+    private Date autoStopAt;
     private EnvironmentState state;
     private Deployment lastDeployment;
 
     public String getTier() {
         return tier;
-    }
-
-    public void setTier(String tier) {
-        this.tier = tier;
     }
 
     public Long getId() {
@@ -89,6 +87,14 @@ public class Environment implements Serializable {
         this.externalUrl = externalUrl;
     }
 
+    public void setTier(String tier) {
+        this.tier = tier;
+    }
+
+    public Date getAutoStopAt() {
+        return autoStopAt;
+    }
+
     public EnvironmentState getState() {
         return state;
     }
@@ -105,9 +111,8 @@ public class Environment implements Serializable {
         this.lastDeployment = lastDeployment;
     }
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
+    public void setAutoStopAt(Date autoStopAt) {
+        this.autoStopAt = autoStopAt;
     }
 
     public enum EnvironmentState {
@@ -130,6 +135,11 @@ public class Environment implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
 }

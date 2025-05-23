@@ -45,7 +45,8 @@ import lombok.Setter;
 public class TableSchema implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852791390850L;
+    private static final long serialVersionUID = 2852265695738L;
+
     /**
      * 表名
      */
@@ -58,4 +59,5 @@ public class TableSchema implements Serializable {
      * 表列
      */
     private List<ColumnSchema> columns;
+
 }

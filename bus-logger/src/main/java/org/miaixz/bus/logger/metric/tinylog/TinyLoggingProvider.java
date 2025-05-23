@@ -49,7 +49,7 @@ import org.tinylog.provider.ProviderRegistry;
 public class TinyLoggingProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852703130709L;
+    private static final long serialVersionUID = 2852283698687L;
 
     /**
      * 堆栈增加层数，因为封装因此多了两层，此值用于正确获取当前类名

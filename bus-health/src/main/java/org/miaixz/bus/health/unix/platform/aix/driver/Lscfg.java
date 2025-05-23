@@ -130,4 +130,5 @@ public final class Lscfg {
         }
         return Pair.of(model, serial);
     }
+
 }

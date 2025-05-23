@@ -159,4 +159,5 @@ public final class ThreadInfo {
             return priority;
         }
     }
+
 }

@@ -27,23 +27,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.File;
-import java.io.Serial;
 import java.io.Serializable;
-
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.TopicsApi;
+import java.io.Serial;
 
 /**
- * This class is utilized by the {@link TopicsApi#createTopic(TopicParams)} and
- * {@link TopicsApi#updateTopic(Integer, TopicParams)} methods to set the parameters for the call to the GitLab API.
+ * This class is utilized by the <code>org.miaixz.bus.gitlab.TopicsApi#createTopic(TopicParams)</code> and
+ * <code>org.miaixz.bus.gitlab.TopicsApi#updateTopic(Integer, TopicParams)</code> methods to set the parameters for the
+ * call to the GitLab API.
  *
- * Avatar Upload has its own Upload in {@link TopicsApi#updateTopicAvatar(Integer,File)}
+ * Avatar Upload has its own Upload in <code>org.miaixz.bus.gitlab.TopicsApi#updateTopicAvatar(Integer,File)</code>
  */
 public class TopicParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852386173087L;
+    private static final long serialVersionUID = 2852233031509L;
 
     private String name;
     private String title;
@@ -71,9 +68,9 @@ public class TopicParams implements Serializable {
      * @return a GitLabApiForm instance holding the parameters for the group create or update operation
      * @throws RuntimeException if required parameters are missing
      */
-    public GitLabApiForm getForm(boolean isCreate) {
+    public GitLabForm getForm(boolean isCreate) {
 
-        GitLabApiForm form = new GitLabApiForm().withParam("name", name, isCreate).withParam("title", title, isCreate)
+        GitLabForm form = new GitLabForm().withParam("name", name, isCreate).withParam("title", title, isCreate)
                 .withParam("description", description);
 
         return (form);

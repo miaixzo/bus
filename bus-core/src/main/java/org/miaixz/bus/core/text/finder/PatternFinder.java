@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class PatternFinder extends TextFinder {
 
     @Serial
-    private static final long serialVersionUID = 2852321127150L;
+    private static final long serialVersionUID = 2852275538523L;
 
     private final java.util.regex.Pattern pattern;
     private Matcher matcher;

@@ -197,7 +197,7 @@ public class TodosApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action, false)
                 .withParam("author_id", authorId, false).withParam("project_id", projectId, false)
                 .withParam("group_id", groupId, false).withParam("state", state, false).withParam("type", type, false);
-        return (new Pager<>(this, Todo.class, itemsPerPage, formData.asMap(), "todos"));
+        return (new Pager<Todo>(this, Todo.class, itemsPerPage, formData.asMap(), "todos"));
     }
 
     /**

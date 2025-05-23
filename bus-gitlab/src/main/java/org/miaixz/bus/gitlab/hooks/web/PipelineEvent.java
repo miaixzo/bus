@@ -27,24 +27,30 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
+import org.miaixz.bus.gitlab.models.Build;
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.Variable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class PipelineEvent extends AbstractEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852251638868L;
+
     public static final String X_GITLAB_EVENT = "Pipeline Hook";
     public static final String OBJECT_KIND = "pipeline";
-    @Serial
-    private static final long serialVersionUID = 2852370778315L;
+
     private ObjectAttributes objectAttributes;
+    private EventMergeRequest mergeRequest;
     private EventUser user;
     private EventProject project;
     private EventCommit commit;
     private List<Job> jobs;
+    private List<Build> builds;
 
     public String getObjectKind() {
         return (OBJECT_KIND);
@@ -61,6 +67,14 @@ public class PipelineEvent extends AbstractEvent {
 
     public void setObjectAttributes(ObjectAttributes objectAttributes) {
         this.objectAttributes = objectAttributes;
+    }
+
+    public EventMergeRequest getMergeRequest() {
+        return mergeRequest;
+    }
+
+    public void setMergeRequest(EventMergeRequest mergeRequest) {
+        this.mergeRequest = mergeRequest;
     }
 
     public EventUser getUser() {
@@ -95,6 +109,14 @@ public class PipelineEvent extends AbstractEvent {
         this.jobs = jobs;
     }
 
+    public List<Build> getBuilds() {
+        return builds;
+    }
+
+    public void setBuilds(List<Build> builds) {
+        this.builds = builds;
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
@@ -103,18 +125,22 @@ public class PipelineEvent extends AbstractEvent {
     public static class ObjectAttributes {
 
         private Long id;
+        private Long iid;
+        private String name;
         private String ref;
         private Boolean tag;
         private String sha;
         private String beforeSha;
         private String source;
         private String status;
+        private String detailedStatus;
         private List<String> stages;
         private Date createdAt;
         private Date finishedAt;
         private Integer duration;
         private Float queuedDuration;
         private List<Variable> variables;
+        private String url;
 
         public Long getId() {
             return id;
@@ -122,6 +148,22 @@ public class PipelineEvent extends AbstractEvent {
 
         public void setId(Long id) {
             this.id = id;
+        }
+
+        public Long getIid() {
+            return iid;
+        }
+
+        public void setIid(Long iid) {
+            this.iid = iid;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public String getRef() {
@@ -172,6 +214,14 @@ public class PipelineEvent extends AbstractEvent {
             this.status = status;
         }
 
+        public String getDetailedStatus() {
+            return detailedStatus;
+        }
+
+        public void setDetailedStatus(String detailedStatus) {
+            this.detailedStatus = detailedStatus;
+        }
+
         public List<String> getStages() {
             return stages;
         }
@@ -218,6 +268,14 @@ public class PipelineEvent extends AbstractEvent {
 
         public void setVariables(List<Variable> variables) {
             this.variables = variables;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 

@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Link implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852379696615L;
+    private static final long serialVersionUID = 2852282283893L;
 
     private Integer id;
     private String name;
     private String url;
+
     private String linkType;
 
     public Integer getId() {

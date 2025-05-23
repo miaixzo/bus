@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273361173L;
+    private static final long serialVersionUID = 2852239087252L;
 
     /**
      * 单例对象

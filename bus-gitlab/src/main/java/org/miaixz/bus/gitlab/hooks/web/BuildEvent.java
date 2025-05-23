@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serial;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.models.Runner;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
@@ -37,18 +39,22 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  */
 public class BuildEvent extends AbstractEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852267756819L;
+
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
     public static final String OBJECT_KIND = "build";
-    @Serial
-    private static final long serialVersionUID = 2852368929717L;
+
     private String ref;
     private Boolean tag;
     private String beforeSha;
     private String sha;
+    private Integer retriesCount;
     private Long buildId;
     private String buildName;
     private String buildStage;
     private String buildStatus;
+    private Date buildCreatedAt;
     private Date buildStartedAt;
     private Date buildFinishedAt;
     private Float buildDuration;
@@ -63,6 +69,8 @@ public class BuildEvent extends AbstractEvent {
     private EventUser user;
     private BuildCommit commit;
     private EventRepository repository;
+    private EventProject project;
+    private Runner runner;
 
     @Override
     public String getObjectKind() {
@@ -106,6 +114,14 @@ public class BuildEvent extends AbstractEvent {
         this.sha = sha;
     }
 
+    public Integer getRetriesCount() {
+        return retriesCount;
+    }
+
+    public void setRetriesCount(Integer retriesCount) {
+        this.retriesCount = retriesCount;
+    }
+
     public Long getBuildId() {
         return buildId;
     }
@@ -136,6 +152,14 @@ public class BuildEvent extends AbstractEvent {
 
     public void setBuildStatus(String buildStatus) {
         this.buildStatus = buildStatus;
+    }
+
+    public Date getBuildCreatedAt() {
+        return buildCreatedAt;
+    }
+
+    public void setBuildCreatedAt(Date buildCreatedAt) {
+        this.buildCreatedAt = buildCreatedAt;
     }
 
     public Date getBuildStartedAt() {
@@ -232,6 +256,22 @@ public class BuildEvent extends AbstractEvent {
 
     public void setRepository(EventRepository repository) {
         this.repository = repository;
+    }
+
+    public EventProject getProject() {
+        return project;
+    }
+
+    public void setProject(EventProject project) {
+        this.project = project;
+    }
+
+    public Runner getRunner() {
+        return runner;
+    }
+
+    public void setRunner(Runner runner) {
+        this.runner = runner;
     }
 
     @Override

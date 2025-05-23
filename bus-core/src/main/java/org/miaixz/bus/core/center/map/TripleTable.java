@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class TripleTable<L, M, R> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852268196092L;
+    private static final long serialVersionUID = 2852233536038L;
 
     private final List<L> lefts;
     private final List<M> middles;

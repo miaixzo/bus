@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Package implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852381166607L;
+    private static final long serialVersionUID = 2852287072820L;
 
     private Long id;
     private String name;

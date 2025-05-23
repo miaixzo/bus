@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
 
 public class JobAttributes implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852378972983L;
+    private static final long serialVersionUID = 2852280857375L;
 
     @JsonProperty("job_variables_attributes")
     private List<JobAttribute> jobAttributes;

@@ -72,4 +72,5 @@ final class AixSensors extends AbstractSensors {
         // Not available in general without specialized software
         return 0d;
     }
+
 }

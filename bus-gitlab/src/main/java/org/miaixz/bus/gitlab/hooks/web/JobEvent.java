@@ -27,16 +27,19 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serial;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class JobEvent extends AbstractEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852251372612L;
+
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
     public static final String OBJECT_KIND = "job";
-    @Serial
-    private static final long serialVersionUID = 2852370538919L;
+
     private String ref;
     private Boolean tag;
     private String beforeSha;

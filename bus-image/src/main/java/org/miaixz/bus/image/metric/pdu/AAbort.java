@@ -39,7 +39,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class AAbort extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852679981292L;
+    private static final long serialVersionUID = 2852270155656L;
 
     public static final int UL_SERIVE_USER = 0;
     public static final int UL_SERIVE_PROVIDER = 2;

@@ -45,4 +45,5 @@ public interface SocketTask {
      * 取消定时器
      */
     void cancel();
+
 }

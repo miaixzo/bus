@@ -28,11 +28,12 @@
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Assignee extends AbstractUser<Assignee> {
 
     @Serial
-    private static final long serialVersionUID = 2852372776030L;
+    private static final long serialVersionUID = 2852255611157L;
 
     @Override
     public String toString() {

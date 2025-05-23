@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class CompareResults implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852375259519L;
+    private static final long serialVersionUID = 2852258299955L;
 
     private Commit commit;
     private List<Commit> commits;;

@@ -58,7 +58,7 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852238806525L;
+    private static final long serialVersionUID = 2852292318535L;
 
     /**
      * 写的时候每个key一把锁，降低锁的粒度

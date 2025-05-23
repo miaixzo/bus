@@ -249,4 +249,5 @@ public class SshjSession implements Session {
         // 结果输出
         return IoKit.read(shell.getInputStream(), charset);
     }
+
 }

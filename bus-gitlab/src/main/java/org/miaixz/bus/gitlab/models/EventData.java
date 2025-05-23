@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class EventData implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376867551L;
+    private static final long serialVersionUID = 2852273006699L;
 
     private String after;
     private String before;

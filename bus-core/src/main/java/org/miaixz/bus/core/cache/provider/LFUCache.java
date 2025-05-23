@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.thread.lock.NoLock;
 public class LFUCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852239098371L;
+    private static final long serialVersionUID = 2852292956838L;
 
     /**
      * 构造

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 public class NoCache<K, V> implements Cache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852239261111L;
+    private static final long serialVersionUID = 2852293202615L;
 
     @Override
     public int capacity() {

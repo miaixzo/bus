@@ -84,4 +84,5 @@ public interface Template {
         render(bindingMap, writer);
         return writer.toString();
     }
+
 }

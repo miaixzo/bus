@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
     @Serial
-    public static final long serialVersionUID = 2852273910002L;
+    public static final long serialVersionUID = 2852239838720L;
 
     /**
      * 单例

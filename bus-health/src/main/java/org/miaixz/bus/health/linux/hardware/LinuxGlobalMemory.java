@@ -135,4 +135,5 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
     private VirtualMemory createVirtualMemory() {
         return new LinuxVirtualMemory(this);
     }
+
 }

@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CRC16Ansi extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852285109971L;
+    private static final long serialVersionUID = 2852283203687L;
 
     private static final int WC_POLY = 0xa001;
 

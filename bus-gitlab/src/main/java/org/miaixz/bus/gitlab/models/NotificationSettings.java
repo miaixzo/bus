@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -35,12 +34,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class NotificationSettings implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852381009976L;
-
+    private static final long serialVersionUID = 2852286786389L;
     private Level level;
     private String email;
     private Events events;
@@ -74,11 +73,8 @@ public class NotificationSettings implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
-    /**
-     * Notification level
-     */
+    /** Notification level */
     public static enum Level {
-
         DISABLED, PARTICIPATING, WATCH, GLOBAL, MENTION, CUSTOM;
 
         private static JacksonJsonEnumHelper<Level> enumHelper = new JacksonJsonEnumHelper<>(Level.class);
@@ -102,7 +98,7 @@ public class NotificationSettings implements Serializable {
     public static class Events implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852228655517L;
+        private static final long serialVersionUID = 2852286895225L;
 
         private Boolean newNote;
         private Boolean newIssue;

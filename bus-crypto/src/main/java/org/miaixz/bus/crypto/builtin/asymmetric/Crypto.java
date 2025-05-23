@@ -58,7 +58,7 @@ import org.miaixz.bus.crypto.cipher.JceCipher;
 public class Crypto extends AbstractCrypto<Crypto> {
 
     @Serial
-    private static final long serialVersionUID = 2852335331758L;
+    private static final long serialVersionUID = 2852262531302L;
 
     /**
      * Cipher负责完成加密或解密工作

@@ -40,7 +40,7 @@ import java.net.URISyntaxException;
 public class InstanceLocator implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852681896578L;
+    private static final long serialVersionUID = 2852273291027L;
 
     public final String cuid;
     public final String iuid;

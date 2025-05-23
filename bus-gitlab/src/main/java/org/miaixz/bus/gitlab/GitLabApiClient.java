@@ -49,8 +49,8 @@ import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.media.multipart.*;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
-import org.miaixz.bus.gitlab.Constants.TokenType;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.MaskingLoggingFilter;
 
@@ -63,6 +63,7 @@ import jakarta.ws.rs.core.*;
 public class GitLabApiClient implements AutoCloseable {
 
     protected static final String PRIVATE_TOKEN_HEADER = "PRIVATE-TOKEN";
+    protected static final String JOB_TOKEN_HEADER = "JOB-TOKEN";
     protected static final String SUDO_HEADER = "Sudo";
     protected static final String AUTHORIZATION_HEADER = "Authorization";
     protected static final String X_GITLAB_TOKEN_HEADER = "X-Gitlab-Token";
@@ -329,7 +330,6 @@ public class GitLabApiClient implements AutoCloseable {
 
     /**
      * Set the ID of the user to sudo as.
-     *
      */
     Long getSudoAsId() {
         return (sudoAsId);
@@ -698,7 +698,6 @@ public class GitLabApiClient implements AutoCloseable {
      *
      * @param name         the name for the form field that contains the file name
      * @param fileToUpload a File instance pointing to the file to upload
-     * 
      * @param url          the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
@@ -851,8 +850,8 @@ public class GitLabApiClient implements AutoCloseable {
             }
         }
 
-        String authHeader = (tokenType == TokenType.OAUTH2_ACCESS ? AUTHORIZATION_HEADER : PRIVATE_TOKEN_HEADER);
-        String authValue = (tokenType == TokenType.OAUTH2_ACCESS ? "Bearer " + authToken.get() : authToken.get());
+        String authHeader = getAuthHeader();
+        String authValue = getAuthValue();
         Invocation.Builder builder = target.request();
         if (accept == null || accept.trim().length() == 0) {
             builder = builder.header(authHeader, authValue);
@@ -875,6 +874,26 @@ public class GitLabApiClient implements AutoCloseable {
         }
 
         return (builder);
+    }
+
+    private String getAuthValue() {
+        switch (tokenType) {
+        case OAUTH2_ACCESS:
+            return "Bearer " + authToken.get();
+        default:
+            return authToken.get();
+        }
+    }
+
+    private String getAuthHeader() {
+        switch (tokenType) {
+        case OAUTH2_ACCESS:
+            return AUTHORIZATION_HEADER;
+        case JOB_TOKEN:
+            return JOB_TOKEN_HEADER;
+        default:
+            return PRIVATE_TOKEN_HEADER;
+        }
     }
 
     /**
@@ -982,7 +1001,7 @@ public class GitLabApiClient implements AutoCloseable {
 
     /**
      * Set auth token supplier for gitlab api client.
-     * 
+     *
      * @param authTokenSupplier - supplier which provide actual auth token
      */
     public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {

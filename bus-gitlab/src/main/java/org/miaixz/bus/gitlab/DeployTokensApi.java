@@ -38,12 +38,20 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class implements the client side API for the GitLab Deploy Tokens API calls. See
  * https://docs.gitlab.com/ee/api/deploy_tokens.html
+ *
+ * Since GitLab 12.9
+ *
  */
 public class DeployTokensApi extends AbstractApi {
 
     public DeployTokensApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
+
+    /*
+     * ************************************************************************************************ Global Deploy
+     * Token API
+     */
 
     /**
      * Get a list of all deploy tokens across the GitLab instance. This endpoint requires admin access.
@@ -87,6 +95,11 @@ public class DeployTokensApi extends AbstractApi {
     public Stream<DeployToken> getDeployTokensStream() throws GitLabApiException {
         return (getDeployTokens(getDefaultPerPage()).stream());
     }
+
+    /*
+     * ************************************************************************************************ Projects Deploy
+     * Token API
+     */
 
     /**
      * Get a list of the deploy tokens for the specified project. This method requires admin access.
@@ -150,8 +163,7 @@ public class DeployTokensApi extends AbstractApi {
      *                        if not provided. Does not expire if no value is provided.
      * @param username        the username for deploy token. Currently documented as not required but api fails if not
      *                        provided. Default is gitlab+deploy-token-{n}
-     * @param scopes          indicates the deploy token scopes. Must be at least one of
-     *                        {@link Constants.DeployTokenScope}.
+     * @param scopes          indicates the deploy token scopes.
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
@@ -159,9 +171,9 @@ public class DeployTokensApi extends AbstractApi {
             List<DeployTokenScope> scopes) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", expiresAt, true) // Currently documented as not required but api fails if not
-                                                          // provided
-                .withParam("username", username, true)// Currently documented as not required but api fails if not
-                                                      // provided
+                // provided
+                .withParam("username", username, true) // Currently documented as not required but api fails if not
+                // provided
                 .withParam("scopes", scopes, true);
         Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
                 "deploy_tokens");
@@ -187,6 +199,11 @@ public class DeployTokensApi extends AbstractApi {
 
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "deploy_tokens", tokenId);
     }
+
+    /*
+     * ************************************************************************************************ Groups Deploy
+     * Token API
+     */
 
     /**
      * Get a list of the deploy tokens for the specified group. This method requires admin access.
@@ -249,8 +266,7 @@ public class DeployTokensApi extends AbstractApi {
      *                      not provided. Does not expire if no value is provided.
      * @param username      the username for deploy token. Currently documented as not required but api fails if not
      *                      provided. Default is gitlab+deploy-token-{n}
-     * @param scopes        indicates the deploy token scopes. Must be at least one of
-     *                      {@link Constants.DeployTokenScope}.
+     * @param scopes        indicates the deploy token scopes.
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
@@ -258,9 +274,9 @@ public class DeployTokensApi extends AbstractApi {
             List<DeployTokenScope> scopes) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", expiresAt, true) // Currently documented as not required but api fails if not
-                                                          // provided
-                .withParam("username", username, true)// Currently documented as not required but api fails if not
-                                                      // provided
+                // provided
+                .withParam("username", username, true) // Currently documented as not required but api fails if not
+                // provided
                 .withParam("scopes", scopes, true);
         Response response = post(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath),
                 "deploy_tokens");

@@ -146,4 +146,5 @@ public final class Dmidecode {
         }
         return Pair.of(biosName, revision);
     }
+
 }

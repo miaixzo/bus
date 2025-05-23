@@ -27,16 +27,20 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.io.Serial;
+
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852262877083L;
+
     public static final String NEW_GROUP_MEMBER_EVENT = "user_add_to_group";
     public static final String GROUP_MEMBER_REMOVED_EVENT = "user_remove_from_group";
-    @Serial
-    private static final long serialVersionUID = 2852367810991L;
+
     private Date createdAt;
     private Date updatedAt;
     private String eventName;

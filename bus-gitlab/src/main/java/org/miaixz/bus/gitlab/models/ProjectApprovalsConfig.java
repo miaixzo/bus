@@ -27,17 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 public class ProjectApprovalsConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852382180673L;
+    private static final long serialVersionUID = 2852288655555L;
 
     private Integer approvalsBeforeMerge;
     private Boolean resetApprovalsOnPush;
@@ -146,8 +144,8 @@ public class ProjectApprovalsConfig implements Serializable {
      * @return a GitLabApiForm instance holding the form parameters for this ProjectApprovalsConfig instance
      */
     @JsonIgnore
-    public GitLabApiForm getForm() {
-        return new GitLabApiForm().withParam("approvals_before_merge", approvalsBeforeMerge)
+    public GitLabForm getForm() {
+        return new GitLabForm().withParam("approvals_before_merge", approvalsBeforeMerge)
                 .withParam("reset_approvals_on_push", resetApprovalsOnPush)
                 .withParam("selective_code_owner_removals", selectiveCodeOwnerRemovals)
                 .withParam("disable_overriding_approvers_per_merge_request", disableOverridingApproversPerMergeRequest)

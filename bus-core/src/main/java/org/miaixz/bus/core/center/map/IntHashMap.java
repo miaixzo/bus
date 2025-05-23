@@ -45,7 +45,7 @@ import java.util.Arrays;
 public class IntHashMap<V> implements Cloneable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267255695L;
+    private static final long serialVersionUID = 2852231533838L;
 
     private static final int DEFAULT_CAPACITY = 32;
     private static final int MINIMUM_CAPACITY = 4;

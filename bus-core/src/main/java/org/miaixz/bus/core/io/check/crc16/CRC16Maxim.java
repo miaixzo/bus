@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CRC16Maxim extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852285587199L;
+    private static final long serialVersionUID = 2852285782553L;
 
     private static final int WC_POLY = 0xa001;
 

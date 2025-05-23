@@ -55,7 +55,7 @@ public class MailAccount implements Serializable {
     public static final String[] MAIL_SETTING_PATHS = new String[] { "config/mail.setting",
             "config/mailAccount.setting", "mail.setting" };
     @Serial
-    private static final long serialVersionUID = 2852353835399L;
+    private static final long serialVersionUID = 2852281510160L;
     private static final String MAIL_PROTOCOL = "mail.transport.protocol";
     private static final String SMTP_HOST = "mail.smtp.host";
     private static final String SMTP_PORT = "mail.smtp.port";

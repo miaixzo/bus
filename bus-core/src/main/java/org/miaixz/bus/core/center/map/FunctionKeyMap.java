@@ -42,7 +42,7 @@ import java.util.function.Function;
 public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852267150621L;
+    private static final long serialVersionUID = 2852231228508L;
 
     private final Function<Object, K> keyFunc;
 

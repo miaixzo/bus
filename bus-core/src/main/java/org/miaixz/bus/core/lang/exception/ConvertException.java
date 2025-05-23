@@ -38,7 +38,7 @@ import java.io.Serial;
 public class ConvertException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852300720712L;
+    private static final long serialVersionUID = 2852268539777L;
 
     /**
      * 构造

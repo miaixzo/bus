@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class ReferenceConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852279676963L;
+    private static final long serialVersionUID = 2852276939578L;
 
     private final Converter rootConverter;
 

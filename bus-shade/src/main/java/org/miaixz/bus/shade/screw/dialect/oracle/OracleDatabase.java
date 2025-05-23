@@ -48,4 +48,5 @@ public class OracleDatabase implements Database {
      */
     @MappingField(value = "TABLE_CAT")
     private String database;
+
 }

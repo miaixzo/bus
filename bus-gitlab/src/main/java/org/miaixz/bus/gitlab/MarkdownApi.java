@@ -52,8 +52,10 @@ public class MarkdownApi extends AbstractApi {
      * @param text text to be transformed
      * @return a Markdown instance with transformed info
      * @throws GitLabApiException if any exception occurs
+     * @since GitLab 11.0
      */
     public Markdown getMarkdown(String text) throws GitLabApiException {
+
         if (!isApiVersion(ApiVersion.V4)) {
             throw new GitLabApiException("Api version must be v4");
         }
@@ -71,8 +73,10 @@ public class MarkdownApi extends AbstractApi {
      * @param markdownRequest a request of markdown transformation
      * @return a Markdown instance with transformed info
      * @throws GitLabApiException if any exception occurs
+     * @since GitLab 11.0
      */
     public Markdown getMarkdown(MarkdownRequest markdownRequest) throws GitLabApiException {
+
         if (!isApiVersion(ApiVersion.V4)) {
             throw new GitLabApiException("Api version must be v4");
         }

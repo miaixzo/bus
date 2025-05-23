@@ -27,18 +27,21 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.io.Serial;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class UserSystemHookEvent extends AbstractSystemHookEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852267173390L;
+
     public static final String USER_CREATE_EVENT = "user_create";
     public static final String USER_DESTROY_EVENT = "user_destroy";
     public static final String USER_RENAME_EVENT = "user_rename";
     public static final String USER_FAILED_LOGIN_EVENT = "user_failed_login";
-    @Serial
-    private static final long serialVersionUID = 2852368686239L;
+
     private String eventName;
     private Date createdAt;
     private Date updatedAt;

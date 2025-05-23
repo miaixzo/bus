@@ -55,7 +55,7 @@ import jakarta.mail.util.ByteArrayDataSource;
 public class Mail implements Builder<MimeMessage> {
 
     @Serial
-    private static final long serialVersionUID = 2852353795275L;
+    private static final long serialVersionUID = 2852280836739L;
 
     /**
      * 邮箱帐户信息以及一些客户端配置信息

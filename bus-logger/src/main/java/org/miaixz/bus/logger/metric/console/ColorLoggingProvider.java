@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Level;
 public class ColorLoggingProvider extends NormalLoggingProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852702092107L;
+    private static final long serialVersionUID = 2852281851682L;
 
     /**
      * 控制台打印类名的颜色代码

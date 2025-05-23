@@ -27,13 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.Constants.PackageOrderBy;
-import org.miaixz.bus.gitlab.Constants.PackageStatus;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.PackageOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.PackageStatus;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
+import java.io.Serial;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified group.
@@ -41,7 +40,7 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 public class PackageFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852381332635L;
+    private static final long serialVersionUID = 2852287153271L;
 
     private Boolean excludeSubgroups;
     private PackageOrderBy orderBy;
@@ -143,8 +142,8 @@ public class PackageFilter implements Serializable {
      *
      * @return a GitLabApiForm instance holding the query parameters for this ProjectFilter instance
      */
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("order_by", orderBy).withParam("sort", sort)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("order_by", orderBy).withParam("sort", sort)
                 .withParam("exclude_subgroups", excludeSubgroups).withParam("package_type", packageType)
                 .withParam("package_name", packageName).withParam("include_versionless", includeVersionless)
                 .withParam("status", status).withParam("package_version", packageVersion));

@@ -67,4 +67,5 @@ public class OracleTable implements Table {
      */
     @MappingField(value = "REMARKS")
     private String remarks;
+
 }

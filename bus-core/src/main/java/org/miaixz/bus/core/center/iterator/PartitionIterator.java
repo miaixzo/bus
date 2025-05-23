@@ -51,7 +51,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class PartitionIterator<T> implements IterableIterator<List<T>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852265650768L;
+    private static final long serialVersionUID = 2852228665631L;
 
     /**
      * 被分批的迭代器

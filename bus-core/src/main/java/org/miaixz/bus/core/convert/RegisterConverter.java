@@ -69,7 +69,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class RegisterConverter extends ConverterWithRoot implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279718306L;
+    private static final long serialVersionUID = 2852277021912L;
 
     /**
      * 默认类型转换器

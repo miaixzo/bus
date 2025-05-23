@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TimeParser implements PredicateDateParser, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852262129992L;
+    private static final long serialVersionUID = 2852292135516L;
 
     /**
      * 单例

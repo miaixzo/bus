@@ -118,4 +118,5 @@ public class UnifiedOrder {
      * 电子发票入口开放标识
      */
     private boolean support_fapiao;
+
 }

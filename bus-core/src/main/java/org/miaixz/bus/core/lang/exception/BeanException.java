@@ -38,7 +38,7 @@ import java.io.Serial;
 public class BeanException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852300578333L;
+    private static final long serialVersionUID = 2852267951371L;
 
     /**
      * 构造

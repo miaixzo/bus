@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class Tuple implements Iterable<Object>, Serializable, Cloneable {
 
     @Serial
-    private static final long serialVersionUID = 2852315582957L;
+    private static final long serialVersionUID = 2852238209572L;
 
     /**
      * 多值信息

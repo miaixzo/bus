@@ -73,4 +73,5 @@ public class PostgreSqlPrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "table_name")
     private String tableName;
+
 }

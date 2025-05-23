@@ -40,7 +40,7 @@ import java.util.ArrayList;
 public class IncrementSelector<T> extends ArrayList<T> implements Selector<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852312153937L;
+    private static final long serialVersionUID = 2852236889888L;
 
     private int position;
 

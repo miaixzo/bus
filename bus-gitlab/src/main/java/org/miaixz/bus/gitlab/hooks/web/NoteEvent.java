@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serial;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.models.Diff;
@@ -38,10 +39,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class NoteEvent extends AbstractEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852251579832L;
+
     public static final String X_GITLAB_EVENT = "Note Hook";
     public static final String OBJECT_KIND = "note";
-    @Serial
-    private static final long serialVersionUID = 2852370699895L;
+
     private EventUser user;
     private Long projectId;
     private EventProject project;
@@ -134,13 +137,7 @@ public class NoteEvent extends AbstractEvent {
         this.snippet = snippet;
     }
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
-
     public static enum NoteableType {
-
         ISSUE, MERGE_REQUEST, SNIPPET, COMMIT;
 
         private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
@@ -308,6 +305,11 @@ public class NoteEvent extends AbstractEvent {
         public void setUrl(String url) {
             this.url = url;
         }
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
 }

@@ -59,4 +59,5 @@ public final class PerfstatConfig {
         }
         return new perfstat_partition_config_t();
     }
+
 }

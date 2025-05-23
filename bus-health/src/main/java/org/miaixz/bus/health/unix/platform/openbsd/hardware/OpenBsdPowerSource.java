@@ -167,4 +167,5 @@ public final class OpenBsdPowerSource extends AbstractPowerSource {
                 psDischarging, psCapacityUnits, psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount,
                 psChemistry, psManufactureDate, psManufacturer, psSerialNumber, psTemperature);
     }
+
 }

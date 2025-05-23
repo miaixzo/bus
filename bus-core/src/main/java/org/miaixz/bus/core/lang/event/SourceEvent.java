@@ -39,7 +39,7 @@ import java.util.EventObject;
 public class SourceEvent extends EventObject implements Event {
 
     @Serial
-    private static final long serialVersionUID = 2852300056900L;
+    private static final long serialVersionUID = 2852267559389L;
 
     /**
      * 构造

@@ -42,7 +42,7 @@ import java.util.Set;
 public class LookupReplacer extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852322730555L;
+    private static final long serialVersionUID = 2852280980186L;
 
     private final Map<String, String> lookupMap;
     private final Set<Character> keyPrefixSkeyet;

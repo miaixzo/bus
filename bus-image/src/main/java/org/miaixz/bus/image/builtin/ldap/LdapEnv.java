@@ -39,7 +39,7 @@ import javax.naming.Context;
 public class LdapEnv extends Hashtable<String, Object> {
 
     @Serial
-    private static final long serialVersionUID = 2852539112558L;
+    private static final long serialVersionUID = 2852227326355L;
 
     public LdapEnv() {
         put(Context.INITIAL_CONTEXT_FACTORY,

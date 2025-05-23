@@ -28,11 +28,12 @@
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class EpicInLink extends AbstractEpic<EpicInLink> {
 
     @Serial
-    private static final long serialVersionUID = 2852376652811L;
+    private static final long serialVersionUID = 2852266655652L;
 
     public String toString() {
         return (JacksonJson.toJsonString(this));

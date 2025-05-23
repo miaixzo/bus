@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class LdapGroupLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852379331979L;
+    private static final long serialVersionUID = 2852281913098L;
 
     private String cn;
 

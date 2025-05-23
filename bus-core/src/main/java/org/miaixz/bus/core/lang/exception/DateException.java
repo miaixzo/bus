@@ -38,7 +38,7 @@ import java.io.Serial;
 public class DateException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852300897991L;
+    private static final long serialVersionUID = 2852268870606L;
 
     /**
      * 构造

@@ -85,4 +85,5 @@ public class OpenBsdFirmware extends AbstractFirmware {
     public String getReleaseDate() {
         return manufVersRelease.get().getRight();
     }
+
 }

@@ -33,4 +33,5 @@ package org.miaixz.bus.image.galaxy.data;
  */
 public enum UpdatePolicy {
     SUPPLEMENT, MERGE, OVERWRITE, REPLACE, PRESERVE
+
 }

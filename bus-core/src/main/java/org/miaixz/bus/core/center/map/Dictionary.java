@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.SetKit;
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
     @Serial
-    private static final long serialVersionUID = 2852266972060L;
+    private static final long serialVersionUID = 2852231001201L;
     /**
      * 是否大小写不敏感
      */

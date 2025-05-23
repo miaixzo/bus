@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.pool.PoolConfig;
 public class PartitionPoolConfig extends PoolConfig {
 
     @Serial
-    private static final long serialVersionUID = 2852308371202L;
+    private static final long serialVersionUID = 2852232593659L;
     private int partitionSize = 4;
 
     /**

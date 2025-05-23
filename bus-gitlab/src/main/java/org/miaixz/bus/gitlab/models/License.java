@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class License implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852379551002L;
+    private static final long serialVersionUID = 2852281999565L;
 
     private Long id;
     private String plan;

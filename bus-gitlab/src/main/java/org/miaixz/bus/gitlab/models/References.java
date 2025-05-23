@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
 
 public class References implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852383170213L;
+    private static final long serialVersionUID = 2852228093703L;
 
     @JsonProperty("short")
     private String _short;
+
     private String relative;
     private String full;
 

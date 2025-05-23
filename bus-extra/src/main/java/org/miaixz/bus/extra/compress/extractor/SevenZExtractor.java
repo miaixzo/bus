@@ -187,4 +187,5 @@ public class SevenZExtractor implements Extractor, RandomAccess {
     public void close() {
         IoKit.closeQuietly(this.sevenZFile);
     }
+
 }

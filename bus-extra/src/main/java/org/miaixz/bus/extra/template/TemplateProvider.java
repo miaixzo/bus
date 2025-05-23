@@ -52,4 +52,5 @@ public interface TemplateProvider extends Wrapper<Object> {
      * @return 模板实现
      */
     Template getTemplate(String resource);
+
 }

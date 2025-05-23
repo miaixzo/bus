@@ -27,13 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.Constants.StateEvent;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.StateEvent;
+import java.io.Serial;
 
 /**
  * This class provides the form parameters for creating and updating merge requests.
@@ -41,7 +40,7 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 public class MergeRequestParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852380586885L;
+    private static final long serialVersionUID = 2852285596982L;
 
     private String sourceBranch;
     private String targetBranch;
@@ -257,9 +256,9 @@ public class MergeRequestParams implements Serializable {
      *                 merge request
      * @return a GitLabApiForm instance holding the form parameters for this MergeRequestParams instance
      */
-    public GitLabApiForm getForm(boolean isCreate) {
+    public GitLabForm getForm(boolean isCreate) {
 
-        GitLabApiForm form = new GitLabApiForm().withParam("target_branch", targetBranch, isCreate)
+        GitLabForm form = new GitLabForm().withParam("target_branch", targetBranch, isCreate)
                 .withParam("title", title, isCreate).withParam("assignee_id", assigneeId)
                 .withParam("assignee_ids", assigneeIds).withParam("reviewer_ids", reviewerIds)
                 .withParam("milestone_id", milestoneId)

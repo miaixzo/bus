@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class RandomStrategy extends AbstractStrategy {
 
     @Serial
-    private static final long serialVersionUID = 2852350738737L;
+    private static final long serialVersionUID = 2852276658655L;
 
     /**
      * 构造，使用字母+数字做为基础
@@ -74,4 +74,5 @@ public class RandomStrategy extends AbstractStrategy {
         }
         return false;
     }
+
 }

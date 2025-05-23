@@ -38,7 +38,7 @@ import java.io.Serial;
 public class ValidateException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852302573791L;
+    private static final long serialVersionUID = 2852276101302L;
 
     /**
      * 构造

@@ -28,6 +28,8 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -41,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ApprovedBy implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852372312681L;
+    private static final long serialVersionUID = 2852255061925L;
 
     private User user;
     private Group group;

@@ -27,11 +27,16 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serial;
+
 public class MattermostService extends NotificationService {
+
+    @Serial
+    private static final long serialVersionUID = 2852236318909L;
 
     private String defaultChannel;
 
@@ -41,8 +46,8 @@ public class MattermostService extends NotificationService {
      * @return the form data for this service based on it's properties
      */
     @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm().withParam("webhook", getWebhook(), true)
+    public GitLabForm servicePropertiesForm() {
+        GitLabForm formData = new GitLabForm().withParam("webhook", getWebhook(), true)
                 .withParam("username", getUsername()).withParam("channel", getDefaultChannel())
                 .withParam("notify_only_broken_pipelines", getNotifyOnlyBrokenPipelines())
                 .withParam("notify_only_default_branch", getNotifyOnlyDefaultBranch())
@@ -104,7 +109,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getWebhook() {
-        return ((String) getProperty(WEBHOOK_PROP));
+        return getProperty(WEBHOOK_PROP);
     }
 
     public void setWebhook(String webhook) {
@@ -118,7 +123,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getUsername() {
-        return ((String) getProperty(USERNAME_PROP));
+        return getProperty(USERNAME_PROP);
     }
 
     public void setUsername(String username) {
@@ -174,7 +179,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getPushChannel() {
-        return ((String) getProperty(PUSH_CHANNEL_PROP));
+        return getProperty(PUSH_CHANNEL_PROP);
     }
 
     public void setPushChannel(String pushChannel) {
@@ -188,7 +193,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getIssueChannel() {
-        return ((String) getProperty(ISSUE_CHANNEL_PROP));
+        return getProperty(ISSUE_CHANNEL_PROP);
     }
 
     public void setIssueChannel(String issueChannel) {
@@ -202,7 +207,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getConfidentialIssueChannel() {
-        return ((String) getProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP));
+        return getProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP);
     }
 
     public void setConfidentialIssueChannel(String confidentialIssueChannel) {
@@ -216,7 +221,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getMergeRequestChannel() {
-        return ((String) getProperty(MERGE_REQUEST_CHANNEL_PROP));
+        return getProperty(MERGE_REQUEST_CHANNEL_PROP);
     }
 
     public void setMergeRequestChannel(String mergeRequestChannel) {
@@ -230,7 +235,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getNoteChannel() {
-        return ((String) getProperty(NOTE_CHANNEL_PROP));
+        return getProperty(NOTE_CHANNEL_PROP);
     }
 
     public void setNoteChannel(String noteChannel) {
@@ -244,7 +249,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getConfidentialNoteChannel() {
-        return ((String) getProperty(CONFIDENTIAL_NOTE_CHANNEL_PROP));
+        return getProperty(CONFIDENTIAL_NOTE_CHANNEL_PROP);
     }
 
     public void setConfidentialNoteChannel(String noteChannel) {
@@ -258,7 +263,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getTagPushChannel() {
-        return ((String) getProperty(TAG_PUSH_CHANNEL_PROP));
+        return getProperty(TAG_PUSH_CHANNEL_PROP);
     }
 
     public void setTagPushChannel(String tagPushChannel) {
@@ -272,7 +277,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getPipelineChannel() {
-        return ((String) getProperty(PIPELINE_CHANNEL_PROP));
+        return getProperty(PIPELINE_CHANNEL_PROP);
     }
 
     public void setPipelineChannel(String pipelineChannel) {
@@ -286,7 +291,7 @@ public class MattermostService extends NotificationService {
 
     @JsonIgnore
     public String getWikiPageChannel() {
-        return ((String) getProperty(WIKI_PAGE_CHANNEL_PROP));
+        return getProperty(WIKI_PAGE_CHANNEL_PROP);
     }
 
     public void setWikiPageChannel(String wikiPageChannel) {

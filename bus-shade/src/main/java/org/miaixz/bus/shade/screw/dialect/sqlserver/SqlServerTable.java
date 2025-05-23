@@ -42,6 +42,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SqlServerTable implements Table {
+
     /**
      * TABLE_CAT
      */
@@ -67,4 +68,5 @@ public class SqlServerTable implements Table {
      */
     @MappingField(value = "REMARKS")
     private String remarks;
+
 }

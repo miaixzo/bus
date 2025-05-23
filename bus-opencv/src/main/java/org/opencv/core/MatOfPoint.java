@@ -102,4 +102,5 @@ public class MatOfPoint extends Mat {
         Point[] ap = toArray();
         return Arrays.asList(ap);
     }
+
 }

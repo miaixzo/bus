@@ -55,7 +55,7 @@ import lombok.experimental.SuperBuilder;
 public class Message extends org.miaixz.bus.core.basic.entity.Message {
 
     @Serial
-    private static final long serialVersionUID = 2852759918173L;
+    private static final long serialVersionUID = 2852288227572L;
 
     private String body;
     private byte[] bodyByte;

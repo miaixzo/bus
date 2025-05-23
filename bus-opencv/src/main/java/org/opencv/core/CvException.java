@@ -32,7 +32,7 @@ import java.io.Serial;
 public class CvException extends RuntimeException {
 
     @Serial
-    private static final long serialVersionUID = 2852737568757L;
+    private static final long serialVersionUID = 2852276192352L;
 
     public CvException(String msg) {
         super(msg);

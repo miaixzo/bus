@@ -82,7 +82,7 @@ public class MilestonesApi extends AbstractApi {
     public List<Milestone> getGroupMilestones(Object groupIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "groups",
                 getGroupIdOrPath(groupIdOrPath), "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -134,7 +134,7 @@ public class MilestonesApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("state", state).withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -154,7 +154,7 @@ public class MilestonesApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("search", search).withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -177,7 +177,7 @@ public class MilestonesApi extends AbstractApi {
                 .withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -230,7 +230,7 @@ public class MilestonesApi extends AbstractApi {
      */
     public Pager<Issue> getGroupIssues(Object groupIdOrPath, Long milestoneId, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<>(this, Issue.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
+        return (new Pager<Issue>(this, Issue.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "milestones", milestoneId, "issues"));
     }
 
@@ -265,7 +265,7 @@ public class MilestonesApi extends AbstractApi {
     public List<MergeRequest> getGroupMergeRequest(Object groupIdOrPath, Long milestoneId) throws GitLabApiException {
         Response response = get(Response.Status.OK, getDefaultPerPageParam(), "groups", getGroupIdOrPath(groupIdOrPath),
                 "milestones", milestoneId, "merge_requests");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<MergeRequest>>() {
         }));
     }
 
@@ -405,7 +405,7 @@ public class MilestonesApi extends AbstractApi {
     public List<Milestone> getMilestones(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -457,7 +457,7 @@ public class MilestonesApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("state", state).withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -477,7 +477,7 @@ public class MilestonesApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("search", search).withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -500,7 +500,7 @@ public class MilestonesApi extends AbstractApi {
                 .withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "milestones");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Milestone>>() {
         }));
     }
 
@@ -553,7 +553,7 @@ public class MilestonesApi extends AbstractApi {
      */
     public Pager<Issue> getIssues(Object projectIdOrPath, Long milestoneId, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+        return (new Pager<Issue>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "milestones", milestoneId, "issues"));
     }
 
@@ -591,11 +591,11 @@ public class MilestonesApi extends AbstractApi {
 
     /**
      * Get a Pager of merge requests associated with the specified milestone.
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/milestones/:milestone_id/merge_requests</code>
      * </pre>
-     * 
+     *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param milestoneId     the milestone ID to get the merge requests for
      * @return a Pager of merge requests associated with the specified milestone
@@ -603,17 +603,17 @@ public class MilestonesApi extends AbstractApi {
      */
     public Pager<MergeRequest> getMergeRequest(Object projectIdOrPath, Long milestoneId, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<>(this, MergeRequest.class, itemsPerPage, null, "projects",
+        return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "milestones", milestoneId, "merge_requests"));
     }
 
     /**
      * Get a Stream of merge requests associated with the specified milestone.
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/milestones/:milestone_id/merge_requests</code>
      * </pre>
-     * 
+     *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param milestoneId     the milestone ID to get the merge requests for
      * @return a Stream of merge requests associated with the specified milestone

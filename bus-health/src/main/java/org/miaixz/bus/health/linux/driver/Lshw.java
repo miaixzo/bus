@@ -114,4 +114,5 @@ public final class Lshw {
         }
         return -1L;
     }
+
 }

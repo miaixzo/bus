@@ -45,7 +45,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
 public class Log4jLoggingProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852701883277L;
+    private static final long serialVersionUID = 2852281325191L;
 
     /**
      * 日志门面

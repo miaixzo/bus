@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.HashKit;
 public class ConsistentHash<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275030272L;
+    private static final long serialVersionUID = 2852239935395L;
 
     /**
      * 复制的节点个数

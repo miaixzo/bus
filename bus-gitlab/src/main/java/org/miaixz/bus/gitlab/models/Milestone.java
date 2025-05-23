@@ -27,25 +27,28 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serial;
 
 public class Milestone implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852380830983L;
+    private static final long serialVersionUID = 2852286237867L;
 
     private Date createdAt;
     private String description;
+
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date startDate;
+
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
+
     private Long id;
     private Long iid;
     private Long projectId;

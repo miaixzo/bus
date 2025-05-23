@@ -39,7 +39,7 @@ import org.miaixz.bus.image.UID;
 public class NoPresentationException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852679071588L;
+    private static final long serialVersionUID = 2852268785830L;
 
     public NoPresentationException(String cuid) {
         super(toMessage(cuid));

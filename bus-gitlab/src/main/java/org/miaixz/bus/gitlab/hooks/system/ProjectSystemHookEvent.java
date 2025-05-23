@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.io.Serial;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.models.Visibility;
@@ -34,13 +35,15 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852263717976L;
+
     public static final String PROJECT_CREATE_EVENT = "project_create";
     public static final String PROJECT_DESTROY_EVENT = "project_destroy";
     public static final String PROJECT_RENAME_EVENT = "project_rename";
     public static final String PROJECT_TRANSFER_EVENT = "project_transfer";
     public static final String PROJECT_UPDATE_EVENT = "project_update";
-    @Serial
-    private static final long serialVersionUID = 2852368092365L;
+
     private Date createdAt;
     private Date updatedAt;
     private String eventName;

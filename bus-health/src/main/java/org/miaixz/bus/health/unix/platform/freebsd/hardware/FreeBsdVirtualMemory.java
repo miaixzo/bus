@@ -114,4 +114,5 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
     public long getSwapPagesOut() {
         return pagesOut.get();
     }
+
 }

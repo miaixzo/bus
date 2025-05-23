@@ -28,6 +28,10 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class Duration implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376195033L;
+    private static final long serialVersionUID = 2852260379538L;
 
     private static final String[] TIME_UNITS = { "mo", "w", "d", "h", "m", "s" };
     private static final int[] TIME_UNIT_MULTIPLIERS = { 60 * 60 * 8 * 5 * 4, // 4 weeks = 1 month
@@ -73,6 +77,30 @@ public class Duration implements Serializable {
     public Duration(int seconds) {
         this.seconds = seconds;
         durationString = (seconds == 0 ? "0m" : toString(seconds, true));
+    }
+
+    /**
+     * Get the number of seconds this duration represents.
+     *
+     * @return the number of seconds this duration represents
+     */
+    public int getSeconds() {
+        return (seconds);
+    }
+
+    /**
+     * Set the number of seconds this duration represents.
+     *
+     * @param seconds the number of seconds this duration represents
+     */
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
+    }
+
+    @JsonValue
+    @Override
+    public String toString() {
+        return (durationString);
     }
 
     @JsonCreator
@@ -224,30 +252,6 @@ public class Duration implements Serializable {
         }
 
         return (-1);
-    }
-
-    /**
-     * Get the number of seconds this duration represents.
-     *
-     * @return the number of seconds this duration represents
-     */
-    public int getSeconds() {
-        return (seconds);
-    }
-
-    /**
-     * Set the number of seconds this duration represents.
-     *
-     * @param seconds the number of seconds this duration represents
-     */
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
-
-    @JsonValue
-    @Override
-    public String toString() {
-        return (durationString);
     }
 
 }

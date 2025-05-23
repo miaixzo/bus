@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -35,14 +34,36 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class CommitRef implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852375032655L;
+    private static final long serialVersionUID = 2852257927803L;
 
     private RefType type;
     private String name;
+
+    public enum RefType {
+        BRANCH, TAG, ALL;
+
+        private static JacksonJsonEnumHelper<RefType> enumHelper = new JacksonJsonEnumHelper<>(RefType.class);
+
+        @JsonCreator
+        public static RefType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 
     public RefType getType() {
         return type;
@@ -65,24 +86,4 @@ public class CommitRef implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
-    public enum RefType {
-        BRANCH, TAG, ALL;
-
-        private static JacksonJsonEnumHelper<RefType> enumHelper = new JacksonJsonEnumHelper<>(RefType.class);
-
-        @JsonCreator
-        public static RefType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
 }

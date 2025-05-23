@@ -401,4 +401,5 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         }
         return DEFAULT_FREQUENCY;
     }
+
 }

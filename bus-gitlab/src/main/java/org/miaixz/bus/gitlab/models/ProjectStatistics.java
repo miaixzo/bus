@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 /**
  * This class contains the sizing information from the project. To get this information, ProjectApi.getProject() has to
@@ -39,7 +39,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectStatistics implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852382665297L;
+    private static final long serialVersionUID = 2852289278711L;
 
     long commitCount;
     long storageSize;

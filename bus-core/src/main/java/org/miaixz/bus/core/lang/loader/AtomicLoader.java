@@ -50,7 +50,7 @@ import org.miaixz.bus.core.Loader;
 public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852303673669L;
+    private static final long serialVersionUID = 2852286051999L;
 
     /**
      * 被加载对象的引用

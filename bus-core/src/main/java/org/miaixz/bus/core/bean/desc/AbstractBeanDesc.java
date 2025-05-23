@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.Assert;
 public abstract class AbstractBeanDesc implements BeanDesc {
 
     @Serial
-    private static final long serialVersionUID = 2852236812088L;
+    private static final long serialVersionUID = 2852290990777L;
 
     /**
      * Bean类

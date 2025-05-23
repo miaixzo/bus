@@ -50,7 +50,7 @@ import org.miaixz.bus.image.metric.hl7.MLLPConnection;
 public class HL7Application implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852676022125L;
+    private static final long serialVersionUID = 2852262120701L;
 
     private final LinkedHashSet<String> acceptedSendingApplications = new LinkedHashSet<>();
     private final LinkedHashSet<String> otherApplicationNames = new LinkedHashSet<>();

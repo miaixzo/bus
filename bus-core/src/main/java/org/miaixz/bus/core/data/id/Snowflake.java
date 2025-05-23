@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class Snowflake implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281706622L;
+    private static final long serialVersionUID = 2852279556712L;
 
     /**
      * 默认的起始时间，为Thu, 04 Nov 2010 01:42:54 GMT

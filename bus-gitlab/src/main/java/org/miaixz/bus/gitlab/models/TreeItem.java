@@ -27,15 +27,23 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class TreeItem implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852386217285L;
+    private static final long serialVersionUID = 2852233103811L;
+
+    public enum Type {
+        TREE, BLOB, COMMIT;
+
+        public String toString() {
+            return (name().toLowerCase());
+        }
+    }
 
     private String id;
     private String mode;
@@ -86,14 +94,6 @@ public class TreeItem implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    public enum Type {
-        TREE, BLOB, COMMIT;
-
-        public String toString() {
-            return (name().toLowerCase());
-        }
     }
 
 }

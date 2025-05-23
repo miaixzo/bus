@@ -103,4 +103,5 @@ public class MatOfFloat6 extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
+
 }

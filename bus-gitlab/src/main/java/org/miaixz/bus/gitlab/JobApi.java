@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.gitlab.models.ArtifactsFile;
+import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.JobAttributes;
 
@@ -87,7 +88,7 @@ public class JobApi extends AbstractApi implements Constants {
     public List<Job> getJobs(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "jobs");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Job>>() {
         }));
     }
 
@@ -159,7 +160,7 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public Pager<Job> getJobs(Object projectIdOrPath, JobScope scope, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("scope", scope);
-        return (new Pager<>(this, Job.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<Job>(this, Job.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "jobs"));
     }
 
@@ -259,7 +260,7 @@ public class JobApi extends AbstractApi implements Constants {
                 .withParam("include_retried", includeRetried).withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "pipelines", pipelineId, "jobs");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Job>>() {
         }));
     }
 
@@ -337,6 +338,45 @@ public class JobApi extends AbstractApi implements Constants {
     public Stream<Job> getJobsStream(Object projectIdOrPath, long pipelineId, Boolean includeRetried)
             throws GitLabApiException {
         return (getJobsForPipeline(projectIdOrPath, pipelineId, getDefaultPerPage(), includeRetried).stream());
+    }
+
+    /**
+     * Retrieve the job corresponding to the <code>$CI_JOB_TOKEN</code> environment variable (Using a
+     * {@link TokenType#JOB_TOKEN} authentication).
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /job</code>
+     * </pre>
+     *
+     * @return a single job corresponding to the token used for the authentication
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Job getJob() throws GitLabApiException {
+        TokenType tokenType = getApiClient().getTokenType();
+        if (tokenType != TokenType.JOB_TOKEN) {
+            throw new IllegalStateException(
+                    "This method can only be called with a " + TokenType.JOB_TOKEN + " authentication");
+        }
+        Response response = get(Response.Status.OK, null, "job");
+        return (response.readEntity(Job.class));
+    }
+
+    /**
+     * Retrieve the job corresponding to the <code>$CI_JOB_TOKEN</code> environment variable. This works only when used
+     * without any authentication.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /job?job_token=${ciJobToken}"</code>
+     * </pre>
+     *
+     * @return a single job corresponding to the token passed as query parameter
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Job getJob(final String ciJobToken) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm().withParam("job_token", ciJobToken, true);
+
+        Response response = get(Response.Status.OK, formData.asMap(), "job");
+        return (response.readEntity(Job.class));
     }
 
     /**

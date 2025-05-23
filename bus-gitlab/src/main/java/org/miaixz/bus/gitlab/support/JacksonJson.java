@@ -53,6 +53,7 @@ import jakarta.ws.rs.ext.ContextResolver;
 public class JacksonJson implements ContextResolver<ObjectMapper> {
 
     private static final SimpleDateFormat iso8601UtcFormat;
+
     static {
         iso8601UtcFormat = new SimpleDateFormat(ISO8601.UTC_PATTERN);
         iso8601UtcFormat.setLenient(true);
@@ -66,7 +67,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         objectMapper = new ObjectMapper();
 
         objectMapper.setSerializationInclusion(Include.NON_NULL);
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
@@ -80,17 +81,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     }
 
     /**
-     * Parse the provided String into a JsonNode instance.
-     *
-     * @param jsonString a String containing JSON to parse
-     * @return a JsonNode with the String parsed into a JSON tree
-     * @throws IOException if any IO error occurs
-     */
-    public static JsonNode toJsonNode(String jsonString) throws IOException {
-        return (JacksonJsonSingletonHelper.JACKSON_JSON.objectMapper.readTree(jsonString));
-    }
-
-    /**
      * Gets a the supplied object output as a formatted JSON string. Null properties will result in the value of the
      * property being null. This is meant to be used for toString() implementations of GitLab4J classes.
      *
@@ -100,6 +90,17 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      */
     public static <T> String toJsonString(final T object) {
         return (JacksonJsonSingletonHelper.JACKSON_JSON.marshal(object));
+    }
+
+    /**
+     * Parse the provided String into a JsonNode instance.
+     *
+     * @param jsonString a String containing JSON to parse
+     * @return a JsonNode with the String parsed into a JSON tree
+     * @throws IOException if any IO error occurs
+     */
+    public static JsonNode toJsonNode(String jsonString) throws IOException {
+        return (JacksonJsonSingletonHelper.JACKSON_JSON.objectMapper.readTree(jsonString));
     }
 
     /**
@@ -236,35 +237,8 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         }));
     }
 
-    /**
-     * Unmarshal the JSON data and populate a Map of String keys and values of the provided returnType class.
-     *
-     * @param <T>        the generics type for the Map value
-     * @param returnType an instance of this type class will be contained the values of the Map
-     * @param jsonData   the String containing the JSON data
-     * @return a Map containing the parsed data from the String
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
-     * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
-     */
-    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData)
-            throws JsonParseException, JsonMappingException, IOException {
-        ObjectMapper objectMapper = getContext(null);
-        return (objectMapper.readValue(jsonData, new TypeReference<>() {
-        }));
-    }
-
     @Override
     public ObjectMapper getContext(Class<?> objectType) {
-        return (objectMapper);
-    }
-
-    /**
-     * Gets the ObjectMapper contained by this instance.
-     *
-     * @return the ObjectMapper contained by this instance
-     */
-    public ObjectMapper getObjectMapper() {
         return (objectMapper);
     }
 
@@ -341,17 +315,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     }
 
     /**
-     * This class is used to create a thread-safe singleton instance of JacksonJson customized to be used by
-     */
-    private static class JacksonJsonSingletonHelper {
-        private static final JacksonJson JACKSON_JSON = new JacksonJson();
-        static {
-            JACKSON_JSON.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
-            JACKSON_JSON.objectMapper.setSerializationInclusion(Include.ALWAYS);
-        }
-    }
-
-    /**
      * Serializer for the odd User instances in the "approved_by" array in the merge_request JSON.
      */
     public static class UserListSerializer extends JsonSerializer<List<User>> {
@@ -392,6 +355,45 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
             }
 
             return (users);
+        }
+    }
+
+    /**
+     * Gets the ObjectMapper contained by this instance.
+     *
+     * @return the ObjectMapper contained by this instance
+     */
+    public ObjectMapper getObjectMapper() {
+        return (objectMapper);
+    }
+
+    /**
+     * Unmarshal the JSON data and populate a Map of String keys and values of the provided returnType class.
+     *
+     * @param <T>        the generics type for the Map value
+     * @param returnType an instance of this type class will be contained the values of the Map
+     * @param jsonData   the String containing the JSON data
+     * @return a Map containing the parsed data from the String
+     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonMappingException if a JSON error occurs
+     * @throws IOException          if an error occurs reading the JSON data
+     */
+    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData)
+            throws JsonParseException, JsonMappingException, IOException {
+        ObjectMapper objectMapper = getContext(null);
+        return (objectMapper.readValue(jsonData, new TypeReference<Map<String, T>>() {
+        }));
+    }
+
+    /**
+     * This class is used to create a thread-safe singleton instance of JacksonJson customized to be used by
+     */
+    private static class JacksonJsonSingletonHelper {
+        private static final JacksonJson JACKSON_JSON = new JacksonJson();
+
+        static {
+            JACKSON_JSON.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
+            JACKSON_JSON.objectMapper.setSerializationInclusion(Include.ALWAYS);
         }
     }
 

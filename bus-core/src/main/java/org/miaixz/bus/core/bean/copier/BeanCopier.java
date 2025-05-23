@@ -52,7 +52,7 @@ import org.miaixz.bus.core.lang.copier.Copier;
 public class BeanCopier<T> implements Copier<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235816032L;
+    private static final long serialVersionUID = 2852290650852L;
 
     private final Copier<T> copier;
 

@@ -28,6 +28,8 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -36,7 +38,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Blame implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852373136253L;
+    private static final long serialVersionUID = 2852256309128L;
 
     private Commit commit;
     private List<String> lines;

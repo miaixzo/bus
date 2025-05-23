@@ -54,7 +54,7 @@ import org.miaixz.bus.core.xyz.*;
 public class EntryConverter extends ConverterWithRoot implements MatcherConverter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278703325L;
+    private static final long serialVersionUID = 2852260630992L;
 
     /**
      * 构造

@@ -38,7 +38,7 @@ import java.io.Serial;
 public class MapperException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852301365958L;
+    private static final long serialVersionUID = 2852271066227L;
 
     /**
      * 构造

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.center.map.AbstractEntry;
 public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<Map.Entry<K, V>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852306966167L;
+    private static final long serialVersionUID = 2852228956271L;
 
     /**
      * 键

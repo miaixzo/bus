@@ -103,4 +103,5 @@ public class BoundedList<E> extends ListWrapper<E> implements BoundedCollection<
             throw new IndexOutOfBoundsException("List is no space to add " + addSize + " elements!");
         }
     }
+
 }

@@ -49,7 +49,7 @@ import org.miaixz.bus.logger.Logger;
 public class Attributes implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852550507615L;
+    private static final long serialVersionUID = 2852229333359L;
 
     public static final String COERCE = "COERCE";
     public static final String CORRECT = "CORRECT";

@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serial;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852371313319L;
+    private static final long serialVersionUID = 2852252137136L;
 
     private Long id;
     private String name;

@@ -27,15 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.Constants.ProjectOrderBy;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.ProjectOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified user.
@@ -43,7 +41,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852382375215L;
+    private static final long serialVersionUID = 2852288999662L;
 
     private Boolean archived;
     private Visibility visibility;
@@ -242,6 +240,7 @@ public class ProjectFilter implements Serializable {
     /**
      * Limit projects where the wiki checksum calculation has failed.
      *
+     * @since GitLab 11.2
      * @param wikiChecksumFailed if true, limit projects where the wiki checksum calculation has failed
      * @return the reference to this ProjectFilter instance
      */
@@ -253,6 +252,7 @@ public class ProjectFilter implements Serializable {
     /**
      * Limit projects where the repository checksum calculation has failed.
      *
+     * @since GitLab 11.2
      * @param repositoryChecksumFailed if true, limit projects where the repository checksum calculation has failed
      * @return the reference to this ProjectFilter instance
      */
@@ -367,7 +367,7 @@ public class ProjectFilter implements Serializable {
      * @param perPage specifies the number of items per page
      * @return a GitLabApiForm instance holding the query parameters for this ProjectFilter instance
      */
-    public GitLabApiForm getQueryParams(int page, int perPage) {
+    public GitLabForm getQueryParams(int page, int perPage) {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
@@ -376,8 +376,8 @@ public class ProjectFilter implements Serializable {
      *
      * @return a GitLabApiForm instance holding the query parameters for this ProjectFilter instance
      */
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("archived", archived).withParam("visibility", visibility)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("archived", archived).withParam("visibility", visibility)
                 .withParam("order_by", orderBy).withParam("sort", sort).withParam("search", search)
                 .withParam("search_namespaces", searchNamespaces).withParam("simple", simple).withParam("owned", owned)
                 .withParam("membership", membership).withParam("starred", starred).withParam("statistics", statistics)

@@ -103,4 +103,5 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     public List<NetworkIF> getNetworkIFs() {
         return getNetworkIFs(false);
     }
+
 }

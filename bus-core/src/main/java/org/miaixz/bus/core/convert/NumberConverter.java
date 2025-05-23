@@ -64,7 +64,7 @@ import org.miaixz.bus.core.xyz.*;
 public class NumberConverter extends AbstractConverter implements MatcherConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852279075735L;
+    private static final long serialVersionUID = 2852273072605L;
 
     /**
      * 单例

@@ -240,4 +240,5 @@ public final class MacPowerSource extends AbstractPowerSource {
 
         return psList;
     }
+
 }

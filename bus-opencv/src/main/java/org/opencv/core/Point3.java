@@ -105,4 +105,5 @@ public class Point3 {
     public String toString() {
         return "{" + x + ", " + y + ", " + z + "}";
     }
+
 }

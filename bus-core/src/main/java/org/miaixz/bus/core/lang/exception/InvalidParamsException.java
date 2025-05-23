@@ -38,7 +38,7 @@ import java.io.Serial;
 public class InvalidParamsException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852301271500L;
+    private static final long serialVersionUID = 2852270395963L;
 
     /**
      * 构造

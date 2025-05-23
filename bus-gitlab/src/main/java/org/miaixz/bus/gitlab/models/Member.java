@@ -30,11 +30,12 @@ package org.miaixz.bus.gitlab.models;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Member extends AbstractUser<Member> {
 
     @Serial
-    private static final long serialVersionUID = 2852380086163L;
+    private static final long serialVersionUID = 2852283293226L;
 
     private AccessLevel accessLevel;
     private Date expiresAt;

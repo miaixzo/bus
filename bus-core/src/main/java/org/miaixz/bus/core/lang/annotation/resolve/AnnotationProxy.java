@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnnotationProxy<T extends Annotation> implements Annotation, InvocationHandler, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852298156988L;
+    private static final long serialVersionUID = 2852262212959L;
 
     /**
      * 注解

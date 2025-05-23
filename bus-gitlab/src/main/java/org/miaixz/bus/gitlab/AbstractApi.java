@@ -57,29 +57,29 @@ public abstract class AbstractApi implements Constants {
     /**
      * Returns the project ID or path from the provided Long, String, or Project instance.
      *
-     * @param object the object to determine the ID or path from
+     * @param obj the object to determine the ID or path from
      * @return the project ID or path from the provided Long, String, or Project instance
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Object getProjectIdOrPath(Object object) throws GitLabApiException {
+    public Object getProjectIdOrPath(Object obj) throws GitLabApiException {
 
-        if (object == null) {
+        if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
-        } else if (object instanceof Long) {
-            return (object);
-        } else if (object instanceof Integer) {
-            // Compatibility with older version of gitlab4j-api:
-            return Long.valueOf(((Integer) object).longValue());
-        } else if (object instanceof String) {
-            return (urlEncode(((String) object).trim()));
-        } else if (object instanceof Project) {
+        } else if (obj instanceof Long) {
+            return (obj);
+        } else if (obj instanceof Integer) {
+            // Compatibility with older version of gitlab-api:
+            return Long.valueOf(((Integer) obj).longValue());
+        } else if (obj instanceof String) {
+            return (urlEncode(((String) obj).trim()));
+        } else if (obj instanceof Project) {
 
-            Long id = ((Project) object).getId();
+            Long id = ((Project) obj).getId();
             if (id != null && id.longValue() > 0) {
                 return (id);
             }
 
-            String path = ((Project) object).getPathWithNamespace();
+            String path = ((Project) obj).getPathWithNamespace();
             if (path != null && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
@@ -87,7 +87,7 @@ public abstract class AbstractApi implements Constants {
             throw (new RuntimeException("Cannot determine ID or path from provided Project instance"));
 
         } else {
-            throw (new RuntimeException("Cannot determine ID or path from provided " + object.getClass().getSimpleName()
+            throw (new RuntimeException("Cannot determine ID or path from provided " + obj.getClass().getSimpleName()
                     + " instance, must be Long, String, or a Project instance"));
         }
     }
@@ -95,28 +95,29 @@ public abstract class AbstractApi implements Constants {
     /**
      * Returns the group ID or path from the provided Long, String, or Group instance.
      *
-     * @param object the object to determine the ID or path from
+     * @param obj the object to determine the ID or path from
      * @return the group ID or path from the provided Long, String, or Group instance
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Object getGroupIdOrPath(Object object) throws GitLabApiException {
-        if (object == null) {
-            throw (new RuntimeException("Cannot determine ID or path from null object"));
-        } else if (object instanceof Long) {
-            return (object);
-        } else if (object instanceof Integer) {
-            // Compatibility with older version of gitlab4j-api:
-            return Long.valueOf(((Integer) object).longValue());
-        } else if (object instanceof String) {
-            return (urlEncode(((String) object).trim()));
-        } else if (object instanceof Group) {
+    public Object getGroupIdOrPath(Object obj) throws GitLabApiException {
 
-            Long id = ((Group) object).getId();
+        if (obj == null) {
+            throw (new RuntimeException("Cannot determine ID or path from null object"));
+        } else if (obj instanceof Long) {
+            return (obj);
+        } else if (obj instanceof Integer) {
+            // Compatibility with older version of gitlab-api:
+            return Long.valueOf(((Integer) obj).longValue());
+        } else if (obj instanceof String) {
+            return (urlEncode(((String) obj).trim()));
+        } else if (obj instanceof Group) {
+
+            Long id = ((Group) obj).getId();
             if (id != null && id.longValue() > 0) {
                 return (id);
             }
 
-            String path = ((Group) object).getFullPath();
+            String path = ((Group) obj).getFullPath();
             if (path != null && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
@@ -124,7 +125,7 @@ public abstract class AbstractApi implements Constants {
             throw (new RuntimeException("Cannot determine ID or path from provided Group instance"));
 
         } else {
-            throw (new RuntimeException("Cannot determine ID or path from provided " + object.getClass().getSimpleName()
+            throw (new RuntimeException("Cannot determine ID or path from provided " + obj.getClass().getSimpleName()
                     + " instance, must be Long, String, or a Group instance"));
         }
     }
@@ -132,29 +133,29 @@ public abstract class AbstractApi implements Constants {
     /**
      * Returns the user ID or path from the provided Long, String, or User instance.
      *
-     * @param object the object to determine the ID or username from
+     * @param obj the object to determine the ID or username from
      * @return the user ID or username from the provided Long, String, or User instance
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Object getUserIdOrUsername(Object object) throws GitLabApiException {
+    public Object getUserIdOrUsername(Object obj) throws GitLabApiException {
 
-        if (object == null) {
+        if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or username from null object"));
-        } else if (object instanceof Long) {
-            return (object);
-        } else if (object instanceof Integer) {
-            // Compatibility with older version of gitlab4j-api:
-            return Long.valueOf(((Integer) object).longValue());
-        } else if (object instanceof String) {
-            return (urlEncode(((String) object).trim()));
-        } else if (object instanceof User) {
+        } else if (obj instanceof Long) {
+            return (obj);
+        } else if (obj instanceof Integer) {
+            // Compatibility with older version of gitlab-api:
+            return Long.valueOf(((Integer) obj).longValue());
+        } else if (obj instanceof String) {
+            return (urlEncode(((String) obj).trim()));
+        } else if (obj instanceof User) {
 
-            Long id = ((User) object).getId();
+            Long id = ((User) obj).getId();
             if (id != null && id.longValue() > 0) {
                 return (id);
             }
 
-            String username = ((User) object).getUsername();
+            String username = ((User) obj).getUsername();
             if (username != null && username.trim().length() > 0) {
                 return (urlEncode(username.trim()));
             }
@@ -163,7 +164,7 @@ public abstract class AbstractApi implements Constants {
 
         } else {
             throw (new RuntimeException("Cannot determine ID or username from provided "
-                    + object.getClass().getSimpleName() + " instance, must be Long, String, or a User instance"));
+                    + obj.getClass().getSimpleName() + " instance, must be Long, String, or a User instance"));
         }
     }
 
@@ -181,7 +182,7 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Long) {
             return (obj);
         } else if (obj instanceof Integer) {
-            // Compatibility with older version of gitlab4j-api:
+            // Compatibility with older version of gitlab-api:
             return Long.valueOf(((Integer) obj).longValue());
         } else if (obj instanceof String) {
             return (urlEncode(((String) obj).trim()));
@@ -212,7 +213,7 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Long) {
             return (obj);
         } else if (obj instanceof Integer) {
-            // Compatibility with older version of gitlab4j-api:
+            // Compatibility with older version of gitlab-api:
             return Long.valueOf(((Integer) obj).longValue());
         } else if (obj instanceof String) {
             return (urlEncode(((String) obj).trim()));
@@ -254,7 +255,7 @@ public abstract class AbstractApi implements Constants {
 
     /**
      * Encode a string to be used as in-path argument for a gitlab api request.
-     *
+     * <p>
      * Standard URL encoding changes spaces to plus signs, but for arguments that are part of the path, like the
      * :file_path in a "Get raw file" request, gitlab expects spaces to be encoded with %20.
      *
@@ -632,6 +633,25 @@ public abstract class AbstractApi implements Constants {
             throws GitLabApiException {
         try {
             return validate(getApiClient().put(formData, pathArgs), expectedStatus);
+        } catch (Exception e) {
+            throw handle(e);
+        }
+    }
+
+    /**
+     * Perform an HTTP PUT call with the specified form data and path objects, returning a ClientResponse instance with
+     * the data returned from the endpoint.
+     *
+     * @param expectedStatus the HTTP status that should be returned from the server
+     * @param form           the Form containing the name/value pairs for the POST data
+     * @param pathArgs       variable list of arguments used to build the URI
+     * @return a ClientResponse instance with the data returned from the endpoint
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    protected Response putWithFormData(Response.Status expectedStatus, GitLabForm form, Object... pathArgs)
+            throws GitLabApiException {
+        try {
+            return validate(getApiClient().put(new GitLabApiForm(form), pathArgs), expectedStatus);
         } catch (Exception e) {
             throw handle(e);
         }

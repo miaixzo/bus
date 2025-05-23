@@ -101,4 +101,5 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     public List<GraphicsCard> getGraphicsCards() {
         return MacGraphicsCard.getGraphicsCards();
     }
+
 }

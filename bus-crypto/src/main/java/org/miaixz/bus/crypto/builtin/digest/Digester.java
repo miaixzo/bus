@@ -50,7 +50,7 @@ import org.miaixz.bus.crypto.Holder;
 public class Digester extends SimpleWrapper<MessageDigest> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852335771506L;
+    private static final long serialVersionUID = 2852263197568L;
 
     /**
      * 盐值

@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
 
     @Serial
-    private static final long serialVersionUID = 2852261672036L;
+    private static final long serialVersionUID = 2852291750285L;
 
     private static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
     // comparator used to sort regex alternatives

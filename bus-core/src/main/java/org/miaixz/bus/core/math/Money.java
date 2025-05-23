@@ -59,7 +59,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Money implements Serializable, Comparable<Money> {
 
     @Serial
-    private static final long serialVersionUID = 2852316565858L;
+    private static final long serialVersionUID = 2852238921352L;
     /**
      * 一组可能的元/分换算比例。 此处，“分”是指货币的最小单位，“元”是货币的最常用单位， 不同的币种有不同的元/分换算比例，如人民币是100，而日元为1。
      */

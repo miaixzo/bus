@@ -89,4 +89,5 @@ public class Seven7EntryInputStream extends InputStream {
         this.readSize++;
         return this.sevenZFile.read();
     }
+
 }

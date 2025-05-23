@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class ComposeX<A, B, C> implements Function<A, C>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852263020893L;
+    private static final long serialVersionUID = 2852292632067L;
 
     private final Function<B, C> g;
     private final Function<A, ? extends B> f;

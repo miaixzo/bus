@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closeable {
 
     @Serial
-    private static final long serialVersionUID = 2852729191098L;
+    private static final long serialVersionUID = 2852263583616L;
 
     private final Reader reader;
 

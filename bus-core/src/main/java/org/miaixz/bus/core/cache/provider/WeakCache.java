@@ -46,7 +46,7 @@ import org.miaixz.bus.core.lang.ref.Ref;
 public class WeakCache<K, V> extends TimedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852239535183L;
+    private static final long serialVersionUID = 2852293795712L;
 
     /**
      * 构造

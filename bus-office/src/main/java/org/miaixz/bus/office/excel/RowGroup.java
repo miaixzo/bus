@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class RowGroup implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852729880199L;
+    private static final long serialVersionUID = 2852266927073L;
 
     private String name;
     private CellStyle style;

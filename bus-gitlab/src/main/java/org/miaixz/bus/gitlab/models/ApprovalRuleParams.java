@@ -28,15 +28,15 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-
-import org.miaixz.bus.gitlab.GitLabApiForm;
 
 public class ApprovalRuleParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852372169965L;
+    private static final long serialVersionUID = 2852253633229L;
 
     private Integer approvalsRequired;
     private String name;
@@ -140,9 +140,8 @@ public class ApprovalRuleParams implements Serializable {
      *
      * @return a GitLabApiForm instance holding the form parameters for this ApprovalRuleParams instance
      */
-    public GitLabApiForm getForm() {
-        return new GitLabApiForm().withParam("approvals_required", approvalsRequired, true)
-                .withParam("name", name, true)
+    public GitLabForm getForm() {
+        return new GitLabForm().withParam("approvals_required", approvalsRequired, true).withParam("name", name, true)
                 .withParam("applies_to_all_protected_branches", appliesToAllProtectedBranches)
                 .withParam("group_ids", groupIds).withParam("protected_branch_ids", protectedBranchIds)
                 .withParam("report_type", reportType).withParam("rule_type", ruleType).withParam("user_ids", userIds)

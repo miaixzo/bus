@@ -151,4 +151,5 @@ public interface HardwareAbstractionLayer {
      * @return A list of objects or an empty list if none are present.
      */
     List<GraphicsCard> getGraphicsCards();
+
 }

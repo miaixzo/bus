@@ -46,7 +46,7 @@ import org.miaixz.bus.proxy.invoker.Interceptor;
 public class JdkInterceptor extends Interceptor implements InvocationHandler {
 
     @Serial
-    private static final long serialVersionUID = 2852772958766L;
+    private static final long serialVersionUID = 2852250138577L;
 
     /**
      * 构造

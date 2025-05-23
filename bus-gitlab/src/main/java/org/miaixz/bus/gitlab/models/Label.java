@@ -27,28 +27,30 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 public class Label implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852379179660L;
+    private static final long serialVersionUID = 2852281290353L;
 
     private Long id;
     private String name;
     private String color;
     private String description;
+    private String descriptionHtml;
+    private String textColor;
     private Integer openIssuesCount;
     private Integer closedIssuesCount;
     private Integer openMergeRequestsCount;
     private Boolean subscribed;
     private Integer priority;
+    private Boolean isProjectLabel;
 
     public Long getId() {
         return id;
@@ -97,6 +99,22 @@ public class Label implements Serializable {
         return (this);
     }
 
+    public String getDescriptionHtml() {
+        return descriptionHtml;
+    }
+
+    public void setDescriptionHtml(String descriptionHtml) {
+        this.descriptionHtml = descriptionHtml;
+    }
+
+    public String getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
+    }
+
     public Integer getOpenIssuesCount() {
         return openIssuesCount;
     }
@@ -142,6 +160,14 @@ public class Label implements Serializable {
         return (this);
     }
 
+    public Boolean getIsProjectLabel() {
+        return isProjectLabel;
+    }
+
+    public void setIsProjectLabel(Boolean isProjectLabel) {
+        this.isProjectLabel = isProjectLabel;
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
@@ -154,9 +180,9 @@ public class Label implements Serializable {
      * @return a GitLabApiForm instance holding the form parameters for this LabelParams instance
      */
     @JsonIgnore
-    public GitLabApiForm getForm(boolean isCreate) {
-        GitLabApiForm form = new GitLabApiForm().withParam("description", description)
-                .withParam("color", color, isCreate).withParam("priority", priority);
+    public GitLabForm getForm(boolean isCreate) {
+        GitLabForm form = new GitLabForm().withParam("description", description).withParam("color", color, isCreate)
+                .withParam("priority", priority);
 
         if (isCreate) {
             form.withParam("name", name, true);

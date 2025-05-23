@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.WatchKit;
 public class FileTailer implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288072893L;
+    private static final long serialVersionUID = 2852287972176L;
 
     /**
      * 控制台打印的处理类
@@ -293,7 +293,7 @@ public class FileTailer implements Serializable {
      */
     public static class ConsoleLineHandler implements ConsumerX<String> {
         @Serial
-        private static final long serialVersionUID = 2852571830580L;
+        private static final long serialVersionUID = 2852287982622L;
 
         @Override
         public void accepting(final String line) {

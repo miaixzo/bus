@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -37,23 +36,31 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serial;
 
 public class ImpersonationToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852378109592L;
+    private static final long serialVersionUID = 2852279069117L;
 
+    private String description;
     private Boolean active;
     private String token;
     private List<Scope> scopes;
     private Long userId;
     private Boolean revoked;
     private String name;
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
+    private Date expiresAt;
     private Long id;
     private Date createdAt;
     private Date lastUsedAt;
     private Boolean impersonation;
-    private Date expiresAt;
+
+    public String getDescription() {
+        return description;
+    }
 
     public Boolean getActive() {
         return active;
@@ -103,6 +110,32 @@ public class ImpersonationToken implements Serializable {
         this.name = name;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /** Enum to specify the scope of an ImpersonationToken. */
+    public enum Scope {
+        API, READ_API, READ_USER, READ_REPOSITORY, WRITE_REPOSITORY, READ_REGISTRY, WRITE_REGISTRY, SUDO;
+
+        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
+
+        @JsonCreator
+        public static Scope forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -146,31 +179,6 @@ public class ImpersonationToken implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    /**
-     * Enum to specify the scope of an ImpersonationToken.
-     */
-    public enum Scope {
-
-        API, READ_API, READ_USER, READ_REPOSITORY, WRITE_REPOSITORY, READ_REGISTRY, WRITE_REGISTRY, SUDO;
-
-        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
-
-        @JsonCreator
-        public static Scope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

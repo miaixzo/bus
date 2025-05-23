@@ -76,4 +76,5 @@ public final class Ls {
         }
         return majMinMap;
     }
+
 }

@@ -317,4 +317,5 @@ public abstract class AbstractPowerSource implements PowerSource {
         }
         return sb.toString();
     }
+
 }

@@ -274,4 +274,5 @@ public class MacFileSystem extends AbstractFileSystem {
     public long getMaxFileDescriptorsPerProcess() {
         return SysctlKit.sysctl("kern.maxfilesperproc", 0);
     }
+
 }

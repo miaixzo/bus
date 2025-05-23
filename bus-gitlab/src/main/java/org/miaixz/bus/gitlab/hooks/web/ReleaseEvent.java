@@ -29,12 +29,16 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import java.io.Serial;
+
 public class ReleaseEvent extends AbstractEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852251793628L;
 
     public static final String X_GITLAB_EVENT = "Release Hook";
     public static final String OBJECT_KIND = "release";
-    @Serial
-    private static final long serialVersionUID = 2852370929806L;
+
     private Long id;
     private String createdAt;
     private String description;

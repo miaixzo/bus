@@ -48,7 +48,7 @@ import org.miaixz.bus.extra.image.ImageKit;
 public class LineProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852350176891L;
+    private static final long serialVersionUID = 2852275266689L;
 
     /**
      * 构造，默认5位验证码，150条干扰线

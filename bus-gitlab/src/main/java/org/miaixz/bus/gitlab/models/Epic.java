@@ -31,14 +31,20 @@ import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serial;
+
 public class Epic extends AbstractEpic<Epic> {
 
     @Serial
-    private static final long serialVersionUID = 2852376367623L;
+    private static final long serialVersionUID = 2852260693006L;
 
     private Boolean startDateIsFixed;
     private Boolean dueDateIsFixed;
+
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDateFromInheritedSource;
+
     private Boolean subscribed;
 
     public Boolean getStartDateIsFixed() {

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class CommitStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852375131102L;
+    private static final long serialVersionUID = 2852258130291L;
 
     private Boolean allowFailure;
     private Author author;
@@ -199,4 +199,5 @@ public class CommitStatus implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

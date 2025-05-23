@@ -47,7 +47,7 @@ import org.miaixz.bus.pager.plugin.PageSqlHandler;
 public class Page<E> extends ArrayList<E> implements Closeable {
 
     @Serial
-    private static final long serialVersionUID = 2852751756102L;
+    private static final long serialVersionUID = 2852281222526L;
 
     /**
      * 记录当前堆栈,可查找到page在何处创建 需开启page.debug

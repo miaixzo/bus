@@ -27,23 +27,34 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class IterationFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852378763063L;
+    private static final long serialVersionUID = 2852280339896L;
+
+    @JsonIgnore
+    public GitLabForm getQueryParams(int page, int perPage) {
+        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
+    }
+
+    @JsonIgnore
+    public GitLabForm getQueryParams() {
+        return new GitLabForm().withParam("state", state).withParam("search", search).withParam("in", in)
+                .withParam("include_ancestors", includeAncestors)
+                .withParam("updated_after", ISO8601.toString(updatedAfter, false))
+                .withParam("updated_before", ISO8601.toString(updatedBefore, false));
+    }
 
     /**
      * Return opened, upcoming, current, closed, or all iterations.
@@ -151,19 +162,6 @@ public class IterationFilter implements Serializable {
     public IterationFilter withUpdatedBefore(Date updatedBefore) {
         this.updatedBefore = updatedBefore;
         return (this);
-    }
-
-    @JsonIgnore
-    public GitLabApiForm getQueryParams(int page, int perPage) {
-        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
-    }
-
-    @JsonIgnore
-    public GitLabApiForm getQueryParams() {
-        return new GitLabApiForm().withParam("state", state).withParam("search", search).withParam("in", in)
-                .withParam("include_ancestors", includeAncestors)
-                .withParam("updated_after", ISO8601.toString(updatedAfter, false))
-                .withParam("updated_before", ISO8601.toString(updatedBefore, false));
     }
 
     public enum IterationFilterState {

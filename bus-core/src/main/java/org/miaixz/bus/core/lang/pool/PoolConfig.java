@@ -45,7 +45,7 @@ import java.io.Serializable;
 public class PoolConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852308013627L;
+    private static final long serialVersionUID = 2852231663515L;
     /**
      * 最小（初始）池大小
      */

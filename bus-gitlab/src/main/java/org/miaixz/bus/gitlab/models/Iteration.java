@@ -35,11 +35,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Iteration implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852378722197L;
+    private static final long serialVersionUID = 2852280233359L;
 
     private Long id;
     private Long iid;
@@ -50,8 +51,42 @@ public class Iteration implements Serializable {
     private IterationState state;
     private Date createdAt;
     private Date updatedAt;
+
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date startDate;
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date dueDate;
+
+    public enum IterationState {
+        UPCOMMING(1), CURRENT(2), CLOSED(3);
+
+        private int value;
+
+        IterationState(int value) {
+            this.value = value;
+        }
+
+        @JsonCreator
+        public static IterationState fromIntValue(int value) {
+            for (IterationState it : values()) {
+                if (it.value == value) {
+                    return it;
+                }
+            }
+            throw new IllegalArgumentException("No enum found for value: " + value);
+        }
+
+        @JsonValue
+        public int toIntValue() {
+            return this.value;
+        }
+
+        @Override
+        public String toString() {
+            return name();
+        }
+    }
+
     private String webUrl;
 
     public Long getId() {
@@ -153,36 +188,6 @@ public class Iteration implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    public enum IterationState {
-        UPCOMMING(1), CURRENT(2), CLOSED(3);
-
-        private int value;
-
-        IterationState(int value) {
-            this.value = value;
-        }
-
-        @JsonCreator
-        public static IterationState fromIntValue(int value) {
-            for (IterationState it : values()) {
-                if (it.value == value) {
-                    return it;
-                }
-            }
-            throw new IllegalArgumentException("No enum found for value: " + value);
-        }
-
-        @JsonValue
-        public int toIntValue() {
-            return this.value;
-        }
-
-        @Override
-        public String toString() {
-            return name();
-        }
     }
 
 }

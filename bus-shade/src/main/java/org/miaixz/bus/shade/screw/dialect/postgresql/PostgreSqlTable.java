@@ -92,4 +92,5 @@ public class PostgreSqlTable implements Table {
      */
     @MappingField(value = "table_type")
     private String tableType;
+
 }

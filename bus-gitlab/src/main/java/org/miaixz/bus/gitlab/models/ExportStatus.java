@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
@@ -39,11 +38,43 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class ExportStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376950226L;
+    private static final long serialVersionUID = 2852276369912L;
+
+    /**
+     * Enum representing the status of the export.
+     */
+    public enum Status {
+        NONE, STARTED, FINISHED,
+
+        /**
+         * Represents that the export process has been completed successfully and the platform is performing some
+         * actions on the resulted file. For example, sending an email notifying the user to download the file,
+         * uploading the exported file to a web server, etc.
+         */
+        AFTER_EXPORT_ACTION;
+
+        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
+
+        @JsonCreator
+        public static Status forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 
     private Long id;
     private String description;
@@ -141,38 +172,6 @@ public class ExportStatus implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    /**
-     * Enum representing the status of the export.
-     */
-    public enum Status {
-
-        NONE, STARTED, FINISHED,
-
-        /**
-         * Represents that the export process has been completed successfully and the platform is performing some
-         * actions on the resulted file. For example, sending an email notifying the user to download the file,
-         * uploading the exported file to a web server, etc.
-         */
-        AFTER_EXPORT_ACTION;
-
-        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
-
-        @JsonCreator
-        public static Status forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

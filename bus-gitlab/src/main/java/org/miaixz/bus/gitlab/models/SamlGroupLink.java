@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class SamlGroupLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852385293687L;
+    private static final long serialVersionUID = 2852231763758L;
 
     private String name;
 

@@ -62,7 +62,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class AES extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852336912591L;
+    private static final long serialVersionUID = 2852266806253L;
 
     /**
      * 构造，默认AES/ECB/PKCS5Padding，使用随机密钥

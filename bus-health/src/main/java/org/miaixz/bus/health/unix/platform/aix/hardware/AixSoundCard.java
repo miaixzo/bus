@@ -76,4 +76,5 @@ final class AixSoundCard extends AbstractSoundCard {
         }
         return soundCards;
     }
+
 }

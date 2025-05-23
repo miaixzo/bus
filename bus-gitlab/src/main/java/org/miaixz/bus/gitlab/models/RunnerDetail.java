@@ -35,11 +35,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class RunnerDetail extends Runner {
 
     @Serial
-    private static final long serialVersionUID = 2852385197303L;
+    private static final long serialVersionUID = 2852231075730L;
 
     private String architecture;
     private String platform;
@@ -50,6 +51,31 @@ public class RunnerDetail extends Runner {
     private List<String> tagList;
     private String version;
     private RunnerAccessLevel accessLevel;
+
+    /**
+     * Enum to use for RunnerDetail accessLevel property.
+     */
+    public enum RunnerAccessLevel {
+        NOT_PROTECTED, REF_PROTECTED;
+
+        private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
+                RunnerAccessLevel.class);
+
+        @JsonCreator
+        public static RunnerAccessLevel forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 
     public String getArchitecture() {
         return architecture;
@@ -171,32 +197,6 @@ public class RunnerDetail extends Runner {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    /**
-     * Enum to use for RunnerDetail accessLevel property.
-     */
-    public enum RunnerAccessLevel {
-
-        NOT_PROTECTED, REF_PROTECTED;
-
-        private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
-                RunnerAccessLevel.class);
-
-        @JsonCreator
-        public static RunnerAccessLevel forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

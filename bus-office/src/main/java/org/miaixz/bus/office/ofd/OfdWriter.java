@@ -50,7 +50,7 @@ import org.ofdrw.reader.OFDReader;
 public class OfdWriter implements Serializable, Closeable {
 
     @Serial
-    private static final long serialVersionUID = 2852736937671L;
+    private static final long serialVersionUID = 2852273221296L;
 
     private final OFDDoc doc;
 

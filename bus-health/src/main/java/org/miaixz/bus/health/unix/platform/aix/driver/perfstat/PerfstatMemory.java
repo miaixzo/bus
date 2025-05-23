@@ -59,4 +59,5 @@ public final class PerfstatMemory {
         }
         return new perfstat_memory_total_t();
     }
+
 }

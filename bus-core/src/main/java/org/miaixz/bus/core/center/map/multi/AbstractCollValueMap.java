@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collection<V>> implements MultiValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852268699398L;
+    private static final long serialVersionUID = 2852235195980L;
 
     /**
      * 默认集合初始大小

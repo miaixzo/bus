@@ -53,4 +53,5 @@ public class ZipRegexComplex extends RegexComplex<ZipArchiveEntry> implements Co
     protected String toText(ZipArchiveEntry entry) {
         return entry.getName();
     }
+
 }

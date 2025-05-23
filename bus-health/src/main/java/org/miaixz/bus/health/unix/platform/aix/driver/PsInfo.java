@@ -242,4 +242,5 @@ public final class PsInfo {
     private static long getOffsetFromBuffer(Memory buffer, long offset, long increment) {
         return increment == 8 ? buffer.getLong(offset) : buffer.getInt(offset);
     }
+
 }

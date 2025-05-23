@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class RegistryRepositoryTag implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852383319216L;
+    private static final long serialVersionUID = 2852228279597L;
 
     private String name;
     private String path;

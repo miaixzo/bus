@@ -27,21 +27,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.Constants.EpicOrderBy;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.models.AbstractEpic.EpicState;
+import org.miaixz.bus.gitlab.models.Constants.EpicOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of epics.
@@ -49,7 +48,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class EpicFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852376569057L;
+    private static final long serialVersionUID = 2852260800820L;
 
     private Long authorId;
     private String authorUsername;
@@ -141,6 +140,23 @@ public class EpicFilter implements Serializable {
     public EpicFilter withSearch(String search) {
         this.search = search;
         return (this);
+    }
+
+    /**
+     * Get the query params specified by this filter.
+     *
+     * @return a GitLabApiForm instance holding the query parameters for this GroupFilter instance
+     */
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("author_id", authorId).withParam("author_username", authorUsername)
+                .withParam("labels", labels).withParam("order_by", orderBy).withParam("sort", sort)
+                .withParam("search", search).withParam("state", state)
+                .withParam("created_after", ISO8601.toString(createdAfter, false))
+                .withParam("updated_after", ISO8601.toString(updatedAfter, false))
+                .withParam("updated_before", ISO8601.toString(updatedBefore, false))
+                .withParam("include_ancestor_groups", includeAncestorGroups)
+                .withParam("include_descendant_groups", includeDescendantGroups)
+                .withParam("my_reaction_emoji", myReactionEmoji).withParam("not", toStringMap(not), false));
     }
 
     /**
@@ -265,36 +281,7 @@ public class EpicFilter implements Serializable {
         return (this);
     }
 
-    /**
-     * Get the query params specified by this filter.
-     *
-     * @return a GitLabApiForm instance holding the query parameters for this GroupFilter instance
-     */
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("author_id", authorId).withParam("author_username", authorUsername)
-                .withParam("labels", labels).withParam("order_by", orderBy).withParam("sort", sort)
-                .withParam("search", search).withParam("state", state)
-                .withParam("created_after", ISO8601.toString(createdAfter, false))
-                .withParam("updated_after", ISO8601.toString(updatedAfter, false))
-                .withParam("updated_before", ISO8601.toString(updatedBefore, false))
-                .withParam("include_ancestor_groups", includeAncestorGroups)
-                .withParam("include_descendant_groups", includeDescendantGroups)
-                .withParam("my_reaction_emoji", myReactionEmoji).withParam("not", toStringMap(not), false));
-    }
-
-    private Map<String, Object> toStringMap(Map<EpicField, Object> map) {
-        if (map == null) {
-            return null;
-        }
-        Map<String, Object> result = new LinkedHashMap<>();
-        for (Map.Entry<EpicField, Object> entry : map.entrySet()) {
-            result.put(entry.getKey().toString(), entry.getValue());
-        }
-        return result;
-    }
-
     public enum EpicField {
-
         AUTHOR_ID, AUTHOR_USERNAME, LABELS;
 
         private static JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);
@@ -313,6 +300,17 @@ public class EpicFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+    }
+
+    private Map<String, Object> toStringMap(Map<EpicField, Object> map) {
+        if (map == null) {
+            return null;
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<EpicField, Object> entry : map.entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue());
+        }
+        return result;
     }
 
 }

@@ -163,4 +163,5 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
     public long getSwapPagesOut() {
         return inOut.get().getRight();
     }
+
 }

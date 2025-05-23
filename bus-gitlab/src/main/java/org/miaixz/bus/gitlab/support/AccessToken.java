@@ -57,6 +57,63 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public final class AccessToken {
 
+    /**
+     * This enum defines the available scopes for a personal access token.
+     */
+    public enum Scope {
+
+        /**
+         * Grants complete access to the API and Container Registry (read/write) (introduced in GitLab 8.15).
+         */
+        API,
+
+        /**
+         * Allows to read (pull) container registry images if a project is private and authorization is required
+         * (introduced in GitLab 9.3). If the GitLab server you are using does not have the Registry properly
+         * configured, using this scope will result in an exception.
+         */
+        READ_REGISTRY,
+
+        /**
+         * Allows read-only access (pull) to the repository through git clone.
+         */
+        READ_REPOSITORY,
+
+        /**
+         * Allows access to the read-only endpoints under /users. Essentially, any of the GET requests in the Users API
+         * are allowed (introduced in GitLab 8.15).
+         */
+        READ_USER,
+
+        /**
+         * Allows performing API actions as any user in the system, if the authenticated user is an admin (introduced in
+         * GitLab 10.2).
+         */
+        SUDO,
+
+        /**
+         * Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
+         */
+        WRITE_REPOSITORY;
+
+        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
+
+        @JsonCreator
+        public static Scope forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
     protected static final String USER_AGENT = "GitLab4J Client";
     protected static final String COOKIES_HEADER = "Set-Cookie";
 
@@ -751,63 +808,6 @@ public final class AccessToken {
         }
 
         return (buf.toString());
-    }
-
-    /**
-     * This enum defines the available scopes for a personal access token.
-     */
-    public enum Scope {
-
-        /**
-         * Grants complete access to the API and Container Registry (read/write) (introduced in GitLab 8.15).
-         */
-        API,
-
-        /**
-         * Allows to read (pull) container registry images if a project is private and authorization is required
-         * (introduced in GitLab 9.3). If the GitLab server you are using does not have the Registry properly
-         * configured, using this scope will result in an exception.
-         */
-        READ_REGISTRY,
-
-        /**
-         * Allows read-only access (pull) to the repository through git clone.
-         */
-        READ_REPOSITORY,
-
-        /**
-         * Allows access to the read-only endpoints under /users. Essentially, any of the GET requests in the Users API
-         * are allowed (introduced in GitLab 8.15).
-         */
-        READ_USER,
-
-        /**
-         * Allows performing API actions as any user in the system, if the authenticated user is an admin (introduced in
-         * GitLab 10.2).
-         */
-        SUDO,
-
-        /**
-         * Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
-         */
-        WRITE_REPOSITORY;
-
-        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
-
-        @JsonCreator
-        public static Scope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

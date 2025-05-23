@@ -319,4 +319,5 @@ public class BootURLConnection extends JarURLConnection {
     public Certificate[] getCertificates() throws IOException {
         return jarURLConnection.getCertificates();
     }
+
 }

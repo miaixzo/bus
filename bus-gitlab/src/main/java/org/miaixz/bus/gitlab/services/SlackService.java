@@ -27,18 +27,45 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import java.io.Serial;
-
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serial;
 
 public class SlackService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852387358227L;
+    private static final long serialVersionUID = 2852236659590L;
 
     private String defaultChannel;
+
+    /**
+     * Get the form data for this service based on it's properties.
+     *
+     * @return the form data for this service based on it's properties
+     */
+    @Override
+    public GitLabForm servicePropertiesForm() {
+        GitLabForm formData = new GitLabForm().withParam("webhook", getWebhook(), true)
+                .withParam("username", getUsername()).withParam("channel", getDefaultChannel())
+                .withParam("notify_only_broken_pipelines", getNotifyOnlyBrokenPipelines())
+                .withParam("notify_only_default_branch", getNotifyOnlyDefaultBranch())
+                .withParam("push_events", getPushEvents()).withParam("issues_events", getIssuesEvents())
+                .withParam("confidential_issues_events", getConfidentialIssuesEvents())
+                .withParam("merge_requests_events", getMergeRequestsEvents())
+                .withParam("tag_push_events", getTagPushEvents()).withParam("note_events", getNoteEvents())
+                .withParam("confidential_note_events", getConfidentialNoteEvents())
+                .withParam("pipeline_events", getPipelineEvents()).withParam("wiki_page_events", getWikiPageEvents())
+                .withParam("push_channel", getPushChannel()).withParam("issue_channel", getIssueChannel())
+                .withParam("confidential_issue_channel", getConfidentialIssueChannel())
+                .withParam("merge_request_channel", getMergeRequestChannel())
+                .withParam("note_channel", getNoteChannel())
+                .withParam("confidential_note_channel", getConfidentialNoteChannel())
+                .withParam("tag_push_channel", getTagPushChannel()).withParam("pipeline_channel", getPipelineChannel())
+                .withParam("wiki_page_channel", getWikiPageChannel());
+        return formData;
+    }
 
     public SlackService withPushEvents(Boolean pushEvents) {
         return withPushEvents(pushEvents, this);
@@ -82,7 +109,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getWebhook() {
-        return ((String) getProperty(WEBHOOK_PROP));
+        return getProperty(WEBHOOK_PROP);
     }
 
     public void setWebhook(String webhook) {
@@ -96,7 +123,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getUsername() {
-        return ((String) getProperty(USERNAME_PROP));
+        return getProperty(USERNAME_PROP);
     }
 
     public void setUsername(String username) {
@@ -124,7 +151,12 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public Boolean getNotifyOnlyBrokenPipelines() {
-        return ((Boolean) getProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, Boolean.FALSE));
+        return getProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, Boolean.FALSE);
+    }
+
+    @JsonIgnore
+    public Boolean getNotifyOnlyDefaultBranch() {
+        return getProperty(NOTIFY_ONLY_DEFAULT_BRANCH_PROP, Boolean.FALSE);
     }
 
     public void setNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
@@ -158,7 +190,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getPushChannel() {
-        return ((String) getProperty(PUSH_CHANNEL_PROP));
+        return getProperty(PUSH_CHANNEL_PROP);
     }
 
     public void setPushChannel(String pushChannel) {
@@ -172,7 +204,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getIssueChannel() {
-        return ((String) getProperty(ISSUE_CHANNEL_PROP));
+        return getProperty(ISSUE_CHANNEL_PROP);
     }
 
     public void setIssueChannel(String issueChannel) {
@@ -186,7 +218,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getConfidentialIssueChannel() {
-        return ((String) getProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP));
+        return getProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP);
     }
 
     public void setConfidentialIssueChannel(String confidentialIssueChannel) {
@@ -200,7 +232,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getMergeRequestChannel() {
-        return ((String) getProperty(MERGE_REQUEST_CHANNEL_PROP));
+        return getProperty(MERGE_REQUEST_CHANNEL_PROP);
     }
 
     public void setMergeRequestChannel(String mergeRequestChannel) {
@@ -214,7 +246,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getNoteChannel() {
-        return ((String) getProperty(NOTE_CHANNEL_PROP));
+        return getProperty(NOTE_CHANNEL_PROP);
     }
 
     public void setNoteChannel(String noteChannel) {
@@ -228,7 +260,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getConfidentialNoteChannel() {
-        return ((String) getProperty(CONFIDENTIAL_NOTE_CHANNEL_PROP));
+        return getProperty(CONFIDENTIAL_NOTE_CHANNEL_PROP);
     }
 
     public void setConfidentialNoteChannel(String noteChannel) {
@@ -242,7 +274,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getTagPushChannel() {
-        return ((String) getProperty(TAG_PUSH_CHANNEL_PROP));
+        return getProperty(TAG_PUSH_CHANNEL_PROP);
     }
 
     public void setTagPushChannel(String tagPushChannel) {
@@ -256,7 +288,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getPipelineChannel() {
-        return ((String) getProperty(PIPELINE_CHANNEL_PROP));
+        return getProperty(PIPELINE_CHANNEL_PROP);
     }
 
     public void setPipelineChannel(String pipelineChannel) {
@@ -270,7 +302,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getWikiPageChannel() {
-        return ((String) getProperty(WIKI_PAGE_CHANNEL_PROP));
+        return getProperty(WIKI_PAGE_CHANNEL_PROP);
     }
 
     public void setWikiPageChannel(String wikiPageChannel) {
@@ -280,32 +312,6 @@ public class SlackService extends NotificationService {
     public SlackService withWikiPageChannel(String wikiPageChannel) {
         setWikiPageChannel(wikiPageChannel);
         return (this);
-    }
-
-    /**
-     * Get the form data for this service based on it's properties.
-     *
-     * @return the form data for this service based on it's properties
-     */
-    @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm().withParam("webhook", getWebhook(), true)
-                .withParam("username", getUsername()).withParam("channel", getDefaultChannel())
-                .withParam("notify_only_broken_pipelines", getNotifyOnlyBrokenPipelines())
-                .withParam("push_events", getPushEvents()).withParam("issues_events", getIssuesEvents())
-                .withParam("confidential_issues_events", getConfidentialIssuesEvents())
-                .withParam("merge_requests_events", getMergeRequestsEvents())
-                .withParam("tag_push_events", getTagPushEvents()).withParam("note_events", getNoteEvents())
-                .withParam("confidential_note_events", getConfidentialNoteEvents())
-                .withParam("pipeline_events", getPipelineEvents()).withParam("wiki_page_events", getWikiPageEvents())
-                .withParam("push_channel", getPushChannel()).withParam("issue_channel", getIssueChannel())
-                .withParam("confidential_issue_channel", getConfidentialIssueChannel())
-                .withParam("merge_request_channel", getMergeRequestChannel())
-                .withParam("note_channel", getNoteChannel())
-                .withParam("confidential_note_channel", getConfidentialNoteChannel())
-                .withParam("tag_push_channel", getTagPushChannel()).withParam("pipeline_channel", getPipelineChannel())
-                .withParam("wiki_page_channel", getWikiPageChannel());
-        return formData;
     }
 
 }

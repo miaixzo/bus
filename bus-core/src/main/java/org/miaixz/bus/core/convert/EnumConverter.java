@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.*;
 public class EnumConverter extends AbstractConverter implements MatcherConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852278797878L;
+    private static final long serialVersionUID = 2852260792773L;
 
     /**
      * 单例

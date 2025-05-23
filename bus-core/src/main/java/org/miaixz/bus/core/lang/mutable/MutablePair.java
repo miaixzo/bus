@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 public class MutablePair<L, R> extends Pair<L, R> implements Mutable<MutablePair<L, R>> {
 
     @Serial
-    private static final long serialVersionUID = 2852307339863L;
+    private static final long serialVersionUID = 2852230028230L;
 
     /**
      * 构造

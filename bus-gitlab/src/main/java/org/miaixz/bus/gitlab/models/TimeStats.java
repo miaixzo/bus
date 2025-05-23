@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class TimeStats implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852385961080L;
+    private static final long serialVersionUID = 2852232623960L;
 
     private Integer timeEstimate;
     private Integer totalTimeSpent;

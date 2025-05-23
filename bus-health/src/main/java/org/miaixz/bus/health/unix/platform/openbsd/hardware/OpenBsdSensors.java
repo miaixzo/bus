@@ -108,4 +108,5 @@ final class OpenBsdSensors extends AbstractSensors {
     public double queryCpuVoltage() {
         return tempFanVolts.get().getRight();
     }
+
 }

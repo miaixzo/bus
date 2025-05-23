@@ -27,9 +27,14 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
+
+import java.io.Serial;
 
 public class ExternalWikiService extends NotificationService {
+
+    @Serial
+    private static final long serialVersionUID = 2852235929259L;
 
     public static final String WIKIURL_KEY_PROP = "external_wiki_url";
 
@@ -39,8 +44,8 @@ public class ExternalWikiService extends NotificationService {
      * @return the form data for this service based on it's properties
      */
     @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm().withParam("external_wiki_url", getExternalWikiUrl(), true);
+    public GitLabForm servicePropertiesForm() {
+        GitLabForm formData = new GitLabForm().withParam("external_wiki_url", getExternalWikiUrl(), true);
         return formData;
     }
 

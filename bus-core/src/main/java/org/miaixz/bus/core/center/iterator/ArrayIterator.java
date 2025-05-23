@@ -43,7 +43,7 @@ import java.util.Objects;
 public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator<E>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852263931881L;
+    private static final long serialVersionUID = 2852227283675L;
 
     /**
      * 数组

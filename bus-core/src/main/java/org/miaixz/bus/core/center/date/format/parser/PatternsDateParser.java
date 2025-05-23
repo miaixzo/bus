@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
 public class PatternsDateParser implements DateParser, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852261771592L;
+    private static final long serialVersionUID = 2852291821693L;
 
     private String[] patterns;
     private Locale locale;

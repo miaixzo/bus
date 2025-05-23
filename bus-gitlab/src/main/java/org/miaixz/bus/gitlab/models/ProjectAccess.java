@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class ProjectAccess implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852382082265L;
+    private static final long serialVersionUID = 2852288398256L;
 
     private AccessLevel accessLevel;
     private int notificationLevel;

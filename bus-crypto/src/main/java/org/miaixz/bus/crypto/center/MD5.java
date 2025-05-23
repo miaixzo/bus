@@ -46,7 +46,7 @@ import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
 public class MD5 extends Digester {
 
     @Serial
-    private static final long serialVersionUID = 2852337615762L;
+    private static final long serialVersionUID = 2852268391195L;
 
     /**
      * MD5算法不使用BC库，使用JDK默认以提高初始性能

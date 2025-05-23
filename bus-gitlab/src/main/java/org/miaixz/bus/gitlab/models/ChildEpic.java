@@ -28,11 +28,12 @@
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class ChildEpic extends AbstractEpic<ChildEpic> {
 
     @Serial
-    private static final long serialVersionUID = 2852373750559L;
+    private static final long serialVersionUID = 2852257116302L;
 
     public String toString() {
         return (JacksonJson.toJsonString(this));

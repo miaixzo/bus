@@ -64,7 +64,7 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 public class Device implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852536836780L;
+    private static final long serialVersionUID = 2852238013863L;
 
     /**
      * AE可以发起的最大开放关联数

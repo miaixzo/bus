@@ -42,7 +42,7 @@ import org.miaixz.bus.core.text.finder.MultiStringFinder;
 public class HighMultiReplacerV2 extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852322715816L;
+    private static final long serialVersionUID = 2852280770633L;
 
     private final AhoCorasickAutomaton ahoCorasickAutomaton;
 

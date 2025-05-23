@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class SearchReplacer extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852322892728L;
+    private static final long serialVersionUID = 2852281566508L;
 
     private final int fromIndex;
     private final CharSequence searchText;

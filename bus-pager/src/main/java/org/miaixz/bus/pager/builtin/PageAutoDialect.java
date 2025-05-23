@@ -365,4 +365,5 @@ public class PageAutoDialect {
             this.delegate = instanceDialect(dialect, properties);
         }
     }
+
 }

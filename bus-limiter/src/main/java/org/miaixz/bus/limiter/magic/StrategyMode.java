@@ -36,4 +36,5 @@ package org.miaixz.bus.limiter.magic;
 public enum StrategyMode {
 
     FALLBACK, HOT_METHOD, REQUEST_LIMIT
+
 }

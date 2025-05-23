@@ -47,7 +47,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class DES extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852337233027L;
+    private static final long serialVersionUID = 2852267363970L;
 
     /**
      * 构造，默认DES/ECB/PKCS5Padding，使用随机密钥

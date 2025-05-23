@@ -249,7 +249,7 @@ public class Coordinate {
     public static class Point implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852281072302L;
+        private static final long serialVersionUID = 2852278323837L;
 
         /**
          * 经度

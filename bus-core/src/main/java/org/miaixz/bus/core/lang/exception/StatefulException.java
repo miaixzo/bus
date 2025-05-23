@@ -38,7 +38,7 @@ import java.io.Serial;
 public class StatefulException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852302252168L;
+    private static final long serialVersionUID = 2852273931571L;
 
     /**
      * 异常状态码

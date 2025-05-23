@@ -232,4 +232,5 @@ public interface PowerSource {
          */
         RELATIVE
     }
+
 }

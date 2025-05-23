@@ -75,7 +75,7 @@ public class NamespaceApi extends AbstractApi {
      */
     public List<Namespace> getNamespaces(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "namespaces");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Namespace>>() {
         }));
     }
 
@@ -92,7 +92,7 @@ public class NamespaceApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Namespace> getNamespaces(int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Namespace.class, itemsPerPage, null, "namespaces"));
+        return (new Pager<Namespace>(this, Namespace.class, itemsPerPage, null, "namespaces"));
     }
 
     /**
@@ -142,7 +142,7 @@ public class NamespaceApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "namespaces");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Namespace>>() {
         }));
     }
 
@@ -160,7 +160,7 @@ public class NamespaceApi extends AbstractApi {
      */
     public Pager<Namespace> findNamespaces(String query, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true);
-        return (new Pager<>(this, Namespace.class, itemsPerPage, formData.asMap(), "namespaces"));
+        return (new Pager<Namespace>(this, Namespace.class, itemsPerPage, formData.asMap(), "namespaces"));
     }
 
     /**
@@ -190,7 +190,6 @@ public class NamespaceApi extends AbstractApi {
      * @return the Namespace instance for the specified path
      * @throws GitLabApiException if any exception occurs
      */
-
     public Namespace getNamespace(Object namespaceIdOrPath) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "namespaces", getNamespaceIdOrPath(namespaceIdOrPath));
         return (response.readEntity(Namespace.class));

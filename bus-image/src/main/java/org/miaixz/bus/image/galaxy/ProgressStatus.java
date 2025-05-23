@@ -33,4 +33,5 @@ package org.miaixz.bus.image.galaxy;
  */
 public enum ProgressStatus {
     FAILED, WARNING, COMPLETED
+
 }

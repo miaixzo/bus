@@ -63,6 +63,7 @@ import org.miaixz.bus.image.nimble.stream.BytesWithImageDescriptor;
 import org.miaixz.bus.image.nimble.stream.ImageAdapter;
 import org.miaixz.bus.image.nimble.stream.ImageAdapter.AdaptTransferSyntax;
 import org.miaixz.bus.logger.Logger;
+import java.io.Serial;
 
 /**
  * @author Kimi Liu
@@ -177,7 +178,8 @@ public class CGetForward implements AutoCloseable {
         }
 
         class AbortException extends IllegalStateException {
-            private static final long serialVersionUID = 2852695150262L;
+@Serial
+            private static final long serialVersionUID = 2852259062120L;
 
             public AbortException(String s) {
                 super(s);

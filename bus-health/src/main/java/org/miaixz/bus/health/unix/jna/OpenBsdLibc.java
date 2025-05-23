@@ -129,4 +129,5 @@ public interface OpenBsdLibc extends CLibrary {
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
     }
+
 }

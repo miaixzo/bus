@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class MutableFloat extends Number implements Comparable<MutableFloat>, Mutable<Number> {
 
     @Serial
-    private static final long serialVersionUID = 2852307055790L;
+    private static final long serialVersionUID = 2852229122558L;
 
     private float value;
 

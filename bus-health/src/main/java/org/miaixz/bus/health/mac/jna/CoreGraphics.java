@@ -95,4 +95,5 @@ public interface CoreGraphics extends Library {
             Builder.freeMemory(getPointer());
         }
     }
+
 }

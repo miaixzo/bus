@@ -89,4 +89,5 @@ public interface UsbDevice extends Comparable<UsbDevice> {
      * @return An {@code UnmodifiableList} of other devices connected to this hub, if any, or an empty list if none
      */
     List<UsbDevice> getConnectedDevices();
+
 }

@@ -48,4 +48,5 @@ public class MariadbDatabase implements Database {
      */
     @MappingField(value = "TABLE_CAT")
     private String database;
+
 }

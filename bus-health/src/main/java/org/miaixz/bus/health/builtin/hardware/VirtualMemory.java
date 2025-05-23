@@ -98,4 +98,5 @@ public interface VirtualMemory {
      * @return Pages swapped out
      */
     long getSwapPagesOut();
+
 }

@@ -194,4 +194,5 @@ public class FreeBsdOSThread extends AbstractOSThread {
         this.priority = Parsing.parseIntOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.PRI), 0);
         return true;
     }
+
 }

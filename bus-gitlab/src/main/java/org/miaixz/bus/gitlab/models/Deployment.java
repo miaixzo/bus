@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants.DeploymentStatus;
+import org.miaixz.bus.gitlab.models.Constants.DeploymentStatus;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Deployment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852375732619L;
+    private static final long serialVersionUID = 2852259600183L;
 
     private Long id;
     private Long iid;

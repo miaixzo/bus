@@ -264,4 +264,5 @@ public final class NetStat {
         return new InternetProtocolStats.UdpStats(datagramsSent, datagramsReceived, datagramsNoPort,
                 datagramsReceivedErrors);
     }
+
 }

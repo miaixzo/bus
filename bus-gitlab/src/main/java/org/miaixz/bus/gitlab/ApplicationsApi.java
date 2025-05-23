@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.gitlab.models.Application;
 
+import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
@@ -116,45 +116,25 @@ public class ApplicationsApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /api/v4/applications</code>
      * </pre>
      *
-     * @param name        the name for the OAUTH Application
-     * @param redirectUri the redirect URI for the OAUTH Application
-     * @param scopes      the scopes of the application (api, read_user, sudo, read_repository, openid, profile, email)
+     * @param name         the name for the OAUTH Application
+     * @param redirectUri  the redirect URI for the OAUTH Application
+     * @param scopes       the scopes of the application (api, read_user, sudo, read_repository, openid, profile, email)
+     * @param confidential The application is used where the client secret can be kept confidential. Native mobile apps
+     *                     and Single Page Apps are considered non-confidential
      * @return the created Application instance
      * @throws GitLabApiException if any exception occurs
      */
-    public Application createApplication(String name, String redirectUri, ApplicationScope[] scopes)
-            throws GitLabApiException {
-
-        if (scopes == null || scopes.length == 0) {
-            throw new GitLabApiException("scopes cannot be null or empty");
-        }
-
-        return (createApplication(name, redirectUri, Arrays.asList(scopes)));
-    }
-
-    /**
-     * Create an OAUTH Application.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: POST /api/v4/applications</code>
-     * </pre>
-     *
-     * @param name        the name for the OAUTH Application
-     * @param redirectUri the redirect URI for the OAUTH Application
-     * @param scopes      the scopes of the application (api, read_user, sudo, read_repository, openid, profile, email)
-     * @return the created Application instance
-     * @throws GitLabApiException if any exception occurs
-     */
-    public Application createApplication(String name, String redirectUri, List<ApplicationScope> scopes)
-            throws GitLabApiException {
+    public Application createApplication(String name, String redirectUri, List<ApplicationScope> scopes,
+            Boolean confidential) throws GitLabApiException {
 
         if (scopes == null || scopes.isEmpty()) {
             throw new GitLabApiException("scopes cannot be null or empty");
         }
 
-        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(","));
+        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(" "));
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
-                .withParam("redirect_uri", redirectUri, true).withParam("scopes", scopesString, true);
+                .withParam("redirect_uri", redirectUri, true).withParam("scopes", scopesString, true)
+                .withParam("confidential", confidential);
         Response response = post(Response.Status.CREATED, formData, "applications");
         return (response.readEntity(Application.class));
     }
@@ -171,6 +151,22 @@ public class ApplicationsApi extends AbstractApi {
      */
     public void deleteApplication(Long applicationId) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "applications", applicationId);
+    }
+
+    /**
+     * Renews an application secret.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: POST /applications/:id/renew-secret</code>
+     * </pre>
+     *
+     * @param applicationId the ID of the OUAUTH Application to renew
+     * @return the updated Application instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Application renewSecret(Long applicationId) throws GitLabApiException {
+        Response response = post(Response.Status.CREATED, (Form) null, "applications", applicationId, "renew-secret");
+        return (response.readEntity(Application.class));
     }
 
 }

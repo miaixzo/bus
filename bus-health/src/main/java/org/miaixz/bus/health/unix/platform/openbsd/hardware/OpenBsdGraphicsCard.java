@@ -132,4 +132,5 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
         }
         return cardList;
     }
+
 }

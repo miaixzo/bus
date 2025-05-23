@@ -54,7 +54,7 @@ import lombok.experimental.SuperBuilder;
 public class Entity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233535921L;
+    private static final long serialVersionUID = 2852289696633L;
 
     /**
      * 数据主键

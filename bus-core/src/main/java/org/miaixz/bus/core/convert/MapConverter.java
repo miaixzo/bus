@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class MapConverter extends ConverterWithRoot implements MatcherConverter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278926052L;
+    private static final long serialVersionUID = 2852272766826L;
 
     /**
      * 单例

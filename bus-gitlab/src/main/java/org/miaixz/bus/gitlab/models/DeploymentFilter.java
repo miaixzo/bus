@@ -27,23 +27,21 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.Constants.DeploymentOrderBy;
-import org.miaixz.bus.gitlab.Constants.DeploymentStatus;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.DeploymentOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.DeploymentStatus;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 public class DeploymentFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852375779796L;
+    private static final long serialVersionUID = 2852259662851L;
 
     /**
      * Return deployments ordered by either one of id, iid, created_at, updated_at or ref fields. Default is id.
@@ -154,13 +152,13 @@ public class DeploymentFilter implements Serializable {
     }
 
     @JsonIgnore
-    public GitLabApiForm getQueryParams(int page, int perPage) {
+    public GitLabForm getQueryParams(int page, int perPage) {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
     @JsonIgnore
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("order_by", orderBy).withParam("sort", sortOrder)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("order_by", orderBy).withParam("sort", sortOrder)
                 .withParam("updated_after", ISO8601.toString(updatedAfter, false))
                 .withParam("updated_before", ISO8601.toString(updatedBefore, false))
                 .withParam("environment", environment).withParam("status", status));

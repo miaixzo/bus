@@ -129,4 +129,5 @@ public final class WindowInfo {
 
         return windowList;
     }
+
 }

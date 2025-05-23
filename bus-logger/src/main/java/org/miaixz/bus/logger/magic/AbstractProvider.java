@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Provider;
 public abstract class AbstractProvider implements Provider, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852701056510L;
+    private static final long serialVersionUID = 2852280299793L;
 
     private static final String FQCN = AbstractProvider.class.getName();
 

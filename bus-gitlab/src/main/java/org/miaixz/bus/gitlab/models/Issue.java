@@ -28,11 +28,12 @@
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Issue extends AbstractIssue {
 
     @Serial
-    private static final long serialVersionUID = 2852378227595L;
+    private static final long serialVersionUID = 2852279223925L;
 
     private Boolean subscribed;
 

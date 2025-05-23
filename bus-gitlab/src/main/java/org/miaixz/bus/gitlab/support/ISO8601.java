@@ -46,6 +46,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ISO8601 {
 
     public static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
+    public static final String MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    public static final String SPACEY_PATTERN = "yyyy-MM-dd HH:mm:ss Z";
+    public static final String SPACEY_MSEC_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS Z";
     public static final String PATTERN_MSEC = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     public static final String OUTPUT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String OUTPUT_MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -96,6 +99,38 @@ public class ISO8601 {
     }
 
     /**
+     * Parses an ISO8601 formatted string a returns an Instant instance.
+     *
+     * @param dateTimeString the ISO8601 formatted string
+     * @return an Instant instance for the ISO8601 formatted string
+     * @throws ParseException if the provided string is not in the proper format
+     */
+    public static Instant toInstant(String dateTimeString) throws ParseException {
+
+        if (dateTimeString == null) {
+            return (null);
+        }
+
+        dateTimeString = dateTimeString.trim();
+
+        if (dateTimeString.endsWith("Z")) {
+            return (Instant.parse(dateTimeString));
+        } else {
+
+            // Convert UTC zoned dates to 0 offset date
+            if (dateTimeString.endsWith("UTC")) {
+                dateTimeString = dateTimeString.replace("UTC", "+0000");
+            }
+
+            OffsetDateTime odt = (dateTimeString.length() > 25
+                    ? OffsetDateTime.parse(dateTimeString, ODT_WITH_MSEC_PARSER)
+                    : OffsetDateTime.parse(dateTimeString, ODT_PARSER));
+
+            return (odt.toInstant());
+        }
+    }
+
+    /**
      * Get a ISO8601 formatted string for the provided Date instance.
      *
      * @param date     the Date instance to get the ISO8601 formatted string for
@@ -139,56 +174,6 @@ public class ISO8601 {
     }
 
     /**
-     * Parses an ISO8601 formatted string a returns an Instant instance.
-     *
-     * @param dateTimeString the ISO8601 formatted string
-     * @return an Instant instance for the ISO8601 formatted string
-     */
-    public static Instant toInstant(String dateTimeString) {
-
-        if (dateTimeString == null) {
-            return (null);
-        }
-
-        dateTimeString = dateTimeString.trim();
-
-        if (dateTimeString.endsWith("Z")) {
-            return (Instant.parse(dateTimeString));
-        } else {
-
-            // Convert UTC zoned dates to 0 offset date
-            if (dateTimeString.endsWith("UTC")) {
-                dateTimeString = dateTimeString.replace("UTC", "+0000");
-            }
-
-            OffsetDateTime odt = (dateTimeString.length() > 25
-                    ? OffsetDateTime.parse(dateTimeString, ODT_WITH_MSEC_PARSER)
-                    : OffsetDateTime.parse(dateTimeString, ODT_PARSER));
-
-            return (odt.toInstant());
-        }
-    }
-
-    /**
-     * Parses an ISO8601 formatted string a returns a Calendar instance.
-     *
-     * @param dateTimeString the ISO8601 formatted string
-     * @return a Calendar instance for the ISO8601 formatted string
-     * @throws ParseException if the provided string is not in the proper format
-     */
-    public static Calendar toCalendar(String dateTimeString) throws ParseException {
-
-        Date date = toDate(dateTimeString);
-        if (date == null) {
-            return (null);
-        }
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return (cal);
-    }
-
-    /**
      * Parses an ISO8601 formatted string a returns a Date instance.
      *
      * @param dateTimeString the ISO8601 formatted string
@@ -219,6 +204,25 @@ public class ISO8601 {
 
             return (format);
         }
+    }
+
+    /**
+     * Parses an ISO8601 formatted string a returns a Calendar instance.
+     *
+     * @param dateTimeString the ISO8601 formatted string
+     * @return a Calendar instance for the ISO8601 formatted string
+     * @throws ParseException if the provided string is not in the proper format
+     */
+    public static Calendar toCalendar(String dateTimeString) throws ParseException {
+
+        Date date = toDate(dateTimeString);
+        if (date == null) {
+            return (null);
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return (cal);
     }
 
 }

@@ -43,6 +43,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class EngineConfig implements Serializable {
+
     /**
      * 是否打开输出目录
      */
@@ -67,4 +68,5 @@ public class EngineConfig implements Serializable {
      * 文件名称
      */
     private String fileName;
+
 }

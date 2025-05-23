@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CamelCaseMap<K, V> extends FunctionKeyMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852266625709L;
+    private static final long serialVersionUID = 2852229896169L;
 
     /**
      * 构造

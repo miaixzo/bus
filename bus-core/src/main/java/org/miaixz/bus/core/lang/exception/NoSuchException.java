@@ -38,7 +38,7 @@ import java.io.Serial;
 public class NoSuchException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852301560597L;
+    private static final long serialVersionUID = 2852271383117L;
 
     /**
      * 构造
