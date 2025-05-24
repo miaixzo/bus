@@ -89,7 +89,6 @@ public final class ImageDescriptor {
         this.pixelRepresentation = dcm.getInt(Tag.PixelRepresentation, 0);
         this.planarConfiguration = dcm.getInt(Tag.PlanarConfiguration, 0);
         this.sopClassUID = dcm.getString(Tag.SOPClassUID);
-        this.anatomicRegion = AnatomicRegion.read(dcm);
         this.stationName = dcm.getString(Tag.StationName);
         this.frames = Math.max(dcm.getInt(Tag.NumberOfFrames, 1), 1);
         this.embeddedOverlay = EmbeddedOverlay.getEmbeddedOverlay(dcm);
