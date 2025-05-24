@@ -49,9 +49,9 @@ import org.opencv.core.CvType;
 public class ImageRendering {
 
     public static PlanarImage getRawRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
-            ImageReadParam params) {
+            ImageReadParam params, int frameIndex) {
         PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc);
-        ImageAdapter adapter = new ImageAdapter(img, desc);
+        ImageAdapter adapter = new ImageAdapter(img, desc, frameIndex);
         return getModalityLutImage(imageSource, adapter, params);
     }
 
@@ -69,13 +69,13 @@ public class ImageRendering {
     public static PlanarImage getDefaultRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
             ImageReadParam params, int frameIndex) {
         PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc);
-        img = getVoiLutImage(img, desc, params);
+        img = getVoiLutImage(img, desc, params, frameIndex);
         return OverlayData.getOverlayImage(imageSource, img, desc, params, frameIndex);
     }
 
-    public static PlanarImage getVoiLutImage(final PlanarImage imageSource, ImageDescriptor desc,
-            ImageReadParam params) {
-        ImageAdapter adapter = new ImageAdapter(imageSource, desc);
+    public static PlanarImage getVoiLutImage(final PlanarImage imageSource, ImageDescriptor desc, ImageReadParam params,
+            int frameIndex) {
+        ImageAdapter adapter = new ImageAdapter(imageSource, desc, frameIndex);
         return getVoiLutImage(imageSource, adapter, params);
     }
 
@@ -98,17 +98,17 @@ public class ImageRendering {
         ImageCV imageModalityTransformed = modalityLookup == null ? imageSource.toImageCV()
                 : modalityLookup.lookup(imageSource.toMat());
 
-        /**
+        /*
          * C.11.2.1.2 Window center and window width
          *
-         * Theses Attributes shall be used only for Images with Photometric Interpretation (0028,0004) values of
+         * These Attributes shall be used only for Images with Photometric Interpretation (0028,0004) values of
          * MONOCHROME1 and MONOCHROME2. They have no meaning for other Images.
          */
         if ((!p.isAllowWinLevelOnColorImage()
                 || MathKit.isEqual(p.getWindow(), 255.0) && MathKit.isEqual(p.getLevel(), 127.5))
                 && !desc.getPhotometricInterpretation().isMonochrome()) {
             /*
-             * If photometric interpretation is not monochrome do not apply VOILUT. It is necessary for PALETTE_COLOR.
+             * If photometric interpretation is not monochrome, do not apply VOI LUT. It is necessary for PALETTE_COLOR.
              */
             return imageModalityTransformed;
         }

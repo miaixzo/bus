@@ -159,7 +159,7 @@ public class MoveSCU extends Device implements AutoCloseable {
     public void retrieve(File f) throws IOException, InterruptedException {
         Attributes attrs = new Attributes();
         try (ImageInputStream dis = new ImageInputStream(f)) {
-            attrs.addSelected(dis.readDataset(-1, -1), inFilter);
+            attrs.addSelected(dis.readDataset(), inFilter);
         }
         attrs.addAll(keys);
         retrieve(attrs);

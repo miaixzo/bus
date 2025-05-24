@@ -174,7 +174,7 @@ public class StoreSCP {
     private static Attributes parse(File file) throws IOException {
         try (ImageInputStream in = new ImageInputStream(file)) {
             in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
-            return in.readDataset(-1, Tag.PixelData);
+            return in.readDatasetUntilPixelData();
         }
     }
 

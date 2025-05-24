@@ -60,9 +60,12 @@ public abstract class DicomFiles {
     }
 
     private static void scan(File f, boolean printout, Callback scb) {
-        if (f.isDirectory()) {
-            for (String s : f.list()) {
-                scan(new File(f, s), printout, scb);
+        if (f.isDirectory() && f.canRead()) {
+            String[] fileList = f.list();
+            if (fileList != null) {
+                for (String s : fileList) {
+                    scan(new File(f, s), printout, scb);
+                }
             }
             return;
         }
@@ -97,7 +100,7 @@ public abstract class DicomFiles {
                 in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
                 Attributes fmi = in.readFileMetaInformation();
                 long dsPos = in.getPosition();
-                Attributes ds = in.readDataset(-1, Tag.PixelData);
+                Attributes ds = in.readDatasetUntilPixelData();
                 if (fmi == null || !fmi.containsValue(Tag.TransferSyntaxUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPClassUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPInstanceUID)) {

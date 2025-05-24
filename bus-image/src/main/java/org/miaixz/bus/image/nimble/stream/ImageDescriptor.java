@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.image.Builder;
@@ -37,6 +38,8 @@ import org.miaixz.bus.image.nimble.OverlayData;
 import org.miaixz.bus.image.nimble.Photometric;
 import org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule;
 import org.miaixz.bus.image.nimble.opencv.lut.VoiLutModule;
+import org.miaixz.bus.logger.Logger;
+import org.opencv.core.Core;
 
 /**
  * @author Kimi Liu
@@ -66,6 +69,8 @@ public final class ImageDescriptor {
     private final int highBit;
     private final String stationName;
     private final String pixelPresentation;
+    private final String seriesInstanceUID;
+    private final List<Core.MinMaxLocResult> minMaxPixelValues;
 
     public ImageDescriptor(Attributes dcm) {
         this(dcm, 0);
@@ -77,15 +82,16 @@ public final class ImageDescriptor {
         this.samples = dcm.getInt(Tag.SamplesPerPixel, 0);
         this.photometric = Photometric.fromString(dcm.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
         this.pixelPresentation = dcm.getString(Tag.PixelPresentation);
-        this.bitsAllocated = dcm.getInt(Tag.BitsAllocated, 8);
-        this.bitsStored = dcm.getInt(Tag.BitsStored, bitsAllocated);
+        this.bitsAllocated = Math.max(dcm.getInt(Tag.BitsAllocated, 8), 1);
+        this.bitsStored = Math.min(Math.max(dcm.getInt(Tag.BitsStored, bitsAllocated), 1), bitsAllocated);
         this.highBit = dcm.getInt(Tag.HighBit, bitsStored - 1);
         this.bitsCompressed = bitsCompressed > 0 ? Math.min(bitsCompressed, bitsAllocated) : bitsStored;
         this.pixelRepresentation = dcm.getInt(Tag.PixelRepresentation, 0);
         this.planarConfiguration = dcm.getInt(Tag.PlanarConfiguration, 0);
         this.sopClassUID = dcm.getString(Tag.SOPClassUID);
+        this.anatomicRegion = AnatomicRegion.read(dcm);
         this.stationName = dcm.getString(Tag.StationName);
-        this.frames = dcm.getInt(Tag.NumberOfFrames, 1);
+        this.frames = Math.max(dcm.getInt(Tag.NumberOfFrames, 1), 1);
         this.embeddedOverlay = EmbeddedOverlay.getEmbeddedOverlay(dcm);
         this.overlayData = OverlayData.getOverlayData(dcm, 0xffff);
         this.presentationLUTShape = dcm.getString(Tag.PresentationLUTShape);
@@ -94,6 +100,8 @@ public final class ImageDescriptor {
         this.pixelPaddingRangeLimit = Builder.getIntegerFromDicomElement(dcm, Tag.PixelPaddingRangeLimit, null);
         this.modalityLUT = new ModalityLutModule(dcm);
         this.voiLUT = new VoiLutModule(dcm);
+        this.seriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
+        this.minMaxPixelValues = new ArrayList<>(frames);
     }
 
     public int getRows() {
@@ -214,6 +222,26 @@ public final class ImageDescriptor {
 
     public List<OverlayData> getOverlayData() {
         return overlayData;
+    }
+
+    public String getSeriesInstanceUID() {
+        return seriesInstanceUID;
+    }
+
+    public Core.MinMaxLocResult getMinMaxPixelValue(int frame) {
+        if (frame < 0 || frame >= minMaxPixelValues.size()) {
+            Logger.error("Invalid frame index: {}", frame);
+            return null;
+        }
+        return minMaxPixelValues.get(frame);
+    }
+
+    public void setMinMaxPixelValue(int frame, Core.MinMaxLocResult minMaxPixelValue) {
+        if (frame < 0 || frame >= minMaxPixelValues.size()) {
+            Logger.error("Unable to set MinMaxPixelValue for invalid frame index: {}", frame);
+            return;
+        }
+        minMaxPixelValues.set(frame, minMaxPixelValue);
     }
 
 }

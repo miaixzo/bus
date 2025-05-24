@@ -52,14 +52,22 @@ public class ImageAdapter {
 
     private final ImageDescriptor desc;
     private final MinMaxLocResult minMax;
+    private final int frameIndex;
 
     private int bitsStored;
     private List<PresetWindowLevel> windowingPresetCollection = null;
 
-    public ImageAdapter(PlanarImage image, ImageDescriptor desc) {
+    public ImageAdapter(PlanarImage image, ImageDescriptor desc, int frameIndex) {
+        int depth = CvType.depth(Objects.requireNonNull(image).type());
         this.desc = Objects.requireNonNull(desc);
-        this.bitsStored = desc.getBitsStored();
-        this.minMax = findMinMaxValues(Objects.requireNonNull(image));
+        this.bitsStored = depth > CvType.CV_16S ? (int) image.elemSize1() * 8 : desc.getBitsStored();
+        this.frameIndex = frameIndex;
+        MinMaxLocResult minMax = desc.getMinMaxPixelValue(frameIndex);
+        if (minMax == null) {
+            minMax = findMinMaxValues(image, frameIndex);
+            desc.setMinMaxPixelValue(frameIndex, minMax);
+        }
+        this.minMax = minMax;
         /*
          * Lazily compute image pixel transformation here since inner class Load is called from a separate and dedicated
          * worker Thread. Also, it will be computed only once
@@ -69,16 +77,11 @@ public class ImageAdapter {
         getModalityLookup(null, false);
     }
 
-    private MinMaxLocResult findMinMaxValues(PlanarImage image) {
-        /*
-         * This function can be called several times from the inner class Load. min and max will be computed only once.
-         */
-
-        MinMaxLocResult val = null;
-        // Cannot trust SmallestImagePixelValue and LargestImagePixelValue values! So search min and max
-        // values
-        int bitsAllocated = desc.getBitsAllocated();
-
+    public static MinMaxLocResult getMinMaxValues(PlanarImage image, ImageDescriptor desc, int frameIndex) {
+        MinMaxLocResult val = desc.getMinMaxPixelValue(frameIndex);
+        if (val != null) {
+            return val;
+        }
         boolean monochrome = desc.getPhotometricInterpretation().isMonochrome();
         if (monochrome) {
             Integer paddingValue = desc.getPixelPaddingValue();
@@ -90,20 +93,28 @@ public class ImageAdapter {
             }
         }
 
-        // This function can be called several times from the inner class Load.
-        // Do not compute min and max it has already be done
+        // When not monochrome and no padding value, use the default min and max values
         if (val == null) {
             val = ImageProcessor.findRawMinMaxValues(image, !monochrome);
         }
+        return val;
+    }
 
+    private MinMaxLocResult findMinMaxValues(PlanarImage image, int frameIndex) {
+        /*
+         * This function can be called several times from the inner class Load. min and max will be computed only once.
+         */
+
+        MinMaxLocResult val = getMinMaxValues(image, desc, frameIndex);
+        // Cannot trust SmallestImagePixelValue and LargestImagePixelValue values! So search min and max
+        // values
+        int bitsAllocated = desc.getBitsAllocated();
         if (bitsStored < bitsAllocated) {
             boolean isSigned = desc.isSigned();
             int minInValue = isSigned ? -(1 << (bitsStored - 1)) : 0;
             int maxInValue = isSigned ? (1 << (bitsStored - 1)) - 1 : (1 << bitsStored) - 1;
             if (val.minVal < minInValue || val.maxVal > maxInValue) {
                 /*
-                 *
-                 *
                  * When the image contains values outside the bits stored values, the bits stored is replaced by the
                  * bits allocated for having a LUT which handles all the values.
                  *
@@ -121,7 +132,8 @@ public class ImageAdapter {
      * @param paddingValueMin padding value to exclude from min value
      * @param paddingValueMax padding value to exclude from max value
      */
-    private MinMaxLocResult findMinMaxValues(PlanarImage image, Integer paddingValueMin, Integer paddingValueMax) {
+    private static MinMaxLocResult findMinMaxValues(PlanarImage image, Integer paddingValueMin,
+            Integer paddingValueMax) {
         MinMaxLocResult val;
         if (CvType.depth(image.type()) <= CvType.CV_8S) {
             val = new MinMaxLocResult();
@@ -129,7 +141,7 @@ public class ImageAdapter {
             val.maxVal = 255.0;
         } else {
             val = ImageProcessor.findMinMaxValues(image.toMat(), paddingValueMin, paddingValueMax);
-            // Handle special case when min and max are equal, ex. black image
+            // Handle a special case when min and max are equal, ex. Black image
             // + 1 to max enables to display the correct value
             if (val != null && val.minVal == val.maxVal) {
                 val.maxVal += 1.0;
@@ -152,6 +164,10 @@ public class ImageAdapter {
 
     public ImageDescriptor getImageDescriptor() {
         return desc;
+    }
+
+    public int getFrameIndex() {
+        return frameIndex;
     }
 
     public int getMinAllocatedValue(WlPresentation wl) {
@@ -372,11 +388,7 @@ public class ImageAdapter {
     public boolean isPhotometricInterpretationInverse(PresentationStateLut pr) {
         Optional<String> prLUTShape = pr == null ? Optional.empty() : pr.getPrLutShapeMode();
         Photometric p = desc.getPhotometricInterpretation();
-        if (prLUTShape.isPresent()) {
-            return ("INVERSE".equals(prLUTShape.get()) && p == Photometric.MONOCHROME2)
-                    || ("IDENTITY".equals(prLUTShape.get()) && p == Photometric.MONOCHROME1);
-        }
-        return p == Photometric.MONOCHROME1;
+        return prLUTShape.map("INVERSE"::equals).orElseGet(() -> p == Photometric.MONOCHROME1);
     }
 
     public LutParameters getLutParameters(boolean pixelPadding, LookupTableCV mLUTSeq, boolean inversePaddingMLUT,

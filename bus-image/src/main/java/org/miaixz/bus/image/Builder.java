@@ -179,8 +179,8 @@ public class Builder {
 
     public static void addEmptyAttributes(Attributes attrs, String[] optVals) {
         if (optVals != null) {
-            for (int i = 0; i < optVals.length; i++) {
-                addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVals[i], "/")));
+            for (String optVal : optVals) {
+                addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, "/")));
             }
         }
     }

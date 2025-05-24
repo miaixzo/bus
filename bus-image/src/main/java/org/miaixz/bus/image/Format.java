@@ -49,7 +49,11 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.UnaryOperator;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.DatePrecision;
 
@@ -603,6 +607,57 @@ public class Format extends java.text.Format {
         return LocalDateTime.of(date, time);
     }
 
+    public static long combineTags(int tagDate, int tagTime) {
+        return ((long) tagDate << 32) | (tagTime & 0xFFFFFFFFL);
+    }
+
+    /**
+     * Create a Date object from a date and a time dicom attributes.
+     *
+     * @param dcm     the DICOM attributes
+     * @param tagDate the date tag
+     * @param tagTime the time tag
+     * @return the Date object
+     */
+    public static Date dateTime(Attributes dcm, int tagDate, int tagTime) {
+        if (dcm == null) {
+            return null;
+        }
+
+        return dcm.getDate(combineTags(tagDate, tagTime));
+    }
+
+    /**
+     * Create a Date object from a date and a time object.
+     *
+     * @param tz                   the time zone
+     * @param date                 the date object
+     * @param time                 the time object
+     * @param acceptNullDateOrTime if false, return null when date or time is null
+     * @return the Date object
+     */
+    public static Date dateTime(TimeZone tz, Date date, Date time, boolean acceptNullDateOrTime) {
+        if (!acceptNullDateOrTime && (date == null || time == null)) {
+            return null;
+        }
+        Calendar calendar = tz == null || date == null ? Calendar.getInstance() : Calendar.getInstance(tz);
+
+        Calendar datePart = Calendar.getInstance();
+        datePart.setTime(date == null ? new Date(0) : date);
+        calendar.set(Calendar.YEAR, datePart.get(Calendar.YEAR));
+        calendar.set(Calendar.MONTH, datePart.get(Calendar.MONTH));
+        calendar.set(Calendar.DAY_OF_MONTH, datePart.get(Calendar.DAY_OF_MONTH));
+
+        Calendar timePart = Calendar.getInstance();
+        timePart.setTime(time == null ? new Date(0) : time);
+        calendar.set(Calendar.HOUR_OF_DAY, timePart.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, timePart.get(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, timePart.get(Calendar.SECOND));
+        calendar.set(Calendar.MILLISECOND, timePart.get(Calendar.MILLISECOND));
+
+        return calendar.getTime();
+    }
+
     private static int getMonth(TemporalAccessor temporal) {
         return temporal.isSupported(MONTH_OF_YEAR) ? temporal.get(MONTH_OF_YEAR) : 1;
     }
@@ -736,24 +791,12 @@ public class Format extends java.text.Format {
         return null;
     }
 
-    public static Date dateTime(Date date, Date time) {
-        if (time == null) {
-            return date;
-        } else if (date == null) {
-            return time;
+    public static GregorianCalendar parseXmlDateTime(CharSequence s) throws DatatypeConfigurationException {
+        if (!StringKit.hasText(s.toString())) {
+            throw new IllegalArgumentException("Input CharSequence cannot be null or empty");
         }
-        Calendar calendarA = Calendar.getInstance();
-        calendarA.setTime(date);
-
-        Calendar calendarB = Calendar.getInstance();
-        calendarB.setTime(time);
-
-        calendarA.set(Calendar.HOUR_OF_DAY, calendarB.get(Calendar.HOUR_OF_DAY));
-        calendarA.set(Calendar.MINUTE, calendarB.get(Calendar.MINUTE));
-        calendarA.set(Calendar.SECOND, calendarB.get(Calendar.SECOND));
-        calendarA.set(Calendar.MILLISECOND, calendarB.get(Calendar.MILLISECOND));
-
-        return calendarA.getTime();
+        String val = s.toString().trim();
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(val).toGregorianCalendar();
     }
 
     private List<String> tokenize(String s) {
