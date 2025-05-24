@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.rabjung.RabjungYear;
 
 /**
  * 公历年
@@ -140,6 +141,15 @@ public class SolarYear extends Loops {
             l.add(SolarHalfYear.fromIndex(year, i));
         }
         return l;
+    }
+
+    /**
+     * 藏历年
+     *
+     * @return 藏历年
+     */
+    public RabjungYear getRabByungYear() {
+        return RabjungYear.fromYear(year);
     }
 
 }
