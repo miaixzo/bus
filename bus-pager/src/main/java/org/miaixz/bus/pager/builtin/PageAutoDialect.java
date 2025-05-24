@@ -96,7 +96,7 @@ public class PageAutoDialect {
         // 瀚高数据库
         registerDialectAlias("highgo", Hsqldb.class);
         // 虚谷数据库
-        registerDialectAlias("xugu", Hsqldb.class);
+        registerDialectAlias("xugu", Xugudb.class);
         registerDialectAlias("impala", Hsqldb.class);
         registerDialectAlias("firebirdsql", Firebird.class);
         // 人大金仓数据库
