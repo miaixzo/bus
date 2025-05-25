@@ -30,7 +30,7 @@ package org.miaixz.bus.goalie.registry;
 import org.miaixz.bus.goalie.Registry;
 
 /**
- * 数据序列化
+ * 数据序列化注册接口，用于管理和注册数据序列化相关的拦截器
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -57,7 +57,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
- * 参数过滤/校验
+ * 参数过滤和校验过滤器，负责处理和验证请求参数，设置上下文
  *
  * @author Justubborn
  * @since Java 17+
@@ -65,25 +65,37 @@ import reactor.core.publisher.Mono;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class PrimaryFilter implements WebFilter {
 
+    /**
+     * 过滤器主逻辑，处理请求参数并进行校验
+     *
+     * @param exchange 当前的 ServerWebExchange 对象，包含请求和响应
+     * @param chain    过滤器链，用于继续处理请求
+     * @return {@link Mono<Void>} 表示异步处理完成
+     */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        // 设置默认 Content-Type（如果缺失）
         ServerWebExchange mutate = setDefaultContentTypeIfNecessary(exchange);
         Context context = Context.get(mutate);
+        // 记录请求开始时间
         context.setStartTime(System.currentTimeMillis());
         ServerHttpRequest request = mutate.getRequest();
+
+        // 处理 GET 请求
         if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
             MultiValueMap<String, String> params = request.getQueryParams();
             context.setRequestMap(params.toSingleValueMap());
-            doParams(mutate);
+            doParams(mutate); // 校验参数
             return chain.filter(mutate).then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms",
                     mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
         } else {
-            // 文件上传处理
+            // 处理文件上传（multipart/form-data）
             if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mutate.getRequest().getHeaders().getContentType())) {
                 return mutate.getMultipartData().flatMap(params -> {
                     Map<String, String> formMap = new LinkedHashMap<>();
                     Map<String, Part> fileMap = new LinkedHashMap<>();
 
+                    // 分离表单参数和文件参数
                     Map<String, Part> map = params.toSingleValueMap();
                     map.forEach((k, v) -> {
                         if (v instanceof FormFieldPart) {
@@ -95,33 +107,33 @@ public class PrimaryFilter implements WebFilter {
                     });
                     context.setRequestMap(formMap);
                     context.setFilePartMap(fileMap);
-                    doParams(mutate);
+                    doParams(mutate); // 校验参数
                     return chain.filter(mutate).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
                             mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
-
             } else {
+                // 处理普通表单数据
                 return mutate.getFormData().flatMap(params -> {
                     context.setRequestMap(params.toSingleValueMap());
-                    doParams(mutate);
+                    doParams(mutate); // 校验参数
                     return chain.filter(mutate).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
                             mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
             }
-
         }
     }
 
     /**
-     * 参数校验
+     * 校验请求参数，确保必要参数存在且有效
      *
-     * @param exchange 消息
+     * @param exchange ServerWebExchange 对象
+     * @throws BusinessException 如果参数无效或缺失，抛出异常
      */
     private void doParams(ServerWebExchange exchange) {
         Context context = Context.get(exchange);
         Map<String, String> params = context.getRequestMap();
 
-        // 过滤无效参数及值- undefined
+        // 过滤无效参数（键或值为 "undefined"）
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (Normal.UNDEFINED.equals(entry.getKey().toLowerCase())
                     || Normal.UNDEFINED.equals(entry.getValue().toLowerCase())) {
@@ -129,6 +141,7 @@ public class PrimaryFilter implements WebFilter {
             }
         }
 
+        // 校验必要参数
         if (StringKit.isBlank(params.get(Config.METHOD))) {
             throw new BusinessException(ErrorCode.EM_100108);
         }
@@ -139,27 +152,32 @@ public class PrimaryFilter implements WebFilter {
             throw new BusinessException(ErrorCode.EM_100111);
         }
 
+        // 如果存在签名参数，标记需要解密
         if (StringKit.isNotBlank(params.get(Config.SIGN))) {
             context.setNeedDecrypt(true);
         }
+
+        // 记录请求参数日志
         Logger.info("traceId:{},method:{},req =>{}", exchange.getLogPrefix(), params.get(Config.METHOD),
                 JsonKit.toJsonString(context.getRequestMap()));
     }
 
     /**
-     * 设置默认值
+     * 设置默认 Content-Type（如果请求头缺失）
      *
-     * @param exchange 消息
+     * @param exchange ServerWebExchange 对象
+     * @return 更新后的 ServerWebExchange
      */
     private ServerWebExchange setDefaultContentTypeIfNecessary(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
         MediaType mediaType = request.getHeaders().getContentType();
         if (null == mediaType) {
+            // 默认设置为 application/x-www-form-urlencoded
             mediaType = MediaType.APPLICATION_FORM_URLENCODED;
             HttpHeaders headers = new HttpHeaders();
             headers.putAll(exchange.getRequest().getHeaders());
             headers.setContentType(mediaType);
-            // 变异
+            // 创建装饰器以更新请求头
             ServerHttpRequest requestDecorator = new ServerHttpRequestDecorator(request) {
                 @Override
                 public HttpHeaders getHeaders() {

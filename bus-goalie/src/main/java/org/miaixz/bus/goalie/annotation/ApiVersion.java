@@ -30,10 +30,9 @@ package org.miaixz.bus.goalie.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
 /**
- * 注解用于生成 {@link RequestMappingInfo} 时候直接拼接路径 规则，自动放置于路径开始部分；不做method版本，避免难以维护
+ * API 版本注解，用于在生成 Spring 的 RequestMappingInfo 时自动拼接版本路径到请求路径的开始部分。 该注解避免直接在方法上定义版本，以简化维护。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,6 +43,11 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 @Inherited
 public @interface ApiVersion {
 
+    /**
+     * 版本路径值，默认为空字符串。 当指定时，该值会自动拼接到请求路径的开始部分。
+     *
+     * @return 版本路径
+     */
     String value() default Normal.EMPTY;
 
 }

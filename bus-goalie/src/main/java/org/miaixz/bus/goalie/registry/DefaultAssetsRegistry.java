@@ -30,31 +30,51 @@ package org.miaixz.bus.goalie.registry;
 import org.miaixz.bus.goalie.Assets;
 
 /**
- * 抽象路由注册
+ * 默认路由注册实现类，基于 AbstractRegistry 提供资产（Assets）的注册、修改和查询功能
  *
  * @author Justubborn
  * @since Java 17+
  */
 public class DefaultAssetsRegistry extends AbstractRegistry<Assets> implements AssetsRegistry {
 
+    /**
+     * 添加资产到注册表，使用方法名和版本号的组合作为键
+     *
+     * @param assets 要添加的资产对象
+     */
     @Override
     public void addAssets(Assets assets) {
         super.add(assets.getMethod() + assets.getVersion(), assets);
     }
 
+    /**
+     * 修改注册表中的资产，使用方法名和版本号的组合作为键
+     *
+     * @param assets 要更新的资产对象
+     */
     @Override
     public void amendAssets(Assets assets) {
         super.amend(assets.getMethod() + assets.getVersion(), assets);
     }
 
+    /**
+     * 根据方法名和版本号获取对应的资产
+     *
+     * @param method  方法名
+     * @param version 版本号
+     * @return 匹配的资产对象，若不存在返回 null
+     */
     @Override
     public Assets getAssets(String method, String version) {
         return get(method + version);
     }
 
+    /**
+     * 初始化注册表，当前实现为空，子类可根据需要扩展
+     */
     @Override
     public void init() {
-
+        // 空实现，留给子类扩展
     }
 
 }

@@ -25,57 +25,48 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.goalie.metric;
+package org.miaixz.bus.goalie.magic;
 
-import com.google.common.util.concurrent.RateLimiter;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.entity.OAuth2;
+import org.miaixz.bus.core.basic.normal.Consts;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 限流器
+ * 认证及委托处理类，用于封装认证结果和 OAuth2 授权信息
  *
  * @author Justubborn
  * @since Java 17+
  */
 @Getter
 @Setter
-public class Limiter {
+@SuperBuilder
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class Delegate {
 
-    private String ip;
-
-    private String method;
-
-    private String version;
-
-    private int tokenCount;
     /**
-     * 令牌桶
+     * 认证结果消息，包含错误码和错误信息等
      */
-    private volatile RateLimiter rateLimiter;
-
-    public synchronized void initRateLimiter() {
-        rateLimiter = RateLimiter.create(tokenCount);
-    }
+    private Message message;
 
     /**
-     * 获取令牌桶
+     * OAuth2 授权信息，包含认证相关的详细信息
+     */
+    private OAuth2 oAuth2;
+
+    /**
+     * 判断认证是否成功
      *
-     * @return 限流器
+     * @return 如果消息错误码为 Consts.STATUS_ZERO（通常表示成功），返回 true，否则返回 false
      */
-    public RateLimiter fetchRateLimiter() {
-        if (null == rateLimiter) {
-            synchronized (this) {
-                if (null == rateLimiter) {
-                    rateLimiter = RateLimiter.create(tokenCount);
-                }
-            }
-        }
-        return rateLimiter;
-    }
-
-    public double acquire() {
-        return fetchRateLimiter().acquire();
+    public boolean isOk() {
+        return Consts.STATUS_ZERO.equals(message.getErrcode());
     }
 
 }

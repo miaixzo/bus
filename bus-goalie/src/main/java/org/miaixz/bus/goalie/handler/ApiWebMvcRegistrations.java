@@ -33,23 +33,38 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
- * spring boot专用，避免继承webconfigurationsupport对spring的自动配置侵入和破坏
+ * Spring Boot 专用 Web MVC 注册配置类，用于自定义 MVC 组件，避免直接继承 WebConfigurationSupport 破坏 Spring 的自动配置
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ApiWebMvcRegistrations implements WebMvcRegistrations {
 
+    /**
+     * 提供自定义的 RequestMappingHandlerMapping 实现
+     *
+     * @return 自定义的 ApiRequestMappingHandlerMapping 实例
+     */
     @Override
     public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
         return new ApiRequestMappingHandlerMapping();
     }
 
+    /**
+     * 提供自定义的 RequestMappingHandlerAdapter 实现（当前未自定义）
+     *
+     * @return 返回 null，保留 Spring Boot 默认配置
+     */
     @Override
     public RequestMappingHandlerAdapter getRequestMappingHandlerAdapter() {
         return null;
     }
 
+    /**
+     * 提供自定义的 ExceptionHandlerExceptionResolver 实现（当前未自定义）
+     *
+     * @return 返回 null，保留 Spring Boot 默认配置
+     */
     @Override
     public ExceptionHandlerExceptionResolver getExceptionHandlerExceptionResolver() {
         return null;

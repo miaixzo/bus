@@ -25,35 +25,47 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.goalie.support;
+package org.miaixz.bus.goalie.magic;
 
-import java.util.Map;
+import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.goalie.Assets;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.XmlKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.goalie.Provider;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
- * Xml序列化
+ * Token 参数类，用于封装授权认证相关的参数信息
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @since Java 17+
  */
-public class XmlProvider implements Provider {
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class Token {
 
-    @Override
-    public String serialize(Object object) {
-        try {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            Map<String, Object> map = JsonKit.getProvider().toMap(object);
-            XmlKit.mapToXmlString(map);
-            return buffer.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Normal.EMPTY;
-    }
+    /**
+     * 授权令牌，唯一标识认证信息
+     */
+    public final String token;
+
+    /**
+     * 渠道标识，表示请求来源的类型（如 微信、钉钉等）
+     */
+    public final int channel;
+
+    /**
+     * 关联的资源信息，包含资产相关配置
+     */
+    public final Assets assets;
+
+    /**
+     * 租户 ID，标识所属租户，标记为 transient 不参与序列化
+     */
+    public transient String tenant_id;
 
 }

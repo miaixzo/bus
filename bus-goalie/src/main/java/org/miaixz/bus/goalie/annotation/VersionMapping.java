@@ -34,7 +34,10 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
+ * 版本映射注解，整合 Spring 的 RequestMapping、ApiVersion 和 ClientVersion 功能， 用于定义 API 的请求路径、版本和客户端终端版本匹配规则。
+ *
  * @author Kimi Liu
+ * @since Java 17+
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -44,33 +47,83 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @ClientVersion
 public @interface VersionMapping {
 
+    /**
+     * RequestMapping 的名称别名
+     *
+     * @return 映射名称，默认为空字符串
+     */
     @AliasFor(annotation = RequestMapping.class)
     String name() default Normal.EMPTY;
 
+    /**
+     * RequestMapping 的路径别名，与 path 属性等效
+     *
+     * @return 路径数组，默认为空数组
+     */
     @AliasFor(annotation = RequestMapping.class)
     String[] value() default {};
 
+    /**
+     * RequestMapping 的路径别名，与 value 属性等效
+     *
+     * @return 路径数组，默认为空数组
+     */
     @AliasFor(annotation = RequestMapping.class)
     String[] path() default {};
 
+    /**
+     * RequestMapping 的参数条件
+     *
+     * @return 请求参数条件数组，默认为空数组
+     */
     @AliasFor(annotation = RequestMapping.class)
     String[] params() default {};
 
+    /**
+     * RequestMapping 的请求头条件
+     *
+     * @return 请求头条件数组，默认为空数组
+     */
     @AliasFor(annotation = RequestMapping.class)
     String[] headers() default {};
 
+    /**
+     * RequestMapping 的请求内容类型条件
+     *
+     * @return 消费的内容类型数组，默认为空数组
+     */
     @AliasFor(annotation = RequestMapping.class)
     String[] consumes() default {};
 
+    /**
+     * RequestMapping 的响应内容类型条件
+     *
+     * @return 生产的内容类型数组，默认为空数组
+     */
     @AliasFor(annotation = RequestMapping.class)
     String[] produces() default {};
 
+    /**
+     * ApiVersion 的版本路径别名
+     *
+     * @return 版本路径，默认为空字符串
+     */
     @AliasFor(annotation = ApiVersion.class, attribute = "value")
     String apiVersion() default Normal.EMPTY;
 
+    /**
+     * ClientVersion 的终端版本条件别名
+     *
+     * @return TerminalVersion 数组，默认为空数组
+     */
     @AliasFor(annotation = ClientVersion.class, attribute = "value")
     TerminalVersion[] terminalVersion() default {};
 
+    /**
+     * ClientVersion 的字符串表达式别名，用于解析终端版本条件
+     *
+     * @return 字符串表达式数组，默认为空数组
+     */
     @AliasFor(annotation = ClientVersion.class, attribute = "expression")
     String[] terminalExpression() default {};
 

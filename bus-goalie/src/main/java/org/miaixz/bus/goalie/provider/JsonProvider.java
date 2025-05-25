@@ -25,10 +25,28 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.goalie.provider;
+
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.goalie.Provider;
+
 /**
- * 数据输出处理
+ * JSON 序列化提供者，实现对象到 JSON 字符串的转换
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.goalie.support;
+public class JsonProvider implements Provider {
+
+    /**
+     * 将对象序列化为 JSON 字符串
+     *
+     * @param object 要序列化的对象
+     * @return 序列化后的 JSON 字符串
+     */
+    @Override
+    public String serialize(Object object) {
+        return JsonKit.toJsonString(object);
+    }
+
+}

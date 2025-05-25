@@ -25,22 +25,27 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.goalie.support;
+package org.miaixz.bus.goalie.provider;
 
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.goalie.Provider;
+import org.miaixz.bus.goalie.magic.Delegate;
+import org.miaixz.bus.goalie.magic.Token;
 
 /**
- * Json序列化
+ * 访问授权认证接口，定义授权认证相关的功能
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @since Java 17+
  */
-public class JsonProvider implements Provider {
+public interface AuthorizeProvider {
 
-    @Override
-    public String serialize(Object object) {
-        return JsonKit.toJsonString(object);
+    /**
+     * 执行认证操作，验证授权令牌并返回认证结果
+     *
+     * @param token 授权令牌，包含认证所需的信息
+     * @return Delegate 认证结果对象，默认为空 Delegate 实例
+     */
+    default Delegate authorize(Token token) {
+        return new Delegate();
     }
 
 }

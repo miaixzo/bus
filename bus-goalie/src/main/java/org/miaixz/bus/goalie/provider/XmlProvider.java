@@ -25,30 +25,47 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.goalie.metric;
+package org.miaixz.bus.goalie.provider;
 
-import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.entity.OAuth2;
-import org.miaixz.bus.core.basic.normal.Consts;
+import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.XmlKit;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.goalie.Provider;
 
 /**
- * 认证及委托处理
+ * XML 序列化提供者，实现对象到 XML 字符串的转换
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-public class Delegate {
+public class XmlProvider implements Provider {
 
-    private Message message;
-    private OAuth2 oAuth2;
+    /**
+     * 将对象序列化为 XML 字符串
+     *
+     * @param object 要序列化的对象
+     * @return 序列化后的 XML 字符串，若序列化失败返回空字符串
+     */
+    @Override
+    public String serialize(Object object) {
+        try {
+            // 创建 XML 头部
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 
-    public boolean isOk() {
-        return Consts.STATUS_ZERO.equals(message.getErrcode());
+            // 将对象转换为 Map 结构并序列化为 XML
+            Map<String, Object> map = JsonKit.getProvider().toMap(object);
+            XmlKit.mapToXmlString(map);
+
+            return buffer.toString();
+        } catch (Exception e) {
+            // 捕获异常并打印堆栈信息
+            e.printStackTrace();
+        }
+        // 序列化失败时返回空字符串
+        return Normal.EMPTY;
     }
 
 }

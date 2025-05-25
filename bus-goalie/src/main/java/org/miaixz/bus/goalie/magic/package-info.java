@@ -25,42 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.goalie.metric;
-
-import org.miaixz.bus.goalie.Assets;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 /**
- * token参数
+ * 基础信息
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
-public class Token {
-
-    /**
-     * 授权标识
-     */
-    public final String token;
-    /**
-     * 授权
-     */
-    public final int channel;
-    /**
-     * 资源信息
-     */
-    public final Assets assets;
-    /**
-     * 租户
-     */
-    public transient String orgId;
-
-}
+package org.miaixz.bus.goalie.magic;

@@ -25,24 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.goalie.metric;
-
 /**
- * 访问授权认证
+ * 数据输出处理
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-public interface Authorize {
-
-    /**
-     * 认证接口
-     *
-     * @param token 授权令牌
-     * @return OAuth2
-     */
-    default Delegate authorize(Token token) {
-        return new Delegate();
-    }
-
-}
+package org.miaixz.bus.goalie.provider;
