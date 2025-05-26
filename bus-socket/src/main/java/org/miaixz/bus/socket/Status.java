@@ -90,4 +90,5 @@ public enum Status {
      * 内部异常
      */
     INTERNAL_EXCEPTION
+
 }

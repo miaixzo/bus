@@ -27,13 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serializable;
+import java.io.Serial;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import java.io.Serial;
+import java.io.Serializable;
 
 public class AcceptMergeRequestParams implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852252652553L;
 
     private String mergeCommitMessage;
     private Boolean mergeWhenPipelineSucceeds;
@@ -113,8 +115,8 @@ public class AcceptMergeRequestParams implements Serializable {
      *
      * @return a GitLabApiForm instance holding the form parameters for this AcceptMergeRequestParams instance
      */
-    public GitLabApiForm getForm() {
-        return new GitLabApiForm().withParam("merge_commit_message", mergeCommitMessage)
+    public GitLabForm getForm() {
+        return new GitLabForm().withParam("merge_commit_message", mergeCommitMessage)
                 .withParam("merge_when_pipeline_succeeds", mergeWhenPipelineSucceeds).withParam("sha", sha)
                 .withParam("should_remove_source_branch", shouldRemoveSourceBranch).withParam("squash", squash)
                 .withParam("squash_commit_message", squashCommitMessage);

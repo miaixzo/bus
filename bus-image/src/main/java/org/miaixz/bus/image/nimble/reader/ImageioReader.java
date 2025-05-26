@@ -896,4 +896,5 @@ public class ImageioReader extends ImageReader implements Closeable {
     public void close() {
         dispose();
     }
+
 }

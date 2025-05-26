@@ -30,10 +30,12 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class WikiPage implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852235129679L;
 
     private String title;
     private String content;

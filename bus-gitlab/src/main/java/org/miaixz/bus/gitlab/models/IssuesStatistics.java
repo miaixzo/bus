@@ -32,10 +32,12 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 public class IssuesStatistics implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279969088L;
 
     private Statistics statistics;
 
@@ -58,7 +60,9 @@ public class IssuesStatistics implements Serializable {
     }
 
     public static class Statistics implements Serializable {
-        private static final long serialVersionUID = -1L;
+
+        @Serial
+        private static final long serialVersionUID = 2852280033600L;
 
         private Counts counts;
 
@@ -73,7 +77,8 @@ public class IssuesStatistics implements Serializable {
 
     public static class Counts implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852280097832L;
 
         private Integer all;
         private Integer closed;

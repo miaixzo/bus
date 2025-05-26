@@ -43,4 +43,5 @@ public class OpenCVNativeLoader implements OpenCVInterface {
             System.err.println("Cannot load OpenCV native library: " + e.getMessage());
         }
     }
+
 }

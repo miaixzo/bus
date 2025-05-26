@@ -31,12 +31,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class DeployToken implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852259537371L;
 
     private Long id;
     private String name;

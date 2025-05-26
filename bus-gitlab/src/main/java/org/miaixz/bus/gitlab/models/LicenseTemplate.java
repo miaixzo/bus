@@ -31,10 +31,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class LicenseTemplate implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852282178533L;
 
     private String key;
     private String name;

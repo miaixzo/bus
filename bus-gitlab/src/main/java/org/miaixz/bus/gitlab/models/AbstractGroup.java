@@ -32,11 +32,13 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serial;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852252137136L;
 
     private Long id;
     private String name;

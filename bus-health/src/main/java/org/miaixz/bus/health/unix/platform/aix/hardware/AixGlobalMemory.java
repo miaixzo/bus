@@ -149,4 +149,5 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
     private VirtualMemory createVirtualMemory() {
         return new AixVirtualMemory(perfstatMem);
     }
+
 }

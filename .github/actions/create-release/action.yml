@@ -1,0 +1,3 @@
+name: Create GitHub Release
+description: 'Create the release on GitHub with a changelog'
+inputs:

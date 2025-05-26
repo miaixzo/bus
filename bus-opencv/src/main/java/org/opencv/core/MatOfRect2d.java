@@ -105,4 +105,5 @@ public class MatOfRect2d extends Mat {
         Rect2d[] ar = toArray();
         return Arrays.asList(ar);
     }
+
 }

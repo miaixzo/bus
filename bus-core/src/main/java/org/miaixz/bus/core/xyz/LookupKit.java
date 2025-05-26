@@ -34,9 +34,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.reflect.lookup.ConstructorLookupFactory;
 import org.miaixz.bus.core.lang.reflect.lookup.LookupFactory;
 import org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory;
 
@@ -57,11 +55,7 @@ public class LookupKit {
     private static final LookupFactory factory;
 
     static {
-        if (Keys.IS_JDK8) {
-            factory = new ConstructorLookupFactory();
-        } else {
-            factory = new MethodLookupFactory();
-        }
+        factory = new MethodLookupFactory();
     }
 
     /**

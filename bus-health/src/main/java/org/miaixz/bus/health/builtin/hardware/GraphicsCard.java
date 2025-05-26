@@ -73,4 +73,5 @@ public interface GraphicsCard {
      * @return Total number of bytes.
      */
     long getVRam();
+
 }

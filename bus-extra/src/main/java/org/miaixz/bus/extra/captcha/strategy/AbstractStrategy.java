@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.captcha.strategy;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Normal;
 
 /**
@@ -37,7 +39,8 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public abstract class AbstractStrategy implements CodeStrategy {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276251790L;
 
     /**
      * 基础字符集合，用于随机获取字符串的字符集合
@@ -76,4 +79,5 @@ public abstract class AbstractStrategy implements CodeStrategy {
     public int getLength() {
         return this.length;
     }
+
 }

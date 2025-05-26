@@ -30,10 +30,12 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class JobAttribute implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852280698293L;
 
     private String key;
     private String value;

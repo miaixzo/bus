@@ -50,6 +50,8 @@ public class PrivateKeyword {
             return "FailedVerificationsOfPatient";
         case PrivateTag.DominantPatientSequence:
             return "DominantPatientSequence";
+        case PrivateTag.LogicalPatientID:
+            return "LogicalPatientID";
         case PrivateTag.StudyReceiveDateTime:
             return "StudyReceiveDateTime";
         case PrivateTag.StudyUpdateDateTime:

@@ -33,10 +33,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
 
 public class Diff implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852259921892L;
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("a_mode")

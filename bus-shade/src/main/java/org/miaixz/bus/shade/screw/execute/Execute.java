@@ -34,8 +34,10 @@ package org.miaixz.bus.shade.screw.execute;
  * @since Java 17+
  */
 public interface Execute {
+
     /**
      * 执行生成
      */
     void execute();
+
 }

@@ -32,6 +32,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.io.Serial;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, visible = true, property = "event_name")
 @JsonSubTypes({
@@ -61,74 +62,129 @@ public interface SystemHookEvent extends Serializable {
 
     String getEventName();
 
-    @JsonIgnore
-    String getRequestUrl();
-
     void setRequestUrl(String requestUrl);
 
     @JsonIgnore
-    String getRequestQueryString();
+    String getRequestUrl();
 
     void setRequestQueryString(String requestQueryString);
 
     @JsonIgnore
-    String getRequestSecretToken();
+    String getRequestQueryString();
 
     void setRequestSecretToken(String requestSecretToken);
+
+    @JsonIgnore
+    String getRequestSecretToken();
 }
 
 // All of the following class definitions are needed to make the above work.
 // Jackson has a tough time mapping the same class to multiple IDs
 class CreateProjectSystemHookEvent extends ProjectSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265112260L;
 }
 
 class DestroyProjectSystemHookEvent extends ProjectSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265202976L;
 }
 
 class RenameProjectSystemHookEvent extends ProjectSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265330712L;
 }
 
 class TransferProjectSystemHookEvent extends ProjectSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265552328L;
 }
 
 class UpdateProjectSystemHookEvent extends ProjectSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265636152L;
 }
 
 class NewTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265830399L;
 }
 
 class RemoveTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265873907L;
 }
 
 class CreateUserSystemHookEvent extends UserSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852265917558L;
 }
 
 class DestroyUserSystemHookEvent extends UserSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266017381L;
 }
 
 class RenameUserSystemHookEvent extends UserSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266051826L;
 }
 
 class UserFailedLoginSystemHookEvent extends UserSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266119502L;
 }
 
 class CreateKeySystemHookEvent extends KeySystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266191273L;
 }
 
 class DestroyKeySystemHookEvent extends KeySystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266233299L;
 }
 
 class CreateGroupSystemHookEvent extends GroupSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266281261L;
 }
 
 class DestroyGroupSystemHookEvent extends GroupSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266355818L;
 }
 
 class RenameGroupSystemHookEvent extends GroupSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266388705L;
 }
 
 class NewGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266501216L;
 }
 
 class RemoveGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852266575598L;
+
 }

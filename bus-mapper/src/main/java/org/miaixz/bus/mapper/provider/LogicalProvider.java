@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -196,7 +196,7 @@ public class LogicalProvider {
                                 .map(column -> column.columnEqualsProperty("entity."))
                                 .collect(Collectors.joining(Symbol.COMMA)))
                         + variableNotNull("condition", "Condition cannot be null")
-                        + (entity.getPropBoolean("updateByCondition.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + trim("WHERE", "", "WHERE |OR |AND ", "",
                                 () -> Args.UPDATE_BY_CONDITION_WHERE_CLAUSE + logicalNotEqualCondition(entity))
@@ -222,7 +222,7 @@ public class LogicalProvider {
                                         () -> column.columnEqualsProperty("entity.") + Symbol.COMMA))
                                 .collect(Collectors.joining(Symbol.LF)))
                         + variableNotNull("condition", "Condition cannot be null")
-                        + (entity.getPropBoolean("updateByConditionSelective.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByConditionSelective.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + trim("WHERE", "", "WHERE |OR |AND ", "",
                                 () -> Args.UPDATE_BY_CONDITION_WHERE_CLAUSE + logicalNotEqualCondition(entity))
@@ -245,7 +245,7 @@ public class LogicalProvider {
                         + variableNotEmpty("condition.setValues", "Condition setValues cannot be empty") + "UPDATE "
                         + entity.tableName() + Args.CONDITION_SET_CLAUSE_INNER_WHEN
                         + variableNotNull("condition", "Condition cannot be null")
-                        + (entity.getPropBoolean("updateByCondition.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + trim("WHERE", "", "WHERE |OR |AND ", "",
                                 () -> Args.UPDATE_BY_CONDITION_WHERE_CLAUSE + logicalNotEqualCondition(entity))
@@ -371,7 +371,7 @@ public class LogicalProvider {
             return util.ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "UPDATE "
                     + entity.tableName() + " SET " + columnEqualsValue(logicColumn, deleteValue(logicColumn))
                     + util.parameterNotNull("Condition cannot be null")
-                    + (entity.getPropBoolean("deleteByCondition.allowEmpty", true) ? ""
+                    + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? ""
                             : util.variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
                     + Args.CONDITION_WHERE_CLAUSE + " AND "
                     + columnNotEqualsValueCondition(logicColumn, deleteValue(logicColumn))

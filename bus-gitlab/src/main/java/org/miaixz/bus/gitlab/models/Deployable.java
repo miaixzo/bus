@@ -31,12 +31,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.Constants.DeploymentStatus;
+import org.miaixz.bus.gitlab.models.Constants.DeploymentStatus;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Deployable implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852259571317L;
 
     private Long id;
     private DeploymentStatus status;

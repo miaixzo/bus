@@ -126,4 +126,5 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     public long getSwapPagesOut() {
         return inOut.get().getRight();
     }
+
 }

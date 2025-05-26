@@ -54,4 +54,5 @@ public abstract class EntryDecryptorProvider<E> extends WrappedDecryptorProvider
     public boolean on(E entry) {
         return null == filter || filter.on(entry);
     }
+
 }

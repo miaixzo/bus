@@ -28,8 +28,8 @@
 package org.miaixz.bus.setting.metric.setting;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -45,7 +45,7 @@ public class Setting {
     /**
      * 配置文件缓存
      */
-    private static final Map<String, org.miaixz.bus.setting.Setting> CACHE_SETTING = new SafeConcurrentHashMap<>();
+    private static final Map<String, org.miaixz.bus.setting.Setting> CACHE_SETTING = new ConcurrentHashMap<>();
 
     /**
      * 获取当前环境下的配置文件 name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称

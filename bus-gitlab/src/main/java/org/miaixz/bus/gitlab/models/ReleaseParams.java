@@ -32,10 +32,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class ReleaseParams implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852229116989L;
 
     private String name;
     private String tagName;

@@ -77,7 +77,7 @@ public class ReleaseLinksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Link> getLinks(Object projectIdOrPath, String tagName, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Link.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+        return (new Pager<Link>(this, Link.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "releases", urlEncode(tagName), "assets", "links"));
     }
 
@@ -127,8 +127,10 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param tagName         the name of the tag to fetch the Link for
      * @param linkId          the id of the Link to fetch for
      * @return an Optional instance with the specified Link as the value
+     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Link> getOptionalLink(Object projectIdOrPath, String tagName, Integer linkId) {
+    public Optional<Link> getOptionalLink(Object projectIdOrPath, String tagName, Integer linkId)
+            throws GitLabApiException {
         try {
             return (Optional.ofNullable(getLink(projectIdOrPath, tagName, linkId)));
         } catch (GitLabApiException glae) {

@@ -29,20 +29,37 @@ package org.miaixz.bus.goalie.registry;
 
 import org.miaixz.bus.goalie.Assets;
 import org.miaixz.bus.goalie.Registry;
-import org.miaixz.bus.goalie.metric.Limiter;
+import org.miaixz.bus.goalie.magic.Limiter;
 
 /**
- * 限流注册器
+ * 限流注册接口，定义限流配置（Limiter）的注册、修改和查询功能
  *
  * @author Justubborn
  * @since Java 17+
  */
 public interface LimiterRegistry extends Registry<Limiter> {
 
+    /**
+     * 添加限流配置到注册表
+     *
+     * @param limiter 要添加的限流配置对象
+     */
     void addLimiter(Limiter limiter);
 
+    /**
+     * 修改注册表中的限流配置
+     *
+     * @param limiter 要更新的限流配置对象
+     */
     void amendLimiter(Limiter limiter);
 
+    /**
+     * 根据 IP 和方法名版本号组合获取对应的资产
+     *
+     * @param ip          IP 地址
+     * @param nameVersion 方法名和版本号的组合
+     * @return 匹配的资产对象，若不存在返回 null
+     */
     Assets getLimiter(String ip, String nameVersion);
 
 }

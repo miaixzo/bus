@@ -666,4 +666,5 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     public long queryInterrupts() {
         return CpuStat.getInterrupts();
     }
+
 }

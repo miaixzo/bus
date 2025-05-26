@@ -68,4 +68,5 @@ public class TemplateKit {
     public static void render(final String templateContent, final Map<?, ?> bindingMap, final Writer writer) {
         getEngine().getTemplate(templateContent).render(bindingMap, writer);
     }
+
 }

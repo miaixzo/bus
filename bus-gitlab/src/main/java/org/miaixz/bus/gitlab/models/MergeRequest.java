@@ -35,10 +35,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serial;
 
 public class MergeRequest implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852285015685L;
 
     private Boolean allowCollaboration;
     private Boolean allowMaintainerToPush;
@@ -57,6 +59,7 @@ public class MergeRequest implements Serializable {
     private Boolean discussionLocked;
     private Integer divergedCommitsCount;
     private Integer downvotes;
+    private Boolean draft;
     private Boolean forceRemoveSourceBranch;
     private Boolean hasConflicts;
     private Long id;
@@ -103,10 +106,6 @@ public class MergeRequest implements Serializable {
     @JsonSerialize(using = JacksonJson.UserListSerializer.class)
     @JsonDeserialize(using = JacksonJson.UserListDeserializer.class)
     private List<User> approvedBy;
-
-    public static final boolean isValid(MergeRequest mergeRequest) {
-        return (mergeRequest != null && mergeRequest.getId() != null);
-    }
 
     public Boolean getAllowCollaboration() {
         return allowCollaboration;
@@ -234,6 +233,14 @@ public class MergeRequest implements Serializable {
 
     public void setDownvotes(Integer downvotes) {
         this.downvotes = downvotes;
+    }
+
+    public static final boolean isValid(MergeRequest mergeRequest) {
+        return (mergeRequest != null && mergeRequest.getId() != null);
+    }
+
+    public Boolean getDraft() {
+        return draft;
     }
 
     public Boolean getForceRemoveSourceBranch() {
@@ -604,6 +611,10 @@ public class MergeRequest implements Serializable {
 
     public void setRebaseInProgress(Boolean rebaseInProgress) {
         this.rebaseInProgress = rebaseInProgress;
+    }
+
+    public void setDraft(Boolean draft) {
+        this.draft = draft;
     }
 
     public List<Reviewer> getReviewers() {

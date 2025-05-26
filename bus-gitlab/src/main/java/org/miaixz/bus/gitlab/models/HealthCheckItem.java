@@ -31,10 +31,12 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class HealthCheckItem implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278917787L;
 
     private HealthCheckStatus status;
     private Map<String, String> labels;

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.captcha.strategy;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -38,7 +40,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class RandomStrategy extends AbstractStrategy {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852276658655L;
 
     /**
      * 构造，使用字母+数字做为基础
@@ -71,4 +74,5 @@ public class RandomStrategy extends AbstractStrategy {
         }
         return false;
     }
+
 }

@@ -98,4 +98,5 @@ public class MacOSThread extends AbstractOSThread {
     public int getPriority() {
         return priority;
     }
+
 }

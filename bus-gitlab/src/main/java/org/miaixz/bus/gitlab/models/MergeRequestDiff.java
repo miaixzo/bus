@@ -30,10 +30,12 @@ package org.miaixz.bus.gitlab.models;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class MergeRequestDiff extends MergeRequestVersion {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852285185566L;
 
     private List<Commit> commits;
     private List<Diff> diffs;

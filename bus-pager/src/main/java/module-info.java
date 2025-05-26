@@ -58,4 +58,5 @@ module bus.pager {
     exports org.miaixz.bus.pager.parser;
     exports org.miaixz.bus.pager.parser.defaults;
     exports org.miaixz.bus.pager.plugin;
+
 }

@@ -44,4 +44,5 @@ public interface PartMatcher extends Predicate<Integer> {
      * @return 匹配到的值或之后的值
      */
     int nextAfter(int value);
+
 }

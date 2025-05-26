@@ -322,6 +322,16 @@ public class JschSftp extends AbstractFtp {
     }
 
     @Override
+    public boolean rename(String oldPath, String newPath) {
+        try {
+            getClient().rename(oldPath, newPath);
+        } catch (final SftpException e) {
+            throw new InternalException(e);
+        }
+        return true;
+    }
+
+    @Override
     public boolean mkdir(final String dir) {
         if (isDir(dir)) {
             // 目录已经存在，创建直接返回
@@ -567,33 +577,47 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 递归下载FTP服务器上文件到本地(文件目录和服务器同步)
+     * 递归下载FTP文件夹到本地目录。
      *
-     * @param sourcePath ftp服务器目录，必须为目录
-     * @param destDir    本地目录
+     * @param sourceDir FTP源目录路径
+     * @param targetDir 本地目标目录
+     * @throws InternalException 如果下载失败
      */
-    @Override
-    public void recursiveDownloadFolder(final String sourcePath, final File destDir) throws InternalException {
-        String fileName;
-        String srcFile;
-        File destFile;
-        for (final LsEntry item : lsEntries(sourcePath)) {
-            fileName = item.getFilename();
-            srcFile = StringKit.format("{}/{}", sourcePath, fileName);
-            destFile = FileKit.file(destDir, fileName);
+    public void recursiveDownloadFolder(String sourceDir, File targetDir) throws InternalException {
+        // 规范化路径，移除末尾斜杠
+        sourceDir = sourceDir.replaceAll("/+$", "");
 
-            if (!item.getAttrs().isDir()) {
-                // 本地不存在文件或者ftp上文件有修改则下载
-                if (!FileKit.exists(destFile) || (item.getAttrs().getMTime() > (destFile.lastModified() / 1000))) {
-                    download(srcFile, destFile);
-                }
-            } else {
-                // 服务端依旧是目录，继续递归
-                FileKit.mkdir(destFile);
-                recursiveDownloadFolder(srcFile, destFile);
-            }
+        // 获取FTP目录文件列表
+        List<LsEntry> entries = lsEntries(sourceDir);
+        if (entries == null || entries.isEmpty()) {
+            return;
         }
 
+        // 确保目标目录存在
+        if (!targetDir.exists() && !targetDir.mkdirs()) {
+            throw new InternalException("Failed to create target directory: " + targetDir.getAbsolutePath());
+        }
+
+        for (LsEntry item : entries) {
+            String fileName = item.getFilename();
+            // 跳过.和..目录
+            if (fileName.equals(".") || fileName.equals("..")) {
+                continue;
+            }
+
+            String srcPath = sourceDir + "/" + fileName;
+            File destFile = new File(targetDir, fileName);
+
+            if (item.getAttrs().isDir()) {
+                // 递归处理子目录
+                recursiveDownloadFolder(srcPath, destFile);
+            } else {
+                // 下载文件，仅当本地不存在或FTP文件更新
+                if (!destFile.exists() || item.getAttrs().getMTime() * 1000 > destFile.lastModified()) {
+                    download(srcPath, destFile);
+                }
+            }
+        }
     }
 
     /**
@@ -667,4 +691,5 @@ public class JschSftp extends AbstractFtp {
          */
         APPEND
     }
+
 }

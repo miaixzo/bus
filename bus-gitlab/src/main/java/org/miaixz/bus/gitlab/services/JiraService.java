@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.gitlab.services;
 
+import java.io.Serial;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class JiraService extends NotificationService {
+
+    @Serial
+    private static final long serialVersionUID = 2852236233255L;
 
     public static final String URL_PROP = "url";
     public static final String API_URL_PROP = "api_url";
@@ -50,8 +54,8 @@ public class JiraService extends NotificationService {
      * @return the form data for this service based on it's properties
      */
     @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm().withParam("merge_requests_events", getMergeRequestsEvents())
+    public GitLabForm servicePropertiesForm() {
+        GitLabForm formData = new GitLabForm().withParam("merge_requests_events", getMergeRequestsEvents())
                 .withParam(COMMIT_EVENTS_PROP, getCommitEvents()).withParam(URL_PROP, getUrl(), true)
                 .withParam(API_URL_PROP, getApiUrl()).withParam(PROJECT_KEY_PROP, getProjectKey())
                 .withParam(USERNAME_PROP, getUsername(), true).withParam("password", getPassword(), true)
@@ -61,7 +65,7 @@ public class JiraService extends NotificationService {
 
     @JsonIgnore
     public Boolean getCommitEvents() {
-        return (getProperty(COMMIT_EVENTS_PROP, (Boolean) null));
+        return (getProperty(COMMIT_EVENTS_PROP, null));
     }
 
     public void setCommitEvents(Boolean commitEvents) {
@@ -149,7 +153,7 @@ public class JiraService extends NotificationService {
 
     @JsonIgnore
     public Integer getJiraIssueTransitionId() {
-        return (getProperty(JIRA_ISSUE_TRANSITION_ID_PROP, (Integer) null));
+        return (getProperty(JIRA_ISSUE_TRANSITION_ID_PROP, null));
     }
 
     public void setJiraIssueTransitionId(Integer jiraIssueTransitionId) {

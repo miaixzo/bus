@@ -156,4 +156,5 @@ final class MacFirmware extends AbstractFirmware {
     public String getReleaseDate() {
         return manufNameDescVersRelease.get().get(4);
     }
+
 }

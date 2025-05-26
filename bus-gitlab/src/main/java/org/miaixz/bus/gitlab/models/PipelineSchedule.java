@@ -32,10 +32,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class PipelineSchedule implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852287752552L;
 
     private Long id;
     private String description;

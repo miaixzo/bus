@@ -82,7 +82,7 @@ public class ContainerRegistryApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "registry", "repositories");
-        return response.readEntity(new GenericType<>() {
+        return response.readEntity(new GenericType<List<RegistryRepository>>() {
         });
     }
 

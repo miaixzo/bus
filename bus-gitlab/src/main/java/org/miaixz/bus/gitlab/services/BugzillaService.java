@@ -27,9 +27,13 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
+import java.io.Serial;
 
 public class BugzillaService extends NotificationService {
+
+    @Serial
+    private static final long serialVersionUID = 2852235395261L;
 
     /**
      * Get the form data for this service based on it's properties.
@@ -37,8 +41,8 @@ public class BugzillaService extends NotificationService {
      * @return the form data for this service based on it's properties
      */
     @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm().withParam(DESCRIPTION_PROP, getDescription())
+    public GitLabForm servicePropertiesForm() {
+        GitLabForm formData = new GitLabForm().withParam(DESCRIPTION_PROP, getDescription())
                 .withParam(ISSUES_URL_PROP, getIssuesUrl(), true).withParam(NEW_ISSUE_URL_PROP, getNewIssueUrl(), true)
                 .withParam(PROJECT_URL_PROP, getProjectUrl(), true).withParam(PUSH_EVENTS_PROP, getPushEvents())
                 .withParam(TITLE_PROP, getTitle());

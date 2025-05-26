@@ -52,4 +52,5 @@ public class LocalOfficeProvider extends AbstractProvider {
     public Object convert(InputStream source, boolean closeStream) {
         return null;
     }
+
 }

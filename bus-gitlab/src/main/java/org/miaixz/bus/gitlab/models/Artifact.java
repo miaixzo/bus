@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -37,7 +40,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Artifact implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852255156638L;
 
     private FileType fileType;
     private Long size;

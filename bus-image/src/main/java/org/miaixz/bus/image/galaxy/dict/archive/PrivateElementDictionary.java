@@ -96,6 +96,7 @@ public class PrivateElementDictionary extends ElementDictionary {
             return VR.DT;
         case PrivateTag.StorageObjectMultiReference:
             return VR.IS;
+        case PrivateTag.LogicalPatientID:
         case PrivateTag.StudyAccessControlID:
         case PrivateTag.StorageIDsOfStudy:
         case PrivateTag.StudyExpirationExporterID:
@@ -136,4 +137,5 @@ public class PrivateElementDictionary extends ElementDictionary {
         }
         return VR.UN;
     }
+
 }

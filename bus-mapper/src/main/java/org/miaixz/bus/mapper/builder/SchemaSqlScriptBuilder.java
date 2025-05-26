@@ -84,30 +84,6 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
     }
 
     /**
-     * 解析对象上的 {@link SchemaSqlBuilder} 实例
-     *
-     * @param target      目标对象（类、方法或参数）
-     * @param type        元素类型（TYPE, METHOD, PARAMETER）
-     * @param annotations 注解数组
-     * @return {@link SchemaSqlBuilder} 实例列表
-     */
-    private List<SchemaSqlBuilder> parseAnnotations(Object target, ElementType type, Annotation[] annotations) {
-        List<Class<? extends SchemaSqlBuilder>> classes = new ArrayList<>();
-        for (int i = 0; i < annotations.length; i++) {
-            Annotation annotation = annotations[i];
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-            if (annotationType == SqlWrapper.class) {
-                classes.addAll(Arrays.asList(((SqlWrapper) annotation).value()));
-            } else if (annotationType.isAnnotationPresent(SqlWrapper.class)) {
-                SqlWrapper annotationTypeAnnotation = annotationType.getAnnotation(SqlWrapper.class);
-                classes.addAll(Arrays.asList(annotationTypeAnnotation.value()));
-            }
-        }
-        return classes.stream().map(c -> (SchemaSqlBuilder) newInstance(c, target, type, annotations))
-                .collect(Collectors.toList());
-    }
-
-    /**
      * 实例化 {@link SchemaSqlBuilder} 对象
      *
      * @param instanceClass 实例类
@@ -124,6 +100,30 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
         } catch (Exception e) {
             throw new RuntimeException("instance [ " + instanceClass + " ] error", e);
         }
+    }
+
+    /**
+     * 解析对象上的 {@link SchemaSqlBuilder} 实例
+     *
+     * @param target      目标对象（类、方法或参数）
+     * @param type        元素类型（TYPE, METHOD, PARAMETER）
+     * @param annotations 注解数组
+     * @return {@link SchemaSqlBuilder} 实例列表
+     */
+    protected List<SchemaSqlBuilder> parseAnnotations(Object target, ElementType type, Annotation[] annotations) {
+        List<Class<? extends SchemaSqlBuilder>> classes = new ArrayList<>();
+        for (int i = 0; i < annotations.length; i++) {
+            Annotation annotation = annotations[i];
+            Class<? extends Annotation> annotationType = annotation.annotationType();
+            if (annotationType == SqlWrapper.class) {
+                classes.addAll(Arrays.asList(((SqlWrapper) annotation).value()));
+            } else if (annotationType.isAnnotationPresent(SqlWrapper.class)) {
+                SqlWrapper annotationTypeAnnotation = annotationType.getAnnotation(SqlWrapper.class);
+                classes.addAll(Arrays.asList(annotationTypeAnnotation.value()));
+            }
+        }
+        return classes.stream().map(c -> (SchemaSqlBuilder) newInstance(c, target, type, annotations))
+                .collect(Collectors.toList());
     }
 
 }

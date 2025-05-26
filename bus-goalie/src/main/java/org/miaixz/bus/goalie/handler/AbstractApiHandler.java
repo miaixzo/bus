@@ -30,6 +30,8 @@ package org.miaixz.bus.goalie.handler;
 import org.miaixz.bus.goalie.Handler;
 
 /**
+ * 抽象 API 处理类，提供 API 处理的通用实现基础
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

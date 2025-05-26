@@ -97,4 +97,5 @@ final class MacSoundCard extends AbstractSoundCard {
 
         return soundCards;
     }
+
 }

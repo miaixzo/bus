@@ -27,7 +27,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.miaixz</groupId>
@@ -85,13 +85,15 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
+        <bus.version>8.1.8</bus.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-bom</artifactId>
-            <version>${project.version}</version>
+            <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -103,8 +105,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -163,7 +163,7 @@
                             <createSourcesJar>true</createSourcesJar>
                             <artifactSet>
                                 <includes>
-                                    <include>${project.groupId}:*:*</include>
+                                    <include>org.miaixz:*:*</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -224,10 +224,10 @@
                     </formats>
                     <java>
                         <licenseHeader>
-                            <file>../.github/spotless/spotless_miaixz.org</file>
+                            <file>../.github/scripts/miaixz.org</file>
                         </licenseHeader>
                         <eclipse>
-                            <file>../.github/spotless/spotless_format.xml</file>
+                            <file>../.github/scripts/format.xml</file>
                         </eclipse>
                         <removeUnusedImports />
                     </java>

@@ -35,7 +35,7 @@ import org.miaixz.bus.goalie.filter.*;
 import org.miaixz.bus.goalie.handler.ApiRouterHandler;
 import org.miaixz.bus.goalie.handler.ApiWebMvcRegistrations;
 import org.miaixz.bus.goalie.handler.GlobalExceptionHandler;
-import org.miaixz.bus.goalie.metric.Authorize;
+import org.miaixz.bus.goalie.provider.AuthorizeProvider;
 import org.miaixz.bus.goalie.registry.AssetsRegistry;
 import org.miaixz.bus.goalie.registry.DefaultAssetsRegistry;
 import org.miaixz.bus.goalie.registry.DefaultLimiterRegistry;
@@ -105,8 +105,8 @@ public class GoalieConfiguration {
     }
 
     @Bean
-    WebFilter authorizeFilter(Authorize authorize, AssetsRegistry registry) {
-        return new AuthorizeFilter(authorize, registry);
+    WebFilter authorizeFilter(AuthorizeProvider authorizeProvider, AssetsRegistry registry) {
+        return new AuthorizeFilter(authorizeProvider, registry);
     }
 
     @Bean

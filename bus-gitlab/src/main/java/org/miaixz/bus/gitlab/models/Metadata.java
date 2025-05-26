@@ -32,10 +32,12 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
 
 public class Metadata implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852286065853L;
 
     private String version;
     private String revision;
@@ -79,11 +81,13 @@ public class Metadata implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
-    private static class Kas {
+    public static class Kas {
 
         private Boolean enabled;
+
         @JsonProperty("externalUrl")
         private String externalUrl;
+
         private String version;
 
         public Boolean getEnabled() {
@@ -114,7 +118,6 @@ public class Metadata implements Serializable {
         public String toString() {
             return (JacksonJson.toJsonString(this));
         }
-
     }
 
 }

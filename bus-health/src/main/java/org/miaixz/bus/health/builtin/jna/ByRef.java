@@ -143,4 +143,5 @@ public interface ByRef {
             Builder.freeMemory(getPointer());
         }
     }
+
 }

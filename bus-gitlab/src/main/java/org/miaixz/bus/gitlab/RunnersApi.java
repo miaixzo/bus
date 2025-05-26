@@ -143,7 +143,7 @@ public class RunnersApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false).withParam("status",
                 status, false);
         Response response = get(Response.Status.OK, formData.asMap(), "runners");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Runner>>() {
         }));
     }
 
@@ -281,7 +281,7 @@ public class RunnersApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false).withParam("status",
                 status, false);
         Response response = get(Response.Status.OK, formData.asMap(), "runners", "all");
-        return (response.readEntity(new GenericType<>() {
+        return (response.readEntity(new GenericType<List<Runner>>() {
         }));
     }
 
@@ -607,7 +607,7 @@ public class RunnersApi extends AbstractApi {
                 .withParam("description", description, false).withParam("active", active, false)
                 .withParam("locked", locked, false).withParam("run_untagged", runUntagged, false)
                 .withParam("tag_list", tagList, false).withParam("maximum_timeout", maximumTimeout, false);
-        Response response = post(Response.Status.CREATED, formData.asMap(), "runners");
+        Response response = post(Response.Status.CREATED, formData, "runners");
         return (response.readEntity(RunnerDetail.class));
     }
 

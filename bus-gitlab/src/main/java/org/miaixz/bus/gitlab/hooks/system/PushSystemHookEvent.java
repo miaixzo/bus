@@ -30,10 +30,14 @@ package org.miaixz.bus.gitlab.hooks.system;
 import org.miaixz.bus.gitlab.hooks.web.AbstractPushEvent;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import java.io.Serial;
+
 public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
+    @Serial
+    private static final long serialVersionUID = 2852263837191L;
+
     public static final String PUSH_EVENT = "push";
-    private static final long serialVersionUID = -1L;
 
     @Override
     public String toString() {

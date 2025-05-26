@@ -31,10 +31,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class CommitStatus implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852258130291L;
 
     private Boolean allowFailure;
     private Author author;
@@ -197,4 +199,5 @@ public class CommitStatus implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

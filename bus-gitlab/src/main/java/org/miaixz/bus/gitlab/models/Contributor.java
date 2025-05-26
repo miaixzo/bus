@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
+
 /**
  * This class models the object for a repository contributor. See
  * <a href="https://docs.gitlab.com/ee/api/repositories.html#contributors">Contributors at GitLab</a>.
  */
 public class Contributor extends AbstractUser<Contributor> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852258893986L;
 
     private Integer commits;
     private Integer additions;

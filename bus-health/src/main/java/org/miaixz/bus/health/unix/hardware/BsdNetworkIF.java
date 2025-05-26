@@ -150,4 +150,5 @@ public final class BsdNetworkIF extends AbstractNetworkIF {
         this.inDrops = Parsing.parseUnsignedLongOrDefault(split[6], 0L);
         return true;
     }
+
 }

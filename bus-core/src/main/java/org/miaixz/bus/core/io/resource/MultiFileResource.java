@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.io.resource;
 
 import java.io.File;
+import java.io.Serial;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -39,7 +40,8 @@ import java.util.Collection;
  */
 public class MultiFileResource extends MultiResource {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852290297275L;
 
     /**
      * 构造

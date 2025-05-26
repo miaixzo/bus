@@ -52,7 +52,7 @@ public class SqlMetaCache {
     /**
      * 实体类信息
      */
-    private final TableMeta entity;
+    private final TableMeta tableMeta;
 
     /**
      * SQL 提供者
@@ -63,12 +63,12 @@ public class SqlMetaCache {
      * 构造函数，初始化 SQL 缓存
      *
      * @param providerContext   执行方法上下文
-     * @param entity            实体类信息
+     * @param tableMeta         实体类信息
      * @param sqlScriptSupplier SQL 脚本提供者
      */
-    public SqlMetaCache(ProviderContext providerContext, TableMeta entity, Supplier<String> sqlScriptSupplier) {
+    public SqlMetaCache(ProviderContext providerContext, TableMeta tableMeta, Supplier<String> sqlScriptSupplier) {
         this.providerContext = providerContext;
-        this.entity = entity;
+        this.tableMeta = tableMeta;
         this.sqlScriptSupplier = sqlScriptSupplier;
     }
 
@@ -95,8 +95,8 @@ public class SqlMetaCache {
      *
      * @return 实体类信息
      */
-    public TableMeta getEntity() {
-        return entity;
+    public TableMeta getTableMeta() {
+        return tableMeta;
     }
 
 }

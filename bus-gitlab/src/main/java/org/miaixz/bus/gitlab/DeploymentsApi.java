@@ -40,6 +40,7 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class implements the client side API for the GitLab Deployments API calls. See
  * https://docs.gitlab.com/ee/api/deployments.html
+ *
  */
 public class DeploymentsApi extends AbstractApi {
 
@@ -110,7 +111,7 @@ public class DeploymentsApi extends AbstractApi {
      */
     public Pager<Deployment> getProjectDeployments(Object projectIdOrPath, DeploymentFilter filter, int itemsPerPage)
             throws GitLabApiException {
-        GitLabApiForm formData = (filter != null ? filter.getQueryParams() : new GitLabApiForm());
+        GitLabApiForm formData = (filter != null ? new GitLabApiForm(filter.getQueryParams()) : new GitLabApiForm());
         return (new Pager<Deployment>(this, Deployment.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "deployments"));
     }

@@ -80,4 +80,5 @@ final class MacSensors extends AbstractSensors {
         SmcKit.smcClose(conn);
         return volts;
     }
+
 }

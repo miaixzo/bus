@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
-
 /**
  * Params for getting file archive of the repository.
  */
@@ -64,8 +62,8 @@ public class RepositoryArchiveParams {
      *
      * @return form with params
      */
-    public GitLabApiForm getForm() {
-        return new GitLabApiForm().withParam("sha", sha).withParam("path", path);
+    public GitLabForm getForm() {
+        return new GitLabForm().withParam("sha", sha).withParam("path", path);
     }
 
 }

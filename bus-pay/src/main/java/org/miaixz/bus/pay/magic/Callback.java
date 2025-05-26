@@ -47,4 +47,5 @@ public interface Callback {
      * @return json
      */
     String getJson();
+
 }

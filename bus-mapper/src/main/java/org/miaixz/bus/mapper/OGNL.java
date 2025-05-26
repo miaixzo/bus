@@ -151,7 +151,7 @@ public class OGNL {
             }
             String field = Introspector.decapitalize(getter);
             if (clazz == null) {
-                Matcher matcher = Args.INSTANTIATED_CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
+                Matcher matcher = Args.CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
                 String implClass;
                 if (matcher.find()) {
                     implClass = matcher.group("cls").replaceAll("/", "\\.");

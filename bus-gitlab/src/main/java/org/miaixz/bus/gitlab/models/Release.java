@@ -36,10 +36,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
 
 public class Release implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852228885713L;
 
     private String name;
     private String tagName;
@@ -54,6 +56,7 @@ public class Release implements Serializable {
     private String tagPath;
     private String evidenceSha;
     private Assets assets;
+
     @JsonProperty("_links")
     private Map<String, String> links;
 

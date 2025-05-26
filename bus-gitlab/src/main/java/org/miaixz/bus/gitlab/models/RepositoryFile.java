@@ -30,14 +30,16 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 import java.util.Base64;
 
-import org.miaixz.bus.gitlab.Constants.Encoding;
+import org.miaixz.bus.gitlab.models.Constants.Encoding;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 public class RepositoryFile implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852230172893L;
 
     private String fileName; // file name only, Ex. class.rb
     private String filePath; // full path to file. Ex. lib/class.rb

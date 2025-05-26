@@ -47,4 +47,5 @@ public interface ChildLimitProvider {
      * @return 童限信息
      */
     ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term);
+
 }

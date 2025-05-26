@@ -179,4 +179,5 @@ public class PostgreSqlColumn implements Column {
      */
     @MappingField(value = "COLUMN_LENGTH")
     private String columnLength;
+
 }

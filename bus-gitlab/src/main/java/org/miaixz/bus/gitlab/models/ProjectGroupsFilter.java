@@ -29,15 +29,15 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import java.io.Serial;
 
 /**
  * This class is used to filter Groups when getting lists of groups for a specified project.
  */
 public class ProjectGroupsFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852289132299L;
 
     private String search;
     private AccessLevel sharedMinAccessLevel;
@@ -105,9 +105,8 @@ public class ProjectGroupsFilter implements Serializable {
      *
      * @return a GitLabApiForm instance holding the query parameters for this ProjectGroupsFilter instance
      */
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("search", search)
-                .withParam("shared_min_access_level", sharedMinAccessLevel)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("search", search).withParam("shared_min_access_level", sharedMinAccessLevel)
                 .withParam("shared_visible_only", sharedVisibleOnly).withParam("skip_groups", skipGroups)
                 .withParam("with_shared", withShared));
     }

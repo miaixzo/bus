@@ -297,4 +297,5 @@ class LZWEncoder {
             flush_char(outs);
         }
     }
+
 }

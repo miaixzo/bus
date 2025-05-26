@@ -250,4 +250,5 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         STATE, PID, PPID, USER, UID, GROUP, GID, NLWP, PRI, VSZ, RSS, ETIMES, SYSTIME, TIME, COMM, MAJFLT, MINFLT,
         NVCSW, NIVCSW, ARGS // ARGS must always be last
     }
+
 }

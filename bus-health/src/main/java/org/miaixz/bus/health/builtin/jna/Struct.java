@@ -185,4 +185,5 @@ public interface Struct {
             Builder.freeMemory(getPointer());
         }
     }
+
 }

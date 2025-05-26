@@ -28,8 +28,8 @@
 package org.miaixz.bus.core.data;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -69,7 +69,7 @@ public class CreditCode {
     private static final Map<Character, Integer> CODE_INDEX_MAP;
 
     static {
-        CODE_INDEX_MAP = new SafeConcurrentHashMap<>();
+        CODE_INDEX_MAP = new ConcurrentHashMap<>();
         for (int i = 0; i < BASE_CODE_ARRAY.length; i++) {
             CODE_INDEX_MAP.put(BASE_CODE_ARRAY[i], i);
         }

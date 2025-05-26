@@ -30,17 +30,19 @@ package org.miaixz.bus.gitlab.models;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.GitLabApi;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum AccessLevel {
-
-    INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), @Deprecated
-    MASTER(40), MAINTAINER(40), OWNER(50), ADMIN(60);
+    INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), MAINTAINER(40), OWNER(50),
+    ADMIN(60);
 
     private static Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
+    public final Integer value;
+
+    AccessLevel(int value) {
+        this.value = value;
+    }
 
     static {
         for (AccessLevel accessLevel : AccessLevel.values())
@@ -48,12 +50,6 @@ public enum AccessLevel {
 
         // Make sure MAINTAINER is mapped to 40 and not MASTER (MASTER is deprecated)
         valuesMap.put(MAINTAINER.value, MAINTAINER);
-    }
-
-    public final Integer value;
-
-    AccessLevel(int value) {
-        this.value = value;
     }
 
     @JsonCreator
@@ -64,7 +60,6 @@ public enum AccessLevel {
             return (level);
         }
 
-        GitLabApi.getLogger().warning(String.format("[%d] is not a valid GitLab access level.", value));
         return (value == null ? null : INVALID);
     }
 

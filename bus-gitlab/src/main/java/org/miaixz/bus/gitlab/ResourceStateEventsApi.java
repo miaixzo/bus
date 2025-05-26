@@ -74,8 +74,8 @@ public class ResourceStateEventsApi extends AbstractApi {
      */
     public Pager<IssueEvent> getIssueStateEvents(Object projectIdOrPath, Long issueIid, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<>(this, IssueEvent.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid, "resource_state_events"));
+        return (new Pager<IssueEvent>(this, IssueEvent.class, itemsPerPage, null, "projects",
+                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "resource_state_events"));
     }
 
     /**

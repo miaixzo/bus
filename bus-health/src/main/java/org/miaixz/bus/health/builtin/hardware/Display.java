@@ -43,4 +43,5 @@ public interface Display {
      * @return The original unparsed EDID byte array.
      */
     byte[] getEdid();
+
 }

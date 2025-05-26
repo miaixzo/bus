@@ -60,8 +60,8 @@ public interface ClassMetaResolver extends ORDER {
     static Optional<Class<?>> find(Class<?> mapperType, Method mapperMethod) {
         Objects.requireNonNull(mapperType);
         return ENTITY_CLASS_MAP.computeIfAbsent(new MapperTypeMethod(mapperType, mapperMethod), mapperTypeMethod -> {
-            for (ClassMetaResolver instance : EntityClassFinderInstance.getInstances()) {
-                Optional<Class<?>> optionalClass = instance.findEntityClass(mapperType, mapperMethod);
+            for (ClassMetaResolver instance : ClassFinderInstance.getInstances()) {
+                Optional<Class<?>> optionalClass = instance.findClass(mapperType, mapperMethod);
                 if (optionalClass.isPresent()) {
                     return optionalClass;
                 }
@@ -77,7 +77,7 @@ public interface ClassMetaResolver extends ORDER {
      * @param mapperMethod Mapper 接口方法，可以为空
      * @return 实体类类型的 Optional 包装对象
      */
-    Optional<Class<?>> findEntityClass(Class<?> mapperType, Method mapperMethod);
+    Optional<Class<?>> findClass(Class<?> mapperType, Method mapperMethod);
 
     /**
      * 判断指定的类型是否为定义的实体类类型
@@ -85,7 +85,7 @@ public interface ClassMetaResolver extends ORDER {
      * @param clazz 类型
      * @return true 表示是实体类类型，false 表示不是
      */
-    boolean isEntityClass(Class<?> clazz);
+    boolean isClass(Class<?> clazz);
 
     /**
      * Mapper 接口和方法，用作缓存 Key
@@ -153,7 +153,7 @@ public interface ClassMetaResolver extends ORDER {
     /**
      * 实体类查找器实例管理类
      */
-    class EntityClassFinderInstance {
+    class ClassFinderInstance {
         /**
          * 缓存的 ClassFinder 实例列表
          */

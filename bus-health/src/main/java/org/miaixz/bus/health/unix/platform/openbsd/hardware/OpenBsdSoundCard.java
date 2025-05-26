@@ -109,4 +109,5 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
         }
         return soundCards;
     }
+
 }

@@ -99,4 +99,5 @@ final class MacDisplay extends AbstractDisplay {
         }
         return displays;
     }
+
 }

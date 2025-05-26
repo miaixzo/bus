@@ -46,4 +46,5 @@ public @interface Downgrade {
     FlowGrade grade();
 
     int count();
+
 }

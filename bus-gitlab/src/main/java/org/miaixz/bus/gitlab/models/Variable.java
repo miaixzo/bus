@@ -38,27 +38,12 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class Variable implements Serializable {
 
-    private static final long serialVersionUID = -1L;
-
-    private String key;
-    private String value;
-    private Type variableType;
-    @JsonProperty("protected")
-    private Boolean isProtected;
-    @JsonProperty("masked")
-    private Boolean isMasked;
-    private String environmentScope;
-
-    public Variable() {
-    }
-
-    public Variable(String key, String value) {
-        this.key = key;
-        this.value = value;
-    }
+    @Serial
+    private static final long serialVersionUID = 2852233886575L;
 
     /**
      * Create a List of Variable from the provided Map.
@@ -75,6 +60,26 @@ public class Variable implements Serializable {
         List<Variable> varList = new ArrayList<>(variables.size());
         variables.forEach((k, v) -> varList.add(new Variable(k, v)));
         return varList;
+    }
+
+    private String key;
+    private String value;
+    private Type variableType;
+
+    @JsonProperty("protected")
+    private Boolean isProtected;
+
+    @JsonProperty("masked")
+    private Boolean isMasked;
+
+    private String environmentScope;
+
+    public Variable() {
+    }
+
+    public Variable(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
     public String getKey() {
@@ -134,7 +139,6 @@ public class Variable implements Serializable {
      * Enum for the various Commit build status values.
      */
     public enum Type {
-
         ENV_VAR, FILE;
 
         private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class);

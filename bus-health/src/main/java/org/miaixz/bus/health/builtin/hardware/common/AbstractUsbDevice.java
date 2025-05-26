@@ -133,4 +133,5 @@ public abstract class AbstractUsbDevice implements UsbDevice {
         // Naturally sort by device name
         return getName().compareTo(usb.getName());
     }
+
 }

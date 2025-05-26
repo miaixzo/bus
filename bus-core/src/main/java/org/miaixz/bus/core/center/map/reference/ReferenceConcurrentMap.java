@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.center.map.reference;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
@@ -51,7 +52,8 @@ import org.miaixz.bus.core.xyz.ReferKit;
 public abstract class ReferenceConcurrentMap<K, V>
         implements ConcurrentMap<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852269377051L;
 
     final ConcurrentMap<Ref<K>, Ref<V>> raw;
     private final ReferenceQueue<K> lastKeyQueue;

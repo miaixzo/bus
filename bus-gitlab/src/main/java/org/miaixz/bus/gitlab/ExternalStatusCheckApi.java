@@ -124,7 +124,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
     /**
      * Creates a new external status check using the information contained in the provided ExternalStatusCheck instance.
      * Only the following fields from the ExternalStatusCheck instance are used:
-     * 
+     *
      * <pre>
      * <code>
      *      name - Display name of external status check (required)
@@ -186,7 +186,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
     /**
      * Updates an external status check using the information contained in the provided ExternalStatusCheck instance.
      * Only the following fields from the ExternalStatusCheck instance are used:
-     * 
+     *
      * <pre>
      * <code>
      *      id - the id of the external status check (required)
@@ -195,7 +195,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *      protected branches - the id of the protected branches (optional)
      * </code>
      * </pre>
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: PUT /projects/:id/external_status_checks/:check_id</code>
      * </pre>

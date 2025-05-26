@@ -27,19 +27,24 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serial;
+
 public class EmailOnPushService extends NotificationService {
+
+    @Serial
+    private static final long serialVersionUID = 2852235671093L;
 
     public static final String RECIPIENT_PROP = "recipients";
     public static final String DISABLE_DIFFS_PROP = "disable_diffs";
     public static final String SEND_FROM_COMMITTER_EMAIL_PROP = "send_from_committer_email";
 
     @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm().withParam(RECIPIENT_PROP, getRecipients(), true)
+    public GitLabForm servicePropertiesForm() {
+        GitLabForm formData = new GitLabForm().withParam(RECIPIENT_PROP, getRecipients(), true)
                 .withParam(DISABLE_DIFFS_PROP, getDisableDiffs())
                 .withParam(SEND_FROM_COMMITTER_EMAIL_PROP, getSendFromCommitterEmail())
                 .withParam(PUSH_EVENTS_PROP, getPushEvents()).withParam("tag_push_events", getTagPushEvents())

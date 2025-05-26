@@ -178,4 +178,5 @@ public class CacheDbColumn implements Column {
      */
     @MappingField(value = "COLUMN_LENGTH")
     private String columnLength;
+
 }

@@ -74,17 +74,10 @@ public class ModalityLutModule {
     private void init(Attributes dcm) {
         String modality = RGBImageVoiLut.getModality(dcm);
         if (dcm.containsValue(Tag.RescaleIntercept) && dcm.containsValue(Tag.RescaleSlope)) {
-            if ("MR".equals(modality)
-                    // || "PT".equals(modality)
-                    || "XA".equals(modality) || "XRF".equals(modality)) {
-                // IHE BIR: Windowing and Rendering 4.16.4.2.2.5.4
-                Logger.trace("Do not apply RescaleSlope and RescaleIntercept to {}", modality);
-            } else {
-                this.rescaleSlope = OptionalDouble.of(Builder.getDoubleFromDicomElement(dcm, Tag.RescaleSlope, null));
-                this.rescaleIntercept = OptionalDouble
-                        .of(Builder.getDoubleFromDicomElement(dcm, Tag.RescaleIntercept, null));
-                this.rescaleType = Optional.ofNullable(dcm.getString(Tag.RescaleType));
-            }
+            this.rescaleSlope = OptionalDouble.of(Builder.getDoubleFromDicomElement(dcm, Tag.RescaleSlope, null));
+            this.rescaleIntercept = OptionalDouble
+                    .of(Builder.getDoubleFromDicomElement(dcm, Tag.RescaleIntercept, null));
+            this.rescaleType = Optional.ofNullable(dcm.getString(Tag.RescaleType));
         }
 
         initModalityLUTSequence(dcm, modality);

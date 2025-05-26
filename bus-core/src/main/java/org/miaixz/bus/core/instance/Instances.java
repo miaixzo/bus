@@ -28,10 +28,10 @@
 package org.miaixz.bus.core.instance;
 
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 @ThreadSafe
 public final class Instances {
 
-    private static final SafeConcurrentHashMap<String, Object> POOL = new SafeConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Object> POOL = new ConcurrentHashMap<>();
 
     private Instances() {
 

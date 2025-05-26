@@ -437,4 +437,5 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
             return this.key;
         }
     }
+
 }

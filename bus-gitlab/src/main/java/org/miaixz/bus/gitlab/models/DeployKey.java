@@ -31,10 +31,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class DeployKey implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852259312617L;
 
     private Long id;
     private String title;

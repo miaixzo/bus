@@ -28,10 +28,12 @@
 package org.miaixz.bus.gitlab.models;
 
 import java.io.Serializable;
+import java.io.Serial;
 
 public class CustomAttribute implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852259238622L;
 
     private String key;
     private String value;

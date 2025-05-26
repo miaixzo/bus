@@ -248,4 +248,5 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
         ARGS // ARGS must always be last
     }
+
 }

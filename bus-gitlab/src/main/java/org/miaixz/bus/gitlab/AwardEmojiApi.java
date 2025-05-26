@@ -38,6 +38,7 @@ import jakarta.ws.rs.core.Response;
  * This class implements the client side API for the GitLab Award Emoji API calls.
  *
  * @see <a href="https://docs.gitlab.com/ce/api/award_emoji.html">GitLab Award Emoji API Documentaion</a>
+ * @since v4.8.31
  */
 public class AwardEmojiApi extends AbstractApi {
 
@@ -60,7 +61,7 @@ public class AwardEmojiApi extends AbstractApi {
     public List<AwardEmoji> getIssueAwardEmojis(Object projectIdOrPath, Long issueIid) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "award_emoji");
-        return response.readEntity(new GenericType<>() {
+        return response.readEntity(new GenericType<List<AwardEmoji>>() {
         });
     }
 
@@ -80,7 +81,7 @@ public class AwardEmojiApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "award_emoji");
-        return response.readEntity(new GenericType<>() {
+        return response.readEntity(new GenericType<List<AwardEmoji>>() {
         });
     }
 
@@ -99,7 +100,7 @@ public class AwardEmojiApi extends AbstractApi {
     public List<AwardEmoji> getSnippetAwardEmojis(Object projectIdOrPath, Long snippetId) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "snippets", snippetId, "award_emoji");
-        return response.readEntity(new GenericType<>() {
+        return response.readEntity(new GenericType<List<AwardEmoji>>() {
         });
     }
 
@@ -120,7 +121,7 @@ public class AwardEmojiApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "notes", noteId, "award_emoji");
-        return response.readEntity(new GenericType<>() {
+        return response.readEntity(new GenericType<List<AwardEmoji>>() {
         });
     }
 

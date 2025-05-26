@@ -35,6 +35,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BooleanSupplier;
 
 import javax.imageio.ImageTypeSpecifier;
@@ -42,7 +43,9 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.SupplierEx;
@@ -61,10 +64,7 @@ import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.stream.*;
 import org.miaixz.bus.logger.Logger;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfDouble;
-import org.opencv.core.MatOfInt;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.osgi.OpenCVNativeLoader;
@@ -87,7 +87,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             Tag.SegmentedAlphaPaletteColorLookupTableData, Tag.OverlayData, Tag.EncapsulatedDocument,
             Tag.FloatPixelData, Tag.DoubleFloatPixelData, Tag.PixelData);
     public static final BulkDataDescriptor BULKDATA_DESCRIPTOR = (itemPointer, privateCreator, tag, vr, length) -> {
-        var tagNormalized = Tag.normalizeRepeatingGroup(tag);
+        int tagNormalized = Tag.normalizeRepeatingGroup(tag);
         if (tagNormalized == Tag.WaveformData) {
             return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
         } else if (BULK_TAGS.contains(tagNormalized)) {
@@ -103,6 +103,10 @@ public class ImageReader extends javax.imageio.ImageReader {
         default -> false;
         };
     };
+
+    private static final Map<String, Boolean> series2FloatImages = new ConcurrentHashMap<>();
+
+    private static boolean allowFloatImageConversion = false;
 
     static {
         // Load the native OpenCV library
@@ -135,7 +139,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         if (param == null) {
             keepRgbForLossyJpeg = false;
         } else {
-            keepRgbForLossyJpeg = param.getKeepRgbForLossyJpeg().orElse(false);
+            keepRgbForLossyJpeg = param.getKeepRgbForLossyJpeg().orElse(Boolean.FALSE);
         }
 
         if (pmi == Photometric.RGB && !keepRgbForLossyJpeg) {
@@ -400,6 +404,7 @@ public class ImageReader extends javax.imageio.ImageReader {
 
     public PlanarImage getPlanarImage(int frame, ImageReadParam param) throws IOException {
         PlanarImage img = getRawImage(frame, param);
+        ImageDescriptor desc = dis == null ? bdis.getImageDescriptor() : dis.getMetadata().getImageDescriptor();
         PlanarImage out = img;
         if (getImageDescriptor().hasPaletteColorLookupTable()) {
             if (dis == null) {
@@ -414,10 +419,60 @@ public class ImageReader extends javax.imageio.ImageReader {
         if (param != null && param.getSourceRenderSize() != null) {
             out = ImageProcessor.scale(out.toMat(), param.getSourceRenderSize(), Imgproc.INTER_LANCZOS4);
         }
+
+        String seriesUID = desc.getSeriesInstanceUID();
+        if (allowFloatImageConversion && StringKit.hasText(seriesUID)) {
+            Boolean isFloatPixelData = series2FloatImages.get(seriesUID);
+            if (isFloatPixelData != Boolean.FALSE) {
+                if (isFloatPixelData == null) {
+                    out = rangeOutsideLut(out, desc, frame, false);
+                    series2FloatImages.put(seriesUID, CvType.depth(out.type()) == CvType.CV_32F);
+                } else {
+                    out = rangeOutsideLut(out, desc, frame, true);
+                }
+            }
+        }
+
         if (!img.equals(out)) {
             img.release();
         }
         return out;
+    }
+
+    static PlanarImage rangeOutsideLut(PlanarImage input, ImageDescriptor desc, int frameIndex, boolean forceFloat) {
+        OptionalDouble rescaleSlope = desc.getModalityLUT().getRescaleSlope();
+        if (forceFloat || rescaleSlope.isPresent()) {
+            double slope = rescaleSlope.orElse(1.0);
+            double intercept = desc.getModalityLUT().getRescaleIntercept().orElse(0.0);
+            Core.MinMaxLocResult minMax = ImageAdapter.getMinMaxValues(input, desc, frameIndex);
+            Pair<Double, Double> rescale = getRescaleSlopeAndIntercept(slope, intercept, minMax);
+            if (forceFloat || slope < 0.5 || rangeOutsideLut(rescale, desc)) {
+                ImageCV dstImg = new ImageCV();
+                boolean invertLUT = desc.getPhotometricInterpretation() == Photometric.MONOCHROME1;
+                double alpha = slope;
+                double beta = intercept;
+                if (invertLUT) {
+                    alpha = -slope;
+                    beta = rescale.getRight() + rescale.getLeft() - intercept;
+                }
+                input.toImageCV().convertTo(dstImg, CvType.CV_32F, alpha, beta);
+                return dstImg;
+            }
+        }
+        return input;
+    }
+
+    private static boolean rangeOutsideLut(Pair<Double, Double> rescale, ImageDescriptor desc) {
+        boolean outputSigned = rescale.getLeft() < 0 || desc.isSigned();
+        Pair<Double, Double> minMax = RGBImageVoiLut.getMinMax(desc.getBitsAllocated(), outputSigned);
+        return rescale.getLeft() + 1 < minMax.getLeft() || rescale.getRight() - 1 > minMax.getRight();
+    }
+
+    private static Pair<Double, Double> getRescaleSlopeAndIntercept(double slope, double intercept,
+            Core.MinMaxLocResult minMax) {
+        double min = minMax.minVal * slope + intercept;
+        double max = minMax.maxVal * slope + intercept;
+        return new Pair<>(Math.min(min, max), Math.max(min, max));
     }
 
     public PlanarImage getRawImage(int frame, ImageReadParam param) throws IOException {
@@ -473,6 +528,10 @@ public class ImageReader extends javax.imageio.ImageReader {
         ExtendSegmentedInputImageStream seg = buildSegmentedImageInputStream(frame, pixeldataFragments, bulkData);
         if (seg.segmentPositions() == null) {
             return null;
+        }
+
+        if (seg.segmentPositions().length <= frame) {
+            frame = 0;
         }
 
         String tsuid = dis.getMetadata().getTransferSyntaxUID();
@@ -646,6 +705,32 @@ public class ImageReader extends javax.imageio.ImageReader {
             throw new IOException("Neither fragments nor BulkData!");
         }
         return new ExtendSegmentedInputImageStream(dis.getPath(), offsets, length, desc);
+    }
+
+    public static void addSeriesToFloatImages(String seriesInstanceUID, Boolean forceToFloatImages) {
+        series2FloatImages.put(seriesInstanceUID, forceToFloatImages);
+    }
+
+    public static Boolean getForceToFloatImages(String seriesInstanceUID) {
+        return series2FloatImages.get(seriesInstanceUID);
+    }
+
+    public static void removeSeriesToFloatImages(String seriesInstanceUID) {
+        series2FloatImages.remove(seriesInstanceUID);
+    }
+
+    /**
+     * Allow to convert images into float images when the result of the Modality LUT is outside the range of original
+     * image type.
+     *
+     * <p>
+     * Note: by default, the conversion is not allowed. If the conversion is set to true, <code>
+     * removeSeriesToFloatImages()</code> must be called when the series is disposed.
+     *
+     * @param allowFloatImageConversion true to allow conversion
+     */
+    public static void setAllowFloatImageConversion(boolean allowFloatImageConversion) {
+        ImageReader.allowFloatImageConversion = allowFloatImageConversion;
     }
 
 }

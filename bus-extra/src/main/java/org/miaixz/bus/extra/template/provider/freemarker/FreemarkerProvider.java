@@ -159,4 +159,5 @@ public class FreemarkerProvider implements TemplateProvider {
     public Configuration getRaw() {
         return this.cfg;
     }
+
 }

@@ -31,10 +31,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class RegistryRepositoryTag implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852228279597L;
 
     private String name;
     private String path;

@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serializable;
+import java.io.Serial;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * This class is used by the ProtectedBranchesAPi to set up the allowed_to_push, allowed_to_merge, and
@@ -37,7 +38,8 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
  */
 public class AllowedTo implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852252997683L;
 
     private AccessLevel accessLevel;
     private Long userId;
@@ -64,10 +66,10 @@ public class AllowedTo implements Serializable {
         return (this);
     }
 
-    public GitLabApiForm getForm(GitLabApiForm form, String allowedToName) {
+    public GitLabForm getForm(GitLabForm form, String allowedToName) {
 
         if (form == null) {
-            form = new GitLabApiForm();
+            form = new GitLabForm();
         }
 
         return (form.withParam(allowedToName + "[][access_level]", accessLevel)

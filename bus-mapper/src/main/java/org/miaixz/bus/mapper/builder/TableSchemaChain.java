@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -86,9 +86,9 @@ public class TableSchemaChain implements TableSchemaBuilder.Chain {
      * @return 实体表信息，若无工厂处理则返回 null
      */
     @Override
-    public TableMeta createEntityTable(Class<?> entityClass) {
+    public TableMeta createTable(Class<?> entityClass) {
         if (index < factories.size()) {
-            return factories.get(index).createEntityTable(entityClass, next);
+            return factories.get(index).createTable(entityClass, next);
         }
         return null;
     }

@@ -67,4 +67,5 @@ public abstract class WrappedEncryptorProvider implements EncryptorProvider {
     public OutputStream encrypt(Key key, OutputStream out) throws IOException {
         return encryptorProvider.encrypt(key, out);
     }
+
 }

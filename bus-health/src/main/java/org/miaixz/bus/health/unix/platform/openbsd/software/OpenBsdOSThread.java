@@ -194,4 +194,5 @@ public class OpenBsdOSThread extends AbstractOSThread {
         this.name = threadMap.get(OpenBsdOSProcess.PsThreadColumns.ARGS);
         return true;
     }
+
 }

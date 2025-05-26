@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Visibility {
-
     PUBLIC, PRIVATE, INTERNAL;
 
     private static JacksonJsonEnumHelper<Visibility> enumHelper = new JacksonJsonEnumHelper<>(Visibility.class);

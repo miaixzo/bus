@@ -36,6 +36,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.databind.JavaType;
@@ -72,13 +73,12 @@ import jakarta.ws.rs.core.Response;
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
 
-    private static JacksonJson jacksonJson = new JacksonJson();
-    private static ObjectMapper mapper = jacksonJson.getObjectMapper();
     private int itemsPerPage;
     private int totalPages;
     private int totalItems;
     private int currentPage;
     private int kaminariNextPage;
+
     private List<String> pageParam = new ArrayList<>(1);
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
@@ -86,6 +86,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private AbstractApi api;
     private MultivaluedMap<String, String> queryParams;
     private Object[] pathArgs;
+
+    private static JacksonJson jacksonJson = new JacksonJson();
+    private static ObjectMapper mapper = jacksonJson.getObjectMapper();
     private JavaType javaType;
 
     /**
@@ -100,6 +103,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      */
     public Pager(AbstractApi api, Class<T> type, int itemsPerPage, MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
+
         javaType = mapper.getTypeFactory().constructCollectionType(List.class, type);
 
         if (itemsPerPage < 1) {
@@ -168,8 +172,10 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param response the Response instance to get the value from
      * @param key      the HTTP header key to get the value for
      * @return the specified header value from the Response instance, or null if the header is not present
+     * @throws GitLabApiException if any error occurs
      */
-    private String getHeaderValue(Response response, String key) {
+    private String getHeaderValue(Response response, String key) throws GitLabApiException {
+
         String value = response.getHeaderString(key);
         value = (value != null ? value.trim() : null);
         if (value == null || value.length() == 0) {
@@ -188,6 +194,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @throws GitLabApiException if any error occurs
      */
     private int getIntHeaderValue(Response response, String key) throws GitLabApiException {
+
         String value = getHeaderValue(response, key);
         if (value == null) {
             return -1;
@@ -297,6 +304,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @throws GitLabApiException if any error occurs
      */
     public List<T> last() throws GitLabApiException {
+
         if (kaminariNextPage != 0) {
             throw new GitLabApiException("Kaminari count limit exceeded, unable to fetch last page");
         }
@@ -332,6 +340,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *                                details of the error
      */
     public List<T> page(int pageNumber) {
+
         if (currentPage == 0 && pageNumber == 1) {
             currentPage = 1;
             return (currentItems);
@@ -372,6 +381,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @throws GitLabApiException if any error occurs
      */
     public List<T> all() throws GitLabApiException {
+
         // Make sure that current page is 0, this will ensure the whole list is fetched
         // regardless of what page the instance is currently on.
         currentPage = 0;
@@ -393,6 +403,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @throws GitLabApiException    if any other error occurs
      */
     public Stream<T> stream() throws GitLabApiException, IllegalStateException {
+
         if (pagerStream == null) {
             synchronized (this) {
                 if (pagerStream == null) {
@@ -426,6 +437,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @throws IllegalStateException if Stream has already been issued
      */
     public Stream<T> lazyStream() throws IllegalStateException {
+
         if (pagerStream == null) {
             synchronized (this) {
                 if (pagerStream == null) {

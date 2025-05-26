@@ -73,4 +73,5 @@ public interface Sensors {
      * @return CPU Voltage in Volts if available, 0 otherwise.
      */
     double getCpuVoltage();
+
 }

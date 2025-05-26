@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.models.AllowedTo;
+import org.miaixz.bus.gitlab.models.GitLabForm;
 import org.miaixz.bus.gitlab.models.ProtectedBranch;
 
 import jakarta.ws.rs.core.Form;
@@ -78,7 +79,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      */
     public Pager<ProtectedBranch> getProtectedBranches(Object projectIdOrPath, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<>(this, ProtectedBranch.class, itemsPerPage, null, "projects",
+        return (new Pager<ProtectedBranch>(this, ProtectedBranch.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "protected_branches"));
     }
 
@@ -334,7 +335,7 @@ public class ProtectedBranchesApi extends AbstractApi {
             AllowedTo allowedToMerge, AllowedTo allowedToUnprotect, Boolean codeOwnerApprovalRequired)
             throws GitLabApiException {
 
-        GitLabApiForm formData = new GitLabApiForm().withParam("name", branchName, true)
+        GitLabForm formData = new GitLabForm().withParam("name", branchName, true)
                 .withParam("code_owner_approval_required", codeOwnerApprovalRequired);
 
         if (allowedToPush != null)
@@ -344,7 +345,7 @@ public class ProtectedBranchesApi extends AbstractApi {
         if (allowedToUnprotect != null)
             allowedToUnprotect.getForm(formData, "allowed_to_unprotect");
 
-        Response response = post(Response.Status.CREATED, formData.asMap(), "projects",
+        Response response = post(Response.Status.CREATED, new GitLabApiForm(formData).asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "protected_branches");
         return (response.readEntity(ProtectedBranch.class));
     }

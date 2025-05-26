@@ -120,4 +120,5 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
         return new InternetProtocolStats.UdpStats(Parsing.unsignedIntToLong(stat.udps_snd6_swcsum),
                 Parsing.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
     }
+
 }

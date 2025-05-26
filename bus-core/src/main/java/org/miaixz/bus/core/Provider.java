@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core;
 
+import java.io.Serializable;
+
 /**
  * 策略模式
  *
@@ -34,7 +36,7 @@ package org.miaixz.bus.core;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider<T> {
+public interface Provider<T> extends Serializable {
 
     /**
      * 支持类型

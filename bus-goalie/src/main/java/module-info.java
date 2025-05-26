@@ -37,6 +37,7 @@ module bus.goalie {
     requires bus.crypto;
     requires bus.extra;
     requires bus.http;
+    requires bus.logger;
 
     requires static lombok;
     requires static jakarta.annotation;
@@ -54,14 +55,13 @@ module bus.goalie {
     requires static io.netty.handler;
     requires static org.reactivestreams;
     requires static com.google.common;
-    requires bus.logger;
 
     exports org.miaixz.bus.goalie;
     exports org.miaixz.bus.goalie.annotation;
     exports org.miaixz.bus.goalie.filter;
     exports org.miaixz.bus.goalie.handler;
-    exports org.miaixz.bus.goalie.metric;
+    exports org.miaixz.bus.goalie.magic;
+    exports org.miaixz.bus.goalie.provider;
     exports org.miaixz.bus.goalie.registry;
-    exports org.miaixz.bus.goalie.support;
 
 }

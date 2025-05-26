@@ -109,4 +109,5 @@ final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
     private VirtualMemory createVirtualMemory() {
         return new OpenBsdVirtualMemory(this);
     }
+
 }

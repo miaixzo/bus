@@ -31,19 +31,19 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.Constants.IssueScope;
-import org.miaixz.bus.gitlab.GitLabApiException;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.IssueScope;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 /**
  * This class is used to filter issues when getting issue statistics. of them.
  */
 public class IssuesStatisticsFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852280178610L;
 
     private List<String> labels;
     private String milestone;
@@ -131,9 +131,9 @@ public class IssuesStatisticsFilter implements Serializable {
     }
 
     @JsonIgnore
-    public GitLabApiForm getQueryParams() throws GitLabApiException {
+    public GitLabForm getQueryParams() {
 
-        return (new GitLabApiForm().withParam("labels", (labels != null ? String.join(",", labels) : null))
+        return (new GitLabForm().withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("iids", iids).withParam("milestone", milestone).withParam("scope", scope)
                 .withParam("author_id", authorId).withParam("assignee_id", assigneeId)
                 .withParam("my_reaction_emoji", myReactionEmoji).withParam("search", search).withParam("in", in)

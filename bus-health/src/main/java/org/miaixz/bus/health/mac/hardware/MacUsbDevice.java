@@ -309,4 +309,5 @@ public class MacUsbDevice extends AbstractUsbDevice {
                 serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId),
                 usbDevices);
     }
+
 }

@@ -43,7 +43,7 @@ import jakarta.ws.rs.core.Response;
  * This class implements the client side API for the GitLab Packages API. See
  * <a href="https://docs.gitlab.com/ee/api/packages.html">Packages API at GitLab</a> for more information.
  * </p>
- * 
+ *
  * NOTE: This API is not available in the Community edition of GitLab.
  */
 public class PackagesApi extends AbstractApi {
@@ -85,7 +85,7 @@ public class PackagesApi extends AbstractApi {
     public List<Package> getPackages(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages");
-        return response.readEntity(new GenericType<>() {
+        return response.readEntity(new GenericType<List<Package>>() {
         });
     }
 
@@ -122,7 +122,8 @@ public class PackagesApi extends AbstractApi {
      */
     public Pager<Package> getPackages(Object projectIdOrPath, PackageFilter filter, int itemsPerPage)
             throws GitLabApiException {
-        MultivaluedMap query = filter != null ? filter.getQueryParams().asMap() : null;
+        MultivaluedMap<String, String> query = filter != null ? new GitLabApiForm(filter.getQueryParams()).asMap()
+                : null;
         return (new Pager<Package>(this, Package.class, itemsPerPage, query, "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages"));
     }
@@ -212,7 +213,7 @@ public class PackagesApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages", packageId, "package_files");
-        return response.readEntity(new GenericType<>() {
+        return response.readEntity(new GenericType<List<PackageFile>>() {
         });
     }
 
@@ -231,7 +232,7 @@ public class PackagesApi extends AbstractApi {
      */
     public Pager<PackageFile> getPackageFiles(Object projectIdOrPath, Long packageId, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<>(this, PackageFile.class, itemsPerPage, null, "projects",
+        return (new Pager<PackageFile>(this, PackageFile.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages", packageId, "package_files"));
     }
 

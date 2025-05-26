@@ -33,10 +33,12 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
 
 public class SshKey implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852232083769L;
 
     private Long id;
     private String title;

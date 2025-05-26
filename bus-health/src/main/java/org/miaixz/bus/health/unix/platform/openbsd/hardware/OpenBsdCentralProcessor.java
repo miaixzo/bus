@@ -363,4 +363,5 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         }
         return average;
     }
+
 }

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -45,7 +45,7 @@ public interface TableSchemaBuilder extends ORDER {
      * @param chain       工厂链，用于调用下一个处理逻辑
      * @return 实体类表信息
      */
-    TableMeta createEntityTable(Class<?> entityClass, Chain chain);
+    TableMeta createTable(Class<?> entityClass, Chain chain);
 
     /**
      * 工厂链接口，用于链式调用表信息创建逻辑
@@ -58,7 +58,7 @@ public interface TableSchemaBuilder extends ORDER {
          * @param entityClass 实体类类型
          * @return 实体类表信息
          */
-        TableMeta createEntityTable(Class<?> entityClass);
+        TableMeta createTable(Class<?> entityClass);
     }
 
 }

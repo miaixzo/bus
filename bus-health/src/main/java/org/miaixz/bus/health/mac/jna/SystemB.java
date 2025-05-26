@@ -197,4 +197,5 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         // max element is 524 bytes
         public byte[] max_size = new byte[524];
     }
+
 }

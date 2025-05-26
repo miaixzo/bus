@@ -33,8 +33,12 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
 
 public class EpicIssue extends AbstractIssue {
+
+    @Serial
+    private static final long serialVersionUID = 2852271712003L;
 
     @JsonProperty("_links")
     private Map<String, String> links;

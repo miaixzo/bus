@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.apache.ibatis.type.TypeHandler;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -40,7 +41,7 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
 import jakarta.persistence.*;
 
 /**
- * 默认列工厂实现，支持 jakarta.persistence 注解的实体类
+ * 默认列构建器，支持 jakarta.persistence 注解的实体类，解析字段注解并生成列信息
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,65 +49,82 @@ import jakarta.persistence.*;
 public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
 
     /**
-     * 创建实体列信息，处理字段注解并生成列信息
+     * 忽略标记，用于表示字段不映射到数据库列
+     */
+    private static final Optional<List<ColumnMeta>> IGNORE = Optional.of(Collections.emptyList());
+
+    /**
+     * 创建实体列信息，解析字段注解并生成列元数据
      *
-     * @param entityTable 实体表信息
-     * @param field       字段信息
-     * @param chain       列工厂处理链
-     * @return 实体类中列信息的 Optional 包装对象，若为 IGNORE 或字段标记为 Transient 则返回 IGNORE
+     * @param entityTable 实体表信息，包含表元数据
+     * @param field       字段信息，包含字段元数据
+     * @param chain       列工厂处理链，用于责任链模式
+     * @return 列信息的 Optional 包装对象，若字段被忽略或标记为 Transient 则返回空列表
      */
     @Override
-    public Optional<List<ColumnMeta>> createEntityColumn(TableMeta entityTable, FieldMeta field,
+    public Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field,
             ColumnSchemaBuilder.Chain chain) {
-        Optional<List<ColumnMeta>> columns = chain.createEntityColumn(entityTable, field);
+        // 优先调用责任链中的下一个处理器
+        Optional<List<ColumnMeta>> columns = chain.createColumn(entityTable, field);
         if (columns == IGNORE || field.isAnnotationPresent(Transient.class)) {
             return IGNORE;
-        } else if (!columns.isPresent()) {
-            // 没有 @Transient 注解的字段都认为是表字段，字段名默认驼峰转下划线
-            columns = Optional.of(Collections.singletonList(
-                    ColumnMeta.of(field).column(NamingProvider.getDefaultStyle().columnName(entityTable, field))));
         }
+
+        // 若无列信息且字段未标记为 Transient，生成默认列信息（驼峰转下划线）
+        if (!columns.isPresent()) {
+            String columnName = NamingProvider.getDefaultStyle().columnName(entityTable, field);
+            columns = Optional.of(Collections.singletonList(ColumnMeta.of(field).column(columnName)));
+        }
+
+        // 处理列信息中的注解
         if (columns.isPresent()) {
-            List<ColumnMeta> list = columns.getOrNull();
-            for (ColumnMeta columnMeta : list) {
-                FieldMeta entityField = columnMeta.field();
-                // 主键
-                if (!columnMeta.id()) {
-                    columnMeta.id(entityField.isAnnotationPresent(Id.class));
-                }
-                // 列名及相关属性
-                if (field.isAnnotationPresent(Column.class)) {
-                    Column column = field.getAnnotation(Column.class);
-                    String columnName = column.name();
-                    if (!columnName.isEmpty()) {
-                        columnMeta.column(columnName);
-                    }
-                    columnMeta.insertable(column.insertable()).updatable(column.updatable());
-                    if (column.scale() != 0) {
-                        columnMeta.numericScale(String.valueOf(column.scale()));
-                    }
-                }
-                // 排序
-                if (field.isAnnotationPresent(OrderBy.class)) {
-                    OrderBy orderBy = field.getAnnotation(OrderBy.class);
-                    if (orderBy.value().isEmpty()) {
-                        columnMeta.orderBy("ASC");
-                    } else {
-                        columnMeta.orderBy(orderBy.value());
-                    }
-                }
-                // 类型处理器
-                if (field.isAnnotationPresent(Convert.class)) {
-                    Convert convert = field.getAnnotation(Convert.class);
-                    Class converter = convert.converter();
-                    // 确保 converter 不是 void 且是 TypeHandler 的子类
-                    if (converter != void.class && TypeHandler.class.isAssignableFrom(converter)) {
-                        columnMeta.typeHandler(converter);
-                    }
-                }
+            List<ColumnMeta> columnList = columns.getOrNull();
+            for (ColumnMeta columnMeta : columnList) {
+                processAnnotations(columnMeta, field);
             }
         }
+
         return columns;
+    }
+
+    /**
+     * 处理字段上的注解，设置列的元数据属性
+     *
+     * @param columnMeta 列元数据对象
+     * @param field      字段元数据对象
+     */
+    protected void processAnnotations(ColumnMeta columnMeta, FieldMeta field) {
+        // 处理主键注解
+        if (!columnMeta.id() && field.isAnnotationPresent(Id.class)) {
+            columnMeta.id(true);
+        }
+
+        // 处理列注解
+        if (field.isAnnotationPresent(Column.class)) {
+            Column column = field.getAnnotation(Column.class);
+            if (!column.name().isEmpty()) {
+                columnMeta.column(column.name());
+            }
+            columnMeta.insertable(column.insertable()).updatable(column.updatable());
+            if (column.scale() != 0) {
+                columnMeta.numericScale(String.valueOf(column.scale()));
+            }
+        }
+
+        // 处理排序注解
+        if (field.isAnnotationPresent(OrderBy.class)) {
+            OrderBy orderBy = field.getAnnotation(OrderBy.class);
+            columnMeta.orderBy(orderBy.value().isEmpty() ? ORDER.ASC : orderBy.value());
+        }
+
+        // 处理类型转换器注解
+        if (field.isAnnotationPresent(Convert.class)) {
+            Convert convert = field.getAnnotation(Convert.class);
+            Class converter = convert.converter();
+            if (converter != void.class && TypeHandler.class.isAssignableFrom(converter)) {
+                columnMeta.typeHandler(converter);
+            }
+        }
     }
 
 }

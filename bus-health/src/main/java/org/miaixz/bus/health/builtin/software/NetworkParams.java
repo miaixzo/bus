@@ -72,4 +72,5 @@ public interface NetworkParams {
      * @return default gateway for IPv6, or empty string if not defined.
      */
     String getIpv6DefaultGateway();
+
 }

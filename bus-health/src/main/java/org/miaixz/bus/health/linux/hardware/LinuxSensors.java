@@ -57,8 +57,7 @@ final class LinuxSensors extends AbstractSensors {
 
     private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
             .of(Config.get(Config._LINUX_THERMAL_ZONE_TYPE_PRIORITY, "").split(Symbol.COMMA))
-            .filter((s) -> !s.isEmpty())
-            .collect(Collectors.toList());
+            .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
 
     private static final String TYPE = "type";
     // Possible sensor types. See sysfs documentation for others, e.g. current
@@ -280,4 +279,5 @@ final class LinuxSensors extends AbstractSensors {
         }
         return 0d;
     }
+
 }

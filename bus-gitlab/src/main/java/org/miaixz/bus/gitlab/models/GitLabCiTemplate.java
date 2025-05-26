@@ -30,10 +30,12 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class GitLabCiTemplate implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852277869780L;
 
     private String name;
     private String content;

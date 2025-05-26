@@ -476,4 +476,5 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     enum PsThreadColumns {
         TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS
     }
+
 }

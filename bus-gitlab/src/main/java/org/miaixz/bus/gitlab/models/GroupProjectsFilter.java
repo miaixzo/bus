@@ -29,17 +29,18 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.Constants.ProjectOrderBy;
-import org.miaixz.bus.gitlab.Constants.SortOrder;
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.Constants.ProjectOrderBy;
+import org.miaixz.bus.gitlab.models.Constants.SortOrder;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified group.
  */
 public class GroupProjectsFilter implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852278795085L;
 
     private Boolean archived;
     private Visibility visibility;
@@ -205,8 +206,8 @@ public class GroupProjectsFilter implements Serializable {
      *
      * @return a GitLabApiForm instance holding the query parameters for this ProjectFilter instance
      */
-    public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm().withParam("archived", archived).withParam("visibility", visibility)
+    public GitLabForm getQueryParams() {
+        return (new GitLabForm().withParam("archived", archived).withParam("visibility", visibility)
                 .withParam("order_by", orderBy).withParam("sort", sort).withParam("search", search)
                 .withParam("simple", simple).withParam("owned", owned).withParam("starred", starred)
                 .withParam("with_custom_attributes", withCustomAttributes)

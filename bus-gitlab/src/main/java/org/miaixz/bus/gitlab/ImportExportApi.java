@@ -235,7 +235,7 @@ public class ImportExportApi extends AbstractApi {
      * <li>initialize_with_readme (optional) - Initialize project with README file</li>
      * <li>packagesEnabled (optional) - Enable or disable mvn packages repository feature</li>
      * </ul>
-     * 
+     *
      * <pre>
      * <code>GitLab Endpoint: POST /projects/import</code>
      * </pre>

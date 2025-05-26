@@ -29,9 +29,12 @@ package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import java.io.Serial;
+
 public class CreatedChildEpic extends AbstractMinimalEpic<CreatedChildEpic> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852259022133L;
 
     private Boolean hasChildren;
     private Boolean hasIssues;

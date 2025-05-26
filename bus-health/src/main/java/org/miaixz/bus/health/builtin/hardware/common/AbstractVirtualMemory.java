@@ -47,4 +47,5 @@ public abstract class AbstractVirtualMemory implements VirtualMemory {
                 + Formats.formatBytes(getVirtualMax());
         return sb;
     }
+
 }

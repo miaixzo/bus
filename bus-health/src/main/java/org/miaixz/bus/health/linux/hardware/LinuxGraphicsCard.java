@@ -181,4 +181,5 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                 versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
         return cardList;
     }
+
 }

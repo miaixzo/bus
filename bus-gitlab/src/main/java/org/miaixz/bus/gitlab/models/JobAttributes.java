@@ -33,10 +33,12 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serial;
 
 public class JobAttributes implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852280857375L;
 
     @JsonProperty("job_variables_attributes")
     private List<JobAttribute> jobAttributes;

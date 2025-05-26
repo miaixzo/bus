@@ -254,4 +254,5 @@ public interface CLibrary extends LibCAPI, Library {
         public static class ByReference extends Addrinfo implements Structure.ByReference {
         }
     }
+
 }

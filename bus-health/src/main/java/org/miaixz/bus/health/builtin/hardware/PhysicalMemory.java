@@ -136,4 +136,5 @@ public class PhysicalMemory {
         sb.append(", Serial number: " + getSerialNumber());
         return sb.toString();
     }
+
 }

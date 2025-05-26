@@ -35,10 +35,36 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class ImportStatus implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852279101759L;
+
+    /**
+     * Enum representing the status of the import.
+     */
+    public enum Status {
+        NONE, SCHEDULED, FAILED, STARTED, FINISHED;
+
+        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
+
+        @JsonCreator
+        public static Status forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 
     private Long id;
     private String description;
@@ -125,31 +151,6 @@ public class ImportStatus implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    /**
-     * Enum representing the status of the import.
-     */
-    public enum Status {
-
-        NONE, SCHEDULED, FAILED, STARTED, FINISHED;
-
-        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
-
-        @JsonCreator
-        public static Status forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
 }

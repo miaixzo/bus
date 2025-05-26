@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,8 +33,8 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
-import org.miaixz.bus.mapper.builder.*;
+import org.miaixz.bus.mapper.Holder;
+import org.miaixz.bus.mapper.builder.ClassMetaResolver;
 
 /**
  * 实体类信息工厂，用于创建和管理实体类信息
@@ -69,15 +69,15 @@ public abstract class MapperFactory {
      * @throws NullPointerException 如果无法获取实体类信息
      */
     public static TableMeta create(Class<?> entityClass) {
-        // 创建 EntityTable，不处理列（字段），此时返回的 EntityTable 已经经过所有处理链的加工
-        TableMeta entityTable = Holder.entityTableFactoryChain.createEntityTable(entityClass);
-        if (entityTable == null) {
+        // 创建 TableMeta，不处理列（字段），此时返回的 TableMeta 已经经过所有处理链的加工
+        TableMeta tableMeta = Holder.TABLE_SCHEMA_CHAIN.createTable(entityClass);
+        if (tableMeta == null) {
             throw new NullPointerException("Unable to get " + entityClass.getName() + " entity class information");
         }
         // 如果实体表已经处理好，直接返回
-        if (!entityTable.ready()) {
+        if (!tableMeta.ready()) {
             synchronized (entityClass) {
-                if (!entityTable.ready()) {
+                if (!tableMeta.ready()) {
                     // 未处理的需要获取字段
                     Class<?> declaredClass = entityClass;
                     boolean isSuperclass = false;
@@ -92,28 +92,28 @@ public abstract class MapperFactory {
                             if (!Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers)) {
                                 FieldMeta fieldMeta = new FieldMeta(entityClass, field);
                                 // 是否需要排除字段
-                                if (entityTable.isExcludeField(fieldMeta)) {
+                                if (tableMeta.isExcludeField(fieldMeta)) {
                                     continue;
                                 }
-                                Optional<List<ColumnMeta>> optionalEntityColumns = Holder.entityColumnFactoryChain
-                                        .createEntityColumn(entityTable, fieldMeta);
-                                optionalEntityColumns.ifPresent(columns -> columns.forEach(entityTable::addColumn));
+                                Optional<List<ColumnMeta>> optionalEntityColumns = Holder.COLUMN_SCHEMA_CHAIN
+                                        .createColumn(tableMeta, fieldMeta);
+                                optionalEntityColumns.ifPresent(columns -> columns.forEach(tableMeta::addColumn));
                             }
                         }
                         // 迭代获取父类
                         declaredClass = declaredClass.getSuperclass();
                         // 排除父类
-                        while (entityTable.isExcludeSuperClass(declaredClass) && declaredClass != Object.class) {
+                        while (tableMeta.isExcludeSuperClass(declaredClass) && declaredClass != Object.class) {
                             declaredClass = declaredClass.getSuperclass();
                         }
                         isSuperclass = true;
                     }
                     // 标记处理完成
-                    entityTable.ready(true);
+                    tableMeta.ready(true);
                 }
             }
         }
-        return entityTable;
+        return tableMeta;
     }
 
     /**
@@ -127,23 +127,6 @@ public abstract class MapperFactory {
             array[i] = array[array.length - i - 1];
             array[array.length - i - 1] = temp;
         }
-    }
-
-    /**
-     * 工厂实例持有类，管理表工厂和列工厂的处理链
-     */
-    static class Holder {
-        /**
-         * 表工厂处理链，通过 SPI 加载
-         */
-        static final TableSchemaBuilder.Chain entityTableFactoryChain = new TableSchemaChain(
-                NormalSpiLoader.loadList(false, TableSchemaBuilder.class));
-
-        /**
-         * 列工厂处理链，通过 SPI 加载
-         */
-        static final ColumnSchemaBuilder.Chain entityColumnFactoryChain = new ColumnSchemaChain(
-                NormalSpiLoader.loadList(false, ColumnSchemaBuilder.class));
     }
 
 }

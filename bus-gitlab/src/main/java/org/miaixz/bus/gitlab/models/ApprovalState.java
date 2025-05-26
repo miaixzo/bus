@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -34,7 +37,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ApprovalState implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852253779129L;
 
     private Boolean approvalRulesOverwritten;
     private List<ApprovalRule> rules;

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.selector;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -54,7 +55,8 @@ import org.miaixz.bus.core.xyz.CollKit;
  */
 public class WeightRandomSelector<T> implements Selector<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852237255368L;
 
     private final TreeMap<Integer, T> weightMap;
 

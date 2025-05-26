@@ -30,10 +30,12 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Membership implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852283375736L;
 
     private Long sourceId;
     private String sourceName;

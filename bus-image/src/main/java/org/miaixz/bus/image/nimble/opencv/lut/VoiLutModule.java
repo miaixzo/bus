@@ -72,23 +72,7 @@ public class VoiLutModule {
         init(Objects.requireNonNull(dcm));
     }
 
-    private static Double getDouble(Attributes dcm, int tag) {
-        Double val = Builder.getDoubleFromDicomElement(dcm, tag, null);
-        if (val != null) {
-            Attributes parent = dcm.getParent();
-            while (parent != null) {
-                val = Builder.getDoubleFromDicomElement(parent, tag, null);
-                if (val != null) {
-                    return val;
-                }
-                parent = parent.getParent();
-            }
-        }
-        return val;
-    }
-
     private void init(Attributes dcm) {
-        String modality = RGBImageVoiLut.getModality(dcm);
         Optional<double[]> wc = Optional.ofNullable(dcm.getDoubles(Tag.WindowCenter));
         Optional<double[]> ww = Optional.ofNullable(dcm.getDoubles(Tag.WindowWidth));
         if (wc.isPresent() && ww.isPresent()) {
@@ -98,10 +82,6 @@ public class VoiLutModule {
             String[] wexpl = Builder.getStringArrayFromDicomElement(dcm, Tag.WindowCenterWidthExplanation);
             if (wexpl != null) {
                 this.windowCenterWidthExplanation = Stream.of(wexpl).toList();
-            }
-
-            if ("MR".equals(modality) || "XA".equals(modality) || "XRF".equals(modality) || "PT".equals(modality)) {
-                adaptWindowWidth(dcm);
             }
         }
 
@@ -127,28 +107,6 @@ public class VoiLutModule {
         } else if (windowWidth.size() != windowCenter.size()) {
             Logger.debug("VOI Window Center and Width attributes have different number of values : {} => {}",
                     windowCenter.size(), windowWidth.size());
-        }
-    }
-
-    private void adaptWindowWidth(Attributes dcm) {
-        Double rescaleSlope = getDouble(dcm, Tag.RescaleSlope);
-        Double rescaleIntercept = getDouble(dcm, Tag.RescaleIntercept);
-        if (rescaleSlope != null && rescaleIntercept != null) {
-            /*
-             * IHE BIR: Windowing and Rendering 4.16.4.2.2.5.4
-             *
-             * If Rescale Slope and Rescale Intercept has been removed in ModalityLutModule then the Window Center and
-             * Window Width must be adapted. See
-             * https://groups.google.com/forum/#!topic/comp.protocols.dicom/iTCxWcsqjnM
-             */
-            int length = windowCenter.size();
-            if (length != windowWidth.size()) {
-                length = 0;
-            }
-            for (int i = 0; i < length; i++) {
-                windowWidth.set(i, windowWidth.get(i) / rescaleSlope);
-                windowCenter.set(i, (windowCenter.get(i) - rescaleIntercept) / rescaleSlope);
-            }
         }
     }
 

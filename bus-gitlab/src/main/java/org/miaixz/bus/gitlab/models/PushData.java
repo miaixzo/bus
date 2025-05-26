@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants.ActionType;
+import org.miaixz.bus.gitlab.models.Constants.ActionType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class PushData {

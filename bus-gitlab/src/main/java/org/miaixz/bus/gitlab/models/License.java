@@ -32,10 +32,12 @@ import java.util.Date;
 import java.util.Map;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class License implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852281999565L;
 
     private Long id;
     private String plan;

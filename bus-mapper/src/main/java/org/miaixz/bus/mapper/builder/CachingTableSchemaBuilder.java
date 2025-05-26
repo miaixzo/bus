@@ -53,11 +53,11 @@ public class CachingTableSchemaBuilder implements TableSchemaBuilder {
      * @return 实体表信息，失败时返回 null
      */
     @Override
-    public TableMeta createEntityTable(Class<?> entityClass, Chain chain) {
+    public TableMeta createTable(Class<?> entityClass, Chain chain) {
         if (ENTITY_CLASS_MAP.get(entityClass) == null) {
             synchronized (entityClass) {
                 if (ENTITY_CLASS_MAP.get(entityClass) == null) {
-                    TableMeta entityTable = chain.createEntityTable(entityClass);
+                    TableMeta entityTable = chain.createTable(entityClass);
                     if (entityTable != null) {
                         ENTITY_CLASS_MAP.put(entityClass, entityTable);
                     } else {

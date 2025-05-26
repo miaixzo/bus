@@ -73,4 +73,5 @@ public class MariadbPrimaryKey implements PrimaryKey {
      */
     @MappingField(value = "KEY_SEQ")
     private String keySeq;
+
 }

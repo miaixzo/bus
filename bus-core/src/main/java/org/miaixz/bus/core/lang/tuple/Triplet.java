@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.tuple;
 
+import java.io.Serial;
 import java.util.Objects;
 
 /**
@@ -40,7 +41,8 @@ import java.util.Objects;
  */
 public class Triplet<L, M, R> extends Pair<L, R> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852238170795L;
 
     /**
      * 中值

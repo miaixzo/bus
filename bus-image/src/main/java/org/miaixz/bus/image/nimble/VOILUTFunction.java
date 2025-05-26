@@ -33,4 +33,5 @@ package org.miaixz.bus.image.nimble;
  */
 public enum VOILUTFunction {
     LINEAR, LINEAR_EXACT, SIGMOID
+
 }

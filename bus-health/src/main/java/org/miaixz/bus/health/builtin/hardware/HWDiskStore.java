@@ -139,4 +139,5 @@ public interface HWDiskStore {
      * @return True if the update was (probably) successful, false if the disk was not found
      */
     boolean updateAttributes();
+
 }

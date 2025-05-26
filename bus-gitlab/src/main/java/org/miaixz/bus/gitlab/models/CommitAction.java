@@ -34,18 +34,23 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.Base64;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.Constants.Encoding;
-import org.miaixz.bus.gitlab.GitLabApiException;
+import org.miaixz.bus.gitlab.models.Constants.Encoding;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serial;
 
 public class CommitAction implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852257630651L;
+
+    public CommitAction withFileContent(String filePath, Encoding encoding) {
+        File file = new File(filePath);
+        return (withFileContent(file, filePath, encoding));
+    }
 
     private Action action;
     private String filePath;
@@ -169,12 +174,7 @@ public class CommitAction implements Serializable {
         return this;
     }
 
-    public CommitAction withFileContent(String filePath, Encoding encoding) throws GitLabApiException {
-        File file = new File(filePath);
-        return (withFileContent(file, filePath, encoding));
-    }
-
-    public CommitAction withFileContent(File file, String filePath, Encoding encoding) throws GitLabApiException {
+    public CommitAction withFileContent(File file, String filePath, Encoding encoding) {
 
         this.encoding = (encoding != null ? encoding : Encoding.TEXT);
         this.filePath = filePath;
@@ -182,19 +182,13 @@ public class CommitAction implements Serializable {
         try {
             content = getFileContentAsString(file, this.encoding);
         } catch (IOException e) {
-            throw new GitLabApiException(e);
+            throw new IllegalStateException(e);
         }
 
         return (this);
     }
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
-
     public enum Action {
-
         CREATE, DELETE, MOVE, UPDATE, CHMOD;
 
         private static JacksonJsonEnumHelper<Action> enumHelper = new JacksonJsonEnumHelper<>(Action.class);
@@ -213,6 +207,11 @@ public class CommitAction implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
 }

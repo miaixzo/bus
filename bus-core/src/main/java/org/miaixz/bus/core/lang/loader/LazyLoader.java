@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.miaixz.bus.core.Loader;
@@ -41,7 +42,8 @@ import org.miaixz.bus.core.Loader;
  */
 public abstract class LazyLoader<T> implements Loader<T>, Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852290978229L;
 
     /**
      * 被加载对象

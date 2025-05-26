@@ -89,6 +89,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
     </properties>
 
     <build>
@@ -98,8 +99,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -189,7 +188,7 @@
                     </formats>
                     <java>
                         <eclipse>
-                            <file>../.github/spotless/spotless_format.xml</file>
+                            <file>../.github/scripts/format.xml</file>
                         </eclipse>
                         <removeUnusedImports />
                     </java>

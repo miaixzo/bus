@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.nimble.codec;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
@@ -51,7 +52,8 @@ import org.miaixz.bus.logger.Logger;
  */
 public class ImageReaderFactory implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852253212581L;
 
     private static volatile ImageReaderFactory defaultFactory;
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
@@ -184,7 +186,8 @@ public class ImageReaderFactory implements Serializable {
 
     public static class ImageReaderParam implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852253355575L;
 
         public final String formatName;
         public final String className;

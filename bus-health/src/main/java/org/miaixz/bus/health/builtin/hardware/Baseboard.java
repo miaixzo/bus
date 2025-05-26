@@ -64,4 +64,5 @@ public interface Baseboard {
      * @return The serial number.
      */
     String getSerialNumber();
+
 }

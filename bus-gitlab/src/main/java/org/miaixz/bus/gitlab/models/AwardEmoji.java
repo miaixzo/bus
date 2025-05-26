@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,7 +41,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class AwardEmoji implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852256190115L;
 
     private Long id;
     private String name;

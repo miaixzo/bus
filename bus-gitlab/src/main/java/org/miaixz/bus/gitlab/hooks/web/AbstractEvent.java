@@ -27,20 +27,26 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serial;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class AbstractEvent implements Event {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852267332510L;
 
+    private String eventType;
     private String requestUrl;
     private String requestQueryString;
     private String secretToken;
 
-    @Override
-    @JsonIgnore
-    public String getRequestUrl() {
-        return (requestUrl);
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     @Override
@@ -50,8 +56,8 @@ public abstract class AbstractEvent implements Event {
 
     @Override
     @JsonIgnore
-    public String getRequestQueryString() {
-        return (requestQueryString);
+    public String getRequestUrl() {
+        return (requestUrl);
     }
 
     @Override
@@ -61,13 +67,19 @@ public abstract class AbstractEvent implements Event {
 
     @Override
     @JsonIgnore
-    public String getRequestSecretToken() {
-        return (secretToken);
+    public String getRequestQueryString() {
+        return (requestQueryString);
     }
 
     @Override
     public void setRequestSecretToken(String secretToken) {
         this.secretToken = secretToken;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getRequestSecretToken() {
+        return (secretToken);
     }
 
 }

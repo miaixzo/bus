@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -90,9 +90,9 @@ public class ColumnSchemaChain implements ColumnSchemaBuilder.Chain {
      * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
      */
     @Override
-    public Optional<List<ColumnMeta>> createEntityColumn(TableMeta entityTable, FieldMeta field) {
+    public Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field) {
         if (index < factories.size()) {
-            return factories.get(index).createEntityColumn(entityTable, field, next);
+            return factories.get(index).createColumn(entityTable, field, next);
         }
         return Optional.empty();
     }

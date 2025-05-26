@@ -33,6 +33,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -75,6 +76,19 @@ public class RGBImageVoiLut {
             }
         }
         return modality;
+    }
+
+    public static Pair<Double, Double> getMinMax(int bitsStored, boolean signed) {
+        double minValue, maxValue;
+        int stored = (bitsStored > 16) ? 16 : Math.max(bitsStored, 1);
+        if (signed) {
+            minValue = -(1 << (stored - 1));
+            maxValue = (1 << (stored - 1)) - 1;
+        } else {
+            minValue = 0;
+            maxValue = (1 << stored) - 1;
+        }
+        return new Pair<>(minValue, maxValue);
     }
 
     public static PlanarImage getRGBImageFromPaletteColorModel(PlanarImage source, Attributes ds) {
@@ -212,14 +226,14 @@ public class RGBImageVoiLut {
      * minOutValue=-128 and maxOutValue=127 - when bitsStored=16 bits unsigned => minOutValue= 0 and maxOutValue= 65535
      * - when bitsStored=16 bits signed => minOutValue= -32768 and maxOutValue= 32767
      *
-     * @param lutShape
-     * @param window
-     * @param level
-     * @param minValue
-     * @param maxValue
-     * @param bitsStored
-     * @param isSigned
-     * @param inverse
+     * @param lutShape   the LUT shape
+     * @param window     the window width
+     * @param level      the window center
+     * @param minValue   the minimum input value
+     * @param maxValue   the maximum input value
+     * @param bitsStored the number of bits stored
+     * @param isSigned   true if the data is signed
+     * @param inverse    true if the LUT should be inverted
      * @return a LookupTableJAI for data between minValue and maxValue according to all given parameters
      */
     public static LookupTableCV createVoiLut(LutShape lutShape, double window, double level, int minValue, int maxValue,
@@ -229,8 +243,8 @@ public class RGBImageVoiLut {
             return null;
         }
 
-        int bStored = bitsStored > 16 ? 16 : (bitsStored < 1) ? 1 : bitsStored;
-        double win = window < 1.0 ? 1.0 : window;
+        int bStored = bitsStored > 16 ? 16 : Math.max(bitsStored, 1);
+        double win = Math.max(window, 1.0);
 
         int bitsAllocated = (bStored <= 8) ? 8 : 16;
         int outRangeSize = (1 << bitsAllocated) - 1;
@@ -291,7 +305,7 @@ public class RGBImageVoiLut {
     public static LookupTableCV createRescaleRampLut(double intercept, double slope, int minValue, int maxValue,
             int bitsStored, boolean isSigned, boolean inverse, boolean outputSigned, int bitsOutput) {
 
-        int stored = (bitsStored > 16) ? 16 : ((bitsStored < 1) ? 1 : bitsStored);
+        int stored = (bitsStored > 16) ? 16 : Math.max(bitsStored, 1);
 
         int bitsOutLut = bitsOutput <= 8 ? 8 : 16;
         int outRangeSize = (1 << bitsOutLut) - 1;
@@ -301,8 +315,8 @@ public class RGBImageVoiLut {
         int minInValue = isSigned ? -(1 << (stored - 1)) : 0;
         int maxInValue = isSigned ? (1 << (stored - 1)) - 1 : (1 << stored) - 1;
 
-        minInValue = Math.max(minInValue, maxValue < minValue ? maxValue : minValue);
-        maxInValue = Math.min(maxInValue, maxValue < minValue ? minValue : maxValue);
+        minInValue = Math.max(minInValue, Math.min(maxValue, minValue));
+        maxInValue = Math.min(maxInValue, Math.max(maxValue, minValue));
 
         int numEntries = maxInValue - minInValue + 1;
         Object outLut = (bitsOutLut == 8) ? new byte[numEntries] : new short[numEntries];
@@ -310,18 +324,18 @@ public class RGBImageVoiLut {
         for (int i = 0; i < numEntries; i++) {
             int value = (int) Math.round((i + minInValue) * slope + intercept);
 
-            value = (value >= maxOutValue) ? maxOutValue : ((value <= minOutValue) ? minOutValue : value);
+            value = (value >= maxOutValue) ? maxOutValue : Math.max(value, minOutValue);
             value = inverse ? (maxOutValue + minOutValue - value) : value;
 
             if (outLut instanceof byte[]) {
                 Array.set(outLut, i, (byte) value);
-            } else if (outLut instanceof short[]) {
+            } else {
                 Array.set(outLut, i, (short) value);
             }
         }
 
-        return (outLut instanceof byte[]) ? new LookupTableCV((byte[]) outLut, minInValue) : //
-                new LookupTableCV((short[]) outLut, minInValue, !outputSigned);
+        return (outLut instanceof byte[]) ? new LookupTableCV((byte[]) outLut, minInValue)
+                : new LookupTableCV((short[]) outLut, minInValue, !outputSigned);
     }
 
     /**
@@ -393,14 +407,19 @@ public class RGBImageVoiLut {
                         + minOutValue);
             }
 
-            value = (value >= maxOutValue) ? maxOutValue : ((value <= minOutValue) ? minOutValue : value);
-            value = inverse ? (maxOutValue + minOutValue - value) : value;
+            setLutValue(outLut, minOutValue, maxOutValue, inverse, i, value);
+        }
+    }
 
-            if (outLut instanceof byte[]) {
-                Array.set(outLut, i, (byte) value);
-            } else if (outLut instanceof short[]) {
-                Array.set(outLut, i, (short) value);
-            }
+    private static void setLutValue(Object outLut, int minOutValue, int maxOutValue, boolean inverse, int i,
+            int value) {
+        value = (value >= maxOutValue) ? maxOutValue : Math.max(value, minOutValue);
+        value = inverse ? (maxOutValue + minOutValue - value) : value;
+
+        if (outLut instanceof byte[]) {
+            Array.set(outLut, i, (byte) value);
+        } else if (outLut instanceof short[]) {
+            Array.set(outLut, i, (short) value);
         }
     }
 
@@ -412,15 +431,7 @@ public class RGBImageVoiLut {
 
         for (int i = 0; i < Array.getLength(outLut); i++) {
             int value = (int) ((i + minInValue) * slope + intercept);
-
-            value = (value >= maxOutValue) ? maxOutValue : ((value <= minOutValue) ? minOutValue : value);
-            value = inverse ? (maxOutValue + minOutValue - value) : value;
-
-            if (outLut instanceof byte[]) {
-                Array.set(outLut, i, (byte) value);
-            } else if (outLut instanceof short[]) {
-                Array.set(outLut, i, (short) value);
-            }
+            setLutValue(outLut, minOutValue, maxOutValue, inverse, i, value);
         }
     }
 
@@ -451,20 +462,7 @@ public class RGBImageVoiLut {
 
         for (int i = 0; i < Array.getLength(outLut); i++) {
             double value = outRange / (1d + Math.exp((2d * nFactor / 10d) * (i + minInValue - center) / width));
-
-            if (normalize) {
-                value = (value - minValue) * outRescaleRatio;
-            }
-
-            value = (int) Math.round(value + minOutValue);
-            value = (int) ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
-            value = (int) (inverse ? (maxOutValue + minOutValue - value) : value);
-
-            if (outLut instanceof byte[]) {
-                Array.set(outLut, i, (byte) value);
-            } else if (outLut instanceof short[]) {
-                Array.set(outLut, i, (short) value);
-            }
+            setLutValue(outLut, minOutValue, maxOutValue, inverse, normalize, minValue, outRescaleRatio, i, value);
         }
     }
 
@@ -494,20 +492,7 @@ public class RGBImageVoiLut {
 
         for (int i = 0; i < Array.getLength(outLut); i++) {
             double value = outRange * Math.exp((nFactor / 10d) * (i + minInValue - center) / width);
-
-            if (normalize) {
-                value = (value - minValue) * outRescaleRatio;
-            }
-
-            value = (int) Math.round(value + minOutValue);
-            value = (int) ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
-            value = (int) (inverse ? (maxOutValue + minOutValue - value) : value);
-
-            if (outLut instanceof byte[]) {
-                Array.set(outLut, i, (byte) value);
-            } else if (outLut instanceof short[]) {
-                Array.set(outLut, i, (short) value);
-            }
+            setLutValue(outLut, minOutValue, maxOutValue, inverse, normalize, minValue, outRescaleRatio, i, value);
         }
     }
 
@@ -538,20 +523,24 @@ public class RGBImageVoiLut {
 
         for (int i = 0; i < Array.getLength(outLut); i++) {
             double value = outRange * Math.log((nFactor / 10d) * (1 + (i + minInValue - center) / width));
+            setLutValue(outLut, minOutValue, maxOutValue, inverse, normalize, minValue, outRescaleRatio, i, value);
+        }
+    }
 
-            if (normalize) {
-                value = (value - minValue) * outRescaleRatio;
-            }
+    private static void setLutValue(Object outLut, int minOutValue, int maxOutValue, boolean inverse, boolean normalize,
+            double minValue, double outRescaleRatio, int i, double value) {
+        if (normalize) {
+            value = (value - minValue) * outRescaleRatio;
+        }
 
-            value = (int) Math.round(value + minOutValue);
-            value = (int) ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
-            value = (int) (inverse ? (maxOutValue + minOutValue - value) : value);
+        value = (int) Math.round(value + minOutValue);
+        value = (int) ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
+        value = (int) (inverse ? (maxOutValue + minOutValue - value) : value);
 
-            if (outLut instanceof byte[]) {
-                Array.set(outLut, i, (byte) value);
-            } else if (outLut instanceof short[]) {
-                Array.set(outLut, i, (short) value);
-            }
+        if (outLut instanceof byte[]) {
+            Array.set(outLut, i, (byte) value);
+        } else if (outLut instanceof short[]) {
+            Array.set(outLut, i, (short) value);
         }
     }
 
@@ -567,18 +556,6 @@ public class RGBImageVoiLut {
         return lutDataArray;
     }
 
-    /**
-     * @param width
-     * @param center
-     * @param lookupSequence
-     * @param minInValue
-     * @param maxInValue
-     * @param outLut
-     * @param minOutValue
-     * @param maxOutValue
-     * @param inverse
-     * @return a normalized LookupTableJAI based upon given lutSequence
-     */
     private static void setWindowLevelSequenceLut(double width, double center, LookupTableCV lookupSequence,
             int minInValue, int maxInValue, Object outLut, int minOutValue, int maxOutValue, boolean inverse) {
 

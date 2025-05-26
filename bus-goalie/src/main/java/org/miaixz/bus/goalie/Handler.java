@@ -31,7 +31,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 
 /**
- * 拦截器，原理同spring拦截器
+ * 拦截器接口，类似于 Spring 的拦截器机制，用于在请求处理的不同阶段执行自定义逻辑
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,45 +39,45 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 public interface Handler {
 
     /**
-     * 预处理回调方法，在方法调用前执行。返回false不继续向下执行，此时可使用response返回错误信息
+     * 预处理回调方法，在请求处理前执行 可用于权限验证、参数校验等，若返回 false，则终止请求处理，可通过 response 返回错误信息
      *
-     * @param request  网络请求
-     * @param response 响应信息
-     * @param service  service类
+     * @param request  当前的 HTTP 请求对象
+     * @param response 当前的 HTTP 响应对象
+     * @param service  服务类实例（通常为控制器或处理类）
      * @param args     方法参数
-     * @return 返回false不继续向下执行，此时可使用response返回错误信息
+     * @return 返回 true 继续处理请求，返回 false 终止处理
      */
     default boolean preHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args) {
         return true;
     }
 
     /**
-     * 接口方法执行完后调用此方法。
+     * 后处理回调方法，在接口方法执行完成后但响应返回前执行 可用于修改响应数据或记录日志
      *
-     * @param request  网络请求
-     * @param response 响应信息
-     * @param service  service类
-     * @param args     参数
-     * @param result   返回结果
+     * @param request  当前的 HTTP 请求对象
+     * @param response 当前的 HTTP 响应对象
+     * @param service  服务类实例
+     * @param args     方法参数
+     * @param result   接口方法返回的结果
      */
     default void postHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
             Object result) {
-
+        // 默认空实现
     }
 
     /**
-     * 结果包装完成后执行
+     * 完成回调方法，在响应结果包装并返回客户端后执行 可用于清理资源、记录最终日志或处理异常
      *
-     * @param request   网络请求
-     * @param response  响应信息
-     * @param service   service类
-     * @param args      参数
-     * @param result    最终结果，被包装过
-     * @param exception 业务异常
+     * @param request   当前的 HTTP 请求对象
+     * @param response  当前的 HTTP 响应对象
+     * @param service   服务类实例
+     * @param args      方法参数
+     * @param result    最终包装后的响应结果
+     * @param exception 业务异常（若有）
      */
     default void afterCompletion(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
             Object result, Exception exception) {
-
+        // 默认空实现
     }
 
 }

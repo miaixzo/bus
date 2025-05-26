@@ -115,6 +115,15 @@ public interface Ftp extends Closeable {
     }
 
     /**
+     * 重命名文件
+     *
+     * @param oldPath 旧文件名（或路径）
+     * @param newPath 新文件名（或路径）
+     * @return 是否重命名成功
+     */
+    boolean rename(String oldPath, String newPath);
+
+    /**
      * 在当前远程目录（工作目录）下创建新的目录
      *
      * @param dir 目录名
@@ -173,10 +182,10 @@ public interface Ftp extends Closeable {
     /**
      * 递归下载FTP服务器上文件到本地(文件目录和服务器同步), 服务器上有新文件会覆盖本地文件
      *
-     * @param sourcePath ftp服务器目录
-     * @param destDir    本地目录
+     * @param sourceDir ftp服务器目录
+     * @param targetDir 本地目录
      */
-    void recursiveDownloadFolder(String sourcePath, File destDir);
+    void recursiveDownloadFolder(String sourceDir, File targetDir);
 
     /**
      * 读取FTP服务器上的文件为输入流
@@ -185,4 +194,5 @@ public interface Ftp extends Closeable {
      * @return {@link InputStream}
      */
     InputStream getFileStream(String path);
+
 }

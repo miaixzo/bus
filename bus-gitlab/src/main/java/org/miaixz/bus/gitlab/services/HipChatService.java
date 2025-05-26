@@ -27,11 +27,16 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.GitLabForm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serial;
+
 public class HipChatService extends NotificationService {
+
+    @Serial
+    private static final long serialVersionUID = 2852236110690L;
 
     public static final String TOKEN_PROP = "token";
     public static final String COLOR_PROP = "color";
@@ -47,8 +52,8 @@ public class HipChatService extends NotificationService {
      * @return the form data for this service based on it's properties
      */
     @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm().withParam("push_events", getPushEvents())
+    public GitLabForm servicePropertiesForm() {
+        GitLabForm formData = new GitLabForm().withParam("push_events", getPushEvents())
                 .withParam("issues_events", getIssuesEvents())
                 .withParam("confidential_issues_events", getConfidentialIssuesEvents())
                 .withParam("merge_requests_events", getMergeRequestsEvents())
@@ -115,7 +120,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getColor() {
-        return ((String) getProperty(COLOR_PROP));
+        return getProperty(COLOR_PROP);
     }
 
     public void setColor(String color) {
@@ -128,7 +133,7 @@ public class HipChatService extends NotificationService {
     }
 
     public Boolean getNotify() {
-        return (getProperty(NOTIFY_PROP, (Boolean) null));
+        return (getProperty(NOTIFY_PROP, null));
     }
 
     public void setNotify(Boolean notify) {
@@ -141,7 +146,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getRoom() {
-        return ((String) getProperty(ROOM_PROP));
+        return getProperty(ROOM_PROP);
     }
 
     public void setRoom(String room) {
@@ -154,7 +159,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getApiVersion() {
-        return ((String) getProperty(API_VERSION_PROP));
+        return getProperty(API_VERSION_PROP);
     }
 
     public void setApiVersion(String apiVersion) {
@@ -167,7 +172,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getServer() {
-        return ((String) getProperty(SERVER_PROP));
+        return getProperty(SERVER_PROP);
     }
 
     public void setServer(String server) {

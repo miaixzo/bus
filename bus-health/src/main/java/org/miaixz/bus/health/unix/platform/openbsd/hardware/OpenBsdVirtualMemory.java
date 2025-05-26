@@ -110,4 +110,5 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
     public long getSwapPagesOut() {
         return pgout.get() * global.getPageSize();
     }
+
 }

@@ -27,11 +27,14 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.miaixz.bus.gitlab.Constants.IssueState;
+import org.miaixz.bus.gitlab.models.Constants.IssueState;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,7 +46,10 @@ import com.fasterxml.jackson.databind.node.ValueNode;
 
 public abstract class AbstractIssue implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852252218021L;
+
+    private References references;
 
     private Assignee assignee;
     private List<Assignee> assignees;
@@ -58,8 +64,10 @@ public abstract class AbstractIssue implements Serializable {
 
     @JsonProperty("id")
     private ValueNode actualId;
+
     @JsonIgnore
     private String externalId;
+
     @JsonIgnore
     private Long id;
 
@@ -71,17 +79,27 @@ public abstract class AbstractIssue implements Serializable {
     private String title;
     private Integer userNotesCount;
     private String webUrl;
+    private String severity;
     private Integer weight;
     private Boolean discussionLocked;
     private TimeStats timeStats;
+    private String issueType;
+    private IssueEpic epic;
+    private Boolean imported;
 
     private Integer upvotes;
     private Integer downvotes;
     private Integer mergeRequestsCount;
     private Boolean hasTasks;
     private String taskStatus;
+    private String importedFrom;
+    private String healthStatus;
     private Iteration iteration;
     private TaskCompletionStatus taskCompletionStatus;
+
+    public References getReferences() {
+        return references;
+    }
 
     public Assignee getAssignee() {
         return assignee;
@@ -264,6 +282,14 @@ public abstract class AbstractIssue implements Serializable {
         this.webUrl = webUrl;
     }
 
+    public void setReferences(References references) {
+        this.references = references;
+    }
+
+    public Boolean getImported() {
+        return imported;
+    }
+
     public Integer getWeight() {
         return weight;
     }
@@ -328,6 +354,22 @@ public abstract class AbstractIssue implements Serializable {
         this.taskStatus = taskStatus;
     }
 
+    public void setImported(Boolean imported) {
+        this.imported = imported;
+    }
+
+    public String getImportedFrom() {
+        return importedFrom;
+    }
+
+    public void setImportedFrom(String importedFrom) {
+        this.importedFrom = importedFrom;
+    }
+
+    public String getIssueType() {
+        return issueType;
+    }
+
     public Iteration getIteration() {
         return iteration;
     }
@@ -344,6 +386,34 @@ public abstract class AbstractIssue implements Serializable {
         this.taskCompletionStatus = taskCompletionStatus;
     }
 
+    public void setIssueType(String issueType) {
+        this.issueType = issueType;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+
+    public IssueEpic getEpic() {
+        return epic;
+    }
+
+    public void setEpic(IssueEpic epic) {
+        this.epic = epic;
+    }
+
+    public String getHealthStatus() {
+        return healthStatus;
+    }
+
+    public void setHealthStatus(String healthStatus) {
+        this.healthStatus = healthStatus;
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
@@ -351,7 +421,8 @@ public abstract class AbstractIssue implements Serializable {
 
     public static class TaskCompletionStatus implements Serializable {
 
-        private static final long serialVersionUID = -1L;
+        @Serial
+        private static final long serialVersionUID = 2852252280563L;
 
         private Integer count;
         private Integer completedCount;

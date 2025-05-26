@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.base.entity;
 
+import java.io.Serial;
 import java.util.List;
 
 import org.miaixz.bus.core.basic.entity.Tracer;
@@ -34,6 +35,7 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.mapper.annotation.Logical;
+import org.miaixz.bus.validate.magic.annotation.NotBlank;
 
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -55,12 +57,14 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class BaseEntity extends Tracer {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852286296868L;
 
     /**
      * 数据状态:-1删除,0无效,1正常
      */
     @Logical
+    @NotBlank
     protected Integer status;
 
     /**
@@ -93,12 +97,14 @@ public class BaseEntity extends Tracer {
      * 分页页码
      */
     @Transient
+    @NotBlank
     protected transient Integer pageNo;
 
     /**
      * 分页大小
      */
     @Transient
+    @NotBlank
     protected transient Integer pageSize;
 
     /**

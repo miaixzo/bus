@@ -42,7 +42,7 @@ public class HealthCheckApi extends AbstractApi {
 
     /**
      * Get Health Checks from the liveness endpoint.
-     *
+     * <p>
      * Requires ip_whitelist, see the following link for more info: See <a href=
      * "https://docs.gitlab.com/ee/administration/monitoring/ip_whitelist.html">https://docs.gitlab.com/ee/administration/monitoring/ip_whitelist.html</a>
      *
@@ -81,7 +81,7 @@ public class HealthCheckApi extends AbstractApi {
 
     /**
      * Get Health Checks from the readiness endpoint.
-     *
+     * <p>
      * Requires ip_whitelist, see the following link for more info: See <a href=
      * "https://docs.gitlab.com/ee/administration/monitoring/ip_whitelist.html">https://docs.gitlab.com/ee/administration/monitoring/ip_whitelist.html</a>
      *

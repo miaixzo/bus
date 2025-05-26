@@ -28,7 +28,7 @@
 package org.miaixz.bus.goalie;
 
 /**
- * 数据序列化
+ * 数据序列化接口，定义对象序列化为字符串的通用方法
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,10 +36,10 @@ package org.miaixz.bus.goalie;
 public interface Provider {
 
     /**
-     * 序列化
+     * 将对象序列化为字符串
      *
-     * @param object 对象
-     * @return 返回序列化后的结果
+     * @param object 待序列化的对象
+     * @return 序列化后的字符串结果
      */
     String serialize(Object object);
 

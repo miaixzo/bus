@@ -61,4 +61,5 @@ public class AuthInfo extends Material {
     private String rawdata;
     private String attach;
     private String sign;
+
 }

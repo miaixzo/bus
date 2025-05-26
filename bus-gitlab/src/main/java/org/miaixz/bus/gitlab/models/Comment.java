@@ -30,12 +30,14 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants.LineType;
+import org.miaixz.bus.gitlab.models.Constants.LineType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class Comment implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852257153223L;
 
     private Author author;
     private Date createdAt;

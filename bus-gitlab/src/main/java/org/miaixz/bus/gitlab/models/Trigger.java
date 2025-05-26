@@ -29,10 +29,12 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.io.Serial;
 
 public class Trigger implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852233269238L;
 
     private Long id;
     private String description;

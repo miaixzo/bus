@@ -70,4 +70,5 @@ public final class UnixBaseboard extends AbstractBaseboard {
     public String getVersion() {
         return this.version;
     }
+
 }

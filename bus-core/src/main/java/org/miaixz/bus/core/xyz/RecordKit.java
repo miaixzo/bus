@@ -27,13 +27,12 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.util.AbstractMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.bean.copier.ValueProvider;
-import org.miaixz.bus.core.lang.Keys;
 
 /**
  * java.lang.Record 相关工具类封装 来自于FastJSON2
@@ -43,11 +42,6 @@ import org.miaixz.bus.core.lang.Keys;
  */
 public class RecordKit {
 
-    private static volatile Class<?> RECORD_CLASS;
-    private static volatile Method METHOD_GET_RECORD_COMPONENTS;
-    private static volatile Method METHOD_COMPONENT_GET_NAME;
-    private static volatile Method METHOD_COMPONENT_GET_GENERIC_TYPE;
-
     /**
      * 判断给定类是否为Record类
      *
@@ -55,27 +49,7 @@ public class RecordKit {
      * @return 是否为Record类
      */
     public static boolean isRecord(final Class<?> clazz) {
-        if (Keys.JVM_VERSION < 14) {
-            // JDK14+支持Record类
-            return false;
-        }
-        final Class<?> superClass = clazz.getSuperclass();
-        if (superClass == null) {
-            return false;
-        }
-
-        if (RECORD_CLASS == null) {
-            // 此处不使用同步代码，重复赋值并不影响判断
-            final String superclassName = superClass.getName();
-            if ("java.lang.Record".equals(superclassName)) {
-                RECORD_CLASS = superClass;
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return superClass == RECORD_CLASS;
+        return null != clazz && clazz.isRecord();
     }
 
     /**
@@ -85,29 +59,11 @@ public class RecordKit {
      * @return 字段数组
      */
     public static Map.Entry<String, Type>[] getRecordComponents(final Class<?> recordClass) {
-        if (Keys.JVM_VERSION < 14) {
-            // JDK14+支持Record类
-            return new Map.Entry[0];
-        }
-        if (null == METHOD_GET_RECORD_COMPONENTS) {
-            METHOD_GET_RECORD_COMPONENTS = MethodKit.getMethod(Class.class, "getRecordComponents");
-        }
-
-        final Class<Object> recordComponentClass = ClassKit.loadClass("java.lang.reflect.RecordComponent");
-        if (METHOD_COMPONENT_GET_NAME == null) {
-            METHOD_COMPONENT_GET_NAME = MethodKit.getMethod(recordComponentClass, "getName");
-        }
-        if (METHOD_COMPONENT_GET_GENERIC_TYPE == null) {
-            METHOD_COMPONENT_GET_GENERIC_TYPE = MethodKit.getMethod(recordComponentClass, "getGenericType");
-        }
-
-        final Object[] components = MethodKit.invoke(recordClass, METHOD_GET_RECORD_COMPONENTS);
+        final RecordComponent[] components = recordClass.getRecordComponents();
         final Map.Entry<String, Type>[] entries = new Map.Entry[components.length];
         for (int i = 0; i < components.length; i++) {
-            entries[i] = new AbstractMap.SimpleEntry<>(MethodKit.invoke(components[i], METHOD_COMPONENT_GET_NAME),
-                    MethodKit.invoke(components[i], METHOD_COMPONENT_GET_GENERIC_TYPE));
+            entries[i] = new AbstractMap.SimpleEntry<>(components[i].getName(), components[i].getGenericType());
         }
-
         return entries;
     }
 

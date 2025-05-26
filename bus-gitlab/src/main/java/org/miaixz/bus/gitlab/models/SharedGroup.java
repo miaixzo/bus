@@ -33,15 +33,18 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serial;
 
 public class SharedGroup implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852231958586L;
 
     private Long groupId;
     private String groupName;
     private String groupFullPath;
     private AccessLevel groupAccessLevel;
+
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date expiresAt;
 

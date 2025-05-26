@@ -85,6 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <bus.version>8.1.8</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
     </properties>
@@ -111,8 +112,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -209,10 +208,10 @@
                     </formats>
                     <java>
                         <licenseHeader>
-                            <file>../.github/spotless/spotless_miaixz.org</file>
+                            <file>../.github/scripts/miaixz.org</file>
                         </licenseHeader>
                         <eclipse>
-                            <file>../.github/spotless/spotless_format.xml</file>
+                            <file>../.github/scripts/format.xml</file>
                         </eclipse>
                         <removeUnusedImports />
                     </java>

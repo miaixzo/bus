@@ -194,6 +194,9 @@ public class JSONReader {
         expect(Event.END_OBJECT);
         if (el.vr == null) {
             el.vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
+            if (el.vr == null) {
+                el.vr = VR.UN;
+            }
             Logger.info("Missing property: vr at {} - treat as '{}'", parser.getLocation(), el.vr);
         }
         if (el.isEmpty())

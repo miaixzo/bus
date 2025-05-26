@@ -28,10 +28,10 @@
 package org.miaixz.bus.starter.pay;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
@@ -56,7 +56,7 @@ public class PayProviderService {
     /**
      * 通知器配置
      */
-    private static Map<Registry, Context> CACHE = MapKit.newSafeConcurrentHashMap();
+    private static Map<Registry, Context> CACHE = new ConcurrentHashMap();
     public PayProperties properties;
     public ExtendCache cache;
     public Complex complex;

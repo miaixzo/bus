@@ -46,6 +46,7 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleDay;
 import org.miaixz.bus.core.center.date.culture.en.Constellation;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
+import org.miaixz.bus.core.center.date.culture.rabjung.RabjungDay;
 
 /**
  * 公历日
@@ -461,6 +462,15 @@ public class SolarDay extends Loops {
      */
     public SolarFestival getFestival() {
         return SolarFestival.fromYmd(getYear(), getMonth(), day);
+    }
+
+    /**
+     * 藏历日
+     *
+     * @return 藏历日
+     */
+    public RabjungDay getRabByungDay() {
+        return RabjungDay.fromSolarDay(this);
     }
 
 }

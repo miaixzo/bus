@@ -32,9 +32,9 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 
@@ -50,8 +50,8 @@ public abstract class FormatCache<F extends Format> {
     /**
      * No date or no time. Used in same parameters as DateFormat.SHORT or DateFormat.LONG
      */
-    private static final ConcurrentMap<Tuple, String> C_DATE_TIME_INSTANCE_CACHE = new SafeConcurrentHashMap<>(7);
-    private final ConcurrentMap<Tuple, F> cInstanceCache = new SafeConcurrentHashMap<>(7);
+    private static final ConcurrentMap<Tuple, String> C_DATE_TIME_INSTANCE_CACHE = new ConcurrentHashMap<>(7);
+    private final ConcurrentMap<Tuple, F> cInstanceCache = new ConcurrentHashMap<>(7);
 
     /**
      * Gets a date/time format for the specified styles and locale.

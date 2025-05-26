@@ -63,7 +63,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class TableMeta extends ConfigMeta<TableMeta> {
+public class TableMeta extends PropertyMeta<TableMeta> {
 
     /**
      * 原始表名，在拼 SQL 中，使用 tableName() 方法，可能返回代理方法加工后的值
@@ -71,12 +71,12 @@ public class TableMeta extends ConfigMeta<TableMeta> {
     protected String table;
 
     /**
-     * catalog 名称，配置后会在表名前面加上 catalog，规则为：catalog.schema.tableName
+     * catalog 名称，配置后会在表名前面加上 catalog
      */
     protected String catalog;
 
     /**
-     * schema 名称，配置后会在表名前面加上 schema，规则为：catalog.schema.tableName
+     * schema 名称，配置后会在表名前面加上 schema
      */
     protected String schema;
 

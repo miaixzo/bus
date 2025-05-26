@@ -466,4 +466,5 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     enum PsThreadColumns {
         TDNAME, LWP, STATE, ETIMES, SYSTIME, TIME, TDADDR, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI
     }
+
 }

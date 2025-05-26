@@ -93,4 +93,5 @@ public class CacheDbTable implements Table {
      */
     @MappingField(value = "TYPE_NAME")
     private String typeName;
+
 }

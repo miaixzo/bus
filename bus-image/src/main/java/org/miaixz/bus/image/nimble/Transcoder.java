@@ -92,7 +92,7 @@ public class Transcoder {
                 PlanarImage img = reader.getPlanarImage(i, params.getReadParam());
                 boolean rawImg = isPreserveRawImage(params, format, img.type());
                 if (rawImg) {
-                    img = ImageRendering.getRawRenderedImage(img, reader.getImageDescriptor(), params.getReadParam());
+                    ImageRendering.getRawRenderedImage(img, reader.getImageDescriptor(), params.getReadParam(), i);
                 } else {
                     img = ImageRendering.getDefaultRenderedImage(img, reader.getImageDescriptor(),
                             params.getReadParam(), i);

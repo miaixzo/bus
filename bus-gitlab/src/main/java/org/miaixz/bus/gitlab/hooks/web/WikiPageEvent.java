@@ -29,11 +29,16 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import java.io.Serial;
+
 public class WikiPageEvent extends AbstractEvent {
+
+    @Serial
+    private static final long serialVersionUID = 2852251866596L;
 
     public static final String X_GITLAB_EVENT = "Wiki Page Hook";
     public static final String OBJECT_KIND = "wiki_page";
-    private static final long serialVersionUID = -1L;
+
     private EventUser user;
     private EventProject project;
     private Wiki wiki;
@@ -78,11 +83,6 @@ public class WikiPageEvent extends AbstractEvent {
 
     public void setObjectAttributes(ObjectAttributes objectAttributes) {
         this.objectAttributes = objectAttributes;
-    }
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
     public static class Wiki {
@@ -134,6 +134,11 @@ public class WikiPageEvent extends AbstractEvent {
         }
     }
 
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
     public static class ObjectAttributes {
 
         private String title;
@@ -143,6 +148,8 @@ public class WikiPageEvent extends AbstractEvent {
         private String slug;
         private String url;
         private String action;
+        private String diffUrl;
+        private String versionId;
 
         public String getTitle() {
             return title;
@@ -198,6 +205,22 @@ public class WikiPageEvent extends AbstractEvent {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getDiffUrl() {
+            return diffUrl;
+        }
+
+        public void setDiffUrl(String diffUrl) {
+            this.diffUrl = diffUrl;
+        }
+
+        public String getVersionId() {
+            return versionId;
+        }
+
+        public void setVersionId(String versionId) {
+            this.versionId = versionId;
         }
     }
 

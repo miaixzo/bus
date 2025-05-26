@@ -129,4 +129,5 @@ public class RotatedRect {
     public String toString() {
         return "{ " + center + " " + size + " * " + angle + " }";
     }
+
 }

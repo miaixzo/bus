@@ -30,6 +30,9 @@ package org.miaixz.bus.goalie;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpMethod;
 
 import lombok.Getter;
@@ -43,6 +46,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuperBuilder
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class Assets {
 
     private String id;

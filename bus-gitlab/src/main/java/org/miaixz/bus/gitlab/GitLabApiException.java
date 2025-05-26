@@ -29,6 +29,7 @@ package org.miaixz.bus.gitlab;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
@@ -38,13 +39,15 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.StatusType;
+import java.io.Serial;
 
 /**
  * This is the exception that will be thrown if any exception occurs while communicating with a GitLab API endpoint.
  */
 public class GitLabApiException extends Exception {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852259803210L;
 
     private StatusType statusInfo;
     private int httpStatus;
@@ -107,8 +110,7 @@ public class GitLabApiException extends Exception {
                         // If the node is an object, then it is validation errors
                         if (jsonMessage.isObject()) {
 
-                            StringBuilder buf = new StringBuilder();
-                            validationErrors = new HashMap<>();
+                            validationErrors = new LinkedHashMap<>();
                             Iterator<Entry<String, JsonNode>> fields = jsonMessage.fields();
                             while (fields.hasNext()) {
 
@@ -119,14 +121,15 @@ public class GitLabApiException extends Exception {
                                 for (JsonNode value : field.getValue()) {
                                     values.add(value.asText());
                                 }
-
-                                if (values.size() > 0) {
-                                    buf.append((buf.length() > 0 ? ", " : "")).append(fieldName);
-                                }
                             }
 
-                            if (buf.length() > 0) {
-                                this.message = "The following fields have validation errors: " + buf.toString();
+                            if (!validationErrors.isEmpty()) {
+                                this.message = "The following fields have validation errors: "
+                                        + String.join(", ", validationErrors.keySet()) + "\n"
+                                        + validationErrors.entrySet().stream().map(e -> {
+                                            return "* " + e.getKey() + e.getValue().stream()
+                                                    .collect(Collectors.joining("\n     - ", "\n     - ", ""));
+                                        }).collect(Collectors.joining("\n"));
                             }
 
                         } else if (jsonMessage.isArray()) {

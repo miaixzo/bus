@@ -31,10 +31,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
+import java.io.Serial;
 
 public class ProtectedBranch implements Serializable {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852227563555L;
 
     private Long id;
     private String name;
@@ -43,10 +45,6 @@ public class ProtectedBranch implements Serializable {
     private List<BranchAccessLevel> unprotectAccessLevels;
     private Boolean codeOwnerApprovalRequired;
     private Boolean allowForcePush;
-
-    public static final boolean isValid(ProtectedBranch branch) {
-        return (branch != null && branch.getName() != null);
-    }
 
     public Long getId() {
         return id;
@@ -86,6 +84,10 @@ public class ProtectedBranch implements Serializable {
 
     public void setUnprotectAccessLevels(List<BranchAccessLevel> unprotectAccessLevels) {
         this.unprotectAccessLevels = unprotectAccessLevels;
+    }
+
+    public static final boolean isValid(ProtectedBranch branch) {
+        return (branch != null && branch.getName() != null);
     }
 
     public ProtectedBranch withName(String name) {

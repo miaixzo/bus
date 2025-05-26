@@ -93,7 +93,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     protected final Level level;
     protected final int maxEntitySize;
     protected final AtomicLong _id = new AtomicLong(0);
-    protected Set<String> maskedHeaderNames = new HashSet<>();
+    protected Set<String> maskedHeaderNames = new HashSet<String>();
 
     /**
      * Creates a masking logging filter for the specified logger with entity logging disabled.
@@ -160,7 +160,9 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     public void setMaskedHeaderNames(final List<String> maskedHeaderNames) {
         this.maskedHeaderNames.clear();
         if (maskedHeaderNames != null) {
-            maskedHeaderNames.forEach(h -> addMaskedHeaderName(h));
+            maskedHeaderNames.forEach(h -> {
+                addMaskedHeaderName(h);
+            });
         }
     }
 
@@ -185,7 +187,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     protected StringBuilder appendId(final StringBuilder sb, final long id) {
-        sb.append(id).append(' ');
+        sb.append(Long.toString(id)).append(' ');
         return (sb);
     }
 
@@ -199,7 +201,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     protected void printResponseLine(final StringBuilder sb, final String note, final long id, final int status) {
         appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
                 .append(Thread.currentThread().getName()).append('\n');
-        appendId(sb, id).append(RESPONSE_PREFIX).append(status).append('\n');
+        appendId(sb, id).append(RESPONSE_PREFIX).append(Integer.toString(status)).append('\n');
     }
 
     protected Set<Entry<String, List<String>>> getSortedHeaders(final Set<Entry<String, List<String>>> headers) {
@@ -213,7 +215,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Logs each of the HTTP headers, masking the value of the header if the header key is in the list of masked header
      * names.
-     * 
+     *
      * @param sb      the StringBuilder to build up the logging info in
      * @param id      the ID for the logging line
      * @param prefix  the logging line prefix character
@@ -223,7 +225,6 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             final MultivaluedMap<String, String> headers) {
 
         getSortedHeaders(headers.entrySet()).forEach(h -> {
-
             final List<?> values = h.getValue();
             final String header = h.getKey();
             final boolean isMaskedHeader = maskedHeaderNames.contains(header.toLowerCase());
@@ -335,7 +336,6 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
                 || mediaType.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
             log(stream.getStringBuilder(MessageUtils.getCharset(mediaType)));
         }
-
     }
 
     /**

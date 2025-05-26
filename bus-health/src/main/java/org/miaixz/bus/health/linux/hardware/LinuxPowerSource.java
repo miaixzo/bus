@@ -281,4 +281,5 @@ public final class LinuxPowerSource extends AbstractPowerSource {
         String value = device.getPropertyValue(property);
         return value == null ? def : value;
     }
+
 }

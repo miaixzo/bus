@@ -27,8 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
+
 public class Reviewer extends AbstractUser<Reviewer> {
 
-    private static final long serialVersionUID = -1L;
+    @Serial
+    private static final long serialVersionUID = 2852230530508L;
 
 }

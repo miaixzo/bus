@@ -37,7 +37,6 @@ import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.mapper.Handler;
 
 /**
  * SQL 拦截处理器
@@ -45,7 +44,7 @@ import org.miaixz.bus.mapper.Handler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractSqlHandler implements Handler {
+public abstract class AbstractSqlHandler {
 
     /**
      * 代理对象的 boundSql

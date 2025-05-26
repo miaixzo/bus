@@ -111,4 +111,5 @@ public class ProginnProvider extends AbstractProvider {
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(ProginnScope.values())))
                 .build();
     }
+
 }
