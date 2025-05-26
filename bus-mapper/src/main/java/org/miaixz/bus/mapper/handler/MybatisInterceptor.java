@@ -45,6 +45,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.mapper.Context;
+import org.miaixz.bus.mapper.Handler;
 
 /**
  * MyBatis SQL 拦截处理器，实现 MyBatis 的 Interceptor 接口，用于拦截和处理 SQL 执行过程 支持通过 Handler 接口扩展自定义拦截逻辑
@@ -65,7 +66,7 @@ public class MybatisInterceptor implements Interceptor {
     /**
      * 拦截器列表，存储自定义的 Handler 实例
      */
-    private List<MybatisHandler> handlers = new ArrayList<>();
+    private List<Handler> handlers = new ArrayList<>();
 
     /**
      * 拦截方法，处理 MyBatis 的 Executor 和 StatementHandler 调用
@@ -97,7 +98,7 @@ public class MybatisInterceptor implements Interceptor {
                     // 特殊情况：通过代理对象调用 query 方法（6 个参数）
                     boundSql = (BoundSql) args[5];
                 }
-                for (MybatisHandler query : handlers) {
+                for (Handler query : handlers) {
                     if (!query.isQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql)) {
                         return Collections.emptyList(); // 终止查询，返回空列表
                     }
@@ -107,7 +108,7 @@ public class MybatisInterceptor implements Interceptor {
                 return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
             } else if (isUpdate) {
                 // 处理更新操作
-                for (MybatisHandler update : handlers) {
+                for (Handler update : handlers) {
                     if (!update.isUpdate(executor, ms, parameter)) {
                         return -1; // 终止更新，返回 -1
                     }
@@ -119,14 +120,14 @@ public class MybatisInterceptor implements Interceptor {
             final StatementHandler sh = (StatementHandler) target;
             if (null == args) {
                 // 处理 getBoundSql 方法
-                for (MybatisHandler mapperHandler : handlers) {
+                for (Handler mapperHandler : handlers) {
                     mapperHandler.getBoundSql(sh);
                 }
             } else {
                 // 处理 prepare 方法
                 Connection connections = (Connection) args[0];
                 Integer transactionTimeout = (Integer) args[1];
-                for (MybatisHandler mapperHandler : handlers) {
+                for (Handler mapperHandler : handlers) {
                     mapperHandler.prepare(sh, connections, transactionTimeout);
                 }
             }
@@ -149,7 +150,7 @@ public class MybatisInterceptor implements Interceptor {
         return target; // 不代理其他类型
     }
 
-    public void setHandlers(List<MybatisHandler> handlers) {
+    public void setHandlers(List<Handler> handlers) {
         this.handlers = handlers;
     }
 
@@ -158,7 +159,7 @@ public class MybatisInterceptor implements Interceptor {
      *
      * @param mapperHandler 自定义 Handler 实例
      */
-    public void handler(MybatisHandler mapperHandler) {
+    public void handler(Handler mapperHandler) {
         this.handlers.add(mapperHandler);
     }
 
@@ -167,7 +168,7 @@ public class MybatisInterceptor implements Interceptor {
      *
      * @return 拦截器列表的副本
      */
-    public List<MybatisHandler> getHandlers() {
+    public List<Handler> getHandlers() {
         return ListKit.of(handlers);
     }
 
@@ -183,7 +184,7 @@ public class MybatisInterceptor implements Interceptor {
         Map<String, Properties> group = context.group(Symbol.AT);
         group.forEach((k, v) -> {
             // 动态创建 Handler 实例
-            MybatisHandler mapperHandler = ReflectKit.newInstance(k);
+            Handler mapperHandler = ReflectKit.newInstance(k);
             mapperHandler.setProperties(v); // 设置属性
             this.handler(mapperHandler); // 添加到拦截器列表
         });

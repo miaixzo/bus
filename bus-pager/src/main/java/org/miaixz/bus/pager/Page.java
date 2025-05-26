@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -34,9 +34,8 @@ import java.util.List;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
-import org.miaixz.bus.pager.builtin.PageAutoDialect;
-import org.miaixz.bus.pager.plugin.BoundSqlHandler;
-import org.miaixz.bus.pager.plugin.PageSqlHandler;
+import org.miaixz.bus.pager.binding.PageAutoDialect;
+import org.miaixz.bus.pager.handler.BoundSqlHandler;
 
 /**
  * Mybatis - 分页对象
@@ -52,7 +51,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 记录当前堆栈,可查找到page在何处创建 需开启page.debug
      */
-    private final String stackTrace = PageSqlHandler.isDebug() ? Builder.current() : null;
+    private final String stackTrace = Builder.current();
     /**
      * 页码，从1开始
      */

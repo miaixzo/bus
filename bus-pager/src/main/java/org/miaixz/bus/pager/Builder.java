@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.pager.parser.SqlParser;
+import org.miaixz.bus.pager.parsing.SqlParser;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.ParseException;

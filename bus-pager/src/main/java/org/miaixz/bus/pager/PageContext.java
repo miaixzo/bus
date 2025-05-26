@@ -42,14 +42,14 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.pager.builtin.PageAutoDialect;
-import org.miaixz.bus.pager.builtin.PageMethod;
-import org.miaixz.bus.pager.builtin.PageParams;
+import org.miaixz.bus.pager.binding.PageAutoDialect;
+import org.miaixz.bus.pager.binding.PageMethod;
+import org.miaixz.bus.pager.binding.PageParams;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
-import org.miaixz.bus.pager.parser.CountSqlParser;
-import org.miaixz.bus.pager.plugin.BoundSqlChain;
-import org.miaixz.bus.pager.plugin.BoundSqlHandler;
-import org.miaixz.bus.pager.plugin.PageBoundSqlHandler;
+import org.miaixz.bus.pager.parsing.CountSqlParser;
+import org.miaixz.bus.pager.handler.BoundSqlChain;
+import org.miaixz.bus.pager.handler.BoundSqlHandler;
+import org.miaixz.bus.pager.handler.PageBoundSqlHandler;
 
 /**
  * Mybatis - 通用分页拦截器

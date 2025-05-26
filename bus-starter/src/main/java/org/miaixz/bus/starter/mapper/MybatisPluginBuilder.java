@@ -32,7 +32,7 @@ import java.util.Properties;
 
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.mapper.handler.MybatisHandler;
+import org.miaixz.bus.mapper.Handler;
 import org.miaixz.bus.mapper.handler.MybatisInterceptor;
 import org.miaixz.bus.pager.handler.ExplainSqlMapperHandler;
 import org.miaixz.bus.pager.handler.NatureSqlMapperHandler;
@@ -53,7 +53,7 @@ import org.springframework.core.env.Environment;
 public class MybatisPluginBuilder {
 
     public static MybatisInterceptor build(Environment environment) {
-        List<MybatisHandler> list = ListKit.of(new NatureSqlMapperHandler(), new ExplainSqlMapperHandler());
+        List<Handler> list = ListKit.of(new NatureSqlMapperHandler(), new ExplainSqlMapperHandler());
 
         if (ObjectKit.isNotEmpty(environment)) {
             MybatisProperties mybatisProperties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
@@ -91,7 +91,7 @@ public class MybatisPluginBuilder {
         }
 
         MybatisInterceptor mybatisInterceptor = new MybatisInterceptor();
-        mybatisInterceptor.setInterceptors(list);
+        mybatisInterceptor.setHandlers(list);
         return mybatisInterceptor;
     }
 
