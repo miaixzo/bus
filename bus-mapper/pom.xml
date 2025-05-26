@@ -95,7 +95,7 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-setting</artifactId>
+            <artifactId>bus-logger</artifactId>
             <version>${bus.version}</version>
         </dependency>
         <dependency>
@@ -131,8 +131,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

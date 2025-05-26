@@ -36,16 +36,15 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.io.VFS;
-import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.mapper.Context;
+import org.miaixz.bus.logger.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.InitializingBean;
@@ -63,7 +62,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import jakarta.annotation.Resource;
 
 /**
- * Mybatis的配置，提供一个{@link SqlSessionFactory}和一个{@link SqlSessionTemplate}
+ * Mybatis配置类，提供SqlSessionFactory和SqlSessionTemplate
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -74,22 +73,37 @@ import jakarta.annotation.Resource;
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
 public class MapperConfiguration implements InitializingBean {
 
+    /** Spring环境配置 */
     private final Environment environment;
-    private final Interceptor[] interceptors;
+
+    /** 资源加载器 */
     private final ResourceLoader resourceLoader;
+
+    /** MyBatis配置定制器列表 */
     private final List<ConfigurationCustomizer> configurationCustomizers;
+
+    /** MyBatis属性配置 */
     @Resource
     MybatisProperties properties;
 
-    public MapperConfiguration(Environment environment, ObjectProvider<Interceptor[]> interceptorsProvider,
-            ResourceLoader resourceLoader,
+    /**
+     * 构造函数，初始化环境、资源加载器和配置定制器
+     *
+     * @param environment                      Spring环境
+     * @param resourceLoader                   资源加载器
+     * @param configurationCustomizersProvider MyBatis配置定制器提供者
+     */
+    public MapperConfiguration(Environment environment, ResourceLoader resourceLoader,
             ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider) {
         this.environment = environment;
-        this.interceptors = interceptorsProvider.getIfAvailable();
         this.resourceLoader = resourceLoader;
         this.configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
+        Logger.info("Initializing MapperConfiguration with provided environment and resource loader");
     }
 
+    /**
+     * 初始化后检查配置文件是否存在
+     */
     @Override
     public void afterPropertiesSet() {
         if (this.properties.isCheckConfigLocation() && StringKit.hasText(this.properties.getConfigLocation())) {
@@ -97,12 +111,21 @@ public class MapperConfiguration implements InitializingBean {
                     .getResource(this.properties.getConfigLocation());
             Assert.state(resource.exists(), "Cannot find config location: " + resource
                     + " (please add config file or check your Mybatis configuration)");
+            Logger.debug("Checked MyBatis config location: {}", this.properties.getConfigLocation());
         }
     }
 
+    /**
+     * 创建SqlSessionFactory bean
+     *
+     * @param dataSource 数据源
+     * @return SqlSessionFactory
+     * @throws Exception 异常
+     */
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+        Logger.info("Creating SqlSessionFactory with dataSource");
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
@@ -116,7 +139,7 @@ public class MapperConfiguration implements InitializingBean {
             configuration = new Configuration();
         }
 
-        // 设置自定义列表
+        // 应用配置定制器
         if (configuration != null && !CollKit.isEmpty(this.configurationCustomizers)) {
             for (ConfigurationCustomizer customizer : this.configurationCustomizers) {
                 customizer.customize(configuration);
@@ -127,11 +150,7 @@ public class MapperConfiguration implements InitializingBean {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
             Context.INSTANCE.setProperties(this.properties.getConfigurationProperties());
         }
-        if (ArrayKit.isNotEmpty(this.interceptors)) {
-            factory.setPlugins(this.interceptors);
-        } else {
-            factory.setPlugins(MybatisPluginBuilder.build(environment));
-        }
+        factory.setPlugins(MybatisPluginBuilder.build(environment));
         if (ObjectKit.isEmptyIfString(this.properties.getTypeAliasesPackage())) {
             factory.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
         }
@@ -145,38 +164,78 @@ public class MapperConfiguration implements InitializingBean {
             factory.setMapperLocations(this.properties.resolveMapperLocations());
         }
 
-        return factory.getObject();
+        SqlSessionFactory sqlSessionFactory = factory.getObject();
+        Logger.info("SqlSessionFactory created successfully");
+        return sqlSessionFactory;
     }
 
+    /**
+     * 创建SqlSessionTemplate bean
+     *
+     * @param sqlSessionFactory SqlSessionFactory
+     * @return SqlSessionTemplate
+     */
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         ExecutorType executorType = this.properties.getExecutorType();
+        SqlSessionTemplate template;
         if (executorType != null) {
-            return new SqlSessionTemplate(sqlSessionFactory, executorType);
+            template = new SqlSessionTemplate(sqlSessionFactory, executorType);
+            Logger.info("Created SqlSessionTemplate with executor type: {}", executorType);
         } else {
-            return new SqlSessionTemplate(sqlSessionFactory);
+            template = new SqlSessionTemplate(sqlSessionFactory);
+            Logger.info("Created SqlSessionTemplate with default executor type");
         }
+        return template;
     }
 
+    /**
+     * 自定义VFS实现，用于Spring Boot环境
+     */
     class SpringBootVFS extends VFS {
 
+        /** 资源解析器 */
         private final ResourcePatternResolver resourceResolver;
 
+        /**
+         * 构造函数，初始化资源解析器
+         */
         public SpringBootVFS() {
             this.resourceResolver = new PathMatchingResourcePatternResolver(getClass().getClassLoader());
+            Logger.debug("Initialized SpringBootVFS with resource resolver");
         }
 
+        /**
+         * 保留子包名称
+         *
+         * @param uri      URI
+         * @param rootPath 根路径
+         * @return 子包路径
+         */
         private String preserveSubpackageName(final URI uri, final String rootPath) {
             final String url = uri.toString();
             return url.substring(url.indexOf(rootPath));
         }
 
+        /**
+         * 检查VFS是否有效
+         *
+         * @return 始终返回true
+         */
         @Override
         public boolean isValid() {
             return true;
         }
 
+        /**
+         * 列出指定路径下的类文件
+         *
+         * @param url  URL
+         * @param path 路径
+         * @return 类文件路径列表
+         * @throws IOException IO exception
+         */
         @Override
         protected List<String> list(URL url, String path) throws IOException {
             org.springframework.core.io.Resource[] resources = resourceResolver
@@ -185,6 +244,7 @@ public class MapperConfiguration implements InitializingBean {
             for (org.springframework.core.io.Resource resource : resources) {
                 resourcePaths.add(preserveSubpackageName(resource.getURI(), path));
             }
+            Logger.debug("Listed resources for path: {}", path);
             return resourcePaths;
         }
 

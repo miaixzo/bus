@@ -37,7 +37,6 @@ module bus.mapper {
 
     requires bus.core;
     requires bus.logger;
-    requires bus.setting;
 
     requires static lombok;
     requires static jakarta.persistence;

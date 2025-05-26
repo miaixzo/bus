@@ -39,7 +39,7 @@ import org.miaixz.bus.mapper.builder.TableSchemaChain;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Holder {
+public class Holder implements org.miaixz.bus.core.Holder {
 
     /**
      * 表工厂处理链，通过 SPI 加载

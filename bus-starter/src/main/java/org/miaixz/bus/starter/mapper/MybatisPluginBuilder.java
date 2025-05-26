@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.ibatis.plugin.Interceptor;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.pager.plugin.ExplainSqlHandler;
-import org.miaixz.bus.pager.plugin.NatureSqlHandler;
-import org.miaixz.bus.pager.plugin.PageSqlHandler;
+import org.miaixz.bus.mapper.handler.MybatisHandler;
+import org.miaixz.bus.mapper.handler.MybatisInterceptor;
+import org.miaixz.bus.pager.handler.ExplainSqlMapperHandler;
+import org.miaixz.bus.pager.handler.NatureSqlMapperHandler;
+import org.miaixz.bus.pager.handler.PageSqlMapperHandler;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.miaixz.bus.starter.sensitive.SensitiveProperties;
@@ -45,17 +45,15 @@ import org.miaixz.bus.starter.sensitive.SensitiveStatementHandler;
 import org.springframework.core.env.Environment;
 
 /**
- * mybatis 插件启用
+ * mapper 插件启用
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MybatisPluginBuilder {
 
-    public static List<Interceptor> plugins = new ArrayList<>();
-
-    public static Interceptor[] build(Environment environment) {
-        List<Interceptor> list = ListKit.of(new NatureSqlHandler(), new ExplainSqlHandler());
+    public static MybatisInterceptor build(Environment environment) {
+        List<MybatisHandler> list = ListKit.of(new NatureSqlMapperHandler(), new ExplainSqlMapperHandler());
 
         if (ObjectKit.isNotEmpty(environment)) {
             MybatisProperties mybatisProperties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
@@ -67,7 +65,7 @@ public class MybatisPluginBuilder {
                 p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
                 p.setProperty("params", mybatisProperties.getParams());
 
-                PageSqlHandler pageSqlHandler = new PageSqlHandler();
+                PageSqlMapperHandler pageSqlHandler = new PageSqlMapperHandler();
                 pageSqlHandler.setProperties(p);
                 list.add(pageSqlHandler);
             }
@@ -82,17 +80,19 @@ public class MybatisPluginBuilder {
                 // 数据解密脱敏
                 SensitiveResultSetHandler sensitiveResultSetHandler = new SensitiveResultSetHandler();
                 sensitiveResultSetHandler.setProperties(p);
-                list.add(sensitiveResultSetHandler);
+                // list.add(sensitiveResultSetHandler);
                 p.setProperty("key", sensitiveProperties.getEncrypt().getKey());
                 p.setProperty("type", sensitiveProperties.getEncrypt().getType());
                 // 数据脱敏加密
                 SensitiveStatementHandler sensitiveStatementHandler = new SensitiveStatementHandler();
                 sensitiveStatementHandler.setProperties(p);
-                list.add(sensitiveStatementHandler);
+                // list.add(sensitiveStatementHandler);
             }
         }
-        plugins.addAll(list);
-        return plugins.stream().toArray(Interceptor[]::new);
+
+        MybatisInterceptor mybatisInterceptor = new MybatisInterceptor();
+        mybatisInterceptor.setInterceptors(list);
+        return mybatisInterceptor;
     }
 
 }

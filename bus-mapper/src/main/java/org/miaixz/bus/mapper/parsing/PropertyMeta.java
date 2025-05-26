@@ -30,10 +30,10 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.mapper.Context;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -39,6 +39,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
+import org.miaixz.bus.core.Context;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.parsing.SqlMetaCache;
 import org.miaixz.bus.mapper.parsing.SqlSourceEnhancer;
@@ -145,7 +146,7 @@ public class Caching extends XMLLanguageDriver {
                         SqlMetaCache cache = CACHE_SQL.get(cacheKey);
                         if (cache == SqlMetaCache.NULL) {
                             throw new RuntimeException(script
-                                    + " => CACHE_SQL is NULL, you need to configure mybatis.provider.cacheSql.useOnce=false");
+                                    + " => CACHE_SQL is NULL, you need to configure mapper.provider.cacheSql.useOnce=false");
                         }
                         cache.getTableMeta().initRuntimeContext(configuration, cache.getProviderContext(), cacheKey);
                         Map<String, SqlSource> cachekeyMap = CONFIGURATION_CACHE_KEY_MAP.computeIfAbsent(configuration,

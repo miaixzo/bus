@@ -25,35 +25,53 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.mapper;
+package org.miaixz.bus.core;
+
+import java.io.Serializable;
+import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
- * SQL 拦截处理器
+ * 处理接口，定义任务执行前后的回调方法以及属性配置逻辑
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Handler {
+public interface Handler<T> extends Serializable {
 
     /**
-     * 预处理回调方法，在方法调用前执行
+     * 前置处理回调方法，在任务执行前调用 可用于初始化、验证或预处理操作
+     *
+     * @param executor 执行器，可能为代理对象
+     * @param args     可变参数，传递额外上下文或数据
+     * @return 返回 true 表示继续执行任务，返回 false 表示中断执行
      */
-    default void preHandle() {
-
+    default boolean before(Executor executor, Object... args) {
+        // do nothing
+        return true;
     }
 
     /**
-     * 拦截处理程序的执行 使用这种方法,每个拦截器可以对一个执行进行后处理, 按执行链的相反顺序应用
+     * 后置处理回调方法，在任务执行完成后调用 可用于清理资源、记录日志或后处理操作
+     *
+     * @param executor 执行器，可能为代理对象
+     * @param args     可变参数，传递额外上下文或数据
+     * @return 返回 true 表示处理成功，返回 false 表示处理失败
      */
-    default void postHandle() {
-
+    default boolean after(Executor executor, Object... args) {
+        // do nothing
+        return true;
     }
 
     /**
-     * 完成请求处理后回调
+     * 设置属性配置 用于配置处理器的属性或参数
+     *
+     * @param properties 属性集合，包含配置键值对
+     * @return 返回 true 表示配置成功，返回 false 表示配置失败
      */
-    default void afterCompletion() {
-
+    default boolean setProperties(Properties properties) {
+        // do nothing
+        return true;
     }
 
 }

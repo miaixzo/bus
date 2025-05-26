@@ -143,8 +143,7 @@ public class RabjungMonth extends Loops {
         return new RabjungMonth(year, month);
     }
 
-    public static RabjungMonth fromElementZodiac(int rabByungIndex, RabjungElement element, Zodiac zodiac,
-                                                 int month) {
+    public static RabjungMonth fromElementZodiac(int rabByungIndex, RabjungElement element, Zodiac zodiac, int month) {
         return new RabjungMonth(rabByungIndex, element, zodiac, month);
     }
 

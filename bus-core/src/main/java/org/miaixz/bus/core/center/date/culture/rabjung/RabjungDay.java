@@ -100,7 +100,7 @@ public class RabjungDay extends Loops {
     }
 
     public static RabjungDay fromElementZodiac(int rabByungIndex, RabjungElement element, Zodiac zodiac, int month,
-                                               int day) {
+            int day) {
         return new RabjungDay(rabByungIndex, element, zodiac, month, day);
     }
 
