@@ -30,8 +30,6 @@ package org.miaixz.bus.extra.json;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * 用于根据用户引入的json库 自动创建对应的json解析器
@@ -60,8 +58,6 @@ public class JsonFactory {
         if (null == engine) {
             throw new InternalException("No json jar found ! Please add one of it to your project !");
         }
-        Logger.debug("Use [{}] provider as default.",
-                StringKit.removeSuffix(engine.getClass().getSimpleName(), "Provider"));
         return engine;
     }
 

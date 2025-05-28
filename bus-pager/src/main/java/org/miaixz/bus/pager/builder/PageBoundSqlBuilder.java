@@ -25,50 +25,55 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.pager.handler;
+package org.miaixz.bus.pager.builder;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.pager.Builder;
 
 /**
+ * BoundSql 拦截器链配置器，负责初始化和管理 SQL 绑定处理器链
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BoundSqlChain implements BoundSqlHandler.Chain {
+public class PageBoundSqlBuilder {
 
-    private final BoundSqlHandler.Chain original;
-    private final List<BoundSqlHandler> interceptors;
+    /**
+     * BoundSql 处理器链
+     */
+    private BoundSqlBuilder.Chain chain;
 
-    private int index = 0;
-    private boolean executable;
+    /**
+     * 配置 BoundSql 拦截器链，根据属性初始化处理器列表
+     *
+     * @param properties 配置属性
+     */
+    public void setProperties(Properties properties) {
+        // 初始化 boundSqlInterceptorChain
+        String boundSqlInterceptors = properties.getProperty("boundSqlInterceptors");
+        if (StringKit.isEmpty(boundSqlInterceptors)) {
+            return;
+        }
 
-    public BoundSqlChain(BoundSqlHandler.Chain original, List<BoundSqlHandler> interceptors) {
-        this(original, interceptors, false);
-    }
+        List<BoundSqlBuilder> handlers = Arrays.stream(boundSqlInterceptors.split("[;|,]"))
+                .map(className -> (BoundSqlBuilder) Builder.newInstance(className.trim(), properties)).toList();
 
-    private BoundSqlChain(BoundSqlHandler.Chain original, List<BoundSqlHandler> interceptors, boolean executable) {
-        this.original = original;
-        this.interceptors = interceptors;
-        this.executable = executable;
-    }
-
-    @Override
-    public BoundSql doBoundSql(BoundSqlHandler.Type type, BoundSql boundSql, CacheKey cacheKey) {
-        if (executable) {
-            return _doBoundSql(type, boundSql, cacheKey);
-        } else {
-            return new BoundSqlChain(original, interceptors, true).doBoundSql(type, boundSql, cacheKey);
+        if (!handlers.isEmpty()) {
+            chain = new BoundSqlChainBuilder(null, handlers);
         }
     }
 
-    private BoundSql _doBoundSql(BoundSqlHandler.Type type, BoundSql boundSql, CacheKey cacheKey) {
-        if (this.interceptors == null || this.interceptors.size() == this.index) {
-            return this.original != null ? this.original.doBoundSql(type, boundSql, cacheKey) : boundSql;
-        } else {
-            return this.interceptors.get(this.index++).boundSql(type, boundSql, cacheKey, this);
-        }
+    /**
+     * 获取 BoundSql 处理器链
+     *
+     * @return 处理器链实例
+     */
+    public BoundSqlBuilder.Chain getChain() {
+        return chain;
     }
 
 }

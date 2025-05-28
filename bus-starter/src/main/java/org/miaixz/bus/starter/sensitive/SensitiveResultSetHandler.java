@@ -33,19 +33,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.ibatis.executor.resultset.ResultSetHandler;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.session.ResultHandler;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
+import org.miaixz.bus.mapper.handler.MapperHandler;
+import org.miaixz.bus.pager.handler.SqlParserHandler;
 import org.miaixz.bus.sensitive.Builder;
 import org.miaixz.bus.sensitive.magic.annotation.Privacy;
 import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
@@ -56,14 +55,8 @@ import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Intercepts({
-        @Signature(type = ResultSetHandler.class, method = "handleResultSets", args = { java.sql.Statement.class }) })
-public class SensitiveResultSetHandler extends AbstractSqlHandler implements Interceptor {
+public class SensitiveResultSetHandler<T> extends SqlParserHandler implements MapperHandler<T> {
 
-    /**
-     * 是否DEBUG模式
-     */
-    private boolean debug;
     /**
      * 解密类型
      */
@@ -74,71 +67,56 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
     private String key;
 
     @Override
-    public Object intercept(Invocation invocation) throws Throwable {
-        final List<Object> results = (List<Object>) invocation.proceed();
-
-        if (results.isEmpty()) {
-            return results;
+    public void after(Object result, StatementHandler statementHandler, MappedStatement mappedStatement,
+            ResultHandler resultHandler) {
+        if (((List) result).isEmpty()) {
+            return;
         }
 
-        if (this.debug) {
-            final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
-            final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-            final MappedStatement mappedStatement = getMappedStatement(metaObject, MAPPEDSTATEMENT);
-            final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null
-                    : mappedStatement.getResultMaps().get(0);
+        final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null
+                : mappedStatement.getResultMaps().get(0);
 
-            Sensitive sensitive = results.get(0).getClass().getAnnotation(Sensitive.class);
-            if (ObjectKit.isEmpty(sensitive)) {
-                return results;
-            }
+        Sensitive sensitive = ((List) result).get(0).getClass().getAnnotation(Sensitive.class);
+        if (ObjectKit.isEmpty(sensitive)) {
+            return;
+        }
 
-            final Map<String, Privacy> privacyMap = getSensitiveByResultMap(resultMap);
-            for (Object object : results) {
-                // 数据解密
-                if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
-                        && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-                    final MetaObject objMetaObject = mappedStatement.getConfiguration().newMetaObject(object);
-                    for (Map.Entry<String, Privacy> entry : privacyMap.entrySet()) {
-                        Privacy privacy = entry.getValue();
-                        if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
-                            if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
-                                String property = entry.getKey();
-                                String value = (String) objMetaObject.getValue(property);
-                                if (StringKit.isNotEmpty(value)) {
-                                    Logger.debug("Query data decryption enabled ...");
-                                    String decryptValue = org.miaixz.bus.crypto.Builder.decrypt(this.type, this.key,
-                                            value, Charset.UTF_8);
-                                    objMetaObject.setValue(property, decryptValue);
-                                }
+        final Map<String, Privacy> privacyMap = getSensitiveByResultMap(resultMap);
+        for (Object object : ((List) result)) {
+            // 数据解密
+            if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
+                    && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+                final MetaObject objMetaObject = mappedStatement.getConfiguration().newMetaObject(object);
+                for (Map.Entry<String, Privacy> entry : privacyMap.entrySet()) {
+                    Privacy privacy = entry.getValue();
+                    if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
+                        if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
+                            String property = entry.getKey();
+                            String value = (String) objMetaObject.getValue(property);
+                            if (StringKit.isNotEmpty(value)) {
+                                Logger.debug("Query data decryption enabled ...");
+                                String decryptValue = org.miaixz.bus.crypto.Builder.decrypt(this.type, this.key, value,
+                                        Charset.UTF_8);
+                                objMetaObject.setValue(property, decryptValue);
                             }
                         }
                     }
                 }
-                // 数据脱敏
-                if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
-                        && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-                    Logger.debug("Query data sensitive enabled ...");
-                    Builder.on(object);
-                }
+            }
+            // 数据脱敏
+            if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
+                    && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+                Logger.debug("Query data sensitive enabled ...");
+                Builder.on(object);
             }
         }
-        return results;
     }
 
     @Override
-    public Object plugin(Object object) {
-        if (object instanceof ResultSetHandler) {
-            return Plugin.wrap(object, this);
-        }
-        return object;
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-        this.debug = BooleanKit.toBoolean(properties.getProperty("debug"));
+    public boolean setProperties(Properties properties) {
         this.key = properties.getProperty("key");
         this.type = properties.getProperty("type");
+        return true;
     }
 
     private Map<String, Privacy> getSensitiveByResultMap(ResultMap resultMap) {

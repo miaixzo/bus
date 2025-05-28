@@ -27,38 +27,51 @@
 */
 package org.miaixz.bus.pager.handler;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.pager.Builder;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.schema.Column;
 
 /**
- * @author Kimi Liu
- * @since Java 17+
+ * 租户：行级多租户
  */
-public class PageBoundSqlHandler {
+public interface TenantService {
 
-    private BoundSqlHandler.Chain chain;
+    /**
+     * 获取租户 ID 值表达式，仅支持单个 ID 值
+     *
+     * @return 租户 ID 表达式
+     */
+    Expression getTenantId();
 
-    public void setProperties(Properties properties) {
-        // 初始化 boundSqlInterceptorChain
-        String boundSqlInterceptorStr = properties.getProperty("boundSqlInterceptors");
-        if (StringKit.isNotEmpty(boundSqlInterceptorStr)) {
-            String[] boundSqlInterceptors = boundSqlInterceptorStr.split("[;|,]");
-            List<BoundSqlHandler> list = new ArrayList<>();
-            for (int i = 0; i < boundSqlInterceptors.length; i++) {
-                list.add(Builder.newInstance(boundSqlInterceptors[i], properties));
-            }
-            if (list.size() > 0) {
-                chain = new BoundSqlChain(null, list);
-            }
-        }
+    /**
+     * 获取租户字段名
+     *
+     * @return 租户字段名，默认为 "tenant_id"
+     */
+    default String getTenantColumn() {
+        return "tenant_id";
     }
 
-    public BoundSqlHandler.Chain getChain() {
-        return chain;
+    /**
+     * 判断是否忽略表的多租户条件拼接
+     *
+     * @param tableName 表名
+     * @return true 表示忽略，false 表示需要拼接
+     */
+    default boolean ignoreTenantCondition(String tableName) {
+        return false;
+    }
+
+    /**
+     * 判断是否忽略插入租户字段
+     *
+     * @param columns 插入的字段列表
+     * @param column  租户 ID 字段名
+     * @return true 表示忽略，false 表示需要插入
+     */
+    default boolean ignoreTenantInsert(List<Column> columns, String column) {
+        return columns.stream().map(Column::getColumnName).anyMatch(name -> name.equalsIgnoreCase(column));
     }
 
 }

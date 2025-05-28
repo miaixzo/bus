@@ -33,6 +33,6 @@ package org.miaixz.bus.core;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Holder {
+public interface Holder<T> {
 
 }

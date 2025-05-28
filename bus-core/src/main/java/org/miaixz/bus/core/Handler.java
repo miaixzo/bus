@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.core;
 
-import java.io.Serializable;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
@@ -37,7 +36,7 @@ import java.util.concurrent.Executor;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Handler<T> extends Serializable {
+public interface Handler<T> {
 
     /**
      * 前置处理回调方法，在任务执行前调用 可用于初始化、验证或预处理操作

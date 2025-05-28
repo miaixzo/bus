@@ -42,7 +42,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.pager.Dialect;
-import org.miaixz.bus.pager.handler.BoundSqlHandler;
+import org.miaixz.bus.pager.builder.BoundSqlBuilder;
 
 /**
  * count 查询
@@ -170,8 +170,8 @@ public abstract class CountExecutor {
             countBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
         }
         // 对 boundSql 的拦截处理
-        if (dialect instanceof BoundSqlHandler.Chain) {
-            countBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.COUNT_SQL, countBoundSql,
+        if (dialect instanceof BoundSqlBuilder.Chain) {
+            countBoundSql = ((BoundSqlBuilder.Chain) dialect).doBoundSql(BoundSqlBuilder.Type.COUNT_SQL, countBoundSql,
                     countKey);
         }
         // 执行 count 查询
@@ -204,27 +204,24 @@ public abstract class CountExecutor {
             throws SQLException {
         // 判断是否需要进行分页查询
         if (dialect.beforePage(ms, parameter, rowBounds)) {
-            // 生成分页的缓存 key
-            CacheKey pageKey = cacheKey;
             // 处理参数对象
-            parameter = dialect.processParameterObject(ms, parameter, boundSql, pageKey);
+            parameter = dialect.processParameterObject(ms, parameter, boundSql, cacheKey);
             // 调用方言获取分页 sql
-            String pageSql = dialect.getPageSql(ms, boundSql, parameter, rowBounds, pageKey);
-            BoundSql pageBoundSql = new BoundSql(ms.getConfiguration(), pageSql, boundSql.getParameterMappings(),
-                    parameter);
+            String pageSql = dialect.getPageSql(ms, boundSql, parameter, rowBounds, cacheKey);
 
             Map<String, Object> additionalParameters = getAdditionalParameter(boundSql);
+            boundSql = new BoundSql(ms.getConfiguration(), pageSql, boundSql.getParameterMappings(), parameter);
             // 设置动态参数
             for (String key : additionalParameters.keySet()) {
-                pageBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
+                boundSql.setAdditionalParameter(key, additionalParameters.get(key));
             }
             // 对 boundSql 的拦截处理
-            if (dialect instanceof BoundSqlHandler.Chain) {
-                pageBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.PAGE_SQL, pageBoundSql,
-                        pageKey);
+            if (dialect instanceof BoundSqlBuilder.Chain) {
+                boundSql = ((BoundSqlBuilder.Chain) dialect).doBoundSql(BoundSqlBuilder.Type.PAGE_SQL, boundSql,
+                        cacheKey);
             }
             // 执行分页查询
-            return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, pageKey, pageBoundSql);
+            return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, boundSql);
         } else {
             // 不执行分页的情况下，也不执行内存分页
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, boundSql);

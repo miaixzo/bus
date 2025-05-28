@@ -49,6 +49,7 @@ module bus.pager {
 
     exports org.miaixz.bus.pager;
     exports org.miaixz.bus.pager.binding;
+    exports org.miaixz.bus.pager.builder;
     exports org.miaixz.bus.pager.cache;
     exports org.miaixz.bus.pager.dialect;
     exports org.miaixz.bus.pager.handler;
@@ -57,5 +58,5 @@ module bus.pager {
     exports org.miaixz.bus.pager.dialect.base;
     exports org.miaixz.bus.pager.dialect.replace;
     exports org.miaixz.bus.pager.dialect.rowbounds;
-
+    
 }

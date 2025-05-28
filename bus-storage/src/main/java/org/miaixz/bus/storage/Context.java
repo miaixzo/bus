@@ -45,7 +45,7 @@ import lombok.experimental.SuperBuilder;
 public class Context {
 
     /**
-     * RUL前缀
+     * URL前缀
      */
     private String prefix;
     /**

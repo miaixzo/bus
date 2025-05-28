@@ -82,7 +82,6 @@ public class SqlParserHandler extends AbstractSqlHandler {
 
     public String parserMulti(String sql, Object obj) {
         try {
-            // fixed github pull/295
             StringBuilder sb = new StringBuilder();
             Statements statements = parseStatements(sql);
             int i = 0;
@@ -102,7 +101,7 @@ public class SqlParserHandler extends AbstractSqlHandler {
     /**
      * 执行 SQL 解析
      *
-     * @param statement JsqlParser Statement
+     * @param statement JsqlParser
      * @return sql
      */
     protected String processParser(Statement statement, int index, String sql, Object obj) {

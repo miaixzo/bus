@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -39,6 +41,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 配置属性管理类，用于加载和获取配置属性，支持单例模式
@@ -73,12 +76,16 @@ public class Context extends Keys {
         return new Context(properties);
     }
 
+    public Set<String> keys() {
+        return delegate.stringPropertyNames();
+    }
+
     /**
      * 设置配置属性，将外部 Properties 对象合并到内部 delegate 中
      *
      * @param properties 外部配置属性
      */
-    public void setProperties(Properties properties) {
+    public void putAll(Properties properties) {
         this.delegate.putAll(properties);
     }
 
@@ -136,7 +143,7 @@ public class Context extends Keys {
      * @return 分组后的属性映射，若无匹配返回空映射
      */
     public Map<String, Properties> group(String group) {
-        final Set<String> keys = delegate.stringPropertyNames();
+        final Set<String> keys = keys();
         // 过滤以指定前缀开头的键
         Set<String> inner = keys.stream().filter(i -> i.startsWith(group)).collect(Collectors.toSet());
         if (CollKit.isEmpty(inner)) {
@@ -153,7 +160,24 @@ public class Context extends Keys {
                     .forEach(j -> p.setProperty(j.substring(keyIndex), delegate.getProperty(j)));
             map.put(delegate.getProperty(i), p);
         });
+
         return map;
+    }
+
+    public Context whenNotBlank(String key, Consumer<String> consumer) {
+        String value = delegate.getProperty(key);
+        if (StringKit.isNotBlank(value)) {
+            consumer.accept(value);
+        }
+        return this;
+    }
+
+    public <T> Context whenNotBlank(String key, Function<String, T> function, Consumer<T> consumer) {
+        String value = delegate.getProperty(key);
+        if (StringKit.isNotBlank(value)) {
+            consumer.accept(function.apply(value));
+        }
+        return this;
     }
 
 }

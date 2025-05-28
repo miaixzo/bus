@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.starter.health;
 
-import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.health.Provider;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.starter.annotation.EnableHealth;
@@ -178,20 +177,7 @@ public class HealthConfiguration {
          */
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            try {
-                for (String beanName : context.getBeanFactory().getBeanDefinitionNames()) {
-                    String beanClassName = context.getBeanFactory().getBeanDefinition(beanName).getBeanClassName();
-                    if (beanClassName != null) {
-                        Class<?> beanClass = Class.forName(beanClassName);
-                        if (AnnoKit.hasAnnotation(beanClass, EnableHealth.class)) {
-                            return true;
-                        }
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                Logger.error("Failed to check EnableHealth annotation: {}", e.getMessage(), e);
-            }
-            return false;
+            return context.getBeanFactory().getBeansWithAnnotation(EnableHealth.class).size() > 0;
         }
     }
 

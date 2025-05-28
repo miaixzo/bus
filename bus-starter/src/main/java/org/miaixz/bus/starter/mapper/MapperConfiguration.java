@@ -73,16 +73,24 @@ import jakarta.annotation.Resource;
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
 public class MapperConfiguration implements InitializingBean {
 
-    /** Spring环境配置 */
+    /**
+     * Spring环境配置
+     */
     private final Environment environment;
 
-    /** 资源加载器 */
+    /**
+     * 资源加载器
+     */
     private final ResourceLoader resourceLoader;
 
-    /** MyBatis配置定制器列表 */
+    /**
+     * MyBatis配置定制器列表
+     */
     private final List<ConfigurationCustomizer> configurationCustomizers;
 
-    /** MyBatis属性配置 */
+    /**
+     * MyBatis属性配置
+     */
     @Resource
     MybatisProperties properties;
 
@@ -145,12 +153,10 @@ public class MapperConfiguration implements InitializingBean {
                 customizer.customize(configuration);
             }
         }
-        factory.setConfiguration(configuration);
         if (this.properties.getConfigurationProperties() != null) {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
-            Context.INSTANCE.setProperties(this.properties.getConfigurationProperties());
+            Context.INSTANCE.putAll(this.properties.getConfigurationProperties());
         }
-        factory.setPlugins(MybatisPluginBuilder.build(environment));
         if (ObjectKit.isEmptyIfString(this.properties.getTypeAliasesPackage())) {
             factory.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
         }
@@ -163,6 +169,9 @@ public class MapperConfiguration implements InitializingBean {
         if (!ObjectKit.isEmpty(this.properties.resolveMapperLocations())) {
             factory.setMapperLocations(this.properties.resolveMapperLocations());
         }
+        factory.setConfiguration(configuration);
+        // 插件配置
+        factory.setPlugins(MybatisPluginBuilder.build(environment));
 
         SqlSessionFactory sqlSessionFactory = factory.getObject();
         Logger.info("SqlSessionFactory created successfully");

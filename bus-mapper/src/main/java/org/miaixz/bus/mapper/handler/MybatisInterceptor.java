@@ -29,7 +29,9 @@ package org.miaixz.bus.mapper.handler;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
 
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -37,18 +39,28 @@ import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.Handler;
 
 /**
- * MyBatis SQL 拦截处理器，实现 MyBatis 的 Interceptor 接口，用于拦截和处理 SQL 执行过程 支持通过 Handler 接口扩展自定义拦截逻辑
+ * MyBatis SQL 拦截器
+ * <p>
+ * 通过注册的处理器应用自定义逻辑处理 SQL 执行。 拦截 Executor 和 StatementHandler，处理查询、更新和 SQL 准备。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,12 +73,12 @@ import org.miaixz.bus.mapper.Handler;
                 RowBounds.class, ResultHandler.class }),
         @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class }) })
-public class MybatisInterceptor implements Interceptor {
+public class MybatisInterceptor extends AbstractSqlHandler implements Interceptor {
 
     /**
-     * 拦截器列表，存储自定义的 Handler 实例
+     * 自定义处理器集合，使用 Set 避免重复
      */
-    private List<Handler> handlers = new ArrayList<>();
+    private final Set<MapperHandler> handlers = new HashSet<>();
 
     /**
      * 拦截方法，处理 MyBatis 的 Executor 和 StatementHandler 调用
@@ -77,63 +89,194 @@ public class MybatisInterceptor implements Interceptor {
      */
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        long start = DateKit.current();
         Object target = invocation.getTarget();
         Object[] args = invocation.getArgs();
 
-        // 处理 Executor 拦截
         if (target instanceof Executor) {
-            final Executor executor = (Executor) target;
-            Object parameter = args[1];
-            boolean isUpdate = args.length == 2; // update 方法参数长度为 2
-            MappedStatement ms = (MappedStatement) args[0];
+            return handleExecutor((Executor) target, args, start, invocation);
+        } else if (target instanceof StatementHandler) {
+            return handleStatementHandler((StatementHandler) target, args, start, invocation);
+        }
 
-            // 处理查询操作
-            if (!isUpdate && ms.getSqlCommandType() == SqlCommandType.SELECT) {
-                RowBounds rowBounds = (RowBounds) args[2];
-                ResultHandler resultHandler = (ResultHandler) args[3];
-                BoundSql boundSql;
-                if (args.length == 4) {
-                    boundSql = ms.getBoundSql(parameter);
-                } else {
-                    // 特殊情况：通过代理对象调用 query 方法（6 个参数）
-                    boundSql = (BoundSql) args[5];
-                }
-                for (Handler query : handlers) {
-                    if (!query.isQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql)) {
-                        return Collections.emptyList(); // 终止查询，返回空列表
-                    }
-                    query.query(executor, ms, parameter, rowBounds, resultHandler, boundSql);
-                }
-                CacheKey cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
-                return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
-            } else if (isUpdate) {
-                // 处理更新操作
-                for (Handler update : handlers) {
-                    if (!update.isUpdate(executor, ms, parameter)) {
-                        return -1; // 终止更新，返回 -1
-                    }
-                    update.update(executor, ms, parameter);
-                }
-            }
+        return invocation.proceed();
+    }
+
+    /**
+     * 处理 Executor 相关拦截逻辑（查询或更新）
+     *
+     * @param executor   Executor 实例
+     * @param args       参数数组
+     * @param start      开始时间
+     * @param invocation 拦截调用信息
+     * @return 处理结果
+     * @throws Throwable 如果处理过程中发生异常
+     */
+    private Object handleExecutor(Executor executor, Object[] args, long start, Invocation invocation)
+            throws Throwable {
+        MappedStatement ms = (MappedStatement) args[0];
+        Object parameter = args[1];
+        SqlCommandType commandType = ms.getSqlCommandType();
+
+        if (commandType == SqlCommandType.UPDATE) {
+            return processUpdate(executor, ms, parameter, invocation);
+        } else if (commandType == SqlCommandType.SELECT) {
+            return processQuery(executor, ms, parameter, args, invocation);
+        }
+
+        Object result = invocation.proceed();
+        logging(ms, ms.getBoundSql(parameter), start);
+        return result;
+    }
+
+    /**
+     * 处理 StatementHandler 相关拦截逻辑（getBoundSql 或 prepare）
+     *
+     * @param statementHandler StatementHandler 实例
+     * @param args             参数数组
+     * @param start            开始时间
+     * @param invocation       拦截调用信息
+     * @return 处理结果
+     * @throws Throwable 如果处理过程中发生异常
+     */
+    private Object handleStatementHandler(StatementHandler statementHandler, Object[] args, long start,
+            Invocation invocation) throws Throwable {
+        if (args == null) {
+            handlers.forEach(handler -> handler.getBoundSql(statementHandler));
         } else {
-            // 处理 StatementHandler 拦截
-            final StatementHandler sh = (StatementHandler) target;
-            if (null == args) {
-                // 处理 getBoundSql 方法
-                for (Handler mapperHandler : handlers) {
-                    mapperHandler.getBoundSql(sh);
-                }
-            } else {
-                // 处理 prepare 方法
-                Connection connections = (Connection) args[0];
-                Integer transactionTimeout = (Integer) args[1];
-                for (Handler mapperHandler : handlers) {
-                    mapperHandler.prepare(sh, connections, transactionTimeout);
-                }
+            handlers.forEach(handler -> handler.prepare(statementHandler));
+        }
+
+        Object result = invocation.proceed();
+        MetaObject metaObject = getMetaObject(statementHandler);
+        MappedStatement mappedStatement = getMappedStatement(metaObject);
+        BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
+        /*
+         * handlers.forEach(handler -> handler.after(result, statementHandler, mappedStatement,
+         * realTarget(invocation.getTarget())));
+         */
+        logging(mappedStatement, boundSql, start);
+        return result;
+    }
+
+    /**
+     * 处理查询操作
+     *
+     * @param executor   Executor 实例
+     * @param ms         MappedStatement 实例
+     * @param parameter  参数对象
+     * @param args       参数数组
+     * @param invocation 拦截调用信息
+     * @return 查询结果，拦截器阻止时返回空列表
+     * @throws Throwable 如果处理过程中发生异常
+     */
+    private Object processQuery(Executor executor, MappedStatement ms, Object parameter, Object[] args,
+            Invocation invocation) throws Throwable {
+        RowBounds rowBounds = (RowBounds) args[2];
+        ResultHandler<?> resultHandler = (ResultHandler<?>) args[3];
+        BoundSql boundSql = args.length == 4 ? ms.getBoundSql(parameter) : (BoundSql) args[5];
+        CacheKey cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
+
+        for (MapperHandler handler : handlers) {
+            if (!handler.isQuery(executor, ms, parameter, rowBounds, resultHandler, boundSql)) {
+                return Collections.emptyList();
+            }
+            Object[] result = new Object[1];
+            handler.query(result, executor, ms, parameter, rowBounds, resultHandler, boundSql);
+            if (ArrayKit.isNotEmpty(result[0])) {
+                return result[0];
             }
         }
-        // 继续执行原始方法
+        return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
+    }
+
+    /**
+     * 处理更新操作
+     *
+     * @param executor   Executor 实例
+     * @param ms         MappedStatement 实例
+     * @param parameter  参数对象
+     * @param invocation 拦截调用信息
+     * @return 更新结果，拦截器阻止时返回 -1
+     * @throws Throwable 如果处理过程中发生异常
+     */
+    private Object processUpdate(Executor executor, MappedStatement ms, Object parameter, Invocation invocation)
+            throws Throwable {
+        for (MapperHandler handler : handlers) {
+            if (!handler.isUpdate(executor, ms, parameter)) {
+                return -1;
+            }
+            handler.update(executor, ms, parameter);
+        }
         return invocation.proceed();
+    }
+
+    /**
+     * 记录 SQL 执行信息
+     *
+     * @param ms       MappedStatement 实例
+     * @param boundSql BoundSql 实例
+     * @param start    开始时间
+     */
+    private void logging(MappedStatement ms, BoundSql boundSql, long start) {
+        long duration = DateKit.current() - start;
+        Logger.debug("==>     Method: {} {}ms", ms.getId(), duration);
+        String sql = format(ms.getConfiguration(), boundSql);
+        Logger.debug("==>     Script: {}", sql);
+    }
+
+    /**
+     * 格式化 SQL 语句，替换参数值
+     *
+     * @param configuration MyBatis 配置
+     * @param boundSql      BoundSql 实例
+     * @return 格式化后的 SQL 语句
+     */
+    private String format(Configuration configuration, BoundSql boundSql) {
+        String sql = boundSql.getSql().replaceAll("[\\s]+", Symbol.SPACE).replaceAll("\\?", ID.objectId());
+        Object parameterObject = boundSql.getParameterObject();
+        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+
+        if (CollKit.isEmpty(parameterMappings) || parameterObject == null) {
+            return sql;
+        }
+
+        TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+        if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+            return sql.replaceFirst(ID.objectId(), Matcher.quoteReplacement(getParameterValue(parameterObject)));
+        }
+
+        MetaObject metaObject = configuration.newMetaObject(parameterObject);
+        for (ParameterMapping mapping : parameterMappings) {
+            String propertyName = mapping.getProperty();
+            if (metaObject.hasGetter(propertyName)) {
+                sql = sql.replaceFirst(ID.objectId(),
+                        Matcher.quoteReplacement(getParameterValue(metaObject.getValue(propertyName))));
+            } else if (boundSql.hasAdditionalParameter(propertyName)) {
+                sql = sql.replaceFirst(ID.objectId(),
+                        Matcher.quoteReplacement(getParameterValue(boundSql.getAdditionalParameter(propertyName))));
+            } else {
+                sql = sql.replaceFirst(ID.objectId(), "Missing");
+            }
+        }
+        return sql;
+    }
+
+    /**
+     * 格式化参数值
+     *
+     * @param object 参数对象
+     * @return 格式化后的参数值
+     */
+    private static String getParameterValue(Object object) {
+        if (object instanceof String) {
+            return Symbol.SINGLE_QUOTE + object + Symbol.SINGLE_QUOTE;
+        } else if (object instanceof Date) {
+            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
+            return Symbol.SINGLE_QUOTE + formatter.format(object) + Symbol.SINGLE_QUOTE;
+        } else {
+            return object != null ? object.toString() : Normal.EMPTY;
+        }
     }
 
     /**
@@ -144,60 +287,52 @@ public class MybatisInterceptor implements Interceptor {
      */
     @Override
     public Object plugin(Object target) {
-        if (target instanceof Executor || target instanceof StatementHandler) {
-            return Plugin.wrap(target, this); // 对 Executor 和 StatementHandler 进行代理
+        return (target instanceof Executor || target instanceof StatementHandler) ? Plugin.wrap(target, this) : target;
+    }
+
+    /**
+     * 添加自定义处理器
+     *
+     * @param handler 自定义处理器实例
+     */
+    public void addHandler(MapperHandler handler) {
+        handlers.add(handler);
+    }
+
+    /**
+     * 设置处理器列表（兼容旧版本 MybatisPluginBuilder）
+     *
+     * @param handlers 处理器列表
+     */
+    public void setHandlers(List<MapperHandler> handlers) {
+        this.handlers.clear();
+        if (handlers != null) {
+            this.handlers.addAll(handlers);
         }
-        return target; // 不代理其他类型
-    }
-
-    public void setHandlers(List<Handler> handlers) {
-        this.handlers = handlers;
     }
 
     /**
-     * 添加自定义拦截器
+     * 获取处理器列表
      *
-     * @param mapperHandler 自定义 Handler 实例
+     * @return 处理器列表副本
      */
-    public void handler(Handler mapperHandler) {
-        this.handlers.add(mapperHandler);
+    public List<MapperHandler> getHandlers() {
+        return new ArrayList<>(handlers);
     }
 
     /**
-     * 获取拦截器列表
-     *
-     * @return 拦截器列表的副本
-     */
-    public List<Handler> getHandlers() {
-        return ListKit.of(handlers);
-    }
-
-    /**
-     * 设置属性配置，根据属性动态创建和配置拦截器
+     * 设置属性配置，动态创建和配置处理器
      *
      * @param properties 配置属性
      */
     @Override
     public void setProperties(Properties properties) {
         Context context = (Context) Context.newInstance(properties);
-        // 按 "@" 分组解析属性
-        Map<String, Properties> group = context.group(Symbol.AT);
-        group.forEach((k, v) -> {
-            // 动态创建 Handler 实例
-            Handler mapperHandler = ReflectKit.newInstance(k);
-            mapperHandler.setProperties(v); // 设置属性
-            this.handler(mapperHandler); // 添加到拦截器列表
+        Map<String, Properties> groups = context.group(Symbol.AT);
+        groups.forEach((key, value) -> {
+            MapperHandler handler = ReflectKit.newInstance(key);
+            addHandler(handler);
         });
-    }
-
-    /**
-     * 返回字符串表示，包含拦截器列表信息
-     *
-     * @return 字符串表示
-     */
-    @Override
-    public String toString() {
-        return "MybatisInterceptor{" + "handlers=" + handlers + '}';
     }
 
 }

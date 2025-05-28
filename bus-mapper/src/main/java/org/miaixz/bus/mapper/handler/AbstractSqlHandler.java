@@ -31,6 +31,8 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
@@ -39,7 +41,7 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * SQL 拦截处理器
+ * SQL 拦截处理
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -138,6 +140,26 @@ public abstract class AbstractSqlHandler {
     public static MetaObject getMetaObject(Object object) {
         return MetaObject.forObject(object, SystemMetaObject.DEFAULT_OBJECT_FACTORY,
                 SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
+    }
+
+    /**
+     * 给 BoundSql 设置 additionalParameters
+     *
+     * @param boundSql             BoundSql
+     * @param additionalParameters additionalParameters
+     */
+    public static void setAdditionalParameter(BoundSql boundSql, Map<String, Object> additionalParameters) {
+        additionalParameters.forEach(boundSql::setAdditionalParameter);
+    }
+
+    public static MapperBoundSql mpBoundSql(BoundSql boundSql) {
+        return new MapperBoundSql(boundSql);
+    }
+
+    public static MapperStatementHandler mpStatementHandler(StatementHandler statementHandler) {
+        statementHandler = realTarget(statementHandler);
+        MetaObject object = getMetaObject(statementHandler);
+        return new MapperStatementHandler(getMetaObject(object.getValue("delegate")));
     }
 
 }

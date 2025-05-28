@@ -35,7 +35,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.pager.binding.PageAutoDialect;
-import org.miaixz.bus.pager.handler.BoundSqlHandler;
+import org.miaixz.bus.pager.builder.BoundSqlBuilder;
 
 /**
  * Mybatis - 分页对象
@@ -103,8 +103,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * sql拦截处理
      */
-    private BoundSqlHandler boundSqlHandler;
-    private transient BoundSqlHandler.Chain chain;
+    private BoundSqlBuilder boundSqlHandler;
+    private transient BoundSqlBuilder.Chain chain;
     /**
      * 分页实现类，可以使用 {@link PageAutoDialect} 类中注册的别名，例如 "mysql", "oracle"
      */
@@ -437,7 +437,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @param boundSqlHandler 分页拦截器
      * @return 结果
      */
-    public Page<E> boundSqlInterceptor(BoundSqlHandler boundSqlHandler) {
+    public Page<E> boundSqlInterceptor(BoundSqlBuilder boundSqlHandler) {
         setBoundSqlInterceptor(boundSqlHandler);
         return this;
     }
@@ -597,19 +597,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         this.countColumn = countColumn;
     }
 
-    public BoundSqlHandler getBoundSqlInterceptor() {
+    public BoundSqlBuilder getBoundSqlInterceptor() {
         return boundSqlHandler;
     }
 
-    public void setBoundSqlInterceptor(BoundSqlHandler boundSqlHandler) {
+    public void setBoundSqlInterceptor(BoundSqlBuilder boundSqlHandler) {
         this.boundSqlHandler = boundSqlHandler;
     }
 
-    BoundSqlHandler.Chain getChain() {
+    BoundSqlBuilder.Chain getChain() {
         return chain;
     }
 
-    void setChain(BoundSqlHandler.Chain chain) {
+    void setChain(BoundSqlBuilder.Chain chain) {
         this.chain = chain;
     }
 

@@ -27,22 +27,27 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
-import org.apache.ibatis.executor.statement.StatementHandler;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
+import org.miaixz.bus.mapper.handler.MapperHandler;
+import org.miaixz.bus.pager.handler.SqlParserHandler;
 import org.miaixz.bus.sensitive.Builder;
 import org.miaixz.bus.sensitive.Provider;
 import org.miaixz.bus.sensitive.magic.annotation.NShield;
@@ -50,26 +55,14 @@ import org.miaixz.bus.sensitive.magic.annotation.Privacy;
 import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 /**
  * 数据脱敏加密
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Intercepts({
-        @Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
-public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
+public class SensitiveStatementHandler<T> extends SqlParserHandler implements MapperHandler<T> {
 
-    /**
-     * 是否DEBUG模式
-     */
-    private boolean debug;
     /**
      * 加密类型
      */
@@ -79,41 +72,37 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
      */
     private String key;
 
+    /**
+     * 执行分页查询，处理 COUNT 和分页逻辑。
+     *
+     * @param executor        MyBatis 执行器
+     * @param mappedStatement MappedStatement 对象
+     * @param parameter       查询参数
+     * @param rowBounds       分页参数
+     * @param resultHandler   结果处理器
+     * @param boundSql        绑定的 SQL
+     * @param result          分页查询结果
+     */
     @Override
-    public Object intercept(Invocation invocation) throws Throwable {
-        StatementHandler statementHandler = realTarget(invocation.getTarget());
-        MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-        MappedStatement mappedStatement = getMappedStatement(metaObject);
+    public void query(Object result, Executor executor, MappedStatement mappedStatement, Object parameter,
+            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         SqlCommandType commandType = mappedStatement.getSqlCommandType();
-
-        BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
         Object params = boundSql.getParameterObject();
         if (params instanceof Map) {
-            return invocation.proceed();
+            return;
         }
 
-        if (this.debug) {
-            Sensitive sensitive = null != params ? params.getClass().getAnnotation(Sensitive.class) : null;
-            if (ObjectKit.isNotEmpty(sensitive)) {
-                handleParameters(sensitive, mappedStatement.getConfiguration(), boundSql, params, commandType);
-            }
+        Sensitive sensitive = null != params ? params.getClass().getAnnotation(Sensitive.class) : null;
+        if (ObjectKit.isNotEmpty(sensitive)) {
+            handleParameters(sensitive, mappedStatement.getConfiguration(), boundSql, params, commandType);
         }
-        return invocation.proceed();
     }
 
     @Override
-    public Object plugin(Object object) {
-        if (object instanceof StatementHandler) {
-            return Plugin.wrap(object, this);
-        }
-        return object;
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-        this.debug = BooleanKit.toBoolean(properties.getProperty("debug"));
+    public boolean setProperties(Properties properties) {
         this.key = properties.getProperty("key");
         this.type = properties.getProperty("type");
+        return true;
     }
 
     private void handleParameters(Sensitive sensitive, Configuration configuration, BoundSql boundSql, Object param,

@@ -587,4 +587,22 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
     }
 
+    /**
+     * 追加模式
+     *
+     */
+    enum AppendMode {
+
+        /**
+         * 追加至首位
+         */
+        FIRST,
+
+        /**
+         * 追加至末尾
+         */
+        LAST
+
+    }
+
 }
