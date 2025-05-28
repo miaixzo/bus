@@ -38,15 +38,8 @@ import org.miaixz.bus.pager.handler.OperationHandler;
 import org.miaixz.bus.pager.handler.PaginationHandler;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
-import org.miaixz.bus.starter.annotation.EnableSensitive;
 import org.miaixz.bus.starter.sensitive.SensitiveProperties;
-import org.miaixz.bus.starter.sensitive.SensitiveResultSetHandler;
-import org.miaixz.bus.starter.sensitive.SensitiveStatementHandler;
-import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.core.env.Environment;
-import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
  * MyBatis 插件构建器，负责初始化并配置 MyBatis 拦截器及其处理器
@@ -68,7 +61,6 @@ public class MybatisPluginBuilder {
 
         if (ObjectKit.isNotEmpty(environment)) {
             configureMybatisProperties(environment, handlers);
-            configureSensitiveProperties(environment, handlers);
         }
 
         MybatisInterceptor interceptor = new MybatisInterceptor();
@@ -95,35 +87,6 @@ public class MybatisPluginBuilder {
             PaginationHandler paginationHandler = new PaginationHandler();
             paginationHandler.setProperties(props);
             handlers.add(paginationHandler);
-        }
-    }
-
-    /**
-     * 配置敏感数据相关属性，添加加密和解密处理器
-     *
-     * @param environment Spring 环境对象
-     * @param handlers    处理器列表
-     */
-    private static void configureSensitiveProperties(Environment environment, List<MapperHandler> handlers) {
-        SensitiveProperties properties = PlaceHolderBinder.bind(environment, SensitiveProperties.class,
-                GeniusBuilder.SENSITIVE);
-        if (ObjectKit.isNotEmpty(properties)) {
-            Properties props = new Properties();
-            if (ObjectKit.isNotEmpty(properties)) {
-                // 配置解密处理器
-                props.setProperty("key", properties.getDecrypt().getKey());
-                props.setProperty("type", properties.getDecrypt().getType());
-                SensitiveResultSetHandler resultSetHandler = new SensitiveResultSetHandler();
-                resultSetHandler.setProperties(props);
-                handlers.add(resultSetHandler);
-
-                // 配置加密处理器
-                props.setProperty("key", properties.getEncrypt().getKey());
-                props.setProperty("type", properties.getEncrypt().getType());
-                SensitiveStatementHandler statementHandler = new SensitiveStatementHandler();
-                statementHandler.setProperties(props);
-                handlers.add(statementHandler);
-            }
         }
     }
 
