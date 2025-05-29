@@ -105,7 +105,6 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
                 sValue = copyOptions.convertField(typeArguments[1], sValue);
             }
 
-
             // 目标赋值
             if (null != sValue || !copyOptions.ignoreNullValue) {
                 target.put(sFieldName, sValue);

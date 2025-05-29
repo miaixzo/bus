@@ -494,7 +494,7 @@ public final class UrlBuilder implements Builder<String> {
         if (StringKit.isEmpty(fragment)) {
             this.fragment = null;
         }
-        this.fragment = StringKit.removePrefix(fragment, Symbol.SHAPE);
+        this.fragment = StringKit.removePrefix(fragment, Symbol.HASH);
         return this;
     }
 
@@ -566,7 +566,7 @@ public final class UrlBuilder implements Builder<String> {
 
         // fragment
         if (StringKit.isNotBlank(this.fragment)) {
-            fileBuilder.append(Symbol.C_SHAPE).append(getFragmentEncoded());
+            fileBuilder.append(Symbol.C_HASH).append(getFragmentEncoded());
         }
 
         try {

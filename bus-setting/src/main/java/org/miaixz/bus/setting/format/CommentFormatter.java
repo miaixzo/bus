@@ -48,7 +48,7 @@ public class CommentFormatter extends AbstractFormatter<IniComment> {
 
     public CommentFormatter() {
         super(null);
-        start = Symbol.C_SHAPE;
+        start = Symbol.C_HASH;
     }
 
     @Override

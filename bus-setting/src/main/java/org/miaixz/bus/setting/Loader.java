@@ -62,7 +62,7 @@ public class Loader {
     /**
      * 注释符号（当有此符号在行首，表示此行为注释）
      */
-    private static char COMMENT_FLAG_PRE = Symbol.C_SHAPE;
+    private static char COMMENT_FLAG_PRE = Symbol.C_HASH;
     /**
      * 赋值分隔符（用于分隔键值对）
      */

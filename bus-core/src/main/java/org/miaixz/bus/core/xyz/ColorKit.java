@@ -142,11 +142,11 @@ public class ColorKit {
         }
 
         // 16进制
-        if (StringKit.startWith(colorName, Symbol.C_SHAPE)) {
+        if (StringKit.startWith(colorName, Symbol.C_HASH)) {
             return hexToColor(colorName);
         } else if (StringKit.startWith(colorName, Symbol.C_DOLLAR)) {
             // 由于#在URL传输中无法传输，因此用$代替#
-            return hexToColor(Symbol.SHAPE + colorName.substring(1));
+            return hexToColor(Symbol.HASH + colorName.substring(1));
         }
 
         // RGB值和RGBA
@@ -211,7 +211,7 @@ public class ColorKit {
      * @return {@link Color}
      */
     public static Color hexToColor(final String hex) {
-        return getColor(Integer.parseInt(StringKit.removePrefix(hex, Symbol.SHAPE), 16));
+        return getColor(Integer.parseInt(StringKit.removePrefix(hex, Symbol.HASH), 16));
     }
 
     /**
@@ -376,7 +376,7 @@ public class ColorKit {
         rHex = rHex.length() == 1 ? "0" + rHex : rHex;
         gHex = gHex.length() == 1 ? "0" + gHex : gHex;
         bHex = bHex.length() == 1 ? "0" + bHex : bHex;
-        return Symbol.SHAPE + rHex + gHex + bHex;
+        return Symbol.HASH + rHex + gHex + bHex;
     }
 
     /**

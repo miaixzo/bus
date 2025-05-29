@@ -32,8 +32,12 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -49,6 +53,21 @@ import org.miaixz.bus.mapper.support.ClassField;
  * @since Java 17+
  */
 public class OGNL {
+
+    /**
+     * SQL 语法检查正则，匹配包含两个关键字（有先后顺序）的 SQL 语句
+     */
+    public static final Pattern SQL_SYNTAX_PATTERN = Pattern.compile(
+            "(insert|delete|update|select|create|drop|truncate|grant|alter|deny|revoke|call|execute|exec|declare|show|rename|set)"
+                    + "\\s+.*(into|from|set|where|table|database|view|index|on|cursor|procedure|trigger|for|password|union|and|or)|(select\\s*\\*\\s*from\\s+)"
+                    + "|if\\s*\\(.*\\)|select\\s*\\(.*\\)|substr\\s*\\(.*\\)|substring\\s*\\(.*\\)|char\\s*\\(.*\\)|concat\\s*\\(.*\\)|benchmark\\s*\\(.*\\)|sleep\\s*\\(.*\\)|(and|or)\\s+.*",
+            Pattern.CASE_INSENSITIVE);
+
+    /**
+     * SQL 注释截断检查正则，匹配包含单引号、注释或分号的 SQL 语句
+     */
+    public static final Pattern SQL_COMMENT_PATTERN = Pattern.compile("'.*(or|union|--|#|/\\*|;)",
+            Pattern.CASE_INSENSITIVE);
 
     /**
      * 注册新的简单类型。
@@ -164,6 +183,251 @@ public class OGNL {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to convert Fn to field name", e);
         }
+    }
+
+    /**
+     * 检查参数是否存在 SQL 注入风险。
+     *
+     * @param value 要检查的参数
+     * @return 如果存在 SQL 注入风险返回 true，否则返回 false
+     * @throws NullPointerException 如果 value 为 null
+     */
+    public static boolean check(String value) {
+        Objects.requireNonNull(value);
+        return SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find();
+    }
+
+    /**
+     * 删除字段中的转义字符（单引号和双引号）。
+     *
+     * @param text 待处理的字段
+     * @return 删除转义字符后的字段值
+     * @throws NullPointerException 如果 text 为 null
+     */
+    public static String removeEscapeCharacter(String text) {
+        Objects.requireNonNull(text);
+        return text.replaceAll("\"", "").replaceAll("'", "");
+    }
+
+    /**
+     * 生成包含 if 标签的 SQL 脚本。
+     *
+     * @param sqlScript SQL 脚本片段
+     * @param ifTest    if 标签的 test 条件
+     * @param newLine   是否在新行包裹脚本
+     * @return 包含 if 标签的 SQL 脚本
+     */
+    public static String convertIf(final String sqlScript, final String ifTest, boolean newLine) {
+        String newSqlScript = sqlScript;
+        if (newLine) {
+            newSqlScript = Symbol.LF + newSqlScript + Symbol.LF;
+        }
+        return String.format("<if test=\"%s\">%s</if>", ifTest, newSqlScript);
+    }
+
+    /**
+     * 生成包含 trim 标签的 SQL 脚本。
+     *
+     * @param sqlScript       SQL 脚本片段
+     * @param prefix          前缀
+     * @param suffix          后缀
+     * @param prefixOverrides 要移除的前缀
+     * @param suffixOverrides 要移除的后缀
+     * @return 包含 trim 标签的 SQL 脚本
+     */
+    public static String convertTrim(final String sqlScript, final String prefix, final String suffix,
+            final String prefixOverrides, final String suffixOverrides) {
+        StringBuilder sb = new StringBuilder("<trim");
+        if (StringKit.isNotBlank(prefix)) {
+            sb.append(" prefix=\"").append(prefix).append(Symbol.SINGLE_QUOTE);
+        }
+        if (StringKit.isNotBlank(suffix)) {
+            sb.append(" suffix=\"").append(suffix).append(Symbol.SINGLE_QUOTE);
+        }
+        if (StringKit.isNotBlank(prefixOverrides)) {
+            sb.append(" prefixOverrides=\"").append(prefixOverrides).append(Symbol.SINGLE_QUOTE);
+        }
+        if (StringKit.isNotBlank(suffixOverrides)) {
+            sb.append(" suffixOverrides=\"").append(suffixOverrides).append(Symbol.SINGLE_QUOTE);
+        }
+        return sb.append(Symbol.GT).append(Symbol.LF).append(sqlScript).append(Symbol.LF).append("</trim>").toString();
+    }
+
+    /**
+     * 生成包含 choose 标签的 SQL 脚本。
+     *
+     * @param whenTest      when 标签的 test 条件
+     * @param whenSqlScript when 条件成立时的 SQL 脚本
+     * @param otherwise     otherwise 标签的内容
+     * @return 包含 choose 标签的 SQL 脚本
+     */
+    public static String convertChoose(final String whenTest, final String whenSqlScript, final String otherwise) {
+        return "<choose>" + Symbol.LF + "<when test=\"" + whenTest + Symbol.SINGLE_QUOTE + Symbol.GT + Symbol.LF
+                + whenSqlScript + Symbol.LF + "</when>" + Symbol.LF + "<otherwise>" + otherwise + "</otherwise>"
+                + Symbol.LF + "</choose>";
+    }
+
+    /**
+     * 生成包含 foreach 标签的 SQL 脚本。
+     *
+     * @param sqlScript  foreach 内部的 SQL 脚本
+     * @param collection 集合名称
+     * @param index      索引名称
+     * @param item       元素名称
+     * @param separator  分隔符
+     * @return 包含 foreach 标签的 SQL 脚本
+     */
+    public static String convertForeach(final String sqlScript, final String collection, final String index,
+            final String item, final String separator) {
+        StringBuilder sb = new StringBuilder("<foreach");
+        if (StringKit.isNotBlank(collection)) {
+            sb.append(" collection=\"").append(collection).append(Symbol.SINGLE_QUOTE);
+        }
+        if (StringKit.isNotBlank(index)) {
+            sb.append(" index=\"").append(index).append(Symbol.SINGLE_QUOTE);
+        }
+        if (StringKit.isNotBlank(item)) {
+            sb.append(" item=\"").append(item).append(Symbol.SINGLE_QUOTE);
+        }
+        if (StringKit.isNotBlank(separator)) {
+            sb.append(" separator=\"").append(separator).append(Symbol.SINGLE_QUOTE);
+        }
+        return sb.append(Symbol.GT).append(Symbol.LF).append(sqlScript).append(Symbol.LF).append("</foreach>")
+                .toString();
+    }
+
+    /**
+     * 生成包含 where 标签的 SQL 脚本。
+     *
+     * @param sqlScript where 内部的 SQL 脚本
+     * @return 包含 where 标签的 SQL 脚本
+     */
+    public static String convertWhere(final String sqlScript) {
+        return "<where>" + Symbol.LF + sqlScript + Symbol.LF + "</where>";
+    }
+
+    /**
+     * 生成包含 set 标签的 SQL 脚本。
+     *
+     * @param sqlScript set 内部的 SQL 脚本
+     * @return 包含 set 标签的 SQL 脚本
+     */
+    public static String convertSet(final String sqlScript) {
+        return "<set>" + Symbol.LF + sqlScript + Symbol.LF + "</set>";
+    }
+
+    /**
+     * 生成安全的 MyBatis 参数占位符（#{param}）。
+     *
+     * @param param 参数名称
+     * @return 安全的参数占位符脚本
+     */
+    public static String safeParam(final String param) {
+        return safeParam(param, null);
+    }
+
+    /**
+     * 生成安全的 MyBatis 参数占位符（#{param,mapping}）。
+     *
+     * @param param   参数名称
+     * @param mapping 参数映射配置
+     * @return 安全的参数占位符脚本
+     */
+    public static String safeParam(final String param, final String mapping) {
+        String target = Symbol.HASH_LEFT_BRACE + param;
+        if (StringKit.isBlank(mapping)) {
+            return target + Symbol.C_BRACE_RIGHT;
+        }
+        return target + Symbol.COMMA + mapping + Symbol.C_BRACE_RIGHT;
+    }
+
+    /**
+     * 生成非安全的 MyBatis 参数占位符（${param}）。
+     *
+     * @param param 参数名称
+     * @return 非安全的参数占位符脚本
+     */
+    public static String unSafeParam(final String param) {
+        return Symbol.DOLLAR_LEFT_BRACE + param + Symbol.C_BRACE_RIGHT;
+    }
+
+    /**
+     * 生成 TypeHandler 的映射配置。
+     *
+     * @param typeHandler TypeHandler 类
+     * @return TypeHandler 映射配置字符串，若 typeHandler 为 null 则返回 null
+     */
+    public static String mappingTypeHandler(Class<? extends TypeHandler<?>> typeHandler) {
+        if (typeHandler != null) {
+            return "typeHandler=" + typeHandler.getName();
+        }
+        return null;
+    }
+
+    /**
+     * 生成 JdbcType 的映射配置。
+     *
+     * @param jdbcType JdbcType 类型
+     * @return JdbcType 映射配置字符串，若 jdbcType 为 null 则返回 null
+     */
+    public static String mappingJdbcType(JdbcType jdbcType) {
+        if (jdbcType != null) {
+            return "jdbcType=" + jdbcType.name();
+        }
+        return null;
+    }
+
+    /**
+     * 生成数字精度的映射配置。
+     *
+     * @param numericScale 数字精度
+     * @return 数字精度映射配置字符串，若 numericScale 为 null 则返回 null
+     */
+    public static String mappingNumericScale(Integer numericScale) {
+        if (numericScale != null) {
+            return "numericScale=" + numericScale;
+        }
+        return null;
+    }
+
+    /**
+     * 组合 TypeHandler、JdbcType 和数字精度的映射配置。
+     *
+     * @param typeHandler  TypeHandler 类
+     * @param jdbcType     JdbcType 类型
+     * @param numericScale 数字精度
+     * @return 组合的映射配置字符串，若所有参数为 null 则返回 null
+     */
+    public static String convertParamMapping(Class<? extends TypeHandler<?>> typeHandler, JdbcType jdbcType,
+            Integer numericScale) {
+        if (typeHandler == null && jdbcType == null && numericScale == null) {
+            return null;
+        }
+        String mapping = null;
+        if (typeHandler != null) {
+            mapping = mappingTypeHandler(typeHandler);
+        }
+        if (jdbcType != null) {
+            mapping = appendMapping(mapping, mappingJdbcType(jdbcType));
+        }
+        if (numericScale != null) {
+            mapping = appendMapping(mapping, mappingNumericScale(numericScale));
+        }
+        return mapping;
+    }
+
+    /**
+     * 拼接映射配置项。
+     *
+     * @param mapping 当前映射配置
+     * @param other   要追加的映射配置
+     * @return 拼接后的映射配置字符串
+     */
+    private static String appendMapping(String mapping, String other) {
+        if (mapping != null) {
+            return mapping + Symbol.COMMA + other;
+        }
+        return other;
     }
 
 }

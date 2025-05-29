@@ -54,7 +54,7 @@ public class InvokeCrontab implements Crontab {
      * @param classNameWithMethodName 类名与方法名的字符串表示，方法名和类名使用#隔开或者.隔开
      */
     public InvokeCrontab(final String classNameWithMethodName) {
-        int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_SHAPE);
+        int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_HASH);
         if (splitIndex <= 0) {
             splitIndex = classNameWithMethodName.lastIndexOf('.');
         }

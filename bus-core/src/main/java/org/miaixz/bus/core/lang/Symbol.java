@@ -315,10 +315,10 @@ public class Symbol {
     public static final String DOLLAR = Normal.EMPTY + C_DOLLAR;
 
     /**
-     * 符号: #
+     * 符号: 井号
      */
-    public static final char C_SHAPE = '#';
-    public static final String SHAPE = Normal.EMPTY + C_SHAPE;
+    public static final char C_HASH = '#';
+    public static final String HASH = Normal.EMPTY + C_HASH;
 
     /**
      * 符号: 百分比
@@ -468,6 +468,16 @@ public class Symbol {
      * 符号: [L
      */
     public static final String NON_PREFIX = "[L";
+
+    /**
+     * ${
+     */
+    public static final String DOLLAR_LEFT_BRACE = "${";
+
+    /**
+     * #{
+     */
+    public static final String HASH_LEFT_BRACE = "#{";
 
     /**
      * HTML: 空格

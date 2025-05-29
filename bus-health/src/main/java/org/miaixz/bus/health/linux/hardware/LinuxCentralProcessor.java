@@ -227,7 +227,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // 0,0
         // 1,0
         for (String line : lscpu) {
-            if (!line.startsWith(Symbol.SHAPE)) {
+            if (!line.startsWith(Symbol.HASH)) {
                 int pos = line.indexOf(Symbol.C_COMMA);
                 if (pos > 0 && pos < line.length()) {
                     numaNodeMap.put(Parsing.parseIntOrDefault(line.substring(0, pos), 0),

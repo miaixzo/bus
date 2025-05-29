@@ -35,6 +35,7 @@ import java.util.List;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
+import org.miaixz.bus.mapper.OGNL;
 import org.miaixz.bus.pager.binding.PageAutoDialect;
 import org.miaixz.bus.pager.builder.BoundSqlBuilder;
 
@@ -416,7 +417,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @throws PageException 若存在SQL注入风险
      */
     public <E> Page<E> setOrderBy(String orderBy) {
-        if (Builder.check(orderBy)) {
+        if (OGNL.check(orderBy)) {
             throw new PageException("order by [" + orderBy + "] has a risk of SQL injection, "
                     + "if you want to avoid SQL injection verification, you can call Page.setUnsafeOrderBy");
         }
@@ -846,7 +847,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @throws PageException 若存在SQL注入风险
      */
     public void setCountColumn(String countColumn) {
-        if (!"0".equals(countColumn) && !Symbol.STAR.equals(countColumn) && Builder.check(countColumn)) {
+        if (!"0".equals(countColumn) && !Symbol.STAR.equals(countColumn) && OGNL.check(countColumn)) {
             throw new PageException("count(" + countColumn + ") has a risk of SQL injection");
         }
         this.countColumn = countColumn;

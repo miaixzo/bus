@@ -208,9 +208,9 @@ public class TomlReader {
     private char nextUseful(final boolean skipComments) {
         char c = Symbol.C_SPACE;
         while (hasNext() && (c == Symbol.C_SPACE || c == '\t' || c == '\r' || c == '\n'
-                || (c == Symbol.C_SHAPE && skipComments))) {
+                || (c == Symbol.C_HASH && skipComments))) {
             c = next();
-            if (skipComments && c == Symbol.C_SHAPE) {
+            if (skipComments && c == Symbol.C_HASH) {
                 final int nextLinebreak = data.indexOf('\n', pos);
                 if (nextLinebreak == -1) {
                     pos = data.length();
@@ -435,7 +435,7 @@ public class TomlReader {
             final Object value = nextValue(valueFirstChar);
 
             final char afterEntry = nextUsefulOrLinebreak();
-            if (afterEntry == Symbol.C_SHAPE) {
+            if (afterEntry == Symbol.C_HASH) {
                 pos--;// to make the next nextUseful() call read the # character
             } else if (afterEntry != '\n') {
                 throw new InternalException(
@@ -524,7 +524,7 @@ public class TomlReader {
                         || c == Symbol.C_UNDERLINE || c == Symbol.C_MINUS))
                     throw new InternalException(
                             "Forbidden character '" + toString(c) + "' in strict bare-data at line " + line);
-            } else if (c <= Symbol.C_SPACE || c == Symbol.C_SHAPE || c == Symbol.C_EQUAL || c == '.' || c == '['
+            } else if (c <= Symbol.C_SPACE || c == Symbol.C_HASH || c == Symbol.C_EQUAL || c == '.' || c == '['
                     || c == ']') {// lenient bare data
                 throw new InternalException(
                         "Forbidden character '" + toString(c) + "' in lenient bare-data at line " + line);

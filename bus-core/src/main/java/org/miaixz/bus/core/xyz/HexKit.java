@@ -53,7 +53,7 @@ public class HexKit extends Hex {
      * @return Hex字符串
      */
     public static String encodeColor(final Color color) {
-        return encodeColor(color, Symbol.SHAPE);
+        return encodeColor(color, Symbol.HASH);
     }
 
     /**
@@ -107,7 +107,7 @@ public class HexKit extends Hex {
         int index = 0;
         if (value.startsWith("0x", index) || value.startsWith("0X", index)) {
             index += 2;
-        } else if (value.startsWith(Symbol.SHAPE, index)) {
+        } else if (value.startsWith(Symbol.HASH, index)) {
             index++;
         }
         try {

@@ -156,7 +156,7 @@ public class DcmDump implements ImageInputHandler {
         VR vr = dis.vr();
         if (null != vr)
             line.append(vr).append(Symbol.C_TAB);
-        line.append(Symbol.C_SHAPE).append(dis.length());
+        line.append(Symbol.C_HASH).append(dis.length());
     }
 
     private void appendKeyword(ImageInputStream dis, String privateCreator, StringBuilder line) {
