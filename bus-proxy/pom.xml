@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.1.8</bus.version>
         <aspectj.version>1.9.24</aspectj.version>
-        <spring.boot.version>3.4.5</spring.boot.version>
+        <spring.boot.version>3.5.0</spring.boot.version>
     </properties>
 
     <dependencies>

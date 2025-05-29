@@ -107,19 +107,6 @@ public interface MapperHandler<T> extends Handler<T> {
     }
 
     /**
-     * 在 Executor 的 query 方法执行后的处理 可用于修改结果、记录日志等
-     *
-     * @param statementHandler 语句处理器，可能为代理对象
-     * @param mappedStatement  映射语句，包含 SQL 配置
-     * @param resultHandler    结果处理器
-     * @param result           执行结果
-     */
-    default void after(Object result, StatementHandler statementHandler, MappedStatement mappedStatement,
-            ResultHandler resultHandler) {
-
-    }
-
-    /**
      * 在 StatementHandler 的 getBoundSql 方法执行前的预处理 仅在 BatchExecutor 和 ReuseExecutor 中调用 可用于修改绑定的 SQL
      *
      * @param statementHandler 语句处理器，可能为代理对象

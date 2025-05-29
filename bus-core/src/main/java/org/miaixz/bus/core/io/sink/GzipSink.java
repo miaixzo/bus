@@ -37,7 +37,7 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 这相当于使用{@link Deflater}同步刷新选项 该类不提供任何部分刷新机制 为获得最佳性能, 只在应用程序行为需要时调用{@link #flush}
+ * GZIP 格式压缩接收器，使用 {@link Deflater} 进行压缩，仅在必要时调用 flush 以优化性能。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,25 +45,36 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class GzipSink implements Sink {
 
     /**
-     * Sink into which the GZIP format is written.
+     * 接收 GZIP 格式数据的缓冲接收器
      */
     private final BufferSink sink;
 
     /**
-     * The deflater used to compress the body.
+     * 用于压缩数据的压缩器
      */
     private final Deflater deflater;
 
     /**
-     * The deflater sink takes care of moving data between decompressed source and compressed sink buffers.
+     * 负责在解压源和压缩接收器之间移动数据的压缩接收器
      */
     private final DeflaterSink deflaterSink;
+
     /**
-     * Checksum calculated for the compressed body.
+     * 计算压缩数据的 CRC32 校验和
      */
     private final CRC32 crc = new CRC32();
+
+    /**
+     * 是否已关闭
+     */
     private boolean closed;
 
+    /**
+     * 构造方法，初始化 GZIP 接收器。
+     *
+     * @param sink 底层接收器
+     * @throws IllegalArgumentException 如果 sink 为 null
+     */
     public GzipSink(Sink sink) {
         if (null == sink) {
             throw new IllegalArgumentException("sink == null");
@@ -71,41 +82,56 @@ public class GzipSink implements Sink {
         this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
         this.sink = IoKit.buffer(sink);
         this.deflaterSink = new DeflaterSink(this.sink, deflater);
-
         writeHeader();
     }
 
+    /**
+     * 从源缓冲区读取指定字节数并写入压缩数据。
+     *
+     * @param source    数据源缓冲区
+     * @param byteCount 要读取的字节数
+     * @throws IOException              如果写入失败
+     * @throws IllegalArgumentException 如果 byteCount 小于 0
+     */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
         if (byteCount < 0)
             throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (byteCount == 0)
             return;
-
         updateCrc(source, byteCount);
         deflaterSink.write(source, byteCount);
     }
 
+    /**
+     * 刷新缓冲区，推送压缩数据到目标。
+     *
+     * @throws IOException 如果刷新失败
+     */
     @Override
     public void flush() throws IOException {
         deflaterSink.flush();
     }
 
+    /**
+     * 获取接收器的超时配置。
+     *
+     * @return 超时对象
+     */
     @Override
     public Timeout timeout() {
         return sink.timeout();
     }
 
+    /**
+     * 关闭接收器，完成压缩并释放资源。
+     *
+     * @throws IOException 如果关闭失败
+     */
     @Override
     public void close() throws IOException {
         if (closed)
             return;
-
-        // This method delegates to the DeflaterSink for finishing the deflate process
-        // but keeps responsibility for releasing the deflater's resources. This is
-        // necessary because writeFooter needs to query the processed byte count which
-        // only works when the deflater is still open.
-
         Throwable thrown = null;
         try {
             deflaterSink.finishDeflate();
@@ -113,14 +139,12 @@ public class GzipSink implements Sink {
         } catch (Throwable e) {
             thrown = e;
         }
-
         try {
             deflater.end();
         } catch (Throwable e) {
             if (thrown == null)
                 thrown = e;
         }
-
         try {
             sink.close();
         } catch (Throwable e) {
@@ -128,21 +152,24 @@ public class GzipSink implements Sink {
                 thrown = e;
         }
         closed = true;
-
         if (thrown != null) {
             IoKit.sneakyRethrow(thrown);
         }
     }
 
     /**
-     * Returns the {@link Deflater}. Use it to access stats, dictionary, compression level, etc.
+     * 获取压缩器以访问统计信息、字典、压缩级别等。
+     *
+     * @return 压缩器对象
      */
     public final Deflater deflater() {
         return deflater;
     }
 
+    /**
+     * 写入 GZIP 文件头。
+     */
     private void writeHeader() {
-        // Write the Gzip header directly into the buffer for the sink to avoid handling IOException.
         Buffer buffer = this.sink.buffer();
         buffer.writeShort(0x1f8b); // Two-byte Gzip ID.
         buffer.writeByte(0x08); // 8 == Deflate compression method.
@@ -152,13 +179,23 @@ public class GzipSink implements Sink {
         buffer.writeByte(0x00); // No OS.
     }
 
+    /**
+     * 写入 GZIP 文件尾，包括 CRC32 校验和和原始数据长度。
+     *
+     * @throws IOException 如果写入失败
+     */
     private void writeFooter() throws IOException {
-        sink.writeIntLe((int) crc.getValue()); // CRC of original data.
-        sink.writeIntLe((int) deflater.getBytesRead()); // Length of original data.
+        // 原始数据的 CRC32
+        sink.writeIntLe((int) crc.getValue());
+        // 原始数据长度
+        sink.writeIntLe((int) deflater.getBytesRead());
     }
 
     /**
-     * Updates the CRC with the given bytes.
+     * 更新 CRC32 校验和。
+     *
+     * @param buffer    数据缓冲区
+     * @param byteCount 要更新的字节数
      */
     private void updateCrc(Buffer buffer, long byteCount) {
         for (SectionBuffer head = buffer.head; byteCount > 0; head = head.next) {

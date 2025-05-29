@@ -86,7 +86,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.1.8</bus.version>
-        <spring.boot.version>3.4.5</spring.boot.version>
+        <spring.boot.version>3.5.0</spring.boot.version>
         <lombok.version>1.18.38</lombok.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
@@ -101,6 +101,7 @@
         <elasticsearch.version>9.0.0</elasticsearch.version>
         <mongo.version>5.4.0</mongo.version>
         <curator.version>5.8.0</curator.version>
+        <jsqlparser.version>5.1</jsqlparser.version>
     </properties>
 
     <dependencies>
@@ -352,6 +353,12 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>${curator.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>${jsqlparser.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

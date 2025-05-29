@@ -38,24 +38,44 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 这种流体的强冲刷可能导致压缩降低 每一个 调用{@link #flush}立即压缩所有当前缓存的数据
+ * 使用 Deflater 进行压缩的接收器，立即压缩并写入缓冲数据，调用 flush 会导致压缩率降低。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DeflaterSink implements Sink {
 
+    /**
+     * 底层缓冲接收器
+     */
     private final BufferSink sink;
+
+    /**
+     * 压缩器
+     */
     private final Deflater deflater;
+
+    /**
+     * 是否已关闭
+     */
     private boolean closed;
 
+    /**
+     * 构造方法，使用指定的接收器和压缩器。
+     *
+     * @param sink     底层接收器
+     * @param deflater 压缩器
+     */
     public DeflaterSink(Sink sink, Deflater deflater) {
         this(IoKit.buffer(sink), deflater);
     }
 
     /**
-     * This package-private constructor shares a buffer with its trusted caller. In general we can't share a
-     * BufferedSource because the deflater holds input bytes until they are inflated.
+     * 构造方法，使用指定的缓冲接收器和压缩器。
+     *
+     * @param sink     缓冲接收器
+     * @param deflater 压缩器
+     * @throws IllegalArgumentException 如果 sink 或 deflater 为 null
      */
     DeflaterSink(BufferSink sink, Deflater deflater) {
         if (sink == null)
@@ -66,50 +86,50 @@ public class DeflaterSink implements Sink {
         this.deflater = deflater;
     }
 
+    /**
+     * 从源缓冲区读取指定字节数并压缩写入接收器。
+     *
+     * @param source    数据源缓冲区
+     * @param byteCount 要读取的字节数
+     * @throws IOException 如果写入失败
+     */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
         IoKit.checkOffsetAndCount(source.size, 0, byteCount);
         while (byteCount > 0) {
-            // Share bytes from the head segment of 'source' with the deflater.
             SectionBuffer head = source.head;
             int toDeflate = (int) Math.min(byteCount, head.limit - head.pos);
             deflater.setInput(head.data, head.pos, toDeflate);
-
-            // Deflate those bytes into sink.
             deflate(false);
-
-            // Mark those bytes as read.
             source.size -= toDeflate;
             head.pos += toDeflate;
             if (head.pos == head.limit) {
                 source.head = head.pop();
                 LifeCycle.recycle(head);
             }
-
             byteCount -= toDeflate;
         }
     }
 
+    /**
+     * 压缩数据到接收器。
+     *
+     * @param syncFlush 是否同步刷新
+     * @throws IOException 如果压缩或写入失败
+     */
     private void deflate(boolean syncFlush) throws IOException {
         Buffer buffer = sink.buffer();
         while (true) {
             SectionBuffer s = buffer.writableSegment(1);
-
-            // The 4-parameter overload of deflate() doesn't exist in the RI until
-            // Java 1.7, and is public (although with @hide) on Android since 2.3.
-            // The @hide tag means that this code won't compile against the Android
-            // 2.3 SDK, but it will run fine there.
             int deflated = syncFlush
                     ? deflater.deflate(s.data, s.limit, SectionBuffer.SIZE - s.limit, Deflater.SYNC_FLUSH)
                     : deflater.deflate(s.data, s.limit, SectionBuffer.SIZE - s.limit);
-
             if (deflated > 0) {
                 s.limit += deflated;
                 buffer.size += deflated;
                 sink.emitCompleteSegments();
             } else if (deflater.needsInput()) {
                 if (s.pos == s.limit) {
-                    // We allocated a tail segment, but didn't end up needing it. Recycle!
                     buffer.head = s.pop();
                     LifeCycle.recycle(s);
                 }
@@ -118,38 +138,48 @@ public class DeflaterSink implements Sink {
         }
     }
 
+    /**
+     * 刷新缓冲区，立即压缩并写入所有数据。
+     *
+     * @throws IOException 如果刷新失败
+     */
     @Override
     public void flush() throws IOException {
         deflate(true);
         sink.flush();
     }
 
+    /**
+     * 完成压缩过程，写入剩余数据。
+     *
+     * @throws IOException 如果写入失败
+     */
     void finishDeflate() throws IOException {
         deflater.finish();
         deflate(false);
     }
 
+    /**
+     * 关闭接收器，完成压缩并释放资源。
+     *
+     * @throws IOException 如果关闭失败
+     */
     @Override
     public void close() throws IOException {
         if (closed)
             return;
-
-        // Emit deflated data to the underlying sink. If this fails, we still need
-        // to close the deflater and the sink; otherwise we risk leaking resources.
         Throwable thrown = null;
         try {
             finishDeflate();
         } catch (Throwable e) {
             thrown = e;
         }
-
         try {
             deflater.end();
         } catch (Throwable e) {
             if (thrown == null)
                 thrown = e;
         }
-
         try {
             sink.close();
         } catch (Throwable e) {
@@ -157,16 +187,25 @@ public class DeflaterSink implements Sink {
                 thrown = e;
         }
         closed = true;
-
         if (thrown != null)
             IoKit.sneakyRethrow(thrown);
     }
 
+    /**
+     * 获取底层接收器的超时配置。
+     *
+     * @return 超时对象
+     */
     @Override
     public Timeout timeout() {
         return sink.timeout();
     }
 
+    /**
+     * 返回对象的字符串表示。
+     *
+     * @return 字符串表示，包含类名和底层接收器信息
+     */
     @Override
     public String toString() {
         return "DeflaterSink(" + sink + Symbol.PARENTHESE_RIGHT;

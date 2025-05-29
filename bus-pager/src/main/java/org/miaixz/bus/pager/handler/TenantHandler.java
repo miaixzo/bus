@@ -69,26 +69,26 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
     /**
      * 租户服务接口，用于获取租户相关信息
      */
-    private TenantService tenantService;
+    private TenantProvider provider;
 
     /**
      * 处理查询操作，在 SELECT 语句中添加租户条件。
      *
-     * @param object        结果对象（未使用）
-     * @param executor      MyBatis 执行器
-     * @param ms            映射语句
-     * @param parameter     查询参数
-     * @param rowBounds     分页参数
-     * @param resultHandler 结果处理器
-     * @param boundSql      绑定 SQL
+     * @param object          结果对象（未使用）
+     * @param executor        MyBatis 执行器
+     * @param mappedStatement 映射语句
+     * @param parameter       查询参数
+     * @param rowBounds       分页参数
+     * @param resultHandler   结果处理器
+     * @param boundSql        绑定 SQL
      */
     @Override
-    public void query(Object object, Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds,
-            ResultHandler resultHandler, BoundSql boundSql) {
+    public void query(Object object, Executor executor, MappedStatement mappedStatement, Object parameter,
+            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         // 获取 MapperBoundSql 对象
-        MapperBoundSql mpBs = mpBoundSql(boundSql);
+        MapperBoundSql mbs = mapperBoundSql(boundSql);
         // 解析并添加租户条件
-        mpBs.sql(parserSingle(mpBs.sql(), null));
+        mbs.sql(parserSingle(mbs.sql(), null));
     }
 
     /**
@@ -99,17 +99,17 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
     @Override
     public void prepare(StatementHandler statementHandler) {
         // 获取 MapperStatementHandler 对象
-        MapperStatementHandler mpSh = mpStatementHandler(statementHandler);
+        MapperStatementHandler msh = mapperStatementHandler(statementHandler);
         // 获取映射语句
-        MappedStatement ms = mpSh.mappedStatement();
+        MappedStatement mappedStatement = msh.mappedStatement();
         // 获取 SQL 命令类型
-        SqlCommandType sct = ms.getSqlCommandType();
+        SqlCommandType sct = mappedStatement.getSqlCommandType();
         // 检查是否为 INSERT、UPDATE 或 DELETE 操作
         if (sct == SqlCommandType.INSERT || sct == SqlCommandType.UPDATE || sct == SqlCommandType.DELETE) {
             // 获取 MapperBoundSql 对象
-            MapperBoundSql mpBs = mpSh.mPBoundSql();
+            MapperBoundSql mbs = msh.mapperBoundSql();
             // 解析并添加租户条件
-            mpBs.sql(parserMulti(mpBs.sql(), null));
+            mbs.sql(parserMulti(mbs.sql(), null));
         }
     }
 
@@ -119,12 +119,12 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
      * @param select SELECT 语句
      * @param index  语句索引（未使用）
      * @param sql    原始 SQL
-     * @param obj    WHERE 片段（字符串形式）
+     * @param object WHERE 片段（字符串形式）
      */
     @Override
-    protected void processSelect(Select select, int index, String sql, Object obj) {
+    protected void processSelect(Select select, int index, String sql, Object object) {
         // 获取 WHERE 片段
-        final String whereSegment = (String) obj;
+        final String whereSegment = (String) object;
         // 处理 SELECT 语句体
         processSelectBody(select, whereSegment);
         // 获取 WITH 子句列表
@@ -141,12 +141,12 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
      * @param insert INSERT 语句
      * @param index  语句索引（未使用）
      * @param sql    原始 SQL
-     * @param obj    WHERE 片段（未使用）
+     * @param object WHERE 片段（未使用）
      */
     @Override
-    protected void processInsert(Insert insert, int index, String sql, Object obj) {
+    protected void processInsert(Insert insert, int index, String sql, Object object) {
         // 忽略租户条件的表
-        if (tenantService.ignoreTenantCondition(insert.getTable().getName())) {
+        if (this.provider.ignore(insert.getTable().getName())) {
             return;
         }
         // 获取 INSERT 的列列表
@@ -156,15 +156,15 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
             return;
         }
         // 获取租户列名
-        String tenantIdColumn = tenantService.getTenantColumn();
+        String tenantIdColumn = this.provider.getColumn();
         // 已包含租户列的 INSERT 不处理
-        if (tenantService.ignoreTenantInsert(columns, tenantIdColumn)) {
+        if (this.provider.ignore(columns, tenantIdColumn)) {
             return;
         }
         // 添加租户列
         columns.add(new Column(tenantIdColumn));
         // 获取租户 ID
-        Expression tenantId = tenantService.getTenantId();
+        Expression tenantId = this.provider.getTenantId();
         // 获取 ON DUPLICATE KEY UPDATE 的列
         List<UpdateSet> duplicateUpdateColumns = insert.getDuplicateUpdateSets();
         // 处理 ON DUPLICATE KEY UPDATE
@@ -176,7 +176,7 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
         Select select = insert.getSelect();
         // 处理 INSERT INTO ... SELECT
         if (select instanceof PlainSelect) {
-            this.processInsertSelect(select, (String) obj);
+            this.processInsertSelect(select, (String) object);
             // 处理 INSERT 的 VALUES 子句
         } else if (insert.getValues() != null) {
             Values values = insert.getValues();
@@ -214,14 +214,14 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
      * @param update UPDATE 语句
      * @param index  语句索引（未使用）
      * @param sql    原始 SQL
-     * @param obj    WHERE 片段（字符串形式）
+     * @param object WHERE 片段（字符串形式）
      */
     @Override
-    protected void processUpdate(Update update, int index, String sql, Object obj) {
+    protected void processUpdate(Update update, int index, String sql, Object object) {
         // 获取表对象
         final Table table = update.getTable();
         // 忽略租户条件的表
-        if (tenantService.ignoreTenantCondition(table.getName())) {
+        if (this.provider.ignore(table.getName())) {
             return;
         }
         // 获取 UPDATE 的 SET 子句
@@ -230,12 +230,12 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
         if (!CollKit.isEmpty(sets)) {
             sets.forEach(us -> us.getValues().forEach(ex -> {
                 if (ex instanceof Select) {
-                    processSelectBody(((Select) ex), (String) obj);
+                    processSelectBody(((Select) ex), (String) object);
                 }
             }));
         }
         // 添加租户条件到 WHERE
-        update.setWhere(this.andExpression(table, update.getWhere(), (String) obj));
+        update.setWhere(this.andExpression(table, update.getWhere(), (String) object));
     }
 
     /**
@@ -244,42 +244,42 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
      * @param delete DELETE 语句
      * @param index  语句索引（未使用）
      * @param sql    原始 SQL
-     * @param obj    WHERE 片段（字符串形式）
+     * @param object WHERE 片段（字符串形式）
      */
     @Override
-    protected void processDelete(Delete delete, int index, String sql, Object obj) {
+    protected void processDelete(Delete delete, int index, String sql, Object object) {
         // 忽略租户条件的表
-        if (tenantService.ignoreTenantCondition(delete.getTable().getName())) {
+        if (this.provider.ignore(delete.getTable().getName())) {
             return;
         }
         // 添加租户条件到 WHERE
-        delete.setWhere(this.andExpression(delete.getTable(), delete.getWhere(), (String) obj));
+        delete.setWhere(this.andExpression(delete.getTable(), delete.getWhere(), (String) object));
     }
 
     /**
      * 处理 INSERT INTO ... SELECT 语句，确保 SELECT 子查询包含租户条件。
      *
-     * @param selectBody   SELECT 语句体
-     * @param whereSegment WHERE 片段（字符串形式）
+     * @param select  SELECT 语句体
+     * @param segment WHERE 片段（字符串形式）
      */
-    protected void processInsertSelect(Select selectBody, final String whereSegment) {
+    protected void processInsertSelect(Select select, final String segment) {
         // 处理简单 SELECT
-        if (selectBody instanceof PlainSelect) {
-            PlainSelect plainSelect = (PlainSelect) selectBody;
+        if (select instanceof PlainSelect) {
+            PlainSelect plainSelect = (PlainSelect) select;
             FromItem fromItem = plainSelect.getFromItem();
             if (fromItem instanceof Table) {
-                processPlainSelect(plainSelect, whereSegment);
+                processPlainSelect(plainSelect, segment);
                 appendSelectItem(plainSelect.getSelectItems());
                 // 递归处理子查询
             } else if (fromItem instanceof Select) {
                 Select subSelect = (Select) fromItem;
                 appendSelectItem(plainSelect.getSelectItems());
-                processInsertSelect(subSelect, whereSegment);
+                processInsertSelect(subSelect, segment);
             }
             // 处理括号内的 SELECT
-        } else if (selectBody instanceof ParenthesedSelect) {
-            ParenthesedSelect parenthesedSelect = (ParenthesedSelect) selectBody;
-            processInsertSelect(parenthesedSelect.getSelect(), whereSegment);
+        } else if (select instanceof ParenthesedSelect) {
+            ParenthesedSelect parenthesedSelect = (ParenthesedSelect) select;
+            processInsertSelect(parenthesedSelect.getSelect(), segment);
         }
     }
 
@@ -302,7 +302,7 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
             }
         }
         // 添加租户列
-        selectItems.add(new SelectItem<>(new Column(tenantService.getTenantColumn())));
+        selectItems.add(new SelectItem<>(new Column(this.provider.getColumn())));
     }
 
     /**
@@ -319,7 +319,7 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
             column.append(table.getAlias().getName()).append(Symbol.DOT);
         }
         // 添加租户列名
-        column.append(tenantService.getTenantColumn());
+        column.append(this.provider.getColumn());
         // 返回列对象
         return new Column(column.toString());
     }
@@ -333,7 +333,7 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
     @Override
     public boolean setProperties(Properties properties) {
         // 初始化租户服务
-        Context.newInstance(properties).whenNotBlank("tenantService", ReflectKit::newInstance, this::setTenantService);
+        Context.newInstance(properties).whenNotBlank("provider", ReflectKit::newInstance, this::setProvider);
         // 返回设置成功
         return true;
     }
@@ -341,37 +341,37 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
     /**
      * 构建租户条件表达式（如 tenant_id = ?）。
      *
-     * @param table        表对象
-     * @param where        当前 WHERE 条件
-     * @param whereSegment Mapper 全路径（未使用）
+     * @param table   表对象
+     * @param where   当前 WHERE 条件
+     * @param segment Mapper 全路径（未使用）
      * @return 租户条件表达式
      */
     @Override
-    public Expression buildTableExpression(final Table table, final Expression where, final String whereSegment) {
+    public Expression buildTableExpression(final Table table, final Expression where, final String segment) {
         // 忽略租户条件的表
-        if (tenantService.ignoreTenantCondition(table.getName())) {
+        if (this.provider.ignore(table.getName())) {
             return null;
         }
         // 构建 tenant_id = ? 条件
-        return new EqualsTo(getAliasColumn(table), tenantService.getTenantId());
+        return new EqualsTo(getAliasColumn(table), this.provider.getTenantId());
     }
 
     /**
-     * 获取租户服务实例。
+     * 获取租户服务。
      *
-     * @return 租户服务实例
+     * @return 租户服务
      */
-    public TenantService getTenantService() {
-        return tenantService;
+    public TenantProvider getProvider() {
+        return this.provider;
     }
 
     /**
-     * 设置租户服务实例。
+     * 设置租户服务。
      *
-     * @param tenantService 租户服务实例
+     * @param provider 租户服务
      */
-    public void setTenantService(TenantService tenantService) {
-        this.tenantService = tenantService;
+    public void setProvider(TenantProvider provider) {
+        this.provider = provider;
     }
 
 }

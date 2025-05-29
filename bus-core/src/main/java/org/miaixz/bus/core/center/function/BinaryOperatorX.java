@@ -35,7 +35,7 @@ import java.util.function.BinaryOperator;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * BinaryOperatorX
+ * 可序列化的BinaryOperator接口，支持异常抛出和基于比较器的最大最小值操作。
  *
  * @param <T> 参数和返回值类型
  * @author Kimi Liu
@@ -46,14 +46,12 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
 
     /**
-     * Returns a {@code BinaryOperatorX} which returns the lesser of two elements according to the specified
-     * {@code Comparator}.
+     * 返回一个BinaryOperatorX，根据指定的比较器返回两个元素中较小的那个。
      *
-     * @param <T>        the type of the input arguments of the compare
-     * @param comparator a {@code Comparator} for comparing the two values
-     * @return a {@code SerBiUnOp} which returns the lesser of its operands, according to the supplied
-     *         {@code Comparator}
-     * @throws NullPointerException if the argument is null
+     * @param <T>        输入参数类型
+     * @param comparator 用于比较两个值的比较器
+     * @return BinaryOperatorX，返回较小的元素
+     * @throws NullPointerException 如果比较器为null
      */
     static <T> BinaryOperatorX<T> minBy(final Comparator<? super T> comparator) {
         Objects.requireNonNull(comparator);
@@ -61,14 +59,12 @@ public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
     }
 
     /**
-     * Returns a {@code BinaryOperatorX} which returns the greater of two elements according to the specified
-     * {@code Comparator}.
+     * 返回一个BinaryOperatorX，根据指定的比较器返回两个元素中较大的那个。
      *
-     * @param <T>        the type of the input arguments of the compare
-     * @param comparator a {@code Comparator} for comparing the two values
-     * @return a {@code SerBiUnOp} which returns the greater of its operands, according to the supplied
-     *         {@code Comparator}
-     * @throws NullPointerException if the argument is null
+     * @param <T>        输入参数类型
+     * @param comparator 用于比较两个值的比较器
+     * @return BinaryOperatorX，返回较大的元素
+     * @throws NullPointerException 如果比较器为null
      */
     static <T> BinaryOperatorX<T> maxBy(final Comparator<? super T> comparator) {
         Objects.requireNonNull(comparator);
@@ -76,41 +72,42 @@ public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
     }
 
     /**
-     * just before
+     * 返回一个BinaryOperatorX，始终返回第一个参数。
      *
-     * @param <T> type
-     * @return before
+     * @param <T> 参数类型
+     * @return BinaryOperatorX，返回第一个参数
      */
     static <T> BinaryOperatorX<T> justBefore() {
         return (l, r) -> l;
     }
 
     /**
-     * just after
+     * 返回一个BinaryOperatorX，始终返回第二个参数。
      *
-     * @param <T> type
-     * @return after
+     * @param <T> 参数类型
+     * @return BinaryOperatorX，返回第二个参数
      */
     static <T> BinaryOperatorX<T> justAfter() {
         return (l, r) -> r;
     }
 
     /**
-     * Applies this function to the given arguments.
+     * 对给定的两个参数应用此操作，可能抛出异常。
      *
-     * @param t the first function argument
-     * @param u the second function argument
-     * @return the function result
-     * @throws Exception wrapped checked exception
+     * @param t 第一个函数参数
+     * @param u 第二个函数参数
+     * @return 操作结果
+     * @throws Throwable 可能抛出的异常
      */
     T applying(T t, T u) throws Throwable;
 
     /**
-     * Applies this function to the given arguments.
+     * 对给定的两个参数应用此操作，自动处理异常。
      *
-     * @param t the first function argument
-     * @param u the second function argument
-     * @return the function result
+     * @param t 第一个函数参数
+     * @param u 第二个函数参数
+     * @return 操作结果
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default T apply(final T t, final T u) {

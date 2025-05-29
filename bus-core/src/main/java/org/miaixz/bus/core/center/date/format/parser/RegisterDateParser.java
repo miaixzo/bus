@@ -36,7 +36,8 @@ import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * 基于注册的日期解析器，通过遍历列表，找到合适的解析器，然后解析为日期 默认的，可以调用{@link #INSTANCE}使用全局的解析器，亦或者通过构造自定义独立的注册解析器
+ * 基于注册的日期解析器，通过遍历注册的解析器列表，找到适合的解析器并解析为日期。
+ * 默认可使用单例 {@link #INSTANCE}，或通过构造创建自定义的解析器实例。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,37 +48,49 @@ public class RegisterDateParser implements DateParser, Serializable {
     private static final long serialVersionUID = 2852292112391L;
 
     /**
-     * 单例
+     * 单例实例
      */
     public static final RegisterDateParser INSTANCE = new RegisterDateParser();
 
+    /**
+     * 日期解析器列表
+     */
     private final List<PredicateDateParser> list;
 
     /**
-     * 构造
+     * 构造，初始化默认解析器列表。
      */
     public RegisterDateParser() {
         list = ListKit.of(
-                // HH:mm:ss 或者 HH:mm 时间格式匹配单独解析
+                // HH:mm:ss 或 HH:mm 时间格式解析器
                 TimeParser.INSTANCE,
-                // 默认的正则解析器
+                // 默认正则解析器
                 NormalDateParser.INSTANCE);
     }
 
+    /**
+     * 解析日期字符串。
+     *
+     * @param source 日期字符串
+     * @return 解析后的日期对象
+     * @throws DateException 如果解析失败
+     */
     @Override
     public Date parse(final CharSequence source) throws DateException {
-        return list.stream().filter(predicateDateParser -> predicateDateParser.test(source)).findFirst()
-                .map(predicateDateParser -> predicateDateParser.parse(source)).orElse(null);
+        return list.stream()
+                .filter(predicateDateParser -> predicateDateParser.test(source))
+                .findFirst()
+                .map(predicateDateParser -> predicateDateParser.parse(source))
+                .orElse(null);
     }
 
     /**
-     * 注册自定义的{@link PredicateDateParser} 通过此方法，用户可以自定义日期字符串的匹配和解析，通过循环匹配，找到合适的解析器，解析之。
+     * 注册自定义日期解析器，优先级高于默认解析器。
      *
-     * @param parser {@link PredicateDateParser}
-     * @return this
+     * @param parser 自定义日期解析器
+     * @return 当前实例
      */
     public RegisterDateParser register(final PredicateDateParser parser) {
-        // 用户定义的规则优先
         this.list.add(0, parser);
         return this;
     }

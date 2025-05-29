@@ -90,23 +90,23 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 创建 FormatPeriod
+     * 创建 {@link FormatPeriod}
      *
      * @param betweenMs 日期间隔
      * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
-     * @return FormatPeriod
+     * @return {@link FormatPeriod}
      */
     public static FormatPeriod of(final long betweenMs, final Level level) {
         return of(betweenMs, level, 0);
     }
 
     /**
-     * 创建 FormatPeriod
+     * 创建 {@link FormatPeriod}
      *
      * @param betweenMs     日期间隔
      * @param level         级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
      * @param levelMaxCount 格式化级别的最大个数，假如级别个数为1，但是级别到秒，那只显示一个级别
-     * @return FormatPeriod
+     * @return {@link FormatPeriod}
      */
     public static FormatPeriod of(final long betweenMs, final Level level, final int levelMaxCount) {
         return new FormatPeriod(betweenMs, level, levelMaxCount);

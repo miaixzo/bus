@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Supplier
+ * 可序列化的Supplier接口，支持异常抛出和多Supplier组合。
  *
  * @param <R> 返回值类型
  * @author Kimi Liu
@@ -45,11 +45,11 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface SupplierX<R> extends Supplier<R>, Serializable {
 
     /**
-     * last
+     * 从多个SupplierX中返回最后一个。
      *
-     * @param serSups lambda
-     * @param <T>     type
-     * @return lambda
+     * @param serSups 要组合的SupplierX实例
+     * @param <T>     返回值类型
+     * @return 最后一个SupplierX实例，若无则返回null Supplier
      */
     @SafeVarargs
     static <T> SupplierX<T> last(final SupplierX<T>... serSups) {
@@ -57,17 +57,18 @@ public interface SupplierX<R> extends Supplier<R>, Serializable {
     }
 
     /**
-     * Gets a result.
+     * 获取结果，可能抛出异常。
      *
-     * @return a result
-     * @throws Exception wrapped checked exception
+     * @return 结果
+     * @throws Throwable 可能抛出的异常
      */
     R getting() throws Throwable;
 
     /**
-     * Gets a result.
+     * 获取结果，自动处理异常。
      *
-     * @return a result
+     * @return 结果
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default R get() {

@@ -28,54 +28,109 @@
 package org.miaixz.bus.pager;
 
 /**
- * 抽象类，自己的查询类可以继承该类，可以更直接的控制分页参数
+ * 分页参数基类，继承该类以便更直接地控制分页参数。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PageParam implements Paging {
 
+    /**
+     * 页码
+     */
     private Integer pageNo;
+    /**
+     * 每页记录数
+     */
     private Integer pageSize;
+    /**
+     * 排序字段
+     */
     private String orderBy;
 
+    /**
+     * 默认构造函数。
+     */
     public PageParam() {
     }
 
+    /**
+     * 构造函数，指定页码和每页记录数。
+     *
+     * @param pageNo   页码（从1开始）
+     * @param pageSize 每页记录数
+     */
     public PageParam(Integer pageNo, Integer pageSize) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
     }
 
+    /**
+     * 构造函数，指定页码、每页记录数和排序字段。
+     *
+     * @param pageNo   页码（从1开始）
+     * @param pageSize 每页记录数
+     * @param orderBy  排序字段
+     */
     public PageParam(Integer pageNo, Integer pageSize, String orderBy) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
         this.orderBy = orderBy;
     }
 
+    /**
+     * 获取页码。
+     *
+     * @return 页码
+     */
     @Override
     public Integer getPageNo() {
         return pageNo;
     }
 
+    /**
+     * 设置页码。
+     *
+     * @param pageNo 页码
+     */
     public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
 
+    /**
+     * 获取每页记录数。
+     *
+     * @return 每页记录数
+     */
     @Override
     public Integer getPageSize() {
         return pageSize;
     }
 
+    /**
+     * 设置每页记录数。
+     *
+     * @param pageSize 每页记录数
+     */
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
 
+    /**
+     * 获取排序字段。
+     *
+     * @return 排序字段
+     */
     @Override
     public String getOrderBy() {
         return orderBy;
     }
 
+    /**
+     * 设置排序字段。
+     *
+     * @param orderBy 排序字段
+     */
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
     }

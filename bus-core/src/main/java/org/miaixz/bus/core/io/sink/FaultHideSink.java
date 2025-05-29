@@ -32,19 +32,34 @@ import java.io.IOException;
 import org.miaixz.bus.core.io.buffer.Buffer;
 
 /**
- * 不会抛出IOExceptions的接收器， 即使底层接收器抛出了IOExceptions
+ * 容错接收器，捕获底层接收器的 IOException 并标记错误状态，避免抛出异常。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FaultHideSink extends AssignSink {
 
+    /**
+     * 是否发生错误
+     */
     private boolean hasErrors;
 
+    /**
+     * 构造方法，初始化代理接收器。
+     *
+     * @param delegate 代理的接收器
+     */
     public FaultHideSink(Sink delegate) {
         super(delegate);
     }
 
+    /**
+     * 写入数据到代理接收器，若发生错误则标记并跳过数据。
+     *
+     * @param source    数据源缓冲区
+     * @param byteCount 要写入的字节数
+     * @throws IOException 如果写入失败（仅在无错误时抛出）
+     */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
         if (hasErrors) {
@@ -59,6 +74,11 @@ public class FaultHideSink extends AssignSink {
         }
     }
 
+    /**
+     * 刷新代理接收器，若发生错误则忽略。
+     *
+     * @throws IOException 如果刷新失败（仅在无错误时抛出）
+     */
     @Override
     public void flush() throws IOException {
         if (hasErrors)
@@ -71,6 +91,11 @@ public class FaultHideSink extends AssignSink {
         }
     }
 
+    /**
+     * 关闭代理接收器，若发生错误则忽略。
+     *
+     * @throws IOException 如果关闭失败（仅在无错误时抛出）
+     */
     @Override
     public void close() throws IOException {
         if (hasErrors)
@@ -83,6 +108,11 @@ public class FaultHideSink extends AssignSink {
         }
     }
 
+    /**
+     * 处理异常的钩子方法，子类可重写以自定义行为。
+     *
+     * @param e 发生的异常
+     */
     protected void onException(IOException e) {
 
     }

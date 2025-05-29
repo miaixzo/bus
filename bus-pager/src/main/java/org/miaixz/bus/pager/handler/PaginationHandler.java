@@ -304,7 +304,7 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
      */
     @Override
     protected void processSelect(Select select, int index, String sql, Object obj) {
-        Logger.debug("Processing Select statement for pagination: {}", select.toString());
+
     }
 
     /**

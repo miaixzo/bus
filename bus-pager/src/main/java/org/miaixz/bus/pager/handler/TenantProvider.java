@@ -35,31 +35,33 @@ import net.sf.jsqlparser.schema.Column;
 /**
  * 租户：行级多租户
  */
-public interface TenantService {
+public interface TenantProvider {
 
     /**
      * 获取租户 ID 值表达式，仅支持单个 ID 值
      *
      * @return 租户 ID 表达式
      */
-    Expression getTenantId();
+    default Expression getTenantId() {
+        return null;
+    }
 
     /**
      * 获取租户字段名
      *
      * @return 租户字段名，默认为 "tenant_id"
      */
-    default String getTenantColumn() {
+    default String getColumn() {
         return "tenant_id";
     }
 
     /**
      * 判断是否忽略表的多租户条件拼接
      *
-     * @param tableName 表名
+     * @param name 表名
      * @return true 表示忽略，false 表示需要拼接
      */
-    default boolean ignoreTenantCondition(String tableName) {
+    default boolean ignore(String name) {
         return false;
     }
 
@@ -70,7 +72,7 @@ public interface TenantService {
      * @param column  租户 ID 字段名
      * @return true 表示忽略，false 表示需要插入
      */
-    default boolean ignoreTenantInsert(List<Column> columns, String column) {
+    default boolean ignore(List<Column> columns, String column) {
         return columns.stream().map(Column::getColumnName).anyMatch(name -> name.equalsIgnoreCase(column));
     }
 

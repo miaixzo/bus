@@ -36,7 +36,7 @@ import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
- * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。
+ * 通过给定的日期格式解析日期时间字符串，逐个尝试格式直到解析成功，返回 {@link DateTime} 对象，若失败则抛出 {@link DateException}。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,33 +46,40 @@ public class PatternsDateParser implements DateParser, Serializable {
     @Serial
     private static final long serialVersionUID = 2852291821693L;
 
+    /**
+     * 日期格式模式数组
+     */
     private String[] patterns;
+
+    /**
+     * 地域设置
+     */
     private Locale locale;
 
     /**
-     * 构造
+     * 构造，初始化日期格式模式。
      *
-     * @param args 多个日期格式
+     * @param args 多个日期格式模式
      */
     public PatternsDateParser(final String... args) {
         this.patterns = args;
     }
 
     /**
-     * 创建 PatternsDateParser
+     * 创建 PatternsDateParser 实例。
      *
-     * @param args 多个日期格式
-     * @return PatternsDateParser
+     * @param args 多个日期格式模式
+     * @return PatternsDateParser 实例
      */
     public static PatternsDateParser of(final String... args) {
         return new PatternsDateParser(args);
     }
 
     /**
-     * 设置多个日期格式
+     * 设置日期格式模式数组。
      *
-     * @param patterns 日期格式列表
-     * @return this
+     * @param patterns 日期格式模式列表
+     * @return 当前实例
      */
     public PatternsDateParser setPatterns(final String... patterns) {
         this.patterns = patterns;
@@ -80,25 +87,32 @@ public class PatternsDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 获取{@link Locale}
+     * 获取地域设置。
      *
-     * @return {@link Locale}
+     * @return 地域设置
      */
     public Locale getLocale() {
         return locale;
     }
 
     /**
-     * 设置{@link Locale}
+     * 设置地域。
      *
-     * @param locale {@link Locale}
-     * @return this
+     * @param locale 地域设置
+     * @return 当前实例
      */
     public PatternsDateParser setLocale(final Locale locale) {
         this.locale = locale;
         return this;
     }
 
+    /**
+     * 解析日期字符串。
+     *
+     * @param source 日期字符串
+     * @return 解析后的 DateTime 对象
+     * @throws DateException 如果解析失败
+     */
     @Override
     public DateTime parse(final CharSequence source) {
         return new DateTime(Calendar.parseByPatterns(source, this.locale, this.patterns));

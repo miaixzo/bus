@@ -36,7 +36,8 @@ import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * {@link java.text.SimpleDateFormat} 的线程安全版本，用于将 {@link Date} 格式化输出 Thanks to Apache Commons Lang 3.5
+ * 线程安全的日期格式化类，替代 {@link java.text.SimpleDateFormat}，用于将 {@link Date} 格式化为字符串。
+ * 参考 Apache Commons Lang 3.5。
  *
  * @author Kimi Liu
  * @see FastDateParser
@@ -47,18 +48,22 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     @Serial
     private static final long serialVersionUID = 2852292276382L;
 
-    private final DatePattern datePattern;
     /**
-     * 缓存的Calendar对象，用于减少对象创建。参考tomcat的ConcurrentDateFormat
+     * 日期格式化模式对象
+     */
+    private final DatePattern datePattern;
+
+    /**
+     * 缓存的 Calendar 对象队列，用于减少对象创建
      */
     private final Queue<Calendar> queue;
 
     /**
-     * 构造，内部使用<br>
+     * 构造方法，初始化日期格式化器。
      *
-     * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
-     * @param timeZone 非空时区{@link TimeZone}
-     * @param locale   非空{@link Locale} 日期地理位置
+     * @param pattern  {@link java.text.SimpleDateFormat} 兼容的日期格式
+     * @param timeZone 非空时区对象
+     * @param locale   非空地域对象
      */
     public FastDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
         super(pattern, timeZone, locale);
@@ -67,10 +72,11 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * Formats a {@code Date}, {@code Calendar} or {@code Long} (milliseconds) object.
+     * 格式化对象为字符串，支持 {@link Date}、{@link Calendar} 或 {@link Long}（毫秒）。
      *
-     * @param obj the object to format
-     * @return The formatted value.
+     * @param obj 要格式化的对象
+     * @return 格式化后的字符串
+     * @throws IllegalArgumentException 如果对象类型不支持
      */
     public String format(final Object obj) {
         if (obj instanceof Date) {
@@ -84,34 +90,75 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
         }
     }
 
+    /**
+     * 格式化日期对象为字符串。
+     *
+     * @param date 日期对象
+     * @return 格式化后的字符串
+     */
     @Override
     public String format(final Date date) {
         return format(date.getTime());
     }
 
+    /**
+     * 格式化毫秒时间戳为字符串。
+     *
+     * @param millis 毫秒时间戳
+     * @return 格式化后的字符串
+     */
     @Override
     public String format(final long millis) {
         return format(millis, StringKit.builder(datePattern.getEstimateLength())).toString();
     }
 
+    /**
+     * 格式化日历对象为字符串。
+     *
+     * @param calendar 日历对象
+     * @return 格式化后的字符串
+     */
     @Override
     public String format(final Calendar calendar) {
         return format(calendar, StringKit.builder(datePattern.getEstimateLength())).toString();
     }
 
+    /**
+     * 格式化日期对象到指定缓冲区。
+     *
+     * @param date 日期对象
+     * @param buf  输出缓冲区
+     * @param <B>  Appendable 类型
+     * @return 格式化后的缓冲区
+     */
     @Override
     public <B extends Appendable> B format(final Date date, final B buf) {
         return format(date.getTime(), buf);
     }
 
+    /**
+     * 格式化毫秒时间戳到指定缓冲区。
+     *
+     * @param millis 毫秒时间戳
+     * @param buf    输出缓冲区
+     * @param <B>    Appendable 类型
+     * @return 格式化后的缓冲区
+     */
     @Override
     public <B extends Appendable> B format(final long millis, final B buf) {
         return applyRules(millis, buf);
     }
 
+    /**
+     * 格式化日历对象到指定缓冲区。
+     *
+     * @param calendar 日历对象
+     * @param buf      输出缓冲区
+     * @param <B>      Appendable 类型
+     * @return 格式化后的缓冲区
+     */
     @Override
     public <B extends Appendable> B format(Calendar calendar, final B buf) {
-        // do not pass in calendar directly, this will cause TimeZone of FastDatePrinter to be ignored
         if (!calendar.getTimeZone().equals(timeZone)) {
             calendar = (Calendar) calendar.clone();
             calendar.setTimeZone(timeZone);
@@ -120,11 +167,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 根据规则将时间戳转换为Appendable，复用Calendar对象，避免创建新对象
+     * 将时间戳格式化为 Appendable，使用缓存的 Calendar 对象以减少创建开销。
      *
      * @param millis 时间戳
      * @param buf    待拼接的 Appendable
-     * @return buf 拼接后的Appendable
+     * @param <B>    Appendable 类型
+     * @return 拼接后的 Appendable
      */
     private <B extends Appendable> B applyRules(final long millis, final B buf) {
         Calendar calendar = queue.poll();
@@ -138,9 +186,9 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 估算生成的日期字符串长度 实际生成的字符串长度小于或等于此值
+     * 估算格式化后的日期字符串最大长度。
      *
-     * @return 日期字符串长度
+     * @return 最大长度估算值
      */
     public int getMaxLengthEstimate() {
         return datePattern.getEstimateLength();

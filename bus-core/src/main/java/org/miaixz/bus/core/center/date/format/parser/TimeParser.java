@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 时间日期字符串，日期默认为当天，支持格式类似于；
- * 
+ *
  * <pre>
  *   HH:mm:ss
  *   HH:mm
@@ -56,19 +56,30 @@ public class TimeParser implements PredicateDateParser, Serializable {
     private static final long serialVersionUID = 2852292135516L;
 
     /**
-     * 单例
+     * 单例实例
      */
     public static final TimeParser INSTANCE = new TimeParser();
 
+    /**
+     * 测试字符串是否符合时间格式。
+     *
+     * @param date 时间字符串
+     * @return 是否匹配时间格式
+     */
     @Override
     public boolean test(final CharSequence date) {
         return PatternKit.isMatch(Pattern.TIME_PATTERN, date);
     }
 
+    /**
+     * 解析时间字符串，默认日期为当天。
+     *
+     * @param source 时间字符串
+     * @return 解析后的 DateTime 对象
+     */
     @Override
     public DateTime parse(CharSequence source) {
         source = StringKit.replaceChars(source, "时分秒", Symbol.COLON);
-
         source = StringKit.format("{} {}", DateKit.formatToday(), source);
         if (1 == StringKit.count(source, Symbol.C_COLON)) {
             // 时间格式为 HH:mm

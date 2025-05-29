@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.mapper.handler;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +34,7 @@ import java.util.Map;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.reflection.MetaObject;
+import org.miaixz.bus.core.xyz.ListKit;
 
 /**
  * BoundSql的封装类，用于操作MyBatis的BoundSql对象
@@ -88,8 +88,7 @@ public class MapperBoundSql {
      * @return 参数映射列表的副本
      */
     public List<ParameterMapping> parameterMappings() {
-        List<ParameterMapping> parameterMappings = delegate.getParameterMappings();
-        return new ArrayList<>(parameterMappings);
+        return ListKit.of(delegate.getParameterMappings());
     }
 
     /**

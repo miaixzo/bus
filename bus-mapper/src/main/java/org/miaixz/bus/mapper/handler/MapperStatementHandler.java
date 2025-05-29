@@ -89,7 +89,7 @@ public class MapperStatementHandler {
      * 
      * @return MapperBoundSql对象
      */
-    public MapperBoundSql mPBoundSql() {
+    public MapperBoundSql mapperBoundSql() {
         return new MapperBoundSql(boundSql());
     }
 

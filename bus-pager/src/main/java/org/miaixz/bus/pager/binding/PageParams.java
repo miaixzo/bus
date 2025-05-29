@@ -36,55 +36,56 @@ import org.miaixz.bus.pager.Paging;
 import org.miaixz.bus.pager.RowBounds;
 
 /**
- * Page 参数信息
+ * 分页参数配置类，负责管理和解析分页相关参数。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PageParams {
+
     /**
-     * RowBounds参数offset作为PageNo使用 - 默认不使用
+     * 是否将RowBounds的offset作为页码使用，默认false
      */
     protected boolean offsetAsPageNo = false;
     /**
-     * RowBounds是否进行count查询 - 默认不查询
+     * RowBounds是否执行count查询，默认false
      */
     protected boolean rowBoundsWithCount = false;
     /**
-     * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
+     * 当为true且pageSize为0（或RowBounds的limit=0）时，返回全部结果
      */
     protected boolean pageSizeZero = false;
     /**
-     * 分页合理化
+     * 是否启用分页合理化，默认false
      */
     protected boolean reasonable = false;
     /**
-     * 是否支持接口参数来传递分页参数，默认false
+     * 是否支持通过接口参数传递分页参数，默认false
      */
     protected boolean supportMethodsArguments = false;
     /**
-     * 默认count(0)
+     * 默认count查询列，默认为"0"
      */
     protected String countColumn = "0";
     /**
-     * 转换count查询时保留 order by 排序
+     * count查询时是否保留order by排序
      */
     private boolean keepOrderBy = false;
     /**
-     * 转换count查询时保留子查询的 order by 排序
+     * count查询时是否保留子查询的order by排序
      */
     private boolean keepSubSelectOrderBy = false;
     /**
-     * 异步count查询
+     * 是否启用异步count查询
      */
     private boolean asyncCount = false;
 
     /**
-     * 获取分页参数
+     * 获取分页参数对象。
      *
-     * @param parameterObject
-     * @param rowBounds
-     * @return
+     * @param parameterObject 查询参数对象
+     * @param rowBounds       MyBatis RowBounds对象
+     * @return 分页对象，若无分页参数则返回null
      */
     public Page getPage(Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = PageContext.getLocalPage();
@@ -94,8 +95,7 @@ public class PageParams {
                     page = new Page(rowBounds.getOffset(), rowBounds.getLimit(), rowBoundsWithCount);
                 } else {
                     page = new Page(new int[] { rowBounds.getOffset(), rowBounds.getLimit() }, rowBoundsWithCount);
-                    // offsetAsPageNo=false的时候，由于PageNo问题，不能使用reasonable，这里会强制为false
-                    page.setReasonable(false);
+                    page.setReasonable(false); // offsetAsPageNo=false时禁用合理化
                 }
                 if (rowBounds instanceof RowBounds) {
                     RowBounds pageRowBounds = (RowBounds) rowBounds;
@@ -113,11 +113,9 @@ public class PageParams {
             }
             PageContext.setLocalPage(page);
         }
-        // 分页合理化
         if (page.getReasonable() == null) {
             page.setReasonable(reasonable);
         }
-        // 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
         if (page.getPageSizeZero() == null) {
             page.setPageSizeZero(pageSizeZero);
         }
@@ -130,61 +128,86 @@ public class PageParams {
         return page;
     }
 
+    /**
+     * 设置分页相关配置属性。
+     *
+     * @param properties 配置属性
+     */
     public void setProperties(Properties properties) {
-        // offset作为PageNo使用
         this.offsetAsPageNo = Boolean.parseBoolean(properties.getProperty("offsetAsPageNo"));
-        // RowBounds方式是否做count查询
-        String rowBoundsWithCount = properties.getProperty("rowBoundsWithCount");
-        this.rowBoundsWithCount = Boolean.parseBoolean(rowBoundsWithCount);
-        // 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页
-        String pageSizeZero = properties.getProperty("pageSizeZero");
-        this.pageSizeZero = Boolean.parseBoolean(pageSizeZero);
-        // 分页合理化，true开启，如果分页参数不合理会自动修正。默认false不启用
-        String reasonable = properties.getProperty("reasonable");
-        this.reasonable = Boolean.parseBoolean(reasonable);
-        // 是否支持接口参数来传递分页参数，默认false
-        String supportMethodsArguments = properties.getProperty("supportMethodsArguments");
-        this.supportMethodsArguments = Boolean.parseBoolean(supportMethodsArguments);
-        // 默认count列
+        this.rowBoundsWithCount = Boolean.parseBoolean(properties.getProperty("rowBoundsWithCount"));
+        this.pageSizeZero = Boolean.parseBoolean(properties.getProperty("pageSizeZero"));
+        this.reasonable = Boolean.parseBoolean(properties.getProperty("reasonable"));
+        this.supportMethodsArguments = Boolean.parseBoolean(properties.getProperty("supportMethodsArguments"));
         String countColumn = properties.getProperty("countColumn");
         if (StringKit.isNotEmpty(countColumn)) {
             this.countColumn = countColumn;
         }
-        // 当offsetAsPageNo=false的时候，不能
-        // 参数映射
         PageObject.setParams(properties.getProperty("params"));
-        // count查询时，是否保留查询中的 order by
-        keepOrderBy = Boolean.parseBoolean(properties.getProperty("keepOrderBy"));
-        // count查询时，是否保留子查询中的 order by
-        keepSubSelectOrderBy = Boolean.parseBoolean(properties.getProperty("keepSubSelectOrderBy"));
-        // 异步count查询
-        asyncCount = Boolean.parseBoolean(properties.getProperty("asyncCount"));
+        this.keepOrderBy = Boolean.parseBoolean(properties.getProperty("keepOrderBy"));
+        this.keepSubSelectOrderBy = Boolean.parseBoolean(properties.getProperty("keepSubSelectOrderBy"));
+        this.asyncCount = Boolean.parseBoolean(properties.getProperty("asyncCount"));
     }
 
+    /**
+     * 是否将offset作为页码使用。
+     *
+     * @return 是否启用offset作为页码
+     */
     public boolean isOffsetAsPageNo() {
         return offsetAsPageNo;
     }
 
+    /**
+     * RowBounds是否执行count查询。
+     *
+     * @return 是否执行count查询
+     */
     public boolean isRowBoundsWithCount() {
         return rowBoundsWithCount;
     }
 
+    /**
+     * 是否在pageSize为0时返回全部结果。
+     *
+     * @return 是否启用pageSizeZero
+     */
     public boolean isPageSizeZero() {
         return pageSizeZero;
     }
 
+    /**
+     * 是否启用分页合理化。
+     *
+     * @return 是否启用合理化
+     */
     public boolean isReasonable() {
         return reasonable;
     }
 
+    /**
+     * 是否支持接口参数传递分页参数。
+     *
+     * @return 是否支持接口参数
+     */
     public boolean isSupportMethodsArguments() {
         return supportMethodsArguments;
     }
 
+    /**
+     * 获取count查询列名。
+     *
+     * @return count查询列名
+     */
     public String getCountColumn() {
         return countColumn;
     }
 
+    /**
+     * 是否启用异步count查询。
+     *
+     * @return 是否启用异步count
+     */
     public boolean isAsyncCount() {
         return asyncCount;
     }

@@ -42,17 +42,34 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 原始流信息
+ * 实现缓冲接收器，管理字节流的写入操作，支持多种数据格式的写入并适配底层接收器。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public final class RealSink implements BufferSink {
 
+    /**
+     * 内部缓冲区
+     */
     public final Buffer buffer = new Buffer();
+
+    /**
+     * 底层接收器
+     */
     public final Sink sink;
+
+    /**
+     * 是否已关闭
+     */
     boolean closed;
 
+    /**
+     * 构造方法，初始化接收器。
+     *
+     * @param sink 底层接收器
+     * @throws NullPointerException 如果 sink 为 null
+     */
     public RealSink(Sink sink) {
         if (null == sink) {
             throw new NullPointerException("sink == null");
@@ -60,11 +77,24 @@ public final class RealSink implements BufferSink {
         this.sink = sink;
     }
 
+    /**
+     * 获取内部缓冲区。
+     *
+     * @return 内部缓冲区
+     */
     @Override
     public Buffer buffer() {
         return buffer;
     }
 
+    /**
+     * 从源缓冲区写入指定字节数。
+     *
+     * @param source    数据源缓冲区
+     * @param byteCount 要写入的字节数
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
         if (closed)
@@ -73,6 +103,14 @@ public final class RealSink implements BufferSink {
         emitCompleteSegments();
     }
 
+    /**
+     * 写入字节字符串。
+     *
+     * @param byteString 字节字符串
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink write(ByteString byteString) throws IOException {
         if (closed)
@@ -81,6 +119,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用 UTF-8 编码写入字符串。
+     *
+     * @param string 输入字符串
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeUtf8(String string) throws IOException {
         if (closed)
@@ -89,6 +135,16 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用 UTF-8 编码写入字符串的指定部分。
+     *
+     * @param string      输入字符串
+     * @param beginIndex  起始索引
+     * @param endIndex    结束索引
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeUtf8(String string, int beginIndex, int endIndex) throws IOException {
         if (closed)
@@ -97,6 +153,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用 UTF-8 编码写入 Unicode 码点。
+     *
+     * @param codePoint Unicode 码点
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeUtf8CodePoint(int codePoint) throws IOException {
         if (closed)
@@ -105,6 +169,15 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用指定字符集编码写入字符串。
+     *
+     * @param string  输入字符串
+     * @param charset 字符集
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeString(String string, Charset charset) throws IOException {
         if (closed)
@@ -113,6 +186,17 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用指定字符集编码写入字符串的指定部分。
+     *
+     * @param string      输入字符串
+     * @param beginIndex  起始索引
+     * @param endIndex    结束索引
+     * @param charset     字符集
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeString(String string, int beginIndex, int endIndex, Charset charset) throws IOException {
         if (closed)
@@ -121,6 +205,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 写入字节数组。
+     *
+     * @param source 字节数组
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink write(byte[] source) throws IOException {
         if (closed)
@@ -129,6 +221,16 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 写入字节数组的指定部分。
+     *
+     * @param source    字节数组
+     * @param offset    起始偏移量
+     * @param byteCount 写入字节数
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink write(byte[] source, int offset, int byteCount) throws IOException {
         if (closed)
@@ -137,6 +239,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 从 ByteBuffer 写入数据。
+     *
+     * @param source 数据源 ByteBuffer
+     * @return 写入的字节数
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public int write(ByteBuffer source) throws IOException {
         if (closed)
@@ -146,6 +256,14 @@ public final class RealSink implements BufferSink {
         return result;
     }
 
+    /**
+     * 从源读取所有数据并写入接收器。
+     *
+     * @param source 数据源
+     * @return 读取的总字节数
+     * @throws IOException              如果读取或写入失败
+     * @throws IllegalArgumentException 如果 source 为 null
+     */
     @Override
     public long writeAll(Source source) throws IOException {
         if (null == source) {
@@ -159,6 +277,15 @@ public final class RealSink implements BufferSink {
         return totalBytesRead;
     }
 
+    /**
+     * 从源读取指定字节数并写入接收器。
+     *
+     * @param source    数据源
+     * @param byteCount 要读取的字节数
+     * @return 当前接收器
+     * @throws IOException              如果读取或写入失败
+     * @throws EOFException             如果源数据不足
+     */
     @Override
     public BufferSink write(Source source, long byteCount) throws IOException {
         while (byteCount > 0) {
@@ -171,6 +298,14 @@ public final class RealSink implements BufferSink {
         return this;
     }
 
+    /**
+     * 写入单个字节。
+     *
+     * @param b 字节值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeByte(int b) throws IOException {
         if (closed)
@@ -179,6 +314,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用大端序写入短整型。
+     *
+     * @param s 短整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeShort(int s) throws IOException {
         if (closed)
@@ -187,6 +330,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用小端序写入短整型。
+     *
+     * @param s 短整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeShortLe(int s) throws IOException {
         if (closed)
@@ -195,6 +346,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用大端序写入整型。
+     *
+     * @param i 整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeInt(int i) throws IOException {
         if (closed)
@@ -203,6 +362,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用小端序写入整型。
+     *
+     * @param i 整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeIntLe(int i) throws IOException {
         if (closed)
@@ -211,6 +378,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用大端序写入长整型。
+     *
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeLong(long v) throws IOException {
         if (closed)
@@ -219,6 +394,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 使用小端序写入长整型。
+     *
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeLongLe(long v) throws IOException {
         if (closed)
@@ -227,6 +410,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 以十进制形式写入长整型。
+     *
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeDecimalLong(long v) throws IOException {
         if (closed)
@@ -235,6 +426,14 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 以十六进制形式写入无符号长整型。
+     *
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink writeHexadecimalUnsignedLong(long v) throws IOException {
         if (closed)
@@ -243,6 +442,13 @@ public final class RealSink implements BufferSink {
         return emitCompleteSegments();
     }
 
+    /**
+     * 将完整的缓冲段写入底层接收器。
+     *
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink emitCompleteSegments() throws IOException {
         if (closed)
@@ -253,6 +459,13 @@ public final class RealSink implements BufferSink {
         return this;
     }
 
+    /**
+     * 将所有缓冲数据写入底层接收器。
+     *
+     * @return 当前接收器
+     * @throws IOException              如果写入失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public BufferSink emit() throws IOException {
         if (closed)
@@ -263,6 +476,11 @@ public final class RealSink implements BufferSink {
         return this;
     }
 
+    /**
+     * 获取适配此接收器的输出流。
+     *
+     * @return 输出流
+     */
     @Override
     public OutputStream outputStream() {
         return new OutputStream() {
@@ -284,7 +502,6 @@ public final class RealSink implements BufferSink {
 
             @Override
             public void flush() throws IOException {
-                // For backwards compatibility, a flush() on a closed stream is a no-op.
                 if (!closed) {
                     RealSink.this.flush();
                 }
@@ -302,6 +519,12 @@ public final class RealSink implements BufferSink {
         };
     }
 
+    /**
+     * 刷新缓冲区，将所有数据写入底层接收器。
+     *
+     * @throws IOException              如果刷新失败
+     * @throws IllegalStateException    如果接收器已关闭
+     */
     @Override
     public void flush() throws IOException {
         if (closed)
@@ -312,17 +535,26 @@ public final class RealSink implements BufferSink {
         sink.flush();
     }
 
+    /**
+     * 检查接收器是否打开。
+     *
+     * @return 是否打开
+     */
     @Override
     public boolean isOpen() {
         return !closed;
     }
 
+    /**
+     * 关闭接收器，释放资源。
+     *
+     * @throws IOException 如果关闭失败
+     */
     @Override
     public void close() {
         if (closed) {
             return;
         }
-
         Throwable thrown = null;
         try {
             if (buffer.size > 0) {
@@ -331,7 +563,6 @@ public final class RealSink implements BufferSink {
         } catch (Throwable e) {
             thrown = e;
         }
-
         try {
             sink.close();
         } catch (Throwable e) {
@@ -339,16 +570,25 @@ public final class RealSink implements BufferSink {
                 thrown = e;
         }
         closed = true;
-
         if (null != thrown)
             IoKit.sneakyRethrow(thrown);
     }
 
+    /**
+     * 获取底层接收器的超时配置。
+     *
+     * @return 超时对象
+     */
     @Override
     public Timeout timeout() {
         return sink.timeout();
     }
 
+    /**
+     * 返回对象的字符串表示。
+     *
+     * @return 字符串表示，包含底层接收器信息
+     */
     @Override
     public String toString() {
         return "buffer(" + sink + Symbol.PARENTHESE_RIGHT;

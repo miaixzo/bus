@@ -33,7 +33,7 @@ import java.util.function.Function;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Function
+ * 可序列化的Function接口，支持异常抛出。
  *
  * @param <T> 参数类型
  * @param <R> 返回值类型
@@ -45,40 +45,41 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface FunctionX<T, R> extends Function<T, R>, Serializable {
 
     /**
-     * Returns a function that always returns its input argument.
+     * 返回一个始终返回输入参数的函数。
      *
-     * @param <T> the type of the input and output objects to the function
-     * @return a function that always returns its input argument
+     * @param <T> 函数输入和输出的类型
+     * @return 始终返回输入参数的函数
      */
     static <T> FunctionX<T, T> identity() {
         return t -> t;
     }
 
     /**
-     * casting identity
+     * 返回一个支持类型转换的恒等函数。
      *
-     * @param <T> param type
-     * @param <R> result type
-     * @return identity after casting
+     * @param <T> 输入参数类型
+     * @param <R> 返回值类型
+     * @return 类型转换后的恒等函数
      */
     static <T, R> Function<T, R> castingIdentity() {
         return t -> (R) t;
     }
 
     /**
-     * Applies this function to the given argument.
+     * 对给定参数应用此函数，可能抛出异常。
      *
-     * @param t the function argument
-     * @return the function result
-     * @throws Exception wrapped checked exception
+     * @param t 函数输入参数
+     * @return 函数执行结果
+     * @throws Throwable 可能抛出的异常
      */
     R applying(T t) throws Throwable;
 
     /**
-     * Applies this function to the given argument.
+     * 对给定参数应用此函数，自动处理异常。
      *
-     * @param t the function argument
-     * @return the function result
+     * @param t 函数输入参数
+     * @return 函数执行结果
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default R apply(final T t) {

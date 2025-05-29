@@ -41,7 +41,7 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * SQL 拦截处理
+ * MyBatis 中用于 SQL 拦截和处理的抽象基类。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,40 +49,40 @@ import org.miaixz.bus.core.lang.Symbol;
 public abstract class AbstractSqlHandler {
 
     /**
-     * 代理对象的 boundSql
+     * 代理对象中 boundSql 的属性路径。
      */
     public static final String DELEGATE_BOUNDSQL = "delegate.boundSql";
 
     /**
-     * 代理对象的 boundSql.sql
+     * 代理对象中 boundSql.sql 的属性路径。
      */
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
 
     /**
-     * 代理对象的 mappedStatement
+     * 代理对象中 mappedStatement 的属性路径。
      */
     public static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
 
     /**
-     * mappedStatement
+     * mappedStatement 的属性键。
      */
     public static final String MAPPEDSTATEMENT = "mappedStatement";
 
     /**
-     * 默认反射工厂
+     * MyBatis 反射使用的默认反射工厂。
      */
     public static final DefaultReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
     /**
-     * SQL 解析缓存，key 可能是 mappedStatement 的 ID 或 class 的 name
+     * SQL 解析注解结果缓存，键为 mappedStatement 的 ID 或类名。
      */
     private static final Map<String, Boolean> SQL_PARSER_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * 获取 SqlParser 注解信息
+     * 检查指定 MetaObject 是否存在 SqlParser 注解。
      *
-     * @param metaObject 元数据对象
-     * @return true 表示存在 SqlParser 注解，false 表示不存在
+     * @param metaObject 包含映射语句的元对象
+     * @return 若存在 SqlParser 注解返回 true，否则返回 false
      */
     protected static boolean getSqlParserInfo(MetaObject metaObject) {
         String id = getMappedStatement(metaObject).getId();
@@ -95,31 +95,31 @@ public abstract class AbstractSqlHandler {
     }
 
     /**
-     * 获取当前执行的 MappedStatement
+     * 从指定 MetaObject 获取 MappedStatement。
      *
-     * @param metaObject 元对象
-     * @return 映射语句
+     * @param metaObject 包含映射语句的元对象
+     * @return MappedStatement 对象
      */
     protected static MappedStatement getMappedStatement(MetaObject metaObject) {
         return (MappedStatement) metaObject.getValue(DELEGATE_MAPPEDSTATEMENT);
     }
 
     /**
-     * 获取当前执行的 MappedStatement
+     * 从指定 MetaObject 的属性路径获取 MappedStatement。
      *
-     * @param metaObject 元对象
-     * @param property
-     * @return 映射语句
+     * @param metaObject 包含映射语句的元对象
+     * @param property   属性路径
+     * @return MappedStatement 对象
      */
     protected static MappedStatement getMappedStatement(MetaObject metaObject, String property) {
         return (MappedStatement) metaObject.getValue(property);
     }
 
     /**
-     * 获得真正的处理对象，可能多层代理
+     * 获取真实的目标对象，解包多层代理。
      *
-     * @param <T>    泛型
-     * @param target 对象
+     * @param <T>    目标对象的类型
+     * @param target 代理对象
      * @return 真实的目标对象
      */
     protected static <T> T realTarget(Object target) {
@@ -132,10 +132,10 @@ public abstract class AbstractSqlHandler {
     }
 
     /**
-     * 获取对象的元数据信息
+     * 获取对象的元数据信息。
      *
-     * @param object 参数
-     * @return 元数据信息
+     * @param object 目标对象
+     * @return 元数据对象
      */
     public static MetaObject getMetaObject(Object object) {
         return MetaObject.forObject(object, SystemMetaObject.DEFAULT_OBJECT_FACTORY,
@@ -143,20 +143,32 @@ public abstract class AbstractSqlHandler {
     }
 
     /**
-     * 给 BoundSql 设置 additionalParameters
+     * 为 BoundSql 设置附加参数。
      *
-     * @param boundSql             BoundSql
-     * @param additionalParameters additionalParameters
+     * @param boundSql             绑定 SQL 对象
+     * @param additionalParameters 附加参数映射
      */
     public static void setAdditionalParameter(BoundSql boundSql, Map<String, Object> additionalParameters) {
         additionalParameters.forEach(boundSql::setAdditionalParameter);
     }
 
-    public static MapperBoundSql mpBoundSql(BoundSql boundSql) {
+    /**
+     * 创建 MapperBoundSql 实例。
+     *
+     * @param boundSql 绑定 SQL 对象
+     * @return MapperBoundSql 实例
+     */
+    public static MapperBoundSql mapperBoundSql(BoundSql boundSql) {
         return new MapperBoundSql(boundSql);
     }
 
-    public static MapperStatementHandler mpStatementHandler(StatementHandler statementHandler) {
+    /**
+     * 创建 MapperStatementHandler 实例。
+     *
+     * @param statementHandler 语句处理器
+     * @return MapperStatementHandler 实例
+     */
+    public static MapperStatementHandler mapperStatementHandler(StatementHandler statementHandler) {
         statementHandler = realTarget(statementHandler);
         MetaObject object = getMetaObject(statementHandler);
         return new MapperStatementHandler(getMetaObject(object.getValue("delegate")));

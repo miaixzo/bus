@@ -149,13 +149,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
 
         Object result = invocation.proceed();
         MetaObject metaObject = getMetaObject(statementHandler);
-        MappedStatement mappedStatement = getMappedStatement(metaObject);
-        BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
-        /*
-         * handlers.forEach(handler -> handler.after(result, statementHandler, mappedStatement,
-         * realTarget(invocation.getTarget())));
-         */
-        logging(mappedStatement, boundSql, start);
+        logging(getMappedStatement(metaObject), (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL), start);
         return result;
     }
 
@@ -233,30 +227,37 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      * @return 格式化后的 SQL 语句
      */
     private String format(Configuration configuration, BoundSql boundSql) {
-        String sql = boundSql.getSql().replaceAll("[\\s]+", Symbol.SPACE).replaceAll("\\?", ID.objectId());
+        String id = ID.objectId();
+        // 1.SQL语句多个空格全部使用一个空格代替
+        // 2.防止参数值中有问号问题,全部动态替换
+        String sql = boundSql.getSql().replaceAll("[\\s]+", Symbol.SPACE).replaceAll("\\?", id);
+        // 获取参数
         Object parameterObject = boundSql.getParameterObject();
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-
         if (CollKit.isEmpty(parameterMappings) || parameterObject == null) {
             return sql;
         }
-
+        // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
+        // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
         TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
         if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
-            return sql.replaceFirst(ID.objectId(), Matcher.quoteReplacement(getParameterValue(parameterObject)));
+            return sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));
         }
-
+        // MetaObject主要是封装了originalObject对象,提供了get和set的方法
+        // 主要支持对JavaBean、Collection、Map三种类型对象的操作
         MetaObject metaObject = configuration.newMetaObject(parameterObject);
         for (ParameterMapping mapping : parameterMappings) {
             String propertyName = mapping.getProperty();
             if (metaObject.hasGetter(propertyName)) {
-                sql = sql.replaceFirst(ID.objectId(),
+                sql = sql.replaceFirst(id,
                         Matcher.quoteReplacement(getParameterValue(metaObject.getValue(propertyName))));
             } else if (boundSql.hasAdditionalParameter(propertyName)) {
-                sql = sql.replaceFirst(ID.objectId(),
+                // 该分支是动态sql
+                sql = sql.replaceFirst(id,
                         Matcher.quoteReplacement(getParameterValue(boundSql.getAdditionalParameter(propertyName))));
             } else {
-                sql = sql.replaceFirst(ID.objectId(), "Missing");
+                // 打印Missing,提醒该参数缺失并防止错位
+                sql = sql.replaceFirst(id, "Missing");
             }
         }
         return sql;

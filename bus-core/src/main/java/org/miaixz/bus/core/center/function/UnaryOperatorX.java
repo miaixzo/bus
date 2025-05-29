@@ -34,9 +34,9 @@ import java.util.function.UnaryOperator;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的UnaryOperator
+ * 可序列化的UnaryOperator接口，支持异常抛出和类型转换操作。
  *
- * @param <T> 参数类型
+ * @param <T> 参数和返回值类型
  * @author Kimi Liu
  * @see UnaryOperator
  * @since Java 17+
@@ -45,42 +45,43 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface UnaryOperatorX<T> extends UnaryOperator<T>, Serializable {
 
     /**
-     * Returns a unary operator that always returns its input argument.
+     * 返回一个恒等UnaryOperator，始终返回输入参数。
      *
-     * @param <T> the type of the input and output of the operator
-     * @return a unary operator that always returns its input argument
+     * @param <T> 输入和输出的类型
+     * @return 恒等UnaryOperator
      */
     static <T> UnaryOperatorX<T> identity() {
         return t -> t;
     }
 
     /**
-     * casting identity
+     * 返回一个支持类型转换的UnaryOperator。
      *
-     * @param function source function
-     * @param <T>      param type
-     * @param <R>      result type
-     * @param <F>      lambda type
-     * @return identity after casting
+     * @param function 源函数
+     * @param <T>      输入参数类型
+     * @param <R>      返回值类型
+     * @param <F>      函数类型
+     * @return 类型转换后的UnaryOperator
      */
     static <T, R, F extends Function<T, R>> UnaryOperatorX<T> casting(final F function) {
         return t -> (T) function.apply(t);
     }
 
     /**
-     * Applies this function to the given argument.
+     * 对给定参数应用此操作，可能抛出异常。
      *
-     * @param t the function argument
-     * @return the function result
-     * @throws Exception wrapped checked exception
+     * @param t 输入参数
+     * @return 操作结果
+     * @throws Throwable 可能抛出的异常
      */
     T applying(T t) throws Throwable;
 
     /**
-     * Applies this function to the given argument.
+     * 对给定参数应用此操作，自动处理异常。
      *
-     * @param t the function argument
-     * @return the function result
+     * @param t 输入参数
+     * @return 操作结果
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default T apply(final T t) {

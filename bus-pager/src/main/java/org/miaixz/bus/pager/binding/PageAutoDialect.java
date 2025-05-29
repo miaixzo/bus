@@ -50,101 +50,116 @@ import org.miaixz.bus.pager.dialect.auto.Hikari;
 import org.miaixz.bus.pager.dialect.base.*;
 
 /**
- * 基础方言信息
+ * 提供数据库分页方言的自动识别和配置功能。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PageAutoDialect {
 
+    /**
+     * 存储方言别名与实现类的映射
+     */
     private static Map<String, Class<? extends Dialect>> dialectAliasMap = new LinkedHashMap<>();
+    /**
+     * 存储自动方言别名与实现类的映射
+     */
     private static Map<String, Class<? extends AutoDialect>> autoDialectMap = new LinkedHashMap<>();
+    /**
+     * 是否启用自动方言识别
+     */
+    private boolean autoDialect = true;
+    /**
+     * 缓存方言实现，键为JDBC URL或方言类名
+     */
+    private Map<Object, AbstractPaging> urlDialectMap = new ConcurrentHashMap<>();
+    /**
+     * 线程本地存储的方言实例
+     */
+    private ThreadLocal<AbstractPaging> dialectThreadLocal = new ThreadLocal<>();
+    /**
+     * 配置属性
+     */
+    private Properties properties;
+    /**
+     * 自动方言识别委托
+     */
+    private AutoDialect autoDialectDelegate;
+    /**
+     * 线程安全锁
+     */
+    private ReentrantLock lock = new ReentrantLock();
+    /**
+     * 默认方言实例
+     */
+    private AbstractPaging delegate;
 
     static {
-        // 注册别名
+        // 注册数据库方言别名
         registerDialectAlias("hsqldb", Hsqldb.class);
         registerDialectAlias("h2", Hsqldb.class);
         registerDialectAlias("phoenix", Hsqldb.class);
-
         registerDialectAlias("postgresql", PostgreSql.class);
-
         registerDialectAlias("mysql", MySql.class);
         registerDialectAlias("mariadb", MySql.class);
         registerDialectAlias("sqlite", MySql.class);
-
         registerDialectAlias("herddb", HerdDB.class);
-
         registerDialectAlias("oracle", Oracle.class);
         registerDialectAlias("oracle9i", Oracle9i.class);
         registerDialectAlias("db2", Db2.class);
         registerDialectAlias("as400", AS400.class);
         registerDialectAlias("informix", Informix.class);
-        // 解决 informix-sqli
         registerDialectAlias("informix-sqli", Informix.class);
-
         registerDialectAlias("sqlserver", SqlServer.class);
         registerDialectAlias("sqlserver2012", SqlServer2012.class);
-
         registerDialectAlias("derby", SqlServer2012.class);
-        // 达梦数据库
         registerDialectAlias("dm", Oracle.class);
-        // 阿里云PPAS数据库
         registerDialectAlias("edb", Oracle.class);
-        // 神通数据库
         registerDialectAlias("oscar", Oscar.class);
         registerDialectAlias("clickhouse", MySql.class);
-        // 瀚高数据库
         registerDialectAlias("highgo", Hsqldb.class);
-        // 虚谷数据库
         registerDialectAlias("xugu", Xugudb.class);
         registerDialectAlias("impala", Hsqldb.class);
         registerDialectAlias("firebirdsql", Firebird.class);
-        // 人大金仓数据库
         registerDialectAlias("kingbase", PostgreSql.class);
-        // 人大金仓新版本kingbase8
         registerDialectAlias("kingbase8", PostgreSql.class);
-        // 行云数据库
         registerDialectAlias("xcloud", CirroData.class);
-
-        // openGauss数据库
         registerDialectAlias("opengauss", PostgreSql.class);
         registerDialectAlias("sundb", Oracle.class);
 
-        // 注册 AutoDialect
-        // 想要实现和以前版本相同的效果时，可以配置 autoDialectClass=old
+        // 注册自动方言别名
         registerAutoDialectAlias("old", Early.class);
         registerAutoDialectAlias("hikari", Hikari.class);
         registerAutoDialectAlias("druid", Druid.class);
-
-        // 不配置时，默认使用 Defalut
         registerAutoDialectAlias("default", Defalut.class);
     }
 
     /**
-     * 自动获取dialect,如果没有setProperties或setSqlUtilConfig，也可以正常进行
+     * 注册方言别名。
+     *
+     * @param alias        方言别名
+     * @param dialectClass 方言实现类
      */
-    private boolean autoDialect = true;
-    /**
-     * 缓存 dialect 实现，key 有两种，分别为 jdbcurl 和 dialectClassName
-     */
-    private Map<Object, AbstractPaging> urlDialectMap = new ConcurrentHashMap<Object, AbstractPaging>();
-    private ThreadLocal<AbstractPaging> dialectThreadLocal = new ThreadLocal<AbstractPaging>();
-    /**
-     * 属性配置
-     */
-    private Properties properties;
-    private AutoDialect autoDialectDelegate;
-    private ReentrantLock lock = new ReentrantLock();
-    private AbstractPaging delegate;
-
     public static void registerDialectAlias(String alias, Class<? extends Dialect> dialectClass) {
         dialectAliasMap.put(alias, dialectClass);
     }
 
+    /**
+     * 注册自动方言别名。
+     *
+     * @param alias            自动方言别名
+     * @param autoDialectClass 自动方言实现类
+     */
     public static void registerAutoDialectAlias(String alias, Class<? extends AutoDialect> autoDialectClass) {
         autoDialectMap.put(alias, autoDialectClass);
     }
 
+    /**
+     * 从JDBC URL提取方言名称。
+     *
+     * @param jdbcUrl JDBC URL
+     * @return 方言名称，若无法识别则返回null
+     */
     public static String fromJdbcUrl(String jdbcUrl) {
         final String url = jdbcUrl.toLowerCase();
         for (String dialect : dialectAliasMap.keySet()) {
@@ -156,11 +171,11 @@ public class PageAutoDialect {
     }
 
     /**
-     * 反射类
+     * 解析方言类。
      *
-     * @param className
-     * @return
-     * @throws Exception
+     * @param className 方言类名或别名
+     * @return 方言实现类
+     * @throws Exception 若类不存在或无法加载
      */
     public static Class resloveDialectClass(String className) throws Exception {
         if (dialectAliasMap.containsKey(className.toLowerCase())) {
@@ -171,10 +186,12 @@ public class PageAutoDialect {
     }
 
     /**
-     * 初始化 basic
+     * 实例化方言对象。
      *
-     * @param dialectClass
-     * @param properties
+     * @param dialectClass 方言类名或别名
+     * @param properties   配置属性
+     * @return 方言实例
+     * @throws PageException 若实例化失败
      */
     public static AbstractPaging instanceDialect(String dialectClass, Properties properties) {
         AbstractPaging dialect;
@@ -197,7 +214,11 @@ public class PageAutoDialect {
         return dialect;
     }
 
-    // 获取当前的代理对象
+    /**
+     * 获取当前方言代理对象。
+     *
+     * @return 方言实例
+     */
     public AbstractPaging getDelegate() {
         if (delegate != null) {
             return delegate;
@@ -205,24 +226,36 @@ public class PageAutoDialect {
         return dialectThreadLocal.get();
     }
 
-    // 移除代理对象
+    /**
+     * 清除线程本地方言代理。
+     */
     public void clearDelegate() {
         dialectThreadLocal.remove();
     }
 
+    /**
+     * 获取线程本地方言实例。
+     *
+     * @return 方言实例
+     */
     public AbstractPaging getDialectThreadLocal() {
         return dialectThreadLocal.get();
     }
 
+    /**
+     * 设置线程本地方言实例。
+     *
+     * @param delegate 方言实例
+     */
     public void setDialectThreadLocal(AbstractPaging delegate) {
         this.dialectThreadLocal.set(delegate);
     }
 
     /**
-     * 多数据动态获取时，每次需要初始化，还可以运行时指定具体的实现
+     * 初始化方言代理，支持运行时指定方言。
      *
-     * @param ms
-     * @param dialectClass 分页实现，必须是 {@link AbstractPaging} 实现类，可以使用当前类中注册的别名，例如 "mysql", "oracle"
+     * @param ms           MyBatis映射语句
+     * @param dialectClass 方言实现类或别名，如"mysql"、"oracle"
      */
     public void initDelegateDialect(MappedStatement ms, String dialectClass) {
         if (StringKit.isNotEmpty(dialectClass)) {
@@ -249,10 +282,10 @@ public class PageAutoDialect {
     }
 
     /**
-     * 自动获取分页方言实现
+     * 自动获取分页方言实现。
      *
-     * @param ms
-     * @return
+     * @param ms MyBatis映射语句
+     * @return 方言实例
      */
     public AbstractPaging autoGetDialect(MappedStatement ms) {
         DataSource dataSource = ms.getConfiguration().getEnvironment().getDataSource();
@@ -274,9 +307,9 @@ public class PageAutoDialect {
     }
 
     /**
-     * 初始化自定义 AutoDialect
+     * 初始化自定义自动方言实现。
      *
-     * @param properties
+     * @param properties 配置属性
      */
     private void initAutoDialectClass(Properties properties) {
         String autoDialectClassStr = properties.getProperty("autoDialectClass");
@@ -302,9 +335,9 @@ public class PageAutoDialect {
     }
 
     /**
-     * 初始化方言别名
+     * 初始化方言别名配置。
      *
-     * @param properties
+     * @param properties 配置属性
      */
     private void initDialectAlias(Properties properties) {
         String dialectAlias = properties.getProperty("dialectAlias");
@@ -318,12 +351,10 @@ public class PageAutoDialect {
                 }
                 for (int j = 0; j < kv.length; j++) {
                     try {
-                        // 允许配置如 dm=oracle, 直接引用oracle实现
                         if (dialectAliasMap.containsKey(kv[1])) {
                             registerDialectAlias(kv[0], dialectAliasMap.get(kv[1]));
                         } else {
                             Class<? extends Dialect> diallectClass = (Class<? extends Dialect>) Class.forName(kv[1]);
-                            // 允许覆盖已有的实现
                             registerDialectAlias(kv[0], diallectClass);
                         }
                     } catch (ClassNotFoundException e) {
@@ -335,32 +366,27 @@ public class PageAutoDialect {
         }
     }
 
+    /**
+     * 设置分页配置属性。
+     *
+     * @param properties 配置属性
+     */
     public void setProperties(Properties properties) {
-
         this.properties = properties;
-        // 初始化自定义AutoDialect
         initAutoDialectClass(properties);
-        // 使用 sqlserver2012 作为默认分页方式，这种情况在动态数据源时方便使用
         String useSqlserver2012 = properties.getProperty("useSqlserver2012");
         if (StringKit.isNotEmpty(useSqlserver2012) && Boolean.parseBoolean(useSqlserver2012)) {
             registerDialectAlias("sqlserver", SqlServer2012.class);
             registerDialectAlias("sqlserver2008", SqlServer.class);
         }
         initDialectAlias(properties);
-        // 指定的 Pager 数据库方言，和 不同
         String dialect = properties.getProperty("pagerDialect");
-        // 运行时获取数据源
         String runtimeDialect = properties.getProperty("autoRuntimeDialect");
-        // 1.动态多数据源
         if (StringKit.isNotEmpty(runtimeDialect) && "TRUE".equalsIgnoreCase(runtimeDialect)) {
             this.autoDialect = false;
-        }
-        // 2.动态获取方言
-        else if (StringKit.isEmpty(dialect)) {
+        } else if (StringKit.isEmpty(dialect)) {
             autoDialect = true;
-        }
-        // 3.指定方言
-        else {
+        } else {
             autoDialect = false;
             this.delegate = instanceDialect(dialect, properties);
         }

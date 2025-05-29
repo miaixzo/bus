@@ -102,6 +102,8 @@ module bus.starter {
     requires static org.apache.httpcomponents.httpclient;
     requires static org.apache.httpcomponents.httpcore;
     requires static org.apache.httpcomponents.httpasyncclient;
+    requires jdk.jdi;
+    requires net.sf.jsqlparser;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
