@@ -29,12 +29,12 @@ package org.miaixz.bus.pager;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.parsing.SqlParser;
@@ -54,14 +54,16 @@ public class Builder {
     /**
      * SQL语法检查正则：符合两个关键字（有先后顺序）才算匹配
      */
-    private static final Pattern SQL_SYNTAX_PATTERN = Pattern.compile(
+    public static final Pattern SQL_SYNTAX_PATTERN = Pattern.compile(
             "(insert|delete|update|select|create|drop|truncate|grant|alter|deny|revoke|call|execute|exec|declare|show|rename|set)"
-                    + "\\s+.*(into|from|set|where|table|database|view|index|on|cursor|procedure|trigger|for|password|union|and|or)|(select\\s*\\*\\s*from\\s+)",
+                    + "\\s+.*(into|from|set|where|table|database|view|index|on|cursor|procedure|trigger|for|password|union|and|or)|(select\\s*\\*\\s*from\\s+)"
+                    + "|if\\s*\\(.*\\)|select\\s*\\(.*\\)|substr\\s*\\(.*\\)|substring\\s*\\(.*\\)|char\\s*\\(.*\\)|concat\\s*\\(.*\\)|benchmark\\s*\\(.*\\)|sleep\\s*\\(.*\\)|(and|or)\\s+.*",
             Pattern.CASE_INSENSITIVE);
+
     /**
      * 使用'、;或注释截断SQL检查正则
      */
-    private static final Pattern SQL_COMMENT_PATTERN = Pattern.compile("'.*(or|union|--|#|/*|;)",
+    public static final Pattern SQL_COMMENT_PATTERN = Pattern.compile("'.*(or|union|--|#|/\\*|;)",
             Pattern.CASE_INSENSITIVE);
 
     private static final SqlParser SQL_PARSER;
@@ -94,12 +96,19 @@ public class Builder {
      * @return true 非法 false 合法
      */
     public static boolean check(String value) {
-        if (value == null) {
-            return false;
-        }
-        // 不允许使用任何函数（不能出现括号），否则无法检测后面这个注入 order by id,if(1=2,1,(sleep(100)));
-        return value.contains(Symbol.PARENTHESE_LEFT) || SQL_COMMENT_PATTERN.matcher(value).find()
-                || SQL_SYNTAX_PATTERN.matcher(value).find();
+        Objects.requireNonNull(value);
+        // 处理是否包含SQL注释字符 || 检查是否包含SQL注入敏感字符
+        return SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find();
+    }
+
+    /**
+     * 刪除字段转义符单引号双引号
+     *
+     * @param text 待处理字段
+     */
+    public static String removeEscapeCharacter(String text) {
+        Objects.requireNonNull(text);
+        return text.replaceAll("\"", "").replaceAll("'", "");
     }
 
     /**

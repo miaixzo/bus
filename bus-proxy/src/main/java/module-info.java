@@ -36,8 +36,8 @@ module bus.proxy {
     requires java.base;
     requires bus.core;
     requires bus.logger;
-    requires static spring.core;
-    requires static org.aspectj.weaver;
+    requires spring.core;
+    requires org.aspectj.weaver;
 
     exports org.miaixz.bus.proxy;
     exports org.miaixz.bus.proxy.invoker;

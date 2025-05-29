@@ -41,11 +41,11 @@ module bus.pager {
     requires bus.logger;
     requires bus.mapper;
 
-    requires static org.mybatis;
-    requires static druid;
-    requires static com.zaxxer.hikari;
-    requires static com.google.common;
-    requires static net.sf.jsqlparser;
+    requires org.mybatis;
+    requires druid;
+    requires com.zaxxer.hikari;
+    requires com.google.common;
+    requires net.sf.jsqlparser;
 
     exports org.miaixz.bus.pager;
     exports org.miaixz.bus.pager.binding;
@@ -58,5 +58,7 @@ module bus.pager {
     exports org.miaixz.bus.pager.dialect.base;
     exports org.miaixz.bus.pager.dialect.replace;
     exports org.miaixz.bus.pager.dialect.rowbounds;
+
+    uses org.miaixz.bus.pager.parsing.SqlParser;
 
 }

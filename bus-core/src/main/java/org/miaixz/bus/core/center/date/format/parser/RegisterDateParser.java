@@ -36,8 +36,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * 基于注册的日期解析器，通过遍历注册的解析器列表，找到适合的解析器并解析为日期。
- * 默认可使用单例 {@link #INSTANCE}，或通过构造创建自定义的解析器实例。
+ * 基于注册的日期解析器，通过遍历注册的解析器列表，找到适合的解析器并解析为日期。 默认可使用单例 {@link #INSTANCE}，或通过构造创建自定义的解析器实例。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -77,11 +76,8 @@ public class RegisterDateParser implements DateParser, Serializable {
      */
     @Override
     public Date parse(final CharSequence source) throws DateException {
-        return list.stream()
-                .filter(predicateDateParser -> predicateDateParser.test(source))
-                .findFirst()
-                .map(predicateDateParser -> predicateDateParser.parse(source))
-                .orElse(null);
+        return list.stream().filter(predicateDateParser -> predicateDateParser.test(source)).findFirst()
+                .map(predicateDateParser -> predicateDateParser.parse(source)).orElse(null);
     }
 
     /**

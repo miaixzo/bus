@@ -79,11 +79,11 @@ public class Condition<T> {
      */
     protected String simpleSelectColumns;
     /**
-     * 起始 SQL，添加到查询 SQL 前，需注意防止 SQL 注入
+     * 起始 SQL，添加到查询 SQL 前
      */
     protected String startSql;
     /**
-     * 结尾 SQL，添加到查询 SQL 后，需注意防止 SQL 注入
+     * 结尾 SQL，添加到查询 SQL 后
      */
     protected String endSql;
     /**
@@ -302,7 +302,7 @@ public class Condition<T> {
     /**
      * 设置起始 SQL
      *
-     * @param startSql 起始 SQL 字符串，需防止 SQL 注入
+     * @param startSql 起始 SQL 字符串
      * @return 当前条件对象
      */
     public Condition<T> setStartSql(String startSql) {
@@ -322,7 +322,7 @@ public class Condition<T> {
     /**
      * 设置结尾 SQL
      *
-     * @param endSql 结尾 SQL 字符串，需防止 SQL 注入
+     * @param endSql 结尾 SQL 字符串
      * @return 当前条件对象
      */
     public Condition<T> setEndSql(String endSql) {

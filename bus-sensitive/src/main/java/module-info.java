@@ -37,7 +37,7 @@ module bus.sensitive {
     requires bus.crypto;
     requires bus.extra;
 
-    requires static lombok;
+    requires lombok;
 
     exports org.miaixz.bus.sensitive;
     exports org.miaixz.bus.sensitive.magic;

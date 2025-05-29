@@ -30,6 +30,7 @@ package org.miaixz.bus.pager.handler;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
+import org.miaixz.bus.pager.Builder;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -71,6 +72,19 @@ public class SqlParserHandler extends AbstractSqlHandler {
     }
 
     /**
+     * 解析多个SQL语句。
+     *
+     * @param sql SQL语句字符串
+     * @return 解析后的Statements对象
+     */
+    public static void check(String sql) {
+        if (Builder.check(sql)) {
+            throw new InternalException(
+                    "SQL script validation failed: potential security issue detected, please review");
+        }
+    }
+
+    /**
      * 解析并处理单个SQL语句。
      *
      * @param sql    SQL语句字符串
@@ -79,6 +93,7 @@ public class SqlParserHandler extends AbstractSqlHandler {
      * @throws InternalException 如果解析失败
      */
     public String parserSingle(String sql, Object object) {
+        check(sql);
         try {
             Statement statement = parse(sql);
             return processParser(statement, 0, sql, object);
@@ -96,6 +111,7 @@ public class SqlParserHandler extends AbstractSqlHandler {
      * @throws InternalException 如果解析失败
      */
     public String parserMulti(String sql, Object object) {
+        check(sql);
         try {
             StringBuilder sb = new StringBuilder();
             Statements statements = parseStatements(sql);

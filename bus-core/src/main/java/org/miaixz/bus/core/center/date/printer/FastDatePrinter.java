@@ -36,8 +36,7 @@ import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 线程安全的日期格式化类，替代 {@link java.text.SimpleDateFormat}，用于将 {@link Date} 格式化为字符串。
- * 参考 Apache Commons Lang 3.5。
+ * 线程安全的日期格式化类，替代 {@link java.text.SimpleDateFormat}，用于将 {@link Date} 格式化为字符串。 参考 Apache Commons Lang 3.5。
  *
  * @author Kimi Liu
  * @see FastDateParser

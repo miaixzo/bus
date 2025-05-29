@@ -126,40 +126,40 @@ public class RegexDateParser implements DateParser, Serializable {
     private static void parseNumberDate(final String number, final DateBuilder dateBuilder) {
         final int length = number.length();
         switch (length) {
-            case 4: // yyyy
-                dateBuilder.setYear(Integer.parseInt(number));
-                break;
-            case 6: // yyyyMM
-                dateBuilder.setYear(parseInt(number, 0, 4));
-                dateBuilder.setMonth(parseInt(number, 4, 6));
-                break;
-            case 8: // yyyyMMdd
-                dateBuilder.setYear(parseInt(number, 0, 4));
-                dateBuilder.setMonth(parseInt(number, 4, 6));
-                dateBuilder.setDay(parseInt(number, 6, 8));
-                break;
-            case 14: // yyyyMMddhhmmss
-                dateBuilder.setYear(parseInt(number, 0, 4));
-                dateBuilder.setMonth(parseInt(number, 4, 6));
-                dateBuilder.setDay(parseInt(number, 6, 8));
-                dateBuilder.setHour(parseInt(number, 8, 10));
-                dateBuilder.setMinute(parseInt(number, 10, 12));
-                dateBuilder.setSecond(parseInt(number, 12, 14));
-                break;
-            case 10: // unixtime(10)
-                dateBuilder.setUnixsecond(parseLong(number));
-                break;
-            case 13: // millisecond(13)
-                dateBuilder.setMillisecond(parseLong(number));
-                break;
-            case 16: // microsecond(16)
-                dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
-                dateBuilder.setNanosecond(parseInt(number, 10, 16));
-                break;
-            case 19: // nanosecond(19)
-                dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
-                dateBuilder.setNanosecond(parseInt(number, 10, 19));
-                break;
+        case 4: // yyyy
+            dateBuilder.setYear(Integer.parseInt(number));
+            break;
+        case 6: // yyyyMM
+            dateBuilder.setYear(parseInt(number, 0, 4));
+            dateBuilder.setMonth(parseInt(number, 4, 6));
+            break;
+        case 8: // yyyyMMdd
+            dateBuilder.setYear(parseInt(number, 0, 4));
+            dateBuilder.setMonth(parseInt(number, 4, 6));
+            dateBuilder.setDay(parseInt(number, 6, 8));
+            break;
+        case 14: // yyyyMMddhhmmss
+            dateBuilder.setYear(parseInt(number, 0, 4));
+            dateBuilder.setMonth(parseInt(number, 4, 6));
+            dateBuilder.setDay(parseInt(number, 6, 8));
+            dateBuilder.setHour(parseInt(number, 8, 10));
+            dateBuilder.setMinute(parseInt(number, 10, 12));
+            dateBuilder.setSecond(parseInt(number, 12, 14));
+            break;
+        case 10: // unixtime(10)
+            dateBuilder.setUnixsecond(parseLong(number));
+            break;
+        case 13: // millisecond(13)
+            dateBuilder.setMillisecond(parseLong(number));
+            break;
+        case 16: // microsecond(16)
+            dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
+            dateBuilder.setNanosecond(parseInt(number, 10, 16));
+            break;
+        case 19: // nanosecond(19)
+            dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
+            dateBuilder.setNanosecond(parseInt(number, 10, 19));
+            break;
         }
     }
 
@@ -173,13 +173,13 @@ public class RegexDateParser implements DateParser, Serializable {
     private static int parseYear(final String year) {
         final int length = year.length();
         switch (length) {
-            case 4:
-                return Integer.parseInt(year);
-            case 2:
-                final int num = Integer.parseInt(year);
-                return (num > 50 ? 1900 : 2000) + num;
-            default:
-                throw new DateException("Invalid year: [{}]", year);
+        case 4:
+            return Integer.parseInt(year);
+        case 2:
+            final int num = Integer.parseInt(year);
+            return (num > 50 ? 1900 : 2000) + num;
+        default:
+            throw new DateException("Invalid year: [{}]", year);
         }
     }
 
@@ -191,7 +191,7 @@ public class RegexDateParser implements DateParser, Serializable {
      * @param preferMonthFirst 是否优先解析为月/日
      */
     private static void parseDayOrMonth(final String dayOrMonth, final DateBuilder dateBuilder,
-                                        final boolean preferMonthFirst) {
+            final boolean preferMonthFirst) {
         final char next = dayOrMonth.charAt(1);
         final int a;
         final int b;
@@ -250,7 +250,7 @@ public class RegexDateParser implements DateParser, Serializable {
     /**
      * 解析限定范围的数字。
      *
-     * @param numberStr 数字字符串
+     * @param numberStr  数字字符串
      * @param minInclude 最小值（包含）
      * @param maxInclude 最大值（包含）
      * @return 解析后的数字

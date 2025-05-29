@@ -40,9 +40,9 @@ module bus.notify {
     requires bus.extra;
     requires bus.http;
 
-    requires static lombok;
-    requires static jakarta.activation;
-    requires static jakarta.mail;
+    requires lombok;
+    requires jakarta.activation;
+    requires jakarta.mail;
 
     exports org.miaixz.bus.notify;
     exports org.miaixz.bus.notify.cache;

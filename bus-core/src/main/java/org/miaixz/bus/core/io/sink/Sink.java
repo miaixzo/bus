@@ -35,9 +35,8 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
- * 字节流接收器接口，用于将数据写入目标（如网络、存储或内存缓冲区）。
- * 支持分层处理以转换数据（如压缩、加密、节流或协议框架）。
- * 通过 {@link BufferSink#outputStream} 可适配为 {@code OutputStream}。
+ * 字节流接收器接口，用于将数据写入目标（如网络、存储或内存缓冲区）。 支持分层处理以转换数据（如压缩、加密、节流或协议框架）。 通过 {@link BufferSink#outputStream} 可适配为
+ * {@code OutputStream}。
  *
  * @author Kimi Liu
  * @since Java 17+

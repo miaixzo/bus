@@ -111,9 +111,9 @@ public interface BufferSink extends Sink, WritableByteChannel {
     /**
      * 使用 UTF-8 编码写入字符串的指定部分。
      *
-     * @param string      输入字符串
-     * @param beginIndex  起始索引
-     * @param endIndex    结束索引
+     * @param string     输入字符串
+     * @param beginIndex 起始索引
+     * @param endIndex   结束索引
      * @return 当前接收器
      * @throws IOException 如果写入失败
      */
@@ -141,10 +141,10 @@ public interface BufferSink extends Sink, WritableByteChannel {
     /**
      * 使用指定字符集编码写入字符串的指定部分。
      *
-     * @param string      输入字符串
-     * @param beginIndex  起始索引
-     * @param endIndex    结束索引
-     * @param charset     字符集
+     * @param string     输入字符串
+     * @param beginIndex 起始索引
+     * @param endIndex   结束索引
+     * @param charset    字符集
      * @return 当前接收器
      * @throws IOException 如果写入失败
      */

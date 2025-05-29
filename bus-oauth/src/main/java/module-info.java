@@ -40,9 +40,9 @@ module bus.oauth {
     requires bus.http;
     requires bus.logger;
 
-    requires static lombok;
-    requires static org.bouncycastle.provider;
-    requires static org.bouncycastle.pkix;
+    requires lombok;
+    requires org.bouncycastle.provider;
+    requires org.bouncycastle.pkix;
 
     exports org.miaixz.bus.oauth;
     exports org.miaixz.bus.oauth.cache;

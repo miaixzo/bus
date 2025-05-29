@@ -45,9 +45,9 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class BeanToMapCopier extends AbstractCopier<Object, Map> {
 
     /**
-     * 目标的Map类型（用于泛型类注入）
+     * 目标 Map 的泛型参数类型
      */
-    private final Type targetType;
+    private final Type[] typeArguments;
 
     /**
      * 构造
@@ -60,7 +60,7 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
     public BeanToMapCopier(final Object source, final Map target, final Type targetType,
             final CopyOptions copyOptions) {
         super(source, target, copyOptions);
-        this.targetType = targetType;
+        this.typeArguments = TypeKit.getTypeArguments(targetType);
     }
 
     @Override
@@ -101,10 +101,10 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
             sValue = entry.getValue();
 
             // 获取目标值真实类型并转换源值
-            final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
             if (null != typeArguments && typeArguments.length > 1) {
                 sValue = copyOptions.convertField(typeArguments[1], sValue);
             }
+
 
             // 目标赋值
             if (null != sValue || !copyOptions.ignoreNullValue) {
