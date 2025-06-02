@@ -144,7 +144,7 @@
         <jsqlparser.version>5.1</jsqlparser.version>
         <hikaricp.version>6.3.0</hikaricp.version>
         <druid.version>1.2.24</druid.version>
-        <vertx.version>4.5.14</vertx.version>
+        <vertx.version>5.0.0</vertx.version>
         <dubbo.version>3.3.4</dubbo.version>
         <elasticsearch.version>9.0.0</elasticsearch.version>
         <mongo.version>5.4.0</mongo.version>
@@ -235,7 +235,7 @@
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
-                <artifactId>bus-oauth</artifactId>
+                <artifactId>bus-auth</artifactId>
                 <version>${bus.version}</version>
             </dependency>
             <dependency>

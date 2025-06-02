@@ -534,7 +534,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         /**
          * 授权
          */
-        OAUTH("OAUTH"),
+        AUTH("AUTH"),
         /**
          * 支付
          */

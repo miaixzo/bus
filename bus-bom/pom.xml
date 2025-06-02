@@ -166,7 +166,7 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-oauth</artifactId>
+            <artifactId>bus-auth</artifactId>
             <version>${bus.version}</version>
         </dependency>
         <dependency>

@@ -102,6 +102,7 @@ module bus.starter {
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpasyncclient;
+    requires bus.auth;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
@@ -128,7 +129,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.mapper;
     exports org.miaixz.bus.starter.mongo;
     exports org.miaixz.bus.starter.notify;
-    exports org.miaixz.bus.starter.oauth;
+    exports org.miaixz.bus.starter.auth;
     exports org.miaixz.bus.starter.office;
     exports org.miaixz.bus.starter.pay;
     exports org.miaixz.bus.starter.sensitive;

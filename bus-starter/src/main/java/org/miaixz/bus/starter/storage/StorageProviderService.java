@@ -84,22 +84,34 @@ public class StorageProviderService {
         }
         if (Registry.ALIYUN.equals(type)) {
             return new AliYunOssProvider(context);
+        } else if (Registry.AMAZON.equals(type)) {
+            return new AmazonS3Provider(context);
         } else if (Registry.BAIDU.equals(type)) {
             return new BaiduBosProvider(context);
+        } else if (Registry.FTP.equals(type)) {
+            return new FtpFileProvider(context);
+        } else if (Registry.GITLAB.equals(type)) {
+            return new GitlabFileProvider(context);
+        } else if (Registry.GOOGLE.equals(type)) {
+            return new GoogleCsProvider(context);
         } else if (Registry.HUAWEI.equals(type)) {
             return new HuaweiObsProvider(context);
         } else if (Registry.JD.equals(type)) {
             return new JdOssProvider(context);
+        } else if (Registry.LOCAL.equals(type)) {
+            return new LocalFileProvider(context);
         } else if (Registry.MINIO.equals(type)) {
             return new MinioOssProvider(context);
         } else if (Registry.QINIU.equals(type)) {
             return new QiniuOssProvider(context);
         } else if (Registry.TENCENT.equals(type)) {
             return new TencentCosProvider(context);
+        } else if (Registry.SFTP.equals(type)) {
+            return new SftpFileProvider(context);
         } else if (Registry.UPYUN.equals(type)) {
             return new UpyunOssProvider(context);
-        } else if (Registry.LOCAL.equals(type)) {
-            return new LocalFileProvider(context);
+        } else if (Registry.WEBDAV.equals(type)) {
+            return new WebDavProvider(context);
         }
         throw new InternalException(ErrorCode.UNSUPPORTED.getDesc());
     }

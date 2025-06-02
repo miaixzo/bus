@@ -91,7 +91,7 @@
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <aspectj.version>1.9.24</aspectj.version>
-        <vertx.version>4.5.14</vertx.version>
+        <vertx.version>5.0.0</vertx.version>
         <guice.version>7.0.0</guice.version>
         <mybatis.version>3.5.19</mybatis.version>
         <mybatis.spring.version>3.0.4</mybatis.spring.version>
@@ -161,7 +161,7 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-oauth</artifactId>
+            <artifactId>bus-auth</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>
