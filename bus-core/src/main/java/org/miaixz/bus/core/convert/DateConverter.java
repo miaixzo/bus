@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class DateConverter extends AbstractConverter implements MatcherConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852260072957L;
+    private static final long serialVersionUID = 2852267950550L;
 
     /**
      * 单例

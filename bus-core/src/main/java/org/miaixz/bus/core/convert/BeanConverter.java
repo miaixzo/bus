@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.*;
 public class BeanConverter implements Converter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258008993L;
+    private static final long serialVersionUID = 2852265579700L;
 
     /**
      * 单例对象

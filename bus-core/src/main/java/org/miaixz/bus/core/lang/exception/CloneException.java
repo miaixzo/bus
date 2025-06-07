@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CloneException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852268353379L;
+    private static final long serialVersionUID = 2852252361660L;
 
     /**
      * 构造

@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 public class CastConverter implements MatcherConverter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258572095L;
+    private static final long serialVersionUID = 2852266109781L;
 
     /**
      * 单例

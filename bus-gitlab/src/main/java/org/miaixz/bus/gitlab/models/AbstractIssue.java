@@ -47,7 +47,7 @@ import com.fasterxml.jackson.databind.node.ValueNode;
 public abstract class AbstractIssue implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252218021L;
+    private static final long serialVersionUID = 2852235017309L;
 
     private References references;
 
@@ -422,7 +422,7 @@ public abstract class AbstractIssue implements Serializable {
     public static class TaskCompletionStatus implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852252280563L;
+        private static final long serialVersionUID = 2852235115381L;
 
         private Integer count;
         private Integer completedCount;

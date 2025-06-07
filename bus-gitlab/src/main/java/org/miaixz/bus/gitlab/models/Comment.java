@@ -37,7 +37,7 @@ import java.io.Serial;
 public class Comment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257153223L;
+    private static final long serialVersionUID = 2852239270127L;
 
     private Author author;
     private Date createdAt;

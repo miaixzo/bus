@@ -37,7 +37,7 @@ import java.io.Serial;
 public class ReleaseParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852229116989L;
+    private static final long serialVersionUID = 2852279596256L;
 
     private String name;
     private String tagName;

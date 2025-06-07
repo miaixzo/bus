@@ -41,7 +41,7 @@ import java.util.List;
 public class Serialize<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282139500L;
+    private static final long serialVersionUID = 2852290178259L;
 
     /**
      * 总记录数

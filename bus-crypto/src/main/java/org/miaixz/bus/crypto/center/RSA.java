@@ -56,7 +56,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 public class RSA extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852268925822L;
+    private static final long serialVersionUID = 2852290353723L;
 
     /**
      * 构造，生成新的私钥公钥对

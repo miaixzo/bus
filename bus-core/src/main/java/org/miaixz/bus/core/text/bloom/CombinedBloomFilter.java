@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CombinedBloomFilter implements BloomFilter {
 
     @Serial
-    private static final long serialVersionUID = 2852270595539L;
+    private static final long serialVersionUID = 2852235531853L;
 
     private final BloomFilter[] filters;
 

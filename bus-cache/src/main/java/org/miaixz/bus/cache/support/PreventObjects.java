@@ -47,7 +47,7 @@ public class PreventObjects {
     private static final class PreventObject implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852289037113L;
+        private static final long serialVersionUID = 2852290208329L;
 
         private static final PreventObject INSTANCE = new PreventObject();
     }

@@ -39,7 +39,7 @@ import java.io.Serial;
 public class LabelEvent implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281719519L;
+    private static final long serialVersionUID = 2852260316959L;
 
     /** Enum to use for specifying the label event resource type. */
     public enum ResourceType {

@@ -109,7 +109,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class BoundedRange<T extends Comparable<? super T>> implements PredicateX<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852233235926L;
+    private static final long serialVersionUID = 2852273351363L;
 
     /**
      * 双向无界的区间

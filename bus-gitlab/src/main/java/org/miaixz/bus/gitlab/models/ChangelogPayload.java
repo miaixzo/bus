@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ChangelogPayload implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256863930L;
+    private static final long serialVersionUID = 2852238869802L;
 
     private String version;
     private String from;

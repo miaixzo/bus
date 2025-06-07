@@ -37,7 +37,7 @@ import java.io.Serial;
 public class Label implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281290353L;
+    private static final long serialVersionUID = 2852260153906L;
 
     private Long id;
     private String name;

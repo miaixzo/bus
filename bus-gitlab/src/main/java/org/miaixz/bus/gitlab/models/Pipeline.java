@@ -36,7 +36,7 @@ import java.io.Serial;
 public class Pipeline implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287628939L;
+    private static final long serialVersionUID = 2852269321958L;
 
     private Long id;
     private Long iid;

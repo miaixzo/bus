@@ -35,7 +35,7 @@ import java.io.Serial;
 public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252379079L;
+    private static final long serialVersionUID = 2852235180659L;
 
     private Long id;
     private Long iid;

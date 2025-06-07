@@ -33,7 +33,7 @@ import java.io.Serial;
 public class EpicInLink extends AbstractEpic<EpicInLink> {
 
     @Serial
-    private static final long serialVersionUID = 2852266655652L;
+    private static final long serialVersionUID = 2852252889389L;
 
     public String toString() {
         return (JacksonJson.toJsonString(this));

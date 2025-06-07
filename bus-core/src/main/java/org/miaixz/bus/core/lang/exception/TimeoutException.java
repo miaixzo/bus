@@ -38,7 +38,7 @@ import java.io.Serial;
 public class TimeoutException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852275321613L;
+    private static final long serialVersionUID = 2852266380577L;
 
     /**
      * 构造

@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class CopiedIterator<E> implements IterableIterator<E>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852227503137L;
+    private static final long serialVersionUID = 2852259692199L;
 
     private final Iterator<E> listIterator;
 

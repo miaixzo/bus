@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class SimpleBeanDesc extends AbstractBeanDesc {
 
     @Serial
-    private static final long serialVersionUID = 2852291216519L;
+    private static final long serialVersionUID = 2852227709360L;
 
     /**
      * 构造

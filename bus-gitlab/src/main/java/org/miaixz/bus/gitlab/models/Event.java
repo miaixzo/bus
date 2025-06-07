@@ -37,7 +37,7 @@ import java.io.Serial;
 public class Event implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852272258598L;
+    private static final long serialVersionUID = 2852253230058L;
 
     private Long id;
     private String actionName;

@@ -42,7 +42,7 @@ import java.util.Iterator;
 public class EnumerationIterator<E> implements IterableIterator<E>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852227675219L;
+    private static final long serialVersionUID = 2852259861780L;
 
     private final Enumeration<E> e;
 

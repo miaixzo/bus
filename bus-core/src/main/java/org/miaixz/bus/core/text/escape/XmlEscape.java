@@ -49,7 +49,7 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
 public class XmlEscape extends ReplacerChain {
 
     @Serial
-    private static final long serialVersionUID = 2852272730165L;
+    private static final long serialVersionUID = 2852236260780L;
 
     /**
      * XML转义字符

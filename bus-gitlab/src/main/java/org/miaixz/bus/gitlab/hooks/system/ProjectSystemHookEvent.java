@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852263717976L;
+    private static final long serialVersionUID = 2852292902085L;
 
     public static final String PROJECT_CREATE_EVENT = "project_create";
     public static final String PROJECT_DESTROY_EVENT = "project_destroy";

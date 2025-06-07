@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.Charset;
 public class TemplateConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256835966L;
+    private static final long serialVersionUID = 2852288273095L;
 
     /**
      * 默认配置

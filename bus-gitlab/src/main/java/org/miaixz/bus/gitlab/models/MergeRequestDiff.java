@@ -35,7 +35,7 @@ import java.io.Serial;
 public class MergeRequestDiff extends MergeRequestVersion {
 
     @Serial
-    private static final long serialVersionUID = 2852285185566L;
+    private static final long serialVersionUID = 2852262933296L;
 
     private List<Commit> commits;
     private List<Diff> diffs;

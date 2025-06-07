@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Normal;
 public abstract class AbstractStrategy implements CodeStrategy {
 
     @Serial
-    private static final long serialVersionUID = 2852276251790L;
+    private static final long serialVersionUID = 2852292099713L;
 
     /**
      * 基础字符集合，用于随机获取字符串的字符集合

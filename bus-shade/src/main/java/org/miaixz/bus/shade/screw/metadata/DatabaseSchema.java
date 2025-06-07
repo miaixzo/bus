@@ -45,7 +45,7 @@ import lombok.Setter;
 public class DatabaseSchema implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852237785936L;
+    private static final long serialVersionUID = 2852277792906L;
 
     /**
      * 数据库名称

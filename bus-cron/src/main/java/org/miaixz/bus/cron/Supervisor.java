@@ -41,7 +41,7 @@ import java.util.List;
 public class Supervisor implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852293708939L;
+    private static final long serialVersionUID = 2852287618105L;
     /**
      * 启动器列表
      */

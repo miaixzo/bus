@@ -41,7 +41,7 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
 public class Html4Escape extends ReplacerChain {
 
     @Serial
-    private static final long serialVersionUID = 2852271607062L;
+    private static final long serialVersionUID = 2852235839619L;
 
     /**
      * ISO8859_1 转义字符

@@ -68,7 +68,7 @@ import org.miaixz.bus.core.xyz.ZoneKit;
 public class DateTime extends Date {
 
     @Serial
-    private static final long serialVersionUID = 2852286511921L;
+    private static final long serialVersionUID = 2852233950292L;
 
     private static boolean useJdkToStringStyle = false;
     /**

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
+import java.io.Serial;
+
 /**
  * 类型: JWT异常
  *
@@ -35,7 +37,8 @@ package org.miaixz.bus.core.lang.exception;
  */
 public class JWTException extends UncheckedException {
 
-    private static final long serialVersionUID = 2852270385965L;
+    @Serial
+    private static final long serialVersionUID = 2852257851297L;
 
     /**
      * 构造

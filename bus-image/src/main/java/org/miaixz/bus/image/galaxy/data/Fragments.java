@@ -61,7 +61,7 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 public class Fragments extends ArrayList<Object> implements Value {
 
     @Serial
-    private static final long serialVersionUID = 2852231292196L;
+    private static final long serialVersionUID = 2852262835172L;
 
     private final VR vr;
     private final boolean bigEndian;

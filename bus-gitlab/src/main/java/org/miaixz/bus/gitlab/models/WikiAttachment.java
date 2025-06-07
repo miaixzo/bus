@@ -35,12 +35,12 @@ import java.io.Serial;
 public class WikiAttachment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235056229L;
+    private static final long serialVersionUID = 2852283267221L;
 
     public static class Link implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852235081375L;
+        private static final long serialVersionUID = 2852283337059L;
 
         private String url;
         private String markdown;

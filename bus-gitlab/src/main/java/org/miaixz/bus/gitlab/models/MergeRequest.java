@@ -40,7 +40,7 @@ import java.io.Serial;
 public class MergeRequest implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852285015685L;
+    private static final long serialVersionUID = 2852262182510L;
 
     private Boolean allowCollaboration;
     private Boolean allowMaintainerToPush;

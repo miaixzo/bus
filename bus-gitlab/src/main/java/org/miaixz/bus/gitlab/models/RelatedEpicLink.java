@@ -36,7 +36,7 @@ import java.io.Serial;
 public class RelatedEpicLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852228773669L;
+    private static final long serialVersionUID = 2852279222688L;
 
     private Long id;
     private EpicInLink sourceEpic;

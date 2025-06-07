@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Exists implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273512127L;
+    private static final long serialVersionUID = 2852253538080L;
 
     private Boolean exists;
 

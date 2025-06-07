@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 
     @Serial
-    private static final long serialVersionUID = 2852231938511L;
+    private static final long serialVersionUID = 2852275393666L;
 
     private final Map<K, V> map;
 

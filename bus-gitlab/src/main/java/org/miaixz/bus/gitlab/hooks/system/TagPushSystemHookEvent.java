@@ -35,7 +35,7 @@ import java.io.Serial;
 public class TagPushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266868687L;
+    private static final long serialVersionUID = 2852229727686L;
 
     public static final String TAG_PUSH_EVENT = "tag_push";
 

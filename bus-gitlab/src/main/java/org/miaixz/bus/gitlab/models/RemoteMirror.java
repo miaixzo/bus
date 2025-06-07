@@ -36,7 +36,7 @@ import java.io.Serial;
 public class RemoteMirror implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852229250675L;
+    private static final long serialVersionUID = 2852279737972L;
 
     private Long id;
     private Boolean enabled;

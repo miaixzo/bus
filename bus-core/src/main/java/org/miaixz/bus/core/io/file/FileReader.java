@@ -51,7 +51,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class FileReader extends FileWrapper {
 
     @Serial
-    private static final long serialVersionUID = 2852287859602L;
+    private static final long serialVersionUID = 2852285708261L;
 
     /**
      * 构造

@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
 
     @Serial
-    private static final long serialVersionUID = 2852291750285L;
+    private static final long serialVersionUID = 2852256079661L;
 
     /**
      * 日本历法地区

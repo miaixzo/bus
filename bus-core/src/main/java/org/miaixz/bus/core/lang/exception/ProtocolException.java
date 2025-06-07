@@ -38,7 +38,7 @@ import java.io.Serial;
 public class ProtocolException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852272165282L;
+    private static final long serialVersionUID = 2852263285797L;
 
     /**
      * 构造

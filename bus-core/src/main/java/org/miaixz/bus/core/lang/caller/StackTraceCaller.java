@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class StackTraceCaller implements Caller, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852266733131L;
+    private static final long serialVersionUID = 2852251293153L;
 
     private static final int OFFSET = 2;
 

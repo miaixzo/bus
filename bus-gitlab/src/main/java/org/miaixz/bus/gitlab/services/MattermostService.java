@@ -36,7 +36,7 @@ import java.io.Serial;
 public class MattermostService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852236318909L;
+    private static final long serialVersionUID = 2852285227357L;
 
     private String defaultChannel;
 

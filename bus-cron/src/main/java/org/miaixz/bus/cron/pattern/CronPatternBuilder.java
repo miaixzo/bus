@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CronPatternBuilder implements Builder<String> {
 
     @Serial
-    private static final long serialVersionUID = 2852293890599L;
+    private static final long serialVersionUID = 2852287899252L;
 
     final String[] parts = new String[7];
 

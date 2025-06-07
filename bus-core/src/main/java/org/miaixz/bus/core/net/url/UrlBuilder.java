@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
 public final class UrlBuilder implements Builder<String> {
 
     @Serial
-    private static final long serialVersionUID = 2852250291825L;
+    private static final long serialVersionUID = 2852231355809L;
 
     /**
      * 协议，例如http

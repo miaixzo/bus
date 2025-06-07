@@ -52,7 +52,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 public class PrimitiveConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275638206L;
+    private static final long serialVersionUID = 2852271020075L;
 
     /**
      * 单例对象

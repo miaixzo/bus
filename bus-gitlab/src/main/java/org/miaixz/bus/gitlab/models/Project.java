@@ -47,7 +47,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class Project implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288163909L;
+    private static final long serialVersionUID = 2852270183312L;
 
     private List<SharedGroup> sharedWithGroups;
     private Integer approvalsBeforeMerge;

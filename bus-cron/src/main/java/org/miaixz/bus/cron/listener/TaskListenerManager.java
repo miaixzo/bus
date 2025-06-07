@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
 public class TaskListenerManager implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852293810311L;
+    private static final long serialVersionUID = 2852287805158L;
 
     private final List<TaskListener> listeners = new ArrayList<>();
 

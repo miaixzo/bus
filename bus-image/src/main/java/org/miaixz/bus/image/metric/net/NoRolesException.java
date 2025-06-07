@@ -40,7 +40,7 @@ import org.miaixz.bus.image.metric.TransferCapability;
 public class NoRolesException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852268991268L;
+    private static final long serialVersionUID = 2852273231891L;
 
     public NoRolesException(String cuid, TransferCapability.Role role) {
         super(toMessage(cuid, role));

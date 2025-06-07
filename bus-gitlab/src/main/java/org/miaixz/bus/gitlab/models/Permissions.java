@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Permissions implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287297120L;
+    private static final long serialVersionUID = 2852269138567L;
 
     private ProjectAccess projectAccess;
     private ProjectAccess groupAccess;

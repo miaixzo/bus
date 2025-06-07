@@ -49,7 +49,7 @@ import org.miaixz.bus.cron.crontab.Crontab;
 public class Manager implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852293196122L;
+    private static final long serialVersionUID = 2852287209701L;
 
     /**
      * 执行器列表

@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260912095L;
+    private static final long serialVersionUID = 2852233335568L;
 
     private final boolean ignoreCase;
     private final boolean ignoreEquals;

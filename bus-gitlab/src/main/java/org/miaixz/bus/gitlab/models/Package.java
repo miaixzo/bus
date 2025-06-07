@@ -36,7 +36,7 @@ import java.io.Serial;
 public class Package implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287072820L;
+    private static final long serialVersionUID = 2852268098577L;
 
     private Long id;
     private String name;

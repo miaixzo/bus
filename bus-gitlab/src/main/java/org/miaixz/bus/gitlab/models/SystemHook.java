@@ -37,7 +37,7 @@ import java.io.Serial;
 public class SystemHook implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232126637L;
+    private static final long serialVersionUID = 2852281631008L;
 
     private Long id;
     private String name;
@@ -197,7 +197,7 @@ public class SystemHook implements Serializable {
     public static class UrlVariable implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852232215905L;
+        private static final long serialVersionUID = 2852281710398L;
 
         private String key;
 

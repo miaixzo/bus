@@ -38,7 +38,7 @@ import java.io.Serial;
 public class TokenException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852275808792L;
+    private static final long serialVersionUID = 2852266567727L;
 
     /**
      * 构造

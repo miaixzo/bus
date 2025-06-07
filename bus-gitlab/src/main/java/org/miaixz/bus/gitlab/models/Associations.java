@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Associations implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852255916319L;
+    private static final long serialVersionUID = 2852237588798L;
 
     private int groupsCount;
     private int projectsCount;

@@ -36,7 +36,7 @@ import java.io.Serial;
 public class ProjectHook implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289183109L;
+    private static final long serialVersionUID = 2852273671982L;
 
     private Boolean buildEvents;
     private Date createdAt;

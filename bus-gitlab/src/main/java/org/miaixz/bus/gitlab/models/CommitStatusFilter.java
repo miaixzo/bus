@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CommitStatusFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258177628L;
+    private static final long serialVersionUID = 2852250336272L;
 
     private String ref;
     private String stage;

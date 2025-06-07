@@ -41,7 +41,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class JcsegWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852285373833L;
+    private static final long serialVersionUID = 2852286128127L;
 
     private final IWord word;
 

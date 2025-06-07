@@ -35,7 +35,7 @@ import java.io.Serial;
 public class CommitStats implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258062080L;
+    private static final long serialVersionUID = 2852250082857L;
 
     private Integer additions;
     private Integer deletions;

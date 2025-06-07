@@ -32,6 +32,6 @@ import java.io.Serial;
 public class Owner extends AbstractUser<Owner> {
 
     @Serial
-    private static final long serialVersionUID = 2852286980305L;
+    private static final long serialVersionUID = 2852268017381L;
 
 }

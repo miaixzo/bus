@@ -39,7 +39,7 @@ import java.io.Serial;
 public abstract class AbstractUser<U extends AbstractUser<U>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252597172L;
+    private static final long serialVersionUID = 2852235350570L;
 
     private String avatarUrl;
     private Date createdAt;

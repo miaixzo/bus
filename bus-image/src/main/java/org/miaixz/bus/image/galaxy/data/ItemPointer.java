@@ -38,7 +38,7 @@ import java.util.Objects;
 public class ItemPointer implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231731983L;
+    private static final long serialVersionUID = 2852263859002L;
 
     public final int sequenceTag;
     public final String privateCreator;

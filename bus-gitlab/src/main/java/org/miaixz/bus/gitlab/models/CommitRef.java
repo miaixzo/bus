@@ -39,7 +39,7 @@ import java.io.Serial;
 public class CommitRef implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257927803L;
+    private static final long serialVersionUID = 2852239992782L;
 
     private RefType type;
     private String name;

@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Version implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233953679L;
+    private static final long serialVersionUID = 2852283127687L;
 
     private String version;
     private String revision;

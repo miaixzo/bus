@@ -36,7 +36,7 @@ import java.io.Serial;
 public class LicenseTemplate implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282178533L;
+    private static final long serialVersionUID = 2852260622196L;
 
     private String key;
     private String name;

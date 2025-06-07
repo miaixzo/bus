@@ -36,7 +36,7 @@ import java.io.Serial;
 public class Contributor extends AbstractUser<Contributor> {
 
     @Serial
-    private static final long serialVersionUID = 2852258893986L;
+    private static final long serialVersionUID = 2852250837816L;
 
     private Integer commits;
     private Integer additions;

@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Link implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282283893L;
+    private static final long serialVersionUID = 2852260700263L;
 
     private Integer id;
     private String name;

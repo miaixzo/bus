@@ -497,7 +497,7 @@ public abstract class SegmentLock<L> {
      */
     private static class PaddedLock extends ReentrantLock {
         @Serial
-        private static final long serialVersionUID = 2852237899137L;
+        private static final long serialVersionUID = 2852280575965L;
 
         long unused1;
         long unused2;
@@ -513,7 +513,7 @@ public abstract class SegmentLock<L> {
      */
     private static class PaddedSemaphore extends Semaphore {
         @Serial
-        private static final long serialVersionUID = 2852237977751L;
+        private static final long serialVersionUID = 2852280626061L;
 
         long unused1;
         long unused2;

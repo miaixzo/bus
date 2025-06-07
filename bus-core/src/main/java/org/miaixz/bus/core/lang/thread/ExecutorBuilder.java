@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
     @Serial
-    private static final long serialVersionUID = 2852237372339L;
+    private static final long serialVersionUID = 2852279106156L;
 
     /**
      * 默认的等待队列容量

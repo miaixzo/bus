@@ -32,6 +32,6 @@ import java.io.Serial;
 public class Reviewer extends AbstractUser<Reviewer> {
 
     @Serial
-    private static final long serialVersionUID = 2852230530508L;
+    private static final long serialVersionUID = 2852280533625L;
 
 }

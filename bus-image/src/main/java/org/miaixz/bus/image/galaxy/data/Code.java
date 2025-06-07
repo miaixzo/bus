@@ -42,7 +42,7 @@ import org.miaixz.bus.image.Tag;
 public class Code implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852230869593L;
+    private static final long serialVersionUID = 2852262087160L;
 
     private static final String NO_CODE_MEANING = "<none>";
     private transient final Key key = new Key();

@@ -43,7 +43,7 @@ import java.io.Serial;
 public class ExportStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276369912L;
+    private static final long serialVersionUID = 2852253553600L;
 
     /**
      * Enum representing the status of the export.

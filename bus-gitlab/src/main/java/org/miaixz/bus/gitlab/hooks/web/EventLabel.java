@@ -40,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class EventLabel implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852268669115L;
+    private static final long serialVersionUID = 2852231062892L;
 
     public enum LabelType {
         PROJECT_LABEL, GROUP_LABEL;

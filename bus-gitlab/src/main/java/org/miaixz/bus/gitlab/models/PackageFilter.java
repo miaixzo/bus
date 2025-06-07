@@ -40,7 +40,7 @@ import java.io.Serial;
 public class PackageFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287153271L;
+    private static final long serialVersionUID = 2852268635108L;
 
     private Boolean excludeSubgroups;
     private PackageOrderBy orderBy;

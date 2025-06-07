@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class SpecialConverter extends ConverterWithRoot implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852277066737L;
+    private static final long serialVersionUID = 2852271836876L;
 
     /**
      * 类型转换器集合 此集合初始化后不再加入新值，因此单例使用线程安全

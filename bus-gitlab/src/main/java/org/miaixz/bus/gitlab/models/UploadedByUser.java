@@ -35,7 +35,7 @@ import java.io.Serial;
 public class UploadedByUser implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233398877L;
+    private static final long serialVersionUID = 2852282819125L;
 
     private Long id;
     private String username;

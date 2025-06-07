@@ -34,7 +34,7 @@ import java.io.Serial;
 public class ReleaseEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852251793628L;
+    private static final long serialVersionUID = 2852233091729L;
 
     public static final String X_GITLAB_EVENT = "Release Hook";
     public static final String OBJECT_KIND = "release";

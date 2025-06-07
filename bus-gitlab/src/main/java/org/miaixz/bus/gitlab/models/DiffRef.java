@@ -35,7 +35,7 @@ import java.io.Serial;
 public class DiffRef implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259999785L;
+    private static final long serialVersionUID = 2852251659905L;
 
     private String baseSha;
     private String headSha;

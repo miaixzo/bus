@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ArtifactsFile implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852255196193L;
+    private static final long serialVersionUID = 2852237018613L;
 
     private String filename;
     private Long size;

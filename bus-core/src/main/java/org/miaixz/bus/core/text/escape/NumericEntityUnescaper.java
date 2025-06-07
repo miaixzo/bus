@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.CharKit;
 public class NumericEntityUnescaper extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852272105609L;
+    private static final long serialVersionUID = 2852236101870L;
 
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {

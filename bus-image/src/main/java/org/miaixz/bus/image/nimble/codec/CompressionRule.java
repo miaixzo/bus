@@ -42,7 +42,7 @@ import org.miaixz.bus.image.nimble.Photometric;
 public class CompressionRule implements Comparable<CompressionRule>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852239991691L;
+    private static final long serialVersionUID = 2852288068061L;
 
     private final String commonName;
     private final Condition condition;
@@ -106,7 +106,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
     private static class Condition implements Comparable<Condition>, Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852250020351L;
+        private static final long serialVersionUID = 2852288131317L;
 
         final EnumSet<Photometric> pmis;
         final int bitsStoredMask;

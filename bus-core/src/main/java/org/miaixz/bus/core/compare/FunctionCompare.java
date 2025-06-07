@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class FunctionCompare<T> extends NullCompare<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852250623976L;
+    private static final long serialVersionUID = 2852261525153L;
 
     /**
      * 构造

@@ -38,7 +38,7 @@ import java.io.Serial;
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252137136L;
+    private static final long serialVersionUID = 2852233810677L;
 
     private Long id;
     private String name;

@@ -35,7 +35,7 @@ import java.io.Serial;
 public class LdapGroupLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281913098L;
+    private static final long serialVersionUID = 2852260326318L;
 
     private String cn;
 

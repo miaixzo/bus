@@ -36,7 +36,7 @@ import java.io.Serial;
 public class ExternalStatusCheckProtectedBranch implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276700667L;
+    private static final long serialVersionUID = 2852253691392L;
 
     private Long id;
     private Long projectId;

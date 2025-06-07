@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
 
     @Serial
-    private static final long serialVersionUID = 2852288888296L;
+    private static final long serialVersionUID = 2852228290187L;
 
     private final CopyOption[] options;
 

@@ -40,7 +40,7 @@ import java.io.Serial;
 public class RunnerDetail extends Runner {
 
     @Serial
-    private static final long serialVersionUID = 2852231075730L;
+    private static final long serialVersionUID = 2852280720196L;
 
     private String architecture;
     private String platform;

@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.Chain;
 public class ReplacerChain extends StringReplacer implements Chain<StringReplacer, ReplacerChain> {
 
     @Serial
-    private static final long serialVersionUID = 2852281197921L;
+    private static final long serialVersionUID = 2852239321085L;
 
     private final List<StringReplacer> replacers = new LinkedList<>();
 

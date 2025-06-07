@@ -39,7 +39,7 @@ import java.util.Locale;
 public class Property implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852261318011L;
+    private static final long serialVersionUID = 2852261138619L;
 
     private final String name;
     private final Object value;

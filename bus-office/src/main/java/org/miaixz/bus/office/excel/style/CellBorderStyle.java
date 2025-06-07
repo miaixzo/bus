@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class CellBorderStyle implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852270212522L;
+    private static final long serialVersionUID = 2852286028705L;
 
     private BorderStyle topStyle;
     private Short topColor;

@@ -38,7 +38,7 @@ import java.io.Serial;
 public class NotFoundException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852271557126L;
+    private static final long serialVersionUID = 2852262037609L;
 
     /**
      * 构造

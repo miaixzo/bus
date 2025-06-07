@@ -35,7 +35,7 @@ import java.io.Serial;
 public class ContainerExpirationPolicy implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258707705L;
+    private static final long serialVersionUID = 2852250662811L;
 
     private String cadence;
     private Boolean enabled;

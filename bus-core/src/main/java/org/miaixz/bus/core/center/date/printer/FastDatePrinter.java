@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter {
 
     @Serial
-    private static final long serialVersionUID = 2852292276382L;
+    private static final long serialVersionUID = 2852257551539L;
 
     /**
      * 日期格式化模式对象

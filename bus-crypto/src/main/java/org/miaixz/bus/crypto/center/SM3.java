@@ -49,7 +49,7 @@ import org.miaixz.bus.crypto.builtin.digest.Digester;
 public class SM3 extends Digester {
 
     @Serial
-    private static final long serialVersionUID = 2852269577313L;
+    private static final long serialVersionUID = 2852290571103L;
 
     /**
      * 构造

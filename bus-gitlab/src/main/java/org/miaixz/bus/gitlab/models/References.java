@@ -37,7 +37,7 @@ import java.io.Serial;
 public class References implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852228093703L;
+    private static final long serialVersionUID = 2852277122269L;
 
     @JsonProperty("short")
     private String _short;

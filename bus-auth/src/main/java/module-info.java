@@ -33,6 +33,8 @@
  */
 module bus.auth {
 
+    requires java.naming;
+
     requires bus.cache;
     requires bus.core;
     requires bus.crypto;
@@ -43,10 +45,15 @@ module bus.auth {
     requires lombok;
     requires org.bouncycastle.provider;
     requires org.bouncycastle.pkix;
-    requires org.ldaptive;
-    requires java.naming;
-    requires jakarta.persistence;
-    requires org.slf4j;
+    requires io.vertx.core;
+    requires io.vertx.web;
+    requires io.vertx.codegen.api;
+    requires io.vertx.auth.common;
+    requires io.vertx.config;
+    requires io.vertx.sql.client;
+    requires io.vertx.sql.client.pg;
+    requires io.vertx.web.client;
+    requires io.vertx.mail.client;
 
     exports org.miaixz.bus.auth;
     exports org.miaixz.bus.auth.cache;

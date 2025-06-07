@@ -51,7 +51,7 @@ import lombok.experimental.SuperBuilder;
 public class Result<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852289958112L;
+    private static final long serialVersionUID = 2852291039338L;
 
     /**
      * 总数据

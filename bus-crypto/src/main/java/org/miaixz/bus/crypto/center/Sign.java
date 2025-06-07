@@ -58,7 +58,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 public class Sign extends Asymmetric<Sign> {
 
     @Serial
-    private static final long serialVersionUID = 2852270312865L;
+    private static final long serialVersionUID = 2852290831738L;
 
     /**
      * 签名，用于签名和验证

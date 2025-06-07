@@ -53,7 +53,7 @@ import org.miaixz.bus.crypto.Keeper;
 public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852262251129L;
+    private static final long serialVersionUID = 2852288538932L;
 
     /**
      * 算法

@@ -38,7 +38,7 @@ import java.io.Serial;
 public class NotExistsException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852271517379L;
+    private static final long serialVersionUID = 2852261792681L;
 
     /**
      * 构造

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class LazyFunLoader<T> extends LazyLoader<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852290772229L;
+    private static final long serialVersionUID = 2852267697038L;
 
     /**
      * 用于生成对象的函数

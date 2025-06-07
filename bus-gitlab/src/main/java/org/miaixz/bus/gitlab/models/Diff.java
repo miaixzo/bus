@@ -38,7 +38,7 @@ import java.io.Serial;
 public class Diff implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259921892L;
+    private static final long serialVersionUID = 2852251521883L;
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("a_mode")

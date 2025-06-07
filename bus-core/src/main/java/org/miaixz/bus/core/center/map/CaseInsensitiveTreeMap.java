@@ -43,7 +43,7 @@ import java.util.TreeMap;
 public class CaseInsensitiveTreeMap<K, V> extends CaseInsensitiveMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852230220080L;
+    private static final long serialVersionUID = 2852272639786L;
 
     /**
      * 构造

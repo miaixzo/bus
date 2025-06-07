@@ -43,7 +43,7 @@ import org.miaixz.bus.core.Loader;
 public abstract class LazyLoader<T> implements Loader<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852290978229L;
+    private static final long serialVersionUID = 2852267795270L;
 
     /**
      * 被加载对象

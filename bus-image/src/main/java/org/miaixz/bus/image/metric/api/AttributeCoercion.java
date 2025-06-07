@@ -45,7 +45,7 @@ import org.miaixz.bus.image.metric.TransferCapability;
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
 
     @Serial
-    private static final long serialVersionUID = 2852261671598L;
+    private static final long serialVersionUID = 2852262397936L;
 
     private final String commonName;
     private final Condition condition;
@@ -137,7 +137,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     private static class Condition implements Serializable, Comparable<Condition> {
 
         @Serial
-        private static final long serialVersionUID = 2852261750591L;
+        private static final long serialVersionUID = 2852262539097L;
 
         final String[] sopClasses;
         final Dimse dimse;

@@ -52,7 +52,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class IOD extends ArrayList<IOD.DataElement> {
 
     @Serial
-    private static final long serialVersionUID = 2852238385811L;
+    private static final long serialVersionUID = 2852255015270L;
 
     private DataElementType type;
     private Condition condition;
@@ -131,7 +131,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public static class DataElement implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852238601653L;
+        private static final long serialVersionUID = 2852255091391L;
 
         public final int tag;
         public final VR vr;

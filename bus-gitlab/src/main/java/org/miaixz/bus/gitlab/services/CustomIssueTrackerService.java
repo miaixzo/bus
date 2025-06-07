@@ -34,7 +34,7 @@ import java.io.Serial;
 public class CustomIssueTrackerService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852235577286L;
+    private static final long serialVersionUID = 2852283856060L;
 
     /**
      * Get the form data for this service based on it's properties.

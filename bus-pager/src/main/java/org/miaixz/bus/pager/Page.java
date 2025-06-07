@@ -49,7 +49,7 @@ import org.miaixz.bus.pager.builder.BoundSqlBuilder;
 public class Page<E> extends ArrayList<E> implements Closeable {
 
     @Serial
-    private static final long serialVersionUID = 2852281222526L;
+    private static final long serialVersionUID = 2852289758798L;
 
     /**
      * 记录当前堆栈，可查找到Page对象创建位置（需开启page.debug）

@@ -42,7 +42,7 @@ import java.util.function.Predicate;
 public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implements Copier<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267050926L;
+    private static final long serialVersionUID = 2852251585211L;
 
     /**
      * 源

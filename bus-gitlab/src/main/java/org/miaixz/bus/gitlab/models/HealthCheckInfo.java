@@ -44,7 +44,7 @@ import java.io.Serial;
 public class HealthCheckInfo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278839158L;
+    private static final long serialVersionUID = 2852256691706L;
 
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem dbCheck;

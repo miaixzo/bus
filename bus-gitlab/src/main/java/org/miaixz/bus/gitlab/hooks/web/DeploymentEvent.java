@@ -34,7 +34,7 @@ import java.io.Serial;
 public class DeploymentEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852268007239L;
+    private static final long serialVersionUID = 2852230222355L;
 
     public static final String X_GITLAB_EVENT = "Deployment Hook";
     public static final String OBJECT_KIND = "deployment";

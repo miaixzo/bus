@@ -36,7 +36,7 @@ import java.io.Serial;
 public class EventData implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273006699L;
+    private static final long serialVersionUID = 2852253272657L;
 
     private String after;
     private String before;

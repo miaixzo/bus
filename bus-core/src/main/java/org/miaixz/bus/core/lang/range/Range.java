@@ -49,7 +49,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class Range<T> implements Iterable<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233851389L;
+    private static final long serialVersionUID = 2852275092763L;
     /**
      * 起始对象
      */

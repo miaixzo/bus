@@ -64,7 +64,7 @@ import org.miaixz.bus.crypto.cipher.JceCipher;
 public class Crypto implements Encryptor, Decryptor, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852263933587L;
+    private static final long serialVersionUID = 2852289196593L;
 
     /**
      * 锁操作

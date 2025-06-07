@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConcurrentHashSet<E> extends SetFromMap<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852237331635L;
+    private static final long serialVersionUID = 2852280065806L;
 
     /**
      * 构造 触发因子为默认的0.75

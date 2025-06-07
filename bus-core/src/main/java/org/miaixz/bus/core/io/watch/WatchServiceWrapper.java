@@ -54,7 +54,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements WatchService, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852261226060L;
+    private static final long serialVersionUID = 2852236630789L;
 
     /**
      * 监听事件列表，如新建、修改、删除等

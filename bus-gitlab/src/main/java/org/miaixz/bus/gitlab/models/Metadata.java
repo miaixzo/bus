@@ -37,7 +37,7 @@ import java.io.Serial;
 public class Metadata implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286065853L;
+    private static final long serialVersionUID = 2852265316087L;
 
     private String version;
     private String revision;

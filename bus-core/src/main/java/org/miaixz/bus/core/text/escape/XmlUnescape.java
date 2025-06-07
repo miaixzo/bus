@@ -41,7 +41,7 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
 public class XmlUnescape extends ReplacerChain {
 
     @Serial
-    private static final long serialVersionUID = 2852272876989L;
+    private static final long serialVersionUID = 2852236398787L;
 
     /**
      * 基础反转义符

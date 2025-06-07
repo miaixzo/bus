@@ -35,7 +35,7 @@ import java.io.Serial;
 public class EpicIssueLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852271877613L;
+    private static final long serialVersionUID = 2852253087369L;
 
     private Long id;
     private Integer relativePosition;

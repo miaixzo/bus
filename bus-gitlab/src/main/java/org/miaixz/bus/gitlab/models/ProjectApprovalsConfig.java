@@ -35,7 +35,7 @@ import java.io.Serial;
 public class ProjectApprovalsConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288655555L;
+    private static final long serialVersionUID = 2852271099830L;
 
     private Integer approvalsBeforeMerge;
     private Boolean resetApprovalsOnPush;

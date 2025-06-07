@@ -42,7 +42,7 @@ import com.hankcs.hanlp.seg.common.Term;
 public class HanLPWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852283817199L;
+    private static final long serialVersionUID = 2852285886718L;
 
     private final Term term;
 

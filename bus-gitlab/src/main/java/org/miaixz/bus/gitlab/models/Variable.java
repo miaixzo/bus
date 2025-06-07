@@ -43,7 +43,7 @@ import java.io.Serial;
 public class Variable implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233886575L;
+    private static final long serialVersionUID = 2852283021997L;
 
     /**
      * Create a List of Variable from the provided Map.

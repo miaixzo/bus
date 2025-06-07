@@ -57,7 +57,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringJoiner implements Appendable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260987013L;
+    private static final long serialVersionUID = 2852233611385L;
 
     private Appendable appendable;
     private CharSequence delimiter;

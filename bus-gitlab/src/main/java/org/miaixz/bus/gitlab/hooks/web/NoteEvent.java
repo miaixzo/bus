@@ -40,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class NoteEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852251579832L;
+    private static final long serialVersionUID = 2852232895012L;
 
     public static final String X_GITLAB_EVENT = "Note Hook";
     public static final String OBJECT_KIND = "note";

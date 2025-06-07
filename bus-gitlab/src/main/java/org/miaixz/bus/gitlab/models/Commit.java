@@ -37,7 +37,7 @@ import java.io.Serial;
 public class Commit implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257312072L;
+    private static final long serialVersionUID = 2852239586962L;
 
     private Author author;
     private Date authoredDate;

@@ -37,7 +37,7 @@ import java.io.Serial;
 public class Job implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280519122L;
+    private static final long serialVersionUID = 2852259736306L;
 
     private Long id;
     private Commit commit;

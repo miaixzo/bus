@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class NotificationService implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852236507733L;
+    private static final long serialVersionUID = 2852285332559L;
 
     public static final String WEBHOOK_PROP = "webhook";
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";

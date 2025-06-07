@@ -42,7 +42,7 @@ import java.util.function.Supplier;
 public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852236327803L;
+    private static final long serialVersionUID = 2852277962550L;
 
     /**
      * 基于{@code mapFactory}创建一个值为{@link Set}的多值映射集合

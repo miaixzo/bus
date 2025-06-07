@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FormatPeriod implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291580698L;
+    private static final long serialVersionUID = 2852255710766L;
 
     /**
      * 格式化级别的最大个数

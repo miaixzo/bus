@@ -38,7 +38,7 @@ import java.io.Serial;
 public class Milestone implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286237867L;
+    private static final long serialVersionUID = 2852265609811L;
 
     private Date createdAt;
     private String description;

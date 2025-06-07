@@ -51,7 +51,7 @@ import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
 public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852239563861L;
+    private static final long serialVersionUID = 2852258698190L;
 
     /**
      * 单例对象

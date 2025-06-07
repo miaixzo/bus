@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.LambdaKit;
 public class LambdaNodeConfig<T, R> extends NodeConfig {
 
     @Serial
-    private static final long serialVersionUID = 2852282663008L;
+    private static final long serialVersionUID = 2852250050652L;
 
     private FunctionX<T, R> idKeyFun;
     private FunctionX<T, R> parentIdKeyFun;

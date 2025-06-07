@@ -32,6 +32,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.cache.AuthCache;
+import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.data.id.ID;
@@ -43,11 +48,6 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.auth.cache.AuthCache;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
 
 /**
  * 抽象授权处理基类，支持 OAuth2、SAML、LDAP 等多种协议。 提供通用的授权、令牌获取和用户信息查询逻辑，协议特定实现由子类完成。
@@ -340,15 +340,6 @@ public abstract class AbstractProvider implements Provider {
     protected void check(Context context) {
         if (complex.getProtocol() == Protocol.OIDC) {
             Checker.check(context, this.complex);
-        } else if (complex.getProtocol() == Protocol.LDAP) {
-            if (StringKit.isEmpty(context.getLdapUrl()) || StringKit.isEmpty(context.getBaseDn())
-                    || StringKit.isEmpty(context.getUserFilter())) {
-                throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getCode());
-            }
-        } else if (complex.getProtocol() == Protocol.SAML) {
-            if (StringKit.isEmpty(context.getSamlIdpUrl()) || StringKit.isEmpty(context.getSamlSpEntityId())) {
-                throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getCode());
-            }
         }
     }
 

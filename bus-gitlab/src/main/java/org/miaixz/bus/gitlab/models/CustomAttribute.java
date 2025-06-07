@@ -33,7 +33,7 @@ import java.io.Serial;
 public class CustomAttribute implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259238622L;
+    private static final long serialVersionUID = 2852250951355L;
 
     private String key;
     private String value;

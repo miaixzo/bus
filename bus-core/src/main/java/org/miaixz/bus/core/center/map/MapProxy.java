@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, InvocationHandler, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232361561L;
+    private static final long serialVersionUID = 2852275756380L;
 
     Map map;
 

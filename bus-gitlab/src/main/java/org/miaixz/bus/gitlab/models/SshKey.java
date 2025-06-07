@@ -38,7 +38,7 @@ import java.io.Serial;
 public class SshKey implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232083769L;
+    private static final long serialVersionUID = 2852281539315L;
 
     private Long id;
     private String title;

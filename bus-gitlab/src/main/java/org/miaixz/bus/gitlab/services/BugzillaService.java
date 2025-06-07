@@ -33,7 +33,7 @@ import java.io.Serial;
 public class BugzillaService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852235395261L;
+    private static final long serialVersionUID = 2852283785895L;
 
     /**
      * Get the form data for this service based on it's properties.

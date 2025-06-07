@@ -36,7 +36,7 @@ import java.io.Serial;
 public class MergeRequestVersion implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852285897877L;
+    private static final long serialVersionUID = 2852265139183L;
 
     private Long id;
     private String headCommitSha;

@@ -36,7 +36,7 @@ import java.io.Serial;
 public class Discussion implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260103116L;
+    private static final long serialVersionUID = 2852251836760L;
 
     private String id;
     private Boolean individualNote;

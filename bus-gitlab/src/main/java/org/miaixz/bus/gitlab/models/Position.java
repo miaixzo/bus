@@ -39,7 +39,7 @@ import java.io.Serial;
 public class Position implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287876633L;
+    private static final long serialVersionUID = 2852270036770L;
 
     public static enum PositionType {
         TEXT, IMAGE, FILE;

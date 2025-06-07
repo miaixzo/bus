@@ -83,108 +83,108 @@ public interface SystemHookEvent extends Serializable {
 class CreateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265112260L;
+    private static final long serialVersionUID = 2852228078820L;
 }
 
 class DestroyProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265202976L;
+    private static final long serialVersionUID = 2852228251132L;
 }
 
 class RenameProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265330712L;
+    private static final long serialVersionUID = 2852228370569L;
 }
 
 class TransferProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265552328L;
+    private static final long serialVersionUID = 2852228576607L;
 }
 
 class UpdateProjectSystemHookEvent extends ProjectSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265636152L;
+    private static final long serialVersionUID = 2852228633920L;
 }
 
 class NewTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265830399L;
+    private static final long serialVersionUID = 2852228695353L;
 }
 
 class RemoveTeamMemberSystemHookEvent extends TeamMemberSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265873907L;
+    private static final long serialVersionUID = 2852228711072L;
 }
 
 class CreateUserSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852265917558L;
+    private static final long serialVersionUID = 2852228769923L;
 }
 
 class DestroyUserSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266017381L;
+    private static final long serialVersionUID = 2852228833780L;
 }
 
 class RenameUserSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266051826L;
+    private static final long serialVersionUID = 2852228918310L;
 }
 
 class UserFailedLoginSystemHookEvent extends UserSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266119502L;
+    private static final long serialVersionUID = 2852229056099L;
 }
 
 class CreateKeySystemHookEvent extends KeySystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266191273L;
+    private static final long serialVersionUID = 2852229066130L;
 }
 
 class DestroyKeySystemHookEvent extends KeySystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266233299L;
+    private static final long serialVersionUID = 2852229156110L;
 }
 
 class CreateGroupSystemHookEvent extends GroupSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266281261L;
+    private static final long serialVersionUID = 2852229213926L;
 }
 
 class DestroyGroupSystemHookEvent extends GroupSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266355818L;
+    private static final long serialVersionUID = 2852229266109L;
 }
 
 class RenameGroupSystemHookEvent extends GroupSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266388705L;
+    private static final long serialVersionUID = 2852229331677L;
 }
 
 class NewGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266501216L;
+    private static final long serialVersionUID = 2852229395085L;
 }
 
 class RemoveGroupMemberSystemHookEvent extends GroupMemberSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852266575598L;
+    private static final long serialVersionUID = 2852229651810L;
 
 }

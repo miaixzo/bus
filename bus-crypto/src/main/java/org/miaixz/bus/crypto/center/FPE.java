@@ -58,7 +58,7 @@ import org.miaixz.bus.crypto.Padding;
 public class FPE implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267935597L;
+    private static final long serialVersionUID = 2852289932187L;
 
     /**
      * 映射字符表，规定了明文和密文的字符范围

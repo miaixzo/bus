@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class UniqueKeySet<K, V> extends AbstractSet<V> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852237652078L;
+    private static final long serialVersionUID = 2852280266036L;
 
     private final Function<V, K> uniqueGenerator;
     private Map<K, V> map;

@@ -43,7 +43,7 @@ import java.util.function.Supplier;
 public class FunctionMap<K, V> extends TransMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852231371862L;
+    private static final long serialVersionUID = 2852273919816L;
 
     private final Function<Object, K> keyFunc;
     private final Function<Object, V> valueFunc;

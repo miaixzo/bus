@@ -40,7 +40,7 @@ import java.util.Locale;
 public class LocaleCompare extends NullCompare<String> {
 
     @Serial
-    private static final long serialVersionUID = 2852250669921L;
+    private static final long serialVersionUID = 2852261895676L;
 
     /**
      * 构造

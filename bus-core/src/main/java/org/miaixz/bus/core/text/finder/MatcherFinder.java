@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class MatcherFinder extends TextFinder {
 
     @Serial
-    private static final long serialVersionUID = 2852275082358L;
+    private static final long serialVersionUID = 2852236936800L;
 
     private final Predicate<Character> matcher;
 

@@ -39,7 +39,7 @@ import java.util.Objects;
 public class DateRange implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231173303L;
+    private static final long serialVersionUID = 2852262327192L;
 
     private final Date start;
     private final Date end;

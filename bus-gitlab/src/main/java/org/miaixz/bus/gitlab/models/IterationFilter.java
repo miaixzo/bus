@@ -41,7 +41,7 @@ import java.io.Serial;
 public class IterationFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280339896L;
+    private static final long serialVersionUID = 2852259338991L;
 
     @JsonIgnore
     public GitLabForm getQueryParams(int page, int perPage) {

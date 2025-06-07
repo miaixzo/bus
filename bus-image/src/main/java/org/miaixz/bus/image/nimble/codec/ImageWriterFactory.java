@@ -53,7 +53,7 @@ import org.miaixz.bus.logger.Logger;
 public class ImageWriterFactory implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852253713722L;
+    private static final long serialVersionUID = 2852288887239L;
 
     private static volatile ImageWriterFactory defaultFactory;
     private final TreeMap<String, ImageWriterParam> map = new TreeMap<>();
@@ -188,7 +188,7 @@ public class ImageWriterFactory implements Serializable {
     public static class ImageWriterParam implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852253781276L;
+        private static final long serialVersionUID = 2852289015819L;
 
         public final String formatName;
         public final String className;

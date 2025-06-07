@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.ReflectKit;
 public class EmptyBeanConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260391221L;
+    private static final long serialVersionUID = 2852268257237L;
 
     /**
      * 单例

@@ -32,6 +32,7 @@
  * Lensometry MR : Magnetic Resonance MG : Mammography OP : Ophthalmic Photography OSS : Optical Surface Scanner RF :
  * Radiofluoroscopy RG : Radiographic imaging VA : Visual Acuity XA : X-Ray Angiography
  * 
+
  * 以上仅列举部分图像类型，详细请参考{@link org.miaixz.bus.image.builtin.AcquisitionModality}
  *
  * @author Kimi Liu

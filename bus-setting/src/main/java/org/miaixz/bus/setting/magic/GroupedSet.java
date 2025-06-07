@@ -57,7 +57,7 @@ import org.miaixz.bus.core.xyz.*;
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
     @Serial
-    private static final long serialVersionUID = 2852251192018L;
+    private static final long serialVersionUID = 2852227976051L;
 
     /**
      * 分组行识别的环绕标记

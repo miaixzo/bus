@@ -63,7 +63,7 @@ import org.miaixz.bus.setting.Setting;
 public final class Props extends java.util.Properties implements TypeGetter<CharSequence> {
 
     @Serial
-    private static final long serialVersionUID = 2852227856621L;
+    private static final long serialVersionUID = 2852230820065L;
 
     /**
      * 配置文件缓存

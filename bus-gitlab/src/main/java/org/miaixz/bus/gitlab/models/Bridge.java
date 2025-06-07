@@ -38,7 +38,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Bridge implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256728671L;
+    private static final long serialVersionUID = 2852238667902L;
 
     private Commit commit;
     private boolean allowFailure;

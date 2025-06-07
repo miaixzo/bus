@@ -38,7 +38,7 @@ import java.io.Serial;
 public class SharedGroup implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231958586L;
+    private static final long serialVersionUID = 2852281256893L;
 
     private Long groupId;
     private String groupName;
