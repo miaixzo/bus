@@ -28,7 +28,7 @@
 package org.miaixz.bus.starter.auth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.auth.cache.OauthCache;
+import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -58,7 +58,7 @@ public class AuthConfiguration {
     @ConditionalOnMissingBean(ExtendCache.class)
     @ConditionalOnProperty(name = GeniusBuilder.AUTH + ".cache.type", havingValue = "default", matchIfMissing = true)
     public ExtendCache authCache() {
-        return OauthCache.INSTANCE;
+        return AuthCache.INSTANCE;
     }
 
 }

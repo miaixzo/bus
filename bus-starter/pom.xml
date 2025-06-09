@@ -107,6 +107,12 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-auth</artifactId>
+            <version>${bus.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-base</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
@@ -156,12 +162,6 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-notify</artifactId>
-            <version>${bus.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-auth</artifactId>
             <version>${bus.version}</version>
             <optional>true</optional>
         </dependency>

@@ -148,7 +148,7 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
                     Logger.warn("Empty SQL detected, MappedStatement: {}", mappedStatement.getId());
                     return false;
                 }
-                parserSingle(sql, null);
+                parserSingle(sql, parameter);
                 return true;
             } catch (Exception e) {
                 Logger.error("Failed to parse query SQL: {}", e.getMessage());

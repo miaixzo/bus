@@ -27,15 +27,14 @@
 */
 package org.miaixz.bus.health.mac.software;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.ApplicationInfo;
+import org.miaixz.bus.health.mac.jna.CoreFoundation;
 
 /**
  * @author Kimi Liu
@@ -43,7 +42,8 @@ import org.miaixz.bus.health.builtin.software.ApplicationInfo;
  */
 public final class MacInstalledApps {
 
-    private static final String COLON = ":";
+    private static final String COLON = Symbol.COLON;
+    private static final CoreFoundation CF = CoreFoundation.INSTANCE;
 
     private MacInstalledApps() {
     }
@@ -54,10 +54,11 @@ public final class MacInstalledApps {
     }
 
     private static List<ApplicationInfo> parseMacAppInfo(List<String> lines) {
-        List<ApplicationInfo> appInfoList = new ArrayList<>();
+        Set<ApplicationInfo> appInfoSet = new LinkedHashSet<>();
         String appName = null;
         Map<String, String> appDetails = null;
         boolean collectingAppDetails = false;
+        String dateFormat = getLocaleDateTimeFormat(CoreFoundation.CFDateFormatterStyle.kCFDateFormatterShortStyle);
 
         for (String line : lines) {
             line = line.trim();
@@ -66,7 +67,7 @@ public final class MacInstalledApps {
             if (line.endsWith(COLON)) {
                 // When app and appDetails are not empty then we reached the next app, add it to the list
                 if (appName != null && !appDetails.isEmpty()) {
-                    appInfoList.add(createAppInfo(appName, appDetails));
+                    appInfoSet.add(createAppInfo(appName, appDetails, dateFormat));
                 }
 
                 // store app name and proceed with collecting app details
@@ -85,25 +86,44 @@ public final class MacInstalledApps {
             }
         }
 
-        return appInfoList;
+        return new ArrayList<>(appInfoSet);
     }
 
-    private static ApplicationInfo createAppInfo(String name, Map<String, String> details) {
+    private static ApplicationInfo createAppInfo(String name, Map<String, String> details, String dateFormat) {
         String obtainedFrom = Parsing.getValueOrUnknown(details, "Obtained from");
         String signedBy = Parsing.getValueOrUnknown(details, "Signed by");
         String vendor = (obtainedFrom.equals("Identified Developer")) ? signedBy : obtainedFrom;
 
         String lastModified = details.getOrDefault("Last Modified", Normal.UNKNOWN);
-        long lastModifiedEpoch = Parsing.parseDateToEpoch(lastModified, "dd/MM/yy, HH:mm");
+        long lastModifiedEpoch = Parsing.parseDateToEpoch(lastModified, dateFormat);
 
         // Additional info map
-        Map<String, String> additionalInfo = new HashMap<>();
+        Map<String, String> additionalInfo = new LinkedHashMap<>();
         additionalInfo.put("Kind", Parsing.getValueOrUnknown(details, "Kind"));
         additionalInfo.put("Location", Parsing.getValueOrUnknown(details, "Location"));
         additionalInfo.put("Get Info String", Parsing.getValueOrUnknown(details, "Get Info String"));
 
         return new ApplicationInfo(name, Parsing.getValueOrUnknown(details, "Version"), vendor, lastModifiedEpoch,
                 additionalInfo);
+    }
+
+    private static String getLocaleDateTimeFormat(CoreFoundation.CFDateFormatterStyle style) {
+        CoreFoundation.CFIndex styleIndex = style.index();
+        CoreFoundation.CFLocale locale = CF.CFLocaleCopyCurrent();
+        try {
+            CoreFoundation.CFDateFormatter formatter = CF.CFDateFormatterCreate(null, locale, styleIndex, styleIndex);
+            if (formatter == null) {
+                return "";
+            }
+            try {
+                CoreFoundation.CFStringRef format = CF.CFDateFormatterGetFormat(formatter);
+                return (format == null) ? "" : format.stringValue();
+            } finally {
+                CF.CFRelease(formatter);
+            }
+        } finally {
+            CF.CFRelease(locale);
+        }
     }
 
 }

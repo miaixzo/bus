@@ -37,6 +37,7 @@ module bus.starter {
     requires java.desktop;
     requires java.management;
 
+    requires bus.auth;
     requires bus.base;
     requires bus.cache;
     requires bus.core;
@@ -50,7 +51,6 @@ module bus.starter {
     requires bus.logger;
     requires bus.mapper;
     requires bus.notify;
-    requires bus.oauth;
     requires bus.office;
     requires bus.pager;
     requires bus.pay;
@@ -102,7 +102,6 @@ module bus.starter {
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpasyncclient;
-    requires bus.auth;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;

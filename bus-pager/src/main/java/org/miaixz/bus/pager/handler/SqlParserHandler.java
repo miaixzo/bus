@@ -72,18 +72,6 @@ public class SqlParserHandler extends AbstractSqlHandler {
     }
 
     /**
-     * 解析多个SQL语句。
-     *
-     * @param sql SQL语句字符串
-     */
-    public static void check(String sql) {
-        if (OGNL.check(sql)) {
-            throw new InternalException(
-                    "SQL script validation failed: potential security issue detected, please review");
-        }
-    }
-
-    /**
      * 解析并处理单个SQL语句。
      *
      * @param sql    SQL语句字符串
@@ -92,7 +80,6 @@ public class SqlParserHandler extends AbstractSqlHandler {
      * @throws InternalException 如果解析失败
      */
     public String parserSingle(String sql, Object object) {
-        check(sql);
         try {
             Statement statement = parse(sql);
             return processParser(statement, 0, sql, object);
@@ -110,7 +97,6 @@ public class SqlParserHandler extends AbstractSqlHandler {
      * @throws InternalException 如果解析失败
      */
     public String parserMulti(String sql, Object object) {
-        check(sql);
         try {
             StringBuilder sb = new StringBuilder();
             Statements statements = parseStatements(sql);
@@ -147,6 +133,7 @@ public class SqlParserHandler extends AbstractSqlHandler {
         } else if (statement instanceof Delete) {
             this.processDelete((Delete) statement, index, sql, object);
         }
+        this.validateSql(statement.toString());
         return statement.toString();
     }
 
@@ -200,6 +187,18 @@ public class SqlParserHandler extends AbstractSqlHandler {
      */
     protected void processSelect(Select select, int index, String sql, Object object) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 校验SQL防止注入风险
+     *
+     * @param sql SQL语句字符串
+     */
+    protected static void validateSql(String sql) {
+        if (!Symbol.ZERO.equals(sql) && !Symbol.STAR.equals(sql) && OGNL.validateSql(sql)) {
+            throw new InternalException(
+                    "SQL script validation failed: potential security issue detected, please review");
+        }
     }
 
 }

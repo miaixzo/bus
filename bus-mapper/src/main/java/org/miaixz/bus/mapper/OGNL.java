@@ -58,9 +58,7 @@ public class OGNL {
      * SQL 语法检查正则，匹配包含两个关键字（有先后顺序）的 SQL 语句
      */
     public static final Pattern SQL_SYNTAX_PATTERN = Pattern.compile(
-            "(insert|delete|update|select|create|drop|truncate|grant|alter|deny|revoke|call|execute|exec|declare|show|rename|set)"
-                    + "\\s+.*(into|from|set|where|table|database|view|index|on|cursor|procedure|trigger|for|password|union|and|or)|(select\\s*\\*\\s*from\\s+)"
-                    + "|if\\s*\\(.*\\)|select\\s*\\(.*\\)|substr\\s*\\(.*\\)|substring\\s*\\(.*\\)|char\\s*\\(.*\\)|concat\\s*\\(.*\\)|benchmark\\s*\\(.*\\)|sleep\\s*\\(.*\\)|(and|or)\\s+.*",
+            "(?i)(?:\\b(insert\\s+into\\s+\\w+|delete\\s+from\\s+\\w+|update\\s+\\w+\\s*(?:set\\s+.*)?|create\\s+(table|database|view|index|procedure|trigger)\\s+\\w+|drop\\s+(table|database|view|index)\\s+\\w+|truncate\\s+table\\s+\\w+|grant\\s+.*\\s+on\\s+.*|alter\\s+(table|database)\\s+\\w+|deny\\s+.*\\s+on\\s+.*|revoke\\s+.*\\s+on\\s+.*|call\\s+\\w+|execute\\s+\\w+|exec\\s+\\w+|declare\\s+@\\w+|show\\s+(databases|tables|columns)|rename\\s+table\\s+\\w+|set\\s+password|union\\s+select\\s+.*|insert\\s+\\w+)(?:\\s*(?:;|\\/\\*|\\-\\-)|\\b)|\\b(if|substr|substring|char|concat|benchmark|sleep)\\s*\\([^)]*\\)|\\b(or|and)\\s+['\"0-1]=['\"0-1])",
             Pattern.CASE_INSENSITIVE);
 
     /**
@@ -192,7 +190,7 @@ public class OGNL {
      * @return 如果存在 SQL 注入风险返回 true，否则返回 false
      * @throws NullPointerException 如果 value 为 null
      */
-    public static boolean check(String value) {
+    public static boolean validateSql(String value) {
         Objects.requireNonNull(value);
         return SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find();
     }

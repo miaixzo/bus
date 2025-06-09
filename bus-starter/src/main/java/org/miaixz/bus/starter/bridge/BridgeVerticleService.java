@@ -67,7 +67,7 @@ public class BridgeVerticleService extends AbstractVerticle {
         router.route("/profile/get").handler(context -> {
             String result;
             try {
-                BridgeProperties properties = JsonKit.toPojo(context.getBodyAsString(), BridgeProperties.class);
+                BridgeProperties properties = JsonKit.toPojo(context.body().asString(), BridgeProperties.class);
                 Message message = Message.builder().data(this.resolvable.find(properties)).build();
                 Logger.info("request:{},response:{}", properties, message);
                 result = JsonKit.toJsonString(message);

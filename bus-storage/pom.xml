@@ -27,7 +27,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.miaixz</groupId>
@@ -87,10 +87,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.1.8</bus.version>
         <lombok.version>1.18.38</lombok.version>
-        <amazon.s3.version>2.31.33</amazon.s3.version>
-        <sardine.version>5.13</sardine.version>
         <jackson.version>2.19.0</jackson.version>
+        <sardine.version>5.13</sardine.version>
+        <jsch.version>0.2.25</jsch.version>
         <httpclient.version>4.5.14</httpclient.version>
+        <amazon.s3.version>2.31.33</amazon.s3.version>
     </properties>
 
     <dependencies>
@@ -133,9 +134,16 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>

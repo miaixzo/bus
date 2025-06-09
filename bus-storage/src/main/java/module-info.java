@@ -43,6 +43,7 @@ module bus.storage {
 
     requires lombok;
     requires com.github.sardine;
+    requires com.jcraft.jsch;
     requires software.amazon.awssdk.auth;
     requires software.amazon.awssdk.core;
     requires software.amazon.awssdk.regions;

@@ -36,8 +36,7 @@ import java.util.regex.Pattern;
 /**
  * SQL 表名解析器，用于从 SQL 语句中提取表名。
  * <p>
- * 超轻量、超快速的解析器，支持提取 Oracle 方言 SQL 中的表名。
- * 使用方式：new TableNameParser(sql).tables()
+ * 超轻量、超快速的解析器，支持提取 Oracle 方言 SQL 中的表名。 使用方式：new TableNameParser(sql).tables()
  *
  * @author Kimi Liu
  * @since Java 17+

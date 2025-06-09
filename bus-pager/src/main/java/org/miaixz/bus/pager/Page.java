@@ -33,9 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.PageException;
-import org.miaixz.bus.mapper.OGNL;
 import org.miaixz.bus.pager.binding.PageAutoDialect;
 import org.miaixz.bus.pager.builder.BoundSqlBuilder;
 
@@ -409,18 +406,13 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 设置排序字段，包含SQL注入校验。
+     * 设置排序字段。
      *
      * @param orderBy 排序字段
      * @param <E>     分页数据元素类型
      * @return 当前Page对象
-     * @throws PageException 若存在SQL注入风险
      */
     public <E> Page<E> setOrderBy(String orderBy) {
-        if (OGNL.check(orderBy)) {
-            throw new PageException("order by [" + orderBy + "] has a risk of SQL injection, "
-                    + "if you want to avoid SQL injection verification, you can call Page.setUnsafeOrderBy");
-        }
         this.orderBy = orderBy;
         return (Page<E>) this;
     }
@@ -844,12 +836,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * 设置count查询列名，包含SQL注入校验。
      *
      * @param countColumn 列名
-     * @throws PageException 若存在SQL注入风险
      */
     public void setCountColumn(String countColumn) {
-        if (!"0".equals(countColumn) && !Symbol.STAR.equals(countColumn) && OGNL.check(countColumn)) {
-            throw new PageException("count(" + countColumn + ") has a risk of SQL injection");
-        }
         this.countColumn = countColumn;
     }
 
