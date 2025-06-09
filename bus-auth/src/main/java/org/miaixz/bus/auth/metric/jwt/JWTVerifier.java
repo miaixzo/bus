@@ -39,14 +39,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * JWT 数据校验器，用于验证 JWT 的算法、签名和时间字段。
- * <p>
- * 验证内容包括：
  * <ul>
  * <li>算法是否一致</li>
  * <li>签名是否正确</li>
  * <li>时间字段是否有效（如未过期、已生效等）</li>
  * </ul>
- * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -256,15 +253,12 @@ public class JWTVerifier {
 
     /**
      * 验证 JWT 的时间字段，使用当前时间。
-     * <p>
-     * 检查以下时间字段：
      * <ul>
      * <li>notBefore (nbf)：生效时间不能晚于当前时间</li>
      * <li>expiresAt (exp)：失效时间不能早于当前时间</li>
      * <li>issuedAt (iat)：签发时间不能晚于当前时间</li>
      * </ul>
      * 未设置的字段不检查。
-     * </p>
      *
      * @return 当前 JWTVerifier 实例
      * @throws ValidateException 如果时间字段无效

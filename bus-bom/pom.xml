@@ -91,6 +91,11 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-auth</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-base</artifactId>
             <version>${bus.version}</version>
         </dependency>
@@ -166,11 +171,6 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-auth</artifactId>
-            <version>${bus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
             <artifactId>bus-office</artifactId>
             <version>${bus.version}</version>
         </dependency>
@@ -237,8 +237,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
-                <configuration>
-                </configuration>
+                <configuration />
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

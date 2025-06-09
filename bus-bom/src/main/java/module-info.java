@@ -33,6 +33,7 @@
  */
 module bus.bom {
 
+    requires bus.auth;
     requires bus.base;
     requires bus.cache;
     requires bus.core;
@@ -48,7 +49,6 @@ module bus.bom {
     requires bus.logger;
     requires bus.mapper;
     requires bus.notify;
-    requires bus.oauth;
     requires bus.office;
     requires bus.pager;
     requires bus.pay;
