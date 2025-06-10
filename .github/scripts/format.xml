@@ -56,7 +56,7 @@
                  value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_prefix_operator" value="do not insert"/>
 
-        <!--IDEA使用了对应的配置：Java:SPACE_WITHIN_ARRAY_INITIALIZER_BRACES，但感觉不太好，IDEA默认不插入，Eclipse使用插入-->
+        <!--IDEA使用了对应的配置：Java:SPACE_WITHIN_ARRAY_INITIALIZER_BRACES，感觉不太好，IDEA默认不插入，Eclipse使用插入-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_brace_in_array_initializer"
                  value="insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_arguments"

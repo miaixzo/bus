@@ -21,6 +21,7 @@ script:
   - cd ../bus-crypto && mvn install -DskipTests=true
   - cd ../bus-extra && mvn install -DskipTests=true
   - cd ../bus-cache && mvn install -DskipTests=true
+  - cd ../bus-auth && mvn install -DskipTests=true
   - cd ../bus-gitlab && mvn install -DskipTests=true
   - cd ../bus-health && mvn install -DskipTests=true
   - cd ../bus-http && mvn install -DskipTests=true
@@ -29,7 +30,6 @@ script:
   - cd ../bus-limiter && mvn install -DskipTests=true
   - cd ../bus-mapper && mvn install -DskipTests=true
   - cd ../bus-notify && mvn install -DskipTests=true
-  - cd ../bus-auth && mvn install -DskipTests=true
   - cd ../bus-office && mvn install -DskipTests=true
   - cd ../bus-pager && mvn install -DskipTests=true
   - cd ../bus-parent && mvn install -DskipTests=true
