@@ -40,7 +40,7 @@ import java.time.temporal.TemporalAmount;
 public class PeriodConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852275598618L;
+    private static final long serialVersionUID = 2852270870935L;
 
     @Override
     protected Period convertInternal(final Class<?> targetClass, final Object value) {

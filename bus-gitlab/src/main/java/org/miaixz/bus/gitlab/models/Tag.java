@@ -36,7 +36,7 @@ import java.io.Serial;
 public class Tag implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232317596L;
+    private static final long serialVersionUID = 2852281821331L;
 
     private Commit commit;
     private String message;

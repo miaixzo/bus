@@ -34,7 +34,7 @@ import java.io.Serial;
 public class GroupHook implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278505675L;
+    private static final long serialVersionUID = 2852256215172L;
 
     private Long id;
     private String url;

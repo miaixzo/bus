@@ -103,7 +103,7 @@ public interface PinyinProvider extends Provider {
      * @return 汉字返回拼音，非汉字原样返回
      */
     default String getFirstLetter(final String str, final String separator) {
-        final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
+        final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.HASH : separator;
         final List<String> split = CharsBacker.split(getPinyin(str, splitSeparator), splitSeparator);
         return CollKit.join(split, separator, (s) -> String.valueOf(!s.isEmpty() ? s.charAt(0) : Normal.EMPTY));
     }

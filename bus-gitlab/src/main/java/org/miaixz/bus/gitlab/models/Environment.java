@@ -40,7 +40,7 @@ import java.io.Serial;
 public class Environment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260587576L;
+    private static final long serialVersionUID = 2852252558305L;
     private String tier;
 
     private Long id;

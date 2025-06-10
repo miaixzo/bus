@@ -43,7 +43,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class AnalysisWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852282570318L;
+    private static final long serialVersionUID = 2852285660095L;
 
     private final Attribute word;
 

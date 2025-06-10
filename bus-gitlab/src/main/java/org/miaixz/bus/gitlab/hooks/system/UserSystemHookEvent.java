@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class UserSystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852267173390L;
+    private static final long serialVersionUID = 2852229925117L;
 
     public static final String USER_CREATE_EVENT = "user_create";
     public static final String USER_DESTROY_EVENT = "user_destroy";

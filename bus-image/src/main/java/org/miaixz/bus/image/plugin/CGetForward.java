@@ -179,7 +179,7 @@ public class CGetForward implements AutoCloseable {
 
         class AbortException extends IllegalStateException {
             @Serial
-            private static final long serialVersionUID = 2852259062120L;
+            private static final long serialVersionUID = 2852291915160L;
 
             public AbortException(String s) {
                 super(s);

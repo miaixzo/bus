@@ -34,7 +34,7 @@ import java.util.function.BiFunction;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * BiFunctionX
+ * 可序列化的BiFunction接口，支持异常抛出和函数组合。
  *
  * @param <T> 参数1的类型
  * @param <U> 参数2的类型
@@ -46,21 +46,22 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface BiFunctionX<T, U, R> extends BiFunction<T, U, R>, Serializable {
 
     /**
-     * Applies this function to the given arguments.
+     * 对给定两个参数应用此函数，可能抛出异常。
      *
-     * @param t the first function argument
-     * @param u the second function argument
-     * @return the function result
-     * @throws Exception wrapped checked exception
+     * @param t 第一个函数参数
+     * @param u 第二个函数参数
+     * @return 函数执行结果
+     * @throws Throwable 可能抛出的异常
      */
     R applying(T t, U u) throws Throwable;
 
     /**
-     * Applies this function to the given arguments.
+     * 对给定两个参数应用此函数，自动处理异常。
      *
-     * @param t the first function argument
-     * @param u the second function argument
-     * @return the function result
+     * @param t 第一个函数参数
+     * @param u 第二个函数参数
+     * @return 函数执行结果
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default R apply(final T t, final U u) {
@@ -72,14 +73,12 @@ public interface BiFunctionX<T, U, R> extends BiFunction<T, U, R>, Serializable 
     }
 
     /**
-     * Returns a composed function that first applies this function to its input, and then applies the {@code after}
-     * function to the result. If evaluation of either function throws an exception, it is relayed to the caller of the
-     * composed function.
+     * 返回一个组合函数，先应用此函数，再将结果传递给after函数。
      *
-     * @param <V>   the type of output of the {@code after} function, and of the composed function
-     * @param after the function to apply after this function is applied
-     * @return a composed function that first applies this function and then applies the {@code after} function
-     * @throws NullPointerException if after is null
+     * @param <V>   after函数输出类型及组合函数的输出类型
+     * @param after 在此函数应用后执行的函数
+     * @return 组合函数，先应用此函数再应用after函数
+     * @throws NullPointerException 如果after为null
      */
     default <V> BiFunctionX<T, U, V> andThen(final FunctionX<? super R, ? extends V> after) {
         Objects.requireNonNull(after);

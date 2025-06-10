@@ -38,7 +38,7 @@ import java.io.Serial;
 public class ForbiddenException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852269505731L;
+    private static final long serialVersionUID = 2852255638020L;
 
     /**
      * 构造

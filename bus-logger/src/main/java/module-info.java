@@ -36,12 +36,12 @@ module bus.logger {
     requires java.logging;
     requires bus.core;
 
-    requires static org.jboss.logging;
-    requires static org.apache.commons.logging;
-    requires static org.apache.logging.log4j;
-    requires static org.slf4j;
-    requires static org.tinylog.api;
-    requires static ch.qos.logback.classic;
+    requires org.jboss.logging;
+    requires org.apache.commons.logging;
+    requires org.apache.logging.log4j;
+    requires org.slf4j;
+    requires org.tinylog.api;
+    requires ch.qos.logback.classic;
 
     exports org.miaixz.bus.logger;
     exports org.miaixz.bus.logger.magic;

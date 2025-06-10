@@ -27,72 +27,112 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.Context;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.mapper.handler.MybatisHandler;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.handler.MapperHandler;
 import org.miaixz.bus.mapper.handler.MybatisInterceptor;
-import org.miaixz.bus.pager.handler.ExplainSqlMapperHandler;
-import org.miaixz.bus.pager.handler.NatureSqlMapperHandler;
-import org.miaixz.bus.pager.handler.PageSqlMapperHandler;
+import org.miaixz.bus.pager.handler.OperationHandler;
+import org.miaixz.bus.pager.handler.PaginationHandler;
+import org.miaixz.bus.pager.handler.TenantHandler;
+import org.miaixz.bus.pager.handler.TenantProvider;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
-import org.miaixz.bus.starter.sensitive.SensitiveProperties;
-import org.miaixz.bus.starter.sensitive.SensitiveResultSetHandler;
-import org.miaixz.bus.starter.sensitive.SensitiveStatementHandler;
 import org.springframework.core.env.Environment;
 
 /**
- * mapper 插件启用
+ * MyBatis 插件构建器，负责初始化并配置 MyBatis 拦截器及其处理器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MybatisPluginBuilder {
 
+    /**
+     * 构建并配置 MyBatis 拦截器
+     *
+     * @param environment Spring 环境对象，用于获取配置
+     * @return 配置好的 MyBatis 拦截器
+     */
     public static MybatisInterceptor build(Environment environment) {
-        List<MybatisHandler> list = ListKit.of(new NatureSqlMapperHandler(), new ExplainSqlMapperHandler());
+        List<MapperHandler> handlers = new ArrayList<>();
+        handlers.add(new OperationHandler());
 
         if (ObjectKit.isNotEmpty(environment)) {
-            MybatisProperties mybatisProperties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
-                    GeniusBuilder.MYBATIS);
-            if (ObjectKit.isNotEmpty(mybatisProperties)) {
-                Properties p = new Properties();
-                p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
-                p.setProperty("reasonable", mybatisProperties.getReasonable());
-                p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
-                p.setProperty("params", mybatisProperties.getParams());
-
-                PageSqlMapperHandler pageSqlHandler = new PageSqlMapperHandler();
-                pageSqlHandler.setProperties(p);
-                list.add(pageSqlHandler);
-            }
-
-            SensitiveProperties sensitiveProperties = PlaceHolderBinder.bind(environment, SensitiveProperties.class,
-                    GeniusBuilder.SENSITIVE);
-            if (ObjectKit.isNotEmpty(sensitiveProperties)) {
-                Properties p = new Properties();
-                p.setProperty("debug", String.valueOf(sensitiveProperties.isDebug()));
-                p.setProperty("key", sensitiveProperties.getDecrypt().getKey());
-                p.setProperty("type", sensitiveProperties.getDecrypt().getType());
-                // 数据解密脱敏
-                SensitiveResultSetHandler sensitiveResultSetHandler = new SensitiveResultSetHandler();
-                sensitiveResultSetHandler.setProperties(p);
-                // list.add(sensitiveResultSetHandler);
-                p.setProperty("key", sensitiveProperties.getEncrypt().getKey());
-                p.setProperty("type", sensitiveProperties.getEncrypt().getType());
-                // 数据脱敏加密
-                SensitiveStatementHandler sensitiveStatementHandler = new SensitiveStatementHandler();
-                sensitiveStatementHandler.setProperties(p);
-                // list.add(sensitiveStatementHandler);
-            }
+            configureMybatisProperties(environment, handlers);
+            configureTenantProperties(environment, handlers);
         }
 
-        MybatisInterceptor mybatisInterceptor = new MybatisInterceptor();
-        mybatisInterceptor.setInterceptors(list);
-        return mybatisInterceptor;
+        MybatisInterceptor interceptor = new MybatisInterceptor();
+        interceptor.setHandlers(handlers);
+        return interceptor;
+    }
+
+    /**
+     * 配置 MyBatis 相关属性，添加分页处理器
+     *
+     * @param environment Spring 环境对象
+     * @param handlers    处理器列表
+     */
+    private static void configureMybatisProperties(Environment environment, List<MapperHandler> handlers) {
+        MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
+                GeniusBuilder.MYBATIS);
+        if (ObjectKit.isNotEmpty(properties)) {
+            Properties props = new Properties();
+            props.setProperty("autoDelimitKeywords", properties.getAutoDelimitKeywords());
+            props.setProperty("reasonable", properties.getReasonable());
+            props.setProperty("supportMethodsArguments", properties.getSupportMethodsArguments());
+            props.setProperty("params", properties.getParams());
+
+            PaginationHandler paginationHandler = new PaginationHandler();
+            paginationHandler.setProperties(props);
+            handlers.add(paginationHandler);
+        }
+    }
+
+    /**
+     * 配置多租户相关属性，添加多租户处理器
+     *
+     * @param environment Spring 环境对象
+     * @param handlers    处理器列表
+     */
+    private static void configureTenantProperties(Environment environment, List<MapperHandler> handlers) {
+        MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
+                GeniusBuilder.MYBATIS);
+        if (ObjectKit.isNotEmpty(properties.getConfigurationProperties())
+                && ObjectKit.isNotEmpty(properties.getConfigurationProperties().get("tenant.column"))) {
+            Logger.info("Enable multi-tenant support, all database operations will include tenant ID support.");
+            TenantHandler tenantHandler = new TenantHandler();
+            tenantHandler.setProvider(new TenantProvider() {
+                @Override
+                public String getColumn() {
+                    // 租户id,默认tenant_id
+                    return Context.INSTANCE.getProperty("tenant.column", "tenant_id");
+                }
+
+                @Override
+                public boolean ignore(String name) {
+                    // 忽略租户隔离主表
+                    String prefix = Context.INSTANCE.getProperty(Args.TABLE_PREFIX_KEY, Normal.EMPTY);
+                    String ignoreTables = Context.INSTANCE.getProperty("tenant.ignore", "tenant");
+                    // 分割 tenant.ignore 的值并加上前缀
+                    List<String> ignoreTableList = Arrays.stream(ignoreTables.split(Symbol.COMMA))
+                            .map(table -> prefix + table.trim()).collect(Collectors.toList());
+                    return ignoreTableList.contains(name);
+                }
+            });
+
+            handlers.add(tenantHandler);
+        }
     }
 
 }

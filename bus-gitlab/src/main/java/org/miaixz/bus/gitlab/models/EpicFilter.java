@@ -48,7 +48,7 @@ import java.io.Serial;
 public class EpicFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260800820L;
+    private static final long serialVersionUID = 2852252738550L;
 
     private Long authorId;
     private String authorUsername;

@@ -47,7 +47,7 @@ import org.miaixz.bus.core.lang.ref.WeakObject;
 public class WeakKeyConcurrentMap<K, V> extends ReferenceConcurrentMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852236770820L;
+    private static final long serialVersionUID = 2852278616531L;
 
     /**
      * 构造

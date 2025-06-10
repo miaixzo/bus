@@ -63,7 +63,7 @@ import org.miaixz.bus.setting.Setting;
 public final class Props extends java.util.Properties implements TypeGetter<CharSequence> {
 
     @Serial
-    private static final long serialVersionUID = 2852227856621L;
+    private static final long serialVersionUID = 2852230820065L;
 
     /**
      * 配置文件缓存
@@ -223,7 +223,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     public static void parse(Map<String, Object> result, String content) {
         String[] lines = content.split("\n");
         for (String line : lines) {
-            if (StringKit.isBlank(line) || line.startsWith(Symbol.SHAPE) || line.indexOf(Symbol.EQUAL) < 0) {
+            if (StringKit.isBlank(line) || line.startsWith(Symbol.HASH) || line.indexOf(Symbol.EQUAL) < 0) {
                 continue;
             }
             // 考虑 value包含=的情况

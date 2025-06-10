@@ -57,7 +57,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class WordTree extends HashMap<Character, WordTree> {
 
     @Serial
-    private static final long serialVersionUID = 2852271333231L;
+    private static final long serialVersionUID = 2852235672251L;
 
     /**
      * 单词字符末尾标识，用于标识单词末尾字符

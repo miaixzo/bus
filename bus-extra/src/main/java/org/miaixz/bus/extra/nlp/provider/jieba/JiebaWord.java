@@ -42,7 +42,7 @@ import com.huaban.analysis.jieba.SegToken;
 public class JiebaWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852285756712L;
+    private static final long serialVersionUID = 2852286255273L;
 
     private final SegToken segToken;
 

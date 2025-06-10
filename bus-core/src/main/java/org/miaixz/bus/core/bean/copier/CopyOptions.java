@@ -56,7 +56,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CopyOptions implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852290705925L;
+    private static final long serialVersionUID = 2852291736328L;
 
     /**
      * 限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类 如果目标对象是Map，源对象是Bean，则作用于源对象上

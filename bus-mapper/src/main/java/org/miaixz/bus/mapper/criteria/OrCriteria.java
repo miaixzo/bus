@@ -669,7 +669,7 @@ public class OrCriteria<T> extends Criteria<T> {
     }
 
     /**
-     * 条件添加任意 OR 条件，需防止 SQL 注入
+     * 条件添加任意 OR 条件
      *
      * @param useCondition 是否启用条件
      * @param condition    自定义条件，如 length(name) &lt; 5
@@ -680,7 +680,7 @@ public class OrCriteria<T> extends Criteria<T> {
     }
 
     /**
-     * 添加任意 OR 条件，需防止 SQL 注入
+     * 添加任意 OR 条件
      *
      * @param condition 自定义条件，如 length(name) &lt; 5
      * @return 当前 OR 条件对象
@@ -691,7 +691,7 @@ public class OrCriteria<T> extends Criteria<T> {
     }
 
     /**
-     * 条件添加自定义 OR 条件和值，需防止 SQL 注入
+     * 条件添加自定义 OR 条件和值
      *
      * @param useCondition 是否启用条件
      * @param condition    自定义条件，如 length(name)=
@@ -703,7 +703,7 @@ public class OrCriteria<T> extends Criteria<T> {
     }
 
     /**
-     * 添加自定义 OR 条件和值，需防止 SQL 注入
+     * 添加自定义 OR 条件和值
      *
      * @param condition 自定义条件，如 length(name)=
      * @param value     值，如 5

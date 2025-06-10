@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.XmlKit;
 public class StringConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852277181502L;
+    private static final long serialVersionUID = 2852271992351L;
 
     private Map<Class<?>, Function<Object, String>> stringer;
 

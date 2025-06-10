@@ -35,8 +35,8 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
- * 接收一个字节流 使用这个接口可以在任何地方编写数据 需要:到网络、存储器或内存中的缓冲区 水槽可以分层 转换接收到的数据,如压缩、加密、节流或添加协议框架
- * {@link BufferSink#outputStream}使一个接收器适应{@code outputStream}
+ * 字节流接收器接口，用于将数据写入目标（如网络、存储或内存缓冲区）。 支持分层处理以转换数据（如压缩、加密、节流或协议框架）。 通过 {@link BufferSink#outputStream} 可适配为
+ * {@code OutputStream}。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,26 +44,33 @@ import org.miaixz.bus.core.io.timout.Timeout;
 public interface Sink extends Closeable, Flushable {
 
     /**
-     * Removes {@code byteCount} bytes from {@code source} and appends them to this.
+     * 从源读取指定字节数并写入当前接收器。
+     *
+     * @param source    数据源缓冲区
+     * @param byteCount 要读取的字节数
+     * @throws IOException 如果读取或写入失败
      */
     void write(Buffer source, long byteCount) throws IOException;
 
     /**
-     * Pushes all buffered bytes to their final destination.
+     * 将缓冲区中的所有数据推送到最终目标。
+     *
+     * @throws IOException 如果刷新失败
      */
     @Override
     void flush() throws IOException;
 
     /**
-     * Returns the timeout for this sink.
+     * 获取接收器的超时配置。
      *
-     * @return the {@link Timeout}
+     * @return 超时对象
      */
     Timeout timeout();
 
     /**
-     * Pushes all buffered bytes to their final destination and releases the resources held by this sink. It is an error
-     * to write a closed sink. It is safe to close a sink more than once.
+     * 推送缓冲数据到最终目标并释放资源。关闭后不可再次写入，可安全多次关闭。
+     *
+     * @throws IOException 如果关闭失败
      */
     @Override
     void close() throws IOException;

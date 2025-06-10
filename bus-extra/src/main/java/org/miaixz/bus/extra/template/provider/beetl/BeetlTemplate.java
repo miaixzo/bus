@@ -44,7 +44,7 @@ import org.miaixz.bus.extra.template.Template;
 public class BeetlTemplate implements Template, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256952960L;
+    private static final long serialVersionUID = 2852288593976L;
 
     private final org.beetl.core.Template rawTemplate;
 

@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * BiConsumerX
+ * 可序列化的BiConsumer接口，支持异常抛出和多个消费者组合。
  *
  * @param <T> 第一个参数类型
  * @param <U> 第二个参数类型
@@ -46,12 +46,12 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
 
     /**
-     * multi
+     * 组合多个BiConsumerX实例，按顺序执行。
      *
-     * @param consumers lambda
-     * @param <T>       type
-     * @param <U>       return type
-     * @return lambda
+     * @param consumers 要组合的BiConsumerX实例
+     * @param <T>       第一个参数类型
+     * @param <U>       第二个参数类型
+     * @return 组合后的BiConsumerX实例
      */
     @SafeVarargs
     static <T, U> BiConsumerX<T, U> multi(final BiConsumerX<T, U>... consumers) {
@@ -60,11 +60,11 @@ public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
     }
 
     /**
-     * 什么也不做，用于一些需要传入lambda的方法占位使用
+     * 返回一个空操作的BiConsumerX，用于占位。
      *
-     * @param <T> 参数1类型
-     * @param <U> 参数2类型
-     * @return 什么也不做
+     * @param <T> 第一个参数类型
+     * @param <U> 第二个参数类型
+     * @return 空操作的BiConsumerX实例
      */
     static <T, U> BiConsumerX<T, U> nothing() {
         return (l, r) -> {
@@ -72,19 +72,20 @@ public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
     }
 
     /**
-     * Performs this operation on the given arguments.
+     * 对给定的两个参数执行操作，可能抛出异常。
      *
-     * @param t the first input argument
-     * @param u the second input argument
-     * @throws Exception wrapped checked exception for easy using
+     * @param t 第一个输入参数
+     * @param u 第二个输入参数
+     * @throws Throwable 可能抛出的异常
      */
     void accepting(T t, U u) throws Throwable;
 
     /**
-     * Performs this operation on the given arguments.
+     * 对给定的两个参数执行操作，自动处理异常。
      *
-     * @param t the first input argument
-     * @param u the second input argument
+     * @param t 第一个输入参数
+     * @param u 第二个输入参数
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default void accept(final T t, final U u) {
@@ -96,14 +97,11 @@ public interface BiConsumerX<T, U> extends BiConsumer<T, U>, Serializable {
     }
 
     /**
-     * Returns a composed {@code SerBiCons} that performs, in sequence, this operation followed by the {@code after}
-     * operation. If performing either operation throws an exception, it is relayed to the caller of the composed
-     * operation. If performing this operation throws an exception, the {@code after} operation will not be performed.
+     * 返回一个组合的BiConsumerX，先执行当前操作，再执行after操作。
      *
-     * @param after the operation to perform after this operation
-     * @return a composed {@code SerBiCons} that performs in sequence this operation followed by the {@code after}
-     *         operation
-     * @throws NullPointerException if {@code after} is null
+     * @param after 在当前操作后执行的操作
+     * @return 组合后的BiConsumerX实例，按顺序执行当前操作和after操作
+     * @throws NullPointerException 如果after为null
      */
     default BiConsumerX<T, U> andThen(final BiConsumerX<? super T, ? super U> after) {
         Objects.requireNonNull(after);

@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Membership implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283375736L;
+    private static final long serialVersionUID = 2852261832007L;
 
     private Long sourceId;
     private String sourceName;

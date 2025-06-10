@@ -51,7 +51,7 @@ import java.io.Serial;
 public class IssueFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279759531L;
+    private static final long serialVersionUID = 2852257636989L;
 
     /**
      * Return only the issues having the given iid.

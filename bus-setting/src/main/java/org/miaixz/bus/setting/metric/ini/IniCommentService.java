@@ -53,7 +53,7 @@ public class IniCommentService extends AbstractElement implements IniComment {
      * @return the object
      */
     public static IniCommentService byValue(String value, int lineNumber) {
-        return new IniCommentService(value, Symbol.C_SHAPE + value, lineNumber);
+        return new IniCommentService(value, Symbol.C_HASH + value, lineNumber);
     }
 
     /**

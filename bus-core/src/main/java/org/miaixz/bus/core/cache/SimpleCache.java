@@ -59,7 +59,7 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291673150L;
+    private static final long serialVersionUID = 2852230051852L;
 
     /**
      * 写的时候每个key一把锁，降低锁的粒度

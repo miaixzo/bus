@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 public abstract class AbstractFileCache implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291791191L;
+    private static final long serialVersionUID = 2852230175903L;
 
     /**
      * 容量

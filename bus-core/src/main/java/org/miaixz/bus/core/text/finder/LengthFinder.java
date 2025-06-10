@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class LengthFinder extends TextFinder {
 
     @Serial
-    private static final long serialVersionUID = 2852273780181L;
+    private static final long serialVersionUID = 2852236815139L;
 
     private final int length;
 

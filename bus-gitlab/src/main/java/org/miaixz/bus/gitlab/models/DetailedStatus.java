@@ -38,7 +38,7 @@ import java.io.Serial;
 public class DetailedStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259723568L;
+    private static final long serialVersionUID = 2852251323553L;
 
     private String icon;
     private String text;

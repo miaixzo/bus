@@ -38,7 +38,7 @@ import lombok.ToString;
 public class BusinessException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852268267696L;
+    private static final long serialVersionUID = 2852252217177L;
 
     /**
      * 构造

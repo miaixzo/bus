@@ -35,7 +35,7 @@ import java.io.Serial;
 public class WikiPage implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235129679L;
+    private static final long serialVersionUID = 2852283502293L;
 
     private String title;
     private String content;

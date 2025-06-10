@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents common information about an installed application across different operating systems. This class provides
@@ -40,11 +42,17 @@ import java.util.Map;
  */
 public class ApplicationInfo {
 
-    /** The name of the application. */
+    /**
+     * The name of the application.
+     */
     private final String name;
-    /** The version of the application. */
+    /**
+     * The version of the application.
+     */
     private final String version;
-    /** The vendor or publisher of the application. */
+    /**
+     * The vendor or publisher of the application.
+     */
     private final String vendor;
     /**
      * The installation or last modified timestamp of the application in milliseconds since epoch. This represents the
@@ -72,7 +80,7 @@ public class ApplicationInfo {
         this.version = version;
         this.vendor = vendor;
         this.timestamp = timestamp;
-        this.additionalInfo = additionalInfo != null ? new HashMap<>(additionalInfo) : new HashMap<>();
+        this.additionalInfo = additionalInfo != null ? new LinkedHashMap<>(additionalInfo) : Collections.emptyMap();
     }
 
     /**
@@ -125,6 +133,24 @@ public class ApplicationInfo {
      */
     public Map<String, String> getAdditionalInfo() {
         return additionalInfo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ApplicationInfo)) {
+            return false;
+        }
+        ApplicationInfo that = (ApplicationInfo) o;
+        return timestamp == that.timestamp && Objects.equals(name, that.name) && Objects.equals(version, that.version)
+                && Objects.equals(vendor, that.vendor) && Objects.equals(additionalInfo, that.additionalInfo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, version, vendor, timestamp, additionalInfo);
     }
 
     @Override

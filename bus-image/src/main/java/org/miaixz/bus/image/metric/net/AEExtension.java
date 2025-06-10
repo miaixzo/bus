@@ -37,7 +37,7 @@ import java.io.Serializable;
 public class AEExtension implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267271920L;
+    private static final long serialVersionUID = 2852269683081L;
 
     protected ApplicationEntity ae;
 

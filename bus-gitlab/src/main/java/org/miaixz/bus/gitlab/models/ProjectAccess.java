@@ -35,7 +35,7 @@ import java.io.Serial;
 public class ProjectAccess implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288398256L;
+    private static final long serialVersionUID = 2852270701671L;
 
     private AccessLevel accessLevel;
     private int notificationLevel;

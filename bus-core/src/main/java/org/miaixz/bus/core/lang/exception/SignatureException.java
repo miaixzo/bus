@@ -38,7 +38,7 @@ import java.io.Serial;
 public class SignatureException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852273173232L;
+    private static final long serialVersionUID = 2852263991233L;
 
     /**
      * 构造

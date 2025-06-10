@@ -43,7 +43,7 @@ import java.util.NoSuchElementException;
 public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852292695558L;
+    private static final long serialVersionUID = 2852231183370L;
 
     private final Iterator<CacheObject<K, V>> iterator;
     private CacheObject<K, V> nextValue;

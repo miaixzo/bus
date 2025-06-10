@@ -36,7 +36,7 @@ import java.io.Serial;
 public class CompareResults implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258299955L;
+    private static final long serialVersionUID = 2852250376909L;
 
     private Commit commit;
     private List<Commit> commits;;

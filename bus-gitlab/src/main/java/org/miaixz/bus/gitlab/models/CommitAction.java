@@ -45,7 +45,7 @@ import java.io.Serial;
 public class CommitAction implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257630651L;
+    private static final long serialVersionUID = 2852239693533L;
 
     public CommitAction withFileContent(String filePath, Encoding encoding) {
         File file = new File(filePath);

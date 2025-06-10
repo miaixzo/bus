@@ -40,8 +40,8 @@ module bus.core {
     requires java.desktop;
     requires java.management;
 
-    requires static lombok;
-    requires static jakarta.persistence;
+    requires lombok;
+    requires jakarta.persistence;
 
     exports org.miaixz.bus.core;
     exports org.miaixz.bus.core.basic.advice;

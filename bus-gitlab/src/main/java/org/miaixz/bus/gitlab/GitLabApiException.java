@@ -47,7 +47,7 @@ import java.io.Serial;
 public class GitLabApiException extends Exception {
 
     @Serial
-    private static final long serialVersionUID = 2852259803210L;
+    private static final long serialVersionUID = 2852289982699L;
 
     private StatusType statusInfo;
     private int httpStatus;

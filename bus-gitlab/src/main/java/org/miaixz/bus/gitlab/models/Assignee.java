@@ -33,7 +33,7 @@ import java.io.Serial;
 public class Assignee extends AbstractUser<Assignee> {
 
     @Serial
-    private static final long serialVersionUID = 2852255611157L;
+    private static final long serialVersionUID = 2852237318105L;
 
     @Override
     public String toString() {

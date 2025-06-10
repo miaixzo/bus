@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852237617751L;
+    private static final long serialVersionUID = 2852280238812L;
 
     private final Map<E, Boolean> m; // The backing map
     private transient Set<E> s; // Its keySet

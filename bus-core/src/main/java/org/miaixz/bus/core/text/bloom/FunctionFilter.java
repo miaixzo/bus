@@ -39,7 +39,7 @@ import java.util.function.Function;
 public class FunctionFilter extends AbstractFilter {
 
     @Serial
-    private static final long serialVersionUID = 2852270796835L;
+    private static final long serialVersionUID = 2852235578011L;
 
     private final Function<String, Number> hashFunc;
 

@@ -33,7 +33,7 @@ import java.io.Serial;
 public class Email implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260505187L;
+    private static final long serialVersionUID = 2852252307991L;
 
     private Long id;
     private String email;

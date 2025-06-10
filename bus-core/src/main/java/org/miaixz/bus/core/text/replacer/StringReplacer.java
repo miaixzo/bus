@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public abstract class StringReplacer implements UnaryOperator<CharSequence>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282073111L;
+    private static final long serialVersionUID = 2852239827580L;
 
     /**
      * 抽象的字符串替换方法，通过传入原字符串和当前位置，执行替换逻辑，返回处理或替换的字符串长度部分。

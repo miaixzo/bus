@@ -39,7 +39,7 @@ import java.util.Optional;
 public class OptionalConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852273823908L;
+    private static final long serialVersionUID = 2852269912870L;
 
     @Override
     protected Optional<?> convertInternal(final Class<?> targetClass, final Object value) {

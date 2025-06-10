@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Topic implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232900675L;
+    private static final long serialVersionUID = 2852282103059L;
 
     private Integer id;
 

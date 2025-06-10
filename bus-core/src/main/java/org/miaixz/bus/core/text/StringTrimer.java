@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852269830267L;
+    private static final long serialVersionUID = 2852235152928L;
 
     /**
      * 去除两边空白符

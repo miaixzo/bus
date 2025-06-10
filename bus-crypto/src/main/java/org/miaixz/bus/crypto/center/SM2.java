@@ -78,7 +78,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 public class SM2 extends AbstractCrypto<SM2> {
 
     @Serial
-    private static final long serialVersionUID = 2852269191330L;
+    private static final long serialVersionUID = 2852290382583L;
 
     /**
      * SM2引擎

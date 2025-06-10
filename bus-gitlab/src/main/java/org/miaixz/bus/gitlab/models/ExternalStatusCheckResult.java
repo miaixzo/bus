@@ -35,7 +35,7 @@ import java.io.Serial;
 public class ExternalStatusCheckResult implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276789111L;
+    private static final long serialVersionUID = 2852253955988L;
 
     private Long id;
     private MergeRequest mergeRequest;

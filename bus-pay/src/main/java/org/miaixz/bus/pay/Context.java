@@ -49,7 +49,7 @@ import lombok.Setter;
 public class Context implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288122172L;
+    private static final long serialVersionUID = 2852292391971L;
 
     /**
      * 应用编号

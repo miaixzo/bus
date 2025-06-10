@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Runnable
+ * 可序列化的Runnable接口，支持异常抛出和多个Runnable组合。
  *
  * @author Kimi Liu
  * @see Runnable
@@ -43,32 +43,27 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface RunnableX extends Runnable, Serializable {
 
     /**
-     * multi
+     * 组合多个RunnableX实例，按顺序执行。
      *
-     * @param serRunnableArray lambda
-     * @return lambda
+     * @param serRunnableArray 要组合的RunnableX实例
+     * @return 组合后的RunnableX实例
      */
     static RunnableX multi(final RunnableX... serRunnableArray) {
         return () -> Stream.of(serRunnableArray).forEach(RunnableX::run);
     }
 
     /**
-     * When an object implementing interface {@code Runnable} is used to create a thread, starting the thread causes the
-     * object's {@code run} method to be called in that separately executing thread.
-     * <p>
-     * The general contract of the method {@code run} is that it may take any action whatsoever.
+     * 执行Runnable操作，可能抛出异常。
      *
-     * @throws Exception wrapped checked exception
+     * @throws Throwable 可能抛出的异常
      * @see Thread#run()
      */
     void running() throws Throwable;
 
     /**
-     * When an object implementing interface {@code Runnable} is used to create a thread, starting the thread causes the
-     * object's {@code run} method to be called in that separately executing thread.
-     * <p>
-     * The general contract of the method {@code run} is that it may take any action whatsoever.
+     * 执行Runnable操作，自动处理异常。
      *
+     * @throws RuntimeException 包装后的运行时异常
      * @see Thread#run()
      */
     @Override

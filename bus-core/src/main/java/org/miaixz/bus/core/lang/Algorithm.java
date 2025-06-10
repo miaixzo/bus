@@ -81,7 +81,7 @@ public enum Algorithm {
     /**
      * MD5withRSA
      */
-    MD5withRSA("MD5withRSA"),
+    MD5WITHRSA("MD5withRSA"),
 
     /**
      * 使用SHA-*和RSA的签名算法

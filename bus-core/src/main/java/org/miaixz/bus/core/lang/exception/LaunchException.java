@@ -38,7 +38,7 @@ import java.io.Serial;
 public class LaunchException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852270991057L;
+    private static final long serialVersionUID = 2852260999681L;
 
     /**
      * 构造

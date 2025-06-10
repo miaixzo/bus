@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 public class LRUCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852293035871L;
+    private static final long serialVersionUID = 2852231786866L;
 
     /**
      * 构造 默认无超时

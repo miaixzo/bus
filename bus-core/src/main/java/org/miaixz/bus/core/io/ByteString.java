@@ -55,7 +55,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class ByteString implements Serializable, Comparable<ByteString> {
 
     @Serial
-    private static final long serialVersionUID = 2852280656377L;
+    private static final long serialVersionUID = 2852277011102L;
 
     /**
      * A singleton empty {@code ByteString}.

@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.core;
 
-import java.io.Serializable;
-
 /**
  * 建造者模式接口定义
  *
@@ -36,7 +34,7 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Builder<T> extends Serializable {
+public interface Builder<T> {
 
     /**
      * 构建

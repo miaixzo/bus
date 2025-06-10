@@ -35,7 +35,7 @@ import java.io.Serial;
 public class GitLabCiTemplateElement implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852277922950L;
+    private static final long serialVersionUID = 2852255276995L;
 
     private String key;
     private String name;

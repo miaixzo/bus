@@ -35,7 +35,7 @@ import java.io.Serial;
 public class TimeStats implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232623960L;
+    private static final long serialVersionUID = 2852281923917L;
 
     private Integer timeEstimate;
     private Integer totalTimeSpent;

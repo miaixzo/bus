@@ -37,7 +37,7 @@ import java.io.Serial;
 public class IssuesStatistics implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279969088L;
+    private static final long serialVersionUID = 2852258156052L;
 
     private Statistics statistics;
 
@@ -62,7 +62,7 @@ public class IssuesStatistics implements Serializable {
     public static class Statistics implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852280033600L;
+        private static final long serialVersionUID = 2852258198568L;
 
         private Counts counts;
 
@@ -78,7 +78,7 @@ public class IssuesStatistics implements Serializable {
     public static class Counts implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852280097832L;
+        private static final long serialVersionUID = 2852258280077L;
 
         private Integer all;
         private Integer closed;

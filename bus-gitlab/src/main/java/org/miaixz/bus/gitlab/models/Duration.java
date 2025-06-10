@@ -45,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class Duration implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260379538L;
+    private static final long serialVersionUID = 2852252100196L;
 
     private static final String[] TIME_UNITS = { "mo", "w", "d", "h", "m", "s" };
     private static final int[] TIME_UNIT_MULTIPLIERS = { 60 * 60 * 8 * 5 * 4, // 4 weeks = 1 month

@@ -36,7 +36,7 @@ import java.io.Serial;
 public class PushRules implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852227980729L;
+    private static final long serialVersionUID = 2852276372752L;
 
     private Long id;
     private Long projectId;

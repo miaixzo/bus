@@ -40,7 +40,7 @@ import java.io.Serial;
 public class TopicParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233031509L;
+    private static final long serialVersionUID = 2852282251187L;
 
     private String name;
     private String title;

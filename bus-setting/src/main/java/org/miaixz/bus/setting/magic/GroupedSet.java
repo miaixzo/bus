@@ -57,7 +57,7 @@ import org.miaixz.bus.core.xyz.*;
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
     @Serial
-    private static final long serialVersionUID = 2852251192018L;
+    private static final long serialVersionUID = 2852227976051L;
 
     /**
      * 分组行识别的环绕标记
@@ -221,10 +221,10 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
                 }
                 line = line.trim();
                 // 跳过注释行和空行
-                if (StringKit.isBlank(line) || line.startsWith(Symbol.SHAPE)) {
+                if (StringKit.isBlank(line) || line.startsWith(Symbol.HASH)) {
                     // 空行和注释忽略
                     continue;
-                } else if (line.startsWith(Symbol.BACKSLASH + Symbol.SHAPE)) {
+                } else if (line.startsWith(Symbol.BACKSLASH + Symbol.HASH)) {
                     // 对于值中出现开头为#的字符串，需要转义处理，在此做反转义
                     line = line.substring(1);
                 }

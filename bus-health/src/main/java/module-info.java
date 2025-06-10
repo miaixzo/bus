@@ -39,16 +39,16 @@ module bus.health {
     requires bus.logger;
     requires bus.setting;
 
-    requires static lombok;
-    requires static com.sun.jna;
-    requires static com.sun.jna.platform;
+    requires lombok;
+    requires com.sun.jna;
+    requires com.sun.jna.platform;
 
     opens org.miaixz.bus.health to com.sun.jna;
     opens org.miaixz.bus.health.linux to com.sun.jna;
     opens org.miaixz.bus.health.mac to com.sun.jna;
     opens org.miaixz.bus.health.windows to com.sun.jna;
     opens org.miaixz.bus.health.unix to com.sun.jna;
-    
+
     exports org.miaixz.bus.health;
     exports org.miaixz.bus.health.builtin;
     exports org.miaixz.bus.health.builtin.hardware;

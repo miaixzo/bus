@@ -33,7 +33,7 @@ import java.io.Serial;
 public class ChildEpic extends AbstractEpic<ChildEpic> {
 
     @Serial
-    private static final long serialVersionUID = 2852257116302L;
+    private static final long serialVersionUID = 2852239105250L;
 
     public String toString() {
         return (JacksonJson.toJsonString(this));

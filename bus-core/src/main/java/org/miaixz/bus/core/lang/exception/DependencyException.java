@@ -38,7 +38,7 @@ import java.io.Serial;
 public class DependencyException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852269029799L;
+    private static final long serialVersionUID = 2852253152677L;
 
     /**
      * 构造

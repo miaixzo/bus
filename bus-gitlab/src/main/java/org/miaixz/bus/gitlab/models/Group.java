@@ -41,7 +41,7 @@ import java.io.Serial;
 public class Group extends AbstractGroup<Group> {
 
     @Serial
-    private static final long serialVersionUID = 2852278119771L;
+    private static final long serialVersionUID = 2852255907217L;
 
     public class Statistics {
         private Long storageSize;

@@ -39,7 +39,7 @@ import java.io.Serial;
 public class ProjectStatistics implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289278711L;
+    private static final long serialVersionUID = 2852275036520L;
 
     long commitCount;
     long storageSize;

@@ -116,11 +116,6 @@ public class MybatisProperties {
      */
     private String supportMethodsArguments;
 
-    /**
-     * 支持通过 Mapper 接口参数来传递分页参数
-     */
-    private Provider provider;
-
     public Resource[] resolveMapperLocations() {
         List<Resource> resources = new ArrayList<>();
         if (this.mapperLocations != null) {
@@ -137,32 +132,6 @@ public class MybatisProperties {
         } catch (IOException e) {
             return new Resource[0];
         }
-    }
-
-    /**
-     * 扩展信息
-     */
-    @Getter
-    @Setter
-    public class Provider {
-
-        /**
-         * 默认命名风格
-         */
-        private String naming;
-        /**
-         * 是否仅使用一次缓存
-         */
-        private long useOnce;
-        /**
-         * 缓存初始大小
-         */
-        private long initSize;
-        /**
-         * 主键生成并发
-         */
-        private long concurrency;
-
     }
 
 }

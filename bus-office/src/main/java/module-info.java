@@ -37,13 +37,14 @@ module bus.office {
     requires java.desktop;
 
     requires bus.core;
+    requires bus.logger;
 
-    requires static org.apache.poi.poi;
-    requires static org.apache.poi.ooxml;
-    requires static ofdrw.converter;
-    requires static ofdrw.layout;
-    requires static ofdrw.font;
-    requires static ofdrw.reader;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
+    requires ofdrw.converter;
+    requires ofdrw.layout;
+    requires ofdrw.font;
+    requires ofdrw.reader;
 
     exports org.miaixz.bus.office;
     exports org.miaixz.bus.office.builtin;

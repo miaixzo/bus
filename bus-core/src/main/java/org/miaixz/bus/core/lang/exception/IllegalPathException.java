@@ -38,7 +38,7 @@ import java.io.Serial;
 public class IllegalPathException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852269638068L;
+    private static final long serialVersionUID = 2852255810269L;
 
     /**
      * 构造

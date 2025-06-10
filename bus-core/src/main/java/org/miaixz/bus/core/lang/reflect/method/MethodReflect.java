@@ -83,7 +83,7 @@ public class MethodReflect {
      */
     private static String getUniqueKey(final Method method) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(method.getReturnType().getName()).append(Symbol.C_SHAPE);
+        sb.append(method.getReturnType().getName()).append(Symbol.C_HASH);
         sb.append(method.getName());
         final Class<?>[] parameters = method.getParameterTypes();
         for (int i = 0; i < parameters.length; i++) {

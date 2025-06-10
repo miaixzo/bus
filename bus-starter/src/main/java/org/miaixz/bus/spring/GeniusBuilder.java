@@ -229,9 +229,9 @@ public class GeniusBuilder {
     public static final String NOTIFY = Keys.BUS + Symbol.DOT + "notify";
 
     /**
-     * Bus oauth key
+     * Bus auth key
      */
-    public static final String OAUTH = Keys.BUS + Symbol.DOT + "oauth";
+    public static final String AUTH = Keys.BUS + Symbol.DOT + "auth";
 
     /**
      * Bus office key

@@ -36,7 +36,7 @@ import java.io.Serial;
 public class RegistryRepository implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852228121099L;
+    private static final long serialVersionUID = 2852277202989L;
 
     private Long id;
     private String name;

@@ -37,7 +37,7 @@ import java.io.Serial;
 public class PipelineSchedule implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287752552L;
+    private static final long serialVersionUID = 2852269813738L;
 
     private Long id;
     private String description;

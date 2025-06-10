@@ -35,7 +35,7 @@ import java.io.Serial;
 public class FileUpload implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852277590197L;
+    private static final long serialVersionUID = 2852255128975L;
 
     private String alt;
     private String url;

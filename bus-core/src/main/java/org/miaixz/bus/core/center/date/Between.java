@@ -50,7 +50,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class Between implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852285125850L;
+    private static final long serialVersionUID = 2852233282300L;
 
     /**
      * 开始日期

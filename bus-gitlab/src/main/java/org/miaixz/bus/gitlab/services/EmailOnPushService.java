@@ -36,7 +36,7 @@ import java.io.Serial;
 public class EmailOnPushService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852235671093L;
+    private static final long serialVersionUID = 2852283959961L;
 
     public static final String RECIPIENT_PROP = "recipients";
     public static final String DISABLE_DIFFS_PROP = "disable_diffs";

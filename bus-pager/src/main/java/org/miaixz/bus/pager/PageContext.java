@@ -42,14 +42,14 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.pager.builtin.PageAutoDialect;
-import org.miaixz.bus.pager.builtin.PageMethod;
-import org.miaixz.bus.pager.builtin.PageParams;
+import org.miaixz.bus.pager.binding.PageAutoDialect;
+import org.miaixz.bus.pager.binding.PageMethod;
+import org.miaixz.bus.pager.binding.PageParams;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
-import org.miaixz.bus.pager.parser.CountSqlParser;
-import org.miaixz.bus.pager.plugin.BoundSqlChain;
-import org.miaixz.bus.pager.plugin.BoundSqlHandler;
-import org.miaixz.bus.pager.plugin.PageBoundSqlHandler;
+import org.miaixz.bus.pager.parsing.CountSqlParser;
+import org.miaixz.bus.pager.builder.BoundSqlChainBuilder;
+import org.miaixz.bus.pager.builder.BoundSqlBuilder;
+import org.miaixz.bus.pager.builder.PageBoundSqlBuilder;
 
 /**
  * Mybatis - 通用分页拦截器
@@ -57,11 +57,11 @@ import org.miaixz.bus.pager.plugin.PageBoundSqlHandler;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.Chain {
+public class PageContext extends PageMethod implements Dialect, BoundSqlBuilder.Chain {
 
     private PageParams pageParams;
     private PageAutoDialect autoDialect;
-    private PageBoundSqlHandler pageBoundSqlHandler;
+    private PageBoundSqlBuilder pageBoundSqlBuilder;
     private ForkJoinPool asyncCountService;
 
     @Override
@@ -166,14 +166,14 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
     }
 
     @Override
-    public BoundSql doBoundSql(BoundSqlHandler.Type type, BoundSql boundSql, CacheKey cacheKey) {
+    public BoundSql doBoundSql(BoundSqlBuilder.Type type, BoundSql boundSql, CacheKey cacheKey) {
         Page<Object> localPage = getLocalPage();
-        BoundSqlHandler.Chain chain = localPage != null ? localPage.getChain() : null;
+        BoundSqlBuilder.Chain chain = localPage != null ? localPage.getChain() : null;
         if (chain == null) {
-            BoundSqlHandler boundSqlHandler = localPage != null ? localPage.getBoundSqlInterceptor() : null;
-            BoundSqlHandler.Chain defaultChain = pageBoundSqlHandler != null ? pageBoundSqlHandler.getChain() : null;
+            BoundSqlBuilder boundSqlHandler = localPage != null ? localPage.getBoundSqlInterceptor() : null;
+            BoundSqlBuilder.Chain defaultChain = pageBoundSqlBuilder != null ? pageBoundSqlBuilder.getChain() : null;
             if (boundSqlHandler != null) {
-                chain = new BoundSqlChain(defaultChain, Arrays.asList(boundSqlHandler));
+                chain = new BoundSqlChainBuilder(defaultChain, Arrays.asList(boundSqlHandler));
             } else if (defaultChain != null) {
                 chain = defaultChain;
             }
@@ -192,10 +192,10 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
         setStaticProperties(properties);
         pageParams = new PageParams();
         autoDialect = new PageAutoDialect();
-        pageBoundSqlHandler = new PageBoundSqlHandler();
+        pageBoundSqlBuilder = new PageBoundSqlBuilder();
         pageParams.setProperties(properties);
         autoDialect.setProperties(properties);
-        pageBoundSqlHandler.setProperties(properties);
+        pageBoundSqlBuilder.setProperties(properties);
         // 20180902新增 aggregateFunctions, 允许手动添加聚合函数（影响行数）
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
         // 异步 asyncCountService 并发度设置，这里默认为应用可用的处理器核心数 * 2，更合理的值应该综合考虑数据库服务器的处理能力

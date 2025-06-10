@@ -59,7 +59,7 @@ import org.miaixz.bus.logger.Logger;
 public class ApplicationEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267613723L;
+    private static final long serialVersionUID = 2852269956092L;
 
     private final LinkedHashSet<String> acceptedCallingAETs = new LinkedHashSet<>();
     private final LinkedHashSet<String> otherAETs = new LinkedHashSet<>();

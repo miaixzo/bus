@@ -33,7 +33,7 @@ import java.io.Serial;
 public class Issue extends AbstractIssue {
 
     @Serial
-    private static final long serialVersionUID = 2852279223925L;
+    private static final long serialVersionUID = 2852257231537L;
 
     private Boolean subscribed;
 

@@ -41,7 +41,7 @@ import java.util.Objects;
 public class ImageText implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278982628L;
+    private static final long serialVersionUID = 2852293077169L;
     private String pressText;
     private Color color;
     private Font font;

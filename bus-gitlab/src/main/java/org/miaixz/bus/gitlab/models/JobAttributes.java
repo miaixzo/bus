@@ -38,7 +38,7 @@ import java.io.Serial;
 public class JobAttributes implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280857375L;
+    private static final long serialVersionUID = 2852260015811L;
 
     @JsonProperty("job_variables_attributes")
     private List<JobAttribute> jobAttributes;

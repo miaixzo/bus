@@ -46,7 +46,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852230087258L;
+    private static final long serialVersionUID = 2852268989329L;
 
     /**
      * 构造

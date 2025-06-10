@@ -30,7 +30,6 @@ package org.miaixz.bus.starter.wrapper;
 import java.io.*;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.EscapeKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -59,7 +58,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
     CacheRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         // 从ParameterMap获取参数，并保存以便多次获取
-        Logger.info(Symbol.DELIM, JsonKit.toJsonString(request.getParameterMap()));
+        Logger.info("==> Parameters:{}", JsonKit.toJsonString(request.getParameterMap()));
         // 从InputStream获取参数，并保存以便多次获取
         this.body = IoKit.readBytes(request.getInputStream());
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(

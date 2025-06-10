@@ -37,7 +37,7 @@ import java.io.Serial;
 public class RelatedEpic extends AbstractEpic<RelatedEpic> {
 
     @Serial
-    private static final long serialVersionUID = 2852228390189L;
+    private static final long serialVersionUID = 2852279095069L;
 
     private Boolean startDateIsFixed;
     private Boolean dueDateIsFixed;

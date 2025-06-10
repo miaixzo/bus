@@ -43,7 +43,7 @@ import java.io.Serial;
 public class IssuesStatisticsFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280178610L;
+    private static final long serialVersionUID = 2852258815223L;
 
     private List<String> labels;
     private String milestone;

@@ -45,7 +45,7 @@ import java.io.Serial;
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252051260L;
+    private static final long serialVersionUID = 2852233623053L;
 
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date startDate;

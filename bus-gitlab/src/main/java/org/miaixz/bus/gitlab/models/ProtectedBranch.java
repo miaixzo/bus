@@ -36,7 +36,7 @@ import java.io.Serial;
 public class ProtectedBranch implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852227563555L;
+    private static final long serialVersionUID = 2852275321353L;
 
     private Long id;
     private String name;

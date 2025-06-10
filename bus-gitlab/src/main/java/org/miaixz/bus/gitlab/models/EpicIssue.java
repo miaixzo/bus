@@ -38,7 +38,7 @@ import java.io.Serial;
 public class EpicIssue extends AbstractIssue {
 
     @Serial
-    private static final long serialVersionUID = 2852271712003L;
+    private static final long serialVersionUID = 2852253051692L;
 
     @JsonProperty("_links")
     private Map<String, String> links;

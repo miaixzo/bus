@@ -38,7 +38,7 @@ import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Holder {
+public class Holder implements org.miaixz.bus.core.Holder {
 
     private static final java.security.Provider provider = _createProvider();
     private static boolean useCustomProvider = true;

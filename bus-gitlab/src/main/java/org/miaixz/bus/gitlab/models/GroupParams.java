@@ -42,7 +42,7 @@ import java.io.Serial;
 public class GroupParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278620350L;
+    private static final long serialVersionUID = 2852256333908L;
 
     private String name;
     private String path;

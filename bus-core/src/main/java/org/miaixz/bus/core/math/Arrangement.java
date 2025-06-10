@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.MathKit;
 public class Arrangement implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852238337872L;
+    private static final long serialVersionUID = 2852281592361L;
 
     private final String[] datas;
 

@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class TripletConverter extends ConverterWithRoot implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852277398375L;
+    private static final long serialVersionUID = 2852272275571L;
 
     /**
      * 构造

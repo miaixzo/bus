@@ -39,7 +39,7 @@ import java.io.Serial;
 public class NotificationSettings implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286786389L;
+    private static final long serialVersionUID = 2852266179825L;
     private Level level;
     private String email;
     private Events events;
@@ -98,7 +98,7 @@ public class NotificationSettings implements Serializable {
     public static class Events implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852286895225L;
+        private static final long serialVersionUID = 2852266282729L;
 
         private Boolean newNote;
         private Boolean newIssue;

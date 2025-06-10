@@ -48,7 +48,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class TDEA extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852270709336L;
+    private static final long serialVersionUID = 2852290890720L;
 
     /**
      * 构造，默认DESede/ECB/PKCS5Padding，使用随机密钥

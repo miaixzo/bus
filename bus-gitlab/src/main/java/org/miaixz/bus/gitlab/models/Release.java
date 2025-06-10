@@ -41,7 +41,7 @@ import java.io.Serial;
 public class Release implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852228885713L;
+    private static final long serialVersionUID = 2852279301328L;
 
     private String name;
     private String tagName;

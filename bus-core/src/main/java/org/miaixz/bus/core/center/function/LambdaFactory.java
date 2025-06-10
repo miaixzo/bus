@@ -82,8 +82,7 @@ public class LambdaFactory {
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数<br>
-     * 调用函数相当于执行对应的方法或构造
+     * 根据提供的方法或构造对象，构建对应的Lambda函数 调用函数相当于执行对应的方法或构造
      *
      * @param functionInterfaceType 接受Lambda的函数式接口类型
      * @param executable            方法对象，支持构造器
@@ -95,8 +94,7 @@ public class LambdaFactory {
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数<br>
-     * 调用函数相当于执行对应的方法或构造
+     * 根据提供的方法或构造对象，构建对应的Lambda函数 调用函数相当于执行对应的方法或构造
      *
      * @param <F>                   Function类型
      * @param functionInterfaceType 接受Lambda的函数式接口类型
@@ -115,8 +113,7 @@ public class LambdaFactory {
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数，即通过Lambda函数代理方法或构造<br>
-     * 调用函数相当于执行对应的方法或构造
+     * 根据提供的方法或构造对象，构建对应的Lambda函数，即通过Lambda函数代理方法或构造 调用函数相当于执行对应的方法或构造
      *
      * @param <F>            Function类型
      * @param funcType       接受Lambda的函数式接口类型

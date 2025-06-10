@@ -235,7 +235,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
             // 结束
             return -1;
         }
-        final int ci = line.indexOf(Symbol.C_SHAPE);
+        final int ci = line.indexOf(Symbol.C_HASH);
         if (ci >= 0) {
             // 截取去除注释部分
             // 当注释单独成行，则此行长度为0，跳过，读取下一行

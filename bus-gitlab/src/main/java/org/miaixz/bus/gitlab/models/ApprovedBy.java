@@ -43,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ApprovedBy implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852255061925L;
+    private static final long serialVersionUID = 2852236797551L;
 
     private User user;
     private Group group;

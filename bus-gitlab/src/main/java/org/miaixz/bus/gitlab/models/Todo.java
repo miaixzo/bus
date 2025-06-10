@@ -49,7 +49,7 @@ import java.io.Serial;
 public class Todo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232808573L;
+    private static final long serialVersionUID = 2852282035620L;
 
     private Long id;
     private Project project;

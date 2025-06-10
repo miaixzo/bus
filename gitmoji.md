@@ -14,7 +14,7 @@
 - 🔒️:lock:修复安全问题
 - 🔐:closed_lock_with_key:添加或更新机密
 - 🔖:bookmark:发布/版本标签
-- 🚨:rotating_light:修复编译器/linter 警告
+- 🚨:rotating_light:修复编译器/linter警告
 - 🚧:construction:工作正在进行中
 - 💚:green_heart:修复 CI 构建
 - ⬇️:arrow_down:降级依赖

@@ -44,7 +44,7 @@ import org.miaixz.bus.image.galaxy.data.ValidationResult;
 public class ImageServiceException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852272276556L;
+    private static final long serialVersionUID = 2852276570267L;
 
     private final Attributes rsp;
     private Attributes data;

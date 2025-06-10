@@ -227,7 +227,7 @@ public class DistinguishedNameParser {
         case Symbol.C_PLUS:
         case Symbol.C_LT:
         case Symbol.C_GT:
-        case Symbol.C_SHAPE:
+        case Symbol.C_HASH:
         case Symbol.C_SEMICOLON:
         case Symbol.C_SPACE:
         case Symbol.C_STAR:
@@ -347,7 +347,7 @@ public class DistinguishedNameParser {
             case Symbol.C_DOUBLE_QUOTES:
                 attValue = quotedAV();
                 break;
-            case Symbol.C_SHAPE:
+            case Symbol.C_HASH:
                 attValue = hexAV();
                 break;
             case Symbol.C_PLUS:

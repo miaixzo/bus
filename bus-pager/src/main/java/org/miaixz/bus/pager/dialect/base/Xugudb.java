@@ -36,7 +36,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.builtin.MetaObject;
+import org.miaixz.bus.pager.binding.MetaObject;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**

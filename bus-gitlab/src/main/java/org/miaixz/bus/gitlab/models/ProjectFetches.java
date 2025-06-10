@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class ProjectFetches implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288753591L;
+    private static final long serialVersionUID = 2852271365267L;
     private Fetches fetches;
 
     public Fetches getFetches() {
@@ -58,7 +58,7 @@ public class ProjectFetches implements Serializable {
     public static class DateCount implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852288783257L;
+        private static final long serialVersionUID = 2852271507886L;
 
         private Integer count;
 
@@ -85,7 +85,7 @@ public class ProjectFetches implements Serializable {
     public static class Fetches implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852288827151L;
+        private static final long serialVersionUID = 2852271590601L;
 
         private Integer total;
         private List<DateCount> days;

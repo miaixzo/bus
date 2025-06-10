@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class HL7Exception extends Exception {
 
     @Serial
-    private static final long serialVersionUID = 2852261889083L;
+    private static final long serialVersionUID = 2852263939653L;
 
     public static final String AA = "AA";
     public static final String AR = "AR";

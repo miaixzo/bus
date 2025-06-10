@@ -50,7 +50,7 @@ import lombok.experimental.SuperBuilder;
 public class Tracer extends OAuth2 {
 
     @Serial
-    private static final long serialVersionUID = 2852290052263L;
+    private static final long serialVersionUID = 2852291120377L;
 
     /**
      * 当前主链ID

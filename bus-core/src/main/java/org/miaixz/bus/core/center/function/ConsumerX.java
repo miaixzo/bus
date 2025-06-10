@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Consumer
+ * 可序列化的Consumer接口，支持异常抛出和多个消费者组合。
  *
  * @param <T> 参数类型
  * @author Kimi Liu
@@ -46,11 +46,11 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface ConsumerX<T> extends Consumer<T>, Serializable {
 
     /**
-     * multi
+     * 组合多个ConsumerX实例，按顺序执行。
      *
-     * @param consumers lambda
-     * @param <T>       type
-     * @return lambda
+     * @param consumers 要组合的ConsumerX实例
+     * @param <T>       参数类型
+     * @return 组合后的ConsumerX实例
      */
     @SafeVarargs
     static <T> ConsumerX<T> multi(final ConsumerX<T>... consumers) {
@@ -59,10 +59,10 @@ public interface ConsumerX<T> extends Consumer<T>, Serializable {
     }
 
     /**
-     * nothing
+     * 返回一个空操作的ConsumerX，用于占位。
      *
-     * @param <T> type
-     * @return nothing
+     * @param <T> 参数类型
+     * @return 空操作的ConsumerX实例
      */
     static <T> ConsumerX<T> nothing() {
         return t -> {
@@ -70,17 +70,18 @@ public interface ConsumerX<T> extends Consumer<T>, Serializable {
     }
 
     /**
-     * Performs this operation on the given argument.
+     * 对给定参数执行操作，可能抛出异常。
      *
-     * @param t the input argument
-     * @throws Exception wrapped checked exception
+     * @param t 输入参数
+     * @throws Throwable 可能抛出的异常
      */
     void accepting(T t) throws Throwable;
 
     /**
-     * Performs this operation on the given argument.
+     * 对给定参数执行操作，自动处理异常。
      *
-     * @param t the input argument
+     * @param t 输入参数
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default void accept(final T t) {
@@ -92,14 +93,11 @@ public interface ConsumerX<T> extends Consumer<T>, Serializable {
     }
 
     /**
-     * Returns a composed {@code Consumer} that performs, in sequence, this operation followed by the {@code after}
-     * operation. If performing either operation throws an exception, it is relayed to the caller of the composed
-     * operation. If performing this operation throws an exception, the {@code after} operation will not be performed.
+     * 返回一个组合的ConsumerX，先执行当前操作，再执行after操作。
      *
-     * @param after the operation to perform after this operation
-     * @return a composed {@code Consumer} that performs in sequence this operation followed by the {@code after}
-     *         operation
-     * @throws NullPointerException if {@code after} is null
+     * @param after 在当前操作后执行的操作
+     * @return 组合后的ConsumerX实例，按顺序执行当前操作和after操作
+     * @throws NullPointerException 如果after为null
      */
     default ConsumerX<T> andThen(final ConsumerX<? super T> after) {
         Objects.requireNonNull(after);

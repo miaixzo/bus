@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class VersionCompare extends NullCompare<String> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251011535L;
+    private static final long serialVersionUID = 2852262966591L;
 
     /**
      * 单例

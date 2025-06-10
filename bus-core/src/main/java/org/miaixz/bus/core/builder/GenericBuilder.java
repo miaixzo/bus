@@ -87,7 +87,7 @@ import org.miaixz.bus.core.center.function.Consumer3X;
 public class GenericBuilder<T> implements Builder<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852291576935L;
+    private static final long serialVersionUID = 2852229897009L;
 
     /**
      * 实例化器

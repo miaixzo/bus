@@ -35,7 +35,7 @@ import java.io.Serial;
 public class JobAttribute implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280698293L;
+    private static final long serialVersionUID = 2852259783653L;
 
     private String key;
     private String value;

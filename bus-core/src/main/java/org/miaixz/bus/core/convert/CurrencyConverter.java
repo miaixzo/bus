@@ -39,7 +39,7 @@ import java.util.Currency;
 public class CurrencyConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852259875798L;
+    private static final long serialVersionUID = 2852267872622L;
 
     @Override
     protected Currency convertInternal(final Class<?> targetClass, final Object value) {

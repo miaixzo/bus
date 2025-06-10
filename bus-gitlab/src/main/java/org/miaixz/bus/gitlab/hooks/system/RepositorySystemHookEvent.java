@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852263899112L;
+    private static final long serialVersionUID = 2852227880877L;
 
     public static final String REPOSITORY_UPDATE_EVENT = "repository_update";
 

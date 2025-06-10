@@ -36,7 +36,7 @@ import java.io.Serial;
 public class DownstreamPipeline implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260313130L;
+    private static final long serialVersionUID = 2852251939228L;
 
     private Long id;
     private String sha;

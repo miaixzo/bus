@@ -123,8 +123,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
                         File[] codecs = file.listFiles();
                         if (codecs != null) {
                             for (File codec : codecs) {
-                                if (!codec.isDirectory() && codec.getName().contains(Symbol.SHAPE)) {
-                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf(Symbol.C_SHAPE));
+                                if (!codec.isDirectory() && codec.getName().contains(Symbol.HASH)) {
+                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf(Symbol.C_HASH));
                                     break;
                                 }
                             }

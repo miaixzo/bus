@@ -39,7 +39,7 @@ import java.io.Serial;
 public class ExternalStatusCheckStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276832522L;
+    private static final long serialVersionUID = 2852253997632L;
 
     private Long id;
     private String name;

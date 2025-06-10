@@ -37,7 +37,7 @@ import java.io.Serial;
 public class DeployToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259537371L;
+    private static final long serialVersionUID = 2852251025919L;
 
     private Long id;
     private String name;

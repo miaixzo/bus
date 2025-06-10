@@ -35,7 +35,7 @@ import java.io.Serial;
 public class TreeItem implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233103811L;
+    private static final long serialVersionUID = 2852282298357L;
 
     public enum Type {
         TREE, BLOB, COMMIT;

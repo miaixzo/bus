@@ -52,7 +52,7 @@ import org.thymeleaf.context.Context;
 public class ThymeleafTemplate implements Template, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257811572L;
+    private static final long serialVersionUID = 2852289111659L;
 
     private final TemplateEngine engine;
     private final String template;

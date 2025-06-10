@@ -39,7 +39,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class PipelineEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852251638868L;
+    private static final long serialVersionUID = 2852232997522L;
 
     public static final String X_GITLAB_EVENT = "Pipeline Hook";
     public static final String OBJECT_KIND = "pipeline";

@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public abstract class AbstractConverter implements Converter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257029608L;
+    private static final long serialVersionUID = 2852263159195L;
 
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {

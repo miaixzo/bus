@@ -726,7 +726,7 @@ public class UnoUrl {
         if (null == queryNamesAndValues)
             return null;
         int queryStart = url.indexOf(Symbol.C_QUESTION_MARK) + 1;
-        int queryEnd = org.miaixz.bus.http.Builder.delimiterOffset(url, queryStart, url.length(), Symbol.C_SHAPE);
+        int queryEnd = org.miaixz.bus.http.Builder.delimiterOffset(url, queryStart, url.length(), Symbol.C_HASH);
         return url.substring(queryStart, queryEnd);
     }
 
@@ -907,7 +907,7 @@ public class UnoUrl {
     public String encodedFragment() {
         if (null == fragment)
             return null;
-        int fragmentStart = url.indexOf(Symbol.C_SHAPE) + 1;
+        int fragmentStart = url.indexOf(Symbol.C_HASH) + 1;
         return url.substring(fragmentStart);
     }
 
@@ -1717,7 +1717,7 @@ public class UnoUrl {
             }
 
             if (null != encodedFragment) {
-                result.append(Symbol.C_SHAPE);
+                result.append(Symbol.C_HASH);
                 result.append(encodedFragment);
             }
 
@@ -1789,7 +1789,7 @@ public class UnoUrl {
                     case Symbol.C_SLASH:
                     case Symbol.C_BACKSLASH:
                     case Symbol.C_QUESTION_MARK:
-                    case Symbol.C_SHAPE:
+                    case Symbol.C_HASH:
                         int portColonOffset = portColonOffset(input, pos, componentDelimiterOffset);
                         if (portColonOffset + 1 < componentDelimiterOffset) {
                             host = canonicalizeHost(input, pos, portColonOffset);
@@ -1817,7 +1817,7 @@ public class UnoUrl {
                 this.port = base.port;
                 this.encodedPathSegments.clear();
                 this.encodedPathSegments.addAll(base.encodedPathSegments());
-                if (pos == limit || input.charAt(pos) == Symbol.C_SHAPE) {
+                if (pos == limit || input.charAt(pos) == Symbol.C_HASH) {
                     encodedQuery(base.encodedQuery());
                 }
             }
@@ -1828,13 +1828,13 @@ public class UnoUrl {
 
             if (pos < limit && input.charAt(pos) == Symbol.C_QUESTION_MARK) {
                 int queryDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos, limit,
-                        Symbol.C_SHAPE);
+                        Symbol.C_HASH);
                 this.encodedQueryNamesAndValues = queryStringToNamesAndValues(canonicalize(input, pos + 1,
                         queryDelimiterOffset, QUERY_ENCODE_SET, true, false, true, true, null));
                 pos = queryDelimiterOffset;
             }
 
-            if (pos < limit && input.charAt(pos) == Symbol.C_SHAPE) {
+            if (pos < limit && input.charAt(pos) == Symbol.C_HASH) {
                 this.encodedFragment = canonicalize(input, pos + 1, limit, FRAGMENT_ENCODE_SET, true, false, false,
                         false, null);
             }

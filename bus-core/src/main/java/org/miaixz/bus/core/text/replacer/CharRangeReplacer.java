@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CharRangeReplacer extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852278383022L;
+    private static final long serialVersionUID = 2852238751018L;
 
     private final int beginInclude;
     private final int endExclude;

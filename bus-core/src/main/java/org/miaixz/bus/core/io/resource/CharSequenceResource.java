@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
 public class CharSequenceResource extends BytesResource {
 
     @Serial
-    private static final long serialVersionUID = 2852289555938L;
+    private static final long serialVersionUID = 2852230576091L;
 
     /**
      * 由于{@link java.nio.charset.Charset} 无法序列化，此处使用编码名称

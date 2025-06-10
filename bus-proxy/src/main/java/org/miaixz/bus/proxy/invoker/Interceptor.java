@@ -41,7 +41,7 @@ import org.miaixz.bus.proxy.Aspect;
 public class Interceptor implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250080085L;
+    private static final long serialVersionUID = 2852259600626L;
 
     protected final Object target;
     protected final Aspect aspect;

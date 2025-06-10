@@ -42,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class AwardEmoji implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256190115L;
+    private static final long serialVersionUID = 2852238050300L;
 
     private Long id;
     private String name;

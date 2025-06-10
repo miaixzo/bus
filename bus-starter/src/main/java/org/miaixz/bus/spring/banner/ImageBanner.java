@@ -100,7 +100,7 @@ public class ImageBanner {
         } else if (luminance >= 30) {
             return Symbol.C_EIGHT;
         } else if (luminance >= 20) {
-            return Symbol.C_SHAPE;
+            return Symbol.C_HASH;
         } else {
             return Symbol.C_AT;
         }

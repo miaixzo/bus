@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232699506L;
+    private static final long serialVersionUID = 2852275915009L;
 
     private static final int DEFAULT_CAPACITY = 10;
 

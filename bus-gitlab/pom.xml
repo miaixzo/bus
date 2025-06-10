@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-gitlab</artifactId>
-    <version>8.1.8</version>
+    <version>8.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.1.8</bus.version>
+        <bus.version>8.2.0</bus.version>
         <jersey.version>3.1.10</jersey.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jackson.version>2.19.0</jackson.version>

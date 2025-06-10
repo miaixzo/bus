@@ -58,7 +58,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMark>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280393111L;
+    private static final long serialVersionUID = 2852276768599L;
 
     /**
      * UTF-8 BOM.

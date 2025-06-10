@@ -43,7 +43,7 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 public class Sequence extends ArrayList<Attributes> implements Value {
 
     @Serial
-    private static final long serialVersionUID = 2852233373156L;
+    private static final long serialVersionUID = 2852273702208L;
 
     private final Attributes parent;
     private final String privateCreator;

@@ -38,7 +38,7 @@ import java.io.Serial;
 public class PaymentException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852271905867L;
+    private static final long serialVersionUID = 2852263028577L;
 
     /**
      * 构造

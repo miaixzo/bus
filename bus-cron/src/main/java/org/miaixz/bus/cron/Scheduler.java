@@ -85,7 +85,7 @@ import org.miaixz.bus.setting.Setting;
 public class Scheduler implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852293618198L;
+    private static final long serialVersionUID = 2852287508206L;
 
     private final Lock lock = new ReentrantLock();
 

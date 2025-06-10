@@ -35,7 +35,7 @@ import java.io.Serial;
 public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852263837191L;
+    private static final long serialVersionUID = 2852227399553L;
 
     public static final String PUSH_EVENT = "push";
 

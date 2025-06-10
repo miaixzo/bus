@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Identity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278959236L;
+    private static final long serialVersionUID = 2852256910511L;
 
     private String provider;
     private String externUid;

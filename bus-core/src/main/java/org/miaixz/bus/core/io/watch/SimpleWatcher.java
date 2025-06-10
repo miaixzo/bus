@@ -41,7 +41,7 @@ import java.nio.file.WatchKey;
 public class SimpleWatcher implements Watcher, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852261058752L;
+    private static final long serialVersionUID = 2852236259796L;
 
     @Override
     public void onCreate(final WatchEvent<?> event, final WatchKey key) {

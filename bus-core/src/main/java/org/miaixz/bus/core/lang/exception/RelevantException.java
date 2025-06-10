@@ -42,7 +42,7 @@ import lombok.Setter;
 public class RelevantException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852272538729L;
+    private static final long serialVersionUID = 2852263392627L;
 
     /**
      * 错误码

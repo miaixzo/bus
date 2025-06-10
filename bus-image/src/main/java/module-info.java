@@ -42,9 +42,9 @@ module bus.image {
     requires bus.health;
     requires bus.setting;
 
-    requires static bus.opencv;
-    requires static lombok;
-    requires static jakarta.json;
+    requires bus.opencv;
+    requires lombok;
+    requires jakarta.json;
 
     exports org.miaixz.bus.image;
     exports org.miaixz.bus.image.builtin;

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -28,32 +28,64 @@
 package org.miaixz.bus.pager;
 
 /**
- * 分页结果信息
+ * 扩展MyBatis的RowBounds，添加分页结果信息，如总记录数和是否执行count查询。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RowBounds extends org.apache.ibatis.session.RowBounds {
 
+    /**
+     * 总记录数
+     */
     private Long total;
+    /**
+     * 是否执行count查询
+     */
     private Boolean count;
 
+    /**
+     * 构造函数，指定偏移量和限制数。
+     *
+     * @param offset 起始偏移量
+     * @param limit  每页记录数
+     */
     public RowBounds(int offset, int limit) {
         super(offset, limit);
     }
 
+    /**
+     * 获取总记录数。
+     *
+     * @return 总记录数
+     */
     public Long getTotal() {
         return total;
     }
 
+    /**
+     * 设置总记录数。
+     *
+     * @param total 总记录数
+     */
     public void setTotal(Long total) {
         this.total = total;
     }
 
+    /**
+     * 获取是否执行count查询。
+     *
+     * @return 是否执行count查询
+     */
     public Boolean getCount() {
         return count;
     }
 
+    /**
+     * 设置是否执行count查询。
+     *
+     * @param count 是否执行count查询
+     */
     public void setCount(Boolean count) {
         this.count = count;
     }

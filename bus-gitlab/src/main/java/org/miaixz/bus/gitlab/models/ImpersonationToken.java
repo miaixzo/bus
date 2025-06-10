@@ -42,7 +42,7 @@ import java.io.Serial;
 public class ImpersonationToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279069117L;
+    private static final long serialVersionUID = 2852257073750L;
 
     private String description;
     private Boolean active;

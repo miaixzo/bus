@@ -36,7 +36,7 @@ import java.io.Serial;
 public class User extends AbstractUser<User> {
 
     @Serial
-    private static final long serialVersionUID = 2852233730862L;
+    private static final long serialVersionUID = 2852282972009L;
 
     private String bio;
     private Boolean bot;

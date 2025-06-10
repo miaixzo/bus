@@ -40,7 +40,7 @@ import java.io.Serial;
 public class GroupProjectsFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278795085L;
+    private static final long serialVersionUID = 2852256397389L;
 
     private Boolean archived;
     private Visibility visibility;

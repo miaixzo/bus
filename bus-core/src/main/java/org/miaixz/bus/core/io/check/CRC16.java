@@ -43,7 +43,7 @@ import org.miaixz.bus.core.io.check.crc16.CRC16IBM;
 public class CRC16 implements Checksum, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282785380L;
+    private static final long serialVersionUID = 2852277865069L;
 
     private final CRC16Checksum crc16;
 

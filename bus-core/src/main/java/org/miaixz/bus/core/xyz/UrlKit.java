@@ -221,7 +221,7 @@ public class UrlKit {
      */
     public static URL getURL(final URL url, String relativePath) throws InternalException {
         // # 在文件路径中合法，但是在URL中非法，此处转义
-        relativePath = StringKit.replace(StringKit.removePrefix(relativePath, Symbol.SLASH), Symbol.SHAPE, "%23");
+        relativePath = StringKit.replace(StringKit.removePrefix(relativePath, Symbol.SLASH), Symbol.HASH, "%23");
         try {
             return new URL(url, relativePath);
         } catch (final MalformedURLException e) {

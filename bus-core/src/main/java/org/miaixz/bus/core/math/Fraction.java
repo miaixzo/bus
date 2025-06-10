@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.MathKit;
 public final class Fraction extends Number implements Comparable<Fraction> {
 
     @Serial
-    private static final long serialVersionUID = 2852238858667L;
+    private static final long serialVersionUID = 2852228119600L;
 
     /**
      * {@link Fraction} 表示 0.

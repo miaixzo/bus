@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Namespace implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286689517L;
+    private static final long serialVersionUID = 2852265752716L;
 
     private Long id;
     private String name;

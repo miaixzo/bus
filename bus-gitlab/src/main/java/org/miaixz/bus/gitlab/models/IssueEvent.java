@@ -39,7 +39,7 @@ import java.io.Serial;
 public class IssueEvent implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279599660L;
+    private static final long serialVersionUID = 2852257573191L;
 
     /** Enum to use for specifying the state events resource type. */
     public enum ResourceType {

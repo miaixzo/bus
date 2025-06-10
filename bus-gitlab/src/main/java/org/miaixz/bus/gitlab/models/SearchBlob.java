@@ -35,7 +35,7 @@ import java.io.Serial;
 public class SearchBlob implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231833705L;
+    private static final long serialVersionUID = 2852280850317L;
 
     private String basename;
     private String data;

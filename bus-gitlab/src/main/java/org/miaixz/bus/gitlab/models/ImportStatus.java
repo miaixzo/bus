@@ -40,7 +40,7 @@ import java.io.Serial;
 public class ImportStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279101759L;
+    private static final long serialVersionUID = 2852257150210L;
 
     /**
      * Enum representing the status of the import.

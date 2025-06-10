@@ -308,7 +308,7 @@ public class NumberParser {
             // hex
             radix = 16;
             pos += 2;
-        } else if (text.startsWith(Symbol.SHAPE, pos)) {
+        } else if (text.startsWith(Symbol.HASH, pos)) {
             // alternative hex (allowed by Long/Integer)
             radix = 16;
             pos++;

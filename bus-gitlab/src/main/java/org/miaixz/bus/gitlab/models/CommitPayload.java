@@ -37,7 +37,7 @@ import java.io.Serial;
 public class CommitPayload implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257875699L;
+    private static final long serialVersionUID = 2852239868301L;
 
     private String branch;
     private String commitMessage;

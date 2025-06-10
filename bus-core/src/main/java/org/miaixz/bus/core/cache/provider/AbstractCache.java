@@ -58,7 +58,7 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852292318535L;
+    private static final long serialVersionUID = 2852230739085L;
 
     /**
      * 写的时候每个key一把锁，降低锁的粒度
@@ -117,7 +117,13 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
         // 对于替换的键值对，不做满队列检查和清除
         if (cacheMap.containsKey(mKey)) {
-            // 存在相同key，覆盖之
+            // 1. 先处理旧对象，主动触发监听器释放资源
+            CacheObject<K, V> oldObj = cacheMap.get(mKey);
+            if (oldObj != null) {
+                onRemove(oldObj.key, oldObj.object);
+                cacheMap.remove(mKey);
+            }
+            // 2. 触发监听器和删除旧缓存后，put新对象
             cacheMap.put(mKey, co);
         } else {
             if (isFull()) {

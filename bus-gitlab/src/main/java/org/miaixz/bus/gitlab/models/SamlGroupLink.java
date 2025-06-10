@@ -35,7 +35,7 @@ import java.io.Serial;
 public class SamlGroupLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231763758L;
+    private static final long serialVersionUID = 2852280791389L;
 
     private String name;
 

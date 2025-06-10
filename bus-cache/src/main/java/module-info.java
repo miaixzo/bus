@@ -45,20 +45,20 @@ module bus.cache {
     requires bus.setting;
     requires bus.proxy;
 
-    requires static lombok;
-    requires static jakarta.annotation;
-    requires static spring.jdbc;
-    requires static spring.expression;
-    requires static com.zaxxer.hikari;
-    requires static redis.clients.jedis;
-    requires static xmemcached;
-    requires static zookeeper;
-    requires static hessian;
-    requires static com.google.common;
-    requires static com.google.guice;
-    requires static curator.framework;
-    requires static curator.recipes;
-    requires static curator.client;
+    requires lombok;
+    requires jakarta.annotation;
+    requires spring.jdbc;
+    requires spring.expression;
+    requires com.zaxxer.hikari;
+    requires redis.clients.jedis;
+    requires xmemcached;
+    requires zookeeper;
+    requires hessian;
+    requires com.google.common;
+    requires com.google.guice;
+    requires curator.framework;
+    requires curator.recipes;
+    requires curator.client;
 
     exports org.miaixz.bus.cache;
     exports org.miaixz.bus.cache.magic;

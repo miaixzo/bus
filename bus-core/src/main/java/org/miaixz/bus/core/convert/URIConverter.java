@@ -41,7 +41,7 @@ import java.net.URL;
 public class URIConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852277535229L;
+    private static final long serialVersionUID = 2852272395520L;
 
     @Override
     protected URI convertInternal(final Class<?> targetClass, final Object value) {

@@ -36,7 +36,7 @@ import java.io.Serial;
 public class RegistryRepositoryTag implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852228279597L;
+    private static final long serialVersionUID = 2852277267977L;
 
     private String name;
     private String path;

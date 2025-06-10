@@ -45,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PipelineFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287705261L;
+    private static final long serialVersionUID = 2852269565389L;
 
     /** pipelines, one of: running, pending, finished, branches, tags */
     private PipelineScope scope;

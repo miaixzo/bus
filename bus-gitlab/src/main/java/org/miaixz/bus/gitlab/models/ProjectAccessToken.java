@@ -39,7 +39,7 @@ import java.io.Serial;
 public class ProjectAccessToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288635272L;
+    private static final long serialVersionUID = 2852270950370L;
 
     private Long userId;
     private List<Constants.ProjectAccessTokenScope> scopes;

@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class Iteration implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280233359L;
+    private static final long serialVersionUID = 2852259131760L;
 
     private Long id;
     private Long iid;

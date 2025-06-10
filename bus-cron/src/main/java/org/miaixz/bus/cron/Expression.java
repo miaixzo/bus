@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public final class Expression implements Serializable, Cloneable {
 
     @Serial
-    private static final long serialVersionUID = 2852293019099L;
+    private static final long serialVersionUID = 2852287029125L;
 
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     protected static final int SECOND = 0;
@@ -265,8 +265,8 @@ public final class Expression implements Serializable, Cloneable {
                     throw new ParseException(
                             "Support for specifying 'L' with other days of the week is not implemented", -1);
                 }
-                if (exprOn == DAY_OF_WEEK && expr.indexOf(Symbol.C_SHAPE) != -1
-                        && expr.indexOf(Symbol.C_SHAPE, expr.indexOf(Symbol.C_SHAPE) + 1) != -1) {
+                if (exprOn == DAY_OF_WEEK && expr.indexOf(Symbol.C_HASH) != -1
+                        && expr.indexOf(Symbol.C_HASH, expr.indexOf(Symbol.C_HASH) + 1) != -1) {
                     throw new ParseException("Support for specifying multiple \"nth\" days is not implemented.", -1);
                 }
 
@@ -350,7 +350,7 @@ public final class Expression implements Serializable, Cloneable {
                         if (eval < 0) {
                             throw new ParseException("Invalid Day-of-Week value: '" + sub + "'", i);
                         }
-                    } else if (c == Symbol.C_SHAPE) {
+                    } else if (c == Symbol.C_HASH) {
                         try {
                             i += 4;
                             nthdayOfWeek = Integer.parseInt(s.substring(i));
@@ -529,7 +529,7 @@ public final class Expression implements Serializable, Cloneable {
             return i;
         }
 
-        if (c == Symbol.C_SHAPE) {
+        if (c == Symbol.C_HASH) {
             if (type != DAY_OF_WEEK) {
                 throw new ParseException("'#' option is not valid here. (pos=" + i + ")", i);
             }

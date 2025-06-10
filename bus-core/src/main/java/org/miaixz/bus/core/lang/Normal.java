@@ -535,6 +535,11 @@ public class Normal {
     public static final String EMPTY = "";
 
     /**
+     * 字符串:none
+     */
+    public static final String NONE = "none";
+
+    /**
      * 字符串:null
      */
     public static final String NULL = "null";

@@ -34,7 +34,7 @@ import java.util.function.BiPredicate;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的BiPredicate
+ * 可序列化的BiPredicate接口，支持异常抛出和逻辑组合操作。
  *
  * @param <T> 参数1的类型
  * @param <U> 参数2的类型
@@ -45,21 +45,22 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
 
     /**
-     * Evaluates this predicate on the given arguments.
+     * 对给定的两个参数评估此谓词，可能抛出异常。
      *
-     * @param t the first input argument
-     * @param u the second input argument
-     * @return {@code true} if the input arguments match the predicate, otherwise {@code false}
-     * @throws Exception wrapped checked exception
+     * @param t 第一个输入参数
+     * @param u 第二个输入参数
+     * @return 如果参数匹配谓词返回true，否则返回false
+     * @throws Throwable 可能抛出的异常
      */
     boolean testing(T t, U u) throws Throwable;
 
     /**
-     * Evaluates this predicate on the given arguments.
+     * 对给定的两个参数评估此谓词，自动处理异常。
      *
-     * @param t the first input argument
-     * @param u the second input argument
-     * @return {@code true} if the input arguments match the predicate, otherwise {@code false}
+     * @param t 第一个输入参数
+     * @param u 第二个输入参数
+     * @return 如果参数匹配谓词返回true，否则返回false
+     * @throws RuntimeException 包装后的运行时异常
      */
     @Override
     default boolean test(final T t, final U u) {
@@ -71,18 +72,11 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
     }
 
     /**
-     * Returns a composed predicate that represents a short-circuiting logical AND of this predicate and another. When
-     * evaluating the composed predicate, if this predicate is {@code false}, then the {@code other} predicate is not
-     * evaluated.
+     * 返回一个组合谓词，表示此谓词与另一个谓词的短路逻辑与。如果此谓词为false，则不评估另一个谓词。
      *
-     * <p>
-     * Any exception thrown during evaluation of either predicate are relayed to the caller; if evaluation of this
-     * predicate throws an exception, the {@code other} predicate will not be evaluated.
-     *
-     * @param other a predicate that will be logically-ANDed with this predicate
-     * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the
-     *         {@code other} predicate
-     * @throws NullPointerException if other is null
+     * @param other 与此谓词进行逻辑与的谓词
+     * @return 组合谓词，表示此谓词与other谓词的短路逻辑与
+     * @throws NullPointerException 如果other为null
      */
     default BiPredicateX<T, U> and(final BiPredicateX<? super T, ? super U> other) {
         Objects.requireNonNull(other);
@@ -90,9 +84,9 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
     }
 
     /**
-     * Returns a predicate that represents the logical negation of this predicate.
+     * 返回一个表示此谓词逻辑非的谓词。
      *
-     * @return a predicate that represents the logical negation of this predicate
+     * @return 表示此谓词逻辑非的谓词
      */
     @Override
     default BiPredicateX<T, U> negate() {
@@ -100,18 +94,11 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
     }
 
     /**
-     * Returns a composed predicate that represents a short-circuiting logical OR of this predicate and another. When
-     * evaluating the composed predicate, if this predicate is {@code true}, then the {@code other} predicate is not
-     * evaluated.
+     * 返回一个组合谓词，表示此谓词与另一个谓词的短路逻辑或。如果此谓词为true，则不评估另一个谓词。
      *
-     * <p>
-     * Any exception thrown during evaluation of either predicate are relayed to the caller; if evaluation of this
-     * predicate throws an exception, the {@code other} predicate will not be evaluated.
-     *
-     * @param other a predicate that will be logically-ORed with this predicate
-     * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the
-     *         {@code other} predicate
-     * @throws NullPointerException if other is null
+     * @param other 与此谓词进行逻辑或的谓词
+     * @return 组合谓词，表示此谓词与other谓词的短路逻辑或
+     * @throws NullPointerException 如果other为null
      */
     default BiPredicateX<T, U> or(final BiPredicateX<? super T, ? super U> other) {
         Objects.requireNonNull(other);

@@ -35,7 +35,7 @@ import java.io.Serializable;
 public class AcceptMergeRequestParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252652553L;
+    private static final long serialVersionUID = 2852235380976L;
 
     private String mergeCommitMessage;
     private Boolean mergeWhenPipelineSucceeds;

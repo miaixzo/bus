@@ -924,7 +924,7 @@ public class AntPathMatcher {
             public int getLength() {
                 if (this.length == null) {
                     this.length = (this.pattern != null
-                            ? VARIABLE_PATTERN.matcher(this.pattern).replaceAll(Symbol.SHAPE).length()
+                            ? VARIABLE_PATTERN.matcher(this.pattern).replaceAll(Symbol.HASH).length()
                             : 0);
                 }
                 return this.length;

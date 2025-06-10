@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852290339232L;
+    private static final long serialVersionUID = 2852232202695L;
 
     private final List<Resource> resources;
     private int cursor;

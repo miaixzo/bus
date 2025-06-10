@@ -39,7 +39,7 @@ import java.io.Serial;
 public class RepositoryFile implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852230172893L;
+    private static final long serialVersionUID = 2852280333826L;
 
     private String fileName; // file name only, Ex. class.rb
     private String filePath; // full path to file. Ex. lib/class.rb

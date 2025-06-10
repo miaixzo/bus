@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -35,10 +35,10 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.Dialect;
-import org.miaixz.bus.pager.parser.CountSqlParser;
-import org.miaixz.bus.pager.parser.OrderBySqlParser;
-import org.miaixz.bus.pager.parser.defaults.DefaultCountSqlParser;
-import org.miaixz.bus.pager.parser.defaults.DefaultOrderBySqlParser;
+import org.miaixz.bus.pager.parsing.CountSqlParser;
+import org.miaixz.bus.pager.parsing.OrderBySqlParser;
+import org.miaixz.bus.pager.parsing.DefaultCountSqlParser;
+import org.miaixz.bus.pager.parsing.DefaultOrderBySqlParser;
 
 /**
  * 基于 CountSqlParser 的智能 Count 查询

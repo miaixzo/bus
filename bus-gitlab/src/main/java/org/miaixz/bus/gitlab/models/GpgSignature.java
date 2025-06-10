@@ -35,7 +35,7 @@ import java.io.Serial;
 public class GpgSignature implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278055066L;
+    private static final long serialVersionUID = 2852255356008L;
 
     private Long gpgKeyId;
     private String gpgKeyPrimaryKeyid;

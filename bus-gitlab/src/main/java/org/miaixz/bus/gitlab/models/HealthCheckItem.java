@@ -36,7 +36,7 @@ import java.io.Serial;
 public class HealthCheckItem implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278917787L;
+    private static final long serialVersionUID = 2852256751978L;
 
     private HealthCheckStatus status;
     private Map<String, String> labels;

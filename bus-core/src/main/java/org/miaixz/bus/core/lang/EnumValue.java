@@ -534,7 +534,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         /**
          * 授权
          */
-        OAUTH("OAUTH"),
+        AUTH("AUTH"),
         /**
          * 支付
          */
@@ -584,6 +584,24 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
         BROKEN("broken");
 
         private final String value;
+
+    }
+
+    /**
+     * 追加模式
+     *
+     */
+    enum AppendMode {
+
+        /**
+         * 追加至首位
+         */
+        FIRST,
+
+        /**
+         * 追加至末尾
+         */
+        LAST
 
     }
 

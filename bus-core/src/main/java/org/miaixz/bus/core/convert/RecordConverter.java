@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.RecordKit;
 public class RecordConverter extends AbstractConverter implements MatcherConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852276018731L;
+    private static final long serialVersionUID = 2852271152563L;
 
     /**
      * 单例对象

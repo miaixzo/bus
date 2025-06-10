@@ -35,14 +35,14 @@ module bus.gitlab {
 
     requires java.logging;
 
-    requires static jakarta.ws.rs;
-    requires static jakarta.servlet;
-    requires static jakarta.annotation;
-    requires static jersey.client;
-    requires static jersey.media.multipart;
-    requires static jersey.common;
-    requires static com.fasterxml.jackson.core;
-    requires static com.fasterxml.jackson.databind;
+    requires jakarta.ws.rs;
+    requires jakarta.servlet;
+    requires jakarta.annotation;
+    requires jersey.client;
+    requires jersey.media.multipart;
+    requires jersey.common;
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.databind;
 
     exports org.miaixz.bus.gitlab;
     exports org.miaixz.bus.gitlab.hooks.system;

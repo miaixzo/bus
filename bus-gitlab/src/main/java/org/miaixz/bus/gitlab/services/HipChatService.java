@@ -36,7 +36,7 @@ import java.io.Serial;
 public class HipChatService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852236110690L;
+    private static final long serialVersionUID = 2852285062156L;
 
     public static final String TOKEN_PROP = "token";
     public static final String COLOR_PROP = "color";

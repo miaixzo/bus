@@ -35,7 +35,7 @@ import java.io.Serial;
 public class Markdown implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282886627L;
+    private static final long serialVersionUID = 2852260951898L;
 
     private String html;
 

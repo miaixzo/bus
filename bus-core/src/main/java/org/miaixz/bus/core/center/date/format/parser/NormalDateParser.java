@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.center.date.DateTime;
 
 /**
- * 全局正则日期解析器 通过使用预定义或自定义的正则规则，解析日期字符串
+ * 全局正则日期解析器，通过预定义或自定义的正则规则解析日期字符串。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,30 +40,38 @@ import org.miaixz.bus.core.center.date.DateTime;
 public class NormalDateParser implements PredicateDateParser {
 
     /**
-     * 默认实例
+     * 默认单例实例
      */
     public static NormalDateParser INSTANCE = new NormalDateParser();
 
+    /**
+     * 正则日期解析器
+     */
     private final RegexDateParser parser;
 
     /**
-     * 构造，初始化默认的解析规则
+     * 构造，初始化默认的解析规则。
      */
     public NormalDateParser() {
         parser = createDefault();
     }
 
+    /**
+     * 测试是否适用此解析器。
+     *
+     * @param charSequence 日期字符串
+     * @return 始终返回true，作为兜底解析器
+     */
     @Override
     public boolean test(final CharSequence charSequence) {
-        // 此类用于托底，当自定义规则无法匹配时，一律使用此规则
         return true;
     }
 
     /**
-     * 解析日期，此方法线程安全
+     * 解析日期字符串，线程安全。
      *
      * @param source 日期字符串
-     * @return 日期
+     * @return 解析后的日期对象
      */
     @Override
     public DateTime parse(final CharSequence source) {
@@ -71,9 +79,9 @@ public class NormalDateParser implements PredicateDateParser {
     }
 
     /**
-     * 创建默认的 正则日期解析器
+     * 创建默认的正则日期解析器。
      *
-     * @return {@link RegexDateParser}
+     * @return 正则日期解析器
      */
     private RegexDateParser createDefault() {
         final String yearRegex = "(?<year>\\d{2,4})";
@@ -108,18 +116,18 @@ public class NormalDateParser implements PredicateDateParser {
         final String maskRegex = "(\\smsk m=[+-]\\d[.]\\d+)?";
 
         return RegexDateParser.of(
-                // 【年月日时】类似：2009-Feb-08，时间部分可选，类似：5:57:51，05:57:51 +08:00
+                // 【年月日时】类似：2009-Feb-08，时间部分可选，类似：5:57:50，05:57:50 +08:00
                 yearRegex + "\\W" + dateRegexMonthFirst + timeRegexWithPre + zoneRegex + maskRegex,
-                // 【年月日时】类似：2009-02-08或2014年04月08日，时间部分可选，类似：5:57:51，05:57:51 +08:00
+                // 【年月日时】类似：2020-02-08或2020年02月08日，时间部分可选，类似：5:57:50，05:57:50 +08:00
                 yearRegex + "\\W(?<month>\\d{1,2})(\\W(?<day>\\d{1,2}))?日?" + timeRegexWithPre + zoneRegex + maskRegex,
 
-                // 【周月日年时】类似：May 8, 2009，时间部分可选，类似：5:57:51，05:57:51 +08:00
+                // 【周月日年时】类似：May 8, 2009，时间部分可选，类似：5:57:50，05:57:50 +08:00
                 weekRegexWithSuff + dateRegexMonthFirst + "\\W+" + yearRegex + timeRegexWithPre + zoneRegex + maskRegex,
-                // 【周月日时年】类似：Mon Jan 2 15:04:05 MST 2006
+                // 【周月日时年】类似：Mon Jan 2 15:05:05 MST 2020
                 weekRegexWithSuff + dateRegexMonthFirst + timeRegexWithPre + zoneRegex + "\\W+" + yearRegex + maskRegex,
-                // 【周日月年时】类似：Monday, 02-Jan-06 15:04:05 MST
+                // 【周日月年时】类似：Monday, 02-Jan-06 15:05:05 MST
                 weekRegexWithSuff + dateRegexDayFirst + "\\W+" + yearRegex + timeRegexWithPre + zoneRegex + maskRegex,
-                // 【日月年时】MM/dd/yyyy, dd/MM/yyyy, 类似：4/12/2014 03:00:51，为避免歧义，只支持4位年
+                // 【日月年时】MM/dd/yyyy, dd/MM/yyyy, 类似：5/12/2020 03:00:50，为避免歧义，只支持4位年
                 "(?<dayOrMonth>\\d{1,2}\\W\\d{1,2})\\W(?<year>\\d{4})" + timeRegexWithPre + zoneRegex + maskRegex,
 
                 // 纯数字日期时间
@@ -135,27 +143,27 @@ public class NormalDateParser implements PredicateDateParser {
     }
 
     /**
-     * 当用户传入的月和日无法判定默认位置时，设置默认的日期格式为dd/mm还是mm/dd
+     * 设置月份优先顺序，当无法区分月和日时，决定使用mm/dd还是dd/mm。
      *
-     * @param preferMonthFirst {@code true}默认为mm/dd，否则dd/mm
+     * @param preferMonthFirst true为mm/dd，false为dd/mm
      */
     synchronized public void setPreferMonthFirst(final boolean preferMonthFirst) {
         parser.setPreferMonthFirst(preferMonthFirst);
     }
 
     /**
-     * 新增自定义日期正则
+     * 注册自定义日期正则规则。
      *
-     * @param regex 日期正则
+     * @param regex 日期正则表达式
      */
     synchronized public void registerRegex(final String regex) {
         parser.addRegex(regex);
     }
 
     /**
-     * 新增自定义日期正则
+     * 注册自定义日期正则模式。
      *
-     * @param pattern 日期正则
+     * @param pattern 日期正则模式
      */
     synchronized public void registerPattern(final Pattern pattern) {
         parser.addPattern(pattern);

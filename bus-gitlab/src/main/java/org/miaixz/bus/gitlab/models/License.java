@@ -37,7 +37,7 @@ import java.io.Serial;
 public class License implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281999565L;
+    private static final long serialVersionUID = 2852260513290L;
 
     private Long id;
     private String plan;

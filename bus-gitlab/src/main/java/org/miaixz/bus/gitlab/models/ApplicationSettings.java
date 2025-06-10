@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.node.*;
 public class ApplicationSettings implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852253081239L;
+    private static final long serialVersionUID = 2852235962768L;
 
     private Long id;
     private Date createdAt;

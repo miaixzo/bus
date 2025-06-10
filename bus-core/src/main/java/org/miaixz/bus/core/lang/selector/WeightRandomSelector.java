@@ -56,7 +56,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class WeightRandomSelector<T> implements Selector<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852237255368L;
+    private static final long serialVersionUID = 2852278757903L;
 
     private final TreeMap<Integer, T> weightMap;
 

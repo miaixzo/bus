@@ -53,7 +53,7 @@ import org.miaixz.bus.core.lang.thread.lock.NoLock;
 public class TimedCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852293520239L;
+    private static final long serialVersionUID = 2852232272208L;
 
     /**
      * 正在执行的定时任务

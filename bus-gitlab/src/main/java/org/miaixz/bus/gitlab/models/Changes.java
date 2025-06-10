@@ -40,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Changes implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256970101L;
+    private static final long serialVersionUID = 2852238919699L;
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty("a_mode")

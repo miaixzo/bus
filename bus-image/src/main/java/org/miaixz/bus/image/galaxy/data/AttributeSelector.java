@@ -40,7 +40,7 @@ import org.miaixz.bus.image.Tag;
 public class AttributeSelector implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852229050187L;
+    private static final long serialVersionUID = 2852259019856L;
 
     private static final int MIN_ITEM_POINTER_STR_LEN = 30;
 

@@ -39,14 +39,14 @@ module bus.base {
     requires bus.pager;
     requires bus.validate;
 
-    requires static lombok;
-    requires static jakarta.persistence;
-    requires static jakarta.servlet;
-    requires static spring.beans;
-    requires static spring.web;
-    requires static spring.context;
-    requires static spring.webmvc;
-    requires static spring.boot.autoconfigure;
+    requires lombok;
+    requires jakarta.persistence;
+    requires jakarta.servlet;
+    requires spring.beans;
+    requires spring.web;
+    requires spring.context;
+    requires spring.webmvc;
+    requires spring.boot.autoconfigure;
 
     exports org.miaixz.bus.base.advice;
     exports org.miaixz.bus.base.entity;

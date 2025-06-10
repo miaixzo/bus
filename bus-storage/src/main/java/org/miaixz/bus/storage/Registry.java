@@ -40,9 +40,25 @@ public enum Registry {
      */
     ALIYUN,
     /**
+     * 亚马逊 S3
+     */
+    AMAZON,
+    /**
      * 百度云 BOS
      */
     BAIDU,
+    /**
+     * FTP
+     */
+    FTP,
+    /**
+     * Gitlab
+     */
+    GITLAB,
+    /**
+     * Google CS
+     */
+    GOOGLE,
     /**
      * 华为云 OBS
      */
@@ -64,12 +80,20 @@ public enum Registry {
      */
     QINIU,
     /**
+     * Sftp
+     */
+    SFTP,
+    /**
      * 腾讯云 COS
      */
     TENCENT,
     /**
      * 又拍云 OSS
      */
-    UPYUN
+    UPYUN,
+    /**
+     * WEBDAV
+     */
+    WEBDAV
 
 }

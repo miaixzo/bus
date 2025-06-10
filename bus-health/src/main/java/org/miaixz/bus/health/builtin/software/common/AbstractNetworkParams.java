@@ -110,7 +110,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
             String line = resolv.get(i);
             if (line.startsWith(key)) {
                 String value = line.substring(key.length()).replaceFirst("^[ \t]+", Normal.EMPTY);
-                if (value.length() != 0 && value.charAt(0) != Symbol.C_SHAPE && value.charAt(0) != Symbol.C_SEMICOLON) {
+                if (value.length() != 0 && value.charAt(0) != Symbol.C_HASH && value.charAt(0) != Symbol.C_SEMICOLON) {
                     String val = value.split("[ \t#;]", 2)[0];
                     servers.add(val);
                 }

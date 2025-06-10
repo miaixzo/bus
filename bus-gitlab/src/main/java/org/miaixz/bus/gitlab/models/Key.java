@@ -36,7 +36,7 @@ import java.io.Serial;
 public class Key implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281135765L;
+    private static final long serialVersionUID = 2852260056272L;
 
     private Date createdAt;
     private Long id;

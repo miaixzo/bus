@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Map属性拷贝到Map中的拷贝器
+ * Map 到 Map 的属性拷贝器，将源 Map 的键值对复制到目标 Map。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,23 +42,28 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class MapToMapCopier extends AbstractCopier<Map, Map> {
 
     /**
-     * 目标的类型（用于泛型类注入）
+     * 目标 Map 的泛型参数类型
      */
-    private final Type targetType;
+    private final Type[] typeArguments;
 
     /**
-     * 构造
+     * 构造方法，初始化 Map 到 Map 的拷贝器。
      *
-     * @param source      来源Map
-     * @param target      目标Bean对象
+     * @param source      来源 Map
+     * @param target      目标 Map 对象
      * @param targetType  目标泛型类型
-     * @param copyOptions 拷贝选项，{@code null}使用默认配置
+     * @param copyOptions 拷贝选项，null 时使用默认配置
      */
     public MapToMapCopier(final Map source, final Map target, final Type targetType, final CopyOptions copyOptions) {
         super(source, target, copyOptions);
-        this.targetType = targetType;
+        this.typeArguments = TypeKit.getTypeArguments(targetType);
     }
 
+    /**
+     * 执行 Map 到 Map 的拷贝操作。
+     *
+     * @return 目标 Map
+     */
     @Override
     public Map copy() {
         this.source.forEach((sKey, sValue) -> {
@@ -72,7 +77,7 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
                 return;
             }
             sKey = entry.getKey();
-            // 对key做转换，转换后为null的跳过
+            // 键转换后为 null 则跳过
             if (null == sKey) {
                 return;
             }
@@ -83,13 +88,12 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
             }
 
             final Object targetValue = target.get(sKey);
-            // 非覆盖模式下，如果目标值存在，则跳过
+            // 非覆盖模式下，目标值存在则跳过
             if (!copyOptions.override && null != targetValue) {
                 return;
             }
 
-            // 获取目标值真实类型并转换源值
-            final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
+            // 转换源值到目标值的类型
             if (null != typeArguments) {
                 sValue = this.copyOptions.convertField(typeArguments[1], sValue);
             }

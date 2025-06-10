@@ -35,7 +35,7 @@ import java.io.Serial;
 public class IssueLink implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279915695L;
+    private static final long serialVersionUID = 2852257890367L;
 
     private Issue sourceIssue;
     private Issue targetIssue;

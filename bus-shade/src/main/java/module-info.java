@@ -39,10 +39,10 @@ module bus.shade {
     requires bus.core;
     requires bus.logger;
 
-    requires static lombok;
-    requires static freemarker;
-    requires static org.apache.commons.compress;
-    requires static spring.boot.loader;
+    requires lombok;
+    requires freemarker;
+    requires org.apache.commons.compress;
+    requires spring.boot.loader;
 
     exports org.miaixz.bus.shade.beans;
     exports org.miaixz.bus.shade.safety;

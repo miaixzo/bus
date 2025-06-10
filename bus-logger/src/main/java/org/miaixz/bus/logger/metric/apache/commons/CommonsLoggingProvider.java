@@ -45,7 +45,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
 public class CommonsLoggingProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852280909959L;
+    private static final long serialVersionUID = 2852286531003L;
 
     /**
      * 日志门面

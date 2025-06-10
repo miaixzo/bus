@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.Assert;
 public abstract class TextFinder implements Finder, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275865568L;
+    private static final long serialVersionUID = 2852237708637L;
 
     /**
      * 文本

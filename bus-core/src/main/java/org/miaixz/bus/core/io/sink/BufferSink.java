@@ -37,7 +37,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 
 /**
- * 一种接收器,它在内部保存缓冲区, 以便调用者可以进行小的写操作没有性能损失
+ * 缓冲接收器接口，提供高效的写操作，内部维护缓冲区以减少性能开销。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,347 +45,220 @@ import org.miaixz.bus.core.io.source.Source;
 public interface BufferSink extends Sink, WritableByteChannel {
 
     /**
-     * Returns this sink's internal buffer.
+     * 获取内部缓冲区。
+     *
+     * @return 内部缓冲区对象
      */
     Buffer buffer();
 
+    /**
+     * 写入字节字符串。
+     *
+     * @param byteString 字节字符串
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
+     */
     BufferSink write(ByteString byteString) throws IOException;
 
     /**
-     * Like {@link OutputStream#write(byte[])}, this writes a complete byte array to this sink.
+     * 写入完整的字节数组。
+     *
+     * @param source 字节数组
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink write(byte[] source) throws IOException;
 
     /**
-     * Like {@link OutputStream#write(byte[], int, int)}, this writes {@code byteCount} bytes of {@code source},
-     * starting at {@code offset}.
+     * 写入字节数组的指定部分。
+     *
+     * @param source    字节数组
+     * @param offset    起始偏移量
+     * @param byteCount 写入字节数
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink write(byte[] source, int offset, int byteCount) throws IOException;
 
     /**
-     * Removes all bytes from {@code source} and appends them to this sink. Returns the number of bytes read which will
-     * be 0 if {@code source} is exhausted.
+     * 从源读取所有字节并写入接收器。
+     *
+     * @param source 数据源
+     * @return 读取的字节数，源耗尽时返回 0
+     * @throws IOException 如果读取或写入失败
      */
     long writeAll(Source source) throws IOException;
 
     /**
-     * Removes {@code byteCount} bytes from {@code source} and appends them to this sink.
+     * 从源读取指定字节数并写入接收器。
+     *
+     * @param source    数据源
+     * @param byteCount 要读取的字节数
+     * @return 当前接收器
+     * @throws IOException 如果读取或写入失败
      */
     BufferSink write(Source source, long byteCount) throws IOException;
 
     /**
-     * Encodes {@code string} in UTF-8 and writes it to this sink.
-     * 
-     * <pre>{@code
+     * 使用 UTF-8 编码写入字符串。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeUtf8("Uh uh uh!");
-     * buffer.writeByte(' ');
-     * buffer.writeUtf8("You didn't say the magic word!");
-     *
-     * assertEquals("Uh uh uh! You didn't say the magic word!", buffer.readUtf8());
-     * }</pre>
+     * @param string 输入字符串
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeUtf8(String string) throws IOException;
 
     /**
-     * Encodes the characters at {@code beginIndex} up to {@code endIndex} from {@code string} in UTF-8 and writes it to
-     * this sink.
-     * 
-     * <pre>{@code
+     * 使用 UTF-8 编码写入字符串的指定部分。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeUtf8("I'm a hacker!\n", 6, 12);
-     * buffer.writeByte(' ');
-     * buffer.writeUtf8("That's what I said: you're a nerd.\n", 29, 33);
-     * buffer.writeByte(' ');
-     * buffer.writeUtf8("I prefer to be called a hacker!\n", 24, 31);
-     *
-     * assertEquals("hacker nerd hacker!", buffer.readUtf8());
-     * }</pre>
+     * @param string     输入字符串
+     * @param beginIndex 起始索引
+     * @param endIndex   结束索引
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeUtf8(String string, int beginIndex, int endIndex) throws IOException;
 
     /**
-     * Encodes {@code codePoint} in UTF-8 and writes it to this sink.
+     * 使用 UTF-8 编码写入 Unicode 码点。
+     *
+     * @param codePoint Unicode 码点
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeUtf8CodePoint(int codePoint) throws IOException;
 
     /**
-     * Encodes {@code string} in {@code charset} and writes it to this sink.
+     * 使用指定字符集编码写入字符串。
+     *
+     * @param string  输入字符串
+     * @param charset 字符集
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeString(String string, Charset charset) throws IOException;
 
     /**
-     * Encodes the characters at {@code beginIndex} up to {@code endIndex} from {@code string} in {@code charset} and
-     * writes it to this sink.
+     * 使用指定字符集编码写入字符串的指定部分。
+     *
+     * @param string     输入字符串
+     * @param beginIndex 起始索引
+     * @param endIndex   结束索引
+     * @param charset    字符集
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeString(String string, int beginIndex, int endIndex, Charset charset) throws IOException;
 
     /**
-     * Writes a byte to this sink.
+     * 写入单个字节。
+     *
+     * @param b 字节值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeByte(int b) throws IOException;
 
     /**
-     * Writes a big-endian short to this sink using two bytes.
-     * 
-     * <pre>{@code
+     * 使用大端序写入短整型（2 字节）。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeShort(32767);
-     * buffer.writeShort(15);
-     *
-     * assertEquals(4, buffer.size());
-     * assertEquals((byte) 0x7f, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x0f, buffer.readByte());
-     * assertEquals(0, buffer.size());
-     * }</pre>
+     * @param s 短整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeShort(int s) throws IOException;
 
     /**
-     * Writes a little-endian short to this sink using two bytes.
-     * 
-     * <pre>{@code
+     * 使用小端序写入短整型（2 字节）。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeShortLe(32767);
-     * buffer.writeShortLe(15);
-     *
-     * assertEquals(4, buffer.size());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0x7f, buffer.readByte());
-     * assertEquals((byte) 0x0f, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals(0, buffer.size());
-     * }</pre>
+     * @param s 短整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeShortLe(int s) throws IOException;
 
     /**
-     * Writes a big-endian int to this sink using four bytes.
-     * 
-     * <pre>{@code
+     * 使用大端序写入整型（4 字节）。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeInt(2147483647);
-     * buffer.writeInt(15);
-     *
-     * assertEquals(8, buffer.size());
-     * assertEquals((byte) 0x7f, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x0f, buffer.readByte());
-     * assertEquals(0, buffer.size());
-     * }</pre>
+     * @param i 整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeInt(int i) throws IOException;
 
     /**
-     * Writes a little-endian int to this sink using four bytes.
-     * 
-     * <pre>{@code
+     * 使用小端序写入整型（4 字节）。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeIntLe(2147483647);
-     * buffer.writeIntLe(15);
-     *
-     * assertEquals(8, buffer.size());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0x7f, buffer.readByte());
-     * assertEquals((byte) 0x0f, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals(0, buffer.size());
-     * }</pre>
+     * @param i 整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeIntLe(int i) throws IOException;
 
     /**
-     * Writes a big-endian long to this sink using eight bytes.
-     * 
-     * <pre>{@code
+     * 使用大端序写入长整型（8 字节）。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeLong(9223372036854775807L);
-     * buffer.writeLong(15);
-     *
-     * assertEquals(16, buffer.size());
-     * assertEquals((byte) 0x7f, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x0f, buffer.readByte());
-     * assertEquals(0, buffer.size());
-     * }</pre>
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeLong(long v) throws IOException;
 
     /**
-     * Writes a little-endian long to this sink using eight bytes.
-     * 
-     * <pre>{@code
+     * 使用小端序写入长整型（8 字节）。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeLongLe(9223372036854775807L);
-     * buffer.writeLongLe(15);
-     *
-     * assertEquals(16, buffer.size());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0xff, buffer.readByte());
-     * assertEquals((byte) 0x7f, buffer.readByte());
-     * assertEquals((byte) 0x0f, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals((byte) 0x00, buffer.readByte());
-     * assertEquals(0, buffer.size());
-     * }</pre>
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeLongLe(long v) throws IOException;
 
     /**
-     * Writes a long to this sink in signed decimal form (i.e., as a string in base 10).
-     * 
-     * <pre>{@code
+     * 以十进制形式写入长整型。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeDecimalLong(8675309L);
-     * buffer.writeByte(' ');
-     * buffer.writeDecimalLong(-123L);
-     * buffer.writeByte(' ');
-     * buffer.writeDecimalLong(1L);
-     *
-     * assertEquals("8675309 -123 1", buffer.readUtf8());
-     * }</pre>
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeDecimalLong(long v) throws IOException;
 
     /**
-     * Writes a long to this sink in hexadecimal form (i.e., as a string in base 16).
-     * 
-     * <pre>{@code
+     * 以十六进制形式写入无符号长整型。
      *
-     * Buffer buffer = new Buffer();
-     * buffer.writeHexadecimalUnsignedLong(65535L);
-     * buffer.writeByte(' ');
-     * buffer.writeHexadecimalUnsignedLong(0xcafebabeL);
-     * buffer.writeByte(' ');
-     * buffer.writeHexadecimalUnsignedLong(0x10L);
-     *
-     * assertEquals("ffff cafebabe 10", buffer.readUtf8());
-     * }</pre>
+     * @param v 长整型值
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink writeHexadecimalUnsignedLong(long v) throws IOException;
 
     /**
-     * Writes all buffered data to the underlying sink, if one exists. Then that sink is recursively flushed which
-     * pushes data as far as possible towards its ultimate destination. Typically that destination is a network socket
-     * or file.
-     * 
-     * <pre>{@code
+     * 将缓冲数据写入底层接收器，并递归刷新以推送数据到最终目标。
      *
-     * BufferedSink b0 = new Buffer();
-     * BufferedSink b1 = Okio.buffer(b0);
-     * BufferedSink b2 = Okio.buffer(b1);
-     *
-     * b2.writeUtf8("hello");
-     * assertEquals(5, b2.buffer().size());
-     * assertEquals(0, b1.buffer().size());
-     * assertEquals(0, b0.buffer().size());
-     *
-     * b2.flush();
-     * assertEquals(0, b2.buffer().size());
-     * assertEquals(0, b1.buffer().size());
-     * assertEquals(5, b0.buffer().size());
-     * }</pre>
+     * @throws IOException 如果写入或刷新失败
      */
     @Override
     void flush() throws IOException;
 
     /**
-     * Writes all buffered data to the underlying sink, if one exists. Like {@link #flush}, but weaker. Call this before
-     * this buffered sink goes out of scope so that its data can reach its destination.
-     * 
-     * <pre>{@code
+     * 将缓冲数据写入底层接收器，较弱的刷新操作，确保数据向目标移动。
      *
-     * BufferedSink b0 = new Buffer();
-     * BufferedSink b1 = Okio.buffer(b0);
-     * BufferedSink b2 = Okio.buffer(b1);
-     *
-     * b2.writeUtf8("hello");
-     * assertEquals(5, b2.buffer().size());
-     * assertEquals(0, b1.buffer().size());
-     * assertEquals(0, b0.buffer().size());
-     *
-     * b2.emit();
-     * assertEquals(0, b2.buffer().size());
-     * assertEquals(5, b1.buffer().size());
-     * assertEquals(0, b0.buffer().size());
-     *
-     * b1.emit();
-     * assertEquals(0, b2.buffer().size());
-     * assertEquals(0, b1.buffer().size());
-     * assertEquals(5, b0.buffer().size());
-     * }</pre>
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink emit() throws IOException;
 
     /**
-     * Writes complete segments to the underlying sink, if one exists. Like {@link #flush}, but weaker. Use this to
-     * limit the memory held in the buffer to a single segment. Typically application code will not need to call this:
-     * it is only necessary when application code writes directly to this {@linkplain #buffer() sink's buffer}.
-     * 
-     * <pre>{@code
+     * 将完整的缓冲段写入底层接收器，限制缓冲区内存占用。
      *
-     * BufferedSink b0 = new Buffer();
-     * BufferedSink b1 = Okio.buffer(b0);
-     * BufferedSink b2 = Okio.buffer(b1);
-     *
-     * b2.buffer().write(new byte[20_000]);
-     * assertEquals(20_000, b2.buffer().size());
-     * assertEquals(0, b1.buffer().size());
-     * assertEquals(0, b0.buffer().size());
-     *
-     * b2.emitCompleteSegments();
-     * assertEquals(3_616, b2.buffer().size());
-     * assertEquals(0, b1.buffer().size());
-     * assertEquals(16_384, b0.buffer().size()); // This example assumes 8192 byte segments.
-     * }</pre>
+     * @return 当前接收器
+     * @throws IOException 如果写入失败
      */
     BufferSink emitCompleteSegments() throws IOException;
 
     /**
-     * Returns an output stream that writes to this sink.
+     * 获取写入此接收器的输出流。
+     *
+     * @return 输出流
      */
     OutputStream outputStream();
 

@@ -41,7 +41,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class AnsjWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852283171057L;
+    private static final long serialVersionUID = 2852285815563L;
 
     private final Term term;
 

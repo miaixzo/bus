@@ -40,7 +40,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class BuildEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852267756819L;
+    private static final long serialVersionUID = 2852230100093L;
 
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
     public static final String OBJECT_KIND = "build";

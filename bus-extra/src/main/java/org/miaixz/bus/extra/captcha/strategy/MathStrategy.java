@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class MathStrategy implements CodeStrategy {
 
     @Serial
-    private static final long serialVersionUID = 2852276531270L;
+    private static final long serialVersionUID = 2852292238303L;
 
     private static final String operators = "+-*";
 

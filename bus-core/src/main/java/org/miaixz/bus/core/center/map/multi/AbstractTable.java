@@ -107,7 +107,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     private static class SimpleCell<R, C, V> implements Cell<R, C, V>, Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852235617382L;
+        private static final long serialVersionUID = 2852277093211L;
 
         private final R rowKey;
         private final C columnKey;

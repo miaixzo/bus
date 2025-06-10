@@ -40,7 +40,7 @@ import java.io.Serial;
 public class Runner implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852230807930L;
+    private static final long serialVersionUID = 2852280665555L;
 
     private Long id;
     private String description;

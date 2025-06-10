@@ -165,11 +165,6 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         GenericBeanDefinition definition;
         for (BeanDefinitionHolder holder : beanDefinitions) {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
-            if (Logger.isDebugEnabled()) {
-                Logger.debug("Creating MapperFactoryBean with name '{}' and '{}' mapperInterface", holder.getBeanName(),
-                        definition.getBeanClassName());
-            }
-
             // 映射器接口是bean的原始类，但是bean的实际类是MapperFactoryBean
             definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
             definition.setBeanClass(this.mapperFactoryBean.getClass());
@@ -206,8 +201,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             }
             if (!explicitFactoryUsed) {
                 if (Logger.isDebugEnabled()) {
-                    Logger.debug("Enabling autowire by type for MapperFactoryBean with name '{}'",
-                            holder.getBeanName());
+                    Logger.debug("Enabling component by type for MapperFactoryBean with name '{}' and '{}'",
+                            holder.getBeanName(), definition.getBeanClassName());
+
                 }
                 definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             }

@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class Artifact implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852255156638L;
+    private static final long serialVersionUID = 2852236887008L;
 
     private FileType fileType;
     private Long size;

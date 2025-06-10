@@ -1317,9 +1317,10 @@ public final class Parsing {
      * @return 自 1970 年 1 月 1 日 UTC 以来的毫秒数。如果解析失败，返回 {@code 0}。
      */
     public static long parseDateToEpoch(String dateString, String datePattern) {
-        if (dateString.equals(Normal.UNKNOWN) || dateString.isEmpty()) {
+        if (dateString == null || dateString.equals(Normal.UNKNOWN) || dateString.isEmpty() || datePattern.isEmpty()) {
             return 0; // 如果日期未知或为空，返回默认值
         }
+
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern, Locale.ROOT);
             // 确定模式是否包含时间组件

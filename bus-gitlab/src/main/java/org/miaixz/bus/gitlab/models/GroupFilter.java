@@ -42,7 +42,7 @@ import java.io.Serial;
 public class GroupFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278261702L;
+    private static final long serialVersionUID = 2852256129063L;
 
     private List<Long> skipGroups;
     private Boolean allAvailable;

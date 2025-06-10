@@ -43,7 +43,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 public class ECIES extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852267691369L;
+    private static final long serialVersionUID = 2852289857959L;
 
     /**
      * 构造，生成新的私钥公钥对

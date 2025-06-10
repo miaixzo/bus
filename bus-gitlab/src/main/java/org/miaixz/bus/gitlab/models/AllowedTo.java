@@ -39,7 +39,7 @@ import java.io.Serializable;
 public class AllowedTo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252997683L;
+    private static final long serialVersionUID = 2852235756710L;
 
     private AccessLevel accessLevel;
     private Long userId;

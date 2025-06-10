@@ -38,7 +38,7 @@ import java.io.Serial;
 public class CrontabException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852268625659L;
+    private static final long serialVersionUID = 2852252787255L;
 
     /**
      * 构造

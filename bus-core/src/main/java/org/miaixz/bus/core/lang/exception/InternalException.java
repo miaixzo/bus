@@ -38,7 +38,7 @@ import java.io.Serial;
 public class InternalException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852269885127L;
+    private static final long serialVersionUID = 2852256005322L;
 
     /**
      * 构造

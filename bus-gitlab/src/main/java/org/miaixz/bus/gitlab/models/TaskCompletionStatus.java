@@ -35,7 +35,7 @@ import java.io.Serial;
 public class TaskCompletionStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232538976L;
+    private static final long serialVersionUID = 2852281866977L;
 
     private Integer count;
     private Integer completedCount;

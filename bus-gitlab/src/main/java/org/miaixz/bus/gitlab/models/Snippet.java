@@ -36,7 +36,7 @@ import java.io.Serial;
 public class Snippet implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232020911L;
+    private static final long serialVersionUID = 2852281375272L;
 
     private Author author;
     private Date createdAt;

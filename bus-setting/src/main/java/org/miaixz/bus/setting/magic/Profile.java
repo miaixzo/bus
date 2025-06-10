@@ -54,7 +54,7 @@ import org.miaixz.bus.setting.Setting;
 public class Profile implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251212376L;
+    private static final long serialVersionUID = 2852228167252L;
 
     /**
      * 配置文件缓存

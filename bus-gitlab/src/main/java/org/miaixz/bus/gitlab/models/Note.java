@@ -40,7 +40,7 @@ import java.io.Serial;
 public class Note implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286728897L;
+    private static final long serialVersionUID = 2852265960807L;
 
     /** Enum to use for ordering the results. */
     public static enum OrderBy {

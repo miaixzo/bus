@@ -36,7 +36,7 @@ import java.io.Serial;
 public class CommitStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258130291L;
+    private static final long serialVersionUID = 2852250191072L;
 
     private Boolean allowFailure;
     private Author author;

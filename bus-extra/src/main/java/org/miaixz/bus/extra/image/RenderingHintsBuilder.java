@@ -56,7 +56,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class RenderingHintsBuilder implements Builder<RenderingHints> {
 
     @Serial
-    private static final long serialVersionUID = 2852279817165L;
+    private static final long serialVersionUID = 2852293220296L;
 
     private final Map<RenderingHints.Key, Object> hintsMap;
 

@@ -36,7 +36,7 @@ import java.io.Serial;
 public class SlackService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852236659590L;
+    private static final long serialVersionUID = 2852285372238L;
 
     private String defaultChannel;
 

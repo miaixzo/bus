@@ -33,7 +33,7 @@ import java.io.Serial;
 public class OauthTokenResponse implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286927313L;
+    private static final long serialVersionUID = 2852267905007L;
 
     private String accessToken;
     private String tokenType;

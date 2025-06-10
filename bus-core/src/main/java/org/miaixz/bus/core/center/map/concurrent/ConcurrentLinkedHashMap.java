@@ -1499,7 +1499,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      */
     final class WriteThroughEntry extends SimpleEntry<K, V> {
         @Serial
-        private static final long serialVersionUID = 2852233772238L;
+        private static final long serialVersionUID = 2852276319333L;
 
         WriteThroughEntry(final Node<K, V> node) {
             super(node.key, node.getValue());

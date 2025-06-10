@@ -45,7 +45,7 @@ import java.util.Objects;
 public class NullCompare<T> implements Comparator<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250790195L;
+    private static final long serialVersionUID = 2852262152885L;
 
     /**
      * 是否{@code null}最大，排在最后

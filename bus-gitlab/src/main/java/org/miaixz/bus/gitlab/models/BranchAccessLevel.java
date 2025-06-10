@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class BranchAccessLevel implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256698332L;
+    private static final long serialVersionUID = 2852238639719L;
 
     private Long id;
     private AccessLevel accessLevel;

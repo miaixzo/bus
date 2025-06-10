@@ -34,7 +34,7 @@ import java.io.Serial;
 public class TagPushEvent extends AbstractPushEvent implements Event {
 
     @Serial
-    private static final long serialVersionUID = 2852251812211L;
+    private static final long serialVersionUID = 2852233179805L;
 
     public static final String X_GITLAB_EVENT = "Tag Push Hook";
     public static final String OBJECT_KIND = "tag_push";

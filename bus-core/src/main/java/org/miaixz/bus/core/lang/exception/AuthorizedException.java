@@ -38,7 +38,7 @@ import java.io.Serial;
 public class AuthorizedException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852267830877L;
+    private static final long serialVersionUID = 2852252036370L;
 
     /**
      * 构造

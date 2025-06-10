@@ -37,7 +37,7 @@ import java.io.Serial;
 public class Deployment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259600183L;
+    private static final long serialVersionUID = 2852251169268L;
 
     private Long id;
     private Long iid;

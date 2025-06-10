@@ -128,7 +128,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     /**
      * 设置起始 SQL
      *
-     * @param startSql 起始 SQL，需防止 SQL 注入
+     * @param startSql 起始 SQL
      * @return 当前包装器对象
      */
     public ConditionWrapper<T, I> startSql(String startSql) {
@@ -139,7 +139,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     /**
      * 设置结尾 SQL
      *
-     * @param endSql 结尾 SQL，需防止 SQL 注入
+     * @param endSql 结尾 SQL
      * @return 当前包装器对象
      */
     public ConditionWrapper<T, I> endSql(String endSql) {
@@ -880,7 +880,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * 条件添加任意查询条件
      *
      * @param useCondition 是否启用
-     * @param condition    自定义条件，需防止 SQL 注入
+     * @param condition    自定义条件
      * @return 当前包装器对象
      */
     public ConditionWrapper<T, I> anyCondition(boolean useCondition, String condition) {
@@ -890,7 +890,7 @@ public class ConditionWrapper<T, I extends Serializable> {
     /**
      * 添加任意查询条件
      *
-     * @param condition 自定义条件，需防止 SQL 注入
+     * @param condition 自定义条件
      * @return 当前包装器对象
      */
     public ConditionWrapper<T, I> anyCondition(String condition) {

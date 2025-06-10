@@ -33,7 +33,7 @@ import java.io.Serial;
 public class GroupHookParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278561881L;
+    private static final long serialVersionUID = 2852256256678L;
 
     private String url;
     private String name;

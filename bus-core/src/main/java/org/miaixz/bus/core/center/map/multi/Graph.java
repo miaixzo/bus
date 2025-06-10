@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class Graph<T> extends SetValueMap<T, T> {
 
     @Serial
-    private static final long serialVersionUID = 2852235867832L;
+    private static final long serialVersionUID = 2852277389299L;
 
     /**
      * 添加边

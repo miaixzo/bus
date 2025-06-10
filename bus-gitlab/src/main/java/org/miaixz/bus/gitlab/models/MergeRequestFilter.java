@@ -51,7 +51,7 @@ import java.io.Serial;
 public class MergeRequestFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852285301232L;
+    private static final long serialVersionUID = 2852263228021L;
 
     private Long projectId;
     private Long groupId;

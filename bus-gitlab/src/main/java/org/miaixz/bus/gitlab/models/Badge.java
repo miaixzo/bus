@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class Badge implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256278863L;
+    private static final long serialVersionUID = 2852238086816L;
 
     private Long id;
     private String name;

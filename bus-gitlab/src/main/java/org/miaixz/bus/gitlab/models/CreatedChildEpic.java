@@ -34,7 +34,7 @@ import java.io.Serial;
 public class CreatedChildEpic extends AbstractMinimalEpic<CreatedChildEpic> {
 
     @Serial
-    private static final long serialVersionUID = 2852259022133L;
+    private static final long serialVersionUID = 2852250855125L;
 
     private Boolean hasChildren;
     private Boolean hasIssues;

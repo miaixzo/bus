@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class WordWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852253976572L;
+    private static final long serialVersionUID = 2852286932330L;
 
     private final org.apdplat.word.segmentation.Word word;
 

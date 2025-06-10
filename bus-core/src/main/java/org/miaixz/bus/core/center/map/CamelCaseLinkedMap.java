@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852229676508L;
+    private static final long serialVersionUID = 2852268579885L;
 
     /**
      * 构造

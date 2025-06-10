@@ -34,7 +34,7 @@ import java.io.Serial;
 public class WikiPageEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852251866596L;
+    private static final long serialVersionUID = 2852233220608L;
 
     public static final String X_GITLAB_EVENT = "Wiki Page Hook";
     public static final String OBJECT_KIND = "wiki_page";

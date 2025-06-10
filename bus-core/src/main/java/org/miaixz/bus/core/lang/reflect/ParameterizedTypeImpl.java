@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235793539L;
+    private static final long serialVersionUID = 2852276963509L;
 
     private final Type[] actualTypeArguments;
     private final Type ownerType;

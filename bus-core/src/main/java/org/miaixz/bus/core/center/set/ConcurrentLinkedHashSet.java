@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852237523190L;
+    private static final long serialVersionUID = 2852280151086L;
 
     /**
      * 构造

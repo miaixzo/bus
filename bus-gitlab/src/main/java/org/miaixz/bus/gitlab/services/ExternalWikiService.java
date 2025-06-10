@@ -34,7 +34,7 @@ import java.io.Serial;
 public class ExternalWikiService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852235929259L;
+    private static final long serialVersionUID = 2852285037171L;
 
     public static final String WIKIURL_KEY_PROP = "external_wiki_url";
 

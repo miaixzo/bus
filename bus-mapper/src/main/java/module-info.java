@@ -38,10 +38,10 @@ module bus.mapper {
     requires bus.core;
     requires bus.logger;
 
-    requires static lombok;
-    requires static jakarta.persistence;
-    requires static org.mybatis;
-    requires static org.mybatis.spring;
+    requires lombok;
+    requires jakarta.persistence;
+    requires org.mybatis;
+    requires org.mybatis.spring;
 
     exports org.miaixz.bus.mapper;
     exports org.miaixz.bus.mapper.annotation;
