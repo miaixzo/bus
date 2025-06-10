@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.miaixz.bus.core.basic.entity.OAuth2;
+import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Symbol;
@@ -172,10 +172,10 @@ public class AuthorizeFilter implements WebFilter {
             Token access = new Token(context.getToken(), context.getChannel().getTokenType(), assets);
             Delegate delegate = authorizeProvider.authorize(access);
             if (delegate.isOk()) {
-                // 认证成功，将 OAuth2 信息转换为参数
-                OAuth2 auth2 = delegate.getOAuth2();
+                // 认证成功，将 Authorize 信息转换为参数
+                Authorize auth = delegate.getAuthorize();
                 Map<String, Object> map = new HashMap<>();
-                BeanKit.beanToMap(auth2, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
+                BeanKit.beanToMap(auth, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
                 map.forEach((k, v) -> params.put(k, v.toString()));
             } else {
                 // 认证失败，抛出错误

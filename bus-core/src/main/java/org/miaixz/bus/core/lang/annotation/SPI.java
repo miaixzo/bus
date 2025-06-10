@@ -52,8 +52,8 @@ import org.miaixz.bus.core.lang.Normal;
  * @since Java 17+
  */
 @Documented
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface SPI {
 
     /**

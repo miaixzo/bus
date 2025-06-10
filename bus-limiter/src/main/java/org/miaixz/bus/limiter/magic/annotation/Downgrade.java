@@ -39,8 +39,8 @@ import org.miaixz.bus.limiter.magic.FlowGrade;
  */
 @Inherited
 @Documented
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface Downgrade {
 
     FlowGrade grade();

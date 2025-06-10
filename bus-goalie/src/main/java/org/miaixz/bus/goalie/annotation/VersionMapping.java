@@ -39,12 +39,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
+
 @Documented
 @RequestMapping
 @ApiVersion
 @ClientVersion
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface VersionMapping {
 
     /**

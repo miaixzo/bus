@@ -111,8 +111,8 @@ public User create(@Valid(value = {"name"}) @NotNull User user){
 ```java
 
 @Documented
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Complex(value = Builder._BLANK, clazz = BlankStrategy.class)
 public @interface Blank {
 

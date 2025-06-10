@@ -38,8 +38,8 @@ import org.miaixz.bus.core.lang.Normal;
  * @since Java 17+
  */
 @Documented
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface Scheduled {
 
     /**

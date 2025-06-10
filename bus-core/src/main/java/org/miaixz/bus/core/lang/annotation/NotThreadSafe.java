@@ -35,10 +35,10 @@ import java.lang.annotation.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Documented
 @Inherited
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface NotThreadSafe {
 
 }

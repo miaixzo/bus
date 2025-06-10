@@ -37,10 +37,10 @@ import org.miaixz.bus.core.lang.Normal;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
-@Inherited
 public @interface GuardedBy {
 
     /**

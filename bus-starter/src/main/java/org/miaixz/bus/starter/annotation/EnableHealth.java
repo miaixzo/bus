@@ -40,8 +40,8 @@ import org.springframework.context.annotation.Import;
  */
 @Inherited
 @Documented
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 @Import({ HealthConfiguration.class })
 public @interface EnableHealth {
 

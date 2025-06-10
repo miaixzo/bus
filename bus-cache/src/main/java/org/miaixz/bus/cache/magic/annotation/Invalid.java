@@ -36,8 +36,8 @@ import org.miaixz.bus.core.lang.Normal;
  * @since Java 17+
  */
 @Documented
-@Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(value = ElementType.METHOD)
 public @interface Invalid {
 
     /**

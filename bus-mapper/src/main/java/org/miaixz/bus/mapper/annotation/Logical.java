@@ -37,8 +37,8 @@ import org.miaixz.bus.core.lang.Normal;
 /**
  * 标记该字段为逻辑状态列
  */
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
 public @interface Logical {
 
     /**

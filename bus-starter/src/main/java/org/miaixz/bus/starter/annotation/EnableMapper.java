@@ -45,8 +45,8 @@ import org.springframework.context.annotation.Import;
  */
 @Inherited
 @Documented
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 @Import({ JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class })
 public @interface EnableMapper {
 

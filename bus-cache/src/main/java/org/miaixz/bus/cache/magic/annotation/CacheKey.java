@@ -36,8 +36,8 @@ import org.miaixz.bus.core.lang.Normal;
  * @since Java 17+
  */
 @Documented
-@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
 public @interface CacheKey {
 
     /**

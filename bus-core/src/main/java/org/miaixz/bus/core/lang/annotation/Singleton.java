@@ -39,8 +39,8 @@ import java.lang.annotation.Target;
  * @since Java 17+
  */
 @Scope
-@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Singleton {
 
 }

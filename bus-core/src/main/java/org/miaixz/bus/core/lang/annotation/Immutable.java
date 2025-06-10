@@ -35,10 +35,10 @@ import java.lang.annotation.*;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
-@Inherited
 public @interface Immutable {
 
 }

@@ -47,16 +47,22 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OAuth2 extends Entity {
+public class Authorize extends Entity {
 
     @Serial
     private static final long serialVersionUID = 2852290950589L;
 
     /**
-     * 当前租户
+     * 当前租户标识
      */
     @Transient
     protected String x_tenant_id;
+
+    /**
+     * 当前租户名称
+     */
+    @Transient
+    protected String x_tenant_name;
 
     /**
      * 当前用户标识
@@ -65,16 +71,34 @@ public class OAuth2 extends Entity {
     protected String x_user_id;
 
     /**
+     * 当前用户邮箱
+     */
+    @Transient
+    protected String x_user_email;
+
+    /**
      * 当前用户编码
      */
     @Transient
     protected String x_user_code;
 
     /**
+     * 当前用户昵称
+     */
+    @Transient
+    protected String x_user_nick;
+
+    /**
      * 当前用户名称
      */
     @Transient
     protected String x_user_name;
+
+    /**
+     * 当前用户头像
+     */
+    @Transient
+    protected String x_user_avatar;
 
     /**
      * 当前用户角色

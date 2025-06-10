@@ -37,9 +37,9 @@ import org.miaixz.bus.core.lang.Normal;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.PARAMETER, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER, ElementType.METHOD })
 public @interface Trace {
 
     /**

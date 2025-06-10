@@ -43,8 +43,8 @@ import org.springframework.core.annotation.AliasFor;
  */
 @Inherited
 @Documented
-@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
 @EnableDubboConfig
 @DubboComponentScan
 @Import(DubboConfiguration.class)
