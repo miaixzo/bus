@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.lang.annotation;
 
 /**
- * 设置返回元素的类型
+ * 注解: 设置返回元素的类型
  *
  * @param <T> 对象泛型
  * @author Kimi Liu

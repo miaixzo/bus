@@ -30,7 +30,7 @@ package org.miaixz.bus.core.lang.annotation.env;
 import java.lang.annotation.*;
 
 /**
- * 生产环境 表示当前方法性能安全性各方面达标,可以用于生产环境
+ * 注解: 生产环境，表示当前方法性能安全性各方面达标,可以用于生产环境。
  *
  * @author Kimi Liu
  * @since Java 17+

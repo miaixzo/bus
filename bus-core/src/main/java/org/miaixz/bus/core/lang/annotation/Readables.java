@@ -30,7 +30,7 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标记可读
+ * 注解: 标记可读
  *
  * @author Kimi Liu
  * @since Java 17+

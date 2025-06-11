@@ -32,7 +32,7 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 启用框架扩展和替换组件,服务提供发现机制, 实现方制定接口并完成对接口的实现
+ * 注解: 启用框架扩展和替换组件,服务提供发现机制, 实现方制定接口并完成对接口的实现
  *
  * <pre>
  *   1.支持自定义实现类为单例/多例

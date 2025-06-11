@@ -33,7 +33,7 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 注解命名
+ * 注解: 命名
  *
  * @author Kimi Liu
  * @since Java 17+

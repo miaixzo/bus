@@ -32,7 +32,7 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 用来标识每个需要加锁的状态变量以及保护该变量的锁 有助于代码的维护与审查,以及一些自动化的分析工具找到潜在的安全性错误
+ * 注解: 用来标识每个需要加锁的状态变量以及保护该变量的锁 有助于代码的维护与审查,以及一些自动化的分析工具找到潜在的安全性错误
  *
  * @author Kimi Liu
  * @since Java 17+

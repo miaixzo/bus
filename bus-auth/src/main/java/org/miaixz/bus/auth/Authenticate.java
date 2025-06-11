@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AuthorizeBuilder {
+public class Authenticate {
 
     /**
      * 认证来源（如 TWITTER、SAML）
@@ -64,7 +64,7 @@ public class AuthorizeBuilder {
     /**
      * 私有构造函数，防止直接实例化。
      */
-    private AuthorizeBuilder() {
+    private Authenticate() {
 
     }
 
@@ -73,8 +73,8 @@ public class AuthorizeBuilder {
      *
      * @return 新创建的 Authorize 实例
      */
-    public static AuthorizeBuilder builder() {
-        return new AuthorizeBuilder();
+    public static Authenticate builder() {
+        return new Authenticate();
     }
 
     /**
@@ -83,7 +83,7 @@ public class AuthorizeBuilder {
      * @param source 认证来源（如 TWITTER、SAML_EXAMPLE）
      * @return 当前 Authorize 实例
      */
-    public AuthorizeBuilder source(String source) {
+    public Authenticate source(String source) {
         this.source = source;
         return this;
     }
@@ -94,7 +94,7 @@ public class AuthorizeBuilder {
      * @param context 上下文配置对象
      * @return 当前 Authorize 实例
      */
-    public AuthorizeBuilder context(Context context) {
+    public Authenticate context(Context context) {
         this.context = context;
         return this;
     }
@@ -105,7 +105,7 @@ public class AuthorizeBuilder {
      * @param context 函数，根据 source 生成上下文配置
      * @return 当前 Authorize 实例
      */
-    public AuthorizeBuilder context(Function<String, Context> context) {
+    public Authenticate context(Function<String, Context> context) {
         this.context = context.apply(this.source);
         return this;
     }
@@ -116,7 +116,7 @@ public class AuthorizeBuilder {
      * @param cache 缓存对象
      * @return 当前 Authorize 实例
      */
-    public AuthorizeBuilder cache(ExtendCache cache) {
+    public Authenticate cache(ExtendCache cache) {
         this.cache = cache;
         return this;
     }
@@ -127,7 +127,7 @@ public class AuthorizeBuilder {
      * @param complex 协议配置数组
      * @return 当前 Authorize 实例
      */
-    public AuthorizeBuilder complex(Complex... complex) {
+    public Authenticate complex(Complex... complex) {
         this.complex = complex;
         return this;
     }

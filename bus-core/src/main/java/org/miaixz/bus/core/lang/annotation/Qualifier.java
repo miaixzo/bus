@@ -30,7 +30,7 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标识qualifier注解
+ * 注解: 标识qualifier注解
  *
  * @author Kimi Liu
  * @since Java 17+
