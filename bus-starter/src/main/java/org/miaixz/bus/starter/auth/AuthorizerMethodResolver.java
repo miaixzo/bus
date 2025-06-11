@@ -25,20 +25,35 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.lang.annotation;
+package org.miaixz.bus.starter.auth;
 
-import java.lang.annotation.*;
+import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.lang.annotation.Authenticate;
+import org.miaixz.bus.spring.ContextBuilder;
+import org.springframework.core.MethodParameter;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * 注解: 需要经过授权/许可的
+ * 将含有 @Authenticate 注解的方法参数注入当前登录用户
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Inherited
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER, ElementType.METHOD })
-public @interface Authenticated {
+public class AuthorizerMethodResolver implements HandlerMethodArgumentResolver {
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.getParameterType().isAssignableFrom(Authorize.class)
+                && parameter.hasParameterAnnotation(Authenticate.class);
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer modelAndViewContainer,
+            NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) {
+        return ContextBuilder.getCurrentUser();
+    }
 
 }

@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Authenticate {
+public class Authorizer {
 
     /**
      * 认证来源（如 TWITTER、SAML）
@@ -64,7 +64,7 @@ public class Authenticate {
     /**
      * 私有构造函数，防止直接实例化。
      */
-    private Authenticate() {
+    private Authorizer() {
 
     }
 
@@ -73,8 +73,8 @@ public class Authenticate {
      *
      * @return 新创建的 Authorize 实例
      */
-    public static Authenticate builder() {
-        return new Authenticate();
+    public static Authorizer builder() {
+        return new Authorizer();
     }
 
     /**
@@ -83,7 +83,7 @@ public class Authenticate {
      * @param source 认证来源（如 TWITTER、SAML_EXAMPLE）
      * @return 当前 Authorize 实例
      */
-    public Authenticate source(String source) {
+    public Authorizer source(String source) {
         this.source = source;
         return this;
     }
@@ -94,7 +94,7 @@ public class Authenticate {
      * @param context 上下文配置对象
      * @return 当前 Authorize 实例
      */
-    public Authenticate context(Context context) {
+    public Authorizer context(Context context) {
         this.context = context;
         return this;
     }
@@ -105,7 +105,7 @@ public class Authenticate {
      * @param context 函数，根据 source 生成上下文配置
      * @return 当前 Authorize 实例
      */
-    public Authenticate context(Function<String, Context> context) {
+    public Authorizer context(Function<String, Context> context) {
         this.context = context.apply(this.source);
         return this;
     }
@@ -116,7 +116,7 @@ public class Authenticate {
      * @param cache 缓存对象
      * @return 当前 Authorize 实例
      */
-    public Authenticate cache(ExtendCache cache) {
+    public Authorizer cache(ExtendCache cache) {
         this.cache = cache;
         return this;
     }
@@ -127,7 +127,7 @@ public class Authenticate {
      * @param complex 协议配置数组
      * @return 当前 Authorize 实例
      */
-    public Authenticate complex(Complex... complex) {
+    public Authorizer complex(Complex... complex) {
         this.complex = complex;
         return this;
     }
