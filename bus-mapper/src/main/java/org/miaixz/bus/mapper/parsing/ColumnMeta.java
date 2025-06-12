@@ -57,12 +57,12 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     /**
      * 实体类字段
      */
-    protected final FieldMeta field;
+    protected final FieldMeta fieldMeta;
 
     /**
      * 所在实体类
      */
-    protected TableMeta entityTable;
+    protected TableMeta tableMeta;
 
     /**
      * 列名
@@ -142,10 +142,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     /**
      * 构造函数，初始化 MapperColumn
      *
-     * @param field 实体类字段
+     * @param fieldMeta 实体类字段
      */
-    protected ColumnMeta(FieldMeta field) {
-        this.field = field;
+    protected ColumnMeta(FieldMeta fieldMeta) {
+        this.fieldMeta = fieldMeta;
     }
 
     /**
@@ -164,8 +164,8 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @param entityTable 实体表信息
      * @return 当前 MapperColumn 实例
      */
-    public ColumnMeta entityTable(TableMeta entityTable) {
-        this.entityTable = entityTable;
+    public ColumnMeta tableMeta(TableMeta entityTable) {
+        this.tableMeta = entityTable;
         return this;
     }
 
@@ -340,7 +340,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return 字段的 Java 类型
      */
     public Class<?> javaType() {
-        return field().getType();
+        return fieldMeta().getType();
     }
 
     /**
@@ -359,7 +359,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return 带前缀的属性名
      */
     public String property(String prefix) {
-        return prefix + field().getName();
+        return prefix + fieldMeta().getName();
     }
 
     /**
@@ -513,7 +513,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return 非空判断字符串
      */
     public String notEmptyTest(String prefix) {
-        if (field().getType() == String.class) {
+        if (fieldMeta().getType() == String.class) {
             return notNullTest(prefix) + " and " + property(prefix) + " != '' ";
         }
         return notNullTest();

@@ -85,14 +85,14 @@ public class ColumnSchemaChain implements ColumnSchemaBuilder.Chain {
     /**
      * 创建实体列信息，链式调用列工厂
      *
-     * @param entityTable 实体表信息
-     * @param field       字段信息
+     * @param tableMeta 实体表信息
+     * @param fieldMeta 字段信息
      * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
      */
     @Override
-    public Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field) {
+    public Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta) {
         if (index < factories.size()) {
-            return factories.get(index).createColumn(entityTable, field, next);
+            return factories.get(index).createColumn(tableMeta, fieldMeta, next);
         }
         return Optional.empty();
     }

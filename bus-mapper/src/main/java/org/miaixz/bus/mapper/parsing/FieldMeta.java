@@ -30,7 +30,7 @@ package org.miaixz.bus.mapper.parsing;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import org.miaixz.bus.mapper.builder.TypeResolver;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 
 /**
  * 实体类字段信息类，参考 {@link java.lang.reflect.Field}，提供字段相关操作
@@ -101,7 +101,7 @@ public class FieldMeta {
      * @return 字段的实际类型
      */
     public Class<?> getType() {
-        return TypeResolver.resolveFieldClass(field, entityClass);
+        return GenericTypeResolver.resolveFieldClass(field, entityClass);
     }
 
     /**

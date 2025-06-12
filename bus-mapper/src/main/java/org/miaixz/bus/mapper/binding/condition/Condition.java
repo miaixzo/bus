@@ -208,12 +208,12 @@ public class Condition<T> {
         StringBuilder simple = new StringBuilder(columns.size() * 16);
         for (ColumnMeta entityColumn : columns) {
             String column = entityColumn.column();
-            String field = entityColumn.field().getName();
+            String field = entityColumn.fieldMeta().getName();
             if (sb.length() != 0) {
                 sb.append(Symbol.COMMA);
                 simple.append(Symbol.COMMA);
             }
-            if (column.equals(field) || entityColumn.entityTable().useResultMaps()) {
+            if (column.equals(field) || entityColumn.tableMeta().useResultMaps()) {
                 sb.append(column);
                 simple.append(column);
             } else {
@@ -243,7 +243,7 @@ public class Condition<T> {
         if (fns == null || fns.length == 0) {
             return this;
         }
-        TableMeta table = fns[0].toEntityColumn().entityTable();
+        TableMeta table = fns[0].toEntityColumn().tableMeta();
         Set<String> excludeColumnSet = Arrays.stream(fns).map(Fn::toColumn).collect(Collectors.toSet());
         selectColumns(table.selectColumns().stream().filter(c -> !excludeColumnSet.contains(c.column()))
                 .collect(Collectors.toList()));

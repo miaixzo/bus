@@ -71,6 +71,7 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
             String prefix = Context.INSTANCE.getProperty(Args.TABLE_PREFIX_KEY, Normal.EMPTY);
             tableMeta.table(prefix + tableMeta.table());
         }
+        EntityClassBuilder.setTableMeta(tableMeta);
 
         return tableMeta;
     }

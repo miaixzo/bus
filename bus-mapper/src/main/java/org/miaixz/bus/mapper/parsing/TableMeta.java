@@ -48,7 +48,7 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.builder.TypeResolver;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -181,8 +181,8 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      *
      * @return 所有字段
      */
-    public List<FieldMeta> fields() {
-        return columns().stream().map(ColumnMeta::field).collect(Collectors.toList());
+    public List<FieldMeta> fieldMetas() {
+        return columns().stream().map(ColumnMeta::fieldMeta).collect(Collectors.toList());
     }
 
     /**
@@ -210,12 +210,12 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      */
     public void addColumn(ColumnMeta column) {
         if (!columns().contains(column)) {
-            if (column.field().getDeclaringClass() != entityClass()) {
+            if (column.fieldMeta().getDeclaringClass() != entityClass()) {
                 columns().add(0, column);
             } else {
                 columns().add(column);
             }
-            column.entityTable(this);
+            column.tableMeta(this);
         } else {
             // 同名列在父类存在时，说明是子类覆盖的，字段顺序应更靠前
             ColumnMeta existsColumn = columns().remove(columns().indexOf(column));
@@ -237,7 +237,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             if (resultType == providerContext.getMapperMethod().getReturnType()) {
                 return true;
             }
-            Class<?> returnType = TypeResolver.getReturnType(providerContext.getMapperMethod(),
+            Class<?> returnType = GenericTypeResolver.getReturnType(providerContext.getMapperMethod(),
                     providerContext.getMapperType());
             return resultType == returnType;
         }

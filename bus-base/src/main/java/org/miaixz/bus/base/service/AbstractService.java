@@ -406,7 +406,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     public boolean pkHasValue(T entity) {
         TableMeta entityTable = mapper.entityTable();
         List<ColumnMeta> idColumns = entityTable.idColumns();
-        return idColumns.get(0).field().get(entity) != null;
+        return idColumns.get(0).fieldMeta().get(entity) != null;
     }
 
     /**

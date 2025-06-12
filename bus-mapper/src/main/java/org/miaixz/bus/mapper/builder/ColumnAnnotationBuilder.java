@@ -56,31 +56,32 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
     /**
      * 创建实体列信息，解析字段注解并生成列元数据
      *
-     * @param entityTable 实体表信息，包含表元数据
-     * @param field       字段信息，包含字段元数据
-     * @param chain       列工厂处理链，用于责任链模式
+     * @param tableMeta 实体表信息，包含表元数据
+     * @param fieldMeta 字段信息，包含字段元数据
+     * @param chain     列工厂处理链，用于责任链模式
      * @return 列信息的 Optional 包装对象，若字段被忽略或标记为 Transient 则返回空列表
      */
     @Override
-    public Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field,
+    public Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta,
             ColumnSchemaBuilder.Chain chain) {
         // 优先调用责任链中的下一个处理器
-        Optional<List<ColumnMeta>> columns = chain.createColumn(entityTable, field);
-        if (columns == IGNORE || field.isAnnotationPresent(Transient.class)) {
+        Optional<List<ColumnMeta>> columns = chain.createColumn(tableMeta, fieldMeta);
+        if (columns == IGNORE || fieldMeta.isAnnotationPresent(Transient.class)) {
             return IGNORE;
         }
 
         // 若无列信息且字段未标记为 Transient，生成默认列信息（驼峰转下划线）
         if (!columns.isPresent()) {
-            String columnName = NamingProvider.getDefaultStyle().columnName(entityTable, field);
-            columns = Optional.of(Collections.singletonList(ColumnMeta.of(field).column(columnName)));
+            String columnName = NamingProvider.getDefaultStyle().columnName(tableMeta, fieldMeta);
+            columns = Optional.of(Collections.singletonList(ColumnMeta.of(fieldMeta).column(columnName)));
         }
 
         // 处理列信息中的注解
         if (columns.isPresent()) {
             List<ColumnMeta> columnList = columns.getOrNull();
             for (ColumnMeta columnMeta : columnList) {
-                processAnnotations(columnMeta, field);
+                processAnnotations(columnMeta, fieldMeta);
+                EntityClassBuilder.setColumnMeta(tableMeta.entityClass(), columnMeta);
             }
         }
 
@@ -91,17 +92,17 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
      * 处理字段上的注解，设置列的元数据属性
      *
      * @param columnMeta 列元数据对象
-     * @param field      字段元数据对象
+     * @param fieldMeta  字段元数据对象
      */
-    protected void processAnnotations(ColumnMeta columnMeta, FieldMeta field) {
+    protected void processAnnotations(ColumnMeta columnMeta, FieldMeta fieldMeta) {
         // 处理主键注解
-        if (!columnMeta.id() && field.isAnnotationPresent(Id.class)) {
+        if (!columnMeta.id() && fieldMeta.isAnnotationPresent(Id.class)) {
             columnMeta.id(true);
         }
 
         // 处理列注解
-        if (field.isAnnotationPresent(Column.class)) {
-            Column column = field.getAnnotation(Column.class);
+        if (fieldMeta.isAnnotationPresent(Column.class)) {
+            Column column = fieldMeta.getAnnotation(Column.class);
             if (!column.name().isEmpty()) {
                 columnMeta.column(column.name());
             }
@@ -112,14 +113,14 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
         }
 
         // 处理排序注解
-        if (field.isAnnotationPresent(OrderBy.class)) {
-            OrderBy orderBy = field.getAnnotation(OrderBy.class);
+        if (fieldMeta.isAnnotationPresent(OrderBy.class)) {
+            OrderBy orderBy = fieldMeta.getAnnotation(OrderBy.class);
             columnMeta.orderBy(orderBy.value().isEmpty() ? ORDER.ASC : orderBy.value());
         }
 
         // 处理类型转换器注解
-        if (field.isAnnotationPresent(Convert.class)) {
-            Convert convert = field.getAnnotation(Convert.class);
+        if (fieldMeta.isAnnotationPresent(Convert.class)) {
+            Convert convert = fieldMeta.getAnnotation(Convert.class);
             Class converter = convert.converter();
             if (converter != void.class && TypeHandler.class.isAssignableFrom(converter)) {
                 columnMeta.typeHandler(converter);

@@ -56,12 +56,12 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
      * 对 SQL 脚本进行包装，应用接口、方法和参数上的注解
      *
      * @param context   提供者上下文
-     * @param entity    实体表信息
+     * @param tableMeta 实体表信息
      * @param sqlScript SQL 脚本
      * @return 包装后的 SQL 脚本
      */
     @Override
-    public SqlScript wrap(ProviderContext context, TableMeta entity, SqlScript sqlScript) {
+    public SqlScript wrap(ProviderContext context, TableMeta tableMeta, SqlScript sqlScript) {
         Class<?> mapperType = context.getMapperType();
         Method mapperMethod = context.getMapperMethod();
         // 接口注解
@@ -78,7 +78,7 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
         wrappers = wrappers.stream().distinct().sorted(Comparator.comparing(f -> ((ORDER) f).order()).reversed())
                 .collect(Collectors.toList());
         for (SqlScriptWrapper wrapper : wrappers) {
-            sqlScript = wrapper.wrap(context, entity, sqlScript);
+            sqlScript = wrapper.wrap(context, tableMeta, sqlScript);
         }
         return sqlScript;
     }

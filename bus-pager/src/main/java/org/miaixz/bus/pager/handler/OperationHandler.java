@@ -33,8 +33,9 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.MetaObject;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.builder.EntityClassBuilder;
+import org.miaixz.bus.mapper.handler.MapperHandler;
 
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
@@ -46,7 +47,6 @@ import net.sf.jsqlparser.expression.operators.relational.NotEqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.update.Update;
-import org.miaixz.bus.mapper.handler.MapperHandler;
 
 /**
  * 操作：防止全表更新与删除
@@ -108,32 +108,32 @@ public class OperationHandler<T> extends SqlParserHandler implements MapperHandl
      * @throws IllegalArgumentException 如果 WHERE 条件无效
      */
     protected void checkWhere(String tableName, Expression where, String ex) {
-        Assert.isFalse(this.fullMatch(where, this.getTableLogicField(tableName)), ex);
+        Assert.isFalse(this.fullMatch(where, EntityClassBuilder.getTableLogicColumn()), ex);
     }
 
     /**
      * 检查 WHERE 条件是否为全表匹配。
      *
-     * @param where      WHERE 条件表达式
-     * @param logicField 逻辑删除字段
+     * @param where  WHERE 条件表达式
+     * @param column 逻辑删除字段
      * @return 是否为全表匹配
      */
-    private boolean fullMatch(Expression where, String logicField) {
+    private boolean fullMatch(Expression where, String column) {
         if (where == null) {
             return true;
         }
-        if (StringKit.isNotBlank(logicField)) {
+        if (StringKit.isNotBlank(column)) {
             if (where instanceof BinaryExpression) {
                 BinaryExpression binaryExpression = (BinaryExpression) where;
-                if (StringKit.equals(binaryExpression.getLeftExpression().toString(), logicField)
-                        || StringKit.equals(binaryExpression.getRightExpression().toString(), logicField)) {
+                if (StringKit.equals(binaryExpression.getLeftExpression().toString(), column)
+                        || StringKit.equals(binaryExpression.getRightExpression().toString(), column)) {
                     return true;
                 }
             }
 
             if (where instanceof IsNullExpression) {
                 IsNullExpression binaryExpression = (IsNullExpression) where;
-                if (StringKit.equals(binaryExpression.getLeftExpression().toString(), logicField)) {
+                if (StringKit.equals(binaryExpression.getLeftExpression().toString(), column)) {
                     return true;
                 }
             }
@@ -148,28 +148,18 @@ public class OperationHandler<T> extends SqlParserHandler implements MapperHandl
                     notEqualsTo.getRightExpression().toString());
         } else if (where instanceof OrExpression) {
             OrExpression orExpression = (OrExpression) where;
-            return fullMatch(orExpression.getLeftExpression(), logicField)
-                    || fullMatch(orExpression.getRightExpression(), logicField);
+            return fullMatch(orExpression.getLeftExpression(), column)
+                    || fullMatch(orExpression.getRightExpression(), column);
         } else if (where instanceof AndExpression) {
             AndExpression andExpression = (AndExpression) where;
-            return fullMatch(andExpression.getLeftExpression(), logicField)
-                    && fullMatch(andExpression.getRightExpression(), logicField);
+            return fullMatch(andExpression.getLeftExpression(), column)
+                    && fullMatch(andExpression.getRightExpression(), column);
         } else if (where instanceof ParenthesedExpressionList) {
             ParenthesedExpressionList<Expression> parenthesis = (ParenthesedExpressionList<Expression>) where;
-            return fullMatch(parenthesis.get(0), logicField);
+            return fullMatch(parenthesis.get(0), column);
         }
 
         return false;
-    }
-
-    /**
-     * 获取表中的逻辑删除字段。
-     *
-     * @param tableName 表名
-     * @return 逻辑删除字段，默认为空字符串
-     */
-    private String getTableLogicField(String tableName) {
-        return Normal.EMPTY;
     }
 
 }

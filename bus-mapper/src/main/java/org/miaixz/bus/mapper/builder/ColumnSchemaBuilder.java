@@ -52,12 +52,12 @@ public interface ColumnSchemaBuilder extends ORDER {
     /**
      * 创建列信息，一个字段可能不是列，也可能是列，还可能对应多个列（如 ValueObject 对象）
      *
-     * @param entityTable 实体表信息
-     * @param field       字段信息
-     * @param chain       工厂链，用于调用下一个处理逻辑
+     * @param tableMeta 实体表信息
+     * @param fieldMeta 字段信息
+     * @param chain     工厂链，用于调用下一个处理逻辑
      * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
      */
-    Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field, Chain chain);
+    Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta, Chain chain);
 
     /**
      * 工厂链接口，用于链式调用列信息创建逻辑
@@ -66,11 +66,11 @@ public interface ColumnSchemaBuilder extends ORDER {
         /**
          * 创建列信息，一个字段可能不是列，也可能是列，还可能对应多个列（如 ValueObject 对象）
          *
-         * @param entityTable 实体表信息
-         * @param field       字段信息
+         * @param tableMeta 实体表信息
+         * @param fieldMeta 字段信息
          * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
          */
-        Optional<List<ColumnMeta>> createColumn(TableMeta entityTable, FieldMeta field);
+        Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta);
     }
 
 }

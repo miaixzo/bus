@@ -133,7 +133,6 @@ public class SqlParserHandler extends AbstractSqlHandler {
         } else if (statement instanceof Delete) {
             this.processDelete((Delete) statement, index, sql, object);
         }
-        this.validateSql(statement.toString());
         return statement.toString();
     }
 

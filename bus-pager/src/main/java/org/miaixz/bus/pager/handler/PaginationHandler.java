@@ -140,6 +140,10 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
     @Override
     public boolean isQuery(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
             ResultHandler resultHandler, BoundSql boundSql) {
+        Page<Object> page = PageMethod.getLocalPage();
+        if (page == null || page.getPageSize() < 0 || resultHandler != Executor.NO_RESULT_HANDLER) {
+            return true;
+        }
         checkDialectExists();
         if (!dialect.skip(mappedStatement, parameter, rowBounds)) {
             try {
@@ -252,10 +256,6 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
                 }
             }
         });
-    }
-
-    public static void main(String[] args) {
-
     }
 
     /**

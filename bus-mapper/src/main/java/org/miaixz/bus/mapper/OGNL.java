@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -66,6 +67,19 @@ public class OGNL {
      */
     public static final Pattern SQL_COMMENT_PATTERN = Pattern.compile("'.*(or|union|--|#|/\\*|;)",
             Pattern.CASE_INSENSITIVE);
+
+    /**
+     * SQL 字符串去除空白
+     *
+     * <ul>
+     * <li><code>' " &lt; &gt; &amp; * + = # - ;</code> - SQL 注入黑名单字符</li>
+     * <li><code>\n</code> - 回车</li>
+     * <li><code>\t</code> - 水平制表符</li>
+     * <li><code>\s</code> - 空格</li>
+     * <li><code>\r</code> - 换行</li>
+     * </ul>
+     */
+    public static final Pattern REPLACE_BLANK = Pattern.compile("'|\"|\\<|\\>|&|\\*|\\+|=|#|-|;|\\s*|\t|\r|\n");
 
     /**
      * 注册新的简单类型。
@@ -193,6 +207,35 @@ public class OGNL {
     public static boolean validateSql(String value) {
         Objects.requireNonNull(value);
         return SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find();
+    }
+
+    /**
+     * 防止 SQL 注入处理
+     * 
+     * @param value 字符串
+     */
+    public static String injection(String value) {
+        if (validateSql(value)) {
+            // 过滤sql黑名单字符，存在 SQL 注入，去除空白内容
+            value = replaceAllBlank(value);
+        }
+        return value;
+    }
+
+    /**
+     * 字符串去除空白：
+     * <ul>
+     * <li>\n 回车</li>
+     * <li>\t 水平制表符</li>
+     * <li>\s 空格</li>
+     * <li>\r 换行</li>
+     * </ul>
+     *
+     * @param value 字符串
+     */
+    public static String replaceAllBlank(String value) {
+        Matcher matcher = REPLACE_BLANK.matcher(value);
+        return matcher.replaceAll(Normal.EMPTY);
     }
 
     /**

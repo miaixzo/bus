@@ -32,7 +32,7 @@ import java.lang.reflect.Type;
 
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.mapper.builder.ClassMetaResolver;
-import org.miaixz.bus.mapper.builder.TypeResolver;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 
 /**
  * 抽象实体类查找器，根据泛型从返回值、参数、接口泛型参数判断对应的实体类类型
@@ -80,7 +80,7 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @return 实体类类型的 Optional 包装对象
      */
     protected Optional<Class<?>> getClassByMapperMethodReturnType(Class<?> mapperType, Method mapperMethod) {
-        Class<?> returnType = TypeResolver.getReturnType(mapperMethod, mapperType);
+        Class<?> returnType = GenericTypeResolver.getReturnType(mapperMethod, mapperType);
         return isClass(returnType) ? Optional.of(returnType) : Optional.empty();
     }
 
@@ -92,7 +92,7 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @return 实体类类型的 Optional 包装对象
      */
     protected Optional<Class<?>> getClassByMapperMethodParamTypes(Class<?> mapperType, Method mapperMethod) {
-        return getClassByTypes(TypeResolver.resolveParamTypes(mapperMethod, mapperType));
+        return getClassByTypes(GenericTypeResolver.resolveParamTypes(mapperMethod, mapperType));
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @return 实体类类型的 Optional 包装对象
      */
     protected Optional<Class<?>> getClassByMapperMethodAndMapperType(Class<?> mapperType, Method mapperMethod) {
-        return getClassByTypes(TypeResolver.resolveMapperTypes(mapperMethod, mapperType));
+        return getClassByTypes(GenericTypeResolver.resolveMapperTypes(mapperMethod, mapperType));
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
      * @return 实体类类型的 Optional 包装对象
      */
     protected Optional<Class<?>> getClassByMapperType(Class<?> mapperType) {
-        return getClassByTypes(TypeResolver.resolveMapperTypes(mapperType));
+        return getClassByTypes(GenericTypeResolver.resolveMapperTypes(mapperType));
     }
 
     /**
@@ -125,16 +125,17 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
     protected Optional<Class<?>> getClassByType(Type type) {
         if (type instanceof Class) {
             return Optional.of((Class<?>) type);
-        } else if (type instanceof TypeResolver.ParameterizedTypes) {
-            return getClassByTypes(((TypeResolver.ParameterizedTypes) type).getActualTypeArguments());
-        } else if (type instanceof TypeResolver.WildcardTypes) {
-            Optional<Class<?>> optionalClass = getClassByTypes(((TypeResolver.WildcardTypes) type).getLowerBounds());
+        } else if (type instanceof GenericTypeResolver.ParameterizedTypes) {
+            return getClassByTypes(((GenericTypeResolver.ParameterizedTypes) type).getActualTypeArguments());
+        } else if (type instanceof GenericTypeResolver.WildcardTypes) {
+            Optional<Class<?>> optionalClass = getClassByTypes(
+                    ((GenericTypeResolver.WildcardTypes) type).getLowerBounds());
             if (optionalClass.isPresent()) {
                 return optionalClass;
             }
-            return getClassByTypes(((TypeResolver.WildcardTypes) type).getUpperBounds());
-        } else if (type instanceof TypeResolver.GenericArrayTypes) {
-            return getClassByType(((TypeResolver.GenericArrayTypes) type).getGenericComponentType());
+            return getClassByTypes(((GenericTypeResolver.WildcardTypes) type).getUpperBounds());
+        } else if (type instanceof GenericTypeResolver.GenericArrayTypes) {
+            return getClassByType(((GenericTypeResolver.GenericArrayTypes) type).getGenericComponentType());
         }
         return Optional.empty();
     }

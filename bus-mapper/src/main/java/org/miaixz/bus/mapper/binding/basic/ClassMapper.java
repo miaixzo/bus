@@ -30,7 +30,7 @@ package org.miaixz.bus.mapper.binding.basic;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.mapper.builder.TypeResolver;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
@@ -78,8 +78,8 @@ public interface ClassMapper<T> {
          */
         private static Class<?> getEntityClass(Class<?> clazz) {
             if (!entityClassMap.containsKey(clazz)) {
-                entityClassMap.put(clazz, TypeResolver.resolveTypeToClass(
-                        TypeResolver.resolveType(ClassMapper.class.getTypeParameters()[0], clazz, ClassMapper.class)));
+                entityClassMap.put(clazz, GenericTypeResolver.resolveTypeToClass(GenericTypeResolver
+                        .resolveType(ClassMapper.class.getTypeParameters()[0], clazz, ClassMapper.class)));
             }
             return entityClassMap.get(clazz);
         }

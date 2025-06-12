@@ -40,12 +40,12 @@ import org.apache.ibatis.cursor.Cursor;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TypeResolver {
+public class GenericTypeResolver {
 
     /**
      * 私有构造函数，防止实例化
      */
-    public TypeResolver() {
+    public GenericTypeResolver() {
 
     }
 
@@ -79,24 +79,24 @@ public class TypeResolver {
                     if (returnTypeParameter instanceof Class<?>) {
                         returnType = (Class<?>) returnTypeParameter;
                     } else if (returnTypeParameter instanceof ParameterizedType) {
-                        // (gcode issue #443) actual type can be a also a parameterized type
+                        // actual type can be a also a parameterized type
                         returnType = (Class<?>) ((ParameterizedType) returnTypeParameter).getRawType();
                     } else if (returnTypeParameter instanceof GenericArrayType) {
                         Class<?> componentType = (Class<?>) ((GenericArrayType) returnTypeParameter)
                                 .getGenericComponentType();
-                        // (gcode issue #525) support List<byte[]>
+                        // support List<byte[]>
                         returnType = Array.newInstance(componentType, 0).getClass();
                     }
                 }
             } else if (method.isAnnotationPresent(MapKey.class) && Map.class.isAssignableFrom(rawType)) {
-                // (gcode issue 504) Do not look into Maps if there is not MapKey annotation
+                // Do not look into Maps if there is not MapKey annotation
                 Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                 if (actualTypeArguments != null && actualTypeArguments.length == 2) {
                     Type returnTypeParameter = actualTypeArguments[1];
                     if (returnTypeParameter instanceof Class<?>) {
                         returnType = (Class<?>) returnTypeParameter;
                     } else if (returnTypeParameter instanceof ParameterizedType) {
-                        // (gcode issue 443) actual type can be a also a parameterized type
+                        // actual type can be a also a parameterized type
                         returnType = (Class<?>) ((ParameterizedType) returnTypeParameter).getRawType();
                     }
                 }
