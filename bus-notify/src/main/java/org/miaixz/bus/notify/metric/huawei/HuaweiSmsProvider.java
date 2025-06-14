@@ -99,7 +99,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context>
 
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "code");
-        return Message.builder().errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
+        return Message.builder().errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, "description")).build();
     }
 

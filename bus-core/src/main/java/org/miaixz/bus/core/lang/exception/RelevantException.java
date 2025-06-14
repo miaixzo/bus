@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 
+import org.miaixz.bus.core.basic.normal.Errors;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -63,6 +65,15 @@ public class RelevantException extends IOException {
     /**
      * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
+     * @param cause 抛出对象
+     */
+    protected RelevantException(final Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * 将抛出对象包裹成运行时异常,并增加自己的描述
+     *
      * @param message 打印信息
      */
     protected RelevantException(final String message) {
@@ -70,12 +81,14 @@ public class RelevantException extends IOException {
     }
 
     /**
-     * 将抛出对象包裹成运行时异常,并增加自己的描述
+     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param cause 抛出对象
+     * @param errors 错误码对象，包含键和值
      */
-    protected RelevantException(final Throwable cause) {
-        super(cause);
+    protected RelevantException(final Errors errors) {
+        super(errors.getValue());
+        this.errcode = errors.getKey();
+        this.errmsg = errors.getValue();
     }
 
     /**

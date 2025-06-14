@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
+import org.miaixz.bus.core.basic.normal.Errors;
+
 import java.io.Serial;
 
 /**
@@ -63,6 +65,15 @@ public class TimeoutException extends UncheckedException {
      */
     public TimeoutException(final String message) {
         super(message);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     */
+    public TimeoutException(final Errors errors) {
+        super(errors);
     }
 
     /**

@@ -153,7 +153,7 @@ public class ElemeProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
                             .expireIn(expiresIn).build())
                     .build();

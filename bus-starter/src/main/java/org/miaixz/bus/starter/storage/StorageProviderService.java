@@ -113,7 +113,7 @@ public class StorageProviderService {
         } else if (Registry.WEBDAV.equals(type)) {
             return new WebDavProvider(context);
         }
-        throw new InternalException(ErrorCode.UNSUPPORTED.getDesc());
+        throw new InternalException(ErrorCode._100508.getValue());
     }
 
 }

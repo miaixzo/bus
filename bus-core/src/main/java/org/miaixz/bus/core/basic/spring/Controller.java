@@ -29,6 +29,7 @@ package org.miaixz.bus.core.basic.spring;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -58,9 +59,9 @@ public class Controller {
      */
     public static Object write(Object data, boolean id) {
         if (id) {
-            return write(ErrorCode.EM_SUCCESS, FieldKit.getFieldValue(data, "id"));
+            return write(ErrorCode._SUCCESS, FieldKit.getFieldValue(data, "id"));
         }
-        return write(ErrorCode.EM_SUCCESS, data);
+        return write(ErrorCode._SUCCESS, data);
     }
 
     /**
@@ -70,7 +71,17 @@ public class Controller {
      * @return body 返回值
      */
     public static Object write(String errcode) {
-        return write(errcode, ErrorCode.require(errcode));
+        return write(errcode, Errors.require(errcode));
+    }
+
+    /**
+     * 返回值:数据处理
+     *
+     * @param errors 错误信息
+     * @return body 返回值
+     */
+    public static Object write(Errors errors) {
+        return write(errors.getKey(), errors.getValue());
     }
 
     /**
@@ -81,11 +92,25 @@ public class Controller {
      * @return body 返回值
      */
     public static Object write(String errcode, Object data) {
-        String errmsg = ErrorCode.require(errcode);
-        if (StringKit.isNotEmpty(errmsg)) {
-            return Message.builder().errcode(errcode).errmsg(errmsg).data(data).build();
+        if (Errors.contains(errcode)) {
+            return Message.builder().errcode(errcode).errmsg(Errors.require(errcode).getValue()).data(data).build();
         }
-        return Message.builder().errcode(ErrorCode.EM_FAILURE).errmsg(ErrorCode.require(ErrorCode.EM_FAILURE)).build();
+        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+    }
+
+    /**
+     * 返回值:数据处理
+     *
+     * @param errors 错误编码
+     * @param data   数据信息
+     * @return body 返回值
+     */
+    public static Object write(Errors errors, Object data) {
+        if (Errors.contains(errors.getKey())) {
+            return Message.builder().errcode(errors.getKey()).errmsg(Errors.require(errors.getKey()).getValue())
+                    .data(data).build();
+        }
+        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
     }
 
     /**
@@ -96,11 +121,10 @@ public class Controller {
      * @return body 返回值
      */
     public static Object write(String errcode, String errmsg) {
-        String error = ErrorCode.require(errcode);
-        if (StringKit.isNotEmpty(error)) {
+        if (Errors.contains(errcode) && StringKit.isNotEmpty(errmsg)) {
             return Message.builder().errcode(errcode).errmsg(errmsg).build();
         }
-        return Message.builder().errcode(ErrorCode.EM_FAILURE).errmsg(ErrorCode.require(ErrorCode.EM_FAILURE)).build();
+        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
     }
 
     /**
@@ -115,7 +139,7 @@ public class Controller {
         if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
             return Message.builder().errcode(errcode).errmsg(StringKit.format(format, errmsg)).build();
         }
-        return Message.builder().errcode(ErrorCode.EM_FAILURE).errmsg(ErrorCode.require(ErrorCode.EM_FAILURE)).build();
+        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
     }
 
 }

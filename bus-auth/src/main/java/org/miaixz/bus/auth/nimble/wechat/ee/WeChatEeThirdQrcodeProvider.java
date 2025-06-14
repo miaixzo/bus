@@ -77,7 +77,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
             }
             AccToken accToken = this.getAccessToken(callback);
             Material user = this.getUserInfo(accToken);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(user).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(user).build();
         } catch (Exception e) {
             Logger.error("Failed to login with auth authorization.", e);
             return this.responseError(e);

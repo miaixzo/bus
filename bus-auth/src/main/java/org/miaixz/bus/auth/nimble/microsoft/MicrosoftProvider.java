@@ -56,7 +56,7 @@ public class MicrosoftProvider extends AbstractMicrosoftProvider {
         // 微软的回调地址必须为https的链接或者localhost,不允许使用http
         if (Registry.MICROSOFT == this.complex && !Protocol.isHttpsOrLocalHost(context.getRedirectUri())) {
             // Microsoft's redirect uri must use the HTTPS or localhost
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), this.complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), this.complex);
         }
     }
 

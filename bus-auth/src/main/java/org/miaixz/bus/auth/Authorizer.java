@@ -141,7 +141,7 @@ public class Authorizer {
     public Provider build() {
         // 验证 source 和 context 是否已设置
         if (StringKit.isEmpty(this.source) || null == this.context) {
-            throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+            throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
         }
 
         // 合并默认的 Registry 和自定义 Complex
@@ -150,12 +150,12 @@ public class Authorizer {
         // 筛选符合 source 的 Complex
         Complex complex = Arrays.stream(complexes).distinct()
                 .filter(authSource -> authSource.getName().equalsIgnoreCase(this.source)).findAny()
-                .orElseThrow(() -> new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode()));
+                .orElseThrow(() -> new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey()));
 
         // 获取提供者类
         Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
         if (null == targetClass) {
-            throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+            throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
         }
 
         // 动态创建提供者实例
@@ -168,7 +168,7 @@ public class Authorizer {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+            throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
         }
     }
 

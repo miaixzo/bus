@@ -120,8 +120,8 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         String response = Httpx.post(url, bodys, headers);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
+        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
@@ -176,8 +176,8 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         String response = Httpx.post(url, bodys, headers);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
+        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

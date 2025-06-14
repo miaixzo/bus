@@ -103,7 +103,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunMaterial, Context> {
                 signHeader(JsonKit.toJsonString(bodys), this.context.getAppKey(), this.context.getAppSecret()));
 
         String errcode = JsonKit.getValue(response, "errcode");
-        return Message.builder().errcode("200".equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
+        return Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, "errmsg")).build();
     }
 

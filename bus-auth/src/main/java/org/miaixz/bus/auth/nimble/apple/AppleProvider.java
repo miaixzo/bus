@@ -157,16 +157,16 @@ public class AppleProvider extends AbstractProvider {
     protected void check(Context context) {
         super.check(context);
         if (StringKit.isEmpty(context.getAppKey())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_CLIENT_ID.getCode(), this.complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_CLIENT_ID.getKey(), this.complex);
         }
         if (StringKit.isEmpty(context.getAppSecret())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_CLIENT_SECRET.getCode(), this.complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_CLIENT_SECRET.getKey(), this.complex);
         }
         if (StringKit.isEmpty(context.getKid())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_KID.getCode(), this.complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_KID.getKey(), this.complex);
         }
         if (StringKit.isEmpty(context.getTeamId())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_TEAM_ID.getCode(), this.complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_TEAM_ID.getKey(), this.complex);
         }
     }
 

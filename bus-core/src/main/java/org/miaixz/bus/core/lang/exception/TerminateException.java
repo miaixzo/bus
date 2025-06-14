@@ -29,6 +29,8 @@ package org.miaixz.bus.core.lang.exception;
 
 import java.io.Serial;
 
+import org.miaixz.bus.core.basic.normal.Errors;
+
 /**
  * 类型: 终止/结束
  * 
@@ -51,12 +53,93 @@ public class TerminateException extends UncheckedException {
     /**
      * 构造
      *
+     * @param e 异常
+     */
+    public TerminateException(final Throwable e) {
+        super(e);
+    }
+
+    /**
+     * 构造
+     *
      * @param message 消息
      */
     public TerminateException(final String message) {
         super(message);
         // 去除堆栈
         setStackTrace(new StackTraceElement[0]);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     */
+    public TerminateException(final Errors errors) {
+        super(errors);
+    }
+
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public TerminateException(final String format, final Object... args) {
+        super(format, args);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public TerminateException(final String errcode, final String errmsg) {
+        super(errcode, errmsg);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public TerminateException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public TerminateException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public TerminateException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public TerminateException(final String message, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

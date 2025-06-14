@@ -96,7 +96,7 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
         String response = Httpx.post(routerUrl, map, header);
         Logger.debug("netease result：{}", response);
         String code = JsonKit.getValue(response, "Code");
-        return Message.builder().errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode.SUCCESS.getCode() : code)
+        return Message.builder().errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
     }
 

@@ -118,7 +118,7 @@ public class FacebookProvider extends AbstractProvider {
         // facebook的回调地址必须为https的链接
         if (Registry.FACEBOOK == this.complex && !Protocol.isHttps(this.context.getRedirectUri())) {
             // Facebook's redirect uri must use the HTTPS protocol
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), this.complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), this.complex);
         }
     }
 

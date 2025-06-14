@@ -169,7 +169,7 @@ public class KujialeProvider extends AbstractProvider {
     @Override
     public Message refresh(AccToken accToken) {
         String response = Httpx.post(refreshTokenUrl(accToken.getRefreshToken()));
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
 }

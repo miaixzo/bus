@@ -137,19 +137,19 @@ public class PrimaryFilter implements WebFilter {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (Normal.UNDEFINED.equals(entry.getKey().toLowerCase())
                     || Normal.UNDEFINED.equals(entry.getValue().toLowerCase())) {
-                throw new BusinessException(ErrorCode.EM_100101);
+                throw new BusinessException(ErrorCode._100101);
             }
         }
 
         // 校验必要参数
         if (StringKit.isBlank(params.get(Config.METHOD))) {
-            throw new BusinessException(ErrorCode.EM_100108);
+            throw new BusinessException(ErrorCode._100108);
         }
         if (StringKit.isBlank(params.get(Config.VERSION))) {
-            throw new BusinessException(ErrorCode.EM_100107);
+            throw new BusinessException(ErrorCode._100107);
         }
         if (StringKit.isBlank(params.get(Config.FORMAT))) {
-            throw new BusinessException(ErrorCode.EM_100111);
+            throw new BusinessException(ErrorCode._100111);
         }
 
         // 如果存在签名参数，标记需要解密

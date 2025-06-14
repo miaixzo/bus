@@ -117,14 +117,14 @@ public class FtpFileProvider extends AbstractProvider {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             InputStream inputStream = client.getFileStream(objectKey);
             if (inputStream == null) {
-                return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg("File not found").build();
+                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(reader).build();
         } catch (InternalException e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -153,11 +153,11 @@ public class FtpFileProvider extends AbstractProvider {
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             client.download(objectKey, file);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
             Logger.error("Failed to download file: {} from bucket: {} to local file: {}. Error: {}", fileName, bucket,
                     file.getAbsolutePath(), e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -171,14 +171,14 @@ public class FtpFileProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             List<String> files = client.ls(prefix);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(files.stream().map(fileName -> {
                         Map<String, Object> extend = new HashMap<>();
                         return Material.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (InternalException e) {
             Logger.error("Failed to list files in path: {}. Error: {}", context.getPrefix(), e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -222,14 +222,14 @@ public class FtpFileProvider extends AbstractProvider {
             String oldObjectKey = getAbsolutePath(bucket, path, oldName);
             String newObjectKey = getAbsolutePath(bucket, path, newName);
             if (!client.exist(oldObjectKey)) {
-                return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg("File not found").build();
+                return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
             client.rename(oldObjectKey, newObjectKey);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
             Logger.error("Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}", oldName, newName,
                     bucket, path, e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -321,12 +321,12 @@ public class FtpFileProvider extends AbstractProvider {
             }
             client.uploadFile(dirPath, tempFile);
             tempFile.delete();
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException | IOException e) {
             Logger.error("Failed to upload file: {} to bucket: {} path: {}. Error: {}", fileName, bucket, path,
                     e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -368,11 +368,11 @@ public class FtpFileProvider extends AbstractProvider {
             if (client.exist(objectKey)) {
                 client.delFile(objectKey);
             }
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
             Logger.error("Failed to remove file: {} from bucket: {} path: {}. Error: {}", fileName, bucket, path,
                     e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 

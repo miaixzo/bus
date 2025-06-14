@@ -95,10 +95,10 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
             if (StringKit.isNotBlank(e.getErrcode())) {
                 message = Controller.write(e.getErrcode()); // 业务异常的特定错误码
             } else {
-                message = Controller.write(ErrorCode.EM_100513, e.getMessage()); // 通用业务异常
+                message = Controller.write(ErrorCode._100513, e.getMessage()); // 通用业务异常
             }
         } else {
-            message = Controller.write(ErrorCode.EM_100513); // 默认未知错误
+            message = Controller.write(ErrorCode._100513); // 默认未知错误
         }
 
         // 使用上下文指定的序列化提供者格式化响应

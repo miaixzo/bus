@@ -62,7 +62,6 @@ public class Message extends org.miaixz.bus.core.basic.entity.Message {
     private int status;
     private Map<String, List<String>> headers;
 
-
     public String getHeader(String name) {
         List<String> values = this.headerList(name);
         return CollKit.isEmpty(values) ? null : values.get(0);

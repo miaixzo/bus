@@ -134,7 +134,7 @@ public class NotifyProviderService {
         } else if (Registry.YUNPIAN_SMS.equals(registry)) {
             return new YunpianSmsProvider(context);
         }
-        throw new InternalException(ErrorCode.UNSUPPORTED.getDesc());
+        throw new InternalException(ErrorCode._100508.getValue());
     }
 
 }

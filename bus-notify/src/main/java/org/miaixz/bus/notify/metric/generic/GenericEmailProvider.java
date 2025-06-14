@@ -76,7 +76,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
             }
             Logger.error(message);
         }
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
     }
 
     /**

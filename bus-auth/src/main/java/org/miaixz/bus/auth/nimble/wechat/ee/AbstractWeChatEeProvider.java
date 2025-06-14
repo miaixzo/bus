@@ -83,7 +83,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
 
         // 返回 OpenId 或其他，均代表非当前企业用户，不支持
         if (!object.containsKey("userid")) {
-            throw new AuthorizedException(ErrorCode.UNIDENTIFIED_PLATFORM.getCode(), complex);
+            throw new AuthorizedException(ErrorCode.UNIDENTIFIED_PLATFORM.getKey(), complex);
         }
         String userId = (String) object.get("userid");
         String userTicket = (String) object.get("user_ticket");

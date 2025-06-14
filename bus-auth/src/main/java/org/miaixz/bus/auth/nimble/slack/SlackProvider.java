@@ -29,6 +29,7 @@ package org.miaixz.bus.auth.nimble.slack;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -103,8 +104,8 @@ public class SlackProvider extends AbstractProvider {
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         // 返回1表示取消授权成功，否则失败
-        ErrorCode status = (Boolean) object.get("revoked") ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
-        return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
+        Errors status = (Boolean) object.get("revoked") ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
+        return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
     }
 
     /**

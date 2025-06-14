@@ -102,7 +102,7 @@ public class TaobaoProvider extends AbstractProvider {
         String tokenUrl = refreshTokenUrl(oldToken.getRefreshToken());
         String response = Httpx.post(tokenUrl);
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(this.getAuthToken(accessTokenObject))
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(accessTokenObject))
                 .build();
     }
 

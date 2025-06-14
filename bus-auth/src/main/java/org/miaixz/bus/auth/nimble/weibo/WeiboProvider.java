@@ -29,6 +29,7 @@ package org.miaixz.bus.auth.nimble.weibo;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -162,14 +163,14 @@ public class WeiboProvider extends AbstractProvider {
             }
             if (object.containsKey("error")) {
                 String error = (String) object.get("error");
-                return Message.builder().errcode(ErrorCode.FAILURE.getCode())
+                return Message.builder().errcode(ErrorCode._FAILURE.getKey())
                         .errmsg(error != null ? error : "Unknown error").build();
             }
 
             Object resultObj = object.get("result");
             boolean result = resultObj instanceof Boolean ? (Boolean) resultObj : false;
-            ErrorCode status = result ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
-            return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
+            Errors status = result ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
+            return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse revoke response: " + e.getMessage());
         }

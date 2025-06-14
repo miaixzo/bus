@@ -177,7 +177,7 @@ public class MiProvider extends AbstractProvider {
      */
     @Override
     public Message refresh(AccToken accToken) {
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(refreshTokenUrl(accToken.getRefreshToken()))).build();
     }
 
