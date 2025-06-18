@@ -133,8 +133,6 @@ public class Pattern {
     public static final java.util.regex.Pattern TEL_PATTERN = java.util.regex.Pattern.compile(Regex.TEL);
     /**
      * 座机号码+400+800电话
-     *
-     * @see <a href="https://baike.baidu.com/item/800">800</a>
      */
     public static final java.util.regex.Pattern TEL_400_800_PATTERN = java.util.regex.Pattern
             .compile(Regex.TEL_400_800);

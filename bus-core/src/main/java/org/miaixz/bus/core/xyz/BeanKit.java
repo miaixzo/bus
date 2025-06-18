@@ -757,10 +757,10 @@ public class BeanKit {
     }
 
     /**
-     * 判断是否为Bean对象 判定方法是否存在只有无参数的getXXX方法或者isXXX方法
+     * 判断是否存在getXXX或者isXXX方法
      *
      * @param clazz 待测试类
-     * @return 是否为Bean对象
+     * @return 判断是否存在getXXX或者isXXX方法
      */
     public static boolean hasGetter(final Class<?> clazz) {
         if (ClassKit.isNormalClass(clazz)) {
