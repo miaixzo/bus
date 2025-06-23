@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.2.0</bus.version>
         <aspectj.version>1.9.24</aspectj.version>
-        <spring.boot.version>3.5.0</spring.boot.version>
+        <spring.boot.version>3.5.3</spring.boot.version>
     </properties>
 
     <dependencies>
@@ -192,7 +192,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.7.0</version>
+                <version>0.8.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>

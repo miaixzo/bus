@@ -28,6 +28,8 @@
 package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.data.masking.MaskingManager;
+import org.miaixz.bus.core.data.masking.MaskingProcessor;
+import org.miaixz.bus.core.data.masking.TextMaskingRule;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -60,21 +62,33 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Masking {
 
     /**
+     * 默认的富文本脱敏处理器
+     */
+    private static final MaskingProcessor DEFAULT_PROCESSOR = createDefaultProcessor();
+
+    /**
+     * 对富文本内容进行脱敏处理
+     *
+     * @param text 富文本内容
+     * @return 脱敏后的文本
+     */
+    public static String mask(final String text) {
+        return DEFAULT_PROCESSOR.mask(text);
+    }
+
+    /**
+     * 使用自定义处理器对富文本内容进行脱敏处理
+     *
+     * @param text      富文本内容
+     * @param processor 自定义处理器
+     * @return 脱敏后的文本
+     */
+    public static String mask(final String text, final MaskingProcessor processor) {
+        return processor.mask(text);
+    }
+
+    /**
      * 脱敏，使用默认的脱敏策略
-     * 
-     * <pre>
-     * Masking.masking("100", Masking.DesensitizedType.USER_ID)) =  "0"
-     * Masking.masking("王二小", Masking.DesensitizedType.CHINESE_NAME)) = "王**"
-     * Masking.masking("51363620000320711X", Masking.DesensitizedType.ID_CARD)) = "5***************1X"
-     * Masking.masking("02167518080", Masking.DesensitizedType.FIXED_PHONE)) = "0216*****80"
-     * Masking.masking("13929531666", Masking.DesensitizedType.MOBILE_PHONE)) = "139****1666"
-     * Masking.masking("北京市海淀区马连洼街道289号", Masking.DesensitizedType.ADDRESS)) = "北京市海淀区马********"
-     * Masking.masking("service@gmail.com", Masking.DesensitizedType.EMAIL)) = "s******@gmail.com"
-     * Masking.masking("1234567890", Masking.DesensitizedType.PASSWORD)) = "**********"
-     * Masking.masking("沪A50006", Masking.DesensitizedType.CAR_LICENSE)) = "沪A5***6"
-     * Masking.masking("11055555000033333350", Masking.DesensitizedType.BANK_CARD)) = "1105 **** **** **** 3350"
-     * Masking.masking("192.168.1.1", Masking.DesensitizedType.IPV4)) = "192.*.*.*"
-     * </pre>
      *
      * @param text    字符串
      * @param masking 脱敏类型;可以脱敏：用户id、中文名、身份证号、座机号、手机号、地址、电子邮件、密码
@@ -237,6 +251,100 @@ public class Masking {
      */
     public static String ipv6(final CharSequence ipv6) {
         return MaskingManager.EMPTY.ipv6(ipv6);
+    }
+
+    /**
+     * 创建一个新的富文本脱敏处理器
+     *
+     * @param preserveHtmlTags 是否保留HTML标签
+     * @return 富文本脱敏处理器
+     */
+    public static MaskingProcessor createProcessor(final boolean preserveHtmlTags) {
+        return new MaskingProcessor(preserveHtmlTags);
+    }
+
+    /**
+     * 创建一个邮箱脱敏规则
+     *
+     * @return 邮箱脱敏规则
+     */
+    public static TextMaskingRule createEmailRule() {
+        return new TextMaskingRule("邮箱", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, null).setPreserveLeft(1)
+                .setPreserveRight(0).setMaskChar('*');
+    }
+
+    /**
+     * 创建一个网址脱敏规则
+     *
+     * @param replacement 替换文本
+     * @return 网址脱敏规则
+     */
+    public static TextMaskingRule createUrlRule(final String replacement) {
+        return new TextMaskingRule("网址", "https?://[\\w.-]+(?:/[\\w.-]*)*", EnumValue.Masking.REPLACE, replacement);
+    }
+
+    /**
+     * 创建一个敏感词脱敏规则
+     *
+     * @param pattern 敏感词正则表达式
+     * @return 敏感词脱敏规则
+     */
+    public static TextMaskingRule createSensitiveWordRule(final String pattern) {
+        return new TextMaskingRule("敏感词", pattern, EnumValue.Masking.FULL, null).setMaskChar('*');
+    }
+
+    /**
+     * 创建一个自定义脱敏规则
+     *
+     * @param name        规则名称
+     * @param pattern     匹配模式（正则表达式）
+     * @param masking     脱敏类型
+     * @param replacement 替换内容
+     * @return 自定义脱敏规则
+     */
+    public static TextMaskingRule createCustomRule(final String name, final String pattern,
+            final EnumValue.Masking masking, final String replacement) {
+        return new TextMaskingRule(name, pattern, masking, replacement);
+    }
+
+    /**
+     * 创建一个部分脱敏规则
+     *
+     * @param name          规则名称
+     * @param pattern       匹配模式（正则表达式）
+     * @param preserveLeft  保留左侧字符数
+     * @param preserveRight 保留右侧字符数
+     * @param maskChar      脱敏字符
+     * @return 部分脱敏规则
+     */
+    public static TextMaskingRule createPartialMaskRule(final String name, final String pattern, final int preserveLeft,
+            final int preserveRight, final char maskChar) {
+        return new TextMaskingRule(name, pattern, preserveLeft, preserveRight, maskChar);
+    }
+
+    /**
+     * 创建默认的富文本脱敏处理器
+     *
+     * @return 默认的富文本脱敏处理器
+     */
+    private static MaskingProcessor createDefaultProcessor() {
+        final MaskingProcessor processor = new MaskingProcessor(true);
+
+        // 添加一些常用的脱敏规则
+
+        // 邮箱脱敏规则
+        processor.addRule(new TextMaskingRule("邮箱", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, "[邮箱已隐藏]")
+                .setPreserveLeft(1).setPreserveRight(0).setMaskChar('*'));
+
+        // 网址脱敏规则
+        processor.addRule(
+                new TextMaskingRule("网址", "https?://[\\w.-]+(?:/[\\w.-]*)*", EnumValue.Masking.REPLACE, "[网址已隐藏]"));
+
+        // 敏感词脱敏规则（示例）
+        processor.addRule(
+                new TextMaskingRule("敏感词", "(机密|绝密|内部资料|秘密|保密)", EnumValue.Masking.FULL, "***").setMaskChar('*'));
+
+        return processor;
     }
 
 }

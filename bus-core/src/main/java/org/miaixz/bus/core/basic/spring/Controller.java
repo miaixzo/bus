@@ -107,8 +107,7 @@ public class Controller {
      */
     public static Object write(Errors errors, Object data) {
         if (Errors.contains(errors.getKey())) {
-            return Message.builder().errcode(errors.getKey()).errmsg(Errors.require(errors.getKey()).getValue())
-                    .data(data).build();
+            return Message.builder().errcode(errors.getKey()).errmsg(errors.getValue()).data(data).build();
         }
         return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
     }

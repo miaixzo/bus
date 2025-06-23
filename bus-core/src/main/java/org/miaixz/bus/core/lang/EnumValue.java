@@ -237,6 +237,20 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     @AllArgsConstructor
     enum Masking {
         /**
+         * 完全脱敏
+         */
+        FULL,
+
+        /**
+         * 部分脱敏
+         */
+        PARTIAL,
+
+        /**
+         * 替换脱敏
+         */
+        REPLACE,
+        /**
          * 用户id
          */
         USER_ID,

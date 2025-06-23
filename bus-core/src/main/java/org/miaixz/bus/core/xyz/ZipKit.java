@@ -748,7 +748,7 @@ public class ZipKit {
      */
     public static byte[] zlib(final InputStream in, final int level, final int length) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
-        Deflate.of(in, out, false).deflater(level);
+        Deflate.of(in, out, false).deflater(level).close();
         return out.toByteArray();
     }
 

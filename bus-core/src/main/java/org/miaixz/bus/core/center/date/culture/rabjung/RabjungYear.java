@@ -211,7 +211,7 @@ public class RabjungYear extends Loops {
     public List<RabjungMonth> getMonths() {
         List<RabjungMonth> l = new ArrayList<>();
         int leapMonth = getLeapMonth();
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 1; i < 13; i++) {
             l.add(new RabjungMonth(this, i));
             if (i == leapMonth) {
                 l.add(new RabjungMonth(this, -i));

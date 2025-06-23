@@ -116,14 +116,10 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         final MutableObject<K> mKey = MutableObject.of(key);
 
         // 对于替换的键值对，不做满队列检查和清除
-        if (cacheMap.containsKey(mKey)) {
-            // 1. 先处理旧对象，主动触发监听器释放资源
-            CacheObject<K, V> oldObj = cacheMap.get(mKey);
-            if (oldObj != null) {
-                onRemove(oldObj.key, oldObj.object);
-                cacheMap.remove(mKey);
-            }
-            // 2. 触发监听器和删除旧缓存后，put新对象
+        final CacheObject<K, V> oldObj = cacheMap.get(mKey);
+        if (null != oldObj) {
+            onRemove(oldObj.key, oldObj.object);
+            // 存在相同key，覆盖之
             cacheMap.put(mKey, co);
         } else {
             if (isFull()) {
