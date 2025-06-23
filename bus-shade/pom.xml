@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>8.2.0</version>
+    <version>8.2.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.0</bus.version>
+        <bus.version>8.2.1</bus.version>
         <spring.boot.version>3.5.3</spring.boot.version>
         <compress.version>1.27.1</compress.version>
         <freemarker.version>2.3.34</freemarker.version>
