@@ -34,7 +34,7 @@ import org.miaixz.bus.core.basic.entity.Tracer;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.*;
-import org.miaixz.bus.mapper.annotation.Logical;
+import org.miaixz.bus.core.lang.annotation.Logical;
 import org.miaixz.bus.validate.magic.annotation.NotBlank;
 
 import jakarta.persistence.Transient;

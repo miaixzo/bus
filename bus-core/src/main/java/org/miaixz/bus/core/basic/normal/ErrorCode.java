@@ -27,14 +27,10 @@
 */
 package org.miaixz.bus.core.basic.normal;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 系统响应码
+ * 错误码，定义全局通用的错误码，可被继承以扩展产品特定错误码
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,288 +40,251 @@ public class ErrorCode {
     /**
      * 请求成功
      */
-    public static String EM_SUCCESS = Symbol.ZERO;
+    public static final Errors _SUCCESS = ErrorRegistry.builder().key(Symbol.ZERO).value("请求成功").build();
+
     /**
-     * 系统繁忙,请稍后重试
+     * 系统繁忙，请稍后重试
      */
-    public static String EM_FAILURE = "-1";
+    public static final Errors _FAILURE = ErrorRegistry.builder().key("-1").value("系统繁忙,请稍后重试").build();
+
     /**
      * 请求过于频繁
      */
-    public static String EM_LIMITER = "-2";
+    public static final Errors _LIMITER = ErrorRegistry.builder().key("-2").value("请求过于频繁").build();
+
     /**
      * 无效的令牌
      */
-    public static String EM_100100 = "100100";
+    public static final Errors _100100 = ErrorRegistry.builder().key("100100").value("无效的令牌").build();
+
     /**
      * 无效的参数
      */
-    public static String EM_100101 = "100101";
+    public static final Errors _100101 = ErrorRegistry.builder().key("100101").value("无效的参数").build();
+
     /**
      * 无效的版本
      */
-    public static String EM_100102 = "100102";
+    public static final Errors _100102 = ErrorRegistry.builder().key("100102").value("无效的版本").build();
+
     /**
      * 无效的方法
      */
-    public static String EM_100103 = "100103";
+    public static final Errors _100103 = ErrorRegistry.builder().key("100103").value("无效的方法").build();
+
     /**
      * 无效的语言
      */
-    public static String EM_100104 = "100104";
+    public static final Errors _100104 = ErrorRegistry.builder().key("100104").value("无效的语言").build();
+
     /**
      * 无效的格式化类型
      */
-    public static String EM_100105 = "100105";
+    public static final Errors _100105 = ErrorRegistry.builder().key("100105").value("无效的格式化类型").build();
+
     /**
      * 缺少token参数
      */
-    public static String EM_100106 = "100106";
+    public static final Errors _100106 = ErrorRegistry.builder().key("100106").value("缺少token参数").build();
+
     /**
      * 缺少version参数
      */
-    public static String EM_100107 = "100107";
+    public static final Errors _100107 = ErrorRegistry.builder().key("100107").value("缺少version参数").build();
+
     /**
      * 缺少method参数
      */
-    public static String EM_100108 = "100108";
+    public static final Errors _100108 = ErrorRegistry.builder().key("100108").value("缺少method参数").build();
+
     /**
      * 缺少language参数
      */
-    public static String EM_100109 = "100109";
+    public static final Errors _100109 = ErrorRegistry.builder().key("100109").value("缺少language参数").build();
+
     /**
      * 缺少fields参数
      */
-    public static String EM_100110 = "100110";
+    public static final Errors _100110 = ErrorRegistry.builder().key("100110").value("缺少fields参数").build();
+
     /**
      * 缺少format参数
      */
-    public static String EM_100111 = "100111";
+    public static final Errors _100111 = ErrorRegistry.builder().key("100111").value("缺少format参数").build();
+
     /**
      * 缺少sign参数
      */
-    public static String EM_100112 = "100112";
+    public static final Errors _100112 = ErrorRegistry.builder().key("100112").value("缺少sign参数").build();
+
     /**
      * 缺少noncestr参数
      */
-    public static String EM_100113 = "100113";
+    public static final Errors _100113 = ErrorRegistry.builder().key("100113").value("缺少noncestr参数").build();
+
     /**
      * 缺少timestamp参数
      */
-    public static String EM_100114 = "100114";
+    public static final Errors _100114 = ErrorRegistry.builder().key("100114").value("缺少timestamp参数").build();
+
     /**
-     * 缺少sign参数
+     * 缺少sign参数（重复，需检查）
      */
-    public static String EM_100115 = "100115";
+    public static final Errors _100115 = ErrorRegistry.builder().key("100115").value("缺少sign参数").build();
+
     /**
      * 当前令牌已过期
      */
-    public static String EM_100116 = "100116";
+    public static final Errors _100116 = ErrorRegistry.builder().key("100116").value("当前令牌已过期").build();
+
     /**
      * 当前账号已登录
      */
-    public static String EM_100117 = "100117";
+    public static final Errors _100117 = ErrorRegistry.builder().key("100117").value("当前账号已登录").build();
+
     /**
      * 无效的签名
      */
-    public static String EM_100118 = "100118";
+    public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("无效的签名").build();
+
     /**
      * 请使用GET请求
      */
-    public static String EM_100200 = "100200";
+    public static final Errors _100200 = ErrorRegistry.builder().key("100200").value("请使用GET请求").build();
+
     /**
      * 请使用POST请求
      */
-    public static String EM_100201 = "100201";
+    public static final Errors _100201 = ErrorRegistry.builder().key("100201").value("请使用POST请求").build();
+
     /**
      * 请使用PUT请求
      */
-    public static String EM_100202 = "100202";
+    public static final Errors _100202 = ErrorRegistry.builder().key("100202").value("请使用PUT请求").build();
+
     /**
      * 请使用DELETE请求
      */
-    public static String EM_100203 = "100203";
+    public static final Errors _100203 = ErrorRegistry.builder().key("100203").value("请使用DELETE请求").build();
+
     /**
      * 请使用OPTIONS请求
      */
-    public static String EM_100204 = "100204";
+    public static final Errors _100204 = ErrorRegistry.builder().key("100204").value("请使用OPTIONS请求").build();
+
     /**
      * 请使用HEAD请求
      */
-    public static String EM_100205 = "100205";
+    public static final Errors _100205 = ErrorRegistry.builder().key("100205").value("请使用HEAD请求").build();
+
     /**
      * 请使用PATCH请求
      */
-    public static String EM_100206 = "100206";
+    public static final Errors _100206 = ErrorRegistry.builder().key("100206").value("请使用PATCH请求").build();
+
     /**
      * 请使用TRACE请求
      */
-    public static String EM_100207 = "100207";
+    public static final Errors _100207 = ErrorRegistry.builder().key("100207").value("请使用TRACE请求").build();
+
     /**
      * 请使用CONNECT请求
      */
-    public static String EM_100208 = "100208";
+    public static final Errors _100208 = ErrorRegistry.builder().key("100208").value("请使用CONNECT请求").build();
+
     /**
      * 请使用HTTPS协议
      */
-    public static String EM_100209 = "100209";
+    public static final Errors _100209 = ErrorRegistry.builder().key("100209").value("请使用HTTPS协议").build();
+
     /**
      * 暂无数据
      */
-    public static String EM_100300 = "100300";
+    public static final Errors _100300 = ErrorRegistry.builder().key("100300").value("暂无数据").build();
+
     /**
      * 转换JSON/XML错误
      */
-    public static String EM_100400 = "100400";
+    public static final Errors _100400 = ErrorRegistry.builder().key("100400").value("转换JSON/XML错误").build();
+
     /**
      * API未授权
      */
-    public static String EM_100500 = "100500";
+    public static final Errors _100500 = ErrorRegistry.builder().key("100500").value("API未授权").build();
+
     /**
      * 日期格式化错误
      */
-    public static String EM_100501 = "100501";
+    public static final Errors _100501 = ErrorRegistry.builder().key("100501").value("日期格式化错误").build();
+
     /**
      * 账号已冻结
      */
-    public static String EM_100502 = "100502";
+    public static final Errors _100502 = ErrorRegistry.builder().key("100502").value("账号已冻结").build();
+
     /**
      * 账号已存在
      */
-    public static String EM_100503 = "100503";
+    public static final Errors _100503 = ErrorRegistry.builder().key("100503").value("账号已存在").build();
+
     /**
      * 账号不存在
      */
-    public static String EM_100504 = "100504";
+    public static final Errors _100504 = ErrorRegistry.builder().key("100504").value("账号不存在").build();
+
     /**
      * 密码错误
      */
-    public static String EM_100505 = "100505";
+    public static final Errors _100505 = ErrorRegistry.builder().key("100505").value("密码错误").build();
+
     /**
-     * 通用函数,处理异常
+     * 通用函数，处理异常
      */
-    public static String EM_100506 = "100506";
+    public static final Errors _100506 = ErrorRegistry.builder().key("100506").value("通用函数,处理异常").build();
+
     /**
      * 请求方法不支持
      */
-    public static String EM_100507 = "100507";
+    public static final Errors _100507 = ErrorRegistry.builder().key("100507").value("请求方法不支持").build();
+
     /**
      * 不支持此类型
      */
-    public static String EM_100508 = "100508";
+    public static final Errors _100508 = ErrorRegistry.builder().key("100508").value("不支持此类型").build();
+
     /**
      * 未找到资源
      */
-    public static String EM_100509 = "100509";
+    public static final Errors _100509 = ErrorRegistry.builder().key("100509").value("未找到资源").build();
+
     /**
      * 内部处理异常
      */
-    public static String EM_100510 = "100510";
+    public static final Errors _100510 = ErrorRegistry.builder().key("100510").value("内部处理异常").build();
+
     /**
-     * 验证失败!
+     * 验证失败
      */
-    public static String EM_100511 = "100511";
+    public static final Errors _100511 = ErrorRegistry.builder().key("100511").value("验证失败!").build();
+
     /**
      * 数据已存在
      */
-    public static String EM_100512 = "100512";
+    public static final Errors _100512 = ErrorRegistry.builder().key("100512").value("数据已存在").build();
+
     /**
      * 业务处理失败
      */
-    public static String EM_100513 = "100513";
+    public static final Errors _100513 = ErrorRegistry.builder().key("100513").value("业务处理失败").build();
+
+    /**
+     * 不支持的操作
+     */
+    public static final Errors _100514 = ErrorRegistry.builder().key("100514").value("不支持的操作").build();
+
     /**
      * 任务执行失败
      */
-    public static String EM_100600 = "100600";
-
-    /**
-     * 错误码缓存
-     */
-    private static Map<String, String> ERRORCODE_CACHE = new ConcurrentHashMap<>();
-
-    static {
-        register(EM_SUCCESS, "请求成功");
-        register(EM_FAILURE, "系统繁忙,请稍后重试");
-        register(EM_LIMITER, "请求过于频繁");
-        register(EM_100100, "无效的令牌");
-        register(EM_100101, "无效的参数");
-        register(EM_100102, "无效的版本");
-        register(EM_100103, "无效的方法");
-        register(EM_100104, "无效的语言");
-        register(EM_100105, "无效的格式化类型");
-        register(EM_100106, "缺少token参数");
-        register(EM_100107, "缺少version参数 ");
-        register(EM_100108, "缺少method参数");
-        register(EM_100109, "缺少language参数");
-        register(EM_100110, "缺少fields参数");
-        register(EM_100111, "缺少format参数");
-        register(EM_100112, "缺少sign参数");
-        register(EM_100113, "缺少noncestr参数");
-        register(EM_100114, "缺少timestamp参数");
-        register(EM_100115, "缺少sign参数");
-        register(EM_100116, "当前令牌已过期");
-        register(EM_100117, "当前账号已登录");
-        register(EM_100118, "无效的签名");
-        register(EM_100200, "请使用GET请求");
-        register(EM_100201, "请使用POST请求");
-        register(EM_100202, "请使用PUT请求");
-        register(EM_100203, "请使用DELETE请求");
-        register(EM_100204, "请使用OPTIONS请求");
-        register(EM_100205, "请使用HEAD请求");
-        register(EM_100206, "请使用PATCH请求");
-        register(EM_100207, "请使用TRACE请求");
-        register(EM_100208, "请使用CONNECT请求");
-        register(EM_100209, "请使用HTTPS协议");
-        register(EM_100300, "暂无数据");
-        register(EM_100400, "转换JSON/XML错误");
-        register(EM_100500, "API未授权");
-        register(EM_100501, "日期格式化错误");
-        register(EM_100502, "账号已冻结");
-        register(EM_100503, "账号已存在");
-        register(EM_100504, "账号不存在");
-        register(EM_100505, "密码错误");
-        register(EM_100506, "通用函数,处理异常");
-        register(EM_100507, "请求方法不支持");
-        register(EM_100508, "不支持此类型");
-        register(EM_100509, "未找到资源");
-        register(EM_100510, "内部处理异常");
-        register(EM_100511, "验证失败!");
-        register(EM_100512, "数据已存在");
-        register(EM_100513, "业务处理失败");
-        register(EM_100600, "任务执行失败");
-    }
-
-    /**
-     * 注册组件
-     *
-     * @param key   错误码
-     * @param value 错误信息
-     */
-    public static void register(String key, String value) {
-        if (ERRORCODE_CACHE.containsKey(key)) {
-            throw new InternalException("重复注册同名称的错误码：" + key);
-        }
-        ERRORCODE_CACHE.putIfAbsent(key, value);
-    }
-
-    /**
-     * 是否包含指定名称的错误码
-     *
-     * @param name 错误码名称
-     * @return true：包含, false：不包含
-     */
-    public static boolean contains(String name) {
-        return ERRORCODE_CACHE.containsKey(name);
-    }
-
-    /**
-     * 根据错误码名称获取错误码
-     *
-     * @param name 错误码名称
-     * @return 错误码对象, 找不到时返回null
-     */
-    public static String require(String name) {
-        return ERRORCODE_CACHE.get(name);
-    }
+    public static final Errors _100600 = ErrorRegistry.builder().key("100600").value("任务执行失败").build();
 
 }

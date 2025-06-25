@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.2.0-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.2.1-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://travis-ci.org/839128/bus">
     <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/badge/Java-17+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-3.5.0-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-3.5.3-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.mysql.com">
     <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">

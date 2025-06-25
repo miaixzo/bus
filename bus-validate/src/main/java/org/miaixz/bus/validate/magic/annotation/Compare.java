@@ -37,9 +37,9 @@ import org.miaixz.bus.validate.Builder;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 public @interface Compare {
 
     /**

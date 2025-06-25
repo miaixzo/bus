@@ -30,14 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 元注解
+ * 注解: 元注解
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Metadata {
 

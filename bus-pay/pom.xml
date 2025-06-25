@@ -27,12 +27,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-pay</artifactId>
-    <version>8.2.0</version>
+    <version>8.2.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.0</bus.version>
+        <bus.version>8.2.1</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <bcpkix.version>1.80</bcpkix.version>
         <alipay.version>4.40.186.ALL</alipay.version>
@@ -100,6 +100,11 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
+            <version>${bus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-extra</artifactId>
             <version>${bus.version}</version>
         </dependency>
         <dependency>
@@ -213,7 +218,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.7.0</version>
+                <version>0.8.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>

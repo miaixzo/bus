@@ -30,15 +30,15 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 线程不安全安全注解
+ * 注解: 线程不安全安全注解
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Documented
 @Inherited
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface NotThreadSafe {
 
 }

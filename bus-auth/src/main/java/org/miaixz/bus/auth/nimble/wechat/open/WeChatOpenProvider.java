@@ -106,7 +106,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
 
     @Override
     public Message refresh(AccToken oldToken) {
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(this.getToken(refreshTokenUrl(oldToken.getRefreshToken()))).build();
     }
 

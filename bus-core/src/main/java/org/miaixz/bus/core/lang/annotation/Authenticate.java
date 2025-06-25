@@ -25,25 +25,20 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.mapper.annotation;
+package org.miaixz.bus.core.lang.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import org.miaixz.bus.core.lang.Normal;
+import java.lang.annotation.*;
 
 /**
- * 标记该字段为逻辑状态列
+ * 注解: 需要经过授权/许可的
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-@Target(ElementType.FIELD)
+@Inherited
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Logical {
-
-    /**
-     * 表示逻辑删除的值，比如null、-1
-     */
-    String value() default Normal.EMPTY + Normal.__1;
+@Target({ ElementType.PARAMETER, ElementType.METHOD })
+public @interface Authenticate {
 
 }

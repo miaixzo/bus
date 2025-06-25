@@ -417,6 +417,8 @@ public class ThreadKit {
         try {
             timeUnit.sleep(timeout.longValue());
         } catch (final InterruptedException e) {
+            // 重新标记线程为中断状态（恢复中断信息），让后续代码能感知到“线程曾被中断过”
+            Thread.currentThread().interrupt();
             return false;
         }
         return true;

@@ -30,15 +30,15 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 不可变类
+ * 注解: 不可变类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
+@Inherited
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
-@Inherited
 public @interface Immutable {
 
 }

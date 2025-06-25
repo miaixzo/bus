@@ -155,11 +155,19 @@ public class EightChar extends Tradition {
      * @return 命宫
      */
     public SixtyCycle getOwnSign() {
-        int offset = month.getEarthBranch().next(-1).getIndex() + hour.getEarthBranch().next(-1).getIndex();
+        int m = month.getEarthBranch().getIndex() - 1;
+        if (m < 1) {
+            m += 12;
+        }
+        int h = hour.getEarthBranch().getIndex() - 1;
+        if (h < 1) {
+            h += 12;
+        }
+        int offset = m + h;
         offset = (offset >= 14 ? 26 : 14) - offset;
-        offset -= 1;
-        return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName()
-                + EarthBranch.fromIndex(2 + offset).getName());
+        return SixtyCycle
+                .fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
+                        + EarthBranch.fromIndex(offset + 1).getName());
     }
 
     /**
@@ -168,9 +176,18 @@ public class EightChar extends Tradition {
      * @return 身宫
      */
     public SixtyCycle getBodySign() {
-        int offset = (month.getEarthBranch().getIndex() + hour.getEarthBranch().getIndex() - 1) % 12;
-        return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName()
-                + EarthBranch.fromIndex(2 + offset).getName());
+        int m = month.getEarthBranch().getIndex() - 1;
+        if (m < 1) {
+            m += 12;
+        }
+        int h = hour.getEarthBranch().getIndex() + 1;
+        int offset = m + h;
+        if (offset > 12) {
+            offset -= 12;
+        }
+        return SixtyCycle
+                .fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
+                        + EarthBranch.fromIndex(offset + 1).getName());
     }
 
     /**

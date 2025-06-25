@@ -217,7 +217,7 @@ public class LinkedinProvider extends AbstractProvider {
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
             String errorDescription = (String) object.get("error_description");
-            throw new AuthorizedException(ErrorCode.FAILURE.getCode(),
+            throw new AuthorizedException(ErrorCode._FAILURE.getKey(),
                     errorDescription != null ? errorDescription : "Unknown error", complex.getName());
         }
     }

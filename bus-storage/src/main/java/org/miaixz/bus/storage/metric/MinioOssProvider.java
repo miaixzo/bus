@@ -135,11 +135,11 @@ public class MinioOssProvider extends AbstractProvider {
             GetObjectRequest request = GetObjectRequest.builder().bucket(bucket).key(objectKey).build();
             InputStream inputStream = client.getObject(request);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(reader).build();
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {}, error: {}", fileName, bucket, e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -161,11 +161,11 @@ public class MinioOssProvider extends AbstractProvider {
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 IoKit.copy(inputStream, outputStream);
             }
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {} to local file: {}, error: {}", fileName, bucket,
                     file.getAbsolutePath(), e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -194,7 +194,7 @@ public class MinioOssProvider extends AbstractProvider {
                             : Builder.buildNormalizedPrefix(context.getPrefix()) + "/")
                     .build();
             ListObjectsV2Response response = client.listObjectsV2(request);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(response.contents().stream().map(item -> {
                         Map<String, Object> extend = new HashMap<>();
                         extend.put("tag", item.eTag());
@@ -205,7 +205,7 @@ public class MinioOssProvider extends AbstractProvider {
                     }).collect(Collectors.toList())).build();
         } catch (SdkException e) {
             Logger.error("Failed to list objects in bucket: {}, error: {}", context.getBucket(), e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -264,11 +264,11 @@ public class MinioOssProvider extends AbstractProvider {
                         .build();
                 client.deleteObject(deleteRequest);
             }
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error("Failed to rename file from {} to {} in bucket: {} with path: {}, error: {}", oldName, newName,
                     bucket, path, e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -360,12 +360,12 @@ public class MinioOssProvider extends AbstractProvider {
             PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
             String presignedUrl = presignedRequest.url().toString();
 
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).url(presignedUrl).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error("Failed to upload file: {} to bucket: {} with path: {}, error: {}", fileName, bucket, path,
                     e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -407,11 +407,11 @@ public class MinioOssProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(bucket).key(objectKey).build();
             client.deleteObject(request);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error("Failed to delete file: {} from bucket: {} with path: {}, error: {}", fileName, bucket, path,
                     e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 

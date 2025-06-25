@@ -94,7 +94,7 @@ public abstract class AbstractProvider implements Provider {
         this.cache = cache;
         // 验证授权支持
         if (!Checker.isSupportedAuth(this.context, this.complex)) {
-            throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getCode());
+            throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE);
         }
         // 验证配置
         check(this.context);
@@ -147,7 +147,7 @@ public abstract class AbstractProvider implements Provider {
             AccToken accToken = this.getAccessToken(callback);
             // 查询用户信息
             Material user = this.getUserInfo(accToken);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(user).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(user).build();
         } catch (Exception e) {
             Logger.error("使用授权登录失败。", e);
             return this.responseError(e);
@@ -173,7 +173,7 @@ public abstract class AbstractProvider implements Provider {
      * @return 包含错误详情的 Message 对象
      */
     protected Message responseError(Exception e) {
-        String errorCode = ErrorCode.FAILURE.getCode();
+        String errorCode = ErrorCode._FAILURE.getKey();
         String errorMsg = e.getMessage();
         if (e instanceof AuthorizedException) {
             AuthorizedException authException = ((AuthorizedException) e);

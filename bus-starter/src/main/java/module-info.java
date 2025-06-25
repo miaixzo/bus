@@ -71,6 +71,7 @@ module bus.starter {
     requires spring.boot.autoconfigure;
     requires spring.context;
     requires spring.core;
+    requires spring.expression;
     requires spring.jdbc;
     requires spring.web;
     requires spring.webflux;

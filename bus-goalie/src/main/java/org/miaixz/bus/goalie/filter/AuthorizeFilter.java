@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.miaixz.bus.core.basic.entity.OAuth2;
+import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Symbol;
@@ -42,9 +42,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.Assets;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.Context;
-import org.miaixz.bus.goalie.provider.AuthorizeProvider;
 import org.miaixz.bus.goalie.magic.Delegate;
 import org.miaixz.bus.goalie.magic.Token;
+import org.miaixz.bus.goalie.provider.AuthorizeProvider;
 import org.miaixz.bus.goalie.registry.AssetsRegistry;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -111,7 +111,7 @@ public class AuthorizeFilter implements WebFilter {
 
         // 校验资产是否存在
         if (null == assets) {
-            return Mono.error(new BusinessException(ErrorCode.EM_100500));
+            return Mono.error(new BusinessException(ErrorCode._100500));
         }
 
         // 校验 HTTP 方法
@@ -146,11 +146,11 @@ public class AuthorizeFilter implements WebFilter {
     private void checkMethod(ServerHttpRequest request, Assets assets) {
         if (!Objects.equals(request.getMethod(), assets.getHttpMethod())) {
             if (Objects.equals(assets.getHttpMethod(), HttpMethod.GET)) {
-                throw new BusinessException(ErrorCode.EM_100200);
+                throw new BusinessException(ErrorCode._100200);
             } else if (Objects.equals(assets.getHttpMethod(), HttpMethod.POST)) {
-                throw new BusinessException(ErrorCode.EM_100201);
+                throw new BusinessException(ErrorCode._100201);
             } else {
-                throw new BusinessException(ErrorCode.EM_100508);
+                throw new BusinessException(ErrorCode._100508);
             }
         }
     }
@@ -166,16 +166,16 @@ public class AuthorizeFilter implements WebFilter {
     private void checkTokenIfNecessary(Context context, Assets assets, Map<String, String> params) {
         if (assets.isToken()) {
             if (StringKit.isBlank(context.getToken())) {
-                throw new BusinessException(ErrorCode.EM_100106);
+                throw new BusinessException(ErrorCode._100106);
             }
             // 创建令牌对象并进行认证
             Token access = new Token(context.getToken(), context.getChannel().getTokenType(), assets);
             Delegate delegate = authorizeProvider.authorize(access);
             if (delegate.isOk()) {
-                // 认证成功，将 OAuth2 信息转换为参数
-                OAuth2 auth2 = delegate.getOAuth2();
+                // 认证成功，将 Authorize 信息转换为参数
+                Authorize auth = delegate.getAuthorize();
                 Map<String, Object> map = new HashMap<>();
-                BeanKit.beanToMap(auth2, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
+                BeanKit.beanToMap(auth, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
                 map.forEach((k, v) -> params.put(k, v.toString()));
             } else {
                 // 认证失败，抛出错误
@@ -232,7 +232,7 @@ public class AuthorizeFilter implements WebFilter {
         requestParam.putIfAbsent("x_app_id", appId);
         String xAppId = requestParam.get("x_app_id");
         if (StringKit.isNotBlank(xAppId) && !appId.equals(xAppId)) {
-            throw new BusinessException(ErrorCode.EM_100511);
+            throw new BusinessException(ErrorCode._100511);
         }
     }
 

@@ -85,7 +85,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return 处理结果 {@link Message}
      */
     default Message list() {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
     }
 
     /**

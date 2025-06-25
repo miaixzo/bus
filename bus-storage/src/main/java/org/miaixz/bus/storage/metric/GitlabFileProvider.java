@@ -101,11 +101,11 @@ public class GitlabFileProvider extends AbstractProvider {
             byte[] content = file.getContent().getBytes();
             BufferedReader bufferedReader = new BufferedReader(
                     new InputStreamReader(new ByteArrayInputStream(content)));
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(bufferedReader).build();
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {}. Error: {}", fileName, bucket, e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -139,11 +139,11 @@ public class GitlabFileProvider extends AbstractProvider {
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 IoKit.copy(new ByteArrayInputStream(content), outputStream);
             }
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error("Failed to download file: {} from bucket: {} to local file: {}. Error: {}", fileName, bucket,
                     file.getAbsolutePath(), e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg("Failed to download file").build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to download file").build();
         }
     }
 
@@ -160,7 +160,7 @@ public class GitlabFileProvider extends AbstractProvider {
             // 使用 getTree 方法获取存储库树，分支为 "master"
             List<TreeItem> treeItems = client.getRepositoryApi().getTree(this.context.getBucket(), prefix, "master",
                     true);
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(treeItems.stream()
                             // 过滤文件类型（假设 TreeItem 有 getType 方法，值为 "blob" 表示文件）
                             .filter(item -> "blob".equals(item.getType())).map(item -> {
@@ -173,7 +173,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     .build();
         } catch (Exception e) {
             Logger.error("Failed to list files in bucket: {}. Error: {}", this.context.getBucket(), e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -225,11 +225,11 @@ public class GitlabFileProvider extends AbstractProvider {
                 newFile.setContent(file.getContent());
                 client.getRepositoryFileApi().createFile(bucket, newFile, "master", "create");
             }
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error("Failed to rename file: from {} to {} in bucket: {} path: {}. Error: {}", oldName, newName,
                     bucket, path, e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -317,12 +317,12 @@ public class GitlabFileProvider extends AbstractProvider {
             file.setContent(new String(contentBytes));
             client.getRepositoryFileApi().createFile(bucket, file, "master", "upload");
             String url = client.getProjectApi().getProject(bucket).getWebUrl() + "/-/blob/master/" + objectKey;
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).url(url).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error("Failed to upload file: {} to bucket: {} path: {}. Error: {}", fileName, bucket, path,
                     e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -363,11 +363,11 @@ public class GitlabFileProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             client.getRepositoryFileApi().deleteFile(bucket, objectKey, "master", "delete");
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
             Logger.error("Failed to delete file: {} from bucket: {} path: {}. Error: {}", fileName, bucket, path,
                     e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 

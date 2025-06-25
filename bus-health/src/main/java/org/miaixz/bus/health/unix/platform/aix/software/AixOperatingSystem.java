@@ -67,6 +67,8 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     private final Supplier<perfstat_partition_config_t> config = Memoizer.memoize(PerfstatConfig::queryConfig);
     private final Supplier<perfstat_process_t[]> procCpu = Memoizer.memoize(PerfstatProcess::queryProcesses,
             Memoizer.defaultExpiration());
+    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+            .memoize(AixInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     private static long querySystemBootTimeMillis() {
         long bootTime = Who.queryBootTime();
@@ -271,6 +273,11 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return services;
+    }
+
+    @Override
+    public List<ApplicationInfo> getInstalledApplications() {
+        return installedAppsSupplier.get();
     }
 
 }

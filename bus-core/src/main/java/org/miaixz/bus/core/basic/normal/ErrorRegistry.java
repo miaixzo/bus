@@ -25,19 +25,14 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.basic.entity;
+package org.miaixz.bus.core.basic.normal;
 
-import java.io.Serial;
-
-import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 访问授权
+ * 基础错误码类，可被继承以定义具体错误码
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,65 +40,48 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-public class OAuth2 extends Entity {
-
-    @Serial
-    private static final long serialVersionUID = 2852290950589L;
+public class ErrorRegistry implements Errors {
 
     /**
-     * 当前租户
+     * 错误码
      */
-    @Transient
-    protected String x_tenant_id;
+    private final String key;
 
     /**
-     * 当前用户标识
+     * 错误信息
      */
-    @Transient
-    protected String x_user_id;
+    private final String value;
 
     /**
-     * 当前用户编码
+     * 构造方法，创建并注册错误码
+     *
+     * @param key   错误码
+     * @param value 错误信息
      */
-    @Transient
-    protected String x_user_code;
+    protected ErrorRegistry(String key, String value) {
+        this.key = key;
+        this.value = value;
+        this.register();
+    }
 
     /**
-     * 当前用户名称
+     * 获取错误码
+     *
+     * @return 错误码
      */
-    @Transient
-    protected String x_user_name;
+    @Override
+    public String getKey() {
+        return this.key;
+    }
 
     /**
-     * 当前用户角色
+     * 获取错误信息
+     *
+     * @return 错误信息
      */
-    @Transient
-    protected String x_role_id;
-
-    /**
-     * 当前用户职称
-     */
-    @Transient
-    protected String x_duty_id;
-
-    /**
-     * 当前用户设备
-     */
-    @Transient
-    protected String x_device_id;
-
-    /**
-     * 当前应用
-     */
-    @Transient
-    protected String x_app_id;
-
-    /**
-     * 扩展参数信息
-     */
-    @Transient
-    protected String x_extension;
+    @Override
+    public String getValue() {
+        return this.value;
+    }
 
 }

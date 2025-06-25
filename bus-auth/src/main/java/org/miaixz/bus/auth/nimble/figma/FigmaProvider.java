@@ -126,7 +126,7 @@ public class FigmaProvider extends AbstractProvider {
             String scope = (String) dataObj.get("scope");
 
             return Message
-                    .builder().errcode(ErrorCode.SUCCESS.getCode()).data(AccToken.builder().accessToken(accessToken)
+                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AccToken.builder().accessToken(accessToken)
                             .openId(openId).expireIn(expiresIn).refreshToken(refreshToken).scope(scope).build())
                     .build();
         } catch (Exception e) {

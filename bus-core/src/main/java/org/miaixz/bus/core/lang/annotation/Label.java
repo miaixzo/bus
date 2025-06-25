@@ -33,7 +33,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用于在输出到CLI表或Excel/CSV等时为字段/getter提供标签.
+ * 注解: 用于在输出到CLI表或Excel/CSV等时为字段/getter提供标签.
  *
  * @author Kimi Liu
  * @since Java 17+

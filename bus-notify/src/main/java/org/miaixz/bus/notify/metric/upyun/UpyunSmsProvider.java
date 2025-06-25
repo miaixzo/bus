@@ -69,11 +69,11 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
 
         Collection<UpyunMaterial.MessageId> list = JsonKit.toList(response, UpyunMaterial.MessageId.class);
         if (CollKit.isEmpty(list)) {
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
         boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunMaterial.MessageId::succeed);
-        String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
+        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

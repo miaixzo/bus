@@ -31,7 +31,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.entity.OAuth2;
+import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.basic.normal.Consts;
 
 import lombok.Getter;
@@ -58,7 +58,7 @@ public class Delegate {
     /**
      * OAuth2 授权信息，包含认证相关的详细信息
      */
-    private OAuth2 oAuth2;
+    private Authorize authorize;
 
     /**
      * 判断认证是否成功

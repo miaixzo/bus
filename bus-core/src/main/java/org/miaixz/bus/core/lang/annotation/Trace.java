@@ -32,14 +32,14 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 日志追溯
+ * 注解: 日志追溯
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.PARAMETER, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER, ElementType.METHOD })
 public @interface Trace {
 
     /**

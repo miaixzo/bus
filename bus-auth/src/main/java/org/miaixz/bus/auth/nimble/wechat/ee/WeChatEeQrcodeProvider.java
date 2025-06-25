@@ -67,7 +67,7 @@ public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
     protected void check(Context context) {
         super.check(context);
         if ("CorpApp".equals(context.getLoginType()) && StringKit.isEmpty(context.getUnionId())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_WECHAT_AGENT_ID.getCode(), this.complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_WECHAT_AGENT_ID.getKey(), this.complex);
         }
     }
 

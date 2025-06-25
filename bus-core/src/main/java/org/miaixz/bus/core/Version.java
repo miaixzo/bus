@@ -52,7 +52,7 @@ public class Version implements Comparable<Version>, Serializable {
     /**
      * 版本信息
      */
-    public static final String _VERSION = "8.2.0";
+    public static final String _VERSION = "8.2.1";
 
     private final String version;
     private final List<Object> sequence;

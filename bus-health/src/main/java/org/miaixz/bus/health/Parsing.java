@@ -32,9 +32,14 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.regex.Matcher;
 
@@ -1322,15 +1327,12 @@ public final class Parsing {
         }
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern, Locale.ROOT);
-            // 确定模式是否包含时间组件
-            if (datePattern.contains("H") || datePattern.contains("m") || datePattern.contains("s")) {
-                LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
-                return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            } else {
-                LocalDate localDate = LocalDate.parse(dateString, formatter);
-                return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-            }
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern(datePattern)
+                    .parseDefaulting(ChronoField.HOUR_OF_DAY, 0).parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                    .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0).parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+                    .toFormatter(Locale.ROOT);
+            LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+            return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         } catch (DateTimeParseException e) {
             Logger.trace("Unable to parse date string: " + dateString);
             return 0;

@@ -32,14 +32,14 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 定时任务注解
+ * 注解: 定时任务注解
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Documented
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface Scheduled {
 
     /**

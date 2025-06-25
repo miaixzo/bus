@@ -115,7 +115,7 @@ public class TeambitionProvider extends AbstractProvider {
 
         this.checkResponse(refreshTokenObject);
 
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(AccToken.builder().accessToken((String) refreshTokenObject.get("access_token"))
                         .refreshToken((String) refreshTokenObject.get("refresh_token")).build())
                 .build();

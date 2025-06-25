@@ -27,6 +27,17 @@
 */
 package org.miaixz.bus.auth.nimble.okta;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -38,17 +49,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Okta 登录
@@ -109,11 +109,11 @@ public class OktaProvider extends AbstractProvider {
     @Override
     public Message refresh(AccToken accToken) {
         if (null == accToken.getRefreshToken()) {
-            return Message.builder().errcode(ErrorCode.ILLEGAL_TOKEN.getCode())
-                    .errmsg(ErrorCode.ILLEGAL_TOKEN.getDesc()).build();
+            return Message.builder().errcode(ErrorCode.ILLEGAL_TOKEN.getKey())
+                    .errmsg(ErrorCode.ILLEGAL_TOKEN.getValue()).build();
         }
         String refreshUrl = refreshTokenUrl(accToken.getRefreshToken());
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(this.getAuthToken(refreshUrl)).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(refreshUrl)).build();
     }
 
     @Override
@@ -160,8 +160,7 @@ public class OktaProvider extends AbstractProvider {
                 "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
 
         Httpx.post(revokeUrl(accToken), params, header);
-        ErrorCode status = ErrorCode.SUCCESS;
-        return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
     }
 
     private void checkResponse(Map<String, Object> object) {

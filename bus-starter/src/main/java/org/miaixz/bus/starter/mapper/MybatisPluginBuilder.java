@@ -68,8 +68,10 @@ public class MybatisPluginBuilder {
         handlers.add(new OperationHandler());
 
         if (ObjectKit.isNotEmpty(environment)) {
-            configureMybatisProperties(environment, handlers);
-            configureTenantProperties(environment, handlers);
+            // 分页配置
+            configurePagination(environment, handlers);
+            // 多租户配置
+            configureTenant(environment, handlers);
         }
 
         MybatisInterceptor interceptor = new MybatisInterceptor();
@@ -83,7 +85,7 @@ public class MybatisPluginBuilder {
      * @param environment Spring 环境对象
      * @param handlers    处理器列表
      */
-    private static void configureMybatisProperties(Environment environment, List<MapperHandler> handlers) {
+    private static void configurePagination(Environment environment, List<MapperHandler> handlers) {
         MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
                 GeniusBuilder.MYBATIS);
         if (ObjectKit.isNotEmpty(properties)) {
@@ -105,7 +107,7 @@ public class MybatisPluginBuilder {
      * @param environment Spring 环境对象
      * @param handlers    处理器列表
      */
-    private static void configureTenantProperties(Environment environment, List<MapperHandler> handlers) {
+    private static void configureTenant(Environment environment, List<MapperHandler> handlers) {
         MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
                 GeniusBuilder.MYBATIS);
         if (ObjectKit.isNotEmpty(properties.getConfigurationProperties())

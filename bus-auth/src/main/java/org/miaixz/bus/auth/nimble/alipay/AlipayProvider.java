@@ -30,15 +30,6 @@ package org.miaixz.bus.auth.nimble.alipay;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Checker;
 import org.miaixz.bus.auth.Context;
@@ -48,6 +39,15 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.http.Httpx;
 
 /**
  * 支付宝 登录
@@ -78,18 +78,18 @@ public class AlipayProvider extends AbstractProvider {
         Checker.check(context, Registry.ALIPAY);
 
         if (!StringKit.isNotEmpty(context.getUnionId())) {
-            throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getCode(), Registry.ALIPAY);
+            throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getKey(), Registry.ALIPAY);
         }
 
         if (Protocol.isLocalHost(context.getRedirectUri())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), Registry.ALIPAY);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), Registry.ALIPAY);
         }
     }
 
     @Override
     protected void check(Callback callback) {
         if (StringKit.isEmpty(callback.getAuth_code())) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_CODE.getCode(), complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_CODE.getKey(), complex);
         }
     }
 
@@ -141,7 +141,7 @@ public class AlipayProvider extends AbstractProvider {
                     (String) ((Map<String, Object>) tokenResponse.get("error_response")).get("sub_msg"));
         }
 
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(AccToken.builder().accessToken((String) tokenResponse.get("access_token"))
                         .uid((String) tokenResponse.get("user_id"))
                         .expireIn(Integer.parseInt((String) tokenResponse.get("expires_in")))

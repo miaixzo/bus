@@ -30,6 +30,7 @@ package org.miaixz.bus.core.lang.exception;
 import java.io.Serial;
 
 import lombok.ToString;
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * 类型: 业务异常
@@ -63,6 +64,15 @@ public class BusinessException extends UncheckedException {
      */
     public BusinessException(final String message) {
         super(message);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     */
+    public BusinessException(final Errors errors) {
+        super(errors);
     }
 
     /**

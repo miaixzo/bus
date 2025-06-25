@@ -41,8 +41,8 @@ import org.springframework.context.annotation.Import;
  */
 @Inherited
 @Documented
-@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
 @Import({ I18nConfiguration.class, I18nMessage.class })
 public @interface EnableI18n {
 

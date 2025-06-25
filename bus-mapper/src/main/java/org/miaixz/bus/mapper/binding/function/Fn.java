@@ -372,7 +372,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
                     this.columns.add(fns[i].toEntityColumn());
                 }
                 if (i == 0) {
-                    TableMeta entityTable = this.columns.get(i).entityTable();
+                    TableMeta entityTable = this.columns.get(i).tableMeta();
                     this.table = entityTable.tableName();
                     this.style = entityTable.style();
                     this.entityClass = entityTable.entityClass();

@@ -30,15 +30,15 @@ package org.miaixz.bus.core.lang.annotation.env;
 import java.lang.annotation.*;
 
 /**
- * 开发环境 表示当前方法禁止用于生产环境,仅可用于开发测试
+ * 注解: 开发环境，表示当前方法禁止用于生产环境,仅可用于开发测试。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Inherited
 @Documented
-@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Dev {
 
 }

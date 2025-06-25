@@ -62,7 +62,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
         if (ObjectKit.isNotEmpty(t)) {
             return write(t);
         }
-        return write(ErrorCode.EM_100513);
+        return write(ErrorCode._100513);
     }
 
     /**
@@ -78,7 +78,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
         if (total >= 0) {
             return write(MapKit.of("total", total));
         }
-        return write(ErrorCode.EM_100513);
+        return write(ErrorCode._100513);
     }
 
     /**
@@ -94,7 +94,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
         if (total >= 0) {
             return write(MapKit.of("total", total));
         }
-        return write(ErrorCode.EM_100513);
+        return write(ErrorCode._100513);
     }
 
     /**
@@ -110,7 +110,7 @@ public class BaseController<T, Service extends BaseService<T>> extends Controlle
         if (ObjectKit.isNotEmpty(t)) {
             return write(t);
         }
-        return write(ErrorCode.EM_100513);
+        return write(ErrorCode._100513);
     }
 
     /**

@@ -30,14 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注释实现类的成员(构造函数、方法和字段)
+ * 注解: 注释实现类的成员(构造函数、方法和字段)
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
 public @interface Inject {
 
     /**

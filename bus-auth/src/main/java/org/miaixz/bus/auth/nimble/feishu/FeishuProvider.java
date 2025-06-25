@@ -149,7 +149,7 @@ public class FeishuProvider extends AbstractProvider {
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "refresh_token");
         requestObject.put("refresh_token", accToken.getRefreshToken());
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(requestObject, this.complex.getConfig().get(Builder.REFRESH))).build();
     }
 

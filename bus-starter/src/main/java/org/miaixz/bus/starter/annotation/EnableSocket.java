@@ -40,8 +40,8 @@ import org.springframework.context.annotation.Import;
  */
 @Inherited
 @Documented
-@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
 @Import({ SocketConfiguration.class })
 public @interface EnableSocket {
 

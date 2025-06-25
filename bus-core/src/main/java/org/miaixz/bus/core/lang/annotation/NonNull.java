@@ -30,14 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 不能为 Null（仅标识）
+ * 注解: 不能为 Null（仅标识）
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
 public @interface NonNull {
 
 }

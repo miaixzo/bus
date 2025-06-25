@@ -148,7 +148,7 @@ public class MeituanProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {

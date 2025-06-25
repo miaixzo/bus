@@ -29,6 +29,8 @@ package org.miaixz.bus.core.lang.exception;
 
 import java.io.Serial;
 
+import org.miaixz.bus.core.basic.normal.Errors;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,13 +48,14 @@ public class UncheckedException extends RuntimeException {
      * 错误码
      */
     protected String errcode;
+
     /**
      * 错误信息
      */
     protected String errmsg;
 
     /**
-     * 构造
+     * 默认构造方法，创建无消息
      */
     protected UncheckedException() {
         super();
@@ -61,16 +64,7 @@ public class UncheckedException extends RuntimeException {
     /**
      * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param message 打印信息
-     */
-    protected UncheckedException(final String message) {
-        super(message);
-    }
-
-    /**
-     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
-     *
-     * @param cause 抛出对象
+     * @param cause 异常原因
      */
     protected UncheckedException(final Throwable cause) {
         super(cause);
@@ -79,17 +73,39 @@ public class UncheckedException extends RuntimeException {
     /**
      * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param message 打印信息
-     * @param cause   抛出对象
+     * @param message 详细消息
      */
-    protected UncheckedException(final String message, final Throwable cause) {
-        super(message, cause);
+    protected UncheckedException(final String message) {
+        super(message);
+        this.errmsg = message;
     }
 
     /**
      * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param errcode 错误编码
+     * @param errors 错误码对象，包含键和值
+     */
+    protected UncheckedException(final Errors errors) {
+        super(errors.getValue());
+        this.errcode = errors.getKey();
+        this.errmsg = errors.getValue();
+    }
+
+    /**
+     * 构造 使用指定消息和原因构造
+     *
+     * @param message 详细消息
+     * @param cause   异常原因
+     */
+    protected UncheckedException(final String message, final Throwable cause) {
+        super(message, cause);
+        this.errmsg = message;
+    }
+
+    /**
+     * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
+     *
+     * @param errcode 错误码
      * @param errmsg  错误提示
      */
     protected UncheckedException(final String errcode, final String errmsg) {
@@ -106,30 +122,33 @@ public class UncheckedException extends RuntimeException {
      */
     protected UncheckedException(final String format, final Object... args) {
         super(String.format(format, args));
+        this.errmsg = String.format(format, args);
     }
 
     /**
      * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param cause  抛出对象
-     * @param format 格式
+     * @param cause  异常原因
+     * @param format 格式化字符串
      * @param args   参数
      */
     protected UncheckedException(final Throwable cause, final String format, final Object... args) {
         super(String.format(format, args), cause);
+        this.errmsg = String.format(format, args);
     }
 
     /**
      * 构造 运行时异常，其中包含指定的详细信息消息，原因，启用或禁用抑制，可写堆栈跟踪启用或禁用
      *
-     * @param message            详细信息
-     * @param cause              原因,（允许使用{@code null}值，表示原因不存在或未知)
-     * @param enableSuppression  是否启用抑制whether or not suppression is enabled or disabled
-     * @param writableStackTrace 堆栈跟踪是否应该可写
+     * @param message            详细消息
+     * @param cause              原因（允许为 null，表示原因未知）
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 是否启用可写堆栈跟踪
      */
     protected UncheckedException(final String message, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
+        this.errmsg = message;
     }
 
 }

@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>8.2.0</version>
+    <version>8.2.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.0</bus.version>
+        <bus.version>8.2.1</bus.version>
         <lombok.version>1.18.38</lombok.version>
-        <spring.boot.version>3.5.0</spring.boot.version>
+        <spring.boot.version>3.5.3</spring.boot.version>
         <guice.version>7.0.0</guice.version>
         <jedis.version>6.0.0</jedis.version>
         <xmemcached.version>2.4.8</xmemcached.version>
@@ -323,7 +323,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.7.0</version>
+                <version>0.8.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>

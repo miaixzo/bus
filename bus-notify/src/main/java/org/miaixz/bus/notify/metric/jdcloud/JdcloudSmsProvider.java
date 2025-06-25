@@ -66,8 +66,8 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Contex
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         int status = JsonKit.getValue(response, "statusCode");
 
-        String errcode = status == HTTP.HTTP_OK ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = status == HTTP.HTTP_OK ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
+        String errcode = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

@@ -29,6 +29,7 @@ package org.miaixz.bus.auth.nimble.line;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -141,8 +142,8 @@ public class LineProvider extends AbstractProvider {
 
             Boolean revoked = (Boolean) object.get("revoked");
             // 返回1表示取消授权成功，否则失败
-            ErrorCode status = (revoked != null && revoked) ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
-            return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
+            Errors status = (revoked != null && revoked) ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
+            return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse revoke response: " + e.getMessage());
         }
@@ -173,7 +174,7 @@ public class LineProvider extends AbstractProvider {
             String scope = (String) accessTokenObject.get("scope");
             String tokenType = (String) accessTokenObject.get("token_type");
 
-            return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
                             .idToken(idToken).scope(scope).tokenType(tokenType).build())
                     .build();

@@ -106,7 +106,7 @@ public class DouyinProvider extends AbstractProvider {
 
     @Override
     public Message refresh(AccToken oldToken) {
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(refreshTokenUrl(oldToken.getRefreshToken()))).build();
     }
 

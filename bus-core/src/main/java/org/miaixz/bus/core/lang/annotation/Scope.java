@@ -33,13 +33,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注释用于确定作用域的注释.
+ * 注解: 注释用于确定作用域的注释.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
 public @interface Scope {
 
 }

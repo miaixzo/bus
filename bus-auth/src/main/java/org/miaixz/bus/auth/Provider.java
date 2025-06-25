@@ -52,7 +52,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return 返回授权地址
      */
     default String authorize(String state) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
@@ -62,7 +62,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return 返回登录成功后的用户信息
      */
     default Message login(Callback callback) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
@@ -72,7 +72,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return Message
      */
     default Message revoke(AccToken accToken) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
@@ -82,7 +82,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return Message
      */
     default Message refresh(AccToken accToken) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**

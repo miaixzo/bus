@@ -122,7 +122,7 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
 
     protected Message checkResponse(String response) {
         String code = JsonKit.getValue(response, "Code");
-        return Message.builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode.SUCCESS.getCode() : code).errmsg(code)
+        return Message.builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code).errmsg(code)
                 .build();
     }
 

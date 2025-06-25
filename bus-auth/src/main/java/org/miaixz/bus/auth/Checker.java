@@ -81,10 +81,10 @@ public class Checker {
             return;
         }
         if (StringKit.isEmpty(redirectUri)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), complex);
         }
         if (!Protocol.isHttp(redirectUri) && !Protocol.isHttps(redirectUri)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), complex);
         }
     }
 
@@ -104,7 +104,7 @@ public class Checker {
             code = callback.getAuthorization_code();
         }
         if (StringKit.isEmpty(code)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_CODE.getCode(), complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_CODE.getKey(), complex);
         }
     }
 
@@ -121,7 +121,7 @@ public class Checker {
             return;
         }
         if (StringKit.isEmpty(state) || !cache.containsKey(state)) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_STATUS.getCode(), complex);
+            throw new AuthorizedException(ErrorCode.ILLEGAL_STATUS.getKey(), complex);
         }
     }
 

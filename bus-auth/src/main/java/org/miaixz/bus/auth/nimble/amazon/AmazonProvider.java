@@ -124,7 +124,7 @@ public class AmazonProvider extends AbstractProvider {
         form.put("refresh_token", accToken.getRefreshToken());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(form, this.complex.getConfig().get(Builder.REFRESH))).build();
     }
 
@@ -216,7 +216,7 @@ public class AmazonProvider extends AbstractProvider {
             }
             String aud = (String) jsonObject.get("aud");
             if (!context.getAppKey().equals(aud)) {
-                throw new AuthorizedException(ErrorCode.ILLEGAL_TOKEN.getCode());
+                throw new AuthorizedException(ErrorCode.ILLEGAL_TOKEN.getKey());
             }
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token info response: " + e.getMessage());

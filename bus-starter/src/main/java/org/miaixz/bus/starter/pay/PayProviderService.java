@@ -113,7 +113,7 @@ public class PayProviderService {
         } else if (Registry.WECHAT.equals(registry)) {
             return new WechatPayProvider(context, complex, cache);
         }
-        throw new InternalException(ErrorCode.UNSUPPORTED.getDesc());
+        throw new InternalException(ErrorCode._100508.getValue());
     }
 
 }

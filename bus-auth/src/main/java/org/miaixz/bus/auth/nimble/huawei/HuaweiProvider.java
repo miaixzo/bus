@@ -177,7 +177,7 @@ public class HuaweiProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
         String response = Httpx.post(this.complex.getConfig().get(Builder.REFRESH), header, form);
 
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(getAccToken(response)).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAccToken(response)).build();
     }
 
     private AccToken getAccToken(String response) {

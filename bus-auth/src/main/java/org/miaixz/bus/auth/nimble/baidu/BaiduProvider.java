@@ -29,6 +29,7 @@ package org.miaixz.bus.auth.nimble.baidu;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -122,8 +123,8 @@ public class BaiduProvider extends AbstractProvider {
             // 返回1表示取消授权成功，否则失败
             Object resultObj = object.get("result");
             int result = resultObj instanceof Number ? ((Number) resultObj).intValue() : 0;
-            ErrorCode status = result == 1 ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
-            return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
+            Errors status = result == 1 ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
+            return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse revoke response: " + e.getMessage());
         }
@@ -136,7 +137,7 @@ public class BaiduProvider extends AbstractProvider {
                 .queryParam("client_id", this.context.getAppKey())
                 .queryParam("client_secret", this.context.getAppSecret()).build();
         String response = Httpx.get(refreshUrl);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(this.getAuthToken(response)).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(response)).build();
     }
 
     /**

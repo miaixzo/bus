@@ -172,7 +172,7 @@ public class JdProvider extends AbstractProvider {
             String openId = (String) object.get("open_id");
 
             return Message
-                    .builder().errcode(ErrorCode.SUCCESS.getCode()).data(AccToken.builder().accessToken(accessToken)
+                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AccToken.builder().accessToken(accessToken)
                             .expireIn(expiresIn).refreshToken(refreshToken).scope(scope).openId(openId).build())
                     .build();
         } catch (Exception e) {

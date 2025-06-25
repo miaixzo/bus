@@ -61,8 +61,8 @@ public class TencentSmsProvider extends AbstractProvider<TencentMaterial, Contex
         String response = Httpx.post(this.getUrl(entity), bodys);
         int status = JsonKit.getValue(response, "status");
 
-        String errcode = status == 200 ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = status == 200 ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
+        String errcode = status == 200 ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = status == 200 ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

@@ -33,13 +33,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 字段排序
+ * 注解: 字段排序
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface Order {
 
     /**

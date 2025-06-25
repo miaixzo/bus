@@ -27,10 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.toutiao;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.extra.json.JsonKit;
+import java.util.Map;
+
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
@@ -39,8 +37,10 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.Map;
+import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /**
  * 今日头条 登录
@@ -135,7 +135,7 @@ public class ToutiaoProvider extends AbstractProvider {
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error_code")) {
-            throw new AuthorizedException(ErrorCode.Toutiao.getErrorCode((String) object.get("error_code")).getDesc());
+            throw new AuthorizedException(ErrorCode.Toutiao.getErrorCode((String) object.get("error_code")).getValue());
         }
     }
 

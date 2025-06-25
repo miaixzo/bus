@@ -33,7 +33,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 将一个单例类标记为惰性初始化, 或者标记为不受立即加载影响的方法(例如,AppConfig中的方法)
+ * 注解: 将一个单例类标记为惰性初始化, 或者标记为不受立即加载影响的方法(例如,AppConfig中的方法)
  *
  * @author Kimi Liu
  * @since Java 17+

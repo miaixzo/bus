@@ -32,14 +32,14 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 配置注解，用于添加前缀
+ * 注解: 配置，用于添加前缀
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface Values {
 
     /**

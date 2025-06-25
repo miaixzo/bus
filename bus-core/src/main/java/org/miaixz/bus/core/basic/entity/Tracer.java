@@ -47,7 +47,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tracer extends OAuth2 {
+public class Tracer extends Authorize {
 
     @Serial
     private static final long serialVersionUID = 2852291120377L;

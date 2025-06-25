@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.goalie.magic;
 
+import org.miaixz.bus.core.basic.normal.ErrorRegistry;
+import org.miaixz.bus.core.basic.normal.Errors;
+
 /**
  * 自定义错误码
  * 
@@ -38,25 +41,18 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     /**
      * 没有API权限
      */
-    public static String EM_80010001 = "80010001";
+    public static final Errors EM_80010001 = ErrorRegistry.builder().key("80010001").value("没有API权限").build();
     /**
      * 没有角色
      */
-    public static String EM_80010002 = "80010002";
+    public static final Errors EM_80010002 = ErrorRegistry.builder().key("80010002").value("没有角色").build();
     /**
      * 服务端超时
      */
-    public static String EM_80010003 = "80010003";
+    public static final Errors EM_80010003 = ErrorRegistry.builder().key("80010003").value("服务端超时").build();
     /**
      * 服务端未响应
      */
-    public static String EM_80010004 = "80010004";
-
-    static {
-        register(EM_80010001, "没有API权限");
-        register(EM_80010002, "没有角色");
-        register(EM_80010003, "服务端超时");
-        register(EM_80010004, "服务端未响应");
-    }
+    public static final Errors EM_80010004 = ErrorRegistry.builder().key("80010004").value("服务端未响应").build();
 
 }

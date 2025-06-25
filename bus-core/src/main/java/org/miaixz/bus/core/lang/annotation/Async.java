@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 将类或方法标记为异步
+ * 注解: 将类或方法标记为异步
  *
  * @author Kimi Liu
  * @since Java 17+

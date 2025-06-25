@@ -131,10 +131,8 @@ public class Regex {
     public static final String TEL = "(010|02\\d|0[3-9]\\d{2})-?(\\d{6,8})";
     /**
      * 座机号码+400+800电话
-     *
-     * @see <a href="https://baike.baidu.com/item/800">800</a>
      */
-    public static final String TEL_400_800 = "0\\d{2,3}[\\- ]?[1-9]\\d{6,7}|[48]00[\\- ]?[1-9]\\d{2}[\\- ]?\\d{4}";
+    public static final String TEL_400_800 = "0\\d{2,3}[\\- ]?[0-9]\\d{6,7}|[48]00[\\- ]?[0-9]\\d{2}[\\- ]?\\d{4}";
     /**
      * 18位身份证号码
      */

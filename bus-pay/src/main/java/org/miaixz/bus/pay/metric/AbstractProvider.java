@@ -123,7 +123,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
         this.complex = complex;
         this.cache = ObjectKit.isEmpty(cache) ? PayCache.INSTANCE : cache;
         if (!Checker.isSupportedPay(this.context, complex)) {
-            throw new PaymentException(ErrorCode.PARAMETER_INCOMPLETE.getCode());
+            throw new PaymentException(ErrorCode._PARAMETER_INCOMPLETE);
         }
         // 校验配置合法性
         Checker.checkConfig(this.context, complex);
@@ -457,7 +457,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @return Message
      */
     protected Message responseError(Exception e) {
-        String errorCode = ErrorCode.FAILURE.getCode();
+        String errorCode = ErrorCode._FAILURE.getKey();
         String errorMsg = e.getMessage();
         if (e instanceof PaymentException) {
             PaymentException authException = ((PaymentException) e);

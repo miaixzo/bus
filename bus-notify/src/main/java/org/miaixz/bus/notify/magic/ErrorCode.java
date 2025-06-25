@@ -27,18 +27,12 @@
 */
 package org.miaixz.bus.notify.magic;
 
-import org.miaixz.bus.core.lang.Symbol;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
-public enum ErrorCode {
-
-    SUCCESS(Symbol.ZERO, "Success"), FAILURE("-1", "Failure"), UNSUPPORTED("5003", "Unsupported operation");
-
-    private String code;
-    private String desc;
+/**
+ * 通知错误码 : 111xxx
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
 }

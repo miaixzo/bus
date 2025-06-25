@@ -124,7 +124,7 @@ public class HealthProviderService {
             return result;
         } catch (Exception e) {
             Logger.error("Failed to retrieve health information for tid '{}': {}", tid, e.getMessage(), e);
-            return Message.builder().errcode(ErrorCode.EM_FAILURE)
+            return Message.builder().errcode(ErrorCode._FAILURE.getKey())
                     .errmsg("Failed to retrieve health information: " + e.getMessage()).build();
         }
     }

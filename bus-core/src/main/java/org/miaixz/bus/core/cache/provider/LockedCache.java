@@ -28,7 +28,6 @@
 package org.miaixz.bus.core.cache.provider;
 
 import java.io.Serial;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -36,6 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.miaixz.bus.core.center.iterator.CopiedIterator;
 import org.miaixz.bus.core.lang.mutable.Mutable;
+import org.miaixz.bus.core.xyz.SetKit;
 
 /**
  * 使用{@link Lock}保护的缓存，读写都使用悲观锁完成，主要避免某些Map无法使用读写锁的问题, 例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，因此读写必须加互斥锁
@@ -116,10 +116,11 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
         lock.lock();
         try {
             // 获取所有键的副本
-            Set<Mutable<K>> keys = new HashSet<>(cacheMap.keySet());
-            for (Mutable<K> key : keys) {
-                CacheObject<K, V> co = removeWithoutLock(key.get());
-                if (co != null) {
+            final Set<Mutable<K>> keys = SetKit.of(cacheMap.keySet());
+            CacheObject<K, V> co;
+            for (final Mutable<K> key : keys) {
+                co = removeWithoutLock(key.get());
+                if (null != co) {
                     // 触发资源释放
                     onRemove(co.key, co.object);
                 }

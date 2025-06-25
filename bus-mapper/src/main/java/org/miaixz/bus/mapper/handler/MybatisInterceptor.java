@@ -94,12 +94,31 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         Object[] args = invocation.getArgs();
 
         if (target instanceof Executor) {
-            return handleExecutor((Executor) target, args, start, invocation);
+            Object result = handleExecutor((Executor) target, args, invocation);
+            MappedStatement ms = (MappedStatement) args[0];
+            Object parameter = args.length > 1 ? args[1] : null;
+            BoundSql boundSql = ms.getBoundSql(parameter);
+            logging(ms, boundSql, start);
+            return result;
         } else if (target instanceof StatementHandler) {
-            return handleStatementHandler((StatementHandler) target, args, start, invocation);
+            Object result = handleStatementHandler((StatementHandler) target, args, invocation);
+            MetaObject metaObject = getMetaObject(target);
+            MappedStatement ms = getMappedStatement(metaObject);
+            BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
+            logging(ms, boundSql, start);
+            return result;
         }
-
-        return invocation.proceed();
+        // Default case for unhandled targets
+        Object result = invocation.proceed();
+        MetaObject metaObject = args != null && args.length > 0 && args[0] instanceof MappedStatement
+                ? getMetaObject(args[0])
+                : null;
+        if (metaObject != null) {
+            MappedStatement ms = getMappedStatement(metaObject);
+            BoundSql boundSql = ms.getBoundSql(args.length > 1 ? args[1] : null);
+            logging(ms, boundSql, start);
+        }
+        return result;
     }
 
     /**
@@ -107,26 +126,23 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      *
      * @param executor   Executor 实例
      * @param args       参数数组
-     * @param start      开始时间
      * @param invocation 拦截调用信息
      * @return 处理结果
      * @throws Throwable 如果处理过程中发生异常
      */
-    private Object handleExecutor(Executor executor, Object[] args, long start, Invocation invocation)
-            throws Throwable {
+    private Object handleExecutor(Executor executor, Object[] args, Invocation invocation) throws Throwable {
         MappedStatement ms = (MappedStatement) args[0];
         Object parameter = args[1];
         SqlCommandType commandType = ms.getSqlCommandType();
 
-        if (commandType == SqlCommandType.UPDATE) {
-            return processUpdate(executor, ms, parameter, invocation);
-        } else if (commandType == SqlCommandType.SELECT) {
+        if (commandType == SqlCommandType.SELECT) {
             return processQuery(executor, ms, parameter, args, invocation);
+        } else if (commandType == SqlCommandType.INSERT || commandType == SqlCommandType.UPDATE
+                || commandType == SqlCommandType.DELETE) {
+            return processUpdate(executor, ms, parameter, invocation);
         }
 
-        Object result = invocation.proceed();
-        logging(ms, ms.getBoundSql(parameter), start);
-        return result;
+        return invocation.proceed();
     }
 
     /**
@@ -134,23 +150,19 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      *
      * @param statementHandler StatementHandler 实例
      * @param args             参数数组
-     * @param start            开始时间
      * @param invocation       拦截调用信息
      * @return 处理结果
      * @throws Throwable 如果处理过程中发生异常
      */
-    private Object handleStatementHandler(StatementHandler statementHandler, Object[] args, long start,
-            Invocation invocation) throws Throwable {
+    private Object handleStatementHandler(StatementHandler statementHandler, Object[] args, Invocation invocation)
+            throws Throwable {
         if (args == null) {
             handlers.forEach(handler -> handler.getBoundSql(statementHandler));
         } else {
             handlers.forEach(handler -> handler.prepare(statementHandler));
         }
 
-        Object result = invocation.proceed();
-        MetaObject metaObject = getMetaObject(statementHandler);
-        logging(getMappedStatement(metaObject), (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL), start);
-        return result;
+        return invocation.proceed();
     }
 
     /**
@@ -288,7 +300,9 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      */
     @Override
     public Object plugin(Object target) {
-        return (target instanceof Executor || target instanceof StatementHandler) ? Plugin.wrap(target, this) : target;
+        return (target instanceof Executor || target instanceof StatementHandler || target instanceof ResultSetHandler)
+                ? Plugin.wrap(target, this)
+                : target;
     }
 
     /**

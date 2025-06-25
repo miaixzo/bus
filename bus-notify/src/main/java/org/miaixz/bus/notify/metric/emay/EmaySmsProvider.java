@@ -81,7 +81,7 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
-                .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
+                .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, "errmsg")).build();
     }
 

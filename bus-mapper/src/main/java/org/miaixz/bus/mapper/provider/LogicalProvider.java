@@ -34,7 +34,7 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.annotation.Logical;
+import org.miaixz.bus.core.lang.annotation.Logical;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -388,7 +388,7 @@ public class LogicalProvider {
      */
     private static ColumnMeta getLogical(TableMeta entity) {
         List<ColumnMeta> logicColumns = entity.columns().stream()
-                .filter(c -> c.field().isAnnotationPresent(Logical.class)).collect(Collectors.toList());
+                .filter(c -> c.fieldMeta().isAnnotationPresent(Logical.class)).collect(Collectors.toList());
         Assert.isTrue(logicColumns.size() == 1, "There are no or multiple fields marked with @Logical");
         return logicColumns.get(0);
     }
@@ -400,7 +400,7 @@ public class LogicalProvider {
      * @return 删除值
      */
     private static String deleteValue(ColumnMeta logicColumn) {
-        return logicColumn.field().getAnnotation(Logical.class).value();
+        return logicColumn.fieldMeta().getAnnotation(Logical.class).value();
     }
 
     /**
