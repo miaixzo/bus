@@ -246,6 +246,10 @@ public class Keys {
      */
     public static final String SUN_ARCH_DATA_MODEL = "sun.arch.data.model";
     /**
+     * 资源名称
+     */
+    public static final String BUNDLE_NAME = "messages";
+    /**
      * 自定义系统属性：是否解析日期字符串采用严格模式
      */
     public static final String DATE_LENIENT = "bus.date.lenient";

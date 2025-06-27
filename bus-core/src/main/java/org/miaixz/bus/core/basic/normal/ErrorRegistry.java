@@ -27,12 +27,18 @@
 */
 package org.miaixz.bus.core.basic.normal;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import org.miaixz.bus.core.lang.I18n;
+import org.miaixz.bus.core.lang.Keys;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 基础错误码类，可被继承以定义具体错误码
+ * 基础错误码类，支持国际化，可被继承以定义具体错误码
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,7 +54,7 @@ public class ErrorRegistry implements Errors {
     private final String key;
 
     /**
-     * 错误信息
+     * 默认错误信息
      */
     private final String value;
 
@@ -56,7 +62,7 @@ public class ErrorRegistry implements Errors {
      * 构造方法，创建并注册错误码
      *
      * @param key   错误码
-     * @param value 错误信息
+     * @param value 默认错误信息
      */
     protected ErrorRegistry(String key, String value) {
         this.key = key;
@@ -75,13 +81,31 @@ public class ErrorRegistry implements Errors {
     }
 
     /**
-     * 获取错误信息
+     * 获取错误信息，使用默认语言环境
      *
      * @return 错误信息
      */
     @Override
     public String getValue() {
-        return this.value;
+        return getValue(I18n.AUTO_DETECT);
+    }
+
+    /**
+     * 获取错误信息，根据指定语言环境
+     *
+     * @param i18n 语言环境（来自I18n枚举）
+     * @return 错误信息
+     */
+    public String getValue(I18n i18n) {
+        try {
+            Locale locale = i18n == I18n.AUTO_DETECT ? Locale.getDefault() : new Locale(i18n.lang());
+            ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
+            return bundle.getString(this.key);
+        } catch (Exception e) {
+            // 回退到 ERRORS_CACHE 中注册的错误信息
+            Errors.Entry entry = Errors.require(this.key);
+            return entry != null ? entry.getValue() : this.value;
+        }
     }
 
 }

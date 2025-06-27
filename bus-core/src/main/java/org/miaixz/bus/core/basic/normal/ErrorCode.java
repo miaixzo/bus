@@ -50,7 +50,7 @@ public class ErrorCode {
     /**
      * 请求过于频繁
      */
-    public static final Errors _LIMITER = ErrorRegistry.builder().key("-2").value("请求过于频繁").build();
+    public static final Errors _LIMITER = ErrorRegistry.builder().key("-2").value("请求过于频繁，请稍候后再试").build();
 
     /**
      * 无效的令牌
@@ -281,6 +281,121 @@ public class ErrorCode {
      * 不支持的操作
      */
     public static final Errors _100514 = ErrorRegistry.builder().key("100514").value("不支持的操作").build();
+
+    /**
+     * 数据不存在
+     */
+    public static final Errors _100515 = ErrorRegistry.builder().key("100515").value("数据不存在").build();
+
+    /**
+     * 链接已过期
+     */
+    public static final Errors _100516 = ErrorRegistry.builder().key("100516").value("链接已过期").build();
+
+    /**
+     * 文件格式错误
+     */
+    public static final Errors _100517 = ErrorRegistry.builder().key("100517").value("文件格式错误").build();
+
+    /**
+     * 未绑定帐号
+     */
+    public static final Errors _100518 = ErrorRegistry.builder().key("100518").value("未绑定帐号").build();
+
+    /**
+     * 名称重复
+     */
+    public static final Errors _100519 = ErrorRegistry.builder().key("100519").value("名称重复").build();
+
+    /**
+     * 帐号不存在
+     */
+    public static final Errors _100520 = ErrorRegistry.builder().key("100520").value("帐号不存在").build();
+
+    /**
+     * 账号异常请联系管理员
+     */
+    public static final Errors _100521 = ErrorRegistry.builder().key("100521").value("账号异常请联系管理员").build();
+
+    /**
+     * 帐号已锁定,请稍后再试
+     */
+    public static final Errors _100522 = ErrorRegistry.builder().key("100522").value("帐号已锁定,请稍后再试").build();
+
+    /**
+     * 用户名或密码错误
+     */
+    public static final Errors _100523 = ErrorRegistry.builder().key("100523").value("用户名或密码错误").build();
+
+    /**
+     * 发送验证码失败
+     */
+    public static final Errors _100524 = ErrorRegistry.builder().key("100524").value("发送验证码失败").build();
+
+    /**
+     * 验证码错误
+     */
+    public static final Errors _100525 = ErrorRegistry.builder().key("100525").value("验证码错误").build();
+
+    /**
+     * 无权操作
+     */
+    public static final Errors _100526 = ErrorRegistry.builder().key("100526").value("无权操作").build();
+
+    /**
+     * 密码长度不符合
+     */
+    public static final Errors _100527 = ErrorRegistry.builder().key("100527").value("密码长度不符合").build();
+
+    /**
+     * 密码需要包含大小写
+     */
+    public static final Errors _100528 = ErrorRegistry.builder().key("100528").value("密码需要包含大小写").build();
+
+    /**
+     * 密码需要包含特殊字符
+     */
+    public static final Errors _100529 = ErrorRegistry.builder().key("100529").value("密码需要包含特殊字符").build();
+
+    /**
+     * 手机号重复
+     */
+    public static final Errors _100530 = ErrorRegistry.builder().key("100530").value("手机号重复").build();
+
+    /**
+     * 租户名称重复
+     */
+    public static final Errors _100531 = ErrorRegistry.builder().key("100531").value("租户名称重复").build();
+
+    /**
+     * 无效的凭证
+     */
+    public static final Errors _100532 = ErrorRegistry.builder().key("100532").value("无效的凭证").build();
+
+    /**
+     * 部门已存在
+     */
+    public static final Errors _100533 = ErrorRegistry.builder().key("100533").value("部门已存在").build();
+
+    /**
+     * 工号已存在
+     */
+    public static final Errors _100534 = ErrorRegistry.builder().key("100534").value("工号已存在").build();
+
+    /**
+     * 错误的免登授权码
+     */
+    public static final Errors _100535 = ErrorRegistry.builder().key("100535").value("错误的免登授权码").build();
+
+    /**
+     * 未绑定手机号码
+     */
+    public static final Errors _100536 = ErrorRegistry.builder().key("100536").value("未绑定手机号码").build();
+
+    /**
+     * id不能为空
+     */
+    public static final Errors _100537 = ErrorRegistry.builder().key("100537").value("id不能为空").build();
 
     /**
      * 任务执行失败
