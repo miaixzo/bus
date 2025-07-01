@@ -45,9 +45,14 @@ import org.miaixz.bus.pager.handler.OperationHandler;
 import org.miaixz.bus.pager.handler.PaginationHandler;
 import org.miaixz.bus.pager.handler.TenantHandler;
 import org.miaixz.bus.pager.handler.TenantProvider;
+import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.springframework.core.env.Environment;
+
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.NullValue;
+import net.sf.jsqlparser.expression.StringValue;
 
 /**
  * MyBatis 插件构建器，负责初始化并配置 MyBatis 拦截器及其处理器
@@ -115,6 +120,14 @@ public class MybatisPluginBuilder {
             Logger.info("Enable multi-tenant support, all database operations will include tenant ID support.");
             TenantHandler tenantHandler = new TenantHandler();
             tenantHandler.setProvider(new TenantProvider() {
+                @Override
+                public Expression getTenantId() {
+                    if (ContextBuilder.getTenantId() != null) {
+                        return new StringValue(ContextBuilder.getTenantId());
+                    }
+                    return new NullValue();
+                }
+
                 @Override
                 public String getColumn() {
                     // 租户id,默认tenant_id

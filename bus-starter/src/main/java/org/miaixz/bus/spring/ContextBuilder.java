@@ -283,27 +283,41 @@ public class ContextBuilder extends WebUtils {
     }
 
     /**
-     * 获取当前租户 ID
+     * 获取租户 ID，依次从以下来源尝试获取： 1. HTTP 请求头中的 'x_tenant_id' 2. HTTP 请求头中的 'tenant_id' 3. 当前登录用户的授权数据 4. 线程池上下文变量
      *
-     * @return 租户 ID，如果无法获取则返回 null
+     * @return 租户 ID 字符串，如果未找到或发生错误则返回 null
      */
     public static String getTenantId() {
-        HttpServletRequest request = getRequest();
         try {
-            if (null != request && !StringKit.isEmpty(request.getHeader("x_tenant_id"))) {
-                return request.getHeader("x_tenant_id");
-            } else {
-                // 从当前登录用户获取租户 ID
-                Authorize authorize = getCurrentUser();
-                if (null != authorize) {
-                    return authorize.getX_tenant_id();
+            // 获取当前 HTTP 请求
+            HttpServletRequest request = getRequest();
+            if (request != null) {
+                // 首先检查 'x_tenant_id' 请求头
+                String tenantId = request.getHeader("x_tenant_id");
+                if (!StringKit.isEmpty(tenantId)) {
+                    return tenantId; // 如果找到且非空，直接返回
                 }
-                // 当都为空时，尝试从异步线程池的上下文变量中获取
-                String tenantId = getThreadPoolContextValue("x_tenant_id");
-                return tenantId;
+                // 回退到检查 'tenant_id' 参数
+                tenantId = request.getParameter("tenant_id");
+                if (!StringKit.isEmpty(tenantId)) {
+                    return tenantId; // 如果找到且非空，直接返回
+                }
             }
+
+            // 尝试从当前登录用户的授权数据中获取租户 ID
+            Authorize authorize = getCurrentUser();
+            if (authorize != null) {
+                String tenantId = authorize.getX_tenant_id();
+                if (!StringKit.isEmpty(tenantId)) {
+                    return tenantId; // 如果找到且非空，直接返回
+                }
+            }
+
+            // 最后尝试从线程池上下文变量中获取租户 ID
+            return getThreadPoolContextValue("x_tenant_id");
         } catch (Exception e) {
-            Logger.error("获取当前租户失败:", e);
+            // 记录错误日志并在发生异常时返回 null
+            Logger.error("获取租户 ID 失败: ", e);
             return null;
         }
     }
