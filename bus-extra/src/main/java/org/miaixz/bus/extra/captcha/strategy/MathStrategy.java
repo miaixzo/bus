@@ -31,6 +31,7 @@ import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.math.Calculator;
+import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -87,7 +88,7 @@ public class MathStrategy implements CodeStrategy {
         final int numberInt2;
         numberInt1 = RandomKit.randomInt(limit);
         // 如果禁止了结果有负数，且计算方式正好计算为减法，需要第二个数小于第一个数
-        if (!resultHasNegativeNumber && CharUtil.equals('-', operator, false)) {
+        if (!resultHasNegativeNumber && CharKit.equals(Symbol.C_MINUS, operator, false)) {
             // 如果第一个数为0，第二个数必须为0，随机[0,0)的数字会报错
             numberInt2 = numberInt1 == 0 ? 0 : RandomKit.randomInt(0, numberInt1);
         } else {

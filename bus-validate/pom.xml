@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-validate</artifactId>
-    <version>8.2.1</version>
+    <version>8.2.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.1</bus.version>
+        <bus.version>8.2.2</bus.version>
         <lombok.version>1.18.38</lombok.version>
     </properties>
 

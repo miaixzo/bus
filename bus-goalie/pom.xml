@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-goalie</artifactId>
-    <version>8.2.1</version>
+    <version>8.2.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.1</bus.version>
-        <spring.boot.version>3.5.3</spring.boot.version>
+        <bus.version>8.2.2</bus.version>
         <lombok.version>1.18.38</lombok.version>
+        <spring.boot.version>3.5.3</spring.boot.version>
         <guava.version>33.4.8-jre</guava.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
     </properties>

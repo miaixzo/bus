@@ -192,6 +192,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
 
         /**
          * 构造
+         * 
          * @param codec 编码器
          */
         private Builder(final PercentCodec codec) {

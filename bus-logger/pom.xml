@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-logger</artifactId>
-    <version>8.2.1</version>
+    <version>8.2.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.1</bus.version>
+        <bus.version>8.2.2</bus.version>
         <commons.logging.version>1.3.5</commons.logging.version>
         <jboss.version>3.6.1.Final</jboss.version>
         <logback.version>1.5.18</logback.version>
