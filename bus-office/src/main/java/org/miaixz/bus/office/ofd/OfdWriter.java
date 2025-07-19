@@ -52,6 +52,9 @@ public class OfdWriter implements Serializable, Closeable {
     @Serial
     private static final long serialVersionUID = 2852287375522L;
 
+    /**
+     * OFD文档
+     */
     private final OFDDoc doc;
 
     /**

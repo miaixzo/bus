@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.2.1</bus.version>
         <lombok.version>1.18.38</lombok.version>
-        <jackson.version>2.19.0</jackson.version>
+        <jackson.version>2.19.2</jackson.version>
         <sardine.version>5.13</sardine.version>
         <jsch.version>0.2.25</jsch.version>
         <httpclient.version>4.5.14</httpclient.version>

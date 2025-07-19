@@ -54,7 +54,9 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * 编码解码器：大写
      */
     public static final Base16Provider CODEC_UPPER = new Base16Provider(false);
-
+    /**
+     * 创建Base16编码器
+     */
     private final char[] alphabets;
 
     /**

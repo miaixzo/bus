@@ -51,7 +51,13 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
 
     private static final int DEFAULT_ROW_CAPACITY = 10;
 
+    /**
+     * 读取配置
+     */
     private final CsvReadConfig config;
+    /**
+     * Tokener
+     */
     private final CsvTokener tokener;
     /**
      * 当前读取字段

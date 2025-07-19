@@ -184,10 +184,16 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
      * {@link PercentCodec}构建器 由于{@link PercentCodec}本身应该是只读对象，因此将此对象的构建放在Builder中
      */
     public static class Builder implements org.miaixz.bus.core.Builder<PercentCodec> {
-        @Serial
-        private static final long serialVersionUID = 2852281198793L;
+
+        /**
+         * 编码器
+         */
         private final PercentCodec codec;
 
+        /**
+         * 构造
+         * @param codec 编码器
+         */
         private Builder(final PercentCodec codec) {
             this.codec = codec;
         }

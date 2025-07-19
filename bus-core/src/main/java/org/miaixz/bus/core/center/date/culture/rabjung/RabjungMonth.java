@@ -230,23 +230,21 @@ public class RabjungMonth extends Loops {
         }
         int m = indexInYear + 1 + n;
         RabjungYear y = year;
-        int leapMonth = y.getLeapMonth();
         if (n > 0) {
-            int monthCount = leapMonth > 0 ? 13 : 12;
+            int monthCount = y.getMonthCount();
             while (m > monthCount) {
                 m -= monthCount;
                 y = y.next(1);
-                leapMonth = y.getLeapMonth();
-                monthCount = leapMonth > 0 ? 13 : 12;
+                monthCount = y.getMonthCount();
             }
         } else {
             while (m <= 0) {
                 y = y.next(-1);
-                leapMonth = y.getLeapMonth();
-                m += leapMonth > 0 ? 13 : 12;
+                m += y.getMonthCount();
             }
         }
         boolean leap = false;
+        int leapMonth = y.getLeapMonth();
         if (leapMonth > 0) {
             if (m == leapMonth + 1) {
                 leap = true;
@@ -276,7 +274,7 @@ public class RabjungMonth extends Loops {
         List<RabjungDay> l = new ArrayList<>();
         List<Integer> missDays = getMissDays();
         List<Integer> leapDays = getLeapDays();
-        for (int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 31; i++) {
             if (missDays.contains(i)) {
                 continue;
             }

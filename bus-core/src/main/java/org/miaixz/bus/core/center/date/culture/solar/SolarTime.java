@@ -29,6 +29,7 @@ package org.miaixz.bus.core.center.date.culture.solar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
+import org.miaixz.bus.core.center.date.culture.cn.climate.Climate;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
@@ -201,17 +202,24 @@ public class SolarTime extends Loops {
      * @return 节气
      */
     public SolarTerms getTerm() {
-        int y = getYear();
-        int i = getMonth() * 2;
-        if (i == 24) {
-            y += 1;
-            i = 0;
-        }
-        SolarTerms term = SolarTerms.fromIndex(y, i);
-        while (isBefore(term.getJulianDay().getSolarTime())) {
+        SolarTerms term = day.getTerm();
+        if (isBefore(term.getJulianDay().getSolarTime())) {
             term = term.next(-1);
         }
         return term;
+    }
+
+    /**
+     * 候
+     *
+     * @return 候
+     */
+    public Climate getPhenology() {
+        Climate p = day.getPhenology();
+        if (isBefore(p.getJulianDay().getSolarTime())) {
+            p = p.next(-1);
+        }
+        return p;
     }
 
     /**

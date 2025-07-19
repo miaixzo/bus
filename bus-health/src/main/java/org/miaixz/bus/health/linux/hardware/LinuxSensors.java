@@ -33,11 +33,11 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.ToIntFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
@@ -55,16 +55,35 @@ import org.miaixz.bus.health.linux.SysPath;
 @ThreadSafe
 final class LinuxSensors extends AbstractSensors {
 
+    /**
+     * Configuration property for prioritizing hwmon temperature sensors by name. Common sensor names include:
+     * <ul>
+     * <li>coretemp: Intel CPU temperature</li>
+     * <li>k10temp: AMD CPU temperature (K10+ cores)</li>
+     * <li>zenpower: AMD Zen CPU temperature</li>
+     * <li>k8temp: AMD K8 CPU temperature</li>
+     * <li>via-cputemp: VIA CPU temperature</li>
+     * </ul>
+     */
+    public static final String OSHI_HWMON_NAME_PRIORITY = "oshi.os.linux.sensors.hwmon.names";
+    public static final String OSHI_THERMAL_ZONE_TYPE_PRIORITY = "oshi.os.linux.sensors.cpuTemperature.types";
+
+    private static final List<String> HWMON_NAME_PRIORITY = Stream
+            .of(Config.get(OSHI_HWMON_NAME_PRIORITY, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
+            .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
     private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
-            .of(Config.get(Config._LINUX_THERMAL_ZONE_TYPE_PRIORITY, "").split(Symbol.COMMA))
+            .of(Config.get(OSHI_THERMAL_ZONE_TYPE_PRIORITY, "cpu-thermal,x86_pkg_temp").split(","))
             .filter((s) -> !s.isEmpty()).collect(Collectors.toList());
 
     private static final String TYPE = "type";
+    private static final String NAME = "/name";
     // Possible sensor types. See sysfs documentation for others, e.g. current
     private static final String TEMP = "temp";
     private static final String FAN = "fan";
     private static final String VOLTAGE = "in";
-    private static final String[] SENSORS = { TEMP, FAN, VOLTAGE };
+    // Compile pattern for "temp<digits>_input"
+    private static final String INPUT_SUFFIX = "_input";
+    private static final Pattern TEMP_INPUT_PATTERN = Pattern.compile("^" + TEMP + "\\d+" + INPUT_SUFFIX + "$");
 
     // Base HWMON path, adds 0, 1, etc. to end for various sensors
     private static final String HWMON = "hwmon";
@@ -173,18 +192,54 @@ final class LinuxSensors extends AbstractSensors {
      * Iterate over all hwmon* directories and look for sensor files, e.g., /sys/class/hwmon/hwmon0/temp1_input
      */
     private void populateSensorsMapFromHwmon() {
-        for (String sensor : SENSORS) {
-            // Final to pass to anonymous class
-            final String sensorPrefix = sensor;
-            // Find any *_input files in that path
-            getSensorFilesFromPath(HWMON_PATH, sensor, f -> {
-                try {
-                    return f.getName().startsWith(sensorPrefix) && f.getName().endsWith("_input")
-                            && Builder.getIntFromFile(f.getCanonicalPath()) > 0;
-                } catch (IOException e) {
-                    return false;
+        String selectedTempPath = null;
+        int selectedPriority = Integer.MAX_VALUE;
+
+        int i = 0;
+        while (Paths.get(HWMON_PATH + i).toFile().isDirectory()) {
+            String path = HWMON_PATH + i;
+
+            // Read the name file
+            String sensorName = Builder.getStringFromFile(path + NAME).trim();
+
+            // Check if this is a temperature sensor with valid readings
+            File dir = new File(path);
+            File[] tempInputs = dir.listFiles((d, name) -> TEMP_INPUT_PATTERN.matcher(name).matches());
+
+            if (tempInputs != null && tempInputs.length > 0) {
+                int priority = HWMON_NAME_PRIORITY.indexOf(sensorName);
+                if (priority >= 0 && priority < selectedPriority) {
+                    // Check if we can read at least one valid temperature
+                    for (File tempInput : tempInputs) {
+                        long temp = Builder.getLongFromFile(tempInput.getPath());
+                        if (temp > 0) {
+                            selectedPriority = priority;
+                            selectedTempPath = path;
+                            break;
+                        }
+                    }
                 }
-            });
+            }
+
+            // Handle other sensor types (fan, voltage)
+            for (String sensor : new String[] { FAN, VOLTAGE }) {
+                final String sensorPrefix = sensor;
+                // Final to pass to anonymous class
+                getSensorFilesFromPath(path, sensor, f -> {
+                    try {
+                        return f.getName().startsWith(sensorPrefix) && f.getName().endsWith(INPUT_SUFFIX)
+                                && Builder.getIntFromFile(f.getCanonicalPath()) > 0;
+                    } catch (IOException e) {
+                        return false;
+                    }
+                });
+            }
+
+            i++;
+        }
+
+        if (selectedTempPath != null) {
+            this.sensorsMap.put(TEMP, selectedTempPath + "/temp");
         }
     }
 
@@ -208,7 +263,7 @@ final class LinuxSensors extends AbstractSensors {
             long millidegrees = 0;
             if (tempStr.contains(HWMON)) {
                 // First attempt should be CPU temperature at index 1, if available
-                millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s1_input", tempStr));
+                millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s1%s", tempStr));
                 // Should return a single line of millidegrees Celsius
                 if (millidegrees > 0) {
                     return millidegrees / 1000d;
@@ -218,7 +273,7 @@ final class LinuxSensors extends AbstractSensors {
                 long sum = 0;
                 int count = 0;
                 for (int i = 2; i <= 6; i++) {
-                    millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s%d_input", tempStr, i));
+                    millidegrees = Builder.getLongFromFile(String.format(Locale.ROOT, "%s%d%s", tempStr, i));
                     if (millidegrees > 0) {
                         sum += millidegrees;
                         count++;
@@ -247,7 +302,7 @@ final class LinuxSensors extends AbstractSensors {
                 List<Integer> speeds = new ArrayList<>();
                 int fan = 1;
                 for (;;) {
-                    String fanPath = String.format(Locale.ROOT, "%s%d_input", fanStr, fan);
+                    String fanPath = String.format(Locale.ROOT, "%s%d%s", fanStr, fan);
                     if (!new File(fanPath).exists()) {
                         // No file found, we've reached max fans
                         break;
@@ -275,7 +330,7 @@ final class LinuxSensors extends AbstractSensors {
         String voltageStr = this.sensorsMap.get(VOLTAGE);
         if (voltageStr != null) {
             // Should return a single line of millivolt
-            return Builder.getIntFromFile(String.format(Locale.ROOT, "%s1_input", voltageStr)) / 1000d;
+            return Builder.getIntFromFile(String.format(Locale.ROOT, "%s1%s", voltageStr)) / 1000d;
         }
         return 0d;
     }

@@ -176,12 +176,11 @@ public class EightChar extends Tradition {
      * @return 身宫
      */
     public SixtyCycle getBodySign() {
-        int m = month.getEarthBranch().getIndex() - 1;
-        if (m < 1) {
-            m += 12;
+        int offset = month.getEarthBranch().getIndex() - 1;
+        if (offset < 1) {
+            offset += 12;
         }
-        int h = hour.getEarthBranch().getIndex() + 1;
-        int offset = m + h;
+        offset += hour.getEarthBranch().getIndex() + 1;
         if (offset > 12) {
             offset -= 12;
         }

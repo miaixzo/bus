@@ -48,6 +48,9 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
      * 容量
      */
     private final int capacity;
+    /**
+     * 比较器
+     */
     private final Comparator<? super E> comparator;
 
     /**

@@ -137,7 +137,7 @@ public class LunarYear extends Loops {
      * @return 月数
      */
     public int getMonthCount() {
-        return getLeapMonth() > 0 ? 13 : 12;
+        return getLeapMonth() < 1 ? 12 : 13;
     }
 
     /**
