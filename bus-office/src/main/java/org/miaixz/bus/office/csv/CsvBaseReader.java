@@ -53,6 +53,9 @@ public class CsvBaseReader implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852282185110L;
 
+    /**
+     * 读取配置
+     */
     private final CsvReadConfig config;
 
     /**

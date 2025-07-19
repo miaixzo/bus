@@ -29,11 +29,14 @@ package org.miaixz.bus.spring.web;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -52,6 +55,8 @@ import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.filter.Filter;
 import com.alibaba.fastjson2.filter.ValueFilter;
+
+import jakarta.persistence.Transient;
 
 /**
  * Fastjson2 JSON 转换器配置器。 配置 Fastjson2 的 HttpMessageConverter，支持 autoType 自动类型识别。
@@ -95,10 +100,24 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
      */
     static class FastJson2HttpMessageConverter extends AbstractHttpMessageConverter<Object> {
         private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
-                JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls };
+                JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls,
+                JSONWriter.Feature.IgnoreNonFieldGetter };
         private static final JSONReader.Feature[] READER_FEATURES = { JSONReader.Feature.FieldBased };
-        private static final Filter[] FILTERS = { (ValueFilter) (object, name,
-                value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value };
+        private static final Filter[] FILTERS = { (ValueFilter) (object, name, value) -> {
+            // 忽略值为 null、空字符串或空格的字段
+            if (value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value)) {
+                return null;
+            }
+
+            // 检查字段是否有 @Transient 注解（jakarta.persistence.Transient）
+            Field field = FieldKit.getField(object.getClass(), name);
+            if (field != null && Modifier.isTransient(field.getModifiers())
+                    || field.getAnnotation(Transient.class) != null) {
+                return null; // 忽略带有 @Transient 注解的字段
+            }
+            // 字段不存在或无法访问，忽略
+            return value;
+        } };
 
         private final String[] autoTypes;
 

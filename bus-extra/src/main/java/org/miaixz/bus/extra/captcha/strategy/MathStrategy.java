@@ -31,6 +31,7 @@ import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.math.Calculator;
+import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -51,12 +52,16 @@ public class MathStrategy implements CodeStrategy {
      * 参与计算数字最大长度
      */
     private final int numberLength;
+    /**
+     * 计算结果是否允许负数
+     */
+    private final boolean resultHasNegativeNumber;
 
     /**
      * 构造
      */
     public MathStrategy() {
-        this(2);
+        this(2, false);
     }
 
     /**
@@ -64,20 +69,38 @@ public class MathStrategy implements CodeStrategy {
      *
      * @param numberLength 参与计算最大数字位数
      */
-    public MathStrategy(final int numberLength) {
+    /**
+     * 构造
+     *
+     * @param numberLength            参与计算最大数字位数
+     * @param resultHasNegativeNumber 结果是否允许负数
+     */
+    public MathStrategy(final int numberLength, final boolean resultHasNegativeNumber) {
         this.numberLength = numberLength;
+        this.resultHasNegativeNumber = resultHasNegativeNumber;
     }
 
     @Override
     public String generate() {
         final int limit = getLimit();
-        String number1 = Integer.toString(RandomKit.randomInt(limit));
-        String number2 = Integer.toString(RandomKit.randomInt(limit));
+        final char operator = RandomKit.randomChar(operators);
+        final int numberInt1;
+        final int numberInt2;
+        numberInt1 = RandomKit.randomInt(limit);
+        // 如果禁止了结果有负数，且计算方式正好计算为减法，需要第二个数小于第一个数
+        if (!resultHasNegativeNumber && CharKit.equals(Symbol.C_MINUS, operator, false)) {
+            // 如果第一个数为0，第二个数必须为0，随机[0,0)的数字会报错
+            numberInt2 = numberInt1 == 0 ? 0 : RandomKit.randomInt(0, numberInt1);
+        } else {
+            numberInt2 = RandomKit.randomInt(limit);
+        }
+        String number1 = Integer.toString(numberInt1);
+        String number2 = Integer.toString(numberInt2);
+
         number1 = StringKit.padAfter(number1, this.numberLength, Symbol.C_SPACE);
         number2 = StringKit.padAfter(number2, this.numberLength, Symbol.C_SPACE);
 
-        return StringKit.builder().append(number1).append(RandomKit.randomChar(operators)).append(number2)//
-                .append(Symbol.C_EQUAL).toString();
+        return StringKit.builder().append(number1).append(operator).append(number2).append('=').toString();
     }
 
     @Override

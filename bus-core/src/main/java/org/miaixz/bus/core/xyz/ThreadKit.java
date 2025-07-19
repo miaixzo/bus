@@ -27,10 +27,12 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.thread.*;
 
 /**
@@ -448,6 +450,7 @@ public class ThreadKit {
             try {
                 Thread.sleep(millis);
             } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 return false;
             }
         }
@@ -719,7 +722,11 @@ public class ThreadKit {
      * @return {@link ConcurrencyTester}
      */
     public static ConcurrencyTester concurrencyTest(final int threadSize, final Runnable runnable) {
-        return (new ConcurrencyTester(threadSize)).test(runnable);
+        try (ConcurrencyTester tester = new ConcurrencyTester(threadSize)) {
+            return tester.test(runnable);
+        } catch (IOException e) {
+            throw new InternalException(e);
+        }
     }
 
     /**

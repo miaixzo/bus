@@ -42,9 +42,7 @@ public interface TenantProvider {
      *
      * @return 租户 ID 表达式
      */
-    default Expression getTenantId() {
-        return null;
-    }
+    Expression getTenantId();
 
     /**
      * 获取租户字段名

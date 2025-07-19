@@ -39,6 +39,9 @@ import org.apache.poi.ss.util.CellRangeAddress;
  */
 public abstract class AbstractSheetReader<T> implements SheetReader<T> {
 
+    /**
+     * 读取范围
+     */
     protected final CellRangeAddress cellRangeAddress;
     /**
      * Excel配置

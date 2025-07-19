@@ -200,7 +200,7 @@ public class RabjungYear extends Loops {
      * @return 数量
      */
     public int getMonthCount() {
-        return getLeapMonth() == 0 ? 12 : 13;
+        return getLeapMonth() < 1 ? 12 : 13;
     }
 
     /**

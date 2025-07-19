@@ -252,19 +252,28 @@ public class SolarDay extends Loops {
     }
 
     /**
+     * 候
+     *
+     * @return 候
+     */
+    public Climate getPhenology() {
+        return getClimateDay().getClimate();
+    }
+
+    /**
      * 七十二候
      *
      * @return 七十二候
      */
     public ClimateDay getClimateDay() {
-        SolarTerms term = getTerm();
-        int dayIndex = subtract(term.getJulianDay().getSolarDay());
+        SolarTermDay d = getTermDay();
+        int dayIndex = d.getDayIndex();
         int index = dayIndex / 5;
         if (index > 2) {
             index = 2;
         }
-        dayIndex -= index * 5;
-        return new ClimateDay(Climate.fromIndex(term.getIndex() * 3 + index), dayIndex);
+        SolarTerms term = d.getSolarTerm();
+        return new ClimateDay(Climate.fromIndex(term.getYear(), term.getIndex() * 3 + index), dayIndex - index * 5);
     }
 
     /**

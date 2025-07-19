@@ -45,7 +45,13 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
     @Serial
     private static final long serialVersionUID = 2852282752523L;
 
+    /**
+     * 头信息
+     */
     private final List<String> header;
+    /**
+     * 行数据
+     */
     private final List<CsvRow> rows;
 
     /**

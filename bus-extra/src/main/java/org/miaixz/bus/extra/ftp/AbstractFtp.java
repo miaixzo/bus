@@ -46,6 +46,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public abstract class AbstractFtp implements Ftp {
 
+    /**
+     * FTP配置
+     */
     protected FtpConfig ftpConfig;
 
     /**

@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-setting</artifactId>
-    <version>8.2.1</version>
+    <version>8.2.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -53,7 +53,7 @@
             <name>Kimi Liu</name>
             <email>839536@gmail.com</email>
             <organization>Miaixz</organization>
-            <organizationUrl>http://www.miaixz.org</organizationUrl>
+            <organizationUrl>https://www.miaixz.org</organizationUrl>
             <roles>
                 <role>Owner</role>
                 <role>Committer</role>
@@ -64,7 +64,7 @@
             <name>Justubborn</name>
             <email>wubenhui@gmail.com</email>
             <organization>Miaixz</organization>
-            <organizationUrl>http://www.miaixz.org</organizationUrl>
+            <organizationUrl>https://www.miaixz.org</organizationUrl>
             <roles>
                 <role>Committer</role>
             </roles>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.1</bus.version>
+        <bus.version>8.2.2</bus.version>
         <yaml.version>2.4</yaml.version>
     </properties>
 
