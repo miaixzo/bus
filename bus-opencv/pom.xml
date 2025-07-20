@@ -37,13 +37,13 @@
 
     <name>${project.artifactId}</name>
     <description>Bus OpenCV</description>
-    <url>https://github.com/839128/bus</url>
+    <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
-            <url>https://github.com/839128/bus/blob/main/LICENSE</url>
+            <url>https://github.com/818000/bus/blob/main/LICENSE</url>
         </license>
         <license>
             <name>Apache-2.0</name>
@@ -53,7 +53,7 @@
 
     <developers>
         <developer>
-            <id>839128</id>
+            <id>818000</id>
             <name>Kimi Liu</name>
             <email>839536@gmail.com</email>
             <organization>Miaixz</organization>
@@ -76,14 +76,14 @@
     </developers>
 
     <scm>
-        <connection>scm:git@github.com:839128/bus.git</connection>
-        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
-        <url>git@github.com:839128/bus.git</url>
+        <connection>scm:git@github.com:818000/bus.git</connection>
+        <developerConnection>scm:git@github.com:818000/bus.git</developerConnection>
+        <url>git@github.com:818000/bus.git</url>
     </scm>
 
     <issueManagement>
         <system>Github Issue</system>
-        <url>https://github.com/839128/bus/issues</url>
+        <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
 
     <properties>

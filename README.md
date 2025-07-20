@@ -5,8 +5,8 @@
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
     <img src="https://img.shields.io/badge/maven--central-v8.2.2-blue.svg?label=Maven%20Central" />
   </a>
-  <a target="_blank" href="https://travis-ci.org/839128/bus">
-    <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
+  <a target="_blank" href="https://travis-ci.org/818000/bus">
+    <img src="https://app.travis-ci.com/818000/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
   </a>
   <a target="_blank" href="https://jdk.java.net/">
     <img src="https://img.shields.io/badge/Java-17+-green.svg">
@@ -23,7 +23,7 @@
   <a target="_blank" href="http://poi.apache.org">
     <img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
   </a>
-  <a target="_blank" href="https://github.com/839128/bus/blob/main/LICENSE">
+  <a target="_blank" href="https://github.com/818000/bus/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg">
   </a>
 </p>
@@ -131,7 +131,7 @@ implementation 'org.miaixz:bus-all:x.x.x'
 
 为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
 
-- 地址: [https://github.com/839128/abarth](https://github.com/839128/abarth)
+- 地址: [https://github.com/818000/abarth](https://github.com/818000/abarth)
 
 > 注意
 > Bus项目支持Java 17+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。

@@ -168,7 +168,7 @@ USB Devices:
 
 ### Prepare
 
-* Make sure tests are green on [Travis CI](https://travis-ci.org/839128/bus).
+* Make sure tests are green on [Travis CI](https://travis-ci.org/818000/bus).
 * Run `mvn clean test` on every OS you have access to
 * Choose an appropriate [version number](http://semver.org/) for the release
     * Proactively change version numbers in the download links on [README.md](README.md).
@@ -199,7 +199,7 @@ for a summary of the below steps
   and [release the deployment from OSSRH to the Central Repository](http://central.sonatype.org/pages/releasing-the-deployment.html)
   .
 
-* Add a title and release notes [to the tag](https://github.com/839128/bus/tags) on GitHub and publish the release to
+* Add a title and release notes [to the tag](https://github.com/818000/bus/tags) on GitHub and publish the release to
   make
   it current.
 
