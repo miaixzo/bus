@@ -153,7 +153,7 @@
         <alipay.version>4.40.186.ALL</alipay.version>
         <sardine.version>5.13</sardine.version>
         <httpclient.version>4.5.14</httpclient.version>
-        <amazon.s3.version>2.31.33</amazon.s3.version>
+        <amazon.s3.version>2.32.3</amazon.s3.version>
     </properties>
 
     <dependencyManagement>

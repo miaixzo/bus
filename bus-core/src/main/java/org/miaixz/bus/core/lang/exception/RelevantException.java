@@ -30,8 +30,12 @@ package org.miaixz.bus.core.lang.exception;
 import java.io.IOException;
 import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.lang.I18n;
+import org.miaixz.bus.core.lang.Keys;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -174,6 +178,31 @@ public class RelevantException extends IOException {
         if (null == cause)
             return false;
         return isCauseBy(cause, causeType);
+    }
+
+    @Override
+    public String getMessage() {
+        if (this.errcode != null) {
+            return this.errmsg;
+        }
+        return super.getMessage();
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        if (errcode != null) {
+            try {
+                Locale locale = new Locale(I18n.AUTO_DETECT.lang());
+                ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
+                return bundle.getString(this.errcode);
+            } catch (Exception e) {
+                // 回退到 ERRORS_CACHE 中注册的错误信息
+                Errors.Entry entry = Errors.require(this.errcode);
+                return entry != null ? entry.getValue() : this.getMessage();
+            }
+
+        }
+        return super.getLocalizedMessage();
     }
 
 }

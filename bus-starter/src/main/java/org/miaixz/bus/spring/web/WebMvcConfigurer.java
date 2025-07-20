@@ -38,6 +38,9 @@ import org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 
 /**
  * 配置 Spring MVC 消息转换器，支持字符串和 JSON 序列化/反序列化。 支持默认 JSON 框架（Jackson、Fastjson）和通过 JsonConverterConfigurer 配置的自定义框架。 确保
@@ -54,10 +57,12 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
             MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
 
     protected String autoType;
+    protected String prefix;
 
-    public WebMvcConfigurer(String autoType) {
+    public WebMvcConfigurer(String autoType, String prefix) {
         super();
         this.autoType = autoType;
+        this.prefix = prefix;
     }
 
     /**
@@ -72,10 +77,19 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
         // 配置 StringHttpMessageConverter
         configureConverter(converters, this::configureStringConverter, "StringHttpMessageConverter");
 
-        /**
-         * 配置 JSON 转换器 用户可自定义实现/只需实现 {@link JsonConverterConfigurer } @Component 即可自动加载
-         */
+        // 配置 JSON 转换器 用户可自定义实现/只需实现 {@link JsonConverterConfigurer } @Component 即可自动加载
         configureJsonConverters(converters, getJsonConfigurers());
+    }
+
+    /**
+     * 为所有Controller配置统一前缀
+     *
+     * @param configurer URL 路径匹配到控制器
+     */
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.addPathPrefix(this.prefix,
+                c -> (c.isAnnotationPresent(Controller.class) || c.isAnnotationPresent(RestController.class)));
     }
 
     /**

@@ -56,10 +56,11 @@ import org.miaixz.bus.mapper.support.ClassField;
 public class OGNL {
 
     /**
-     * SQL 语法检查正则，匹配包含两个关键字（有先后顺序）的 SQL 语句
+     * SQL语法检查正则：符合两个关键字（有先后顺序）才算匹配
      */
     public static final Pattern SQL_SYNTAX_PATTERN = Pattern.compile(
-            "(?i)(?:\\b(insert\\s+into\\s+\\w+|delete\\s+from\\s+\\w+|update\\s+\\w+\\s*(?:set\\s+.*)?|create\\s+(table|database|view|index|procedure|trigger)\\s+\\w+|drop\\s+(table|database|view|index)\\s+\\w+|truncate\\s+table\\s+\\w+|grant\\s+.*\\s+on\\s+.*|alter\\s+(table|database)\\s+\\w+|deny\\s+.*\\s+on\\s+.*|revoke\\s+.*\\s+on\\s+.*|call\\s+\\w+|execute\\s+\\w+|exec\\s+\\w+|declare\\s+@\\w+|show\\s+(databases|tables|columns)|rename\\s+table\\s+\\w+|set\\s+password|union\\s+select\\s+.*|insert\\s+\\w+)(?:\\s*(?:;|\\/\\*|\\-\\-)|\\b)|\\b(if|substr|substring|char|concat|benchmark|sleep)\\s*\\([^)]*\\)|\\b(or|and)\\s+['\"0-1]=['\"0-1])",
+            "(insert|delete|update|select|create|drop|truncate|grant|alter|deny|revoke|call|execute|exec|declare|show|rename|set)"
+                    + "\\s+.*(into|from|set|where|table|database|view|index|on|cursor|procedure|trigger|for|password|union|and|or)|(select\\s*\\*\\s*from\\s+)|(and|or)\\s+.*",
             Pattern.CASE_INSENSITIVE);
 
     /**
@@ -67,6 +68,20 @@ public class OGNL {
      */
     public static final Pattern SQL_COMMENT_PATTERN = Pattern.compile("'.*(or|union|--|#|/\\*|;)",
             Pattern.CASE_INSENSITIVE);
+
+    /**
+     * SQL 语法关键字
+     */
+    public static final String SQL_SYNTAX_KEYWORD = "and |exec |peformance_schema|information_schema|extractvalue|updatexml|geohash|gtid_subset|gtid_subtract|insert |select |delete |update |drop |count |chr |mid |master |truncate |char |declare |;|or |+|--";
+
+    /**
+     * SQL 函数检查正则
+     */
+    public static final String[] SQL_FUNCTION_PATTERN = new String[] { "chr\\s*\\(", "mid\\s*\\(", " char\\s*\\(",
+            "sleep\\s*\\(", "user\\s*\\(", "show\\s+tables", "user[\\s]*\\([\\s]*\\)", "show\\s+databases",
+            "sleep\\(\\d*\\)", "sleep\\(.*\\)", };
+
+    public static final String MESSAGE_TEMPLATE = "SQL 注入检查: 检查值=>{}<=存在 SQL 注入, 关键字=>{}<=";
 
     /**
      * SQL 字符串去除空白
@@ -202,11 +217,48 @@ public class OGNL {
      *
      * @param value 要检查的参数
      * @return 如果存在 SQL 注入风险返回 true，否则返回 false
-     * @throws NullPointerException 如果 value 为 null
      */
     public static boolean validateSql(String value) {
-        Objects.requireNonNull(value);
-        return SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find();
+        if (StringKit.isBlank(value)) {
+            return false;
+        }
+        // 处理是否包含 SQL 注释字符 || 检查是否包含 SQL 注入敏感字符
+        if (SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find()) {
+            Logger.warn("SQL 注入检查: 检查值=>{}<=存在 SQL 注释字符或 SQL 注入敏感字符", value);
+            return true;
+        }
+        // 转换成小写再进行比较
+        value = value.toLowerCase().trim();
+        // 检查是否包含 SQL 语法关键字
+        if (keywords(value, SQL_SYNTAX_KEYWORD.split("\\|"))) {
+            return true;
+        }
+
+        // 检查是否包含 SQL 注入敏感字符
+        for (String pattern : SQL_FUNCTION_PATTERN) {
+            if (Pattern.matches(".*" + pattern + ".*", value)) {
+                Logger.warn(MESSAGE_TEMPLATE, value, pattern);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 检查参数是否存在关键字
+     *
+     * @param value    检查参数
+     * @param keywords 关键字列表
+     * @return true：存在；false：不存在
+     */
+    private static boolean keywords(String value, String[] keywords) {
+        for (String keyword : keywords) {
+            if (value.contains(keyword)) {
+                Logger.warn(MESSAGE_TEMPLATE, value, keyword);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

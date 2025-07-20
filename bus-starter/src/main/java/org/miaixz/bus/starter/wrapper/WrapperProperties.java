@@ -27,16 +27,18 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 配置信息
@@ -57,6 +59,11 @@ public class WrapperProperties {
      * 设置注册bean的顺序
      */
     private int order = 100;
+
+    /**
+     * 设置访问前缀
+     */
+    private String prefix = Normal.EMPTY;
     /**
      * 标志，表示已启用注册
      */
