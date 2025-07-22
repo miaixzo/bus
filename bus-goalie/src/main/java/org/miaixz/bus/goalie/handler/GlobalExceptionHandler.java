@@ -87,9 +87,9 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         Object message;
         if (ex instanceof WebClientException) {
             if (ex.getCause() instanceof ReadTimeoutException) {
-                message = Controller.write(ErrorCode.EM_80010003); // 读取超时错误
+                message = Controller.write(ErrorCode._80010003); // 读取超时错误
             } else {
-                message = Controller.write(ErrorCode.EM_80010004); // 其他 WebClient 异常
+                message = Controller.write(ErrorCode._80010004); // 其他 WebClient 异常
             }
         } else if (ex instanceof BusinessException e) {
             if (StringKit.isNotBlank(e.getErrcode())) {
