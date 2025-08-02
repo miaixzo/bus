@@ -49,6 +49,8 @@ module bus.goalie {
     requires spring.webflux;
     requires spring.boot;
     requires spring.boot.autoconfigure;
+    requires spring.boot.webflux;
+    requires spring.boot.webmvc;
     requires reactor.core;
     requires reactor.netty.http;
     requires reactor.netty.core;
