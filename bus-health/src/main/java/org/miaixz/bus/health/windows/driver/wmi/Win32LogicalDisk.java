@@ -57,7 +57,7 @@ public final class Win32LogicalDisk {
         StringBuilder wmiClassName = new StringBuilder(WIN32_LOGICAL_DISK);
         boolean where = false;
         if (localOnly) {
-            wmiClassName.append(" WHERE DriveType != 4");
+            wmiClassName.append(" WHERE DriveType = 2 OR DriveType = 3 OR DriveType = 6");
             where = true;
         }
         if (nameToMatch != null) {

@@ -154,20 +154,30 @@ public class StoreSCU implements AutoCloseable {
     }
 
     public void scanFiles(List<String> fnames) throws IOException {
+        this.scanFiles(fnames, true);
+    }
+
+    public void scanFiles(List<String> fnames, boolean printout) throws IOException {
         tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
         tmpFile.deleteOnExit();
         try (BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)))) {
-            for (String fname : fnames)
-                scan(new File(fname), fileInfos);
+            for (String fname : fnames) {
+                scan(new File(fname), fileInfos, printout);
+            }
         }
     }
 
-    private void scan(File f, BufferedWriter fileInfos) {
-        if (f.isDirectory()) {
-            for (String s : f.list())
-                scan(new File(f, s), fileInfos);
+    private void scan(File f, BufferedWriter fileInfos, boolean printout) {
+        if (f.isDirectory() && f.canRead()) {
+            String[] fileList = f.list();
+            if (fileList != null) {
+                for (String s : fileList) {
+                    scan(new File(f, s), fileInfos, printout);
+                }
+            }
             return;
         }
+
         try (ImageInputStream in = new ImageInputStream(f)) {
             in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             Attributes fmi = in.readFileMetaInformation();
@@ -181,8 +191,11 @@ public class StoreSCU implements AutoCloseable {
             boolean b = addFile(fileInfos, f, dsPos, fmi);
             if (b)
                 filesScanned++;
+            if (printout) {
+                System.out.print(b ? '.' : 'I');
+            }
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            Logger.error("Failed to scan file {}", f, e);
         }
     }
 

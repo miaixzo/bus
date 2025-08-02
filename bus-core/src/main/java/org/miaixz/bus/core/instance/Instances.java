@@ -58,15 +58,15 @@ public final class Instances {
     /**
      * 获得指定类的单例对象 对象存在于池中返回，否则创建，每次调用此方法获得的对象为同一个对象 注意：单例针对的是类和参数，也就是说只有类、参数一致才会返回同一个对象
      *
-     * @param <T>    单例对象类型
-     * @param clazz  类
-     * @param params 构造方法参数
+     * @param <T>   单例对象类型
+     * @param clazz 类
+     * @param args  构造方法参数
      * @return 单例对象
      */
-    public static <T> T get(final Class<T> clazz, final Object... params) {
+    public static <T> T get(final Class<T> clazz, final Object... args) {
         Assert.notNull(clazz, "Class must be not null !");
-        final String key = buildKey(clazz.getName(), params);
-        return get(key, () -> ReflectKit.newInstance(clazz, params));
+        final String key = buildKey(clazz.getName(), args);
+        return get(key, () -> ReflectKit.newInstance(clazz, args));
     }
 
     /**
@@ -104,13 +104,13 @@ public final class Instances {
     /**
      * 判断某个类的对象是否存在
      *
-     * @param clazz  类
-     * @param params 构造参数
+     * @param clazz 类
+     * @param args  构造参数
      * @return 是否存在
      */
-    public static boolean exists(final Class<?> clazz, final Object... params) {
+    public static boolean exists(final Class<?> clazz, final Object... args) {
         if (null != clazz) {
-            final String key = buildKey(clazz.getName(), params);
+            final String key = buildKey(clazz.getName(), args);
             return POOL.containsKey(key);
         }
         return false;
@@ -211,15 +211,15 @@ public final class Instances {
     /**
      * 获得指定类的单例对象 对象存在于池中返回，否则创建，每次调用此方法获得的对象为同一个对象 注意：单例针对的是类和参数，也就是说只有类、参数一致才会返回同一个对象
      *
-     * @param <T>    单例对象类型
-     * @param clazz  类
-     * @param params 构造方法参数
+     * @param <T>   单例对象类型
+     * @param clazz 类
+     * @param args  构造方法参数
      * @return 单例对象
      */
-    public static <T> T singletion(Class<T> clazz, Object... params) {
+    public static <T> T singletion(Class<T> clazz, Object... args) {
         Assert.notNull(clazz, "Class must be not null !");
-        final String key = buildKey(clazz.getName(), params);
-        return singletion(key, () -> ReflectKit.newInstance(clazz, params));
+        final String key = buildKey(clazz.getName(), args);
+        return singletion(key, () -> ReflectKit.newInstance(clazz, args));
     }
 
     /**
@@ -244,27 +244,27 @@ public final class Instances {
      *
      * @param <T>       单例对象类型
      * @param className 类名
-     * @param params    构造参数
+     * @param args      构造参数
      * @return 单例对象
      */
-    public static <T> T singletion(String className, Object... params) {
+    public static <T> T singletion(String className, Object... args) {
         Assert.notBlank(className, "Class name must be not blank !");
         final Class<T> clazz = ClassKit.loadClass(className);
-        return singletion(clazz, params);
+        return singletion(clazz, args);
     }
 
     /**
      * 构建key
      *
      * @param className 类名
-     * @param params    参数列表
+     * @param args      参数列表
      * @return data
      */
-    private static String buildKey(final String className, final Object... params) {
-        if (ArrayKit.isEmpty(params)) {
+    private static String buildKey(final String className, final Object... args) {
+        if (ArrayKit.isEmpty(args)) {
             return className;
         }
-        return StringKit.format("{}#{}", className, ArrayKit.join(params, Symbol.UNDERLINE));
+        return StringKit.format("{}#{}", className, ArrayKit.join(args, Symbol.UNDERLINE));
     }
 
 }

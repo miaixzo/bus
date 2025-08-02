@@ -54,10 +54,10 @@ public class VersionException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message 消息
+     * @param errmsg 消息
      */
-    public VersionException(final String message) {
-        super(message);
+    public VersionException(final String errmsg) {
+        super(errmsg);
     }
 
     /**
@@ -122,14 +122,14 @@ public class VersionException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message            消息
+     * @param errmsg             消息
      * @param cause              被包装的子异常
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public VersionException(final String message, final Throwable cause, final boolean enableSuppression,
+    public VersionException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        super(errmsg, cause, enableSuppression, writableStackTrace);
     }
 
 }

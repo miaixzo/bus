@@ -80,7 +80,7 @@ public class PinyinFactory {
                 return list.getService(serviceName);
             }
         }
-        throw new InternalException("No such engine named: " + name);
+        throw new InternalException("No such provider named: " + name);
     }
 
     /**

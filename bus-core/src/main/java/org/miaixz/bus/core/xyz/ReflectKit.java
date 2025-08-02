@@ -587,14 +587,14 @@ public class ReflectKit {
     /**
      * 实例化对象
      *
-     * @param <T>    对象类型
-     * @param clazz  类
-     * @param params 构造函数参数
+     * @param <T>   对象类型
+     * @param clazz 类
+     * @param args  构造函数参数
      * @return 对象
      * @throws InternalException 包装各类异常
      */
-    public static <T> T newInstance(final Class<T> clazz, final Object... params) throws InternalException {
-        return DefaultObjectCreator.of(clazz, params).create();
+    public static <T> T newInstance(final Class<T> clazz, final Object... args) throws InternalException {
+        return DefaultObjectCreator.of(clazz, args).create();
     }
 
     /**

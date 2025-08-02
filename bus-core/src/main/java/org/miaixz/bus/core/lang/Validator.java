@@ -76,14 +76,14 @@ public class Validator {
      *
      * @param value            值
      * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
-     * @param params           模板中变量替换后的值
+     * @param args             模板中变量替换后的值
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static boolean validateTrue(final boolean value, final String errorMsgTemplate, final Object... params)
+    public static boolean validateTrue(final boolean value, final String errorMsgTemplate, final Object... args)
             throws ValidateException {
         if (isFalse(value)) {
-            throw new ValidateException(errorMsgTemplate, params);
+            throw new ValidateException(errorMsgTemplate, args);
         }
         return true;
     }
@@ -93,14 +93,14 @@ public class Validator {
      *
      * @param value            值
      * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
-     * @param params           模板中变量替换后的值
+     * @param args             模板中变量替换后的值
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static boolean validateFalse(final boolean value, final String errorMsgTemplate, final Object... params)
+    public static boolean validateFalse(final boolean value, final String errorMsgTemplate, final Object... args)
             throws ValidateException {
         if (isTrue(value)) {
-            throw new ValidateException(errorMsgTemplate, params);
+            throw new ValidateException(errorMsgTemplate, args);
         }
         return false;
     }
@@ -131,14 +131,14 @@ public class Validator {
      * @param <T>              被检查的对象类型
      * @param value            值
      * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
-     * @param params           模板中变量替换后的值
+     * @param args             模板中变量替换后的值
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static <T> T validateNull(final T value, final String errorMsgTemplate, final Object... params)
+    public static <T> T validateNull(final T value, final String errorMsgTemplate, final Object... args)
             throws ValidateException {
         if (isNotNull(value)) {
-            throw new ValidateException(errorMsgTemplate, params);
+            throw new ValidateException(errorMsgTemplate, args);
         }
         return null;
     }
@@ -149,14 +149,14 @@ public class Validator {
      * @param <T>              被检查的对象类型
      * @param value            值
      * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
-     * @param params           模板中变量替换后的值
+     * @param args             模板中变量替换后的值
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static <T> T validateNotNull(final T value, final String errorMsgTemplate, final Object... params)
+    public static <T> T validateNotNull(final T value, final String errorMsgTemplate, final Object... args)
             throws ValidateException {
         if (isNull(value)) {
-            throw new ValidateException(errorMsgTemplate, params);
+            throw new ValidateException(errorMsgTemplate, args);
         }
         return value;
     }

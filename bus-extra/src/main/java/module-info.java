@@ -72,6 +72,12 @@ module bus.extra {
     requires mynlp;
     requires org.apache.logging.log4j;
     requires beetl.core;
+    requires jakarta.messaging;
+    requires activemq.client;
+    requires kafka.clients;
+    requires com.rabbitmq.client;
+    requires rocketmq.client;
+    requires rocketmq.common;
 
     exports org.miaixz.bus.extra.captcha;
     exports org.miaixz.bus.extra.captcha.provider;

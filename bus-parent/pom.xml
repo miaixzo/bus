@@ -33,7 +33,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.5.3</version>
+        <version>4.0.0-M1</version>
     </parent>
 
     <groupId>org.miaixz</groupId>
@@ -93,7 +93,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.2.2</bus.version>
         <lombok.version>1.18.38</lombok.version>
-        <spring.boot.version>3.5.3</spring.boot.version>
+        <spring.boot.version>4.0.0-M1</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.mail.version>2.1.3</jakarta.mail.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
@@ -103,13 +103,13 @@
         <commons.logging.version>1.3.5</commons.logging.version>
         <jboss.version>3.6.1.Final</jboss.version>
         <logback.version>1.5.18</logback.version>
-        <log4j.version>2.24.3</log4j.version>
+        <log4j.version>2.25.1</log4j.version>
         <slf4j.version>2.0.17</slf4j.version>
         <tinylog.version>2.7.0</tinylog.version>
         <yaml.version>2.4</yaml.version>
         <aspectj.version>1.9.24</aspectj.version>
-        <bcpkix.version>1.80</bcpkix.version>
-        <fastjson.version>2.0.57</fastjson.version>
+        <bcpkix.version>1.81</bcpkix.version>
+        <fastjson.version>2.0.58</fastjson.version>
         <gson.version>2.13.1</gson.version>
         <jackson.version>2.19.2</jackson.version>
         <jpinyin.version>1.1.8</jpinyin.version>
@@ -117,13 +117,13 @@
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
         <houbb.version>0.4.0</houbb.version>
-        <jsch.version>0.2.25</jsch.version>
-        <sshj.version>0.39.0</sshj.version>
+        <jsch.version>2.27.2</jsch.version>
+        <sshj.version>0.40.0</sshj.version>
         <zxing.version>3.5.3</zxing.version>
         <net.version>3.11.1</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
-        <compress.version>1.27.1</compress.version>
-        <beetl.version>3.19.1.RELEASE</beetl.version>
+        <compress.version>1.28.0</compress.version>
+        <beetl.version>3.19.2.RELEASE</beetl.version>
         <freemarker.version>2.3.34</freemarker.version>
         <thymeleaf.version>3.1.3.RELEASE</thymeleaf.version>
         <guice.version>7.0.0</guice.version>
@@ -131,29 +131,27 @@
         <xmemcached.version>2.4.8</xmemcached.version>
         <guava.version>33.4.8-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
-        <postgresql.version>42.7.5</postgresql.version>
-        <mysql.version>9.3.0</mysql.version>
+        <postgresql.version>42.7.7</postgresql.version>
+        <mysql.version>9.4.0</mysql.version>
         <h2.version>2.2.232</h2.version>
         <jersey.version>3.1.10</jersey.version>
         <jna.version>5.17.0</jna.version>
         <sentinel.version>1.8.8</sentinel.version>
-        <bytebuddy.version>1.17.5</bytebuddy.version>
+        <bytebuddy.version>1.17.6</bytebuddy.version>
         <mybatis.version>3.5.19</mybatis.version>
-        <mybatis.spring.version>3.0.4</mybatis.spring.version>
+        <mybatis.spring.version>3.0.5</mybatis.spring.version>
         <poi.version>5.4.1</poi.version>
-        <ofdrw.version>2.3.6</ofdrw.version>
-        <jsqlparser.version>5.1</jsqlparser.version>
-        <hikaricp.version>6.3.0</hikaricp.version>
-        <druid.version>1.2.24</druid.version>
-        <vertx.version>5.0.0</vertx.version>
-        <dubbo.version>3.3.4</dubbo.version>
-        <elasticsearch.version>9.0.0</elasticsearch.version>
-        <mongo.version>5.4.0</mongo.version>
+        <ofdrw.version>2.3.7</ofdrw.version>
+        <jsqlparser.version>5.3</jsqlparser.version>
+        <hikaricp.version>7.0.0</hikaricp.version>
+        <druid.version>1.2.27</druid.version>
+        <vertx.version>5.0.1</vertx.version>
+        <dubbo.version>3.3.5</dubbo.version>
+        <elastic.version>9.1.0</elastic.version>
+        <mongo.version>5.5.1</mongo.version>
         <curator.version>5.8.0</curator.version>
-        <alipay.version>4.40.186.ALL</alipay.version>
         <sardine.version>5.13</sardine.version>
-        <httpclient.version>4.5.14</httpclient.version>
-        <amazon.s3.version>2.32.3</amazon.s3.version>
+        <amazon.s3.version>2.32.14</amazon.s3.version>
     </properties>
 
     <dependencyManagement>
@@ -762,37 +760,6 @@
                 <version>${mybatis.spring.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alipay.sdk</groupId>
-                <artifactId>alipay-sdk-java</artifactId>
-                <version>${alipay.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.alibaba</groupId>
-                        <artifactId>fastjson</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcprov-jdk15on</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.squareup.okhttp3</groupId>
-                        <artifactId>okhttp</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>dom4j</groupId>
-                        <artifactId>dom4j</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
@@ -894,9 +861,10 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
+                <groupId>co.elastic.clients</groupId>
+                <artifactId>elasticsearch-java</artifactId>
+                <version>${elastic.version}</version>
+                <optional>true</optional>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.logging.log4j</groupId>
@@ -905,14 +873,6 @@
                     <exclusion>
                         <groupId>org.apache.logging.log4j</groupId>
                         <artifactId>log4j-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpasyncclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpcore</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
@@ -929,11 +889,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongodb-driver-sync</artifactId>
-                <version>${mongo.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
@@ -943,17 +898,6 @@
                 <artifactId>sardine</artifactId>
                 <version>${sardine.version}</version>
                 <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
@@ -1300,7 +1244,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.44.4</version>
+                <version>2.46.1</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

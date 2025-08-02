@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * 类型: 数据操作异常
@@ -61,10 +61,10 @@ public class MapperException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message 消息
+     * @param errmsg 消息
      */
-    public MapperException(final String message) {
-        super(message);
+    public MapperException(final String errmsg) {
+        super(errmsg);
     }
 
     /**
@@ -99,11 +99,11 @@ public class MapperException extends UncheckedException {
     /**
      * 构造
      *
-     * @param errcode   错误码
+     * @param errmsg    消息
      * @param throwable 异常
      */
-    public MapperException(final String errcode, final Throwable throwable) {
-        super(errcode, throwable);
+    public MapperException(final String errmsg, final Throwable throwable) {
+        super(errmsg, throwable);
     }
 
     /**
@@ -129,14 +129,14 @@ public class MapperException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message            消息
+     * @param errmsg             消息
      * @param cause              被包装的子异常
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public MapperException(final String message, final Throwable cause, final boolean enableSuppression,
+    public MapperException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        super(errmsg, cause, enableSuppression, writableStackTrace);
     }
 
 }

@@ -31,7 +31,6 @@ import java.awt.image.DataBuffer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
@@ -43,22 +42,44 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.opencv.core.CvType;
 
 /**
+ * DICOM图像渲染类，用于处理DICOM图像的各种渲染操作。
+ *
+ * <p>
+ * 该类提供了多种图像渲染方法，包括原始图像渲染、模态LUT应用、VOI LUT应用、 嵌入式覆盖层处理等。它支持不同数据类型的图像处理，并提供窗口/级别调整功能。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ImageRendering {
 
+    /**
+     * 返回应用了模态LUT且不包含嵌入式覆盖层的原始渲染图像。
+     *
+     * @param imageSource 源图像
+     * @param desc        包含模态LUT和覆盖层信息的图像描述符
+     * @param params      包含窗口/级别参数的DicomImageReadParam
+     * @param frameIndex  要处理的帧索引（单帧图像为0）
+     * @return 应用了模态LUT的原始渲染图像
+     */
     public static PlanarImage getRawRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
             ImageReadParam params, int frameIndex) {
-        PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc);
+        PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc, frameIndex);
         ImageAdapter adapter = new ImageAdapter(img, desc, frameIndex);
         return getModalityLutImage(imageSource, adapter, params);
     }
 
+    /**
+     * 返回应用了模态LUT的原始渲染图像。
+     *
+     * @param img     源图像
+     * @param adapter 包含模态LUT信息的DicomImageAdapter
+     * @param params  包含窗口/级别参数的DicomImageReadParam
+     * @return 应用了模态LUT的原始渲染图像
+     */
     public static PlanarImage getModalityLutImage(PlanarImage img, ImageAdapter adapter, ImageReadParam params) {
         WindLevelParameters p = new WindLevelParameters(adapter, params);
         int datatype = Objects.requireNonNull(img).type();
-
         if (datatype >= CvType.CV_8U && datatype < CvType.CV_32S) {
             LookupTableCV modalityLookup = adapter.getModalityLookup(p, p.isInverseLut());
             return modalityLookup == null ? img.toImageCV() : modalityLookup.lookup(img.toMat());
@@ -66,23 +87,48 @@ public class ImageRendering {
         return img;
     }
 
+    /**
+     * 返回应用了VOI LUT且不包含嵌入式覆盖层的默认渲染图像。
+     *
+     * @param imageSource 源图像
+     * @param desc        包含VOI LUT和覆盖层信息的图像描述符
+     * @param params      包含窗口/级别参数的DicomImageReadParam
+     * @param frameIndex  要处理的帧索引（单帧图像为0）
+     * @return 应用了VOI LUT和覆盖层的默认渲染图像
+     */
     public static PlanarImage getDefaultRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
             ImageReadParam params, int frameIndex) {
-        PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc);
+        PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc, frameIndex);
         img = getVoiLutImage(img, desc, params, frameIndex);
         return OverlayData.getOverlayImage(imageSource, img, desc, params, frameIndex);
     }
 
+    /**
+     * 返回应用了VOI LUT的图像。
+     *
+     * @param imageSource 源图像
+     * @param desc        包含VOI LUT信息的图像描述符
+     * @param params      包含窗口/级别参数的DicomImageReadParam
+     * @param frameIndex  要处理的帧索引（单帧图像为0）
+     * @return 应用了VOI LUT的图像
+     */
     public static PlanarImage getVoiLutImage(final PlanarImage imageSource, ImageDescriptor desc, ImageReadParam params,
             int frameIndex) {
         ImageAdapter adapter = new ImageAdapter(imageSource, desc, frameIndex);
         return getVoiLutImage(imageSource, adapter, params);
     }
 
+    /**
+     * 返回应用了VOI LUT的图像。
+     *
+     * @param imageSource 源图像
+     * @param adapter     包含VOI LUT信息的DicomImageAdapter
+     * @param params      包含窗口/级别参数的DicomImageReadParam
+     * @return 应用了VOI LUT的图像
+     */
     public static PlanarImage getVoiLutImage(PlanarImage imageSource, ImageAdapter adapter, ImageReadParam params) {
         WindLevelParameters p = new WindLevelParameters(adapter, params);
         int datatype = Objects.requireNonNull(imageSource).type();
-
         if (datatype >= CvType.CV_8U && datatype < CvType.CV_32S) {
             return getImageForByteOrShortData(imageSource, adapter, p);
         } else if (datatype >= CvType.CV_32S) {
@@ -91,6 +137,14 @@ public class ImageRendering {
         return null;
     }
 
+    /**
+     * 处理字节或短数据的图像。
+     *
+     * @param imageSource 源图像
+     * @param adapter     图像适配器
+     * @param p           窗口/级别参数
+     * @return 处理后的图像
+     */
     private static ImageCV getImageForByteOrShortData(PlanarImage imageSource, ImageAdapter adapter,
             WindLevelParameters p) {
         ImageDescriptor desc = adapter.getImageDescriptor();
@@ -99,16 +153,15 @@ public class ImageRendering {
                 : modalityLookup.lookup(imageSource.toMat());
 
         /*
-         * C.11.2.1.2 Window center and window width
+         * C.11.2.1.2 窗位和窗宽
          *
-         * These Attributes shall be used only for Images with Photometric Interpretation (0028,0004) values of
-         * MONOCHROME1 and MONOCHROME2. They have no meaning for other Images.
+         * 这些属性仅用于光度解释(0028,0004)值为MONOCHROME1和MONOCHROME2的图像。 对于其他图像没有意义。
          */
         if ((!p.isAllowWinLevelOnColorImage()
                 || MathKit.isEqual(p.getWindow(), 255.0) && MathKit.isEqual(p.getLevel(), 127.5))
                 && !desc.getPhotometricInterpretation().isMonochrome()) {
             /*
-             * If photometric interpretation is not monochrome, do not apply VOI LUT. It is necessary for PALETTE_COLOR.
+             * 如果光度解释不是单色的，不要应用VOI LUT。这对于PALETTE_COLOR是必要的。
              */
             return imageModalityTransformed;
         }
@@ -122,12 +175,19 @@ public class ImageRendering {
         if (prLut.isEmpty()) {
             return voiLookup.lookup(imageModalityTransformed);
         }
-
         ImageCV imageVoiTransformed = voiLookup == null ? imageModalityTransformed
                 : voiLookup.lookup(imageModalityTransformed);
         return prLut.get().lookup(imageVoiTransformed);
     }
 
+    /**
+     * 处理浮点或整型数据的图像。
+     *
+     * @param imageSource 源图像
+     * @param p           窗口/级别参数
+     * @param datatype    数据类型
+     * @return 处理后的图像
+     */
     private static ImageCV getImageWithFloatOrIntData(PlanarImage imageSource, WindLevelParameters p, int datatype) {
         double low = p.getLevel() - p.getWindow() / 2.0;
         double high = p.getLevel() + p.getWindow() / 2.0;
@@ -137,20 +197,23 @@ public class ImageRendering {
         }
         double slope = 255.0 / range;
         double yint = 255.0 - slope * high;
-
         return ImageProcessor.rescaleToByte(ImageCV.toMat(imageSource), slope, yint);
     }
 
     /**
-     * For overlays encoded in Overlay Data Element (60xx,3000), Overlay Bits Allocated (60xx,0100) is always 1 and
-     * Overlay Bit Position (60xx,0102) is always 0.
+     * 返回不包含嵌入式覆盖层的图像。如果图像有嵌入式覆盖层，它将清除bitsStored和highBit定义范围之外的位。
      *
-     * @param img the image source
-     * @return the bit mask for removing the pixel overlay
-     * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_8.html">8.1.2 Overlay data
-     *      encoding of related data elements</a>
+     * <p>
+     * 对于在覆盖数据元素(60xx,3000)中编码的覆盖层，覆盖位分配(60xx,0100)始终为1， 覆盖位位置(60xx,0102)始终为0。
+     *
+     * @param img        源图像
+     * @param desc       包含覆盖层信息的图像描述符
+     * @param frameIndex 要处理的帧索引（单帧图像为0）
+     * @return 不包含嵌入式覆盖层的图像
+     * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_8.html">8.1.2
+     *      覆盖数据和相关数据元素的编码</a>
      */
-    public static PlanarImage getImageWithoutEmbeddedOverlay(PlanarImage img, ImageDescriptor desc) {
+    public static PlanarImage getImageWithoutEmbeddedOverlay(PlanarImage img, ImageDescriptor desc, int frameIndex) {
         Objects.requireNonNull(img);
         List<EmbeddedOverlay> embeddedOverlays = Objects.requireNonNull(desc).getEmbeddedOverlay();
         if (!embeddedOverlays.isEmpty()) {
@@ -163,13 +226,11 @@ public class ImageRendering {
                 if (high > bitsStored) {
                     val -= (1 << (high - bitsStored)) - 1;
                 }
-                // Set to 0 all bits upper than highBit and if lower than high-bitsStored (=> all bits
-                // outside bitStored)
+                // 将高于highBit和低于high-bitsStored的所有位设置为0（即bitsStored之外的所有位）
                 if (high > bitsStored) {
-                    desc.getModalityLUT().adaptWithOverlayBitMask(high - bitsStored);
+                    desc.getModalityLutForFrame(frameIndex).adaptWithOverlayBitMask(high - bitsStored);
                 }
-
-                // Set to 0 all bits outside bitStored
+                // 将bitsStored之外的所有位设置为0
                 return ImageProcessor.bitwiseAnd(img.toMat(), val);
             }
         }

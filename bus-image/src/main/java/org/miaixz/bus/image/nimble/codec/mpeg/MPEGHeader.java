@@ -43,22 +43,38 @@ public class MPEGHeader {
     private static final String[] ASPECT_RATIO_221_100 = { "221", "100" };
     private static final String[][] ASPECT_RATIOS = { ASPECT_RATIO_1_1, ASPECT_RATIO_4_3, ASPECT_RATIO_16_9,
             ASPECT_RATIO_221_100 };
-    private static final int[] FPS = { 24, 1001, 24, 1000, 25, 1000, 30, 1001, 30, 1000, 50, 1000, 60, 1001, 60, 1000 };
-
+    static final int[] FPS = { 24, 1001, 24, 1000, 25, 1000, 30, 1001, 30, 1000, 50, 1000, 60, 1001, 60, 1000 };
     private final byte[] data;
     private final int seqHeaderOffset;
 
     public MPEGHeader(byte[] data) {
         this.data = data;
-        int remaining = data.length;
-        int i = 0;
-        do {
-            while (remaining-- > 0 && data[i++] != 0)
-                ;
-            if (remaining-- > 0 && data[i++] != 0)
-                continue;
-        } while (remaining > 8 && (data[i] != 1 || data[i + 1] != (byte) 0xb3));
-        seqHeaderOffset = remaining > 8 ? i + 1 : -1;
+        this.seqHeaderOffset = findSequenceHeaderOffset(data);
+    }
+
+    /**
+     * Finds the offset of the MPEG sequence header start code (0x00 0x00 0x01 0xB3).
+     *
+     * @param data the byte array to search in
+     * @return the offset after the start code, or -1 if not found
+     */
+    private static int findSequenceHeaderOffset(byte[] data) {
+        if (data == null || data.length < 4) {
+            return -1;
+        }
+
+        // Search for the sequence header start code: 0x00 0x00 0x01 0xB3
+        for (int i = 0; i <= data.length - 4; i++) {
+            if (data[i] == 0x00 && data[i + 1] == 0x00 && data[i + 2] == 0x01 && data[i + 3] == (byte) 0xB3) {
+                return i + 4;
+            }
+        }
+
+        return -1;
+    }
+
+    public boolean isValid() {
+        return seqHeaderOffset != -1;
     }
 
     /**
@@ -89,15 +105,19 @@ public class MPEGHeader {
             if (bitRate > 0)
                 numFrames = (int) (20 * length * FPS[frameRate2] / FPS[frameRate2 + 1] / bitRate);
         }
+        if (aspectRatio > 0 && aspectRatio < 5)
+            attrs.setString(Tag.PixelAspectRatio, VR.IS, ASPECT_RATIOS[aspectRatio - 1]);
+        return setImageAttributes(attrs, numFrames, y, x);
+    }
+
+    public static Attributes setImageAttributes(Attributes attrs, int numFrames, int rows, int columns) {
         attrs.setInt(Tag.SamplesPerPixel, VR.US, 3);
         attrs.setString(Tag.PhotometricInterpretation, VR.CS, "YBR_PARTIAL_420");
         attrs.setInt(Tag.PlanarConfiguration, VR.US, 0);
         attrs.setInt(Tag.FrameIncrementPointer, VR.AT, Tag.FrameTime);
         attrs.setInt(Tag.NumberOfFrames, VR.IS, numFrames);
-        attrs.setInt(Tag.Rows, VR.US, y);
-        attrs.setInt(Tag.Columns, VR.US, x);
-        if (aspectRatio > 0 && aspectRatio < 5)
-            attrs.setString(Tag.PixelAspectRatio, VR.IS, ASPECT_RATIOS[aspectRatio - 1]);
+        attrs.setInt(Tag.Rows, VR.US, rows);
+        attrs.setInt(Tag.Columns, VR.US, columns);
         attrs.setInt(Tag.BitsAllocated, VR.US, 8);
         attrs.setInt(Tag.BitsStored, VR.US, 8);
         attrs.setInt(Tag.HighBit, VR.US, 7);

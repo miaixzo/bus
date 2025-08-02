@@ -37,7 +37,7 @@ import org.miaixz.bus.goalie.Context;
 import org.miaixz.bus.goalie.Provider;
 import org.miaixz.bus.goalie.magic.ErrorCode;
 import org.miaixz.bus.logger.Logger;
-import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
+import org.springframework.boot.webflux.error.ErrorWebExceptionHandler;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

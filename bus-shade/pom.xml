@@ -87,11 +87,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <bus.version>8.2.2</bus.version>
         <lombok.version>1.18.38</lombok.version>
-        <spring.boot.version>3.5.3</spring.boot.version>
-        <compress.version>1.27.1</compress.version>
+        <spring.boot.version>4.0.0-M1</spring.boot.version>
+        <compress.version>1.28.0</compress.version>
         <freemarker.version>2.3.34</freemarker.version>
-        <hikaricp.version>6.3.0</hikaricp.version>
-        <mysql.version>9.3.0</mysql.version>
+        <hikaricp.version>7.0.0</hikaricp.version>
+        <mysql.version>9.4.0</mysql.version>
     </properties>
 
     <dependencies>
@@ -226,7 +226,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.44.4</version>
+                <version>2.46.1</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

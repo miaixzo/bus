@@ -60,10 +60,10 @@ public class BusinessException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message 消息
+     * @param errmsg 消息
      */
-    public BusinessException(final String message) {
-        super(message);
+    public BusinessException(final String errmsg) {
+        super(errmsg);
     }
 
     /**
@@ -128,14 +128,14 @@ public class BusinessException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message            消息
+     * @param errmsg             消息
      * @param cause              被包装的子异常
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public BusinessException(final String message, final Throwable cause, final boolean enableSuppression,
+    public BusinessException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        super(errmsg, cause, enableSuppression, writableStackTrace);
     }
 
 }

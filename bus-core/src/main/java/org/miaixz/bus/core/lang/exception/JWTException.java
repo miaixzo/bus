@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * 类型: JWT异常
@@ -54,10 +54,10 @@ public class JWTException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message 消息
+     * @param errmsg 消息
      */
-    public JWTException(final String message) {
-        super(message);
+    public JWTException(final String errmsg) {
+        super(errmsg);
     }
 
     /**
@@ -72,11 +72,11 @@ public class JWTException extends UncheckedException {
     /**
      * 构造
      *
-     * @param messageTemplate 消息模板
-     * @param params          参数
+     * @param format 消息模板
+     * @param args   参数
      */
-    public JWTException(final String messageTemplate, final Object... params) {
-        super(messageTemplate, params);
+    public JWTException(final String format, final Object... args) {
+        super(format, args);
     }
 
     /**
@@ -105,12 +105,12 @@ public class JWTException extends UncheckedException {
     /**
      * 构造
      *
-     * @param cause           被包装的子异常
-     * @param messageTemplate 消息模板
-     * @param params          参数
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
      */
-    public JWTException(final Throwable cause, final String messageTemplate, final Object... params) {
-        super(cause, messageTemplate, params);
+    public JWTException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
     }
 
 }

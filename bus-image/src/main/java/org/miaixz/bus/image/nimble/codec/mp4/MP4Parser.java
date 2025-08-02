@@ -39,6 +39,7 @@ import org.miaixz.bus.image.galaxy.SafeBuffer;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.nimble.codec.XPEGParser;
+import org.miaixz.bus.image.nimble.codec.mpeg.MPEGHeader;
 
 public class MP4Parser implements XPEGParser {
 
@@ -121,19 +122,7 @@ public class MP4Parser implements XPEGParser {
 
         attrs.setInt(Tag.CineRate, VR.IS, (fp1000s + 500) / 1000);
         attrs.setFloat(Tag.FrameTime, VR.DS, 1_000_000.f / fp1000s);
-        attrs.setInt(Tag.SamplesPerPixel, VR.US, 3);
-        attrs.setString(Tag.PhotometricInterpretation, VR.CS, "YBR_PARTIAL_420");
-        attrs.setInt(Tag.PlanarConfiguration, VR.US, 0);
-        attrs.setInt(Tag.FrameIncrementPointer, VR.AT, Tag.FrameTime);
-        attrs.setInt(Tag.NumberOfFrames, VR.IS, numFrames);
-        attrs.setInt(Tag.Rows, VR.US, rows);
-        attrs.setInt(Tag.Columns, VR.US, columns);
-        attrs.setInt(Tag.BitsAllocated, VR.US, 8);
-        attrs.setInt(Tag.BitsStored, VR.US, 8);
-        attrs.setInt(Tag.HighBit, VR.US, 7);
-        attrs.setInt(Tag.PixelRepresentation, VR.US, 0);
-        attrs.setString(Tag.LossyImageCompression, VR.CS, "01");
-        return attrs;
+        return MPEGHeader.setImageAttributes(attrs, numFrames, rows, columns);
     }
 
     @Override

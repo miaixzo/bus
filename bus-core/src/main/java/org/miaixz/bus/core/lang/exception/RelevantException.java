@@ -78,10 +78,10 @@ public class RelevantException extends IOException {
     /**
      * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param message 打印信息
+     * @param errmsg 打印信息
      */
-    protected RelevantException(final String message) {
-        super(message);
+    protected RelevantException(final String errmsg) {
+        super(errmsg);
     }
 
     /**
@@ -98,11 +98,11 @@ public class RelevantException extends IOException {
     /**
      * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param message 打印信息
-     * @param cause   抛出对象
+     * @param errmsg 打印信息
+     * @param cause  抛出对象
      */
-    protected RelevantException(final String message, final Throwable cause) {
-        super(message, cause);
+    protected RelevantException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
     }
 
     /**

@@ -66,9 +66,12 @@ public class CFind {
     public static final ImageParam Modality = new ImageParam(Tag.Modality);
     public static final ImageParam SeriesNumber = new ImageParam(Tag.SeriesNumber);
     public static final ImageParam SeriesDescription = new ImageParam(Tag.SeriesDescription);
+    public static final ImageParam SeriesDate = new ImageParam(Tag.SeriesDate);
+    public static final ImageParam SeriesTime = new ImageParam(Tag.SeriesTime);
 
     public static final ImageParam SOPInstanceUID = new ImageParam(Tag.SOPInstanceUID);
     public static final ImageParam InstanceNumber = new ImageParam(Tag.InstanceNumber);
+    public static final ImageParam SopClassUID = new ImageParam(Tag.SOPClassUID);
 
     /**
      * @param callingNode 调用DICOM节点的配置

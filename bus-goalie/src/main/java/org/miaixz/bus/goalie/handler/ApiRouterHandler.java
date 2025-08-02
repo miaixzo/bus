@@ -97,7 +97,7 @@ public class ApiRouterHandler {
                 .baseUrl(baseUrl).build());
 
         // 构建目标 URI，处理查询参数
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(assets.getUrl());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl).path(assets.getUrl());
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.setAll(params);
         if (HttpMethod.GET.equals(assets.getHttpMethod())) {
