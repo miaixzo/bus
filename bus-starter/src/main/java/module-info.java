@@ -43,7 +43,6 @@ module bus.starter {
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.goalie;
     requires bus.health;
     requires bus.http;
     requires bus.image;
@@ -60,6 +59,7 @@ module bus.starter {
     requires bus.socket;
     requires bus.storage;
     requires bus.validate;
+    requires bus.vortex;
 
     requires lombok;
     requires jakarta.annotation;
@@ -126,7 +126,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.cors;
     exports org.miaixz.bus.starter.dubbo;
     exports org.miaixz.bus.starter.elastic;
-    exports org.miaixz.bus.starter.goalie;
+    exports org.miaixz.bus.starter.vortex;
     exports org.miaixz.bus.starter.health;
     exports org.miaixz.bus.starter.i18n;
     exports org.miaixz.bus.starter.image;

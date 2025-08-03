@@ -203,11 +203,6 @@
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
-                <artifactId>bus-goalie</artifactId>
-                <version>${bus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.miaixz</groupId>
                 <artifactId>bus-health</artifactId>
                 <version>${bus.version}</version>
             </dependency>
@@ -289,6 +284,11 @@
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-validate</artifactId>
+                <version>${bus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.miaixz</groupId>
+                <artifactId>bus-vortex</artifactId>
                 <version>${bus.version}</version>
             </dependency>
             <dependency>

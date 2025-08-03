@@ -41,7 +41,6 @@ module bus.all {
     requires bus.crypto;
     requires bus.extra;
     requires bus.gitlab;
-    requires bus.goalie;
     requires bus.health;
     requires bus.http;
     requires bus.image;
@@ -60,6 +59,7 @@ module bus.all {
     requires bus.storage;
     requires bus.tracer;
     requires bus.validate;
+    requires bus.vortex;
 
     exports org.miaixz;
 

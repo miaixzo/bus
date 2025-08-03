@@ -189,12 +189,12 @@ public class GeniusBuilder {
     public static final String ELASTIC = Keys.BUS + Symbol.DOT + "elastic";
 
     /**
-     * Bus goalie key
+     * Bus vortex key
      */
-    public static final String GOALIE = Keys.BUS + Symbol.DOT + "goalie";
+    public static final String VORTEX = Keys.BUS + Symbol.DOT + "vortex";
 
     /**
-     * Bus goalie key
+     * Bus vortex key
      */
     public static final String HEALTH = Keys.BUS + Symbol.DOT + "health";
 
