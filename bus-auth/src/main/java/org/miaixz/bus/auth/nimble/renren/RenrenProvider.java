@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.renren;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,7 +39,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -60,39 +60,39 @@ public class RenrenProvider extends AbstractProvider {
         super(context, Registry.RENREN);
     }
 
-    public RenrenProvider(Context context, ExtendCache cache) {
+    public RenrenProvider(Context context, CacheX cache) {
         super(context, Registry.RENREN, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String response = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String response = doGetUserInfo(authToken);
         Map<String, Object> userObj = (Map<String, Object>) JsonKit.toPojo(response, Map.class).get("response");
 
         return Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("id"))
                 .avatar(getAvatarUrl(userObj)).nickname((String) userObj.get("name")).company(getCompany(userObj))
-                .gender(getGender(userObj)).token(accToken).source(complex.toString()).build();
+                .gender(getGender(userObj)).token(authToken).source(complex.toString()).build();
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(this.refreshTokenUrl(accToken.getRefreshToken()))).build();
+                .data(getToken(this.refreshTokenUrl(authToken.getRefreshToken()))).build();
     }
 
-    private AccToken getToken(String url) {
+    private AuthToken getToken(String url) {
         String response = Httpx.post(url);
         Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
         if (jsonObject.containsKey("error")) {
             throw new AuthorizedException("Failed to get token from Renren: " + jsonObject);
         }
 
-        return AccToken.builder().tokenType((String) jsonObject.get("token_type"))
+        return AuthToken.builder().tokenType((String) jsonObject.get("token_type"))
                 .expireIn(((Number) jsonObject.get("expires_in")).intValue())
                 .accessToken(UrlEncoder.encodeAll((String) jsonObject.get("access_token")))
                 .refreshToken(UrlEncoder.encodeAll((String) jsonObject.get("refresh_token")))
@@ -126,14 +126,13 @@ public class RenrenProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("userId", accToken.getOpenId())
-                .build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
+                .queryParam("userId", authToken.getOpenId()).build();
     }
 
     @Override

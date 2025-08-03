@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -64,7 +64,7 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
         super(context, complex);
     }
 
-    public PaypalProvider(Context context, Complex complex, ExtendCache cache) {
+    public PaypalProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
@@ -228,7 +228,7 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
         PayCache accessTokenCache = PayCache.INSTANCE;
         // 从缓存中获取 AccessToken
         if (!forceRefresh) {
-            String json = (String) accessTokenCache.get(this.context.getAppKey());
+            String json = (String) accessTokenCache.read(this.context.getAppKey());
             if (StringKit.isNotEmpty(json)) {
                 AccessToken accessToken = new AccessToken(json, 200);
                 if (accessToken.isAvailable()) {
@@ -245,7 +245,7 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
         // 三次请求如果仍然返回了不可用的 AccessToken 仍然 put 进去，便于上层通过 AccessToken 中的属性判断底层的情况
         if (null != result) {
             // 利用 clientId 与 accessToken 建立关联，支持多账户
-            accessTokenCache.cache(this.context.getAppKey(), result.getCacheJson());
+            accessTokenCache.write(this.context.getAppKey(), result.getCacheJson());
         }
         return result;
     }

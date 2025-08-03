@@ -30,7 +30,8 @@ package org.miaixz.bus.auth.nimble.proginn;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -39,7 +40,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -56,36 +56,36 @@ public class ProginnProvider extends AbstractProvider {
         super(context, Registry.PROGINN);
     }
 
-    public ProginnProvider(Context context, ExtendCache cache) {
+    public ProginnProvider(Context context, CacheX cache) {
         super(context, Registry.PROGINN, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("code", callback.getCode());
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());
         params.put("grant_type", "authorization_code");
         params.put("redirect_uri", context.getRedirectUri());
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), params);
+        String response = Httpx.post(this.complex.accessToken(), params);
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
                 .refreshToken((String) accessTokenObject.get("refresh_token"))
                 .uid((String) accessTokenObject.get("uid")).tokenType((String) accessTokenObject.get("token_type"))
                 .expireIn(((Number) accessTokenObject.get("expires_in")).intValue()).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String userInfo = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String userInfo = doGetUserInfo(authToken);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("uid"))
                 .username((String) object.get("nickname")).nickname((String) object.get("nickname"))
                 .avatar((String) object.get("avatar")).email((String) object.get("email")).gender(Gender.UNKNOWN)
-                .token(accToken).source(complex.toString()).build();
+                .token(authToken).source(complex.toString()).build();
     }
 
     /**

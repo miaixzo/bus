@@ -30,17 +30,17 @@ package org.miaixz.bus.auth.nimble.dingtalk;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
 
 /**
  * 钉钉 二维码登录
@@ -54,13 +54,13 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
         super(context, Registry.DINGTALK);
     }
 
-    public DingTalkProvider(Context context, ExtendCache cache) {
+    public DingTalkProvider(Context context, CacheX cache) {
         super(context, Registry.DINGTALK, cache);
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("response_type", "code")
+        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("scope", this.getScopes(Symbol.COMMA, true, getDefaultScopes(DingTalkScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri()).queryParam("prompt", "consent")
@@ -70,13 +70,13 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grantType", "authorization_code");
         params.put("clientId", context.getAppKey());
         params.put("clientSecret", context.getAppSecret());
         params.put("code", callback.getCode());
-        String response = Httpx.get(this.complex.getConfig().get(Builder.ACCESSTOKEN), JsonKit.toJsonString(params));
+        String response = Httpx.get(this.complex.accessToken(), JsonKit.toJsonString(params));
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
             if (accessTokenObject == null) {
@@ -93,7 +93,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
             int expireIn = expireInObj instanceof Number ? ((Number) expireInObj).intValue() : 0;
             String corpId = (String) accessTokenObject.get("corpId");
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expireIn)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expireIn)
                     .unionId(corpId).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -101,10 +101,10 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken authToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
         header.put("x-acs-dingtalk-access-token", authToken.getAccessToken());
-        String response = Httpx.get(this.complex.getConfig().get(Builder.USERINFO), new HashMap<>(0), header);
+        String response = Httpx.get(this.complex.userinfo(), new HashMap<>(0), header);
 
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -139,7 +139,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
      * @return 返回获取accessToken的url
      */
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN)).queryParam("code", code)
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
                 .queryParam("clientId", context.getAppKey()).queryParam("clientSecret", context.getAppSecret())
                 .queryParam("grantType", "authorization_code").build();
     }

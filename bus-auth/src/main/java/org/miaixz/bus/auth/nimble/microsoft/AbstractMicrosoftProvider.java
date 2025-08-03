@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.microsoft;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
@@ -40,7 +41,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Complex;
 import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -61,12 +61,12 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         super(context, complex);
     }
 
-    public AbstractMicrosoftProvider(Context context, Complex complex, ExtendCache cache) {
+    public AbstractMicrosoftProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         return getToken(accessTokenUrl(callback.getCode()));
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      * @param accessTokenUrl 实际请求token的地址
      * @return token对象
      */
-    private AccToken getToken(String accessTokenUrl) {
+    private AuthToken getToken(String accessTokenUrl) {
         Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
@@ -99,7 +99,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
             String tokenType = (String) accessTokenObject.get("token_type");
             String refreshToken = (String) accessTokenObject.get("refresh_token");
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
                     .refreshToken(refreshToken).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -119,11 +119,11 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", accToken.getTokenType() + Symbol.SPACE + accToken.getAccessToken());
+        header.put("Authorization", authToken.getTokenType() + Symbol.SPACE + authToken.getAccessToken());
 
-        String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
+        String userInfo = Httpx.get(userInfoUrl(authToken), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -142,7 +142,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
             String mail = (String) object.get("mail");
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(userPrincipalName)
-                    .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN).token(accToken)
+                    .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN).token(authToken)
                     .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -152,13 +152,13 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     /**
      * 刷新access token （续期）
      *
-     * @param accToken 登录成功后返回的Token信息
+     * @param authToken 登录成功后返回的Token信息
      * @return Message
      */
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(refreshTokenUrl(accToken.getRefreshToken()))).build();
+                .data(getToken(refreshTokenUrl(authToken.getRefreshToken()))).build();
     }
 
     /**
@@ -171,10 +171,9 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     public String authorize(String state) {
         // 兼容 MicrosoftScope Entra ID 登录（原微软 AAD）
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
-        return Builder.fromUrl(String.format(complex.getConfig().get(Builder.AUTHORIZE), tenantId))
-                .queryParam("response_type", "code").queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
-                .queryParam("response_mode", "query").queryParam("scope",
+        return Builder.fromUrl(String.format(complex.authorize(), tenantId)).queryParam("response_type", "code")
+                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("state", getRealState(state)).queryParam("response_mode", "query").queryParam("scope",
                         this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .build();
     }
@@ -188,9 +187,9 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     @Override
     protected String accessTokenUrl(String code) {
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
-        return Builder.fromUrl(String.format(this.complex.getConfig().get(Builder.ACCESSTOKEN), tenantId))
-                .queryParam("code", code).queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret()).queryParam("grant_type", "authorization_code")
+        return Builder.fromUrl(String.format(this.complex.accessToken(), tenantId)).queryParam("code", code)
+                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+                .queryParam("grant_type", "authorization_code")
                 .queryParam("scope",
                         this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
@@ -199,12 +198,12 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO)).build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).build();
     }
 
     /**
@@ -216,7 +215,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
-        return Builder.fromUrl(String.format(this.complex.getConfig().get(Builder.REFRESH), tenantId))
+        return Builder.fromUrl(String.format(this.complex.refresh(), tenantId))
                 .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token")
                 .queryParam("scope",

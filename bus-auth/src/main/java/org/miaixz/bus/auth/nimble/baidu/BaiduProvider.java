@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.baidu;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
@@ -39,7 +40,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -59,12 +59,12 @@ public class BaiduProvider extends AbstractProvider {
         super(context, Registry.BAIDU);
     }
 
-    public BaiduProvider(Context context, ExtendCache cache) {
+    public BaiduProvider(Context context, CacheX cache) {
         super(context, Registry.BAIDU, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
@@ -74,12 +74,12 @@ public class BaiduProvider extends AbstractProvider {
      * https://openapi.baidu.com/rest/2.0/passport/users/getInfo?access_token=121.2907d9facf9fb97adf7287fa75496eda.Y3NSjR3-3HKt1RgT0HEl7GgxRXT5gOOVdngXezY.OcC_7g
      * 新旧应用返回的用户信息不一致
      *
-     * @param accToken token信息
+     * @param authToken token信息
      * @return Property
      */
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String userInfo = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String userInfo = doGetUserInfo(authToken);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -98,7 +98,7 @@ public class BaiduProvider extends AbstractProvider {
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(username)
                     .nickname(username).avatar(getAvatar(object)).remark(userDetail).gender(Gender.of(sex))
-                    .token(accToken).source(complex.toString()).build();
+                    .token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -111,8 +111,8 @@ public class BaiduProvider extends AbstractProvider {
     }
 
     @Override
-    public Message revoke(AccToken accToken) {
-        String response = doGetRevoke(accToken);
+    public Message revoke(AuthToken authToken) {
+        String response = doGetRevoke(authToken);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -131,9 +131,9 @@ public class BaiduProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
-        String refreshUrl = Builder.fromUrl(this.complex.getConfig().get(Builder.REFRESH))
-                .queryParam("grant_type", "refresh_token").queryParam("refresh_token", accToken.getRefreshToken())
+    public Message refresh(AuthToken authToken) {
+        String refreshUrl = Builder.fromUrl(this.complex.refresh()).queryParam("grant_type", "refresh_token")
+                .queryParam("refresh_token", authToken.getRefreshToken())
                 .queryParam("client_id", this.context.getAppKey())
                 .queryParam("client_secret", this.context.getAppSecret()).build();
         String response = Httpx.get(refreshUrl);
@@ -166,7 +166,7 @@ public class BaiduProvider extends AbstractProvider {
         }
     }
 
-    private AccToken getAuthToken(String response) {
+    private AuthToken getAuthToken(String response) {
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
             if (accessTokenObject == null) {
@@ -183,7 +183,7 @@ public class BaiduProvider extends AbstractProvider {
             Object expiresInObj = accessTokenObject.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope)
                     .expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());

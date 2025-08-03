@@ -31,7 +31,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.MediaType;
@@ -43,7 +44,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -61,7 +61,7 @@ public class FigmaProvider extends AbstractProvider {
         super(context, Registry.FIGMA);
     }
 
-    public FigmaProvider(Context context, ExtendCache cache) {
+    public FigmaProvider(Context context, CacheX cache) {
         super(context, Registry.FIGMA, cache);
     }
 
@@ -72,7 +72,7 @@ public class FigmaProvider extends AbstractProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put("Authorization",
@@ -96,7 +96,7 @@ public class FigmaProvider extends AbstractProvider {
             Object expiresInObj = accessTokenObject.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope).userId(userId)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope).userId(userId)
                     .expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -104,10 +104,10 @@ public class FigmaProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.post(refreshTokenUrl(accToken.getRefreshToken()), headers);
+        String response = Httpx.post(refreshTokenUrl(authToken.getRefreshToken()), headers);
         try {
             Map<String, Object> dataObj = JsonKit.toPojo(response, Map.class);
             if (dataObj == null) {
@@ -126,7 +126,7 @@ public class FigmaProvider extends AbstractProvider {
             String scope = (String) dataObj.get("scope");
 
             return Message
-                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AccToken.builder().accessToken(accessToken)
+                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AuthToken.builder().accessToken(accessToken)
                             .openId(openId).expireIn(expiresIn).refreshToken(refreshToken).scope(scope).build())
                     .build();
         } catch (Exception e) {
@@ -136,17 +136,16 @@ public class FigmaProvider extends AbstractProvider {
 
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.REFRESH))
-                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
-                .queryParam("refresh_token", refreshToken).build();
+        return Builder.fromUrl(this.complex.refresh()).queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret()).queryParam("refresh_token", refreshToken).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization", "Bearer " + accToken.getAccessToken());
-        String response = Httpx.get(this.complex.getConfig().get(Builder.USERINFO), null, headers);
+        headers.put("Authorization", "Bearer " + authToken.getAccessToken());
+        String response = Httpx.get(this.complex.userinfo(), null, headers);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);
             if (data == null) {
@@ -163,7 +162,7 @@ public class FigmaProvider extends AbstractProvider {
             String email = (String) data.get("email");
 
             return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(handle).avatar(imgUrl)
-                    .email(email).token(accToken).source(complex.toString()).build();
+                    .email(email).token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }

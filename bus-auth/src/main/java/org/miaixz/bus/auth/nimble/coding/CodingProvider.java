@@ -27,20 +27,20 @@
 */
 package org.miaixz.bus.auth.nimble.coding;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import java.util.Map;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.Map;
 
 /**
  * Coding 登录
@@ -54,12 +54,12 @@ public class CodingProvider extends AbstractProvider {
         super(context, Registry.CODING);
     }
 
-    public CodingProvider(Context context, ExtendCache cache) {
+    public CodingProvider(Context context, CacheX cache) {
         super(context, Registry.CODING, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -76,15 +76,15 @@ public class CodingProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
             String refreshToken = (String) accessTokenObject.get("refresh_token");
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String response = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String response = doGetUserInfo(authToken);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -113,8 +113,8 @@ public class CodingProvider extends AbstractProvider {
             return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(name)
                     .avatar(avatar != null ? "https://coding.net" + avatar : null)
                     .blog(path != null ? "https://coding.net" + path : null).nickname(name).company(company)
-                    .location(location).gender(Gender.of(sex)).email(email).remark(slogan).token(accToken)
-                    .source(complex.toString()).build();
+                    .location(location).gender(Gender.of(sex)).email(email).remark(slogan).token(authToken)
+                    .source(this.complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -139,9 +139,9 @@ public class CodingProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(String.format(complex.getConfig().get(Builder.AUTHORIZE), context.getPrefix()))
-                .queryParam("response_type", "code").queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(String.format(this.complex.authorize(), this.context.getPrefix()))
+                .queryParam("response_type", "code").queryParam("client_id", this.context.getAppKey())
+                .queryParam("redirect_uri", this.context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(CodingScope.values())))
                 .queryParam("state", getRealState(state)).build();
     }
@@ -154,22 +154,22 @@ public class CodingProvider extends AbstractProvider {
      */
     @Override
     public String accessTokenUrl(String code) {
-        return Builder.fromUrl(String.format(this.complex.getConfig().get(Builder.ACCESSTOKEN), context.getPrefix()))
-                .queryParam("code", code).queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret()).queryParam("grant_type", "authorization_code")
-                .queryParam("redirect_uri", context.getRedirectUri()).build();
+        return Builder.fromUrl(String.format(this.complex.accessToken(), this.context.getPrefix()))
+                .queryParam("code", code).queryParam("client_id", this.context.getAppKey())
+                .queryParam("client_secret", this.context.getAppSecret()).queryParam("grant_type", "authorization_code")
+                .queryParam("redirect_uri", this.context.getRedirectUri()).build();
     }
 
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken token
+     * @param authToken token
      * @return 返回获取userInfo的url
      */
     @Override
-    public String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(String.format(this.complex.getConfig().get(Builder.USERINFO), context.getPrefix()))
-                .queryParam("access_token", accToken.getAccessToken()).build();
+    public String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(String.format(this.complex.userinfo(), this.context.getPrefix()))
+                .queryParam("access_token", authToken.getAccessToken()).build();
     }
 
 }

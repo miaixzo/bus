@@ -78,7 +78,7 @@ import org.miaixz.bus.auth.nimble.wechat.mp.WeChatMpProvider;
 import org.miaixz.bus.auth.nimble.wechat.open.WeChatOpenProvider;
 import org.miaixz.bus.auth.nimble.weibo.WeiboProvider;
 import org.miaixz.bus.auth.nimble.ximalaya.XimalayaProvider;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
@@ -95,13 +95,13 @@ public class AuthProviderService {
      */
     private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
     public AuthProperties properties;
-    public ExtendCache cache;
+    public CacheX cache;
 
     public AuthProviderService(AuthProperties properties) {
         this(properties, AuthCache.INSTANCE);
     }
 
-    public AuthProviderService(AuthProperties properties, ExtendCache cache) {
+    public AuthProviderService(AuthProperties properties, CacheX cache) {
         this.properties = properties;
         this.cache = cache;
     }

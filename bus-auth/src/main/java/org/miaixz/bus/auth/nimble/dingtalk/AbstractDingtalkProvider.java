@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.dingtalk;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -40,7 +41,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Complex;
 import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -60,7 +60,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
         super(context, complex);
     }
 
-    public AbstractDingtalkProvider(Context context, Complex complex, ExtendCache cache) {
+    public AbstractDingtalkProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
@@ -78,16 +78,16 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
-        return AccToken.builder().accessCode(callback.getCode()).build();
+    public AuthToken getAccessToken(Callback callback) {
+        return AuthToken.builder().accessCode(callback.getCode()).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String code = accToken.getAccessCode();
+    public Material getUserInfo(AuthToken authToken) {
+        String code = authToken.getAccessCode();
         Map<String, Object> param = new HashMap<>();
         param.put("tmp_auth_code", code);
-        String response = Httpx.post(userInfoUrl(accToken), JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
+        String response = Httpx.post(userInfoUrl(authToken), JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -113,7 +113,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
             }
             String nick = (String) userInfo.get("nick");
 
-            AccToken token = AccToken.builder().openId(openId).unionId(unionId).build();
+            AuthToken token = AuthToken.builder().openId(openId).unionId(unionId).build();
 
             return Material.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick)
                     .username(nick).gender(Gender.UNKNOWN).source(complex.toString()).token(token).build();
@@ -130,7 +130,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("response_type", "code")
+        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                 .queryParam("appid", context.getAppKey()).queryParam("scope", "snsapi_login")
                 .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state)).build();
     }
@@ -138,18 +138,17 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
+    protected String userInfoUrl(AuthToken authToken) {
         // 根据timestamp, appSecret计算签名值
         String timestamp = System.currentTimeMillis() + "";
         String urlEncodeSignature = sign(context.getAppSecret(), timestamp);
 
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("signature", urlEncodeSignature).queryParam("timestamp", timestamp)
-                .queryParam("accessKey", context.getAppKey()).build();
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("signature", urlEncodeSignature)
+                .queryParam("timestamp", timestamp).queryParam("accessKey", context.getAppKey()).build();
     }
 
 }

@@ -68,7 +68,7 @@ provider.login(callback);
 注：`refresh`功能，并不是每个平台都支持
 
 ```
-provider.refresh(AccToken.builder().refreshToken(token).build());
+provider.refresh(AuthToken.builder().refreshToken(token).build());
 ```
 
 ### 取消授权
@@ -76,7 +76,7 @@ provider.refresh(AccToken.builder().refreshToken(token).build());
 注：`revoke`功能，并不是每个平台都支持
 
 ```
-provider.revoke(AccToken.builder().accessToken(token).build());
+provider.revoke(AuthToken.builder().accessToken(token).build());
 ```
 
 #### API列表

@@ -27,7 +27,19 @@
 */
 package org.miaixz.bus.auth.nimble.amazon;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
@@ -37,18 +49,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Amazon 登录
@@ -62,7 +62,7 @@ public class AmazonProvider extends AbstractProvider {
         super(context, Registry.AMAZON);
     }
 
-    public AmazonProvider(Context context, ExtendCache cache) {
+    public AmazonProvider(Context context, CacheX cache) {
         super(context, Registry.AMAZON, cache);
     }
 
@@ -75,8 +75,7 @@ public class AmazonProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         String realState = getRealState(state);
-        Builder builder = Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE))
-                .queryParam("client_id", context.getAppKey())
+        Builder builder = Builder.fromUrl(this.complex.authorize()).queryParam("client_id", context.getAppKey())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(AmazonScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri()).queryParam("response_type", "code")
                 .queryParam("state", realState);
@@ -89,7 +88,7 @@ public class AmazonProvider extends AbstractProvider {
             builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
                     codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
-            this.cache.cache(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
+            this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
 
         return builder.build();
@@ -101,7 +100,7 @@ public class AmazonProvider extends AbstractProvider {
      * @return access token
      */
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(9);
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
@@ -111,24 +110,24 @@ public class AmazonProvider extends AbstractProvider {
 
         if (context.isPkce()) {
             String cacheKey = this.complex.getName().concat(":code_verifier:").concat(callback.getState());
-            String codeVerifier = String.valueOf(this.cache.get(cacheKey));
+            String codeVerifier = String.valueOf(this.cache.read(cacheKey));
             form.put("code_verifier", codeVerifier);
         }
-        return getToken(form, this.complex.getConfig().get(Builder.ACCESSTOKEN));
+        return getToken(form, this.complex.accessToken());
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("grant_type", "refresh_token");
-        form.put("refresh_token", accToken.getRefreshToken());
+        form.put("refresh_token", authToken.getRefreshToken());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(form, this.complex.getConfig().get(Builder.REFRESH))).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getToken(form, this.complex.refresh()))
+                .build();
     }
 
-    private AccToken getToken(Map<String, String> param, String url) {
+    private AuthToken getToken(Map<String, String> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.HOST, "api.amazon.com");
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
@@ -150,7 +149,7 @@ public class AmazonProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
             String refreshToken = (String) jsonObject.get("refresh_token");
 
-            return AccToken.builder().accessToken(accessToken).tokenType(tokenType).expireIn(expiresIn)
+            return AuthToken.builder().accessToken(accessToken).tokenType(tokenType).expireIn(expiresIn)
                     .refreshToken(refreshToken).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
@@ -172,18 +171,18 @@ public class AmazonProvider extends AbstractProvider {
     /**
      * https://developer.amazon.com/zh/docs/login-with-amazon/obtain-customer-profile.html#call-profile-endpoint
      *
-     * @param accToken token信息
+     * @param authToken token信息
      * @return Property
      */
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String accessToken = accToken.getAccessToken();
+    public Material getUserInfo(AuthToken authToken) {
+        String accessToken = authToken.getAccessToken();
         this.checkToken(accessToken);
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.HOST, "api.amazon.com");
         header.put(HTTP.AUTHORIZATION, "bearer " + accessToken);
 
-        String userInfo = Httpx.get(this.complex.getConfig().get(Builder.USERINFO), new HashMap<>(0), header);
+        String userInfo = Httpx.get(this.complex.userinfo(), new HashMap<>(0), header);
         try {
             Map<String, Object> jsonObject = JsonKit.toPojo(userInfo, Map.class);
             if (jsonObject == null) {
@@ -199,7 +198,7 @@ public class AmazonProvider extends AbstractProvider {
             String email = (String) jsonObject.get("email");
 
             return Material.builder().rawJson(JsonKit.toJsonString(jsonObject)).uuid(userId).username(name)
-                    .nickname(name).email(email).gender(Gender.UNKNOWN).source(complex.toString()).token(accToken)
+                    .nickname(name).email(email).gender(Gender.UNKNOWN).source(complex.toString()).token(authToken)
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -224,10 +223,9 @@ public class AmazonProvider extends AbstractProvider {
     }
 
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("user_id", accToken.getUserId()).queryParam("screen_name", accToken.getScreenName())
-                .queryParam("include_entities", true).build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("user_id", authToken.getUserId())
+                .queryParam("screen_name", authToken.getScreenName()).queryParam("include_entities", true).build();
     }
 
 }

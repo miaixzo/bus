@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.github;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -36,7 +37,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -56,12 +56,12 @@ public class GithubProvider extends AbstractProvider {
         super(context, Registry.GITHUB);
     }
 
-    public GithubProvider(Context context, ExtendCache cache) {
+    public GithubProvider(Context context, CacheX cache) {
         super(context, Registry.GITHUB, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         Map<String, String> res = Builder.parseStringToMap(response);
 
@@ -72,16 +72,15 @@ public class GithubProvider extends AbstractProvider {
             throw new AuthorizedException("Missing access_token in response");
         }
 
-        return AccToken.builder().accessToken(accessToken).scope(res.get("scope")).tokenType(res.get("token_type"))
+        return AuthToken.builder().accessToken(accessToken).scope(res.get("scope")).tokenType(res.get("token_type"))
                 .build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "token " + accToken.getAccessToken());
-        String response = Httpx.get(Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO)).build(), null,
-                header);
+        header.put("Authorization", "token " + authToken.getAccessToken());
+        String response = Httpx.get(Builder.fromUrl(this.complex.userinfo()).build(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -105,7 +104,7 @@ public class GithubProvider extends AbstractProvider {
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
                     .blog(blog).nickname(name).company(company).location(location).email(email).remark(bio)
-                    .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+                    .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.jd;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,7 +39,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -62,7 +62,7 @@ public class JdProvider extends AbstractProvider {
         super(context, Registry.JD);
     }
 
-    public JdProvider(Context context, ExtendCache cache) {
+    public JdProvider(Context context, CacheX cache) {
         super(context, Registry.JD, cache);
     }
 
@@ -93,13 +93,13 @@ public class JdProvider extends AbstractProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getAppKey());
         form.put("app_secret", context.getAppSecret());
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), form);
+        String response = Httpx.post(this.complex.accessToken(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -117,7 +117,7 @@ public class JdProvider extends AbstractProvider {
             String scope = (String) object.get("scope");
             String openId = (String) object.get("open_id");
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
                     .scope(scope).openId(openId).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -147,13 +147,13 @@ public class JdProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getAppKey());
         form.put("app_secret", context.getAppSecret());
         form.put("grant_type", "refresh_token");
-        form.put("refresh_token", oldToken.getRefreshToken());
-        String response = Httpx.post(this.complex.getConfig().get(Builder.REFRESH), form);
+        form.put("refresh_token", authToken.getRefreshToken());
+        String response = Httpx.post(this.complex.refresh(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -172,7 +172,7 @@ public class JdProvider extends AbstractProvider {
             String openId = (String) object.get("open_id");
 
             return Message
-                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AccToken.builder().accessToken(accessToken)
+                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AuthToken.builder().accessToken(accessToken)
                             .expireIn(expiresIn).refreshToken(refreshToken).scope(scope).openId(openId).build())
                     .build();
         } catch (Exception e) {
@@ -189,11 +189,11 @@ public class JdProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        Builder urlBuilder = Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("app_key", context.getAppKey())
+    public Material getUserInfo(AuthToken authToken) {
+        Builder urlBuilder = Builder.fromUrl(this.complex.userinfo())
+                .queryParam("access_token", authToken.getAccessToken()).queryParam("app_key", context.getAppKey())
                 .queryParam("method", "jingdong.user.getUserInfoByOpenId")
-                .queryParam("360buy_param_json", "{\"openId\":\"" + accToken.getOpenId() + "\"}")
+                .queryParam("360buy_param_json", "{\"openId\":\"" + authToken.getOpenId() + "\"}")
                 .queryParam("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .queryParam("v", "2.0");
         urlBuilder.queryParam("sign", sign(context.getAppSecret(), urlBuilder.getReadOnlyParams()));
@@ -214,8 +214,8 @@ public class JdProvider extends AbstractProvider {
             String imageUrl = (String) data.get("imageUrl");
             String gender = (String) data.get("gendar");
 
-            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(accToken.getOpenId()).username(nickName)
-                    .nickname(nickName).avatar(imageUrl).gender(Gender.of(gender)).token(accToken)
+            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(authToken.getOpenId()).username(nickName)
+                    .nickname(nickName).avatar(imageUrl).gender(Gender.of(gender)).token(authToken)
                     .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -224,7 +224,7 @@ public class JdProvider extends AbstractProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("app_key", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("app_key", context.getAppKey())
                 .queryParam("response_type", "code").queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(JdScope.values())))
                 .queryParam("state", getRealState(state)).build();

@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.taobao;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -38,7 +38,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -58,19 +58,19 @@ public class TaobaoProvider extends AbstractProvider {
         super(context, Registry.TAOBAO);
     }
 
-    public TaobaoProvider(Context context, ExtendCache cache) {
+    public TaobaoProvider(Context context, CacheX cache) {
         super(context, Registry.TAOBAO, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
-        return AccToken.builder().accessCode(callback.getCode()).build();
+    public AuthToken getAccessToken(Callback callback) {
+        return AuthToken.builder().accessCode(callback.getCode()).build();
     }
 
-    private AccToken getAuthToken(Map<String, Object> object) {
+    private AuthToken getAuthToken(Map<String, Object> object) {
         this.checkResponse(object);
 
-        return AccToken.builder().accessToken((String) object.get("access_token"))
+        return AuthToken.builder().accessToken((String) object.get("access_token"))
                 .expireIn(((Number) object.get("expires_in")).intValue()).tokenType((String) object.get("token_type"))
                 .idToken((String) object.get("id_token")).refreshToken((String) object.get("refresh_token"))
                 .uid((String) object.get("taobao_user_id")).openId((String) object.get("taobao_open_uid")).build();
@@ -83,23 +83,23 @@ public class TaobaoProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String response = doPostAuthorizationCode(accToken.getAccessCode());
+    public Material getUserInfo(AuthToken authToken) {
+        String response = doPostAuthorizationCode(authToken.getAccessCode());
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         if (accessTokenObject.containsKey("error")) {
             throw new AuthorizedException((String) accessTokenObject.get("error_description"));
         }
-        accToken = this.getAuthToken(accessTokenObject);
+        authToken = this.getAuthToken(accessTokenObject);
 
         String nick = UrlDecoder.decode((String) accessTokenObject.get("taobao_user_nick"));
         return Material.builder().rawJson(JsonKit.toJsonString(accessTokenObject))
-                .uuid(StringKit.isEmpty(accToken.getUid()) ? accToken.getOpenId() : accToken.getUid()).username(nick)
-                .nickname(nick).gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+                .uuid(StringKit.isEmpty(authToken.getUid()) ? authToken.getOpenId() : authToken.getUid()).username(nick)
+                .nickname(nick).gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
-        String tokenUrl = refreshTokenUrl(oldToken.getRefreshToken());
+    public Message refresh(AuthToken authToken) {
+        String tokenUrl = refreshTokenUrl(authToken.getRefreshToken());
         String response = Httpx.post(tokenUrl);
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(accessTokenObject))
@@ -114,7 +114,7 @@ public class TaobaoProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("response_type", "code")
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("view", "web").queryParam("state", getRealState(state)).build();
     }

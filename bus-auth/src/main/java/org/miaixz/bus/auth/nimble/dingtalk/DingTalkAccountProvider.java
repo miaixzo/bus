@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.dingtalk;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 
@@ -43,7 +43,7 @@ public class DingTalkAccountProvider extends AbstractDingtalkProvider {
         super(context, Registry.DINGTALK_ACCOUNT);
     }
 
-    public DingTalkAccountProvider(Context context, ExtendCache cache) {
+    public DingTalkAccountProvider(Context context, CacheX cache) {
         super(context, Registry.DINGTALK_ACCOUNT, cache);
     }
 

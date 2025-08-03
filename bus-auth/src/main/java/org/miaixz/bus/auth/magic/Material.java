@@ -96,7 +96,7 @@ public class Material implements Serializable {
     /**
      * 用户授权的token信息
      */
-    private AccToken token;
+    private AuthToken token;
     /**
      * 第三方平台返回的原始用户信息
      */

@@ -878,10 +878,26 @@ public class FileKit extends PathResolve {
             final File file = PathResolve.createTempFile(prefix, suffix, null == dir ? null : dir.toPath()).toFile()
                     .getCanonicalFile();
             if (isReCreat) {
-                // noinspection ResultOfMethodCallIgnored
-                file.delete();
-                // noinspection ResultOfMethodCallIgnored
-                file.createNewFile();
+                // Security fix: Use atomic operations to prevent race conditions
+                if (!file.delete()) {
+                    throw new InternalException("Failed to delete temporary file: " + file.getAbsolutePath());
+                }
+
+                // Verify the file was actually deleted
+                if (file.exists()) {
+                    throw new InternalException("File still exists after deletion: " + file.getAbsolutePath());
+                }
+
+                // Recreate with verification
+                if (!file.createNewFile()) {
+                    throw new InternalException("Failed to recreate temporary file: " + file.getAbsolutePath());
+                }
+
+                // Verify we created the expected file (not a symlink or different file)
+                if (!file.exists() || !file.isFile() || !file.canWrite()) {
+                    file.delete(); // Cleanup
+                    throw new InternalException("Created file is not valid: " + file.getAbsolutePath());
+                }
             }
             return file;
         } catch (final IOException e) { // fixes java.io.WinNTFileSystem.createFileExclusively access denied

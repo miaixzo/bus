@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.ximalaya;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -40,7 +40,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -62,7 +62,7 @@ public class XimalayaProvider extends AbstractProvider {
         super(context, Registry.XIMALAYA);
     }
 
-    public XimalayaProvider(Context context, ExtendCache cache) {
+    public XimalayaProvider(Context context, CacheX cache) {
         super(context, Registry.XIMALAYA, cache);
     }
 
@@ -101,7 +101,7 @@ public class XimalayaProvider extends AbstractProvider {
      * @see AbstractProvider#authorize(String)
      */
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> map = new HashMap<>(9);
         map.put("code", callback.getCode());
         map.put("client_id", context.getAppKey());
@@ -109,7 +109,7 @@ public class XimalayaProvider extends AbstractProvider {
         map.put("device_id", context.getDeviceId());
         map.put("grant_type", "authorization_code");
         map.put("redirect_uri", context.getRedirectUri());
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), map);
+        String response = Httpx.post(this.complex.accessToken(), map);
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
             if (accessTokenObject == null) {
@@ -126,7 +126,7 @@ public class XimalayaProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
             String uid = (String) accessTokenObject.get("uid");
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).uid(uid)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).uid(uid)
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -141,7 +141,7 @@ public class XimalayaProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("response_type", "code")
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state)).queryParam("client_os_type", "3")
                 .queryParam("device_id", context.getDeviceId()).build();
@@ -163,20 +163,20 @@ public class XimalayaProvider extends AbstractProvider {
     /**
      * 使用token换取用户信息
      *
-     * @param accToken token信息
+     * @param authToken token信息
      * @return 用户信息
      * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> map = new TreeMap<>();
         map.put("app_key", context.getAppKey());
         map.put("client_os_type", (String) ObjectKit.defaultIfNull(context.getType(), Normal._3));
         map.put("device_id", context.getDeviceId());
         map.put("pack_id", context.getUnionId());
-        map.put("access_token", accToken.getAccessToken());
+        map.put("access_token", authToken.getAccessToken());
         map.put("sig", sign(map, context.getAppSecret()));
-        String rawUserInfo = Httpx.get(this.complex.getConfig().get(Builder.USERINFO), map);
+        String rawUserInfo = Httpx.get(this.complex.userinfo(), map);
         try {
             Map<String, Object> object = JsonKit.toPojo(rawUserInfo, Map.class);
             if (object == null) {
@@ -192,7 +192,7 @@ public class XimalayaProvider extends AbstractProvider {
             String avatarUrl = (String) object.get("avatar_url");
 
             return Material.builder().uuid(id).nickname(nickname).avatar(avatarUrl)
-                    .rawJson(JsonKit.toJsonString(object)).source(complex.toString()).token(accToken)
+                    .rawJson(JsonKit.toJsonString(object)).source(complex.toString()).token(authToken)
                     .gender(Gender.UNKNOWN).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());

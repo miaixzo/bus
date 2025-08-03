@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -65,7 +65,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         this(context, complex, null);
     }
 
-    public AliPayProvider(Context context, Complex complex, ExtendCache cache) {
+    public AliPayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
         Assert.notBlank(this.context.getAppId(), "[appId] not defined");
         Assert.notBlank(this.context.getPrivateKey(), "[privateKey] not defined");
@@ -105,13 +105,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * APP支付（带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知 URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知 URL
+     * @param authToken 应用授权token
      * @return 签名后的请求参数字符串
      */
-    public String appPayWithToken(Map<String, String> model, String notifyUrl, String appAuthToken) {
-        return buildAppRequest(model, notifyUrl, appAuthToken, "alipay.trade.app.pay");
+    public String appPayWithToken(Map<String, String> model, String notifyUrl, String authToken) {
+        return buildAppRequest(model, notifyUrl, authToken, "alipay.trade.app.pay");
     }
 
     /**
@@ -129,14 +129,14 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * WAP支付（带应用授权）
      *
-     * @param model        请求参数
-     * @param returnUrl    同步通知URL
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param returnUrl 同步通知URL
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return WAP支付的HTML表单
      */
-    public String wapPayWithToken(Map<String, String> model, String returnUrl, String notifyUrl, String appAuthToken) {
-        return buildWapPay(model, returnUrl, notifyUrl, appAuthToken);
+    public String wapPayWithToken(Map<String, String> model, String returnUrl, String notifyUrl, String authToken) {
+        return buildWapPay(model, returnUrl, notifyUrl, authToken);
     }
 
     /**
@@ -154,15 +154,15 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * WAP支付（OutputStream兼容，带应用授权）
      *
-     * @param model        请求参数
-     * @param returnUrl    同步通知URL
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param returnUrl 同步通知URL
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return WAP支付的HTML表单
      */
     public String wapPayByOutputWithToken(Map<String, String> model, String returnUrl, String notifyUrl,
-            String appAuthToken) {
-        return buildWapPay(model, returnUrl, notifyUrl, appAuthToken);
+            String authToken) {
+        return buildWapPay(model, returnUrl, notifyUrl, authToken);
     }
 
     /**
@@ -190,26 +190,25 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易支付（带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradePayWithToken(Map<String, String> model, String notifyUrl, String appAuthToken) {
-        return executeRequest(model, notifyUrl, appAuthToken, "alipay.trade.pay");
+    public Map<String, Object> tradePayWithToken(Map<String, String> model, String notifyUrl, String authToken) {
+        return executeRequest(model, notifyUrl, authToken, "alipay.trade.pay");
     }
 
     /**
      * 统一收单交易支付（证书模式，带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradePayWithCertAndToken(Map<String, String> model, String notifyUrl,
-            String appAuthToken) {
-        return executeRequest(true, model, notifyUrl, appAuthToken, "alipay.trade.pay");
+    public Map<String, Object> tradePayWithCertAndToken(Map<String, String> model, String notifyUrl, String authToken) {
+        return executeRequest(true, model, notifyUrl, authToken, "alipay.trade.pay");
     }
 
     /**
@@ -237,27 +236,26 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单线下交易预创建（带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradePrecreateWithToken(Map<String, String> model, String notifyUrl,
-            String appAuthToken) {
-        return executeRequest(model, notifyUrl, appAuthToken, "alipay.trade.precreate");
+    public Map<String, Object> tradePrecreateWithToken(Map<String, String> model, String notifyUrl, String authToken) {
+        return executeRequest(model, notifyUrl, authToken, "alipay.trade.precreate");
     }
 
     /**
      * 统一收单线下交易预创建（证书模式，带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return API响应
      */
     public Map<String, Object> tradePrecreateWithCertAndToken(Map<String, String> model, String notifyUrl,
-            String appAuthToken) {
-        return executeRequest(true, model, notifyUrl, appAuthToken, "alipay.trade.precreate");
+            String authToken) {
+        return executeRequest(true, model, notifyUrl, authToken, "alipay.trade.precreate");
     }
 
     /**
@@ -303,67 +301,67 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一转账
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> uniTransfer(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.fund.trans.uni.transfer");
+    public Map<String, Object> uniTransfer(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.fund.trans.uni.transfer");
     }
 
     /**
      * 统一转账（证书模式）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> uniTransferWithCert(Map<String, String> model, String appAuthToken) {
-        return executeRequest(true, model, null, appAuthToken, "alipay.fund.trans.uni.transfer");
+    public Map<String, Object> uniTransferWithCert(Map<String, String> model, String authToken) {
+        return executeRequest(true, model, null, authToken, "alipay.fund.trans.uni.transfer");
     }
 
     /**
      * 转账业务单据查询
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> transCommonQuery(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.fund.trans.common.query");
+    public Map<String, Object> transCommonQuery(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.fund.trans.common.query");
     }
 
     /**
      * 转账业务单据查询（证书模式）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> transCommonQueryWithCert(Map<String, String> model, String appAuthToken) {
-        return executeRequest(true, model, null, appAuthToken, "alipay.fund.trans.common.query");
+    public Map<String, Object> transCommonQueryWithCert(Map<String, String> model, String authToken) {
+        return executeRequest(true, model, null, authToken, "alipay.fund.trans.common.query");
     }
 
     /**
      * 支付宝资金账户资产查询
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> accountQuery(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.fund.account.query");
+    public Map<String, Object> accountQuery(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.fund.account.query");
     }
 
     /**
      * 支付宝资金账户资产查询（证书模式）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> accountQueryWithCert(Map<String, String> model, String appAuthToken) {
-        return executeRequest(true, model, null, appAuthToken, "alipay.fund.account.query");
+    public Map<String, Object> accountQueryWithCert(Map<String, String> model, String authToken) {
+        return executeRequest(true, model, null, authToken, "alipay.fund.account.query");
     }
 
     /**
@@ -389,23 +387,23 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单线下交易查询（带应用授权）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradeQueryWithToken(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.trade.query");
+    public Map<String, Object> tradeQueryWithToken(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.trade.query");
     }
 
     /**
      * 统一收单交易撤销
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradeCancel(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.trade.cancel");
+    public Map<String, Object> tradeCancel(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.trade.cancel");
     }
 
     /**
@@ -431,12 +429,12 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易关闭
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradeClose(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.trade.close");
+    public Map<String, Object> tradeClose(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.trade.close");
     }
 
     /**
@@ -484,13 +482,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易创建（带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradeCreateWithToken(Map<String, String> model, String notifyUrl, String appAuthToken) {
-        return executeRequest(model, notifyUrl, appAuthToken, "alipay.trade.create");
+    public Map<String, Object> tradeCreateWithToken(Map<String, String> model, String notifyUrl, String authToken) {
+        return executeRequest(model, notifyUrl, authToken, "alipay.trade.create");
     }
 
     /**
@@ -516,12 +514,12 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易退款（带应用授权）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradeRefundWithToken(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.trade.refund");
+    public Map<String, Object> tradeRefundWithToken(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.trade.refund");
     }
 
     /**
@@ -547,12 +545,12 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单退款页面（带应用授权）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradePageRefundWithToken(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.trade.page.refund");
+    public Map<String, Object> tradePageRefundWithToken(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.trade.page.refund");
     }
 
     /**
@@ -578,12 +576,12 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易退款查询（带应用授权）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradeRefundQueryWithToken(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.trade.fastpay.refund.query");
+    public Map<String, Object> tradeRefundQueryWithToken(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.trade.fastpay.refund.query");
     }
 
     /**
@@ -633,34 +631,34 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 查询对账单下载地址（带应用授权）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> billDownloadUrlQueryWithToken(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.data.dataservice.bill.downloadurl.query");
+    public Map<String, Object> billDownloadUrlQueryWithToken(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.data.dataservice.bill.downloadurl.query");
     }
 
     /**
      * 查询对账单下载地址（证书模式，带应用授权）
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> billDownloadUrlQueryWithCertAndToken(Map<String, String> model, String appAuthToken) {
-        return executeRequest(true, model, null, appAuthToken, "alipay.data.dataservice.bill.downloadurl.query");
+    public Map<String, Object> billDownloadUrlQueryWithCertAndToken(Map<String, String> model, String authToken) {
+        return executeRequest(true, model, null, authToken, "alipay.data.dataservice.bill.downloadurl.query");
     }
 
     /**
      * 统一收单交易结算
      *
-     * @param model        请求参数
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradeOrderSettle(Map<String, String> model, String appAuthToken) {
-        return executeRequest(model, null, appAuthToken, "alipay.trade.order.settle");
+    public Map<String, Object> tradeOrderSettle(Map<String, String> model, String authToken) {
+        return executeRequest(model, null, authToken, "alipay.trade.order.settle");
     }
 
     /**
@@ -711,15 +709,14 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 电脑网站支付（PC支付，带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param returnUrl    同步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param returnUrl 同步通知URL
+     * @param authToken 应用授权token
      * @return HTML表单
      */
-    public String tradePageWithToken(Map<String, String> model, String notifyUrl, String returnUrl,
-            String appAuthToken) {
-        return buildPagePay("POST", model, notifyUrl, returnUrl, appAuthToken);
+    public String tradePageWithToken(Map<String, String> model, String notifyUrl, String returnUrl, String authToken) {
+        return buildPagePay("POST", model, notifyUrl, returnUrl, authToken);
     }
 
     /**
@@ -738,16 +735,16 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 电脑网站支付（PC支付，OutputStream兼容，带应用授权）
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param returnUrl    同步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param returnUrl 同步通知URL
+     * @param authToken 应用授权token
      * @return HTML表单
      * @throws IOException IO异常
      */
     public String tradePageByOutputWithToken(Map<String, String> model, String notifyUrl, String returnUrl,
-            String appAuthToken) throws IOException {
-        return buildPagePay("POST", model, notifyUrl, returnUrl, appAuthToken);
+            String authToken) throws IOException {
+        return buildPagePay("POST", model, notifyUrl, returnUrl, authToken);
     }
 
     /**
@@ -1367,14 +1364,14 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 构建APP支付请求
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
-     * @param method       支付宝API方法
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
+     * @param method    支付宝API方法
      * @return 签名后的请求参数字符串
      */
-    private String buildAppRequest(Map<String, String> model, String notifyUrl, String appAuthToken, String method) {
-        Map<String, String> params = buildCommonParams(method, notifyUrl, appAuthToken);
+    private String buildAppRequest(Map<String, String> model, String notifyUrl, String authToken, String method) {
+        Map<String, String> params = buildCommonParams(method, notifyUrl, authToken);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
         StringBuilder result = new StringBuilder();
@@ -1388,14 +1385,14 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 构建WAP支付表单
      *
-     * @param model        请求参数
-     * @param returnUrl    同步通知URL
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param model     请求参数
+     * @param returnUrl 同步通知URL
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return HTML表单
      */
-    private String buildWapPay(Map<String, String> model, String returnUrl, String notifyUrl, String appAuthToken) {
-        Map<String, String> params = buildCommonParams("alipay.trade.wap.pay", notifyUrl, appAuthToken);
+    private String buildWapPay(Map<String, String> model, String returnUrl, String notifyUrl, String authToken) {
+        Map<String, String> params = buildCommonParams("alipay.trade.wap.pay", notifyUrl, authToken);
         params.put("return_url", returnUrl);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
@@ -1413,16 +1410,16 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 构建PC支付表单或URL
      *
-     * @param method       GET/POST
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param returnUrl    同步通知URL
-     * @param appAuthToken 应用授权token
+     * @param method    GET/POST
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param returnUrl 同步通知URL
+     * @param authToken 应用授权token
      * @return HTML表单或URL
      */
     private String buildPagePay(String method, Map<String, String> model, String notifyUrl, String returnUrl,
-            String appAuthToken) {
-        Map<String, String> params = buildCommonParams("alipay.trade.page.pay", notifyUrl, appAuthToken);
+            String authToken) {
+        Map<String, String> params = buildCommonParams("alipay.trade.page.pay", notifyUrl, authToken);
         params.put("return_url", returnUrl);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
@@ -1449,12 +1446,12 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 构建通用请求参数
      *
-     * @param method       支付宝API方法
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
+     * @param method    支付宝API方法
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
      * @return 参数Map
      */
-    private Map<String, String> buildCommonParams(String method, String notifyUrl, String appAuthToken) {
+    private Map<String, String> buildCommonParams(String method, String notifyUrl, String authToken) {
         Map<String, String> params = new HashMap<>();
         params.put("method", method);
         params.put("app_id", context.getAppId());
@@ -1464,8 +1461,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         if (!StringKit.isEmpty(notifyUrl)) {
             params.put("notify_url", notifyUrl);
         }
-        if (!StringKit.isEmpty(appAuthToken)) {
-            params.put("app_auth_token", appAuthToken);
+        if (!StringKit.isEmpty(authToken)) {
+            params.put("app_auth_token", authToken);
         }
         return params;
     }
@@ -1473,30 +1470,30 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 执行支付宝API请求
      *
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
-     * @param method       支付宝API方法
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
+     * @param method    支付宝API方法
      * @return API响应
      */
-    private Map<String, Object> executeRequest(Map<String, String> model, String notifyUrl, String appAuthToken,
+    private Map<String, Object> executeRequest(Map<String, String> model, String notifyUrl, String authToken,
             String method) {
-        return executeRequest(context.isCertMode(), model, notifyUrl, appAuthToken, method);
+        return executeRequest(context.isCertMode(), model, notifyUrl, authToken, method);
     }
 
     /**
      * 执行支付宝API请求
      *
-     * @param certModel    是否使用证书模式
-     * @param model        请求参数
-     * @param notifyUrl    异步通知URL
-     * @param appAuthToken 应用授权token
-     * @param method       支付宝API方法
+     * @param certModel 是否使用证书模式
+     * @param model     请求参数
+     * @param notifyUrl 异步通知URL
+     * @param authToken 应用授权token
+     * @param method    支付宝API方法
      * @return API响应
      */
     private Map<String, Object> executeRequest(Boolean certModel, Map<String, String> model, String notifyUrl,
-            String appAuthToken, String method) {
-        Map<String, String> params = buildCommonParams(method, notifyUrl, appAuthToken);
+            String authToken, String method) {
+        Map<String, String> params = buildCommonParams(method, notifyUrl, authToken);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
 

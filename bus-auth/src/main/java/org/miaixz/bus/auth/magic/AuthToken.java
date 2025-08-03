@@ -46,7 +46,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccToken implements Serializable {
+public class AuthToken implements Serializable {
 
     private String accessToken;
     private int expireIn;
@@ -92,5 +92,10 @@ public class AccToken implements Serializable {
      * Apple附带属性
      */
     private String username;
+
+    /**
+     * VK 附带属性
+     */
+    private String deviceId;
 
 }

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.qq;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,7 +39,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -58,26 +58,26 @@ public class QqProvider extends AbstractProvider {
         super(context, Registry.QQ);
     }
 
-    public QqProvider(Context context, ExtendCache cache) {
+    public QqProvider(Context context, CacheX cache) {
         super(context, Registry.QQ, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
-        String response = Httpx.get(refreshTokenUrl(accToken.getRefreshToken()));
+    public Message refresh(AuthToken authToken) {
+        String response = Httpx.get(refreshTokenUrl(authToken.getRefreshToken()));
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String openId = this.getOpenId(accToken);
-        String response = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String openId = this.getOpenId(authToken);
+        String response = doGetUserInfo(authToken);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         if (!"0".equals(object.get("ret"))) {
             throw new AuthorizedException((String) object.get("msg"));
@@ -90,7 +90,7 @@ public class QqProvider extends AbstractProvider {
         String location = String.format("%s-%s", object.get("province"), object.get("city"));
         return Material.builder().rawJson(JsonKit.toJsonString(object)).username((String) object.get("nickname"))
                 .nickname((String) object.get("nickname")).avatar(avatar).location(location).uuid(openId)
-                .gender(Gender.of((String) object.get("gender"))).token(accToken).source(complex.toString()).build();
+                .gender(Gender.of((String) object.get("gender"))).token(authToken).source(complex.toString()).build();
     }
 
     /**
@@ -98,12 +98,12 @@ public class QqProvider extends AbstractProvider {
      * {@see <url id="d0a3btkc75r1mimetbp0" type="url" status="parsed" title="UnionID介绍 — QQ互联WIKI" wc=
      * "4771">http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D</url> }
      *
-     * @param accToken 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code accToken}
+     * @param authToken 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code accessToken}
      * @return openId
      */
-    private String getOpenId(AccToken accToken) {
+    private String getOpenId(AuthToken authToken) {
         String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("unionid", context.isFlag() ? 1 : 0)
+                .queryParam("access_token", authToken.getAccessToken()).queryParam("unionid", context.isFlag() ? 1 : 0)
                 .build());
         String removePrefix = response.replace("callback(", "");
         String removeSuffix = removePrefix.replace(");", "");
@@ -113,33 +113,32 @@ public class QqProvider extends AbstractProvider {
             throw new AuthorizedException(
                     (String) object.get("error") + Symbol.COLON + (String) object.get("error_description"));
         }
-        accToken.setOpenId((String) object.get("openid"));
+        authToken.setOpenId((String) object.get("openid"));
         if (object.containsKey("unionid")) {
-            accToken.setUnionId((String) object.get("unionid"));
+            authToken.setUnionId((String) object.get("unionid"));
         }
-        return StringKit.isEmpty(accToken.getUnionId()) ? accToken.getOpenId() : accToken.getUnionId();
+        return StringKit.isEmpty(authToken.getUnionId()) ? authToken.getOpenId() : authToken.getUnionId();
     }
 
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权token
+     * @param authToken 用户授权token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("oauth_consumer_key", context.getAppKey()).queryParam("openid", accToken.getOpenId())
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
+                .queryParam("oauth_consumer_key", context.getAppKey()).queryParam("openid", authToken.getOpenId())
                 .build();
     }
 
-    private AccToken getAuthToken(String response) {
+    private AuthToken getAuthToken(String response) {
         Map<String, String> accessTokenObject = Builder.parseStringToMap(response);
         if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
             throw new AuthorizedException(accessTokenObject.get("msg"));
         }
-        return AccToken.builder().accessToken(accessTokenObject.get("access_token"))
+        return AuthToken.builder().accessToken(accessTokenObject.get("access_token"))
                 .expireIn(Integer.parseInt(accessTokenObject.getOrDefault("expires_in", "0")))
                 .refreshToken(accessTokenObject.get("refresh_token")).build();
     }

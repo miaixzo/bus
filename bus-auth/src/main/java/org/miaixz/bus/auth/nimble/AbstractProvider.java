@@ -33,11 +33,11 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.cache.AuthCache;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Normal;
@@ -68,7 +68,7 @@ public abstract class AbstractProvider implements Provider {
     /**
      * 用于存储状态或其他临时数据的缓存
      */
-    protected ExtendCache cache;
+    protected CacheX cache;
 
     /**
      * 使用指定的上下文和协议配置构造 AbstractProvider。
@@ -88,7 +88,7 @@ public abstract class AbstractProvider implements Provider {
      * @param cache   缓存实现
      * @throws AuthorizedException 如果配置不完整
      */
-    public AbstractProvider(Context context, Complex complex, ExtendCache cache) {
+    public AbstractProvider(Context context, Complex complex, CacheX cache) {
         this.context = context;
         this.complex = complex;
         this.cache = cache;
@@ -144,9 +144,9 @@ public abstract class AbstractProvider implements Provider {
             }
 
             // 获取访问令牌
-            AccToken accToken = this.getAccessToken(callback);
+            AuthToken authToken = this.getAccessToken(callback);
             // 查询用户信息
-            Material user = this.getUserInfo(accToken);
+            Material user = this.getUserInfo(authToken);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(user).build();
         } catch (Exception e) {
             Logger.error("使用授权登录失败。", e);
@@ -195,14 +195,14 @@ public abstract class AbstractProvider implements Provider {
     public String authorize(String state) {
         if (complex.getProtocol() == Protocol.OIDC) {
             // 构建 OAuth2 授权 URL
-            return Builder.fromUrl(complex.getConfig().get("authorize")).queryParam("response_type", "code")
-                    .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
-                    .queryParam("state", getRealState(state))
+            return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
+                    .queryParam("client_id", this.context.getAppKey())
+                    .queryParam("redirect_uri", this.context.getRedirectUri()).queryParam("state", getRealState(state))
                     .queryParam("scope", getScopes(Symbol.SPACE, true, getDefaultScopes(null))).build();
-        } else if (complex.getProtocol() == Protocol.SAML) {
+        } else if (this.complex.getProtocol() == Protocol.SAML) {
             // 构建 SAML 单点登录 URL
-            return Builder.fromUrl(complex.getConfig().get("ssoEndpoint")).queryParam("RelayState", getRealState(state))
-                    .build();
+            return Builder.fromUrl(this.complex.endpoint().get("ssoEndpoint"))
+                    .queryParam("RelayState", getRealState(state)).build();
         }
         return null; // LDAP 不使用授权 URL
     }
@@ -214,7 +214,7 @@ public abstract class AbstractProvider implements Provider {
      * @return 访问令牌 URL
      */
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.getConfig().get("accessToken")).queryParam("code", code)
+        return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
                 .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code").queryParam("redirect_uri", context.getRedirectUri())
                 .build();
@@ -227,7 +227,7 @@ public abstract class AbstractProvider implements Provider {
      * @return 刷新令牌 URL
      */
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(complex.getConfig().get("refresh")).queryParam("client_id", context.getAppKey())
+        return Builder.fromUrl(complex.refresh()).queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret()).queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token").queryParam("redirect_uri", context.getRedirectUri()).build();
     }
@@ -235,23 +235,21 @@ public abstract class AbstractProvider implements Provider {
     /**
      * 构造 OAuth2 的用户信息 URL。
      *
-     * @param accToken 访问令牌
+     * @param authToken 访问令牌
      * @return 用户信息 URL
      */
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.getConfig().get("userInfo"))
-                .queryParam("access_token", accToken.getAccessToken()).build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(complex.userinfo()).queryParam("access_token", authToken.getAccessToken()).build();
     }
 
     /**
      * 构造 OAuth2 的撤销授权 URL。
      *
-     * @param accToken 访问令牌
+     * @param authToken 访问令牌
      * @return 撤销授权 URL
      */
-    protected String revokeUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.getConfig().get("revoke")).queryParam("access_token", accToken.getAccessToken())
-                .build();
+    protected String revokeUrl(AuthToken authToken) {
+        return Builder.fromUrl(complex.revoke()).queryParam("access_token", authToken.getAccessToken()).build();
     }
 
     /**
@@ -264,7 +262,7 @@ public abstract class AbstractProvider implements Provider {
         if (StringKit.isEmpty(state)) {
             state = ID.objectId();
         }
-        cache.cache(state, state);
+        cache.write(state, state);
         return state;
     }
 
@@ -291,21 +289,21 @@ public abstract class AbstractProvider implements Provider {
     /**
      * 执行 GET 请求以获取 OAuth2 用户信息。
      *
-     * @param accToken 访问令牌
+     * @param authToken 访问令牌
      * @return 响应内容
      */
-    protected String doGetUserInfo(AccToken accToken) {
-        return Httpx.get(userInfoUrl(accToken));
+    protected String doGetUserInfo(AuthToken authToken) {
+        return Httpx.get(userInfoUrl(authToken));
     }
 
     /**
      * 执行 GET 请求以撤销 OAuth2 授权。
      *
-     * @param accToken 访问令牌
+     * @param authToken 访问令牌
      * @return 响应内容
      */
-    protected String doGetRevoke(AccToken accToken) {
-        return Httpx.get(revokeUrl(accToken));
+    protected String doGetRevoke(AuthToken authToken) {
+        return Httpx.get(revokeUrl(authToken));
     }
 
     /**

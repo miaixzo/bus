@@ -27,18 +27,15 @@
 */
 package org.miaixz.bus.auth.nimble.wechat.ee;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Checker;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -58,13 +55,13 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
         super(context, Registry.WECHAT_EE_QRCODE);
     }
 
-    public WeChatEeThirdQrcodeProvider(Context context, ExtendCache cache) {
+    public WeChatEeThirdQrcodeProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_EE_QRCODE, cache);
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("appid", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
                 .queryParam("usertype", context.getType()).build();
     }
@@ -75,8 +72,8 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
             if (!context.isIgnoreState()) {
                 Checker.check(callback.getState(), complex, cache);
             }
-            AccToken accToken = this.getAccessToken(callback);
-            Material user = this.getUserInfo(accToken);
+            AuthToken authToken = this.getAccessToken(callback);
+            Material user = this.getUserInfo(authToken);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(user).build();
         } catch (Exception e) {
             Logger.error("Failed to login with auth authorization.", e);
@@ -85,7 +82,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         try {
             String response = doGetAuthorizationCode(accessTokenUrl());
             Map<String, Object> object = this.checkResponse(response);
@@ -96,7 +93,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).build();
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("企业微信获取token失败", e);
         }
@@ -116,26 +113,25 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * @return accessTokenUrl
      */
     public String accessTokenUrl() {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN)).build();
+        return Builder.fromUrl(this.complex.accessToken()).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        Map<String, Object> response = this.checkResponse(doGetUserInfo(accToken));
+    public Material getUserInfo(AuthToken authToken) {
+        Map<String, Object> response = this.checkResponse(doGetUserInfo(authToken));
         return Material.builder().rawJson(JsonKit.toJsonString(response)).build();
     }
 
     @Override
-    public String doGetUserInfo(AccToken accToken) {
+    public String doGetUserInfo(AuthToken authToken) {
         Map<String, Object> data = new HashMap<>();
-        data.put("auth_code", accToken.getCode());
-        return Httpx.post(userInfoUrl(accToken), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
+        data.put("auth_code", authToken.getCode());
+        return Httpx.post(userInfoUrl(authToken), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
     }
 
     @Override
-    public String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).build();
+    public String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken()).build();
     }
 
     private Map<String, Object> checkResponse(String response) {

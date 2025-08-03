@@ -33,11 +33,11 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -56,12 +56,12 @@ public class GoogleProvider extends AbstractProvider {
         super(context, Registry.GOOGLE);
     }
 
-    public GoogleProvider(Context context, ExtendCache cache) {
+    public GoogleProvider(Context context, CacheX cache) {
         super(context, Registry.GOOGLE, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -82,7 +82,7 @@ public class GoogleProvider extends AbstractProvider {
             String refresh_token = (String) accessTokenObject.get("refresh_token");
             int refresh_token_expires_in = (int) accessTokenObject.get("refresh_token_expires_in");
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
                     .refreshToken(refresh_token).refreshTokenExpireIn(refresh_token_expires_in).idToken(idToken)
                     .build();
 
@@ -92,10 +92,10 @@ public class GoogleProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Bearer " + accToken.getAccessToken());
-        String userInfo = Httpx.post(userInfoUrl(accToken), null, header);
+        header.put("Authorization", "Bearer " + authToken.getAccessToken());
+        String userInfo = Httpx.post(userInfoUrl(authToken), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -113,7 +113,7 @@ public class GoogleProvider extends AbstractProvider {
             String locale = (String) object.get("locale");
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(email).avatar(picture)
-                    .nickname(name).location(locale).email(email).gender(Gender.UNKNOWN).token(accToken)
+                    .nickname(name).location(locale).email(email).gender(Gender.UNKNOWN).token(authToken)
                     .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -136,13 +136,12 @@ public class GoogleProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken()).build();
     }
 
     /**

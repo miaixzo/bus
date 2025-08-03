@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.wechat.ee;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.auth.Builder;
@@ -47,14 +47,13 @@ public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
         super(context, Registry.WECHAT_EE);
     }
 
-    public WeChatEeQrcodeProvider(Context context, ExtendCache cache) {
+    public WeChatEeQrcodeProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_EE, cache);
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE))
-                .queryParam("login_type", context.getLoginType())
+        return Builder.fromUrl(complex.authorize()).queryParam("login_type", context.getLoginType())
                 // 登录类型为企业自建应用/服务商代开发应用时填企业 CorpID，第三方登录时填登录授权 SuiteID
                 .queryParam("appid", context.getAppKey())
                 // 企业自建应用/服务商代开发应用 AgentID，当login_type=CorpApp时填写

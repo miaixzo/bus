@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.wechat;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.auth.Complex;
@@ -46,7 +46,7 @@ public abstract class AbstractWeChatProvider extends AbstractProvider {
         super(context, complex);
     }
 
-    public AbstractWeChatProvider(Context context, Complex complex, ExtendCache cache) {
+    public AbstractWeChatProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.auth.nimble.aliyun;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -51,15 +51,15 @@ public class AliyunProvider extends AbstractProvider {
         super(context, Registry.ALIYUN);
     }
 
-    public AliyunProvider(Context context, ExtendCache cache) {
+    public AliyunProvider(Context context, CacheX cache) {
         super(context, Registry.ALIYUN, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
-        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
                 .expireIn(((Number) accessTokenObject.get("expires_in")).intValue())
                 .tokenType((String) accessTokenObject.get("token_type"))
                 .idToken((String) accessTokenObject.get("id_token"))
@@ -67,12 +67,12 @@ public class AliyunProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String userInfo = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String userInfo = doGetUserInfo(authToken);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("sub"))
                 .username((String) object.get("login_name")).nickname((String) object.get("name"))
-                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+                .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
     }
 
 }

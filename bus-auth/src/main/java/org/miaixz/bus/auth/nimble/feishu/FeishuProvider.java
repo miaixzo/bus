@@ -27,7 +27,18 @@
 */
 package org.miaixz.bus.auth.nimble.feishu;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
@@ -37,17 +48,6 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 飞书 登录
@@ -61,7 +61,7 @@ public class FeishuProvider extends AbstractProvider {
         super(context, Registry.FEISHU);
     }
 
-    public FeishuProvider(Context context, ExtendCache cache) {
+    public FeishuProvider(Context context, CacheX cache) {
         super(context, Registry.FEISHU, cache);
     }
 
@@ -74,7 +74,7 @@ public class FeishuProvider extends AbstractProvider {
      */
     private String getAppAccessToken() {
         String cacheKey = this.complex.getName().concat(":app_access_token:").concat(context.getAppKey());
-        String cacheAppAccessToken = String.valueOf(this.cache.get(cacheKey));
+        String cacheAppAccessToken = String.valueOf(this.cache.read(cacheKey));
         if (StringKit.isNotEmpty(cacheAppAccessToken)) {
             return cacheAppAccessToken;
         }
@@ -99,26 +99,26 @@ public class FeishuProvider extends AbstractProvider {
         Object expireObj = jsonObject.get("expire");
         long expire = expireObj instanceof Number ? ((Number) expireObj).longValue() : 0;
         // 缓存 app access token
-        this.cache.cache(cacheKey, appAccessToken, expire * 1000);
+        this.cache.write(cacheKey, appAccessToken, expire * 1000);
         return appAccessToken;
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, Object> requestObject = new HashMap<>();
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "authorization_code");
         requestObject.put("code", callback.getCode());
-        return getToken(requestObject, this.complex.getConfig().get(Builder.ACCESSTOKEN));
+        return getToken(requestObject, this.complex.accessToken());
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String accessToken = accToken.getAccessToken();
+    public Material getUserInfo(AuthToken authToken) {
+        String accessToken = authToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         header.put("Authorization", "Bearer " + accessToken);
-        String response = Httpx.get(this.complex.getConfig().get(Builder.USERINFO), null, header);
+        String response = Httpx.get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -136,7 +136,7 @@ public class FeishuProvider extends AbstractProvider {
             String email = (String) data.get("email");
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(name).nickname(name)
-                    .avatar(avatarUrl).email(email).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
+                    .avatar(avatarUrl).email(email).gender(Gender.UNKNOWN).token(authToken).source(complex.toString())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -144,16 +144,16 @@ public class FeishuProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, Object> requestObject = new HashMap<>();
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "refresh_token");
-        requestObject.put("refresh_token", accToken.getRefreshToken());
+        requestObject.put("refresh_token", authToken.getRefreshToken());
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(requestObject, this.complex.getConfig().get(Builder.REFRESH))).build();
+                .data(getToken(requestObject, this.complex.refresh())).build();
     }
 
-    private AccToken getToken(Map<String, Object> param, String url) {
+    private AuthToken getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         String response = Httpx.post(url, JsonKit.toJsonString(param), header, MediaType.APPLICATION_JSON);
@@ -178,7 +178,7 @@ public class FeishuProvider extends AbstractProvider {
             String tokenType = (String) data.get("token_type");
             String openId = (String) data.get("open_id");
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
                     .tokenType(tokenType).openId(openId).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
@@ -187,7 +187,7 @@ public class FeishuProvider extends AbstractProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("app_id", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("app_id", context.getAppKey())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("state", getRealState(state)).build();
     }

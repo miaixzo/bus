@@ -25,69 +25,42 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.metric;
+package org.miaixz.bus.auth.nimble.vk;
+
+import org.miaixz.bus.auth.nimble.AuthorizeScope;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * 缓存接口,方便用户扩展
+ * VK 授权范围
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ExtendCache {
+@Getter
+@AllArgsConstructor
+public enum VKScope implements AuthorizeScope {
 
     /**
-     * 存入缓存
-     *
-     * @param key   缓存key
-     * @param value 缓存内容
+     * {@code scope} 含义，以{@code description} 为准
      */
-    default void cache(String key, Object value) {
+    PERSONAL("vkid.personal_info",
+            "Last name, first name, gender, profile photo and date of birth. The basic permission used by default for all apps",
+            true),
+    EMAIL("email", "Access to the user's email", true), PHONE("phone", "Access to the user's phone number", false),
+    FRIENDS("friends", "Access to friends", false), WALL("wall", "Access to standard and advanced wall methods", false),
+    GROUPS("groups", "Access to the user's groups", false), STORIES("stories", "Access to stories", false),
+    DOCS("docs", "Access to documents", false), PHOTOS("photos", "Access to photos", false),
+    ADS("ads", "Access to advanced methods of the advertising API", false), VIDEO("video", "Access to videos", false),
+    STATUS("status", "Access to the user's status", false), MARKET("market", "Access to products", false),
+    PAGES("pages", "Access to wiki pages", false),
+    NOTIFICATIONS("notifications", "Access to notifications about responses to the user", false),
+    STATS("stats", "Access to statistics of the user's groups and apps for which they are an administrator", false),
+    NOTES("notes", "Access to notes", false);
 
-    }
-
-    /**
-     * 存入缓存
-     *
-     * @param key     缓存key
-     * @param value   缓存内容
-     * @param timeout 指定缓存过期时间(毫秒)
-     */
-    default void cache(String key, Object value, long timeout) {
-
-    }
-
-    /**
-     * 获取缓存内容
-     *
-     * @param key 缓存key
-     * @return 缓存内容
-     */
-    default Object get(String key) {
-        return null;
-    }
-
-    /**
-     * 是否存在key，如果对应key的value值已过期，也返回false
-     *
-     * @param key 缓存key
-     * @return true：存在key，并且value没过期；false：key不存在或者已过期
-     */
-    boolean containsKey(String key);
-
-    /**
-     * 清理缓存内容
-     *
-     * @param key 缓存key
-     */
-    default void remove(String key) {
-
-    }
-
-    /**
-     * 清理过期的缓存
-     */
-    default void pruneCache() {
-
-    }
+    private final String scope;
+    private final String description;
+    private final boolean isDefault;
 
 }

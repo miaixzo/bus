@@ -3,7 +3,7 @@ select: SELECT
   hit_count,
   require_count,
   version
-  FROM hi_cache_rate
+  FROM t_cache_rate
   WHERE pattern = ?
 
 select_all: SELECT
@@ -11,17 +11,17 @@ select_all: SELECT
   hit_count,
   require_count,
   version
-  FROM hi_cache_rate
+  FROM t_cache_rate
 
-update: UPDATE hi_cache_rate
+update: UPDATE t_cache_rate
   SET
   version = version + 1,
   %s = ?
   WHERE pattern = ? AND version = ?
 
-insert: INSERT INTO hi_cache_rate (pattern, %s, version)
+insert: INSERT INTO t_cache_rate (pattern, %s, version)
   VALUES (?, ?, 0)
 
-delete: DELETE FROM hi_cache_rate WHERE pattern = ?
+delete: DELETE FROM t_cache_rate WHERE pattern = ?
 
-truncate: TRUNCATE TABLE hi_cache_rate
+truncate: TRUNCATE TABLE t_cache_rate

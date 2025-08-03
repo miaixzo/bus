@@ -33,12 +33,12 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
@@ -62,17 +62,17 @@ public class OktaProvider extends AbstractProvider {
         super(context, Registry.OKTA);
     }
 
-    public OktaProvider(Context context, ExtendCache cache) {
+    public OktaProvider(Context context, CacheX cache) {
         super(context, Registry.OKTA, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String tokenUrl = accessTokenUrl(callback.getCode());
         return getAuthToken(tokenUrl);
     }
 
-    private AccToken getAuthToken(String tokenUrl) {
+    private AuthToken getAuthToken(String tokenUrl) {
         Map<String, String> header = new HashMap<>();
         header.put("accept", MediaType.APPLICATION_JSON);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
@@ -99,7 +99,7 @@ public class OktaProvider extends AbstractProvider {
             String refreshToken = (String) accessTokenObject.get("refresh_token");
             String idToken = (String) accessTokenObject.get("id_token");
 
-            return AccToken.builder().accessToken(accessToken).tokenType(tokenType).expireIn(expiresIn).scope(scope)
+            return AuthToken.builder().accessToken(accessToken).tokenType(tokenType).expireIn(expiresIn).scope(scope)
                     .refreshToken(refreshToken).idToken(idToken).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -107,21 +107,21 @@ public class OktaProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
-        if (null == accToken.getRefreshToken()) {
+    public Message refresh(AuthToken authToken) {
+        if (null == authToken.getRefreshToken()) {
             return Message.builder().errcode(ErrorCode.ILLEGAL_TOKEN.getKey())
                     .errmsg(ErrorCode.ILLEGAL_TOKEN.getValue()).build();
         }
-        String refreshUrl = refreshTokenUrl(accToken.getRefreshToken());
+        String refreshUrl = refreshTokenUrl(authToken.getRefreshToken());
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(refreshUrl)).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Bearer " + accToken.getAccessToken());
+        header.put("Authorization", "Bearer " + authToken.getAccessToken());
 
-        String response = Httpx.post(userInfoUrl(accToken), null, header);
+        String response = Httpx.post(userInfoUrl(authToken), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -142,7 +142,7 @@ public class OktaProvider extends AbstractProvider {
             String streetAddress = address != null ? (String) address.get("street_address") : null;
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name).nickname(nickname)
-                    .email(email).location(streetAddress).gender(Gender.of(sex)).token(accToken)
+                    .email(email).location(streetAddress).gender(Gender.of(sex)).token(authToken)
                     .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -150,16 +150,16 @@ public class OktaProvider extends AbstractProvider {
     }
 
     @Override
-    public Message revoke(AccToken accToken) {
+    public Message revoke(AuthToken authToken) {
         Map<String, String> params = new HashMap<>(4);
-        params.put("token", accToken.getAccessToken());
+        params.put("token", authToken.getAccessToken());
         params.put("token_type_hint", "access_token");
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization",
                 "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
 
-        Httpx.post(revokeUrl(accToken), params, header);
+        Httpx.post(revokeUrl(authToken), params, header);
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
     }
 
@@ -173,7 +173,7 @@ public class OktaProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder
-                .fromUrl(String.format(complex.getConfig().get(Builder.AUTHORIZE), context.getPrefix(),
+                .fromUrl(String.format(complex.authorize(), context.getPrefix(),
                         ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("response_type", "code").queryParam("prompt", "consent")
                 .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
@@ -184,7 +184,7 @@ public class OktaProvider extends AbstractProvider {
     @Override
     public String accessTokenUrl(String code) {
         return Builder
-                .fromUrl(String.format(this.complex.getConfig().get(Builder.ACCESSTOKEN), context.getPrefix(),
+                .fromUrl(String.format(this.complex.accessToken(), context.getPrefix(),
                         ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("code", code).queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
@@ -193,20 +193,20 @@ public class OktaProvider extends AbstractProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder
-                .fromUrl(String.format(this.complex.getConfig().get(Builder.REFRESH), context.getPrefix(),
+                .fromUrl(String.format(this.complex.refresh(), context.getPrefix(),
                         ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
     }
 
     @Override
-    protected String revokeUrl(AccToken accToken) {
-        return String.format(this.complex.getConfig().get(Builder.REVOKE), context.getPrefix(),
+    protected String revokeUrl(AuthToken authToken) {
+        return String.format(this.complex.revoke(), context.getPrefix(),
                 ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
     @Override
-    public String userInfoUrl(AccToken accToken) {
-        return String.format(this.complex.getConfig().get(Builder.USERINFO), context.getPrefix(),
+    public String userInfoUrl(AuthToken authToken) {
+        return String.format(this.complex.userinfo(), context.getPrefix(),
                 ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
