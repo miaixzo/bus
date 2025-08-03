@@ -3116,14 +3116,14 @@ public class ProjectApi extends AbstractApi implements Constants {
      * </pre>
      *
      * @param projectIdOrPath the project ID, path of the project, or a project instance holding the project ID or path
-     * @param created_after   Project audit events created on or after the given time.
-     * @param created_before  Project audit events created on or before the given time.
+     * @param createdAfter    Project audit events created on or after the given time.
+     * @param createdBefore   Project audit events created on or before the given time.
      * @return a List of project Audit events
      * @throws GitLabApiException if any exception occurs
      */
-    public List<AuditEvent> getAuditEvents(Object projectIdOrPath, Date created_after, Date created_before)
+    public List<AuditEvent> getAuditEvents(Object projectIdOrPath, Date createdAfter, Date createdBefore)
             throws GitLabApiException {
-        return (getAuditEvents(projectIdOrPath, created_after, created_before, getDefaultPerPage()).all());
+        return (getAuditEvents(projectIdOrPath, createdAfter, createdBefore, getDefaultPerPage()).all());
     }
 
     /**

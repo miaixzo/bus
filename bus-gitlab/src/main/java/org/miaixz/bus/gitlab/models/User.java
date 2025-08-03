@@ -63,7 +63,6 @@ public class User extends AbstractUser<User> {
     private String publicEmail;
     private Integer sharedRunnersMinutesLimit;
     private String skype;
-    private String state;
     private Integer themeId;
     private String twitter;
     private Boolean twoFactorEnabled;
@@ -262,14 +261,6 @@ public class User extends AbstractUser<User> {
         this.skype = skype;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public Integer getThemeId() {
         return themeId;
     }
@@ -425,11 +416,6 @@ public class User extends AbstractUser<User> {
 
     public User withSkype(String skype) {
         this.skype = skype;
-        return this;
-    }
-
-    public User withState(String state) {
-        this.state = state;
         return this;
     }
 

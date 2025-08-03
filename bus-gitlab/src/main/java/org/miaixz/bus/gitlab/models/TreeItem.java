@@ -40,6 +40,7 @@ public class TreeItem implements Serializable {
     public enum Type {
         TREE, BLOB, COMMIT;
 
+        @Override
         public String toString() {
             return (name().toLowerCase());
         }

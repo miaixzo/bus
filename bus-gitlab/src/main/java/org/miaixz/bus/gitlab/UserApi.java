@@ -1063,9 +1063,35 @@ public class UserApi extends AbstractApi {
         }
 
         String tokenTypePathArg = impersonation ? "impersonation_tokens" : "personal_access_tokens";
-        Response response = post(Response.Status.CREATED, formData, "users", getUserIdOrUsername(userIdOrUsername),
-                tokenTypePathArg);
+
+        Response response;
+        if (userIdOrUsername != null) {
+            response = post(Response.Status.CREATED, formData, "users", getUserIdOrUsername(userIdOrUsername),
+                    tokenTypePathArg);
+        } else {
+            response = post(Response.Status.CREATED, formData, "user", tokenTypePathArg);
+        }
+
         return (response.readEntity(ImpersonationToken.class));
+    }
+
+    /**
+     * Create a personal access token for your account.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: POST /user/personal_access_tokens</code>
+     * </pre>
+     *
+     * @param name        the name of the personal access token, required
+     * @param description description of personal access token, optional
+     * @param expiresAt   the expiration date of the personal access token, optional
+     * @param scopes      an array of scopes of the personal access token. Only accepts k8s_proxy.
+     * @return the created PersonalAccessToken instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ImpersonationToken createPersonalAccessToken(String name, String description, Date expiresAt, Scope[] scopes)
+            throws GitLabApiException {
+        return createPersonalAccessTokenOrImpersonationToken(null, name, description, expiresAt, scopes, false);
     }
 
     /**
@@ -1561,6 +1587,23 @@ public class UserApi extends AbstractApi {
         } catch (IOException e) {
             throw new GitLabApiException(e);
         }
+    }
+
+    /**
+     * Create a runner linked to the current user.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: POST /user/runners</code>
+     * </pre>
+     *
+     * @param params a CreateRunnerParams instance holding the parameters for the runner creation
+     * @return creation response, be sure to copy or save the token in the response, the value cannot be retrieved
+     *         again.
+     * @throws GitLabApiException
+     */
+    public CreateRunnerResponse createRunner(CreateRunnerParams params) throws GitLabApiException {
+        Response response = post(Response.Status.OK, new GitLabApiForm(params.getForm()).asMap(), "user", "runners");
+        return response.readEntity(CreateRunnerResponse.class);
     }
 
 }
