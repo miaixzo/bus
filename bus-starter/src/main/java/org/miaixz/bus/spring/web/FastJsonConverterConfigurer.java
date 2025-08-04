@@ -28,10 +28,10 @@
 package org.miaixz.bus.spring.web;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -53,7 +53,8 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.filter.PropertyFilter;
+import com.alibaba.fastjson2.filter.Filter;
+import com.alibaba.fastjson2.filter.ValueFilter;
 
 import jakarta.persistence.Transient;
 
@@ -98,48 +99,73 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
      * 自定义 Fastjson2 的 HttpMessageConverter，使用 JSONWriter.Feature 配置序列化， JSONReader.Feature 配置反序列化，并根据构造函数参数配置 autoType。
      */
     static class FastJson2HttpMessageConverter extends AbstractHttpMessageConverter<Object> {
-
         private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
                 JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls,
                 JSONWriter.Feature.IgnoreNonFieldGetter };
-
         private static final JSONReader.Feature[] READER_FEATURES = { JSONReader.Feature.FieldBased };
+        private static final Filter[] FILTERS = { (ValueFilter) (object, name, value) -> {
+            // 忽略值为 null、空字符串或空格的字段
+            if (value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value)) {
+                return null;
+            }
+
+            // 检查字段是否有 @Transient 注解（jakarta.persistence.Transient）
+            Field field = FieldKit.getField(object.getClass(), name);
+            if (field != null && Modifier.isTransient(field.getModifiers())
+                    || field.getAnnotation(Transient.class) != null) {
+                return null; // 忽略带有 @Transient 注解的字段
+            }
+            // 字段不存在或无法访问，忽略
+            return value;
+        } };
 
         private final String[] autoTypes;
 
         public FastJson2HttpMessageConverter(String autoType) {
             super(StandardCharsets.UTF_8, DEFAULT_MEDIA_TYPES.toArray(new MediaType[0]));
-            this.autoTypes = StringKit.isEmpty(autoType) ? null
-                    : Arrays.stream(autoType.split(Symbol.COMMA)).map(String::trim).filter(StringKit::isNotEmpty)
-                            .toArray(String[]::new);
-            if (this.autoTypes == null) {
+            if (StringKit.isEmpty(autoType)) {
+                this.autoTypes = null;
                 Logger.info("Fastjson2 autoType is not configured, @type deserialization is disabled");
             } else {
+                this.autoTypes = StringKit.splitToArray(autoType, Symbol.COMMA);
+                for (int i = 0; i < autoTypes.length; i++) {
+                    autoTypes[i] = autoTypes[i].trim();
+                    if (StringKit.isEmpty(autoTypes[i])) {
+                        throw new IllegalArgumentException("autoType contains empty or invalid types");
+                    }
+                }
                 Logger.info("Fastjson2 autoType is enabled, whitelist types: {}", String.join(", ", autoTypes));
             }
         }
 
         @Override
         protected boolean supports(Class<?> clazz) {
-            return true;
+            return true; // 支持所有类型
         }
 
         @Override
         protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage)
                 throws HttpMessageNotReadableException {
-            try (var inputStream = inputMessage.getBody()) {
-                String jsonString = new String(IoKit.readBytes(inputStream), StandardCharsets.UTF_8);
+            InputStream inputStream = null;
+            try {
+                inputStream = inputMessage.getBody();
+                byte[] bytes = IoKit.readBytes(inputStream);
+                String jsonString = new String(bytes, StandardCharsets.UTF_8);
                 Logger.debug("Deserializing JSON for class {}", clazz.getName());
 
+                // 验证 JSON 是否安全
                 if (autoTypes != null && !isSafeJson(jsonString)) {
                     Logger.error("JSON contains untrusted @type: {}", jsonString);
                     throw new HttpMessageNotReadableException("JSON contains untrusted @type", inputMessage);
                 }
 
                 // 根据是否配置 autoType 进行反序列化
-                Object result = autoTypes == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
-                        : JSON.parseObject(jsonString, clazz, JSONReader.autoTypeFilter(autoTypes), READER_FEATURES);
-
+                Object result;
+                if (autoTypes == null) {
+                    result = JSON.parseObject(jsonString, clazz, READER_FEATURES);
+                } else {
+                    result = JSON.parseObject(jsonString, clazz, JSONReader.autoTypeFilter(autoTypes), READER_FEATURES);
+                }
                 Logger.debug("Deserialization successful for class {}", clazz.getName());
                 return result;
             } catch (IOException e) {
@@ -151,6 +177,8 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                 Logger.error("JSON deserialization failed, class {}: {}", clazz.getName(), e.getMessage(), e);
                 throw new HttpMessageNotReadableException("JSON deserialization failed: " + e.getMessage(), e,
                         inputMessage);
+            } finally {
+                IoKit.closeQuietly(inputStream);
             }
         }
 
@@ -159,28 +187,9 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                 throws HttpMessageNotWritableException {
             try {
                 Logger.debug("Serializing object: {}", object != null ? object.getClass().getName() : "null");
-                PropertyFilter filter = (source, name, value) -> {
-                    if (value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value)) {
-                        return false;
-                    }
-                    try {
-                        Field field = FieldKit.getField(source.getClass(), name);
-                        if (field == null) {
-                            return true;
-                        }
-                        if (Arrays.stream(field.getAnnotations())
-                                .anyMatch(annotation -> annotation.annotationType().equals(Transient.class))) {
-                            return false;
-                        }
-                        return !Modifier.isTransient(field.getModifiers());
-                    } catch (Exception e) {
-                        Logger.warn("Failed to check @Transient annotation for field {}", name, e.getMessage());
-                        return true;
-                    }
-                };
-
-                String jsonString = JSON.toJSONString(object, filter, WRITER_FEATURES);
-                outputMessage.getBody().write(jsonString.getBytes(StandardCharsets.UTF_8));
+                String jsonString = JSON.toJSONString(object, FILTERS, WRITER_FEATURES);
+                byte[] bytes = jsonString.getBytes(StandardCharsets.UTF_8);
+                outputMessage.getBody().write(bytes);
                 Logger.debug("Serialization successful, JSON length: {}", jsonString.length());
             } catch (IOException e) {
                 Logger.error("IO error occurred during JSON serialization: {}", e.getMessage(), e);
@@ -193,13 +202,23 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
         }
 
         /**
-         * 验证 JSON 输入是否只包含白名单中的 @type
+         * 验证 JSON 输入是否只包含白名单中的 @type。
          *
          * @param jsonString JSON 字符串
          * @return 如果 JSON 安全返回 true，否则返回 false
          */
         private boolean isSafeJson(String jsonString) {
-            return !jsonString.contains("@type") || Arrays.stream(autoTypes).anyMatch(jsonString::contains);
+            if (jsonString.contains("@type")) {
+                for (String autoType : autoTypes) {
+                    if (jsonString.contains(autoType)) {
+                        Logger.debug("Found trusted @type: {}", autoType);
+                        return true;
+                    }
+                }
+                Logger.warn("Untrusted @type detected in JSON: {}", jsonString);
+                return false;
+            }
+            return true;
         }
     }
 
