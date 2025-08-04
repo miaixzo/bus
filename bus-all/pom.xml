@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
-    <version>8.2.2</version>
+    <version>8.2.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -78,14 +78,14 @@
     </scm>
 
     <issueManagement>
-        <system>Github Issue</system>
+        <system>Github Issues</system>
         <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.2</bus.version>
+        <bus.version>8.2.3</bus.version>
     </properties>
 
     <dependencies>
@@ -103,7 +103,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
-                <configuration />
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

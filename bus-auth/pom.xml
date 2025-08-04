@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-auth</artifactId>
-    <version>8.2.2</version>
+    <version>8.2.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -78,14 +78,14 @@
     </scm>
 
     <issueManagement>
-        <system>Github Issue</system>
+        <system>Github Issues</system>
         <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.2</bus.version>
+        <bus.version>8.2.3</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <bcpkix.version>1.81</bcpkix.version>
         <vertx.version>5.0.1</vertx.version>
