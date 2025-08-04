@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * @since Java 17+
  */
 public enum GlobalMailAccount {
+
     /**
      * 单例
      */

@@ -28,7 +28,8 @@
 package org.miaixz.bus.auth.nimble.qq;
 
 import lombok.Data;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -36,7 +37,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -55,12 +55,12 @@ public class QqMiniProvider extends AbstractProvider {
         super(context, Registry.QQ_MINI);
     }
 
-    public QqMiniProvider(Context context, ExtendCache cache) {
+    public QqMiniProvider(Context context, CacheX cache) {
         super(context, Registry.QQ_MINI, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback authCallback) {
+    public AuthToken getAccessToken(Callback authCallback) {
         // 使用 code 获取对应的 openId、unionId 等字段
         String response = Httpx.get(accessTokenUrl(authCallback.getCode()));
 
@@ -68,13 +68,13 @@ public class QqMiniProvider extends AbstractProvider {
         checkResponse(accessTokenObject);
 
         // 拼装结果
-        return AccToken.builder().openId((String) accessTokenObject.get("openid"))
+        return AuthToken.builder().openId((String) accessTokenObject.get("openid"))
                 .unionId((String) accessTokenObject.get("unionid"))
                 .accessToken((String) accessTokenObject.get("session_key")).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken authToken) {
+    public Material getUserInfo(AuthToken authToken) {
         // 如果需要用户信息，需要在小程序调用函数后传给后端
         return Material.builder().rawJson(JsonKit.toJsonString(authToken)).username("").nickname("").avatar("")
                 .uuid(authToken.getOpenId()).token(authToken).source(complex.toString()).build();
@@ -93,9 +93,9 @@ public class QqMiniProvider extends AbstractProvider {
 
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN))
-                .queryParam("appid", context.getAppKey()).queryParam("secret", context.getAppSecret())
-                .queryParam("js_code", code).queryParam("grant_type", "authorization_code").build();
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret()).queryParam("js_code", code)
+                .queryParam("grant_type", "authorization_code").build();
     }
 
     @Data

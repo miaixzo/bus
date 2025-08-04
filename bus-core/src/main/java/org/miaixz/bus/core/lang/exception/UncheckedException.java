@@ -28,8 +28,12 @@
 package org.miaixz.bus.core.lang.exception;
 
 import java.io.Serial;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.lang.I18n;
+import org.miaixz.bus.core.lang.Keys;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -73,11 +77,11 @@ public class UncheckedException extends RuntimeException {
     /**
      * 构造 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param message 详细消息
+     * @param errmsg 详细消息
      */
-    protected UncheckedException(final String message) {
-        super(message);
-        this.errmsg = message;
+    protected UncheckedException(final String errmsg) {
+        super(errmsg);
+        this.errmsg = errmsg;
     }
 
     /**
@@ -94,12 +98,12 @@ public class UncheckedException extends RuntimeException {
     /**
      * 构造 使用指定消息和原因构造
      *
-     * @param message 详细消息
-     * @param cause   异常原因
+     * @param errmsg 详细消息
+     * @param cause  异常原因
      */
-    protected UncheckedException(final String message, final Throwable cause) {
-        super(message, cause);
-        this.errmsg = message;
+    protected UncheckedException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
+        this.errmsg = errmsg;
     }
 
     /**
@@ -140,15 +144,40 @@ public class UncheckedException extends RuntimeException {
     /**
      * 构造 运行时异常，其中包含指定的详细信息消息，原因，启用或禁用抑制，可写堆栈跟踪启用或禁用
      *
-     * @param message            详细消息
+     * @param errmsg             详细消息
      * @param cause              原因（允许为 null，表示原因未知）
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 是否启用可写堆栈跟踪
      */
-    protected UncheckedException(final String message, final Throwable cause, final boolean enableSuppression,
+    protected UncheckedException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-        this.errmsg = message;
+        super(errmsg, cause, enableSuppression, writableStackTrace);
+        this.errmsg = errmsg;
+    }
+
+    @Override
+    public String getMessage() {
+        if (this.errcode != null) {
+            return this.errmsg;
+        }
+        return super.getMessage();
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        if (errcode != null) {
+            try {
+                Locale locale = new Locale(I18n.AUTO_DETECT.lang());
+                ResourceBundle bundle = ResourceBundle.getBundle(Keys.BUNDLE_NAME, locale);
+                return bundle.getString(this.errcode);
+            } catch (Exception e) {
+                // 回退到 ERRORS_CACHE 中注册的错误信息
+                Errors.Entry entry = Errors.require(this.errcode);
+                return entry != null ? entry.getValue() : this.getMessage();
+            }
+
+        }
+        return super.getLocalizedMessage();
     }
 
 }

@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -55,7 +55,7 @@ public class Authorizer {
     /**
      * 缓存实现，用于存储状态等临时数据
      */
-    private ExtendCache cache;
+    private CacheX cache;
     /**
      * 自定义协议配置数组
      */
@@ -116,7 +116,7 @@ public class Authorizer {
      * @param cache 缓存对象
      * @return 当前 Authorize 实例
      */
-    public Authorizer cache(ExtendCache cache) {
+    public Authorizer cache(CacheX cache) {
         this.cache = cache;
         return this;
     }
@@ -163,7 +163,7 @@ public class Authorizer {
             if (this.cache == null) {
                 return targetClass.getDeclaredConstructor(Context.class).newInstance(this.context);
             } else {
-                return targetClass.getDeclaredConstructor(Context.class, ExtendCache.class).newInstance(this.context,
+                return targetClass.getDeclaredConstructor(Context.class, CacheX.class).newInstance(this.context,
                         this.cache);
             }
         } catch (Exception e) {

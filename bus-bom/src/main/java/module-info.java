@@ -41,7 +41,7 @@ module bus.bom {
     requires bus.crypto;
     requires bus.extra;
     requires bus.gitlab;
-    requires bus.goalie;
+    requires bus.vortex;
     requires bus.health;
     requires bus.http;
     requires bus.image;

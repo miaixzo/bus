@@ -62,27 +62,6 @@ import lombok.Setter;
 public class Builder {
 
     /**
-     * 授权端点配置键
-     */
-    public static final String AUTHORIZE = "authorize";
-    /**
-     * 访问令牌端点配置键
-     */
-    public static final String ACCESSTOKEN = "accesstoken";
-    /**
-     * 用户信息端点配置键
-     */
-    public static final String USERINFO = "userinfo";
-    /**
-     * 刷新令牌端点配置键
-     */
-    public static final String REFRESH = "refresh";
-    /**
-     * 撤销授权端点配置键
-     */
-    public static final String REVOKE = "revoke";
-
-    /**
      * 查询参数映射
      */
     private final Map<String, String> params = new LinkedHashMap<>(7);

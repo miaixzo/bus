@@ -68,14 +68,14 @@ public class Assert {
      * Assert.isTrue(i &gt; 0, "The value must be greater than zero");
      * </pre>
      *
-     * @param expression       布尔值
-     * @param errorMsgTemplate 错误抛出异常附带的消息模板，变量用{}代替
-     * @param params           参数列表
+     * @param expression 布尔值
+     * @param format     错误抛出异常附带的消息模板，变量用{}代替
+     * @param args       参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
-    public static void isTrue(final boolean expression, final String errorMsgTemplate, final Object... params)
+    public static void isTrue(final boolean expression, final String format, final Object... args)
             throws IllegalArgumentException {
-        isTrue(expression, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+        isTrue(expression, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -121,14 +121,14 @@ public class Assert {
      * Assert.isFalse(i &lt; 0, "The value must not be negative");
      * </pre>
      *
-     * @param expression       布尔值
-     * @param errorMsgTemplate 错误抛出异常附带的消息模板，变量用{}代替
-     * @param params           参数列表
+     * @param expression 布尔值
+     * @param format     错误抛出异常附带的消息模板，变量用{}代替
+     * @param args       参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
-    public static void isFalse(final boolean expression, final String errorMsgTemplate, final Object... params)
+    public static void isFalse(final boolean expression, final String format, final Object... args)
             throws IllegalArgumentException {
-        isFalse(expression, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+        isFalse(expression, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -173,14 +173,14 @@ public class Assert {
      * Assert.isNull(value, "The value must be null");
      * </pre>
      *
-     * @param object           被检查的对象
-     * @param errorMsgTemplate 消息模板，变量使用{}表示
-     * @param params           参数列表
+     * @param object 被检查的对象
+     * @param format 消息模板，变量使用{}表示
+     * @param args   参数列表
      * @throws IllegalArgumentException if the object is not {@code null}
      */
-    public static void isNull(final Object object, final String errorMsgTemplate, final Object... params)
+    public static void isNull(final Object object, final String format, final Object... args)
             throws IllegalArgumentException {
-        isNull(object, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+        isNull(object, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -228,17 +228,17 @@ public class Assert {
      * Assert.notNull(clazz, "The class must not be null");
      * }</pre>
      *
-     * @param <T>              被检查对象泛型类型
-     * @param object           被检查对象
-     * @param errorMsgTemplate 错误消息模板，变量使用{}表示
-     * @param params           参数
+     * @param <T>    被检查对象泛型类型
+     * @param object 被检查对象
+     * @param format 错误消息模板，变量使用{}表示
+     * @param args   参数
      * @return 被检查后的对象
      * @throws IllegalArgumentException if the object is {@code null}
      */
-    public static <T> T notNull(final T object, final String errorMsgTemplate, final Object... params)
+    public static <T> T notNull(final T object, final String format, final Object... args)
             throws IllegalArgumentException {
         if (null == object) {
-            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(format, args));
         }
         return object;
     }
@@ -294,16 +294,16 @@ public class Assert {
      * Assert.notEmpty(array, "The array must have elements");
      * </pre>
      *
-     * @param <T>              数组元素类型
-     * @param array            被检查的数组
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param <T>    数组元素类型
+     * @param array  被检查的数组
+     * @param format 异常时的消息模板
+     * @param args   参数列表
      * @return 被检查的数组
      * @throws IllegalArgumentException if the object array is {@code null} or has no elements
      */
-    public static <T> T[] notEmpty(final T[] array, final String errorMsgTemplate, final Object... params)
+    public static <T> T[] notEmpty(final T[] array, final String format, final Object... args)
             throws IllegalArgumentException {
-        return notEmpty(array, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+        return notEmpty(array, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -356,17 +356,17 @@ public class Assert {
      * Assert.notEmpty(collection, "Collection must have elements");
      * </pre>
      *
-     * @param <E>              集合元素类型
-     * @param <T>              集合类型
-     * @param collection       被检查的集合
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param <E>        集合元素类型
+     * @param <T>        集合类型
+     * @param collection 被检查的集合
+     * @param format     异常时的消息模板
+     * @param args       参数列表
      * @return 非空集合
      * @throws IllegalArgumentException if the collection is {@code null} or has no elements
      */
-    public static <E, T extends Iterable<E>> T notEmpty(final T collection, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        return notEmpty(collection, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static <E, T extends Iterable<E>> T notEmpty(final T collection, final String format, final Object... args)
+            throws IllegalArgumentException {
+        return notEmpty(collection, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -422,18 +422,18 @@ public class Assert {
      * Assert.notEmpty(map, "Map must have entries");
      * </pre>
      *
-     * @param <K>              Key类型
-     * @param <V>              Value类型
-     * @param <T>              Map类型
-     * @param map              被检查的Map
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param <K>    Key类型
+     * @param <V>    Value类型
+     * @param <T>    Map类型
+     * @param map    被检查的Map
+     * @param format 异常时的消息模板
+     * @param args   参数列表
      * @return 被检查的Map
      * @throws IllegalArgumentException if the map is {@code null} or has no entries
      */
-    public static <K, V, T extends Map<K, V>> T notEmpty(final T map, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        return notEmpty(map, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static <K, V, T extends Map<K, V>> T notEmpty(final T map, final String format, final Object... args)
+            throws IllegalArgumentException {
+        return notEmpty(map, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -487,17 +487,17 @@ public class Assert {
      * Assert.notEmpty(name, "Name must not be empty");
      * </pre>
      *
-     * @param <T>              字符串类型
-     * @param text             被检查字符串
-     * @param errorMsgTemplate 错误消息模板，变量使用{}表示
-     * @param params           参数
+     * @param <T>    字符串类型
+     * @param text   被检查字符串
+     * @param format 错误消息模板，变量使用{}表示
+     * @param args   参数
      * @return 非空字符串
      * @throws IllegalArgumentException 被检查字符串为空
      * @see StringKit#isNotEmpty(CharSequence)
      */
-    public static <T extends CharSequence> T notEmpty(final T text, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        return notEmpty(text, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static <T extends CharSequence> T notEmpty(final T text, final String format, final Object... args)
+            throws IllegalArgumentException {
+        return notEmpty(text, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -551,17 +551,17 @@ public class Assert {
      * Assert.notBlank(name, "Name must not be blank");
      * </pre>
      *
-     * @param <T>              字符串类型
-     * @param text             被检查字符串
-     * @param errorMsgTemplate 错误消息模板，变量使用{}表示
-     * @param params           参数
+     * @param <T>    字符串类型
+     * @param text   被检查字符串
+     * @param format 错误消息模板，变量使用{}表示
+     * @param args   参数
      * @return 非空字符串
      * @throws IllegalArgumentException 被检查字符串为空白
      * @see StringKit#isNotBlank(CharSequence)
      */
-    public static <T extends CharSequence> T notBlank(final T text, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        return notBlank(text, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static <T extends CharSequence> T notBlank(final T text, final String format, final Object... args)
+            throws IllegalArgumentException {
+        return notBlank(text, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -616,17 +616,16 @@ public class Assert {
      * Assert.notContain(name, "rod", "Name must not contain 'rod'");
      * </pre>
      *
-     * @param textToSearch     被搜索的字符串
-     * @param subString        被检查的子串
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param textToSearch 被搜索的字符串
+     * @param subString    被检查的子串
+     * @param format       异常时的消息模板
+     * @param args         参数列表
      * @return 被检查的子串
      * @throws IllegalArgumentException 非子串抛出异常
      */
-    public static String notContain(final String textToSearch, final String subString, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        return notContain(textToSearch, subString,
-                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static String notContain(final String textToSearch, final String subString, final String format,
+            final Object... args) throws IllegalArgumentException {
+        return notContain(textToSearch, subString, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -680,16 +679,16 @@ public class Assert {
      * Assert.noNullElements(array, "The array must not have null elements");
      * </pre>
      *
-     * @param <T>              数组元素类型
-     * @param array            被检查的数组
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param <T>    数组元素类型
+     * @param array  被检查的数组
+     * @param format 异常时的消息模板
+     * @param args   参数列表
      * @return 被检查的数组
      * @throws IllegalArgumentException if the object array contains a {@code null} element
      */
-    public static <T> T[] noNullElements(final T[] array, final String errorMsgTemplate, final Object... params)
+    public static <T> T[] noNullElements(final T[] array, final String format, final Object... args)
             throws IllegalArgumentException {
-        return noNullElements(array, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+        return noNullElements(array, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -733,20 +732,20 @@ public class Assert {
      * Assert.instanceOf(Foo.class, foo, "foo must be an instance of class Foo");
      * </pre>
      *
-     * @param <T>              被检查对象泛型类型
-     * @param type             被检查对象匹配的类型
-     * @param object           被检查对象
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param <T>    被检查对象泛型类型
+     * @param type   被检查对象匹配的类型
+     * @param object 被检查对象
+     * @param format 异常时的消息模板
+     * @param args   参数列表
      * @return 被检查对象
      * @throws IllegalArgumentException if the object is not an instance of clazz
      * @see Class#isInstance(Object)
      */
-    public static <T> T isInstanceOf(final Class<?> type, final T object, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
+    public static <T> T isInstanceOf(final Class<?> type, final T object, final String format, final Object... args)
+            throws IllegalArgumentException {
         notNull(type, "Type to check against must not be null");
         if (!type.isInstance(object)) {
-            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(format, args));
         }
         return object;
     }
@@ -776,20 +775,20 @@ public class Assert {
      * Assert.isNotInstanceOf(Foo.class, foo, "foo must be not an Foo");
      * </pre>
      *
-     * @param <T>              被检查对象泛型类型
-     * @param type             被检查对象匹配的类型
-     * @param obj              被检查对象
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param <T>    被检查对象泛型类型
+     * @param type   被检查对象匹配的类型
+     * @param obj    被检查对象
+     * @param format 异常时的消息模板
+     * @param args   参数列表
      * @return 被检查对象
      * @throws IllegalArgumentException if the object is an instance of clazz
      * @see Class#isInstance(Object)
      */
-    public static <T> T isNotInstanceOf(final Class<?> type, final T obj, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
+    public static <T> T isNotInstanceOf(final Class<?> type, final T obj, final String format, final Object... args)
+            throws IllegalArgumentException {
         notNull(type, "Type to check against must not be null");
         if (type.isInstance(obj)) {
-            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(format, args));
         }
         return obj;
     }
@@ -816,17 +815,17 @@ public class Assert {
      * Assert.isAssignable(Number.class, myClass, "myClass must can be assignable to class Number");
      * </pre>
      *
-     * @param superType        需要检查的父类或接口
-     * @param subType          需要检查的子类
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param superType 需要检查的父类或接口
+     * @param subType   需要检查的子类
+     * @param format    异常时的消息模板
+     * @param args      参数列表
      * @throws IllegalArgumentException 如果子类非继承父类，抛出此异常
      */
-    public static void isAssignable(final Class<?> superType, final Class<?> subType, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
+    public static void isAssignable(final Class<?> superType, final Class<?> subType, final String format,
+            final Object... args) throws IllegalArgumentException {
         notNull(superType, "Type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
-            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(format, args));
         }
     }
 
@@ -858,15 +857,15 @@ public class Assert {
      * Assert.state(id == null, "The id property must not already be initialized");
      * </pre>
      *
-     * @param expression       boolean 表达式
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param expression boolean 表达式
+     * @param format     异常时的消息模板
+     * @param args       参数列表
      * @throws IllegalStateException 表达式为 {@code false} 抛出此异常
      */
-    public static void state(final boolean expression, final String errorMsgTemplate, final Object... params)
+    public static void state(final boolean expression, final String format, final Object... args)
             throws IllegalStateException {
         if (!expression) {
-            throw new IllegalStateException(StringKit.format(errorMsgTemplate, params));
+            throw new IllegalStateException(StringKit.format(format, args));
         }
     }
 
@@ -909,18 +908,18 @@ public class Assert {
      * 0 &le; index &lt; size
      * </pre>
      *
-     * @param index            下标
-     * @param size             长度
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
+     * @param index  下标
+     * @param size   长度
+     * @param format 异常时的消息模板
+     * @param args   参数列表
      * @return 检查后的下标
      * @throws IllegalArgumentException  如果size &lt; 0 抛出此异常
      * @throws IndexOutOfBoundsException 如果index &lt; 0或者 index &ge; size 抛出此异常
      */
-    public static int checkIndex(final int index, final int size, final String errorMsgTemplate, final Object... params)
+    public static int checkIndex(final int index, final int size, final String format, final Object... args)
             throws IllegalArgumentException, IndexOutOfBoundsException {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException(badIndexMsg(index, size, errorMsgTemplate, params));
+            throw new IndexOutOfBoundsException(badIndexMsg(index, size, format, args));
         }
         return index;
     }
@@ -948,17 +947,16 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
-     * @param value            值
-     * @param min              最小值（包含）
-     * @param max              最大值（包含）
-     * @param errorMsgTemplate 异常信息模板，类似于"aa{}bb{}cc"
-     * @param params           异常信息参数，用于替换"{}"占位符
+     * @param value  值
+     * @param min    最小值（包含）
+     * @param max    最大值（包含）
+     * @param format 异常信息模板，类似于"aa{}bb{}cc"
+     * @param args   异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static int checkBetween(final int value, final int min, final int max, final String errorMsgTemplate,
-            final Object... params) {
-        return checkBetween(value, min, max,
-                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static int checkBetween(final int value, final int min, final int max, final String format,
+            final Object... args) {
+        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -996,17 +994,16 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
-     * @param value            值
-     * @param min              最小值（包含）
-     * @param max              最大值（包含）
-     * @param errorMsgTemplate 异常信息模板，类似于"aa{}bb{}cc"
-     * @param params           异常信息参数，用于替换"{}"占位符
+     * @param value  值
+     * @param min    最小值（包含）
+     * @param max    最大值（包含）
+     * @param format 异常信息模板，类似于"aa{}bb{}cc"
+     * @param args   异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static long checkBetween(final long value, final long min, final long max, final String errorMsgTemplate,
-            final Object... params) {
-        return checkBetween(value, min, max,
-                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static long checkBetween(final long value, final long min, final long max, final String format,
+            final Object... args) {
+        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -1044,17 +1041,16 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
-     * @param value            值
-     * @param min              最小值（包含）
-     * @param max              最大值（包含）
-     * @param errorMsgTemplate 异常信息模板，类似于"aa{}bb{}cc"
-     * @param params           异常信息参数，用于替换"{}"占位符
+     * @param value  值
+     * @param min    最小值（包含）
+     * @param max    最大值（包含）
+     * @param format 异常信息模板，类似于"aa{}bb{}cc"
+     * @param args   异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static double checkBetween(final double value, final double min, final double max,
-            final String errorMsgTemplate, final Object... params) {
-        return checkBetween(value, min, max,
-                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static double checkBetween(final double value, final double min, final double max, final String format,
+            final Object... args) {
+        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -1112,15 +1108,15 @@ public class Assert {
      * Assert.notEquals(obj1, obj2, "obj1 must be not equals obj2");
      * </pre>
      *
-     * @param obj1             对象1
-     * @param obj2             对象2
-     * @param errorMsgTemplate 异常信息模板，类似于"aa{}bb{}cc"
-     * @param params           异常信息参数，用于替换"{}"占位符
+     * @param obj1   对象1
+     * @param obj2   对象2
+     * @param format 异常信息模板，类似于"aa{}bb{}cc"
+     * @param args   异常信息参数，用于替换"{}"占位符
      * @throws IllegalArgumentException obj1 must be not equals obj2
      */
-    public static void notEquals(final Object obj1, final Object obj2, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        notEquals(obj1, obj2, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static void notEquals(final Object obj1, final Object obj2, final String format, final Object... args)
+            throws IllegalArgumentException {
+        notEquals(obj1, obj2, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -1161,15 +1157,15 @@ public class Assert {
      * Assert.isEquals(obj1, obj2, "obj1 must be equals obj2");
      * </pre>
      *
-     * @param obj1             对象1
-     * @param obj2             对象2
-     * @param errorMsgTemplate 异常信息模板，类似于"aa{}bb{}cc"
-     * @param params           异常信息参数，用于替换"{}"占位符
+     * @param obj1   对象1
+     * @param obj2   对象2
+     * @param format 异常信息模板，类似于"aa{}bb{}cc"
+     * @param args   异常信息参数，用于替换"{}"占位符
      * @throws IllegalArgumentException obj1 must be equals obj2
      */
-    public static void equals(final Object obj1, final Object obj2, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        equals(obj1, obj2, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static void equals(final Object obj1, final Object obj2, final String format, final Object... args)
+            throws IllegalArgumentException {
+        equals(obj1, obj2, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
 
     /**
@@ -1191,19 +1187,19 @@ public class Assert {
     /**
      * 错误的下标时显示的消息
      *
-     * @param index  下标
-     * @param size   长度
-     * @param desc   异常时的消息模板
-     * @param params 参数列表
+     * @param index 下标
+     * @param size  长度
+     * @param desc  异常时的消息模板
+     * @param args  参数列表
      * @return 消息
      */
-    private static String badIndexMsg(final int index, final int size, final String desc, final Object... params) {
+    private static String badIndexMsg(final int index, final int size, final String desc, final Object... args) {
         if (index < 0) {
-            return StringKit.format("{} ({}) must not be negative", StringKit.format(desc, params), index);
+            return StringKit.format("{} ({}) must not be negative", StringKit.format(desc, args), index);
         } else if (size < 0) {
             throw new IllegalArgumentException("negative size: " + size);
         } else { // index >= size
-            return StringKit.format("{} ({}) must be less than size ({})", StringKit.format(desc, params), index, size);
+            return StringKit.format("{} ({}) must be less than size ({})", StringKit.format(desc, args), index, size);
         }
     }
 

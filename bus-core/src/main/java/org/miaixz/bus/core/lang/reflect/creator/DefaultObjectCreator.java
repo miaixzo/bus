@@ -44,19 +44,19 @@ import org.miaixz.bus.core.xyz.LookupKit;
 public class DefaultObjectCreator<T> implements ObjectCreator<T> {
 
     final MethodHandle constructor;
-    final Object[] params;
+    final Object[] args;
 
     /**
      * 构造
      *
-     * @param clazz  实例化的类
-     * @param params 构造参数，无参数空
+     * @param clazz 实例化的类
+     * @param args  构造参数，无参数空
      */
-    public DefaultObjectCreator(final Class<T> clazz, final Object... params) {
-        final Class<?>[] paramTypes = ClassKit.getClasses(params);
+    public DefaultObjectCreator(final Class<T> clazz, final Object... args) {
+        final Class<?>[] paramTypes = ClassKit.getClasses(args);
         this.constructor = LookupKit.findConstructor(clazz, paramTypes);
         Assert.notNull(this.constructor, "Constructor not found!");
-        this.params = params;
+        this.args = args;
     }
 
     /**
@@ -73,18 +73,18 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
     /**
      * 创建默认的对象实例化器
      *
-     * @param clazz  实例化的类
-     * @param params 构造参数，无参数空
-     * @param <T>    对象类型
+     * @param clazz 实例化的类
+     * @param args  构造参数，无参数空
+     * @param <T>   对象类型
      * @return DefaultObjectCreator
      */
-    public static <T> DefaultObjectCreator<T> of(final Class<T> clazz, final Object... params) {
-        return new DefaultObjectCreator<>(clazz, params);
+    public static <T> DefaultObjectCreator<T> of(final Class<T> clazz, final Object... args) {
+        return new DefaultObjectCreator<>(clazz, args);
     }
 
     @Override
     public T create() {
-        return MethodInvoker.invokeHandle(constructor, params);
+        return MethodInvoker.invokeHandle(constructor, args);
     }
 
 }

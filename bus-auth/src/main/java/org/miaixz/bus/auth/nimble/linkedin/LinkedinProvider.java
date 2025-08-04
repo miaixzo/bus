@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.linkedin;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,7 +39,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -60,24 +60,24 @@ public class LinkedinProvider extends AbstractProvider {
         super(context, Registry.LINKEDIN);
     }
 
-    public LinkedinProvider(Context context, ExtendCache cache) {
+    public LinkedinProvider(Context context, CacheX cache) {
         super(context, Registry.LINKEDIN, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String accessToken = accToken.getAccessToken();
+    public Material getUserInfo(AuthToken authToken) {
+        String accessToken = authToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put("Host", "api.linkedin.com");
         header.put("Connection", "Keep-Alive");
         header.put("Authorization", "Bearer " + accessToken);
 
-        String response = Httpx.get(userInfoUrl(accToken), null, header);
+        String response = Httpx.get(userInfoUrl(authToken), null, header);
         try {
             Map<String, Object> data = JsonKit.toPojo(response, Map.class);
             if (data == null) {
@@ -95,7 +95,7 @@ public class LinkedinProvider extends AbstractProvider {
             String email = this.getUserEmail(accessToken);
 
             return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(userName).nickname(userName)
-                    .avatar(avatar).email(email).token(accToken).gender(Gender.UNKNOWN).source(complex.toString())
+                    .avatar(avatar).email(email).token(authToken).gender(Gender.UNKNOWN).source(complex.toString())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -228,7 +228,7 @@ public class LinkedinProvider extends AbstractProvider {
      * @param accessTokenUrl 实际请求token的地址
      * @return token对象
      */
-    private AccToken getToken(String accessTokenUrl) {
+    private AuthToken getToken(String accessTokenUrl) {
         Map<String, String> header = new HashMap<>();
         header.put("Host", "www.linkedin.com");
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
@@ -250,7 +250,7 @@ public class LinkedinProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
             String refreshToken = (String) accessTokenObject.get("refresh_token");
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
@@ -272,12 +272,12 @@ public class LinkedinProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo())
                 .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
                 .build();
     }

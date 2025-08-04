@@ -30,18 +30,28 @@ package org.miaixz.bus.image.galaxy.data;
 import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 
 /**
+ * 字符串值类型枚举，实现了ValueType接口，用于处理DICOM中的各种字符串类型值。 该枚举定义了多种字符串类型，如ASCII、STRING、TEXT、UR、DA、DT、TM、PN、DS和IS等，
+ * 每种类型都有其特定的处理方式和分隔符。
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum StringValueType implements ValueType {
 
-    ASCII(Symbol.BACKSLASH, null), STRING(Symbol.BACKSLASH, null) {
+    /**
+     * ASCII字符串类型，使用反斜杠作为分隔符
+     */
+    ASCII(Symbol.BACKSLASH, null),
+
+    /**
+     * 字符串类型，使用反斜杠作为分隔符，使用特定字符集
+     */
+    STRING(Symbol.BACKSLASH, null) {
         @Override
         public boolean useSpecificCharacterSet() {
             return true;
@@ -52,6 +62,10 @@ public enum StringValueType implements ValueType {
             return cs;
         }
     },
+
+    /**
+     * 文本类型，使用制表符、换行符、换页符和回车符作为分隔符，使用特定字符集
+     */
     TEXT("\t\n\f\r", null) {
         @Override
         public boolean useSpecificCharacterSet() {
@@ -73,6 +87,10 @@ public enum StringValueType implements ValueType {
             return s;
         }
     },
+
+    /**
+     * URI类型，不使用分隔符
+     */
     UR(null, null) {
         @Override
         protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
@@ -84,7 +102,25 @@ public enum StringValueType implements ValueType {
             return s;
         }
     },
-    DA(Symbol.BACKSLASH, TemporalType.DA), DT(Symbol.BACKSLASH, TemporalType.DT), TM(Symbol.BACKSLASH, TemporalType.TM),
+
+    /**
+     * 日期类型，使用反斜杠作为分隔符
+     */
+    DA(Symbol.BACKSLASH, TemporalType.DA),
+
+    /**
+     * 日期时间类型，使用反斜杠作为分隔符
+     */
+    DT(Symbol.BACKSLASH, TemporalType.DT),
+
+    /**
+     * 时间类型，使用反斜杠作为分隔符
+     */
+    TM(Symbol.BACKSLASH, TemporalType.TM),
+
+    /**
+     * 个人名称类型，使用^、=和\作为分隔符，使用特定字符集
+     */
     PN("^=\\", null) {
         @Override
         public boolean useSpecificCharacterSet() {
@@ -96,10 +132,13 @@ public enum StringValueType implements ValueType {
             return cs;
         }
     },
+
+    /**
+     * 十进制字符串类型，使用反斜杠作为分隔符
+     */
     DS(Symbol.BACKSLASH, null) {
         @Override
         public byte[] toBytes(Object val, SpecificCharacterSet cs) {
-
             if (val instanceof double[])
                 val = toStrings((double[]) val);
             return super.toBytes(val, cs);
@@ -107,7 +146,6 @@ public enum StringValueType implements ValueType {
 
         @Override
         public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
-
             if (val instanceof double[] ds) {
                 return (valueIndex < ds.length && !Double.isNaN(ds[valueIndex])) ? Builder.formatDS(ds[valueIndex])
                         : defVal;
@@ -117,18 +155,15 @@ public enum StringValueType implements ValueType {
 
         @Override
         public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
-
             return (val instanceof double[]) ? toStrings((double[]) val) : super.toStrings(val, bigEndian, cs);
         }
 
         private Object toStrings(double[] ds) {
             if (ds.length == 1)
                 return Builder.formatDS(ds[0]);
-
             String[] ss = new String[ds.length];
             for (int i = 0; i < ds.length; i++)
                 ss[i] = !Double.isNaN(ds[i]) ? Builder.formatDS(ds[i]) : Normal.EMPTY;
-
             return ss;
         }
 
@@ -162,10 +197,8 @@ public enum StringValueType implements ValueType {
         public Object toValue(float[] fs, boolean bigEndian) {
             if (fs == null || fs.length == 0)
                 return Value.NULL;
-
             if (fs.length == 1)
                 return Builder.formatDS(fs[0]);
-
             String[] ss = new String[fs.length];
             for (int i = 0; i < fs.length; i++)
                 ss[i] = Builder.formatDS(fs[i]);
@@ -176,7 +209,6 @@ public enum StringValueType implements ValueType {
         public Object toValue(double[] ds, boolean bigEndian) {
             if (ds == null || ds.length == 0)
                 return Value.NULL;
-
             return ds;
         }
 
@@ -187,6 +219,10 @@ public enum StringValueType implements ValueType {
             return super.prompt(val, bigEndian, cs, maxChars, sb);
         }
     },
+
+    /**
+     * 整数字符串类型，使用反斜杠作为分隔符
+     */
     IS("\\", null) {
         @Override
         public boolean isIntValue() {
@@ -195,7 +231,6 @@ public enum StringValueType implements ValueType {
 
         @Override
         public byte[] toBytes(Object val, SpecificCharacterSet cs) {
-
             if (val instanceof long[])
                 val = toStrings((long[]) val);
             return super.toBytes(val, cs);
@@ -203,7 +238,6 @@ public enum StringValueType implements ValueType {
 
         @Override
         public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
-
             if (val instanceof long[] ls) {
                 return (valueIndex < ls.length && ls[valueIndex] != Integer.MIN_VALUE) ? Long.toString(ls[valueIndex])
                         : defVal;
@@ -213,18 +247,15 @@ public enum StringValueType implements ValueType {
 
         @Override
         public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
-
             return (val instanceof long[]) ? toStrings((long[]) val) : super.toStrings(val, bigEndian, cs);
         }
 
         private Object toStrings(long[] ls) {
             if (ls.length == 1)
                 return Long.toString(ls[0]);
-
             String[] ss = new String[ls.length];
             for (int i = 0; i < ls.length; i++)
                 ss[i] = ls[i] != Integer.MIN_VALUE ? Long.toString(ls[i]) : "";
-
             return ss;
         }
 
@@ -242,7 +273,6 @@ public enum StringValueType implements ValueType {
         public Object toValue(int[] is, boolean bigEndian) {
             if (is == null || is.length == 0)
                 return Value.NULL;
-
             return intsToLong(is);
         }
 
@@ -261,7 +291,6 @@ public enum StringValueType implements ValueType {
         public Object toValue(long[] ls, boolean bigEndian) {
             if (ls == null || ls.length == 0)
                 return Value.NULL;
-
             return ls;
         }
 
@@ -273,14 +302,35 @@ public enum StringValueType implements ValueType {
         }
     };
 
+    /**
+     * 分隔符
+     */
     final String delimiters;
+
+    /**
+     * 时间类型
+     */
     final TemporalType temporalType;
 
+    /**
+     * 构造一个字符串值类型
+     *
+     * @param delimiters   分隔符
+     * @param temperalType 时间类型
+     */
     StringValueType(String delimiters, TemporalType temperalType) {
         this.delimiters = delimiters;
         this.temporalType = temperalType;
     }
 
+    /**
+     * 将字符串追加到字符串构建器，限制最大字符数
+     *
+     * @param s        字符串
+     * @param maxChars 最大字符数
+     * @param sb       字符串构建器
+     * @return 如果未超过最大字符数则返回true，否则返回false
+     */
     static boolean prompt(String s, int maxChars, StringBuilder sb) {
         int maxLength = sb.length() + maxChars;
         sb.append(s.trim());
@@ -291,6 +341,14 @@ public enum StringValueType implements ValueType {
         return true;
     }
 
+    /**
+     * 将字符串数组追加到字符串构建器，限制最大字符数
+     *
+     * @param ss       字符串数组
+     * @param maxChars 最大字符数
+     * @param sb       字符串构建器
+     * @return 如果未超过最大字符数则返回true，否则返回false
+     */
     static boolean prompt(String[] ss, int maxChars, StringBuilder sb) {
         int maxLength = sb.length() + maxChars;
         for (String s : ss) {
@@ -307,7 +365,10 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * ~170% faster than LongStream.of(in).mapToInt(l -> (int) l).toArray()
+     * 将long数组转换为int数组 比LongStream.of(in).mapToInt(l -> (int) l).toArray()快约170%
+     *
+     * @param in long数组
+     * @return int数组
      */
     public static int[] longsToInts(long[] in) {
         int[] out = new int[in.length];
@@ -317,7 +378,10 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * ~60% faster than IntStream.of(in).asLongStream().toArray()
+     * 将int数组转换为long数组 比IntStream.of(in).asLongStream().toArray()快约60%
+     *
+     * @param in int数组
+     * @return long数组
      */
     public static long[] intsToLong(int[] in) {
         long[] out = new long[in.length];
@@ -356,52 +420,55 @@ public enum StringValueType implements ValueType {
         return false;
     }
 
+    /**
+     * 获取特定字符集
+     *
+     * @param cs 特定字符集
+     * @return 特定字符集
+     */
     protected SpecificCharacterSet cs(SpecificCharacterSet cs) {
         return SpecificCharacterSet.ASCII;
     }
 
     @Override
     public byte[] toBytes(Object val, SpecificCharacterSet cs) {
-
         if (val instanceof byte[])
             return (byte[]) val;
-
         if (val instanceof String)
             return cs(cs).encode((String) val, delimiters);
-
         if (val instanceof String[])
             return cs(cs).encode(Builder.concat((String[]) val, '\\'), delimiters);
-
         throw new UnsupportedOperationException();
     }
 
     @Override
     public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
-
         if (val instanceof String)
             return (String) (valueIndex == 0 ? val : defVal);
-
         if (val instanceof String[] ss) {
             return (valueIndex < ss.length && ss[valueIndex] != null && !ss[valueIndex].isEmpty()) ? ss[valueIndex]
                     : defVal;
         }
-
         throw new UnsupportedOperationException();
     }
 
     @Override
     public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
-
         if (val instanceof byte[]) {
-            return splitAndTrim(cs(cs).decode((byte[]) val), cs);
+            return splitAndTrim(cs(cs).decode((byte[]) val, delimiters), cs);
         }
-
         if (val instanceof String || val instanceof String[])
             return val;
-
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 分割并修剪字符串
+     *
+     * @param s  字符串
+     * @param cs 特定字符集
+     * @return 分割并修剪后的字符串或字符串数组
+     */
     protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
         return Builder.splitAndTrim(s, '\\');
     }
@@ -450,7 +517,6 @@ public enum StringValueType implements ValueType {
     public Temporal toTemporal(Object val, int valueIndex, DatePrecision precision) {
         if (temporalType == null)
             throw new UnsupportedOperationException();
-
         if (val instanceof String) {
             return valueIndex == 0 ? temporalType.parseTemporal((String) val, precision) : null;
         }
@@ -467,7 +533,6 @@ public enum StringValueType implements ValueType {
     public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision) {
         if (temporalType == null)
             throw new UnsupportedOperationException();
-
         if (val instanceof String) {
             return valueIndex == 0 ? temporalType.parse(tz, (String) val, ceil, precision) : defVal;
         }
@@ -483,7 +548,6 @@ public enum StringValueType implements ValueType {
     public Date[] toDate(Object val, TimeZone tz, boolean ceil, DatePrecision precision) {
         if (temporalType == null)
             throw new UnsupportedOperationException();
-
         if (val instanceof String) {
             precision.precisions = new DatePrecision[1];
             return new Date[] {
@@ -511,10 +575,15 @@ public enum StringValueType implements ValueType {
     public Object toValue(String s, boolean bigEndian) {
         if (s == null || s.isEmpty())
             return Value.NULL;
-
         return toMultiValue(s);
     }
 
+    /**
+     * 将字符串转换为多值对象
+     *
+     * @param s 字符串
+     * @return 多值对象
+     */
     protected Object toMultiValue(String s) {
         return Builder.splitAndTrim(s, Symbol.C_BACKSLASH);
     }
@@ -523,10 +592,8 @@ public enum StringValueType implements ValueType {
     public Object toValue(String[] ss, boolean bigEndian) {
         if (ss == null || ss.length == 0)
             return Value.NULL;
-
         if (ss.length == 1)
             return toValue(ss[0], bigEndian);
-
         return ss;
     }
 
@@ -554,13 +621,10 @@ public enum StringValueType implements ValueType {
     public Object toValue(Date[] ds, TimeZone tz, DatePrecision precision) {
         if (temporalType == null)
             throw new UnsupportedOperationException();
-
         if (ds == null || ds.length == 0)
             return Value.NULL;
-
         if (ds.length == 1)
             return temporalType.format(tz, ds[0], precision);
-
         String[] ss = new String[ds.length];
         for (int i = 0; i < ss.length; i++) {
             ss[i] = temporalType.format(tz, ds[i], precision);
@@ -571,14 +635,11 @@ public enum StringValueType implements ValueType {
     @Override
     public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
         if (val instanceof byte[])
-            return prompt(cs(cs).decode((byte[]) val), maxChars, sb);
-
+            return prompt(cs(cs).decode((byte[]) val, delimiters), maxChars, sb);
         if (val instanceof String)
             return prompt((String) val, maxChars, sb);
-
         if (val instanceof String[])
             return prompt((String[]) val, maxChars, sb);
-
         return prompt(val.toString(), maxChars, sb);
     }
 
@@ -586,11 +647,9 @@ public enum StringValueType implements ValueType {
     public int vmOf(Object val) {
         if (val instanceof String)
             return 1;
-
         if (val instanceof String[] ss) {
             return ss.length;
         }
-
         throw new UnsupportedOperationException();
     }
 

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.wechat.ee;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -36,7 +37,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Complex;
 import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -57,12 +57,12 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         super(context, complex);
     }
 
-    public AbstractWeChatEeProvider(Context context, Complex complex, ExtendCache cache) {
+    public AbstractWeChatEeProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(accessTokenUrl(null));
         Map<String, Object> object = this.checkResponse(response);
 
@@ -73,12 +73,12 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         Object expiresInObj = object.get("expires_in");
         int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-        return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).code(callback.getCode()).build();
+        return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).code(callback.getCode()).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String response = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String response = doGetUserInfo(authToken);
         Map<String, Object> object = this.checkResponse(response);
 
         // 返回 OpenId 或其他，均代表非当前企业用户，不支持
@@ -87,7 +87,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         }
         String userId = (String) object.get("userid");
         String userTicket = (String) object.get("user_ticket");
-        Map<String, Object> data = getUserDetail(accToken.getAccessToken(), userId, userTicket);
+        Map<String, Object> data = getUserDetail(authToken.getAccessToken(), userId, userTicket);
 
         String name = (String) data.get("name");
         String alias = (String) data.get("alias");
@@ -97,7 +97,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         String gender = (String) data.get("gender");
 
         return Material.builder().rawJson(JsonKit.toJsonString(data)).username(name).nickname(alias).avatar(avatar)
-                .location(address).email(email).uuid(userId).gender(getWechatRealGender(gender)).token(accToken)
+                .location(address).email(email).uuid(userId).gender(getWechatRealGender(gender)).token(authToken)
                 .source(complex.toString()).build();
     }
 
@@ -132,20 +132,20 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      */
     @Override
     public String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN))
-                .queryParam("corpid", context.getAppKey()).queryParam("corpsecret", context.getAppSecret()).build();
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("corpid", context.getAppKey())
+                .queryParam("corpsecret", context.getAppSecret()).build();
     }
 
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    public String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("code", accToken.getCode()).build();
+    public String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
+                .queryParam("code", authToken.getCode()).build();
     }
 
     /**

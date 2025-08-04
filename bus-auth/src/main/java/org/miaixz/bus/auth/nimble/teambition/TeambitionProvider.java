@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.auth.nimble.teambition;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -57,7 +56,7 @@ public class TeambitionProvider extends AbstractProvider {
         super(context, Registry.TEAMBITION);
     }
 
-    public TeambitionProvider(Context context, ExtendCache cache) {
+    public TeambitionProvider(Context context, CacheX cache) {
         super(context, Registry.TEAMBITION, cache);
     }
 
@@ -66,57 +65,57 @@ public class TeambitionProvider extends AbstractProvider {
      * @return 所有信息
      */
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
         form.put("code", callback.getCode());
         form.put("grant_type", "code");
 
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), form);
+        String response = Httpx.post(this.complex.accessToken(), form);
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
                 .refreshToken((String) accessTokenObject.get("refresh_token")).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String accessToken = accToken.getAccessToken();
+    public Material getUserInfo(AuthToken authToken) {
+        String accessToken = authToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "OAuth2 " + accessToken);
 
-        String response = Httpx.get(this.complex.getConfig().get(Builder.USERINFO), null, header);
+        String response = Httpx.get(this.complex.userinfo(), null, header);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);
 
-        accToken.setUid((String) object.get("_id"));
+        authToken.setUid((String) object.get("_id"));
 
         return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("_id"))
                 .username((String) object.get("name")).nickname((String) object.get("name"))
                 .avatar((String) object.get("avatarUrl")).blog((String) object.get("website"))
                 .location((String) object.get("location")).email((String) object.get("email")).gender(Gender.UNKNOWN)
-                .token(accToken).source(complex.toString()).build();
+                .token(authToken).source(complex.toString()).build();
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
-        String uid = oldToken.getUid();
-        String refreshToken = oldToken.getRefreshToken();
+    public Message refresh(AuthToken authToken) {
+        String uid = authToken.getUid();
+        String refreshToken = authToken.getRefreshToken();
 
         Map<String, String> form = new HashMap<>(4);
         form.put("_userId", uid);
         form.put("refresh_token", refreshToken);
-        String response = Httpx.post(this.complex.getConfig().get(Builder.REFRESH), form);
+        String response = Httpx.post(this.complex.refresh(), form);
         Map<String, Object> refreshTokenObject = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(refreshTokenObject);
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(AccToken.builder().accessToken((String) refreshTokenObject.get("access_token"))
+                .data(AuthToken.builder().accessToken((String) refreshTokenObject.get("access_token"))
                         .refreshToken((String) refreshTokenObject.get("refresh_token")).build())
                 .build();
     }

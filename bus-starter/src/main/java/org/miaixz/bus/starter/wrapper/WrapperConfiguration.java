@@ -27,11 +27,10 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -40,9 +39,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.web.WebMvcConfigurer;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
@@ -51,9 +50,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import jakarta.annotation.Resource;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Xss/重复读取等WEB封装配置
@@ -95,7 +96,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
 
     @Bean("supportWebMvcConfigurer")
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer() {
-        return new WebMvcConfigurer(properties.getAutoType());
+        return new WebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix());
     }
 
     class RequestMappingHandler extends RequestMappingHandlerMapping {

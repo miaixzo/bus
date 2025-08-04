@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.slack;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
@@ -41,7 +41,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -63,28 +63,28 @@ public class SlackProvider extends AbstractProvider {
         super(context, Registry.SLACK);
     }
 
-    public SlackProvider(Context context, ExtendCache cache) {
+    public SlackProvider(Context context, CacheX cache) {
         super(context, Registry.SLACK, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = Httpx.get(accessTokenUrl(callback.getCode()), null, header);
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
                 .scope((String) accessTokenObject.get("scope")).tokenType((String) accessTokenObject.get("token_type"))
                 .uid(((Map<String, Object>) accessTokenObject.get("authed_user")).get("id").toString()).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
-        String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
+        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+        String userInfo = Httpx.get(userInfoUrl(authToken), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         Map<String, Object> user = (Map<String, Object>) object.get("user");
@@ -92,15 +92,15 @@ public class SlackProvider extends AbstractProvider {
         return Material.builder().rawJson(JsonKit.toJsonString(user)).uuid((String) user.get("id"))
                 .username((String) user.get("name")).nickname((String) user.get("real_name"))
                 .avatar((String) profile.get("image_original")).email((String) profile.get("email"))
-                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+                .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
     }
 
     @Override
-    public Message revoke(AccToken accToken) {
+    public Message revoke(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
-        String userInfo = Httpx.get(this.complex.getConfig().get(Builder.REVOKE), null, header);
+        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+        String userInfo = Httpx.get(this.complex.revoke(), null, header);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         // 返回1表示取消授权成功，否则失败
@@ -130,9 +130,8 @@ public class SlackProvider extends AbstractProvider {
     }
 
     @Override
-    public String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO)).queryParam("user", accToken.getUid())
-                .build();
+    public String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("user", authToken.getUid()).build();
     }
 
     /**
@@ -143,7 +142,7 @@ public class SlackProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("client_id", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("client_id", context.getAppKey())
                 .queryParam("state", getRealState(state)).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(SlackScope.values())))
                 .build();
@@ -151,7 +150,7 @@ public class SlackProvider extends AbstractProvider {
 
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN)).queryParam("code", code)
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
                 .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
     }

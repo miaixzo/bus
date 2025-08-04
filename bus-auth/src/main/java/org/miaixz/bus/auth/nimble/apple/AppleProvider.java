@@ -36,19 +36,19 @@ import java.util.Map;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.cache.AuthCache;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 
 import lombok.Data;
 
@@ -80,7 +80,7 @@ public class AppleProvider extends AbstractProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         if (!StringKit.isEmpty(callback.getError())) {
             throw new AuthorizedException(callback.getError());
         }
@@ -103,7 +103,7 @@ public class AppleProvider extends AbstractProvider {
             String tokenType = (String) accessTokenObject.get("token_type");
             String idToken = (String) accessTokenObject.get("id_token");
 
-            AccToken.AccTokenBuilder builder = AccToken.builder().accessToken(accessToken).expireIn(expiresIn)
+            AuthToken.AuthTokenBuilder builder = AuthToken.builder().accessToken(accessToken).expireIn(expiresIn)
                     .refreshToken(refreshToken).tokenType(tokenType).idToken(idToken);
 
             if (!StringKit.isEmpty(callback.getUser())) {
@@ -130,7 +130,7 @@ public class AppleProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken authToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Base64.Decoder urlDecoder = Base64.getUrlDecoder();
         String[] idToken = authToken.getIdToken().split("\\.");
         String payload = new String(urlDecoder.decode(idToken[1]));

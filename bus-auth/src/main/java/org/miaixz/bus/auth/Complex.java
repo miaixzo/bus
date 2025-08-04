@@ -30,8 +30,8 @@ package org.miaixz.bus.auth;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.core.net.Protocol;
 
 /**
  * OAuth 及其他协议平台的 API 配置接口。 为 OAuth2、SAML、LDAP 等协议提供特定配置和提供者类，实现统一认证框架。 实现类需提供以下功能：
@@ -55,8 +55,54 @@ public interface Complex {
      *
      * @return 配置键值对映射，默认返回空映射
      */
-    default Map<String, String> getConfig() {
+    default Map<Endpoint, String> endpoint() {
         return new HashMap<>();
+    }
+
+    /**
+     * 获取协议特定配置。 配置内容根据协议类型定义，例如： - OAuth2：包含 AUTHORIZE、ACCESSTOKEN、USERINFO 等端点 URL。 - SAML：包含 ssoEndpoint、metadataUrl
+     * 等。 - LDAP：通常返回空映射，使用 Context 配置。
+     *
+     * @return 配置键值对映射，默认返回空映射
+     */
+    default String authorize() {
+        return this.endpoint().get(Endpoint.AUTHORIZE);
+    }
+
+    /**
+     * 获取协议特定配置: authorize
+     *
+     * @return 配置键值对映射，默认返回空映射
+     */
+    default String accessToken() {
+        return this.endpoint().get(Endpoint.AUTHORIZE);
+    }
+
+    /**
+     * 获取协议特定配置: userinfo
+     *
+     * @return 配置键值对映射，默认返回空映射
+     */
+    default String userinfo() {
+        return this.endpoint().get(Endpoint.USERINFO);
+    }
+
+    /**
+     * 获取协议特定配置:refresh
+     *
+     * @return 配置键值对映射，默认返回空映射
+     */
+    default String refresh() {
+        return this.endpoint().get(Endpoint.REFRESH);
+    }
+
+    /**
+     * 获取协议特定配置: revoke
+     *
+     * @return 配置键值对映射，默认返回空映射
+     */
+    default String revoke() {
+        return this.endpoint().get(Endpoint.REVOKE);
     }
 
     /**

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.tenpay;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
@@ -55,7 +55,7 @@ public class TenpayProvider extends AbstractProvider<Material, Context> {
         super(context, complex);
     }
 
-    public TenpayProvider(Context context, Complex complex, ExtendCache cache) {
+    public TenpayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 

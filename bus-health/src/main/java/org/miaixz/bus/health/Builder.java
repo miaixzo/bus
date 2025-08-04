@@ -367,6 +367,21 @@ public final class Builder {
     }
 
     /**
+     * 获取显示器的首选分辨率（例如：1920x1080）
+     * <p>
+     * 该方法通过解析EDID（扩展显示器识别数据）字节数组中的详细时序描述（DTD）部分， 提取并计算显示器的首选分辨率。
+     *
+     * @param edid EDID字节数组，包含显示器的硬件信息
+     * @return 首选分辨率的字符串表示，格式为"水平分辨率x垂直分辨率"
+     */
+    public static String getPreferredResolution(byte[] edid) {
+        int dtd = 54;
+        int horizontalRes = (edid[dtd + 4] & 0xF0) << 4 | edid[dtd + 2] & 0xFF;
+        int verticalRes = (edid[dtd + 7] & 0xF0) << 4 | edid[dtd + 5] & 0xFF;
+        return horizontalRes + "x" + verticalRes;
+    }
+
+    /**
      * 将 EDID 字节数组解析为用户可读信息。
      *
      * @param edid EDID 字节数组

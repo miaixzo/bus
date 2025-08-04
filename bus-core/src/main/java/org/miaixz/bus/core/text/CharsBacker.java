@@ -2145,18 +2145,18 @@ public class CharsBacker extends CharsValidator {
      * is {} for {}", "a", "b") = this is a for b 转义{}： format("this is \\{} for {}", "a", "b") = this is {} for a 转义\：
      * format("this is \\\\{} for {}", "a", "b") = this is \a for b
      *
-     * @param template 文本模板，被替换的部分用 {} 表示，如果模板为null，返回"null"
-     * @param params   参数值
+     * @param format 文本模板，被替换的部分用 {} 表示，如果模板为null，返回"null"
+     * @param args   参数值
      * @return 格式化后的文本，如果模板为null，返回"null"
      */
-    public static String format(final CharSequence template, final Object... params) {
-        if (null == template) {
+    public static String format(final CharSequence format, final Object... args) {
+        if (null == format) {
             return Normal.NULL;
         }
-        if (ArrayKit.isEmpty(params) || isBlank(template)) {
-            return template.toString();
+        if (ArrayKit.isEmpty(args) || isBlank(format)) {
+            return format.toString();
         }
-        return StringFormatter.format(template.toString(), params);
+        return StringFormatter.format(format.toString(), args);
     }
 
     /**

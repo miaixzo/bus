@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * Bean异常
@@ -54,10 +54,10 @@ public class BeanException extends InternalException {
     /**
      * 构造
      *
-     * @param message 消息
+     * @param errmsg 消息
      */
-    public BeanException(final String message) {
-        super(message);
+    public BeanException(final String errmsg) {
+        super(errmsg);
     }
 
     /**
@@ -72,45 +72,45 @@ public class BeanException extends InternalException {
     /**
      * 构造
      *
-     * @param messageTemplate 消息模板
-     * @param params          参数
+     * @param format 消息模板
+     * @param args   参数
      */
-    public BeanException(final String messageTemplate, final Object... params) {
-        super(messageTemplate, params);
+    public BeanException(final String format, final Object... args) {
+        super(format, args);
     }
 
     /**
      * 构造
      *
-     * @param message 消息
-     * @param cause   被包装的子异常
+     * @param errmsg 消息
+     * @param cause  被包装的子异常
      */
-    public BeanException(final String message, final Throwable cause) {
-        super(message, cause);
+    public BeanException(final String errmsg, final Throwable cause) {
+        super(errmsg, cause);
     }
 
     /**
      * 构造
      *
-     * @param message            消息
+     * @param errmsg             消息
      * @param cause              被包装的子异常
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public BeanException(final String message, final Throwable cause, final boolean enableSuppression,
+    public BeanException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        super(errmsg, cause, enableSuppression, writableStackTrace);
     }
 
     /**
      * 构造
      *
-     * @param cause           被包装的子异常
-     * @param messageTemplate 消息模板
-     * @param params          参数
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
      */
-    public BeanException(final Throwable cause, final String messageTemplate, final Object... params) {
-        super(cause, messageTemplate, params);
+    public BeanException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
     }
 
 }

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +38,6 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.io.Serial;
 
 public class ImpersonationToken implements Serializable {
 
@@ -116,7 +116,7 @@ public class ImpersonationToken implements Serializable {
 
     /** Enum to specify the scope of an ImpersonationToken. */
     public enum Scope {
-        API, READ_API, READ_USER, READ_REPOSITORY, WRITE_REPOSITORY, READ_REGISTRY, WRITE_REGISTRY, SUDO;
+        API, READ_API, READ_USER, READ_REPOSITORY, WRITE_REPOSITORY, READ_REGISTRY, WRITE_REGISTRY, K8S_PROXY, SUDO;
 
         private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
 

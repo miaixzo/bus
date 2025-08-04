@@ -25,7 +25,6 @@ script:
   - cd ../bus-gitlab && mvn install -DskipTests=true
   - cd ../bus-health && mvn install -DskipTests=true
   - cd ../bus-http && mvn install -DskipTests=true
-  - cd ../bus-goalie && mvn install -DskipTests=true
   - cd ../bus-image && mvn install -DskipTests=true
   - cd ../bus-limiter && mvn install -DskipTests=true
   - cd ../bus-mapper && mvn install -DskipTests=true
@@ -40,6 +39,7 @@ script:
   - cd ../bus-storage && mvn install -DskipTests=true
   - cd ../bus-tracer && mvn install -DskipTests=true
   - cd ../bus-validate && mvn install -DskipTests=true
+  - cd ../bus-vortex && mvn install -DskipTests=true
   - cd ../bus-base && mvn install -DskipTests=true
   - cd ../bus-starter && mvn install -DskipTests=true
   - cd ../bus-bom && mvn install -DskipTests=true

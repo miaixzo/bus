@@ -1665,15 +1665,15 @@ public class GroupApi extends AbstractApi {
      * <code>GET /groups/:id/audit_events</code>
      * </pre>
      *
-     * @param groupIdOrPath  the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param created_after  Group audit events created on or after the given time.
-     * @param created_before Group audit events created on or before the given time.
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param createdAfter  Group audit events created on or after the given time.
+     * @param createdBefore Group audit events created on or before the given time.
      * @return a List of group Audit events
      * @throws GitLabApiException if any exception occurs
      */
-    public List<AuditEvent> getAuditEvents(Object groupIdOrPath, Date created_after, Date created_before)
+    public List<AuditEvent> getAuditEvents(Object groupIdOrPath, Date createdAfter, Date createdBefore)
             throws GitLabApiException {
-        return (getAuditEvents(groupIdOrPath, created_after, created_before, getDefaultPerPage()).all());
+        return (getAuditEvents(groupIdOrPath, createdAfter, createdBefore, getDefaultPerPage()).all());
     }
 
     /**

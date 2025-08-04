@@ -27,7 +27,19 @@
 */
 package org.miaixz.bus.auth.nimble.eleme;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.data.id.ID;
@@ -38,18 +50,6 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * 饿了么 登录
@@ -63,7 +63,7 @@ public class ElemeProvider extends AbstractProvider {
         super(context, Registry.ELEME);
     }
 
-    public ElemeProvider(Context context, ExtendCache cache) {
+    public ElemeProvider(Context context, CacheX cache) {
         super(context, Registry.ELEME, cache);
     }
 
@@ -93,7 +93,7 @@ public class ElemeProvider extends AbstractProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("redirect_uri", context.getRedirectUri());
@@ -102,7 +102,7 @@ public class ElemeProvider extends AbstractProvider {
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
 
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), form, header);
+        String response = Httpx.post(this.complex.accessToken(), form, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -120,7 +120,7 @@ public class ElemeProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
                     .expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -128,13 +128,13 @@ public class ElemeProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(4);
-        form.put("refresh_token", oldToken.getRefreshToken());
+        form.put("refresh_token", authToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
-        String response = Httpx.post(this.complex.getConfig().get(Builder.REFRESH), form, header);
+        String response = Httpx.post(this.complex.refresh(), form, header);
 
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -154,7 +154,7 @@ public class ElemeProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .data(AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
+                    .data(AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
                             .expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {
@@ -163,7 +163,7 @@ public class ElemeProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, Object> parameters = new HashMap<>(4);
         // 获取商户账号信息的API接口名称
         String action = "eleme.user.getUser";
@@ -174,7 +174,7 @@ public class ElemeProvider extends AbstractProvider {
         metasHashMap.put("app_key", context.getAppKey());
         metasHashMap.put("timestamp", timestamp);
         String signature = sign(context.getAppKey(), context.getAppSecret(), timestamp, action,
-                accToken.getAccessToken(), parameters);
+                authToken.getAccessToken(), parameters);
 
         String requestId = this.getRequestId();
 
@@ -182,14 +182,14 @@ public class ElemeProvider extends AbstractProvider {
         paramsMap.put("nop", "1.0.0");
         paramsMap.put("id", requestId);
         paramsMap.put("action", action);
-        paramsMap.put("token", accToken.getAccessToken());
+        paramsMap.put("token", authToken.getAccessToken());
         paramsMap.put("metas", metasHashMap);
         paramsMap.put("params", parameters);
         paramsMap.put("signature", signature);
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_JSON, requestId, false);
-        String response = Httpx.post(this.complex.getConfig().get(Builder.USERINFO), JsonKit.toJsonString(paramsMap),
-                header, MediaType.APPLICATION_JSON);
+        String response = Httpx.post(this.complex.userinfo(), JsonKit.toJsonString(paramsMap), header,
+                MediaType.APPLICATION_JSON);
 
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -220,7 +220,7 @@ public class ElemeProvider extends AbstractProvider {
             String userName = (String) result.get("userName");
 
             return Material.builder().rawJson(JsonKit.toJsonString(result)).uuid(userId).username(userName)
-                    .nickname(userName).gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+                    .nickname(userName).gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }

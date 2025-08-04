@@ -30,17 +30,17 @@ package org.miaixz.bus.auth.nimble.afdian;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.http.Httpx;
 
 /**
  * 爱发电 登录
@@ -54,28 +54,28 @@ public class AfDianProvider extends AbstractProvider {
         super(context, Registry.AFDIAN);
     }
 
-    public AfDianProvider(Context context, ExtendCache cache) {
+    public AfDianProvider(Context context, CacheX cache) {
         super(context, Registry.AFDIAN, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
-        params.put("client_id", context.getAppKey());
-        params.put("client_secret", context.getAppSecret());
+        params.put("client_id", this.context.getAppKey());
+        params.put("client_secret", this.context.getAppSecret());
         params.put("code", callback.getCode());
-        params.put("redirect_uri", context.getRedirectUri());
+        params.put("redirect_uri", this.context.getRedirectUri());
 
-        String response = Httpx.post(complex.getConfig().get(Builder.ACCESSTOKEN), params);
+        String response = Httpx.post(this.complex.accessToken(), params);
 
         String userId = JsonKit.getValue(JsonKit.getValue(response, "data"), ("user_id"));
-        return AccToken.builder().userId(userId).build();
+        return AuthToken.builder().userId(userId).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        return Material.builder().uuid(accToken.getUserId()).gender(Gender.UNKNOWN).token(accToken)
+    public Material getUserInfo(AuthToken authToken) {
+        return Material.builder().uuid(authToken.getUserId()).gender(Gender.UNKNOWN).token(authToken)
                 .source(complex.toString()).build();
     }
 
@@ -87,7 +87,7 @@ public class AfDianProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("response_type", "code")
+        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                 .queryParam("scope", "basic").queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state)).build();
     }

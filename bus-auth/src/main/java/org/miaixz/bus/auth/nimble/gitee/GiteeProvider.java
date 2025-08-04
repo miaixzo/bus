@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.gitee;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -35,7 +35,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -54,12 +54,12 @@ public class GiteeProvider extends AbstractProvider {
         super(context, Registry.GITEE);
     }
 
-    public GiteeProvider(Context context, ExtendCache cache) {
+    public GiteeProvider(Context context, CacheX cache) {
         super(context, Registry.GITEE, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -78,7 +78,7 @@ public class GiteeProvider extends AbstractProvider {
             Object expiresInObj = accessTokenObject.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope)
                     .tokenType(tokenType).expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -86,8 +86,8 @@ public class GiteeProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String userInfo = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String userInfo = doGetUserInfo(authToken);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -110,7 +110,7 @@ public class GiteeProvider extends AbstractProvider {
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(login).avatar(avatarUrl)
                     .blog(blog).nickname(name).company(company).location(address).email(email).remark(bio)
-                    .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+                    .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }

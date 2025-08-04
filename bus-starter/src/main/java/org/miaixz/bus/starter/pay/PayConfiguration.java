@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.cache.PayCache;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -51,14 +51,14 @@ public class PayConfiguration {
     PayProperties properties;
 
     @Bean
-    public PayProviderService payProviderFactory(Complex complex, ExtendCache cache) {
+    public PayProviderService payProviderFactory(Complex complex, CacheX cache) {
         return new PayProviderService(this.properties, complex, cache);
     }
 
     @Bean
-    @ConditionalOnMissingBean(ExtendCache.class)
+    @ConditionalOnMissingBean(CacheX.class)
     @ConditionalOnProperty(name = GeniusBuilder.PAY + ".cache.type", havingValue = "default", matchIfMissing = true)
-    public ExtendCache cache() {
+    public CacheX cache() {
         return PayCache.INSTANCE;
     }
 

@@ -33,7 +33,7 @@ import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -62,7 +62,7 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         this(context, complex, null);
     }
 
-    public WechatPayProvider(Context context, Complex complex, ExtendCache cache) {
+    public WechatPayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 

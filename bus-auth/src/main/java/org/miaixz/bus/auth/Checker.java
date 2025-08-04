@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.auth;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
 
 /**
  * 授权配置类的校验器
@@ -115,7 +115,7 @@ public class Checker {
      * @param complex {@code complex}当前授权平台
      * @param cache   {@code cache} state缓存实现
      */
-    public static void check(String state, Complex complex, ExtendCache cache) {
+    public static void check(String state, Complex complex, CacheX cache) {
         // 推特平台不支持回调 code 和 state
         if (complex == Registry.TWITTER) {
             return;

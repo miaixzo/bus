@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.huawei;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
@@ -39,7 +40,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -63,7 +63,7 @@ public class HuaweiProvider extends AbstractProvider {
         super(context, Registry.HUAWEI);
     }
 
-    public HuaweiProvider(Context context, ExtendCache cache) {
+    public HuaweiProvider(Context context, CacheX cache) {
         super(context, Registry.HUAWEI, cache);
     }
 
@@ -75,7 +75,7 @@ public class HuaweiProvider extends AbstractProvider {
      * @see AbstractProvider#authorize(String)
      */
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(8);
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
@@ -85,37 +85,37 @@ public class HuaweiProvider extends AbstractProvider {
 
         if (context.isPkce()) {
             String cacheKey = this.complex.getName().concat(":code_verifier:").concat(callback.getState());
-            String codeVerifier = (String) this.cache.get(cacheKey);
+            String codeVerifier = (String) this.cache.read(cacheKey);
             form.put("code_verifier", codeVerifier);
         }
 
         Map<String, String> header = new HashMap<>(8);
         header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), header, form);
+        String response = Httpx.post(this.complex.accessToken(), header, form);
 
-        return getAccToken(response);
+        return getAuthToken(response);
     }
 
     /**
      * 使用token换取用户信息
      *
-     * @param accToken token信息
+     * @param authToken token信息
      * @return 用户信息
      * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String idToken = accToken.getIdToken();
+    public Material getUserInfo(AuthToken authToken) {
+        String idToken = authToken.getIdToken();
         if (StringKit.isEmpty(idToken)) {
             Map<String, String> form = new HashMap<>(7);
-            form.put("access_token", accToken.getAccessToken());
+            form.put("access_token", authToken.getAccessToken());
             form.put("getNickName", "1");
             form.put("nsp_svc", "GOpen.User.getInfo");
 
             Map<String, String> header = new HashMap<>(7);
             header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
-            String response = Httpx.post(this.complex.getConfig().get(Builder.USERINFO), header, form);
+            String response = Httpx.post(this.complex.userinfo(), header, form);
             try {
                 Map<String, Object> object = JsonKit.toPojo(response, Map.class);
                 if (object == null) {
@@ -131,7 +131,7 @@ public class HuaweiProvider extends AbstractProvider {
                 String headPictureURL = (String) object.get("headPictureURL");
 
                 return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionID).username(displayName)
-                        .nickname(displayName).gender(Gender.UNKNOWN).avatar(headPictureURL).token(accToken)
+                        .nickname(displayName).gender(Gender.UNKNOWN).avatar(headPictureURL).token(authToken)
                         .source(context.toString()).build();
             } catch (Exception e) {
                 throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -153,7 +153,7 @@ public class HuaweiProvider extends AbstractProvider {
             String picture = (String) object.get("picture");
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name).nickname(nickname)
-                    .gender(Gender.UNKNOWN).avatar(picture).token(accToken).source(complex.toString()).build();
+                    .gender(Gender.UNKNOWN).avatar(picture).token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse id_token payload: " + e.getMessage());
         }
@@ -162,25 +162,25 @@ public class HuaweiProvider extends AbstractProvider {
     /**
      * 刷新access token （续期）
      *
-     * @param accToken 登录成功后返回的Token信息
+     * @param authToken 登录成功后返回的Token信息
      * @return AuthResponse
      */
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        form.put("refresh_token", accToken.getRefreshToken());
+        form.put("refresh_token", authToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 
         Map<String, String> header = new HashMap<>(7);
         header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
-        String response = Httpx.post(this.complex.getConfig().get(Builder.REFRESH), header, form);
+        String response = Httpx.post(this.complex.refresh(), header, form);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAccToken(response)).build();
+        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
-    private AccToken getAccToken(String response) {
+    private AuthToken getAuthToken(String response) {
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -197,7 +197,7 @@ public class HuaweiProvider extends AbstractProvider {
             String refreshToken = (String) object.get("refresh_token");
             String idToken = (String) object.get("id_token");
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
                     .idToken(idToken).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -225,7 +225,7 @@ public class HuaweiProvider extends AbstractProvider {
             builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
                     codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
-            this.cache.cache(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
+            this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
         return builder.build();
     }

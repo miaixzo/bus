@@ -64,7 +64,7 @@ public class PostgreSQLHitting extends AbstractHitting {
 
                 HikariDataSource dataSource = new HikariDataSource(new HikariConfig(properties));
                 JdbcTemplate template = new JdbcTemplate(dataSource);
-                template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate("
+                template.execute("CREATE TABLE IF NOT EXISTS t_cache_rate("
                         + "id BIGINT     PRIMARY KEY AUTO_INCREMENT," + "pattern       VARCHAR(64) NOT NULL UNIQUE,"
                         + "hit_count     BIGINT      NOT NULL     DEFAULT 0,"
                         + "require_count BIGINT      NOT NULL     DEFAULT 0,"

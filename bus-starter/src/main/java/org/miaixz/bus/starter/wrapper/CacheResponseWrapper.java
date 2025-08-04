@@ -32,12 +32,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.miaixz.bus.core.lang.MediaType;
+
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
+ * 可重复读取响应内容的包装器 支持缓存响应内容，便于日志记录和后续处理 (不缓存SSE)
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,21 +50,43 @@ public class CacheResponseWrapper extends HttpServletResponseWrapper {
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     private PrintWriter writer = new PrintWriter(byteArrayOutputStream);
 
+    /**
+     * 是否为流式响应
+     */
+    private boolean isStreaming = false;
+
     CacheResponseWrapper(HttpServletResponse response) {
         super(response);
+        this.streaming();
     }
 
     @Override
     public PrintWriter getWriter() throws IOException {
+        this.streaming();
+        if (isStreaming) {
+            // 对于 SSE 流式响应，直接返回原始响应写入器，不做额外处理
+            return super.getWriter();
+        }
         return new ServletPrintWriter(super.getWriter(), writer);
     }
 
-    public byte[] getBody() {
-        return byteArrayOutputStream.toByteArray();
+    @Override
+    public void setContentType(String type) {
+        super.setContentType(type);
+        // 根据 Content-Type 判断是否为流式响应
+        if (type != null) {
+            String lowerType = type.toLowerCase();
+            isStreaming = lowerType.contains(MediaType.SERVER_SENT_EVENTS);
+        }
     }
 
     @Override
-    public ServletOutputStream getOutputStream() {
+    public ServletOutputStream getOutputStream() throws IOException {
+        this.streaming();
+        // 对于 SSE 流式响应，直接返回原始响应流，不做额外处理
+        if (isStreaming) {
+            return super.getOutputStream();
+        }
         return new ServletOutputStream() {
             @Override
             public boolean isReady() {
@@ -79,6 +105,27 @@ public class CacheResponseWrapper extends HttpServletResponseWrapper {
                 write.write(b);
             }
         };
+    }
+
+    public byte[] getBody() {
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public void streaming() {
+        String contentType = getContentType();
+        if (contentType != null) {
+            String lowerType = contentType.toLowerCase();
+            isStreaming = lowerType.contains(MediaType.SERVER_SENT_EVENTS);
+        }
+    }
+
+    /**
+     * 是否为流式响应
+     *
+     * @return 是否为流式响应
+     */
+    public boolean isStreaming() {
+        return isStreaming;
     }
 
     private static class ServletPrintWriter extends PrintWriter {

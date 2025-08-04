@@ -37,11 +37,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BooleanSupplier;
-
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -70,14 +68,20 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.osgi.OpenCVNativeLoader;
 
 /**
- * Reads image data from a DICOM object. Supports all the DICOM objects containing pixel data. Use the OpenCV native
- * library to read compressed and uncompressed pixel data.
+ * DICOM图像读取器，用于从DICOM对象中读取图像数据。
+ *
+ * <p>
+ * 该类支持包含像素数据的所有DICOM对象，使用OpenCV本地库来读取压缩和未压缩的像素数据。 它提供了多种图像读取方法，包括原始图像读取、模态LUT应用、VOI LUT应用等。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ImageReader extends javax.imageio.ImageReader {
 
+    /**
+     * 需要批量处理的DICOM标签集合
+     */
     public static Set<Integer> BULK_TAGS = Set.of(Tag.PixelDataProviderURL, Tag.AudioSampleData, Tag.CurveData,
             Tag.SpectroscopyData, Tag.RedPaletteColorLookupTableData, Tag.GreenPaletteColorLookupTableData,
             Tag.BluePaletteColorLookupTableData, Tag.AlphaPaletteColorLookupTableData,
@@ -86,43 +90,71 @@ public class ImageReader extends javax.imageio.ImageReader {
             Tag.SegmentedGreenPaletteColorLookupTableData, Tag.SegmentedBluePaletteColorLookupTableData,
             Tag.SegmentedAlphaPaletteColorLookupTableData, Tag.OverlayData, Tag.EncapsulatedDocument,
             Tag.FloatPixelData, Tag.DoubleFloatPixelData, Tag.PixelData);
-    public static final BulkDataDescriptor BULKDATA_DESCRIPTOR = (itemPointer, privateCreator, tag, vr, length) -> {
+
+    /**
+     * 批量数据描述符
+     */
+    public static final BulkDataDescriptor BULK_DATA_DESCRIPTOR = (itemPointer, privateCreator, tag, vr, length) -> {
         int tagNormalized = Tag.normalizeRepeatingGroup(tag);
         if (tagNormalized == Tag.WaveformData) {
             return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
         } else if (BULK_TAGS.contains(tagNormalized)) {
             return itemPointer.isEmpty();
         }
-
         if (Tag.isPrivateTag(tag)) {
-            return length > 1000; // Do no read in memory private value more than 1 KB
+            return length > 1000; // 不将超过1KB的私有值读入内存
         }
-
         return switch (vr) {
         case OB, OD, OF, OL, OW, UN -> length > 64;
         default -> false;
         };
     };
 
+    /**
+     * 存储系列UID到浮点图像转换状态的映射
+     */
     private static final Map<String, Boolean> series2FloatImages = new ConcurrentHashMap<>();
-
+    /**
+     * 是否允许浮点图像转换
+     */
     private static boolean allowFloatImageConversion = false;
+    /**
+     * 片段位置列表
+     */
+    private final ArrayList<Integer> fragmentsPositions = new ArrayList<>();
+    /**
+     * 带图像描述符的字节数据
+     */
+    private BytesWithImageDescriptor bdis;
+    /**
+     * DICOM图像文件输入流
+     */
+    private ImageFileInputStream dis;
 
     static {
-        // Load the native OpenCV library
+        // 加载本地OpenCV库
         OpenCVNativeLoader loader = new OpenCVNativeLoader();
         loader.init();
     }
 
-    private final ArrayList<Integer> fragmentsPositions = new ArrayList<>();
-
-    private BytesWithImageDescriptor bdis;
-    private ImageFileInputStream dis;
-
+    /**
+     * 构造方法
+     *
+     * @param originatingProvider 图像读取器服务提供者
+     */
     public ImageReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
     }
 
+    /**
+     * 判断是否为YBR颜色模型
+     *
+     * @param channel 通道
+     * @param pmi     光度解释
+     * @param param   图像读取参数
+     * @return 如果是YBR颜色模型返回true，否则返回false
+     * @throws IOException 如果发生I/O错误
+     */
     private static boolean isYbrModel(SeekableByteChannel channel, Photometric pmi, ImageReadParam param)
             throws IOException {
         JPEGParser parser = new JPEGParser(channel);
@@ -141,17 +173,23 @@ public class ImageReader extends javax.imageio.ImageReader {
         } else {
             keepRgbForLossyJpeg = param.getKeepRgbForLossyJpeg().orElse(Boolean.FALSE);
         }
-
         if (pmi == Photometric.RGB && !keepRgbForLossyJpeg) {
-            // Force JPEG Baseline (1.2.840.10008.1.2.4.50) to YBR_FULL_422 color model when RGB with
-            // JFIF header or not RGB components (error made by some constructors).
+            // 当RGB带有JFIF头或不是RGB组件时（某些制造商的错误），强制JPEG基线(1.2.840.10008.1.2.4.50)转换为YBR_FULL_422颜色模型。
             return !"RGB".equals(parser.getParams().colorPhotometricInterpretation());
         }
         return false;
     }
 
+    /**
+     * 判断是否需要将YBR转换为RGB
+     *
+     * @param pmi        光度解释
+     * @param tsuid      传输语法UID
+     * @param isYbrModel 判断是否为YBR模型的函数
+     * @return 如果需要转换返回true，否则返回false
+     */
     private static boolean ybr2rgb(Photometric pmi, String tsuid, BooleanSupplier isYbrModel) {
-        // Option only for IJG native decoder
+        // 仅适用于IJG本地解码器的选项
         switch (pmi) {
         case MONOCHROME1:
         case MONOCHROME2:
@@ -162,7 +200,6 @@ public class ImageReader extends javax.imageio.ImageReader {
         default:
             break;
         }
-
         return switch (UID.from(tsuid)) {
         case UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012 -> {
             if (pmi == Photometric.RGB) {
@@ -174,6 +211,13 @@ public class ImageReader extends javax.imageio.ImageReader {
         };
     }
 
+    /**
+     * 应用处理后释放图像的设置
+     *
+     * @param imageCV 图像CV对象
+     * @param param   图像读取参数
+     * @return 处理后的图像CV对象
+     */
     public static ImageCV applyReleaseImageAfterProcessing(ImageCV imageCV, ImageReadParam param) {
         if (isReleaseImageAfterProcessing(param)) {
             imageCV.setReleasedAfterProcessing(true);
@@ -181,16 +225,33 @@ public class ImageReader extends javax.imageio.ImageReader {
         return imageCV;
     }
 
+    /**
+     * 判断是否在处理后释放图像
+     *
+     * @param param 图像读取参数
+     * @return 如果在处理后释放图像返回true，否则返回false
+     */
     public static boolean isReleaseImageAfterProcessing(ImageReadParam param) {
         return param != null && param.getReleaseImageAfterProcessing().orElse(Boolean.FALSE);
     }
 
+    /**
+     * 关闭Mat对象
+     *
+     * @param mat 要关闭的Mat对象
+     */
     public static void closeMat(Mat mat) {
         if (mat != null) {
             mat.release();
         }
     }
 
+    /**
+     * 判断传输语法是否受支持
+     *
+     * @param uid 传输语法UID
+     * @return 如果受支持返回true，否则返回false
+     */
     public static boolean isSupportedSyntax(String uid) {
         return switch (UID.from(uid)) {
         case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian, UID.RLELossless, UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012, UID.JPEGLossless, UID.JPEGLosslessSV1, UID.JPEGLSLossless, UID.JPEGLSNearLossless, UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC -> true;
@@ -198,6 +259,13 @@ public class ImageReader extends javax.imageio.ImageReader {
         };
     }
 
+    /**
+     * 设置输入源
+     *
+     * @param input           输入源
+     * @param seekForwardOnly 是否只向前查找
+     * @param ignoreMetadata  是否忽略元数据
+     */
     @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         resetInternalState();
@@ -205,8 +273,8 @@ public class ImageReader extends javax.imageio.ImageReader {
             super.setInput(input, seekForwardOnly, ignoreMetadata);
             this.dis = (ImageFileInputStream) input;
             dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
-            dis.setBulkDataDescriptor(BULKDATA_DESCRIPTOR);
-            // avoid a copy of pixeldata into temporary file
+            dis.setBulkDataDescriptor(BULK_DATA_DESCRIPTOR);
+            // 避免将pixelData复制到临时文件
             dis.setURI(dis.getPath().toUri().toString());
         } else if (input instanceof BytesWithImageDescriptor) {
             this.bdis = (BytesWithImageDescriptor) input;
@@ -215,6 +283,11 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
+    /**
+     * 获取图像描述符
+     *
+     * @return 图像描述符
+     */
     public ImageDescriptor getImageDescriptor() {
         if (bdis != null)
             return bdis.getImageDescriptor();
@@ -222,54 +295,100 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * Returns the number of regular images in the study. This excludes overlays.
+     * 返回研究中的常规图像数量。不包括覆盖层。
+     *
+     * @param allowSearch 是否允许搜索
+     * @return 图像数量
      */
     @Override
     public int getNumImages(boolean allowSearch) {
         return getImageDescriptor().getFrames();
     }
 
+    /**
+     * 获取图像宽度
+     *
+     * @param frameIndex 帧索引
+     * @return 图像宽度
+     */
     @Override
     public int getWidth(int frameIndex) {
         checkIndex(frameIndex);
         return getImageDescriptor().getColumns();
     }
 
+    /**
+     * 获取图像高度
+     *
+     * @param frameIndex 帧索引
+     * @return 图像高度
+     */
     @Override
     public int getHeight(int frameIndex) {
         checkIndex(frameIndex);
         return getImageDescriptor().getRows();
     }
 
+    /**
+     * 获取图像类型
+     *
+     * @param frameIndex 帧索引
+     * @return 图像类型迭代器
+     */
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex) {
         throw new UnsupportedOperationException("not implemented");
     }
 
+    /**
+     * 获取默认读取参数
+     *
+     * @return 默认读取参数
+     */
     @Override
     public javax.imageio.ImageReadParam getDefaultReadParam() {
         return new ImageReadParam();
     }
 
     /**
-     * Gets the stream metadata. May not contain post pixel data unless there are no images or the getStreamMetadata has
-     * been called with the post pixel data node being specified.
+     * 获取流元数据。除非没有图像或已调用getStreamMetadata并指定了像素数据后节点， 否则可能不包含像素数据后的元数据。
+     *
+     * @return 流元数据
+     * @throws IOException 如果发生I/O错误
      */
     @Override
     public ImageMetaData getStreamMetadata() throws IOException {
         return dis == null ? null : dis.getMetadata();
     }
 
+    /**
+     * 获取图像元数据
+     *
+     * @param frameIndex 帧索引
+     * @return 图像元数据
+     */
     @Override
     public IIOMetadata getImageMetadata(int frameIndex) {
         return null;
     }
 
+    /**
+     * 判断是否可以读取光栅
+     *
+     * @return 如果可以读取光栅返回true，否则返回false
+     */
     @Override
     public boolean canReadRaster() {
         return true;
     }
 
+    /**
+     * 读取光栅
+     *
+     * @param frameIndex 帧索引
+     * @param param      图像读取参数
+     * @return 光栅
+     */
     @Override
     public Raster readRaster(int frameIndex, javax.imageio.ImageReadParam param) {
         try {
@@ -281,6 +400,13 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
+    /**
+     * 读取图像
+     *
+     * @param frameIndex 帧索引
+     * @param param      图像读取参数
+     * @return 缓冲图像
+     */
     @Override
     public BufferedImage read(int frameIndex, javax.imageio.ImageReadParam param) {
         try {
@@ -292,6 +418,12 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
+    /**
+     * 获取默认读取参数
+     *
+     * @param param 图像读取参数
+     * @return DICOM图像读取参数
+     */
     protected ImageReadParam getDefaultReadParam(javax.imageio.ImageReadParam param) {
         ImageReadParam dcmParam;
         if (param instanceof ImageReadParam readParam) {
@@ -306,6 +438,9 @@ public class ImageReader extends javax.imageio.ImageReader {
         return dcmParam;
     }
 
+    /**
+     * 重置内部状态
+     */
     private void resetInternalState() {
         IoKit.close(dis);
         dis = null;
@@ -313,16 +448,34 @@ public class ImageReader extends javax.imageio.ImageReader {
         fragmentsPositions.clear();
     }
 
+    /**
+     * 检查索引是否有效
+     *
+     * @param frameIndex 帧索引
+     */
     private void checkIndex(int frameIndex) {
         if (frameIndex < 0 || frameIndex >= getImageDescriptor().getFrames())
             throw new IndexOutOfBoundsException("imageIndex: " + frameIndex);
     }
 
+    /**
+     * 释放资源
+     */
     @Override
     public void dispose() {
         resetInternalState();
     }
 
+    /**
+     * 判断文件中的图像是否需要从YBR转换为RGB
+     *
+     * @param pmi   光度解释
+     * @param tsuid 传输语法UID
+     * @param seg   分段输入图像流
+     * @param frame 帧索引
+     * @param param 图像读取参数
+     * @return 如果需要转换返回true，否则返回false
+     */
     private boolean fileYbr2rgb(Photometric pmi, String tsuid, ExtendSegmentedInputImageStream seg, int frame,
             ImageReadParam param) {
         BooleanSupplier isYbrModel = () -> {
@@ -337,6 +490,15 @@ public class ImageReader extends javax.imageio.ImageReader {
         return ybr2rgb(pmi, tsuid, isYbrModel);
     }
 
+    /**
+     * 判断字节数组中的图像是否需要从YBR转换为RGB
+     *
+     * @param pmi   光度解释
+     * @param tsuid 传输语法UID
+     * @param frame 帧索引
+     * @param param 图像读取参数
+     * @return 如果需要转换返回true，否则返回false
+     */
     private boolean byteYbr2rgb(Photometric pmi, String tsuid, int frame, ImageReadParam param) {
         BooleanSupplier isYbrModel = () -> {
             try (SeekableInMemoryByteChannel channel = new SeekableInMemoryByteChannel(bdis.getBytes(frame).array())) {
@@ -349,6 +511,13 @@ public class ImageReader extends javax.imageio.ImageReader {
         return ybr2rgb(pmi, tsuid, isYbrModel);
     }
 
+    /**
+     * 获取延迟加载的平面图像列表
+     *
+     * @param param  图像读取参数
+     * @param editor 图像编辑器
+     * @return 延迟加载的平面图像供应者列表
+     */
     public List<SupplierEx<PlanarImage, IOException>> getLazyPlanarImages(ImageReadParam param,
             Editable<PlanarImage> editor) {
         int size = getImageDescriptor().getFrames();
@@ -380,16 +549,28 @@ public class ImageReader extends javax.imageio.ImageReader {
                 }
 
                 SupplierEx<PlanarImage, IOException> delegate = this::firstTime;
-
             });
         }
         return suppliers;
     }
 
+    /**
+     * 获取所有平面图像
+     *
+     * @return 平面图像列表
+     * @throws IOException 如果发生I/O错误
+     */
     public List<PlanarImage> getPlanarImages() throws IOException {
         return getPlanarImages(null);
     }
 
+    /**
+     * 获取所有平面图像
+     *
+     * @param param 图像读取参数
+     * @return 平面图像列表
+     * @throws IOException 如果发生I/O错误
+     */
     public List<PlanarImage> getPlanarImages(ImageReadParam param) throws IOException {
         List<PlanarImage> list = new ArrayList<>();
         for (int i = 0; i < getImageDescriptor().getFrames(); i++) {
@@ -398,10 +579,24 @@ public class ImageReader extends javax.imageio.ImageReader {
         return list;
     }
 
+    /**
+     * 获取平面图像
+     *
+     * @return 平面图像
+     * @throws IOException 如果发生I/O错误
+     */
     public PlanarImage getPlanarImage() throws IOException {
         return getPlanarImage(0, null);
     }
 
+    /**
+     * 获取平面图像
+     *
+     * @param frame 帧索引
+     * @param param 图像读取参数
+     * @return 平面图像
+     * @throws IOException 如果发生I/O错误
+     */
     public PlanarImage getPlanarImage(int frame, ImageReadParam param) throws IOException {
         PlanarImage img = getRawImage(frame, param);
         ImageDescriptor desc = dis == null ? bdis.getImageDescriptor() : dis.getMetadata().getImageDescriptor();
@@ -419,7 +614,6 @@ public class ImageReader extends javax.imageio.ImageReader {
         if (param != null && param.getSourceRenderSize() != null) {
             out = ImageProcessor.scale(out.toMat(), param.getSourceRenderSize(), Imgproc.INTER_LANCZOS4);
         }
-
         String seriesUID = desc.getSeriesInstanceUID();
         if (allowFloatImageConversion && StringKit.hasText(seriesUID)) {
             Boolean isFloatPixelData = series2FloatImages.get(seriesUID);
@@ -432,18 +626,26 @@ public class ImageReader extends javax.imageio.ImageReader {
                 }
             }
         }
-
         if (!img.equals(out)) {
             img.release();
         }
         return out;
     }
 
+    /**
+     * 处理范围外的LUT
+     *
+     * @param input      输入图像
+     * @param desc       图像描述符
+     * @param frameIndex 帧索引
+     * @param forceFloat 是否强制转换为浮点型
+     * @return 处理后的图像
+     */
     static PlanarImage rangeOutsideLut(PlanarImage input, ImageDescriptor desc, int frameIndex, boolean forceFloat) {
-        OptionalDouble rescaleSlope = desc.getModalityLUT().getRescaleSlope();
+        OptionalDouble rescaleSlope = desc.getModalityLutForFrame(frameIndex).getRescaleSlope();
         if (forceFloat || rescaleSlope.isPresent()) {
             double slope = rescaleSlope.orElse(1.0);
-            double intercept = desc.getModalityLUT().getRescaleIntercept().orElse(0.0);
+            double intercept = desc.getModalityLutForFrame(frameIndex).getRescaleIntercept().orElse(0.0);
             Core.MinMaxLocResult minMax = ImageAdapter.getMinMaxValues(input, desc, frameIndex);
             Pair<Double, Double> rescale = getRescaleSlopeAndIntercept(slope, intercept, minMax);
             if (forceFloat || slope < 0.5 || rangeOutsideLut(rescale, desc)) {
@@ -462,12 +664,27 @@ public class ImageReader extends javax.imageio.ImageReader {
         return input;
     }
 
+    /**
+     * 判断是否在LUT范围外
+     *
+     * @param rescale 重缩放参数
+     * @param desc    图像描述符
+     * @return 如果在LUT范围外返回true，否则返回false
+     */
     private static boolean rangeOutsideLut(Pair<Double, Double> rescale, ImageDescriptor desc) {
         boolean outputSigned = rescale.getLeft() < 0 || desc.isSigned();
         Pair<Double, Double> minMax = RGBImageVoiLut.getMinMax(desc.getBitsAllocated(), outputSigned);
         return rescale.getLeft() + 1 < minMax.getLeft() || rescale.getRight() - 1 > minMax.getRight();
     }
 
+    /**
+     * 获取重缩放斜率和截距
+     *
+     * @param slope     斜率
+     * @param intercept 截距
+     * @param minMax    最小最大值结果
+     * @return 重缩放斜率和截距对
+     */
     private static Pair<Double, Double> getRescaleSlopeAndIntercept(double slope, double intercept,
             Core.MinMaxLocResult minMax) {
         double min = minMax.minVal * slope + intercept;
@@ -475,6 +692,14 @@ public class ImageReader extends javax.imageio.ImageReader {
         return new Pair<>(Math.min(min, max), Math.max(min, max));
     }
 
+    /**
+     * 获取原始图像
+     *
+     * @param frame 帧索引
+     * @param param 图像读取参数
+     * @return 原始图像
+     * @throws IOException 如果发生I/O错误
+     */
     public PlanarImage getRawImage(int frame, ImageReadParam param) throws IOException {
         if (dis == null) {
             return getRawImageFromBytes(frame, param);
@@ -483,6 +708,14 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
+    /**
+     * 从文件获取原始图像
+     *
+     * @param frame 帧索引
+     * @param param 图像读取参数
+     * @return 原始图像
+     * @throws IOException 如果发生I/O错误
+     */
     protected PlanarImage getRawImageFromFile(int frame, ImageReadParam param) throws IOException {
         if (dis == null) {
             throw new IOException("No DicomInputStream found");
@@ -503,13 +736,11 @@ public class ImageReader extends javax.imageio.ImageReader {
                 floatPixData = true;
             }
         }
-
         ImageDescriptor desc = getImageDescriptor();
         int bitsStored = desc.getBitsStored();
         if (pixdata == null || bitsStored < 1) {
             throw new IllegalStateException("No pixel data in this DICOM object");
         }
-
         Fragments pixeldataFragments = null;
         BulkData bulkData = null;
         boolean bigendian = false;
@@ -517,23 +748,20 @@ public class ImageReader extends javax.imageio.ImageReader {
             bulkData = (BulkData) pixdata;
             bigendian = bulkData.bigEndian();
         } else if (dcm.getString(Tag.PixelDataProviderURL) != null) {
-            // TODO Handle JPIP
-            // always little endian:
+            // TODO 处理JPIP
+            // 始终是小端序：
             // http://dicom.nema.org/medical/dicom/2017b/output/chtml/part05/sect_A.6.html
         } else if (pixdata instanceof Fragments) {
             pixeldataFragments = (Fragments) pixdata;
             bigendian = pixeldataFragments.bigEndian();
         }
-
         ExtendSegmentedInputImageStream seg = buildSegmentedImageInputStream(frame, pixeldataFragments, bulkData);
         if (seg.segmentPositions() == null) {
             return null;
         }
-
         if (seg.segmentPositions().length <= frame) {
             frame = 0;
         }
-
         String tsuid = dis.getMetadata().getTransferSyntaxUID();
         TransferSyntaxType type = TransferSyntaxType.forUID(tsuid);
         Photometric pmi = desc.getPhotometricInterpretation();
@@ -556,7 +784,6 @@ public class ImageReader extends javax.imageio.ImageReader {
         if (UID.RLELossless.equals(tsuid)) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_RLE;
         }
-
         MatOfDouble positions = null;
         MatOfDouble lengths = null;
         try {
@@ -581,14 +808,20 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
+    /**
+     * 从字节数组获取原始图像
+     *
+     * @param frame 帧索引
+     * @param param 图像读取参数
+     * @return 原始图像
+     * @throws IOException 如果发生I/O错误
+     */
     protected PlanarImage getRawImageFromBytes(int frame, ImageReadParam param) throws IOException {
         if (bdis == null) {
             throw new IOException("No BytesWithImageDescriptor found");
         }
-
         ImageDescriptor desc = getImageDescriptor();
         int bitsStored = desc.getBitsStored();
-
         String tsuid = bdis.getTransferSyntax();
         TransferSyntaxType type = TransferSyntaxType.forUID(tsuid);
         Photometric pmi = desc.getPhotometricInterpretation();
@@ -610,14 +843,13 @@ public class ImageReader extends javax.imageio.ImageReader {
         if (UID.RLELossless.equals(tsuid)) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_RLE;
         }
-
         Mat buf = null;
         try {
             ByteBuffer b = bdis.getBytes(frame);
             buf = new Mat(1, b.limit(), CvType.CV_8UC1);
             buf.put(0, 0, b.array());
             if (rawData) {
-                int bits = bitsStored <= 8 && desc.getBitsAllocated() > 8 ? 9 : bitsStored; // Fix #94
+                int bits = bitsStored <= 8 && desc.getBitsAllocated() > 8 ? 9 : bitsStored; // 修复#94
                 int streamVR = bdis.getPixelDataVR().numEndianBytes();
                 MatOfInt dicomparams = new MatOfInt(Imgcodecs.IMREAD_UNCHANGED, dcmFlags, desc.getColumns(),
                         desc.getRows(), Imgcodecs.DICOM_CP_UNKNOWN, desc.getSamples(), bits,
@@ -632,6 +864,15 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
+    /**
+     * 构建分段图像输入流
+     *
+     * @param frameIndex 帧索引
+     * @param fragments  片段
+     * @param bulkData   批量数据
+     * @return 分段图像输入流
+     * @throws IOException 如果发生I/O错误
+     */
     private ExtendSegmentedInputImageStream buildSegmentedImageInputStream(int frameIndex, Fragments fragments,
             BulkData bulkData) throws IOException {
         long[] offsets;
@@ -648,9 +889,8 @@ public class ImageReader extends javax.imageio.ImageReader {
         } else if (hasFragments) {
             int nbFragments = fragments.size();
             int numberOfFrame = desc.getFrames();
-
             if (numberOfFrame >= nbFragments - 1) {
-                // nbFrames > nbFragments should never happen
+                // nbFrames > nbFragments 永远不应该发生
                 offsets = new long[1];
                 length = new int[offsets.length];
                 int index = frameIndex < nbFragments - 1 ? frameIndex + 1 : nbFragments - 1;
@@ -667,7 +907,7 @@ public class ImageReader extends javax.imageio.ImageReader {
                         length[i] = b.length();
                     }
                 } else {
-                    // Multi-frames where each frames can have multiple fragments.
+                    // 多帧图像，每帧可以有多个片段。
                     if (fragmentsPositions.isEmpty()) {
                         try (SeekableByteChannel channel = Files.newByteChannel(dis.getPath(),
                                 StandardOpenOption.READ)) {
@@ -678,17 +918,15 @@ public class ImageReader extends javax.imageio.ImageReader {
                                     new JPEGParser(channel);
                                     fragmentsPositions.add(i);
                                 } catch (Exception e) {
-                                    // Not jpeg stream
+                                    // 不是jpeg流
                                 }
                             }
                         }
                     }
-
                     if (fragmentsPositions.size() == numberOfFrame) {
                         int start = fragmentsPositions.get(frameIndex);
                         int end = (frameIndex + 1) >= fragmentsPositions.size() ? nbFragments
                                 : fragmentsPositions.get(frameIndex + 1);
-
                         offsets = new long[end - start];
                         length = new int[offsets.length];
                         for (int i = 0; i < offsets.length; i++) {
@@ -707,27 +945,43 @@ public class ImageReader extends javax.imageio.ImageReader {
         return new ExtendSegmentedInputImageStream(dis.getPath(), offsets, length, desc);
     }
 
+    /**
+     * 添加系列到浮点图像映射
+     *
+     * @param seriesInstanceUID  系列实例UID
+     * @param forceToFloatImages 是否强制转换为浮点图像
+     */
     public static void addSeriesToFloatImages(String seriesInstanceUID, Boolean forceToFloatImages) {
         series2FloatImages.put(seriesInstanceUID, forceToFloatImages);
     }
 
+    /**
+     * 获取强制转换为浮点图像的设置
+     *
+     * @param seriesInstanceUID 系列实例UID
+     * @return 是否强制转换为浮点图像
+     */
     public static Boolean getForceToFloatImages(String seriesInstanceUID) {
         return series2FloatImages.get(seriesInstanceUID);
     }
 
+    /**
+     * 移除系列到浮点图像映射
+     *
+     * @param seriesInstanceUID 系列实例UID
+     */
     public static void removeSeriesToFloatImages(String seriesInstanceUID) {
         series2FloatImages.remove(seriesInstanceUID);
     }
 
     /**
-     * Allow to convert images into float images when the result of the Modality LUT is outside the range of original
-     * image type.
+     * 允许在模态LUT的结果超出原始图像类型范围时将图像转换为浮点图像。
      *
      * <p>
-     * Note: by default, the conversion is not allowed. If the conversion is set to true, <code>
-     * removeSeriesToFloatImages()</code> must be called when the series is disposed.
+     * 注意：默认情况下，不允许转换。如果转换设置为true，当系列被释放时必须调用<code>
+     * removeSeriesToFloatImages()</code>。
      *
-     * @param allowFloatImageConversion true to allow conversion
+     * @param allowFloatImageConversion 是否允许转换为浮点图像
      */
     public static void setAllowFloatImageConversion(boolean allowFloatImageConversion) {
         ImageReader.allowFloatImageConversion = allowFloatImageConversion;

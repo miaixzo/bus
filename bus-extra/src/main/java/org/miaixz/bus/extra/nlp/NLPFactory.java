@@ -80,7 +80,7 @@ public class NLPFactory {
                 return list.getService(serviceName);
             }
         }
-        throw new InternalException("No such engine named: " + engineName);
+        throw new InternalException("No such provider named: " + engineName);
     }
 
     /**

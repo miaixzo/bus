@@ -30,7 +30,7 @@ package org.miaixz.bus.starter.storage;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.storage.Context;
@@ -53,15 +53,15 @@ public class StorageProviderService {
      */
     private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
     public StorageProperties properties;
-    public ExtendCache extendCache;
+    public CacheX CacheX;
 
     public StorageProviderService(StorageProperties properties) {
         this(properties, StorageCache.INSTANCE);
     }
 
-    public StorageProviderService(StorageProperties properties, ExtendCache extendCache) {
+    public StorageProviderService(StorageProperties properties, CacheX CacheX) {
         this.properties = properties;
-        this.extendCache = extendCache;
+        this.CacheX = CacheX;
     }
 
     /**

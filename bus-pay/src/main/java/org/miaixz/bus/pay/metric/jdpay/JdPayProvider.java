@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.pay.metric.jdpay;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
@@ -51,7 +51,7 @@ public class JdPayProvider extends AbstractProvider<Material, Context> {
         super(context, complex);
     }
 
-    public JdPayProvider(Context context, Complex complex, ExtendCache cache) {
+    public JdPayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 

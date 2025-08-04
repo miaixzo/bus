@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.mi;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Normal;
@@ -39,7 +40,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -61,16 +61,16 @@ public class MiProvider extends AbstractProvider {
         super(context, Registry.MI);
     }
 
-    public MiProvider(Context context, ExtendCache cache) {
+    public MiProvider(Context context, CacheX cache) {
         super(context, Registry.MI, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         return getToken(accessTokenUrl(callback.getCode()));
     }
 
-    private AccToken getToken(String accessTokenUrl) {
+    private AuthToken getToken(String accessTokenUrl) {
         String response = Httpx.get(accessTokenUrl);
         String jsonStr = response.replace(PREFIX, Normal.EMPTY);
         try {
@@ -97,7 +97,7 @@ public class MiProvider extends AbstractProvider {
             String macAlgorithm = (String) accessTokenObject.get("mac_algorithm");
             String macKey = (String) accessTokenObject.get("mac_key");
 
-            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
+            return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
                     .refreshToken(refreshToken).openId(openId).macAlgorithm(macAlgorithm).macKey(macKey).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -105,9 +105,9 @@ public class MiProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         // 获取用户信息
-        String userResponse = doGetUserInfo(accToken);
+        String userResponse = doGetUserInfo(authToken);
         try {
             Map<String, Object> userProfile = JsonKit.toPojo(userResponse, Map.class);
             if (userProfile == null) {
@@ -132,14 +132,14 @@ public class MiProvider extends AbstractProvider {
             String miliaoIcon = (String) object.get("miliaoIcon");
             String mail = (String) object.get("mail");
 
-            Material authUser = Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(accToken.getOpenId())
+            Material authUser = Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(authToken.getOpenId())
                     .username(miliaoNick).nickname(miliaoNick).avatar(miliaoIcon).email(mail).gender(Gender.UNKNOWN)
-                    .token(accToken).source(complex.toString()).build();
+                    .token(authToken).source(complex.toString()).build();
 
             // 获取用户邮箱手机号等信息
             String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}",
                     "https://open.account.xiaomi.com/user/phoneAndEmail", context.getAppKey(),
-                    accToken.getAccessToken());
+                    authToken.getAccessToken());
 
             String emailResponse = Httpx.get(emailPhoneUrl);
             try {
@@ -172,13 +172,13 @@ public class MiProvider extends AbstractProvider {
     /**
      * 刷新access token （续期）
      *
-     * @param accToken 登录成功后返回的Token信息
+     * @param authToken 登录成功后返回的Token信息
      * @return Message
      */
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(refreshTokenUrl(accToken.getRefreshToken()))).build();
+                .data(getToken(refreshTokenUrl(authToken.getRefreshToken()))).build();
     }
 
     /**
@@ -197,13 +197,13 @@ public class MiProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("clientId", context.getAppKey()).queryParam("token", accToken.getAccessToken()).build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("clientId", context.getAppKey())
+                .queryParam("token", authToken.getAccessToken()).build();
     }
 
 }

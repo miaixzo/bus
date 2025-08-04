@@ -86,11 +86,11 @@ public class DynaBean implements Cloneable, Serializable {
      * 创建一个DynaBean
      *
      * @param beanClass Bean类
-     * @param params    构造Bean所需要的参数
+     * @param args      构造Bean所需要的参数
      * @return DynaBean
      */
-    public static DynaBean of(final Class<?> beanClass, final Object... params) {
-        return of(ReflectKit.newInstance(beanClass, params));
+    public static DynaBean of(final Class<?> beanClass, final Object... args) {
+        return of(ReflectKit.newInstance(beanClass, args));
     }
 
     /**
@@ -200,11 +200,11 @@ public class DynaBean implements Cloneable, Serializable {
      * 执行原始Bean中的方法
      *
      * @param methodName 方法名
-     * @param params     参数
+     * @param args       参数
      * @return 执行结果，可能为null
      */
-    public Object invoke(final String methodName, final Object... params) {
-        return MethodKit.invoke(this.bean, methodName, params);
+    public Object invoke(final String methodName, final Object... args) {
+        return MethodKit.invoke(this.bean, methodName, args);
     }
 
     /**

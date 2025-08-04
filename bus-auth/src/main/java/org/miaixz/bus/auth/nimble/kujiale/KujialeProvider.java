@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.kujiale;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -36,7 +37,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -56,7 +56,7 @@ public class KujialeProvider extends AbstractProvider {
         super(context, Registry.KUJIALE);
     }
 
-    public KujialeProvider(Context context, ExtendCache cache) {
+    public KujialeProvider(Context context, CacheX cache) {
         super(context, Registry.KUJIALE, cache);
     }
 
@@ -74,12 +74,12 @@ public class KujialeProvider extends AbstractProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
 
-    private AccToken getAuthToken(String response) {
+    private AuthToken getAuthToken(String response) {
         Map<String, Object> accessTokenObject = checkResponse(response);
         Map<String, Object> resultObject = (Map<String, Object>) accessTokenObject.get("d");
         if (resultObject == null) {
@@ -94,7 +94,7 @@ public class KujialeProvider extends AbstractProvider {
         Object expiresInObj = resultObject.get("expiresIn");
         int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-        return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
+        return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
     }
 
     private Map<String, Object> checkResponse(String response) {
@@ -115,10 +115,10 @@ public class KujialeProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String openId = this.getOpenId(accToken);
-        String response = Httpx.get(Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("open_id", openId).build());
+    public Material getUserInfo(AuthToken authToken) {
+        String openId = this.getOpenId(authToken);
+        String response = Httpx.get(Builder.fromUrl(this.complex.userinfo())
+                .queryParam("access_token", authToken.getAccessToken()).queryParam("open_id", openId).build());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -143,7 +143,7 @@ public class KujialeProvider extends AbstractProvider {
             String openIdFromResponse = (String) resultObject.get("openId");
 
             return Material.builder().rawJson(JsonKit.toJsonString(resultObject)).username(userName).nickname(userName)
-                    .avatar(avatar).uuid(openIdFromResponse).token(accToken).source(complex.toString()).build();
+                    .avatar(avatar).uuid(openIdFromResponse).token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
@@ -152,12 +152,12 @@ public class KujialeProvider extends AbstractProvider {
     /**
      * 获取酷家乐的openId，此id在当前client范围内可以唯一识别授权用户
      *
-     * @param accToken 通过{@link KujialeProvider#getAccessToken(Callback)}获取到的{@code accToken}
+     * @param authToken 通过{@link KujialeProvider#getAccessToken(Callback)}获取到的{@code accessToken}
      * @return openId
      */
-    private String getOpenId(AccToken accToken) {
+    private String getOpenId(AuthToken authToken) {
         String response = Httpx.get(Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
-                .queryParam("access_token", accToken.getAccessToken()).build());
+                .queryParam("access_token", authToken.getAccessToken()).build());
         Map<String, Object> accessTokenObject = checkResponse(response);
         String openId = (String) accessTokenObject.get("d");
         if (openId == null) {
@@ -167,8 +167,8 @@ public class KujialeProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
-        String response = Httpx.post(refreshTokenUrl(accToken.getRefreshToken()));
+    public Message refresh(AuthToken authToken) {
+        String response = Httpx.post(refreshTokenUrl(authToken.getRefreshToken()));
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 

@@ -43,7 +43,7 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
@@ -89,7 +89,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     /**
      * 缓存支持
      */
-    protected ExtendCache cache;
+    protected CacheX cache;
 
     /**
      * 构造
@@ -117,7 +117,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param complex API地址
      * @param cache   缓存支持
      */
-    public AbstractProvider(K context, Complex complex, ExtendCache cache) {
+    public AbstractProvider(K context, Complex complex, CacheX cache) {
         Assert.notNull(context, "[context] is null");
         this.context = context;
         this.complex = complex;

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.pinterest;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -36,7 +37,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -58,12 +58,12 @@ public class PinterestProvider extends AbstractProvider {
         super(context, Registry.PINTEREST);
     }
 
-    public PinterestProvider(Context context, ExtendCache cache) {
+    public PinterestProvider(Context context, CacheX cache) {
         super(context, Registry.PINTEREST, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -79,15 +79,15 @@ public class PinterestProvider extends AbstractProvider {
             }
             String tokenType = (String) accessTokenObject.get("token_type");
 
-            return AccToken.builder().accessToken(accessToken).tokenType(tokenType).build();
+            return AuthToken.builder().accessToken(accessToken).tokenType(tokenType).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String userinfoUrl = userInfoUrl(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String userinfoUrl = userInfoUrl(authToken);
         // TODO: 是否需要 .setFollowRedirects(true)
         String response = Httpx.get(userinfoUrl);
         try {
@@ -114,7 +114,7 @@ public class PinterestProvider extends AbstractProvider {
             String avatar = getAvatarUrl(userObj);
 
             return Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid(id).avatar(avatar).username(username)
-                    .nickname(firstName + Symbol.SPACE + lastName).gender(Gender.UNKNOWN).remark(bio).token(accToken)
+                    .nickname(firstName + Symbol.SPACE + lastName).gender(Gender.UNKNOWN).remark(bio).token(authToken)
                     .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -146,13 +146,12 @@ public class PinterestProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken token
+     * @param authToken token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken())
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
                 .queryParam("fields", "id,username,first_name,last_name,bio,image").build();
     }
 

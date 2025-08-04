@@ -28,7 +28,7 @@
 package org.miaixz.bus.auth.nimble.wechat.mini;
 
 import lombok.Data;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -36,7 +36,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -53,12 +53,12 @@ public class WeChatMiniProvider extends AbstractProvider {
         super(context, Registry.WECHAT_MINI);
     }
 
-    public WeChatMiniProvider(Context context, ExtendCache cache) {
+    public WeChatMiniProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_MINI, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback authCallback) {
+    public AuthToken getAccessToken(Callback authCallback) {
         // 参见 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html 文档
         // 使用 code 获取对应的 openId、unionId 等字段
         String response = Httpx.get(accessTokenUrl(authCallback.getCode()));
@@ -66,15 +66,15 @@ public class WeChatMiniProvider extends AbstractProvider {
         assert accessTokenObject != null;
         checkResponse(accessTokenObject);
         // 拼装结果
-        return AccToken.builder().openId(accessTokenObject.getOpenid()).unionId(accessTokenObject.getUnionid())
+        return AuthToken.builder().openId(accessTokenObject.getOpenid()).unionId(accessTokenObject.getUnionid())
                 .accessToken(accessTokenObject.getSession_key()).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken AccToken) {
+    public Material getUserInfo(AuthToken AuthToken) {
         // 参见 https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html 文档
         // 如果需要用户信息，需要在小程序调用函数后传给后端
-        return Material.builder().username("").nickname("").avatar("").uuid(AccToken.getOpenId()).token(AccToken)
+        return Material.builder().username("").nickname("").avatar("").uuid(AuthToken.getOpenId()).token(AuthToken)
                 .source(complex.toString()).build();
     }
 
@@ -91,9 +91,9 @@ public class WeChatMiniProvider extends AbstractProvider {
 
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN))
-                .queryParam("appid", context.getAppKey()).queryParam("secret", context.getAppSecret())
-                .queryParam("js_code", code).queryParam("grant_type", "authorization_code").build();
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret()).queryParam("js_code", code)
+                .queryParam("grant_type", "authorization_code").build();
     }
 
     @Data

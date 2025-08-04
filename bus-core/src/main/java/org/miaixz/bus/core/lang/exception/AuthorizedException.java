@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * 类型: 认证异常
@@ -61,10 +61,10 @@ public class AuthorizedException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message 消息
+     * @param errmsg 消息
      */
-    public AuthorizedException(final String message) {
-        super(message);
+    public AuthorizedException(final String errmsg) {
+        super(errmsg);
     }
 
     /**
@@ -129,14 +129,14 @@ public class AuthorizedException extends UncheckedException {
     /**
      * 构造
      *
-     * @param message            消息
+     * @param errmsg             消息
      * @param cause              被包装的子异常
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public AuthorizedException(final String message, final Throwable cause, final boolean enableSuppression,
+    public AuthorizedException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+        super(errmsg, cause, enableSuppression, writableStackTrace);
     }
 
 }

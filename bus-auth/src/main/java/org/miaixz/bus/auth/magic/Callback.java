@@ -96,6 +96,16 @@ public class Callback implements Serializable {
      */
     private String error;
 
+    /**
+     * 该参数目前只使用于抖音小程序匿名登录
+     */
+    private String anonymous_code;
+
+    /**
+     * VK 设备id
+     */
+    private String device_id;
+
     public String getCode() {
         return StringKit.isEmpty(code) ? auth_code : code;
     }

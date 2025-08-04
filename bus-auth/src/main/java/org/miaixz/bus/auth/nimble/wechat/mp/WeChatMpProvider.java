@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.wechat.mp;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -38,7 +39,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -59,7 +59,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
         super(context, Registry.WECHAT_MP);
     }
 
-    public WeChatMpProvider(Context context, ExtendCache cache) {
+    public WeChatMpProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_MP, cache);
     }
 
@@ -70,27 +70,27 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @return 所有信息
      */
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String openId = accToken.getOpenId();
-        String scope = accToken.getScope();
+    public Material getUserInfo(AuthToken authToken) {
+        String openId = authToken.getOpenId();
+        String scope = authToken.getScope();
         if (!StringKit.isEmpty(scope) && !scope.contains("snsapi_userinfo")) {
             Map<String, Object> tokenMap = new HashMap<>();
-            tokenMap.put("access_token", accToken.getAccessToken());
-            tokenMap.put("refresh_token", accToken.getRefreshToken());
-            tokenMap.put("expires_in", accToken.getExpireIn());
-            tokenMap.put("openid", accToken.getOpenId());
-            tokenMap.put("scope", accToken.getScope());
-            tokenMap.put("is_snapshotuser", accToken.isSnapshotUser() ? 1 : 0);
+            tokenMap.put("access_token", authToken.getAccessToken());
+            tokenMap.put("refresh_token", authToken.getRefreshToken());
+            tokenMap.put("expires_in", authToken.getExpireIn());
+            tokenMap.put("openid", authToken.getOpenId());
+            tokenMap.put("scope", authToken.getScope());
+            tokenMap.put("is_snapshotuser", authToken.isSnapshotUser() ? 1 : 0);
             return Material.builder().rawJson(JsonKit.toJsonString(tokenMap)).uuid(openId)
-                    .snapshotUser(accToken.isSnapshotUser()).token(accToken).source(complex.toString()).build();
+                    .snapshotUser(authToken.isSnapshotUser()).token(authToken).source(complex.toString()).build();
         }
 
-        String response = doGetUserInfo(accToken);
+        String response = doGetUserInfo(authToken);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -106,7 +106,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
 
             String unionId = (String) object.get("unionid");
             if (unionId != null) {
-                accToken.setUnionId(unionId);
+                authToken.setUnionId(unionId);
             }
 
             String nickname = (String) object.get("nickname");
@@ -114,17 +114,17 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
             String sex = (String) object.get("sex");
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
-                    .avatar(headimgurl).location(location).uuid(openId).snapshotUser(accToken.isSnapshotUser())
-                    .gender(getWechatRealGender(sex)).token(accToken).source(complex.toString()).build();
+                    .avatar(headimgurl).location(location).uuid(openId).snapshotUser(authToken.isSnapshotUser())
+                    .gender(getWechatRealGender(sex)).token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(this.getToken(refreshTokenUrl(oldToken.getRefreshToken()))).build();
+                .data(this.getToken(refreshTokenUrl(authToken.getRefreshToken()))).build();
     }
 
     /**
@@ -146,7 +146,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @param accessTokenUrl 实际请求token的地址
      * @return token对象
      */
-    private AccToken getToken(String accessTokenUrl) {
+    private AuthToken getToken(String accessTokenUrl) {
         String response = Httpx.get(accessTokenUrl);
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -168,7 +168,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
             Object snapshotUserObj = accessTokenObject.get("is_snapshotuser");
             boolean snapshotUser = snapshotUserObj instanceof Number && ((Number) snapshotUserObj).intValue() == 1;
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
                     .openId(openId).scope(scope).snapshotUser(snapshotUser).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
@@ -183,7 +183,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("appid", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("response_type", "code")
                 .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(WechatMpScope.values())))
@@ -198,22 +198,21 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN))
-                .queryParam("appid", context.getAppKey()).queryParam("secret", context.getAppSecret())
-                .queryParam("code", code).queryParam("grant_type", "authorization_code").build();
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret()).queryParam("code", code)
+                .queryParam("grant_type", "authorization_code").build();
     }
 
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("openid", accToken.getOpenId())
-                .queryParam("lang", "zh_CN").build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
+                .queryParam("openid", authToken.getOpenId()).queryParam("lang", "zh_CN").build();
     }
 
     /**
@@ -224,7 +223,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.REFRESH)).queryParam("appid", context.getAppKey())
+        return Builder.fromUrl(this.complex.refresh()).queryParam("appid", context.getAppKey())
                 .queryParam("grant_type", "refresh_token").queryParam("refresh_token", refreshToken).build();
     }
 

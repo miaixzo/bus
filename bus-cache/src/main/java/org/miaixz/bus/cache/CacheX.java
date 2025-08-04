@@ -57,6 +57,16 @@ public interface CacheX<K, V> {
     /**
      * 将对象加入到缓存,使用指定失效时长
      *
+     * @param key   键
+     * @param value 缓存的对象
+     */
+    default void write(K key, V value) {
+        write(key, value, 3600_000);
+    }
+
+    /**
+     * 将对象加入到缓存,使用指定失效时长
+     *
      * @param key    键
      * @param value  缓存的对象
      * @param expire 失效时长,单位毫秒

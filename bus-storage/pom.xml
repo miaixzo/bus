@@ -32,24 +32,24 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>8.2.2</version>
+    <version>8.2.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>Bus Storage</description>
-    <url>https://github.com/839128/bus</url>
+    <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
-            <url>https://github.com/839128/bus/blob/main/LICENSE</url>
+            <url>https://github.com/818000/bus/blob/main/LICENSE</url>
         </license>
     </licenses>
 
     <developers>
         <developer>
-            <id>839128</id>
+            <id>818000</id>
             <name>Kimi Liu</name>
             <email>839536@gmail.com</email>
             <organization>Miaixz</organization>
@@ -72,26 +72,25 @@
     </developers>
 
     <scm>
-        <connection>scm:git@github.com:839128/bus.git</connection>
-        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
-        <url>git@github.com:839128/bus.git</url>
+        <connection>scm:git@github.com:818000/bus.git</connection>
+        <developerConnection>scm:git@github.com:818000/bus.git</developerConnection>
+        <url>git@github.com:818000/bus.git</url>
     </scm>
 
     <issueManagement>
-        <system>Github Issue</system>
-        <url>https://github.com/839128/bus/issues</url>
+        <system>Github Issues</system>
+        <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.2</bus.version>
+        <bus.version>8.2.3</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <jackson.version>2.19.2</jackson.version>
         <sardine.version>5.13</sardine.version>
-        <jsch.version>0.2.25</jsch.version>
-        <httpclient.version>4.5.14</httpclient.version>
-        <amazon.s3.version>2.31.33</amazon.s3.version>
+        <jsch.version>2.27.2</jsch.version>
+        <amazon.s3.version>2.32.14</amazon.s3.version>
     </properties>
 
     <dependencies>
@@ -142,12 +141,6 @@
             <groupId>com.github.mwiede</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -262,7 +255,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.44.4</version>
+                <version>2.46.1</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.wechat.ee;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.auth.Builder;
@@ -46,13 +46,13 @@ public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
         super(context, Registry.WECHAT_EE_WEB);
     }
 
-    public WeChatEeWebProvider(Context context, ExtendCache cache) {
+    public WeChatEeWebProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_EE_WEB, cache);
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("appid", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("appid", context.getAppKey())
                 .queryParam("agentid", context.getUnionId())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("response_type", "code")

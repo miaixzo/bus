@@ -30,7 +30,8 @@ package org.miaixz.bus.auth.nimble.meituan;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -39,7 +40,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -57,19 +57,19 @@ public class MeituanProvider extends AbstractProvider {
         super(context, Registry.MEITUAN);
     }
 
-    public MeituanProvider(Context context, ExtendCache cache) {
+    public MeituanProvider(Context context, CacheX cache) {
         super(context, Registry.MEITUAN, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
         form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), form);
+        String response = Httpx.post(this.complex.accessToken(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -86,20 +86,20 @@ public class MeituanProvider extends AbstractProvider {
             Object expiresInObj = object.get("expires_in");
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(5);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
-        form.put("access_token", accToken.getAccessToken());
+        form.put("access_token", authToken.getAccessToken());
 
-        String response = Httpx.post(this.complex.getConfig().get(Builder.USERINFO), form);
+        String response = Httpx.post(this.complex.userinfo(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -116,22 +116,22 @@ public class MeituanProvider extends AbstractProvider {
             String avatar = (String) object.get("avatar");
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(openid).username(nickname)
-                    .nickname(nickname).avatar(avatar).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
-                    .build();
+                    .nickname(nickname).avatar(avatar).gender(Gender.UNKNOWN).token(authToken)
+                    .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
-        form.put("refresh_token", oldToken.getRefreshToken());
+        form.put("refresh_token", authToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 
-        String response = Httpx.post(this.complex.getConfig().get(Builder.REFRESH), form);
+        String response = Httpx.post(this.complex.refresh(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -149,7 +149,7 @@ public class MeituanProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                    AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build())
+                    AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());

@@ -27,23 +27,23 @@
 */
 package org.miaixz.bus.auth.nimble.douyin;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import java.util.Map;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.ErrorCode;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.ErrorCode;
-import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.Map;
 
 /**
  * 抖音 登录
@@ -57,18 +57,18 @@ public class DouyinProvider extends AbstractProvider {
         super(context, Registry.DOUYIN);
     }
 
-    public DouyinProvider(Context context, ExtendCache cache) {
+    public DouyinProvider(Context context, CacheX cache) {
         super(context, Registry.DOUYIN, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String response = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String response = doGetUserInfo(authToken);
         try {
             Map<String, Object> userInfoObject = JsonKit.toPojo(response, Map.class);
             if (userInfoObject == null) {
@@ -93,11 +93,11 @@ public class DouyinProvider extends AbstractProvider {
             String province = (String) data.get("province");
             String city = (String) data.get("city");
 
-            accToken.setUnionId(unionId);
+            authToken.setUnionId(unionId);
 
             return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(unionId).username(nickname)
                     .nickname(nickname).avatar(avatar).remark(description).gender(Gender.of(gender))
-                    .location(String.format("%s %s %s", country, province, city)).token(accToken)
+                    .location(String.format("%s %s %s", country, province, city)).token(authToken)
                     .source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
@@ -105,9 +105,9 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(getToken(refreshTokenUrl(oldToken.getRefreshToken()))).build();
+                .data(getToken(refreshTokenUrl(authToken.getRefreshToken()))).build();
     }
 
     /**
@@ -135,7 +135,7 @@ public class DouyinProvider extends AbstractProvider {
      * @param accessTokenUrl 实际请求token的地址
      * @return token对象
      */
-    private AccToken getToken(String accessTokenUrl) {
+    private AuthToken getToken(String accessTokenUrl) {
         String response = Httpx.post(accessTokenUrl);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -162,7 +162,7 @@ public class DouyinProvider extends AbstractProvider {
                     : 0;
             String scope = (String) dataObj.get("scope");
 
-            return AccToken.builder().accessToken(accessToken).openId(openId).expireIn(expiresIn)
+            return AuthToken.builder().accessToken(accessToken).openId(openId).expireIn(expiresIn)
                     .refreshToken(refreshToken).refreshTokenExpireIn(refreshExpiresIn).scope(scope).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
@@ -177,7 +177,7 @@ public class DouyinProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("response_type", "code")
+        return Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                 .queryParam("client_key", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(DouyinScope.values())))
                 .queryParam("state", getRealState(state)).build();
@@ -191,7 +191,7 @@ public class DouyinProvider extends AbstractProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN)).queryParam("code", code)
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
                 .queryParam("client_key", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code").build();
     }
@@ -199,14 +199,13 @@ public class DouyinProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken oauth返回的token
+     * @param authToken oauth返回的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("open_id", accToken.getOpenId())
-                .build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
+                .queryParam("open_id", authToken.getOpenId()).build();
     }
 
     /**
@@ -217,9 +216,8 @@ public class DouyinProvider extends AbstractProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.REFRESH))
-                .queryParam("client_key", context.getAppKey()).queryParam("refresh_token", refreshToken)
-                .queryParam("grant_type", "refresh_token").build();
+        return Builder.fromUrl(this.complex.refresh()).queryParam("client_key", context.getAppKey())
+                .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
     }
 
 }

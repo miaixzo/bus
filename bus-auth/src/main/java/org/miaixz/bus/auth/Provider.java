@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.auth;
 
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -38,7 +38,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
  * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口 {@link Provider#authorize(String)}
- * {@link Provider#login(Callback)} {@link Provider#revoke(AccToken)} {@link Provider#refresh(AccToken)}
+ * {@link Provider#login(Callback)} {@link Provider#revoke(AuthToken)} {@link Provider#refresh(AuthToken)}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -68,20 +68,20 @@ public interface Provider extends org.miaixz.bus.core.Provider {
     /**
      * 撤销授权
      *
-     * @param accToken 登录成功后返回的Token信息
+     * @param authToken 登录成功后返回的Token信息
      * @return Message
      */
-    default Message revoke(AccToken accToken) {
+    default Message revoke(AuthToken authToken) {
         throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
     /**
      * 刷新access token （续期）
      *
-     * @param accToken 登录成功后返回的Token信息
+     * @param authToken 登录成功后返回的Token信息
      * @return Message
      */
-    default Message refresh(AccToken accToken) {
+    default Message refresh(AuthToken authToken) {
         throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
     }
 
@@ -92,16 +92,16 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return token
      * @see AbstractProvider#authorize(String)
      */
-    AccToken getAccessToken(Callback callback);
+    AuthToken getAccessToken(Callback callback);
 
     /**
      * 使用token换取用户信息
      *
-     * @param accToken token信息
+     * @param authToken token信息
      * @return 用户信息
      * @see AbstractProvider#getAccessToken(Callback)
      */
-    Material getUserInfo(AccToken accToken);
+    Material getUserInfo(AuthToken authToken);
 
     @Override
     default Object type() {

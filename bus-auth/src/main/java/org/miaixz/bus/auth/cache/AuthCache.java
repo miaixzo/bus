@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.cache.metric.MemoryCache;
 
 /**
@@ -37,40 +39,17 @@ import org.miaixz.bus.cache.metric.MemoryCache;
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum AuthCache implements ExtendCache {
+public enum AuthCache implements CacheX<String, Object> {
 
     /**
      * 当前实例
      */
     INSTANCE;
 
-    private CacheX cache;
+    private CacheX<String, Object> cache;
 
     AuthCache() {
         cache = new MemoryCache();
-    }
-
-    /**
-     * 存入缓存
-     *
-     * @param key   缓存key
-     * @param value 缓存内容
-     */
-    @Override
-    public void cache(String key, Object value) {
-        cache.write(key, value, 3 * 60 * 1000);
-    }
-
-    /**
-     * 存入缓存
-     *
-     * @param key     缓存key
-     * @param value   缓存内容
-     * @param timeout 指定缓存过期时间（毫秒）
-     */
-    @Override
-    public void cache(String key, Object value, long timeout) {
-        cache.write(key, value, timeout);
     }
 
     /**
@@ -80,8 +59,13 @@ public enum AuthCache implements ExtendCache {
      * @return 缓存内容
      */
     @Override
-    public Object get(String key) {
+    public Object read(String key) {
         return cache.read(key);
+    }
+
+    @Override
+    public Map read(Collection<String> keys) {
+        return this.cache.read(keys);
     }
 
     /**
@@ -92,7 +76,34 @@ public enum AuthCache implements ExtendCache {
      */
     @Override
     public boolean containsKey(String key) {
-        return cache.containsKey(key);
+        return this.cache.containsKey(key);
+    }
+
+    @Override
+    public void write(Map map, long expire) {
+        this.cache.write(map, expire);
+    }
+
+    /**
+     * 存入缓存
+     *
+     * @param key    缓存key
+     * @param value  缓存内容
+     * @param expire 指定缓存过期时间（毫秒）
+     */
+    @Override
+    public void write(String key, Object value, long expire) {
+        this.cache.write(key, value, expire);
+    }
+
+    @Override
+    public void remove(String[] keys) {
+        this.cache.remove(keys);
+    }
+
+    @Override
+    public void clear() {
+        this.cache.clear();
     }
 
 }

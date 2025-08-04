@@ -192,6 +192,7 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
             return (enumHelper.toString(this));
         }
 
+        @Override
         public String toString() {
             return (enumHelper.toString(this));
         }

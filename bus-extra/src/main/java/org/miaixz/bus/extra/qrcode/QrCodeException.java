@@ -63,11 +63,11 @@ public class QrCodeException extends InternalException {
     /**
      * 构造
      *
-     * @param messageTemplate 消息模板
-     * @param params          参数
+     * @param format 消息模板
+     * @param args   参数
      */
-    public QrCodeException(final String messageTemplate, final Object... params) {
-        super(messageTemplate, params);
+    public QrCodeException(final String format, final Object... args) {
+        super(format, args);
     }
 
     /**
@@ -96,12 +96,12 @@ public class QrCodeException extends InternalException {
     /**
      * 构造
      *
-     * @param cause           被包装的子异常
-     * @param messageTemplate 消息模板
-     * @param params          参数
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
      */
-    public QrCodeException(final Throwable cause, final String messageTemplate, final Object... params) {
-        super(cause, messageTemplate, params);
+    public QrCodeException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
     }
 
 }

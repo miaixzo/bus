@@ -103,12 +103,11 @@ public class ExceptionKit {
      *
      * @param throwable 异常
      * @param message   异常消息
-     * @param params    参数值
+     * @param args      参数值
      * @return 运行时异常
      */
-    public static RuntimeException wrapRuntime(final Throwable throwable, final String message,
-            final Object... params) {
-        return new RuntimeException(StringKit.format(message, params), throwable);
+    public static RuntimeException wrapRuntime(final Throwable throwable, final String message, final Object... args) {
+        return new RuntimeException(StringKit.format(message, args), throwable);
     }
 
     /**

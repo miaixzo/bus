@@ -55,6 +55,7 @@ public class Job implements Serializable {
     private ArtifactsFile artifactsFile;
     private List<Artifact> artifacts;
     private Boolean tag;
+    private List<String> tagList;
     private String webUrl;
     private String stage;
     private JobStatus status;
@@ -167,6 +168,14 @@ public class Job implements Serializable {
 
     public void setTag(Boolean tag) {
         this.tag = tag;
+    }
+
+    public List<String> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<String> tagList) {
+        this.tagList = tagList;
     }
 
     public String getWebUrl() {

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.line;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Gender;
@@ -40,7 +41,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
@@ -61,19 +61,19 @@ public class LineProvider extends AbstractProvider {
         super(context, Registry.LINE);
     }
 
-    public LineProvider(Context context, ExtendCache cache) {
+    public LineProvider(Context context, CacheX cache) {
         super(context, Registry.LINE, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("code", callback.getCode());
         params.put("redirect_uri", context.getRedirectUri());
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), params);
+        String response = Httpx.post(this.complex.accessToken(), params);
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
             if (accessTokenObject == null) {
@@ -91,7 +91,7 @@ public class LineProvider extends AbstractProvider {
             String scope = (String) accessTokenObject.get("scope");
             String tokenType = (String) accessTokenObject.get("token_type");
 
-            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
+            return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
                     .idToken(idToken).scope(scope).tokenType(tokenType).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
@@ -99,12 +99,12 @@ public class LineProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
+        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
 
-        String userInfo = Httpx.get(this.complex.getConfig().get(Builder.USERINFO), null, header);
+        String userInfo = Httpx.get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -121,19 +121,19 @@ public class LineProvider extends AbstractProvider {
 
             return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(displayName)
                     .nickname(displayName).avatar(pictureUrl).remark(statusMessage).gender(Gender.UNKNOWN)
-                    .token(accToken).source(complex.toString()).build();
+                    .token(authToken).source(complex.toString()).build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
     }
 
     @Override
-    public Message revoke(AccToken accToken) {
+    public Message revoke(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(5);
-        form.put("access_token", accToken.getAccessToken());
+        form.put("access_token", authToken.getAccessToken());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        String userInfo = Httpx.post(this.complex.getConfig().get(Builder.REVOKE), form);
+        String userInfo = Httpx.post(this.complex.revoke(), form);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
             if (object == null) {
@@ -150,13 +150,13 @@ public class LineProvider extends AbstractProvider {
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>();
         form.put("grant_type", "refresh_token");
-        form.put("refresh_token", oldToken.getRefreshToken());
+        form.put("refresh_token", authToken.getRefreshToken());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        String response = Httpx.post(this.complex.getConfig().get(Builder.ACCESSTOKEN), form);
+        String response = Httpx.post(this.complex.accessToken(), form);
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
             if (accessTokenObject == null) {
@@ -175,7 +175,7 @@ public class LineProvider extends AbstractProvider {
             String tokenType = (String) accessTokenObject.get("token_type");
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .data(AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
+                    .data(AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
                             .idToken(idToken).scope(scope).tokenType(tokenType).build())
                     .build();
         } catch (Exception e) {
@@ -184,9 +184,8 @@ public class LineProvider extends AbstractProvider {
     }
 
     @Override
-    public String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO)).queryParam("user", accToken.getUid())
-                .build();
+    public String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("user", authToken.getUid()).build();
     }
 
     @Override

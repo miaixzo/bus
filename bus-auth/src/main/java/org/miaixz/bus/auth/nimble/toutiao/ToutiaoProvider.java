@@ -32,12 +32,12 @@ import java.util.Map;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -54,25 +54,25 @@ public class ToutiaoProvider extends AbstractProvider {
         super(context, Registry.TOUTIAO);
     }
 
-    public ToutiaoProvider(Context context, ExtendCache cache) {
+    public ToutiaoProvider(Context context, CacheX cache) {
         super(context, Registry.TOUTIAO, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
                 .expireIn(((Number) accessTokenObject.get("expires_in")).intValue())
                 .openId((String) accessTokenObject.get("open_id")).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String userResponse = doGetUserInfo(accToken);
+    public Material getUserInfo(AuthToken authToken) {
+        String userResponse = doGetUserInfo(authToken);
         Map<String, Object> userProfile = JsonKit.toPojo(userResponse, Map.class);
 
         this.checkResponse(userProfile);
@@ -86,7 +86,7 @@ public class ToutiaoProvider extends AbstractProvider {
                 .username(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
                 .nickname(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
                 .avatar((String) user.get("avatar_url")).remark((String) user.get("description"))
-                .gender(Gender.of((String) user.get("gender"))).token(accToken).source(complex.toString()).build();
+                .gender(Gender.of((String) user.get("gender"))).token(authToken).source(complex.toString()).build();
     }
 
     /**
@@ -97,7 +97,7 @@ public class ToutiaoProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("response_type", "code")
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                 .queryParam("client_key", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("auth_only", 1).queryParam("display", 0).queryParam("state", getRealState(state)).build();
     }
@@ -110,7 +110,7 @@ public class ToutiaoProvider extends AbstractProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.ACCESSTOKEN)).queryParam("code", code)
+        return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
                 .queryParam("client_key", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code").build();
     }
@@ -118,14 +118,13 @@ public class ToutiaoProvider extends AbstractProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param accToken 用户授权后的token
+     * @param authToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("client_key", context.getAppKey()).queryParam("access_token", accToken.getAccessToken())
-                .build();
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("client_key", context.getAppKey())
+                .queryParam("access_token", authToken.getAccessToken()).build();
     }
 
     /**

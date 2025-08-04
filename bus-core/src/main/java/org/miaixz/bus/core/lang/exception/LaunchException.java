@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * 类型: 启动异常
@@ -99,11 +99,11 @@ public class LaunchException extends UncheckedException {
     /**
      * 构造
      *
-     * @param errcode   错误码
+     * @param errmsg    消息
      * @param throwable 异常
      */
-    public LaunchException(final String errcode, final Throwable throwable) {
-        super(errcode, throwable);
+    public LaunchException(final String errmsg, final Throwable throwable) {
+        super(errmsg, throwable);
     }
 
     /**

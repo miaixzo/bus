@@ -27,7 +27,19 @@
 */
 package org.miaixz.bus.auth.nimble.twitter;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
+
+import org.miaixz.bus.auth.Builder;
+import org.miaixz.bus.auth.Context;
+import org.miaixz.bus.auth.Registry;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.auth.magic.Callback;
+import org.miaixz.bus.auth.magic.Material;
+import org.miaixz.bus.auth.nimble.AbstractProvider;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -38,18 +50,6 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.auth.Builder;
-import org.miaixz.bus.auth.Context;
-import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
-import org.miaixz.bus.auth.magic.Callback;
-import org.miaixz.bus.auth.magic.Material;
-import org.miaixz.bus.auth.nimble.AbstractProvider;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
 
 /**
  * Twitter 登录提供者，支持 OAuth 1.0a 认证流程。 实现 Twitter 的单点登录，获取用户访问令牌和用户信息。
@@ -76,7 +76,7 @@ public class TwitterProvider extends AbstractProvider {
      * @param context 上下文配置
      * @param cache   缓存实现
      */
-    public TwitterProvider(Context context, ExtendCache cache) {
+    public TwitterProvider(Context context, CacheX cache) {
         super(context, Registry.TWITTER, cache);
     }
 
@@ -129,9 +129,8 @@ public class TwitterProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        AccToken token = this.getRequestToken();
-        return Builder.fromUrl(complex.getConfig().get("authorize")).queryParam("oauth_token", token.getOauthToken())
-                .build();
+        AuthToken token = this.getRequestToken();
+        return Builder.fromUrl(this.complex.authorize()).queryParam("oauth_token", token.getOauthToken()).build();
     }
 
     /**
@@ -140,7 +139,7 @@ public class TwitterProvider extends AbstractProvider {
      *
      * @return 请求令牌对象
      */
-    public AccToken getRequestToken() {
+    public AuthToken getRequestToken() {
         String baseUrl = "https://api.twitter.com/oauth/request_token";
 
         Map<String, String> form = buildOauthParams();
@@ -154,7 +153,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> res = Builder.parseStringToMap(requestToken);
 
-        return AccToken.builder().oauthToken(res.get("oauth_token")).oauthTokenSecret(res.get("oauth_token_secret"))
+        return AuthToken.builder().oauthToken(res.get("oauth_token")).oauthTokenSecret(res.get("oauth_token_secret"))
                 .oauthCallbackConfirmed(Boolean.valueOf(res.get("oauth_callback_confirmed"))).build();
     }
 
@@ -166,12 +165,12 @@ public class TwitterProvider extends AbstractProvider {
      * @return 访问令牌对象
      */
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> headerMap = buildOauthParams();
         headerMap.put("oauth_token", callback.getOauth_token());
         headerMap.put("oauth_verifier", callback.getOauth_verifier());
-        headerMap.put("oauth_signature", sign(headerMap, "POST", complex.getConfig().get("accessToken"),
-                context.getAppSecret(), callback.getOauth_token()));
+        headerMap.put("oauth_signature",
+                sign(headerMap, "POST", this.complex.accessToken(), context.getAppSecret(), callback.getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(headerMap));
@@ -179,11 +178,11 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> form = new HashMap<>(3);
         form.put("oauth_verifier", callback.getOauth_verifier());
-        String response = Httpx.post(complex.getConfig().get("accessToken"), form, header);
+        String response = Httpx.post(this.complex.accessToken(), form, header);
 
         Map<String, String> requestToken = Builder.parseStringToMap(response);
 
-        return AccToken.builder().oauthToken(requestToken.get("oauth_token"))
+        return AuthToken.builder().oauthToken(requestToken.get("oauth_token"))
                 .oauthTokenSecret(requestToken.get("oauth_token_secret")).userId(requestToken.get("user_id"))
                 .screenName(requestToken.get("screen_name")).build();
     }
@@ -191,25 +190,25 @@ public class TwitterProvider extends AbstractProvider {
     /**
      * 获取用户信息。
      *
-     * @param accToken 访问令牌
+     * @param authToken 访问令牌
      * @return 用户信息对象
      * @throws IllegalArgumentException 如果解析用户信息失败
      */
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> form = buildOauthParams();
-        form.put("oauth_token", accToken.getOauthToken());
+        form.put("oauth_token", authToken.getOauthToken());
 
         Map<String, String> params = new HashMap<>(form);
         params.put("include_entities", Boolean.toString(true));
         params.put("include_email", Boolean.toString(true));
 
-        form.put("oauth_signature", sign(params, "GET", complex.getConfig().get("userInfo"), context.getAppSecret(),
-                accToken.getOauthTokenSecret()));
+        form.put("oauth_signature",
+                sign(params, "GET", this.complex.userinfo(), context.getAppSecret(), authToken.getOauthTokenSecret()));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(form));
-        String response = Httpx.get(userInfoUrl(accToken), null, header);
+        String response = Httpx.get(userInfoUrl(authToken), null, header);
 
         // 使用 JsonKit 解析 JSON 响应
         Map<String, Object> userInfo = JsonKit.toPojo(response, Map.class);
@@ -228,7 +227,7 @@ public class TwitterProvider extends AbstractProvider {
                 .remark((String) userInfo.get("description")).avatar((String) userInfo.get("profile_image_url_https"))
                 .blog((String) userInfo.get("url")).location((String) userInfo.get("location"))
                 .avatar((String) userInfo.get("profile_image_url")).email((String) userInfo.get("email"))
-                .source(complex.getName()).token(accToken).build();
+                .source(complex.getName()).token(authToken).build();
     }
 
     /**
@@ -266,12 +265,12 @@ public class TwitterProvider extends AbstractProvider {
     /**
      * 构造用户信息 URL。
      *
-     * @param accToken 访问令牌
+     * @param authToken 访问令牌
      * @return 用户信息 URL
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.getConfig().get("userInfo")).queryParam("include_entities", true)
+    protected String userInfoUrl(AuthToken authToken) {
+        return Builder.fromUrl(this.complex.userinfo()).queryParam("include_entities", true)
                 .queryParam("include_email", true).build();
     }
 

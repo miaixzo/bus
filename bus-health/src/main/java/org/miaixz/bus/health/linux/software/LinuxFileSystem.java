@@ -235,7 +235,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 try {
                     volumeDeviceMap.put(volume.getCanonicalPath(), volume.getAbsolutePath());
                 } catch (IOException e) {
-                    Logger.error("Couldn't get canonical path for {}. {}", volume.getName(), e.getMessage());
+                    Logger.debug("Couldn't get canonical path for {}. {}", volume.getName(), e.getMessage());
                 }
             }
         }
@@ -253,7 +253,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                         uuidMap.put(volumeDeviceMap.get(canonicalPath), uuid.getName().toLowerCase(Locale.ROOT));
                     }
                 } catch (IOException e) {
-                    Logger.error("Couldn't get canonical path for {}. {}", uuid.getName(), e.getMessage());
+                    Logger.debug("Couldn't get canonical path for {}. {}", uuid.getName(), e.getMessage());
                 }
             }
         }

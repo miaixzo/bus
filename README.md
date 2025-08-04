@@ -3,16 +3,16 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.2.2-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.2.3-blue.svg?label=Maven%20Central" />
   </a>
-  <a target="_blank" href="https://travis-ci.org/839128/bus">
-    <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
+  <a target="_blank" href="https://travis-ci.org/818000/bus">
+    <img src="https://app.travis-ci.com/818000/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
   </a>
   <a target="_blank" href="https://jdk.java.net/">
     <img src="https://img.shields.io/badge/Java-17+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-3.5.3-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.0.0.M1-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.mysql.com">
     <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
@@ -23,7 +23,7 @@
   <a target="_blank" href="http://poi.apache.org">
     <img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
   </a>
-  <a target="_blank" href="https://github.com/839128/bus/blob/main/LICENSE">
+  <a target="_blank" href="https://github.com/818000/bus/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg">
   </a>
 </p>
@@ -85,7 +85,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√] | bus-storage  | 文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式                 |
 | [×] | bus-tracer   | 轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪                   |
 | [√] | bus-validate | 参数校验，会默认拦截所有的标记有`@Valid`的方法或类                     |
-
+| [√] | bus-vortex | 响应式的API网关，用于处理大规模并发请求。它采用非阻塞、事件驱动的架构设计            |
 ### ✨ 功能概述
 
 1. Java基础工具类，对文件、流、加密解密、转码、正则、线程、XML等JDK方法进行封装，组成各种工具类；
@@ -131,7 +131,7 @@ implementation 'org.miaixz:bus-all:x.x.x'
 
 为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
 
-- 地址: [https://github.com/839128/abarth](https://github.com/839128/abarth)
+- 地址: [https://github.com/818000/abarth](https://github.com/818000/abarth)
 
 > 注意
 > Bus项目支持Java 17+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.auth.nimble.stackoverflow;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.auth.magic.AuthToken;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
@@ -40,7 +41,6 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
@@ -61,12 +61,12 @@ public class StackOverflowProvider extends AbstractProvider {
         super(context, Registry.STACK_OVERFLOW);
     }
 
-    public StackOverflowProvider(Context context, ExtendCache cache) {
+    public StackOverflowProvider(Context context, CacheX cache) {
         super(context, Registry.STACK_OVERFLOW, cache);
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         String accessTokenUrl = accessTokenUrl(callback.getCode());
         Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
@@ -78,14 +78,14 @@ public class StackOverflowProvider extends AbstractProvider {
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+        return AuthToken.builder().accessToken((String) accessTokenObject.get("access_token"))
                 .expireIn(((Number) accessTokenObject.get("expires")).intValue()).build();
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
-        String userInfoUrl = Builder.fromUrl(this.complex.getConfig().get(Builder.USERINFO))
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("site", "stackoverflow")
+    public Material getUserInfo(AuthToken authToken) {
+        String userInfoUrl = Builder.fromUrl(this.complex.userinfo())
+                .queryParam("access_token", authToken.getAccessToken()).queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getUnionId()).build();
         String response = Httpx.get(userInfoUrl);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -95,7 +95,7 @@ public class StackOverflowProvider extends AbstractProvider {
         return Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("user_id"))
                 .avatar((String) userObj.get("profile_image")).location((String) userObj.get("location"))
                 .nickname((String) userObj.get("display_name")).blog((String) userObj.get("website_url"))
-                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+                .gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
     }
 
     /**

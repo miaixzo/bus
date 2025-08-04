@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.auth.nimble.microsoft;
 
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.auth.Context;
@@ -46,7 +46,7 @@ public class MicrosoftCnProvider extends AbstractMicrosoftProvider {
         super(context, Registry.MICROSOFT_CN);
     }
 
-    public MicrosoftCnProvider(Context context, ExtendCache cache) {
+    public MicrosoftCnProvider(Context context, CacheX cache) {
         super(context, Registry.MICROSOFT_CN, cache);
     }
 

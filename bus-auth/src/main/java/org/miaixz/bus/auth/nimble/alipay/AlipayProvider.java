@@ -34,12 +34,12 @@ import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Checker;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.magic.AccToken;
+import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
-import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
@@ -64,12 +64,12 @@ public class AlipayProvider extends AbstractProvider {
         check(context);
     }
 
-    public AlipayProvider(Context context, ExtendCache cache) {
+    public AlipayProvider(Context context, CacheX cache) {
         super(context, Registry.ALIPAY, cache);
         check(context);
     }
 
-    public AlipayProvider(Context context, ExtendCache cache, String proxyHost, Integer proxyPort) {
+    public AlipayProvider(Context context, CacheX cache, String proxyHost, Integer proxyPort) {
         super(context, Registry.ALIPAY, cache);
         check(context);
     }
@@ -94,7 +94,7 @@ public class AlipayProvider extends AbstractProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback callback) {
+    public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("app_id", context.getAppKey());
         params.put("method", "alipay.system.auth.token");
@@ -114,14 +114,14 @@ public class AlipayProvider extends AbstractProvider {
                     (String) ((Map<String, Object>) tokenResponse.get("error_response")).get("sub_msg"));
         }
 
-        return AccToken.builder().accessToken((String) tokenResponse.get("access_token"))
+        return AuthToken.builder().accessToken((String) tokenResponse.get("access_token"))
                 .uid((String) tokenResponse.get("user_id"))
                 .expireIn(Integer.parseInt((String) tokenResponse.get("expires_in")))
                 .refreshToken((String) tokenResponse.get("refresh_token")).build();
     }
 
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AuthToken authToken) {
         Map<String, String> params = new HashMap<>();
         params.put("app_id", context.getAppKey());
         params.put("method", "alipay.system.auth.token");
@@ -130,7 +130,7 @@ public class AlipayProvider extends AbstractProvider {
         params.put("timestamp", String.valueOf(System.currentTimeMillis()));
         params.put("version", "1.0");
         params.put("grant_type", "refresh_token");
-        params.put("refresh_token", accToken.getRefreshToken());
+        params.put("refresh_token", authToken.getRefreshToken());
 
         String response = Httpx.post(GATEWAY, params);
         Map<String, Object> json = JsonKit.toMap(response);
@@ -142,7 +142,7 @@ public class AlipayProvider extends AbstractProvider {
         }
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(AccToken.builder().accessToken((String) tokenResponse.get("access_token"))
+                .data(AuthToken.builder().accessToken((String) tokenResponse.get("access_token"))
                         .uid((String) tokenResponse.get("user_id"))
                         .expireIn(Integer.parseInt((String) tokenResponse.get("expires_in")))
                         .refreshToken((String) tokenResponse.get("refresh_token")).build())
@@ -150,7 +150,7 @@ public class AlipayProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AuthToken authToken) {
         Map<String, String> params = new HashMap<>();
         params.put("app_id", context.getAppKey());
         params.put("method", "alipay.user.info.share");
@@ -158,7 +158,7 @@ public class AlipayProvider extends AbstractProvider {
         params.put("sign_type", "RSA2");
         params.put("timestamp", String.valueOf(System.currentTimeMillis()));
         params.put("version", "1.0");
-        params.put("auth_token", accToken.getAccessToken());
+        params.put("auth_token", authToken.getAccessToken());
 
         String response = Httpx.post(GATEWAY, params);
         Map<String, Object> json = JsonKit.toMap(response);
@@ -179,13 +179,13 @@ public class AlipayProvider extends AbstractProvider {
                         ? (String) userResponse.get("nick_name")
                         : (String) userResponse.get("user_name"))
                 .nickname((String) userResponse.get("nick_name")).avatar((String) userResponse.get("avatar"))
-                .location(location).gender(Gender.of((String) userResponse.get("gender"))).token(accToken)
+                .location(location).gender(Gender.of((String) userResponse.get("gender"))).token(authToken)
                 .source(complex.toString()).build();
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.getConfig().get(Builder.AUTHORIZE)).queryParam("app_id", context.getAppKey())
+        return Builder.fromUrl(this.complex.authorize()).queryParam("app_id", context.getAppKey())
                 .queryParam("scope", "auth_user").queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state)).build();
     }
