@@ -96,6 +96,18 @@ public class RelevantException extends IOException {
     }
 
     /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     * @param errmsg 消息
+     */
+    public RelevantException(final Errors errors, String errmsg) {
+        super(errmsg);
+        this.errcode = errors.getKey();
+        this.errmsg = errmsg;
+    }
+
+    /**
      * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
      * @param errmsg 打印信息

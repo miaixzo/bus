@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * 克隆异常
@@ -74,6 +74,16 @@ public class CloneException extends InternalException {
      */
     public CloneException(final Errors errors) {
         super(errors);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     * @param errmsg 消息
+     */
+    public CloneException(final Errors errors, String errmsg) {
+        super(errors.getKey(), errmsg);
     }
 
     /**

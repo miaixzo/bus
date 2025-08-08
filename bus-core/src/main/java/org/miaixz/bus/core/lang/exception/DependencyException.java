@@ -79,6 +79,16 @@ public class DependencyException extends InternalException {
     /**
      * 构造
      *
+     * @param errors 错误码对象，包含键和值
+     * @param errmsg 消息
+     */
+    public DependencyException(final Errors errors, String errmsg) {
+        super(errors.getKey(), errmsg);
+    }
+
+    /**
+     * 构造
+     *
      * @param errmsgTemplate 消息模板
      * @param args           参数
      */

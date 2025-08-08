@@ -189,7 +189,44 @@ public enum Protocol {
     /**
      * 轻量目录访问协议（LDAP），用于目录服务访问，遵循 RFC 4511。
      */
-    LDAP("LDAP");
+    LDAP("LDAP"),
+
+    /**
+     * 消息队列。
+     */
+    MQ("MQ"),
+
+    /**
+     * 高级消息队列协议。
+     */
+    AMQP("AMQP"),
+
+    /**
+     * 简单文本消息协议。
+     */
+    STOMP("STOMP"),
+
+    /**
+     * 消息队列遥测传输。
+     */
+    MQTT("MQTT"),
+
+    /**
+     * 消息中间件二进制协议。
+     */
+    OPENWIRE("Openwire"),
+
+    /**
+     * Apache Kafka 使用的自定义二进制协议。
+     */
+    KAFKA("Kafka"),
+
+    /**
+     * Redis 序列化协议。
+     */
+    RESP("RESP"),
+
+    ;
 
     /**
      * HTTP 前缀，格式为 "http://"。

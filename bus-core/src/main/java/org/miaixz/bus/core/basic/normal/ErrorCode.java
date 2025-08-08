@@ -148,6 +148,11 @@ public class ErrorCode {
     public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("无效的签名").build();
 
     /**
+     * 无效的JSON
+     */
+    public static final Errors _100119 = ErrorRegistry.builder().key("100119").value("无效的JSON").build();
+
+    /**
      * 请使用GET请求
      */
     public static final Errors _100200 = ErrorRegistry.builder().key("100200").value("请使用GET请求").build();
