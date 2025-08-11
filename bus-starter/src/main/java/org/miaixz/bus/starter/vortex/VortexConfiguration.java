@@ -39,6 +39,7 @@ import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -87,20 +88,31 @@ public class VortexConfiguration {
      * @return WebFilter 主过滤器实例
      */
     @Bean
-    Filter primaryFilter() {
+    public Filter primaryFilter() {
         return new PrimaryFilter();
     }
 
     /**
-     * 配置解密过滤器，根据配置决定是否启用
+     * 配置格式化过滤器
      *
-     * @return WebFilter 解密过滤器实例，若未启用返回 null
+     * @return WebFilter 格式化过滤器实例
      */
     @Bean
-    Filter decryptFilter() {
-        return this.properties.getServer().getDecrypt().isEnabled()
-                ? new DecryptFilter(this.properties.getServer().getDecrypt())
-                : null;
+    public Filter formatFilter() {
+        return new FormatFilter();
+    }
+
+    /**
+     * 创建安全加解密过滤器
+     * <p>
+     * 当解密或加密任一功能启用时创建该Bean
+     * </p>
+     *
+     * @return 安全加解密过滤器实例
+     */
+    @Bean
+    public Filter cipherFilter() {
+        return new CipherFilter(this.properties.getServer().getDecrypt(), this.properties.getServer().getEncrypt());
     }
 
     /**
@@ -111,20 +123,8 @@ public class VortexConfiguration {
      * @return WebFilter 授权过滤器实例
      */
     @Bean
-    Filter authorizeFilter(AuthorizeProvider authorizeProvider, AssetsRegistry registry) {
+    public Filter authorizeFilter(AuthorizeProvider authorizeProvider, AssetsRegistry registry) {
         return new AuthorizeFilter(authorizeProvider, registry);
-    }
-
-    /**
-     * 配置加密过滤器，根据配置决定是否启用
-     *
-     * @return WebFilter 加密过滤器实例，若未启用返回 null
-     */
-    @Bean
-    Filter encryptFilter() {
-        return this.properties.getServer().getEncrypt().isEnabled()
-                ? new EncryptFilter(this.properties.getServer().getEncrypt())
-                : null;
     }
 
     /**
@@ -134,18 +134,8 @@ public class VortexConfiguration {
      * @return WebFilter 限流过滤器实例，若未启用返回 null
      */
     @Bean
-    Filter limitFilter(LimiterRegistry registry) {
+    public Filter limitFilter(LimiterRegistry registry) {
         return this.properties.getServer().getLimit().isEnabled() ? new LimitFilter(registry) : null;
-    }
-
-    /**
-     * 配置格式化过滤器
-     *
-     * @return WebFilter 格式化过滤器实例
-     */
-    @Bean
-    Filter formatFilter() {
-        return new FormatFilter();
     }
 
     /**
@@ -154,7 +144,7 @@ public class VortexConfiguration {
      * @return Vortex 核心组件实例，包含 HTTP 服务器
      */
     @Bean(initMethod = "init", destroyMethod = "destroy")
-    Vortex athlete() {
+    public Vortex athlete() {
         // 使用注入的所有 Handler 实例创建 VortexHandler
         VortexHandler vortexHandler = new VortexHandler(handlers);
 
