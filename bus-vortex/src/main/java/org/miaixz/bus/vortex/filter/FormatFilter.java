@@ -36,7 +36,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
@@ -62,16 +61,13 @@ public class FormatFilter extends AbstractFilter {
      */
     @Override
     protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
-        // 强制设置响应内容类型为JSON
-        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-
+        Format.info(exchange, "REQUEST_START", "Method: " + exchange.getRequest().getMethod() + ", Path: "
+                + exchange.getRequest().getPath().value() + ", Query: " + exchange.getRequest().getQueryParams());
         // 如果请求明确要求XML格式，则转换为JSON
         if (Format.XML.equals(context.getFormat())) {
             Format.info(exchange, "FORMAT_CONVERT_TO_JSON", "Converting XML request to JSON response");
-            context.setFormat(Format.JSON);
+            exchange = exchange.mutate().response(process(exchange)).build();
         }
-
-        exchange = exchange.mutate().response(process(exchange)).build();
         return chain.filter(exchange);
     }
 
