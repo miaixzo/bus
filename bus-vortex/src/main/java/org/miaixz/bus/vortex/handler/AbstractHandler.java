@@ -25,16 +25,16 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.registry;
+package org.miaixz.bus.vortex.handler;
 
-import org.miaixz.bus.vortex.Registry;
+import org.miaixz.bus.vortex.Handler;
 
 /**
- * 数据序列化注册接口，用于管理和注册数据序列化相关的拦截器
+ * 抽象 API 处理类，提供异步拦截器实现的基类 子类可选择性覆盖 Handler 接口的默认实现
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface InterceptorRegistry extends Registry {
+public abstract class AbstractHandler implements Handler {
 
 }

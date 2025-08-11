@@ -25,31 +25,63 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.handler;
+package org.miaixz.bus.vortex.registry;
 
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import java.util.function.Consumer;
+
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.magic.Limiter;
 
 /**
- * API 权限处理类，继承自 AbstractApiHandler，用于处理 API 请求的权限验证
+ * 注册表工厂类，用于创建和配置各种类型的注册表
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ApiPermissionHandler extends AbstractApiHandler {
+public class RegistryFactory {
 
     /**
-     * 前置处理方法，执行 API 请求的权限验证
+     * 创建自定义注册表
      *
-     * @param request  当前的 HTTP 请求对象
-     * @param response 当前的 HTTP 响应对象
-     * @param object   处理器对象（通常为控制器或处理方法）
-     * @param args     请求参数或上下文信息
-     * @return 始终返回 true，表示权限验证通过，允许继续处理请求
+     * @param <T>         注册表存储的对象类型
+     * @param registryKey 键生成策略
+     * @param initializer 初始化逻辑
+     * @return 配置好的注册表实例
      */
-    @Override
-    public boolean preHandle(ServerHttpRequest request, ServerHttpResponse response, Object object, Object args) {
-        return true;
+    public static <T> AbstractRegistry<T> of(AbstractRegistry.RegistryKey<T> registryKey,
+            Consumer<AbstractRegistry<T>> initializer) {
+
+        AbstractRegistry<T> registry = new AbstractRegistry<>() {
+            @Override
+            public void init() {
+                if (initializer != null) {
+                    initializer.accept(this);
+                }
+            }
+        };
+
+        registry.setKeyGenerator(registryKey);
+        return registry;
+    }
+
+    /**
+     * 创建资产注册表
+     *
+     * @param initializer 初始化逻辑
+     * @return 配置好的资产注册表实例
+     */
+    public static AbstractRegistry<Assets> assets(Consumer<AbstractRegistry<Assets>> initializer) {
+        return of(assets -> assets.getMethod() + assets.getVersion(), initializer);
+    }
+
+    /**
+     * 创建限流注册表
+     *
+     * @param initializer 初始化逻辑
+     * @return 配置好的限流注册表实例
+     */
+    public static AbstractRegistry<Limiter> limiter(Consumer<AbstractRegistry<Limiter>> initializer) {
+        return of(limiter -> limiter.getIp() + limiter.getMethod() + limiter.getVersion(), initializer);
     }
 
 }

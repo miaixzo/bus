@@ -27,33 +27,24 @@
 */
 package org.miaixz.bus.vortex.filter;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import org.miaixz.bus.core.basic.normal.ErrorCode;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.BusinessException;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.vortex.Config;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Format;
+import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import reactor.core.publisher.Mono;
 
 /**
@@ -63,39 +54,57 @@ import reactor.core.publisher.Mono;
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class PrimaryFilter implements WebFilter {
+public class PrimaryFilter extends AbstractFilter {
 
     /**
-     * 过滤器主逻辑，处理请求参数并进行校验
+     * 需要拦截的非法请求路径列表
+     */
+    private static final List<String> BLOCKED_PATHS = Arrays.asList("/favicon.ico", "/robots.txt", "/sitemap.xml",
+            "/apple-touch-icon.png", "/apple-touch-icon-precomposed.png",
+            "/.well-known/appspecific/com.chrome.devtools.json");
+
+    /**
+     * 内部过滤方法，处理请求参数并进行校验
      *
-     * @param exchange 当前的 ServerWebExchange 对象，包含请求和响应
-     * @param chain    过滤器链，用于继续处理请求
+     * @param exchange 当前的 ServerWebExchange 对象
+     * @param chain    过滤器链
+     * @param context  请求上下文
      * @return {@link Mono<Void>} 表示异步处理完成
      */
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        // 设置默认 Content-Type（如果缺失）
-        ServerWebExchange mutate = setDefaultContentTypeIfNecessary(exchange);
-        Context context = Context.get(mutate);
-        // 记录请求开始时间
+    protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
+        String path = exchange.getRequest().getPath().value();
+        // 检查是否为需要拦截的路径
+        if (isBlockedPath(path)) {
+            Format.warn(exchange, "BLOCKED_REQUEST", "Blocked request to path: " + path);
+            // 抛出异常，避免继续处理
+            throw new InternalException(ErrorCode._BLOCKED);
+        }
+
+        // 检查是否为浏览器地址遍历攻击
+        if (isPathTraversalAttempt(path)) {
+            Format.warn(exchange, "PATH_TRAVERSAL_ATTEMPT", "Path traversal attempt detected: " + path);
+            // 抛出异常，避免继续处理
+            throw new InternalException(ErrorCode._BLOCKED);
+        }
+        ServerWebExchange mutate = setContentType(exchange);
         context.setStartTime(System.currentTimeMillis());
         ServerHttpRequest request = mutate.getRequest();
 
-        // 处理 GET 请求
         if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
             MultiValueMap<String, String> params = request.getQueryParams();
             context.setRequestMap(params.toSingleValueMap());
-            doParams(mutate); // 校验参数
-            return chain.filter(mutate).then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms",
-                    mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
+            checkParams(mutate);
+            Format.info(mutate, "GET_PARAMS_PROCESSED", "Path: " + request.getURI().getPath() + ", Params: "
+                    + JsonKit.toJsonString(context.getRequestMap()));
+            return chain.filter(mutate)
+                    .doOnSuccess(v -> Format.info(mutate, "REQUEST_PROCESSED", "Path: " + request.getURI().getPath()
+                            + ", ExecutionTime: " + (System.currentTimeMillis() - context.getStartTime()) + "ms"));
         } else {
-            // 处理文件上传（multipart/form-data）
             if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mutate.getRequest().getHeaders().getContentType())) {
                 return mutate.getMultipartData().flatMap(params -> {
                     Map<String, String> formMap = new LinkedHashMap<>();
                     Map<String, Part> fileMap = new LinkedHashMap<>();
-
-                    // 分离表单参数和文件参数
                     Map<String, Part> map = params.toSingleValueMap();
                     map.forEach((k, v) -> {
                         if (v instanceof FormFieldPart) {
@@ -107,86 +116,43 @@ public class PrimaryFilter implements WebFilter {
                     });
                     context.setRequestMap(formMap);
                     context.setFilePartMap(fileMap);
-                    doParams(mutate); // 校验参数
-                    return chain.filter(mutate).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
-                            mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+                    checkParams(mutate);
+                    Format.info(mutate, "MULTIPART_PARAMS_PROCESSED",
+                            "Path: " + request.getURI().getPath() + ", Params: " + JsonKit.toJsonString(formMap));
+                    return chain.filter(mutate)
+                            .doOnTerminate(() -> Format.info(mutate, "REQUEST_PROCESSED",
+                                    "Path: " + request.getURI().getPath() + ", ExecutionTime: "
+                                            + (System.currentTimeMillis() - context.getStartTime()) + "ms"));
                 });
             } else {
-                // 处理普通表单数据
                 return mutate.getFormData().flatMap(params -> {
                     context.setRequestMap(params.toSingleValueMap());
-                    doParams(mutate); // 校验参数
-                    return chain.filter(mutate).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
-                            mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+                    checkParams(mutate);
+                    Format.info(mutate, "FORM_PARAMS_PROCESSED", "Path: " + request.getURI().getPath() + ", Params: "
+                            + JsonKit.toJsonString(context.getRequestMap()));
+                    return chain.filter(mutate)
+                            .doOnTerminate(() -> Format.info(mutate, "REQUEST_PROCESSED",
+                                    "Path: " + request.getURI().getPath() + ", ExecutionTime: "
+                                            + (System.currentTimeMillis() - context.getStartTime()) + "ms"));
                 });
             }
         }
     }
 
     /**
-     * 校验请求参数，确保必要参数存在且有效
-     *
-     * @param exchange ServerWebExchange 对象
-     * @throws BusinessException 如果参数无效或缺失，抛出异常
+     * 检查路径是否在拦截列表中
      */
-    private void doParams(ServerWebExchange exchange) {
-        Context context = Context.get(exchange);
-        Map<String, String> params = context.getRequestMap();
-
-        // 过滤无效参数（键或值为 "undefined"）
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            if (Normal.UNDEFINED.equals(entry.getKey().toLowerCase())
-                    || Normal.UNDEFINED.equals(entry.getValue().toLowerCase())) {
-                throw new BusinessException(ErrorCode._100101);
-            }
-        }
-
-        // 校验必要参数
-        if (StringKit.isBlank(params.get(Config.METHOD))) {
-            throw new BusinessException(ErrorCode._100108);
-        }
-        if (StringKit.isBlank(params.get(Config.VERSION))) {
-            throw new BusinessException(ErrorCode._100107);
-        }
-        if (StringKit.isBlank(params.get(Config.FORMAT))) {
-            throw new BusinessException(ErrorCode._100111);
-        }
-
-        // 如果存在签名参数，标记需要解密
-        if (StringKit.isNotBlank(params.get(Config.SIGN))) {
-            context.setNeedDecrypt(true);
-        }
-
-        // 记录请求参数日志
-        Logger.info("traceId:{},method:{},req =>{}", exchange.getLogPrefix(), params.get(Config.METHOD),
-                JsonKit.toJsonString(context.getRequestMap()));
+    private boolean isBlockedPath(String path) {
+        return BLOCKED_PATHS.contains(path);
     }
 
     /**
-     * 设置默认 Content-Type（如果请求头缺失）
-     *
-     * @param exchange ServerWebExchange 对象
-     * @return 更新后的 ServerWebExchange
+     * 检查是否为路径遍历攻击尝试
      */
-    private ServerWebExchange setDefaultContentTypeIfNecessary(ServerWebExchange exchange) {
-        ServerHttpRequest request = exchange.getRequest();
-        MediaType mediaType = request.getHeaders().getContentType();
-        if (null == mediaType) {
-            // 默认设置为 application/x-www-form-urlencoded
-            mediaType = MediaType.APPLICATION_FORM_URLENCODED;
-            HttpHeaders headers = new HttpHeaders();
-            headers.putAll(exchange.getRequest().getHeaders());
-            headers.setContentType(mediaType);
-            // 创建装饰器以更新请求头
-            ServerHttpRequest requestDecorator = new ServerHttpRequestDecorator(request) {
-                @Override
-                public HttpHeaders getHeaders() {
-                    return headers;
-                }
-            };
-            return exchange.mutate().request(requestDecorator).build();
-        }
-        return exchange;
+    private boolean isPathTraversalAttempt(String path) {
+        // 检查路径遍历攻击特征
+        return path.contains("../") || path.contains("..\\") || path.contains("%2e%2e%2f") || path.contains("%2e%2e\\")
+                || path.contains("..%2f") || path.contains("..%5c");
     }
 
 }

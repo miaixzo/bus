@@ -93,6 +93,10 @@ public class Assets {
      */
     private boolean firewall;
     /**
+     * 规则
+     */
+    private String strategy;
+    /**
      * 版本
      */
     private String version;

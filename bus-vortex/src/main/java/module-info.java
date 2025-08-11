@@ -47,6 +47,7 @@ module bus.vortex {
     requires spring.web;
     requires spring.webmvc;
     requires spring.webflux;
+    requires spring.context;
     requires spring.boot;
     requires spring.boot.autoconfigure;
     requires spring.boot.webflux;
@@ -59,7 +60,6 @@ module bus.vortex {
     requires com.google.common;
 
     exports org.miaixz.bus.vortex;
-    exports org.miaixz.bus.vortex.annotation;
     exports org.miaixz.bus.vortex.filter;
     exports org.miaixz.bus.vortex.handler;
     exports org.miaixz.bus.vortex.magic;

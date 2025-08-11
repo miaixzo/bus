@@ -25,19 +25,15 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.handler;
+package org.miaixz.bus.vortex.support;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.vortex.Assets;
-import org.miaixz.bus.vortex.Config;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.*;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -51,19 +47,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.annotation.NonNull;
 
 /**
- * API 路由处理器，负责处理和转发客户端请求到目标服务
+ * HTTP策略路由器，负责将请求路由到HTTP服务
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-public class ApiRouterHandler {
+public class HttpStrategyRouter implements Strategy {
 
     /**
      * 线程安全的 WebClient 缓存，按 baseUrl 存储已初始化的 WebClient 实例
@@ -77,13 +72,18 @@ public class ApiRouterHandler {
      * @return {@link Mono<ServerResponse>} 包含目标服务的响应
      */
     @NonNull
-    public Mono<ServerResponse> handle(ServerRequest request) {
+    @Override
+    public Mono<ServerResponse> route(ServerRequest request) {
         // 获取请求上下文和资产信息
         Context context = Context.get(request);
         Assets assets = context.getAssets();
         Map<String, String> params = context.getRequestMap();
 
-        // 构建目标服务的基础 URL（主机 + 端口 + 路径）
+        // 记录路由开始
+        Format.info(request.exchange(), "HTTP_ROUTE_START",
+                "Method: " + assets.getMethod() + ", Target: " + assets.getHost());
+
+        // 构建目标 URL（主机 + 端口 + 路径）
         String port = StringKit.isEmpty(Normal.EMPTY + assets.getPort()) ? Normal.EMPTY
                 : Symbol.COLON + assets.getPort();
         String path = StringKit.isEmpty(assets.getPath()) ? Normal.EMPTY : Symbol.SLASH + assets.getPath();
@@ -105,7 +105,7 @@ public class ApiRouterHandler {
         }
 
         // 配置请求，包括方法、URI 和请求头
-        WebClient.RequestBodySpec bodySpec = webClient.method(assets.getHttpMethod())
+        WebClient.RequestBodySpec client = webClient.method(assets.getHttpMethod())
                 .uri(builder.build().encode().toUri()).headers(headers -> {
                     headers.addAll(request.headers().asHttpHeaders());
                     headers.remove(HttpHeaders.HOST); // 移除 HOST 头以避免冲突
@@ -122,10 +122,10 @@ public class ApiRouterHandler {
                     partMap.setAll(context.getFilePartMap());
                     BodyInserters.MultipartInserter multipartInserter = BodyInserters.fromMultipartData(partMap);
                     params.forEach(multipartInserter::with);
-                    bodySpec.body(multipartInserter);
+                    client.body(multipartInserter);
                 } else {
                     // 处理普通表单数据
-                    bodySpec.bodyValue(multiValueMap);
+                    client.bodyValue(multiValueMap);
                 }
             }
         }
@@ -134,19 +134,26 @@ public class ApiRouterHandler {
         long start_time = System.currentTimeMillis();
 
         // 发送请求，设置超时并处理响应
-        return bodySpec.httpRequest(clientHttpRequest -> {
+        return client.httpRequest(clientHttpRequest -> {
             // 设置响应超时
             HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
             reactorRequest.responseTimeout(Duration.ofMillis(assets.getTimeout()));
-        }).retrieve().toEntity(DataBuffer.class).flatMap(responseEntity -> ServerResponse.ok().headers(headers -> {
-            // 复制响应头，移除 CONTENT_LENGTH 以避免冲突
-            headers.addAll(responseEntity.getHeaders());
-            headers.remove(HttpHeaders.CONTENT_LENGTH);
-        }).body(null == responseEntity.getBody() ? BodyInserters.empty()
-                : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody()))))
-                // 记录请求耗时日志
-                .doOnTerminate(() -> Logger.info("method:{} 请求耗时:{} ms", context.getAssets().getMethod(),
-                        System.currentTimeMillis() - start_time));
+        }).retrieve().toEntity(DataBuffer.class).flatMap(payload -> {
+            // 记录成功响应
+            long duration = System.currentTimeMillis() - start_time;
+            Format.info(request.exchange(), "HTTP_ROUTE_SUCCESS",
+                    "Method: " + assets.getMethod() + ", Duration: " + duration + "ms");
+
+            return ServerResponse.ok().headers(headers -> {
+                headers.addAll(payload.getHeaders());
+                headers.remove(HttpHeaders.CONTENT_LENGTH);
+            }).body(null == payload.getBody() ? BodyInserters.empty()
+                    : BodyInserters.fromDataBuffers(Flux.just(payload.getBody())));
+        }).doOnTerminate(() -> {
+            long duration = System.currentTimeMillis() - start_time;
+            Format.info(request.exchange(), "HTTP_ROUTE_COMPLETE",
+                    "Method: " + assets.getMethod() + ", Duration: " + duration + "ms");
+        });
     }
 
 }

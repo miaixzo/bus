@@ -29,21 +29,18 @@ package org.miaixz.bus.starter.vortex;
 
 import java.util.List;
 
-import org.miaixz.bus.vortex.Athlete;
 import org.miaixz.bus.vortex.Config;
+import org.miaixz.bus.vortex.Filter;
+import org.miaixz.bus.vortex.Handler;
+import org.miaixz.bus.vortex.Vortex;
 import org.miaixz.bus.vortex.filter.*;
-import org.miaixz.bus.vortex.handler.ApiRouterHandler;
-import org.miaixz.bus.vortex.handler.ApiWebMvcRegistrations;
-import org.miaixz.bus.vortex.handler.GlobalExceptionHandler;
+import org.miaixz.bus.vortex.handler.VortexHandler;
+import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
-import org.miaixz.bus.vortex.registry.DefaultAssetsRegistry;
-import org.miaixz.bus.vortex.registry.DefaultLimiterRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
@@ -53,8 +50,6 @@ import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import org.springframework.web.server.WebExceptionHandler;
-import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
@@ -62,7 +57,7 @@ import jakarta.annotation.Resource;
 import reactor.netty.http.server.HttpServer;
 
 /**
- * 路由自动配置
+ * 路由自动配置类，负责配置 WebFlux 路由和拦截器
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -72,90 +67,117 @@ import reactor.netty.http.server.HttpServer;
 public class VortexConfiguration {
 
     @Resource
-    VortexProperties vortexProperties;
+    VortexProperties properties;
 
+    /**
+     * 自动注入所有 filter 实现
+     */
     @Resource
-    List<WebExceptionHandler> webExceptionHandlers;
+    List<Filter> filters;
 
+    /**
+     * 自动注入所有 Handler 实现
+     */
     @Resource
-    List<WebFilter> webFilters;
+    List<Handler> handlers;
 
-    @ConditionalOnMissingBean
+    /**
+     * 配置主过滤器
+     *
+     * @return WebFilter 主过滤器实例
+     */
     @Bean
-    AssetsRegistry assetsRegistry() {
-        return new DefaultAssetsRegistry();
-    }
-
-    @ConditionalOnMissingBean
-    @Bean
-    LimiterRegistry limiterRegistry() {
-        return new DefaultLimiterRegistry();
-    }
-
-    @Bean
-    WebFilter primaryFilter() {
+    Filter primaryFilter() {
         return new PrimaryFilter();
     }
 
+    /**
+     * 配置解密过滤器，根据配置决定是否启用
+     *
+     * @return WebFilter 解密过滤器实例，若未启用返回 null
+     */
     @Bean
-    WebFilter decryptFilter() {
-        return this.vortexProperties.getServer().getDecrypt().isEnabled()
-                ? new DecryptFilter(this.vortexProperties.getServer().getDecrypt())
+    Filter decryptFilter() {
+        return this.properties.getServer().getDecrypt().isEnabled()
+                ? new DecryptFilter(this.properties.getServer().getDecrypt())
                 : null;
     }
 
+    /**
+     * 配置授权过滤器
+     *
+     * @param authorizeProvider 授权提供者
+     * @param registry          资产注册表
+     * @return WebFilter 授权过滤器实例
+     */
     @Bean
-    WebFilter authorizeFilter(AuthorizeProvider authorizeProvider, AssetsRegistry registry) {
+    Filter authorizeFilter(AuthorizeProvider authorizeProvider, AssetsRegistry registry) {
         return new AuthorizeFilter(authorizeProvider, registry);
     }
 
+    /**
+     * 配置加密过滤器，根据配置决定是否启用
+     *
+     * @return WebFilter 加密过滤器实例，若未启用返回 null
+     */
     @Bean
-    WebFilter encryptFilter() {
-        return this.vortexProperties.getServer().getEncrypt().isEnabled()
-                ? new EncryptFilter(this.vortexProperties.getServer().getEncrypt())
+    Filter encryptFilter() {
+        return this.properties.getServer().getEncrypt().isEnabled()
+                ? new EncryptFilter(this.properties.getServer().getEncrypt())
                 : null;
     }
 
+    /**
+     * 配置限流过滤器，根据配置决定是否启用
+     *
+     * @param registry 限流注册表
+     * @return WebFilter 限流过滤器实例，若未启用返回 null
+     */
     @Bean
-    WebFilter limitFilter(LimiterRegistry registry) {
-        return this.vortexProperties.getServer().getLimit().isEnabled() ? new LimitFilter(registry) : null;
+    Filter limitFilter(LimiterRegistry registry) {
+        return this.properties.getServer().getLimit().isEnabled() ? new LimitFilter(registry) : null;
     }
 
+    /**
+     * 配置格式化过滤器
+     *
+     * @return WebFilter 格式化过滤器实例
+     */
     @Bean
-    WebFilter formatFilter() {
+    Filter formatFilter() {
         return new FormatFilter();
     }
 
-    @Bean
-    WebExceptionHandler webExceptionHandler() {
-        return new GlobalExceptionHandler();
-    }
-
+    /**
+     * 配置 Vortex 请求处理核心组件
+     *
+     * @return Vortex 核心组件实例，包含 HTTP 服务器
+     */
     @Bean(initMethod = "init", destroyMethod = "destroy")
-    Athlete athlete() {
-        ApiRouterHandler apiRouterHandler = new ApiRouterHandler();
+    Vortex athlete() {
+        // 使用注入的所有 Handler 实例创建 VortexHandler
+        VortexHandler vortexHandler = new VortexHandler(handlers);
 
-        RouterFunction<ServerResponse> routerFunction = RouterFunctions
-                .route(RequestPredicates.path(vortexProperties.getServer().getPath()).and(
-                        RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
+        // 配置路由，处理指定路径的请求
+        RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(
+                RequestPredicates.path(properties.getServer().getPath()).and(
+                        RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON)),
+                vortexHandler::handle);
 
+        // 配置编解码器，设置最大内存大小
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
         configurer.defaultCodecs().maxInMemorySize(Config.MAX_INMEMORY_SIZE);
 
+        // 构建 WebHandler，集成过滤器和异常处理器
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
-        HttpHandler handler = WebHttpHandlerBuilder.webHandler(webHandler)
-                .filters(filters -> filters.addAll(webFilters))
-                .exceptionHandlers(handlers -> handlers.addAll(webExceptionHandlers)).codecConfigurer(configurer)
-                .build();
+        HttpHandler handler = WebHttpHandlerBuilder.webHandler(webHandler).filters(list -> list.addAll(filters))
+                .exceptionHandlers(list -> list.add(new ErrorsHandler())).codecConfigurer(configurer).build();
+
+        // 创建 HTTP 服务器适配器
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
-        HttpServer server = HttpServer.create().port(vortexProperties.getServer().getPort()).handle(adapter);
+        HttpServer server = HttpServer.create().port(properties.getServer().getPort()).handle(adapter);
 
-        return new Athlete(server);
-    }
-
-    @Bean
-    public WebMvcRegistrations customWebMvcRegistrations() {
-        return this.vortexProperties.isCondition() ? null : new ApiWebMvcRegistrations();
+        return new Vortex(server);
     }
 
 }

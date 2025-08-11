@@ -25,16 +25,26 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.handler;
+package org.miaixz.bus.vortex;
 
-import org.miaixz.bus.vortex.Handler;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 /**
- * 抽象 API 处理类，提供 API 处理的通用实现基础
+ * 策略接口，定义请求路由的基本行为
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AbstractApiHandler implements Handler {
+public interface Strategy {
+
+    /**
+     * 路由请求到目标服务
+     *
+     * @param request 当前 ServerRequest 对象
+     * @return {@code Mono<ServerResponse>} 异步返回响应
+     */
+    Mono<ServerResponse> route(ServerRequest request);
 
 }

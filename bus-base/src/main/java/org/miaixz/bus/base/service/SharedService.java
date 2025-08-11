@@ -265,6 +265,14 @@ interface SharedService<T, I extends Serializable> extends Service {
     Object selectOne(Condition<T> condition);
 
     /**
+     * 通用：根据条件查询单条记录
+     *
+     * @param condition 查询条件
+     * @return 实体
+     */
+    Object selectFirst(Condition<T> condition);
+
+    /**
      * 通用：根据条件查询列表
      *
      * @param condition 查询条件

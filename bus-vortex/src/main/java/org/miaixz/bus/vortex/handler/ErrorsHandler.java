@@ -27,25 +27,20 @@
 */
 package org.miaixz.bus.vortex.handler;
 
-import java.util.Map;
-
+import java.net.UnknownHostException;
 import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.vortex.Config;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Provider;
+import org.miaixz.bus.vortex.Format;
 import org.miaixz.bus.vortex.magic.ErrorCode;
-import org.miaixz.bus.logger.Logger;
-import org.springframework.boot.webflux.error.ErrorWebExceptionHandler;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ServerWebExchange;
-
-import io.netty.handler.timeout.ReadTimeoutException;
+import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
@@ -55,7 +50,7 @@ import reactor.util.annotation.NonNull;
  * @author Justubborn
  * @since Java 17+
  */
-public class GlobalExceptionHandler extends Controller implements ErrorWebExceptionHandler {
+public class ErrorsHandler implements WebExceptionHandler {
 
     /**
      * 处理异常，生成标准化的错误响应
@@ -74,49 +69,44 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
 
         // 获取请求上下文和参数
         Context context = Context.get(exchange);
-        Map<String, String> map = context.getRequestMap();
-        String method = null;
-        if (null != map) {
-            method = map.get(Config.METHOD); // 获取请求方法名
-        }
-
-        // 记录错误日志，包含 traceId、请求方法和异常信息
-        Logger.error("traceId:{},request: {},error:{}", exchange.getLogPrefix(), method, ex.getMessage());
-
         // 根据异常类型生成错误消息
         Object message;
         if (ex instanceof WebClientException) {
-            if (ex.getCause() instanceof ReadTimeoutException) {
-                message = Controller.write(ErrorCode._80010003); // 读取超时错误
+            if (ex.getCause() instanceof UnknownHostException) {
+                message = Controller.write(ErrorCode._80010001); // 读取超时错误
+                Format.error(exchange, "WEBCLIENT_EXCEPTION", "UnknownHostException: " + ex.getMessage());
             } else {
-                message = Controller.write(ErrorCode._80010004); // 其他 WebClient 异常
+                message = Controller.write(ErrorCode._80010002); // 其他 WebClient 异常
+                Format.error(exchange, "WEBCLIENT_EXCEPTION", "WebClientException: " + ex.getMessage());
             }
         } else if (ex instanceof BusinessException e) {
             if (StringKit.isNotBlank(e.getErrcode())) {
                 message = Controller.write(e.getErrcode()); // 业务异常的特定错误码
+                Format.error(exchange, "BUSINESS_EXCEPTION",
+                        "ErrorCode: " + e.getErrcode() + ", Message: " + e.getMessage());
             } else {
                 message = Controller.write(ErrorCode._100513, e.getMessage()); // 通用业务异常
+                Format.error(exchange, "BUSINESS_EXCEPTION", "Generic BusinessException: " + e.getMessage());
             }
         } else {
             message = Controller.write(ErrorCode._100513); // 默认未知错误
+            Format.error(exchange, "UNKNOWN_EXCEPTION",
+                    "Unknown exception type: " + ex.getClass().getName() + ", Message: " + ex.getMessage());
         }
 
-        // 使用上下文指定的序列化提供者格式化响应
-        Provider provider = context.getFormat().getProvider();
-        String formatBody;
-        if (null != provider) {
-            formatBody = provider.serialize(message);
-        } else {
-            // 回退到 JSON 序列化
-            formatBody = Context.Format.json.getProvider().serialize(message);
-        }
+        // 强制使用 JSON 序列化，确保返回JSON格式
+        String formatBody = Format.JSON.getProvider().serialize(message);
 
         // 将格式化后的响应写入 DataBuffer
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes());
 
         // 返回响应并记录执行耗时
-        return response.writeWith(Mono.just(db)).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
-                exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+        return response.writeWith(Mono.just(db)).doOnTerminate(() -> {
+            if (context != null) {
+                Format.info(exchange, "ERROR_HANDLED", "Error handled, execution time: "
+                        + (System.currentTimeMillis() - context.getStartTime()) + "ms");
+            }
+        });
     }
 
 }

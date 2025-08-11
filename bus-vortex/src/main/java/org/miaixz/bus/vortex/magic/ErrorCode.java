@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 自定义错误码
+ * 存储错误码: 115xxx
  * 
  * @author Kimi Liu
  * @since Java 17+
@@ -39,20 +39,12 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 没有API权限
-     */
-    public static final Errors _80010001 = ErrorRegistry.builder().key("80010001").value("没有API权限").build();
-    /**
-     * 没有角色
-     */
-    public static final Errors _80010002 = ErrorRegistry.builder().key("80010002").value("没有角色").build();
-    /**
      * 服务端超时
      */
-    public static final Errors _80010003 = ErrorRegistry.builder().key("80010003").value("服务端超时").build();
+    public static final Errors _80010001 = ErrorRegistry.builder().key("80010003").value("服务请求超时").build();
     /**
      * 服务端未响应
      */
-    public static final Errors _80010004 = ErrorRegistry.builder().key("80010004").value("服务端未响应").build();
+    public static final Errors _80010002 = ErrorRegistry.builder().key("80010004").value("服务请求异常").build();
 
 }

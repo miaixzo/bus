@@ -24,30 +24,21 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
-package org.miaixz.bus.vortex.annotation;
+ */
+package org.miaixz.bus.vortex;
 
-import java.lang.annotation.*;
-
-import org.miaixz.bus.core.lang.Normal;
+import org.springframework.web.server.WebFilter;
 
 /**
- * API 版本注解，用于在生成 Spring 的 RequestMappingInfo 时自动拼接版本路径到请求路径的开始部分。 该注解避免直接在方法上定义版本，以简化维护。
+ * 定义一个过滤器接口，扩展 Spring WebFlux 的 {@link WebFilter} 接口。
+ * <p>
+ * 该接口用于在 WebFlux 应用中实现 HTTP 请求和响应的过滤逻辑。实现类需要提供具体的过滤逻辑， 通过处理 {@link org.springframework.web.server.ServerWebExchange}
+ * 对象来拦截和修改请求或响应， 并返回 {@link reactor.core.publisher.Mono}<{@link Void}> 以支持异步处理。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Inherited
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface ApiVersion {
-
-    /**
-     * 版本路径值，默认为空字符串。 当指定时，该值会自动拼接到请求路径的开始部分。
-     *
-     * @return 版本路径
-     */
-    String value() default Normal.EMPTY;
+public interface Filter extends WebFilter {
 
 }

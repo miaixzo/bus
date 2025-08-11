@@ -29,17 +29,14 @@ package org.miaixz.bus.vortex.filter;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Format;
 import org.miaixz.bus.vortex.magic.Limiter;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-
 import reactor.core.publisher.Mono;
 
 /**
@@ -49,43 +46,37 @@ import reactor.core.publisher.Mono;
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)
-public class LimitFilter implements WebFilter {
+public class LimitFilter extends AbstractFilter {
 
-    /**
-     * 限流注册表，用于获取限流配置
-     */
-    private final LimiterRegistry limiterRegistry;
+    private final LimiterRegistry registry;
 
     /**
      * 构造器，初始化限流注册表
      *
-     * @param limiterRegistry 限流注册表
+     * @param registry 限流注册表
      */
-    public LimitFilter(LimiterRegistry limiterRegistry) {
-        this.limiterRegistry = limiterRegistry;
+    public LimitFilter(LimiterRegistry registry) {
+        this.registry = registry;
     }
 
     /**
-     * 过滤器主逻辑，应用限流规则并继续处理请求
+     * 内部过滤方法，执行限流逻辑
      *
-     * @param exchange 当前的 ServerWebExchange 对象，包含请求和响应
-     * @param chain    过滤器链，用于继续处理请求
+     * @param exchange 当前的 ServerWebExchange 对象
+     * @param chain    过滤器链
+     * @param context  请求上下文
      * @return {@link Mono<Void>} 表示异步处理完成
      */
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        // 获取上下文和资产信息
-        Context context = Context.get(exchange);
-        Assets assets = context.getAssets();
-        // 获取请求的 IP 地址
-        String ip = context.getRequestMap().get("x-remote-ip");
-        // 获取适用的限流配置
-        Set<Limiter> cfgList = getLimiter(assets.getMethod() + assets.getVersion(), ip);
-        // 应用所有限流规则
+    protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
+        String ip = getRequestMap(context).get("x-remote_ip");
+        String methodVersion = getAssets(context).getMethod() + getAssets(context).getVersion();
+        Set<Limiter> cfgList = getLimiter(methodVersion, ip);
         for (Limiter cfg : cfgList) {
-            cfg.acquire(); // 尝试获取令牌，可能阻塞
+            cfg.acquire();
         }
-        // 继续执行过滤器链
+        Format.info(exchange, "RATE_LIMIT_APPLIED",
+                "Path: " + exchange.getRequest().getURI().getPath() + ", Method: " + methodVersion);
         return chain.filter(exchange);
     }
 
@@ -97,12 +88,10 @@ public class LimitFilter implements WebFilter {
      * @return 适用的限流配置集合
      */
     private Set<Limiter> getLimiter(String methodVersion, String ip) {
-        // 定义限流键：方法版本号和 IP+方法版本号
         String[] limitKeys = new String[] { methodVersion, ip + methodVersion };
         Set<Limiter> limitCfgList = new HashSet<>();
-        // 遍历键，获取对应的限流配置
         for (String limitKey : limitKeys) {
-            Limiter limitCfg = limiterRegistry.get(limitKey);
+            Limiter limitCfg = registry.get(limitKey);
             if (null != limitCfg) {
                 limitCfgList.add(limitCfg);
             }

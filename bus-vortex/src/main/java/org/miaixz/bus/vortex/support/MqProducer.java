@@ -24,11 +24,32 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
+ */
+package org.miaixz.bus.vortex.support;
+
+import reactor.core.publisher.Mono;
+
 /**
- * 注解信息
+ * 消息队列生产者接口，用于向指定主题发送消息。
+ * <p>
+ * 该接口定义了消息队列生产者的核心功能，允许实现类以异步方式向消息队列的指定主题发送消息。 通过返回 {@link Mono}<{@link Void}> 支持响应式编程，确保非阻塞操作。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.vortex.annotation;
+public interface MqProducer {
+
+    /**
+     * 向指定的消息队列主题发送消息。
+     * <p>
+     * 该方法以异步方式将消息发送到指定的主题。实现类需要处理消息的序列化、发送逻辑以及与消息队列系统的交互。 返回的 {@link Mono}<{@link Void}> 表示发送操作的完成状态，成功时完成，失败时抛出异常。
+     * </p>
+     *
+     * @param topic   消息队列的主题名称，用于标识消息的目标队列
+     * @param message 要发送的消息内容
+     * @return {@link Mono}<{@link Void}> 表示异步发送操作的完成状态
+     */
+    Mono<Void> send(String topic, String message);
+
+}
