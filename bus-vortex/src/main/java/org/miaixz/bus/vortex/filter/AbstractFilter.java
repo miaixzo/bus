@@ -159,17 +159,17 @@ public abstract class AbstractFilter implements Filter {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (Normal.UNDEFINED.equals(entry.getKey().toLowerCase())
                     || Normal.UNDEFINED.equals(entry.getValue().toLowerCase())) {
-                throw new BusinessException(org.miaixz.bus.core.basic.normal.ErrorCode._100101);
+                throw new BusinessException(ErrorCode._100101);
             }
         }
         if (StringKit.isBlank(params.get(Config.METHOD))) {
-            throw new BusinessException(org.miaixz.bus.core.basic.normal.ErrorCode._100108);
+            throw new BusinessException(ErrorCode._100108);
         }
         if (StringKit.isBlank(params.get(Config.VERSION))) {
-            throw new BusinessException(org.miaixz.bus.core.basic.normal.ErrorCode._100107);
+            throw new BusinessException(ErrorCode._100107);
         }
         if (StringKit.isBlank(params.get(Config.FORMAT))) {
-            throw new BusinessException(org.miaixz.bus.core.basic.normal.ErrorCode._100111);
+            throw new BusinessException(ErrorCode._100111);
         }
         if (StringKit.isNotBlank(params.get(Config.SIGN))) {
             context.setNeedDecrypt(true);

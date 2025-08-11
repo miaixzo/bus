@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.vortex;
 
 import org.springframework.web.server.WebFilter;
@@ -33,7 +33,7 @@ import org.springframework.web.server.WebFilter;
  * 定义一个过滤器接口，扩展 Spring WebFlux 的 {@link WebFilter} 接口。
  * <p>
  * 该接口用于在 WebFlux 应用中实现 HTTP 请求和响应的过滤逻辑。实现类需要提供具体的过滤逻辑， 通过处理 {@link org.springframework.web.server.ServerWebExchange}
- * 对象来拦截和修改请求或响应， 并返回 {@link reactor.core.publisher.Mono}<{@link Void}> 以支持异步处理。
+ * 对象来拦截和修改请求或响应， 并返回 {@link reactor.core.publisher.Mono} 以支持异步处理。
  * </p>
  *
  * @author Kimi Liu

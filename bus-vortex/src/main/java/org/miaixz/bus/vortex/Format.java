@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.vortex;
 
 import lombok.AllArgsConstructor;
@@ -39,8 +39,7 @@ import org.springframework.web.server.ServerWebExchange;
 /**
  * 数据格式枚举，定义支持的响应数据格式及其相关属性，并提供日志记录功能。
  * <p>
- * 该枚举类用于标识响应数据的格式（如 XML、JSON、PDF、文件流），每个格式关联特定的数据提供者和媒体类型。
- * 同时提供静态方法用于记录不同级别的日志（错误、警告、调试等）以及请求的开始和结束日志。
+ * 该枚举类用于标识响应数据的格式（如 XML、JSON、PDF、文件流），每个格式关联特定的数据提供者和媒体类型。 同时提供静态方法用于记录不同级别的日志（错误、警告、调试等）以及请求的开始和结束日志。
  * </p>
  *
  * @author Kimi Liu
@@ -74,8 +73,8 @@ public enum Format {
     /**
      * 数据格式的提供者，用于处理特定格式的序列化或反序列化。
      * <p>
-     * 例如，XML 格式使用 {@link XmlProvider}，JSON 格式使用 {@link JsonProvider}。
-     * 对于 {@link #PDF} 和 {@link #BINARY}，该字段为 {@code null}。
+     * 例如，XML 格式使用 {@link XmlProvider}，JSON 格式使用 {@link JsonProvider}。 对于 {@link #PDF} 和 {@link #BINARY}，该字段为
+     * {@code null}。
      * </p>
      */
     private Provider provider;
@@ -83,8 +82,8 @@ public enum Format {
     /**
      * 对应的 HTTP 媒体类型。
      * <p>
-     * 定义响应内容的 MIME 类型，例如 XML 对应 {@code application/xml;charset=UTF-8}，
-     * JSON 对应 {@code application/json}。对于 {@link #PDF} 和 {@link #BINARY}，该字段为 {@code null}。
+     * 定义响应内容的 MIME 类型，例如 XML 对应 {@code application/xml;charset=UTF-8}， JSON 对应 {@code application/json}。对于 {@link #PDF}
+     * 和 {@link #BINARY}，该字段为 {@code null}。
      * </p>
      */
     private MediaType mediaType;
@@ -167,8 +166,7 @@ public enum Format {
     /**
      * 记录请求开始的日志。
      * <p>
-     * 记录请求的开始信息，包括 HTTP 方法、请求路径和查询参数。
-     * 如果 {@code exchange} 或上下文为 {@code null}，则直接返回，不记录日志。
+     * 记录请求的开始信息，包括 HTTP 方法、请求路径和查询参数。 如果 {@code exchange} 或上下文为 {@code null}，则直接返回，不记录日志。
      * </p>
      *
      * @param exchange {@link ServerWebExchange} 对象，包含请求和响应的上下文信息
@@ -190,8 +188,7 @@ public enum Format {
     /**
      * 记录请求结束的日志。
      * <p>
-     * 记录请求的结束信息，包括 HTTP 方法、请求路径、响应状态码和执行时间。
-     * 如果 {@code exchange} 或上下文为 {@code null}，则直接返回，不记录日志。
+     * 记录请求的结束信息，包括 HTTP 方法、请求路径、响应状态码和执行时间。 如果 {@code exchange} 或上下文为 {@code null}，则直接返回，不记录日志。
      * </p>
      *
      * @param exchange   {@link ServerWebExchange} 对象，包含请求和响应的上下文信息
@@ -215,8 +212,7 @@ public enum Format {
     /**
      * 获取请求的跟踪 ID，并去除两端的方括号。
      * <p>
-     * 从 {@code exchange} 的日志前缀中提取跟踪 ID。如果 {@code exchange} 或上下文为 {@code null}，
-     * 或日志前缀不可用，则返回 "N/A"。
+     * 从 {@code exchange} 的日志前缀中提取跟踪 ID。如果 {@code exchange} 或上下文为 {@code null}， 或日志前缀不可用，则返回 "N/A"。
      * </p>
      *
      * @param exchange {@link ServerWebExchange} 对象，包含请求和响应的上下文信息
@@ -244,8 +240,7 @@ public enum Format {
     /**
      * 获取请求的 HTTP 方法。
      * <p>
-     * 从 {@code exchange} 中提取 HTTP 方法名称。如果 {@code exchange} 或方法为 {@code null}，
-     * 则返回 "N/A"。
+     * 从 {@code exchange} 中提取 HTTP 方法名称。如果 {@code exchange} 或方法为 {@code null}， 则返回 "N/A"。
      * </p>
      *
      * @param exchange {@link ServerWebExchange} 对象，包含请求和响应的上下文信息

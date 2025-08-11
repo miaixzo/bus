@@ -202,7 +202,6 @@ public class VortexHandler {
                             if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
                                 if (request.headers().contentType().isPresent()) {
                                     MediaType mediaType = request.headers().contentType().get();
-
                                     // 处理multipart/form-data类型的请求（如文件上传）
                                     if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                                         MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>();

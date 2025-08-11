@@ -28,7 +28,9 @@
 package org.miaixz.bus.vortex.filter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Context;
@@ -101,7 +103,27 @@ public class PrimaryFilter extends AbstractFilter {
                     .doOnSuccess(v -> Format.info(mutate, "REQUEST_PROCESSED", "Path: " + request.getURI().getPath()
                             + ", ExecutionTime: " + (System.currentTimeMillis() - context.getStartTime()) + "ms"));
         } else {
-            if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mutate.getRequest().getHeaders().getContentType())) {
+            MediaType contentType = mutate.getRequest().getHeaders().getContentType();
+            if (MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
+                return mutate.getRequest().getBody().collectList().flatMap(dataBuffers -> {
+                    String jsonBody = dataBuffers.stream().map(dataBuffer -> dataBuffer.toString(Charset.UTF_8))
+                            .collect(Collectors.joining());
+                    try {
+                        Map<String, String> jsonMap = JsonKit.toMap(jsonBody);
+                        context.setRequestMap(jsonMap);
+                        checkParams(mutate);
+                        Format.info(mutate, "JSON_PARAMS_PROCESSED",
+                                "Path: " + request.getURI().getPath() + ", Params: " + JsonKit.toJsonString(jsonMap));
+                        return chain.filter(mutate)
+                                .doOnTerminate(() -> Format.info(mutate, "REQUEST_PROCESSED",
+                                        "Path: " + request.getURI().getPath() + ", ExecutionTime: "
+                                                + (System.currentTimeMillis() - context.getStartTime()) + "ms"));
+                    } catch (Exception e) {
+                        Format.warn(mutate, "JSON_PARSING_ERROR", "Failed to parse JSON: " + e.getMessage());
+                        throw new InternalException(ErrorCode._100119);
+                    }
+                });
+            } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
                 return mutate.getMultipartData().flatMap(params -> {
                     Map<String, String> formMap = new LinkedHashMap<>();
                     Map<String, Part> fileMap = new LinkedHashMap<>();
