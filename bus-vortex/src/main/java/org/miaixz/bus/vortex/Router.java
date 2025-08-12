@@ -25,10 +25,28 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.vortex;
+
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
+
 /**
- * 注解信息
+ * 调度接口，定义请求路由的基本行为
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.vortex.annotation;
+public interface Router {
+
+    /**
+     * 路由请求到目标服务
+     *
+     * @param request 当前 ServerRequest 对象
+     * @param context 请求上下文，包含请求参数和配置信息
+     * @param assets  配置资产，包含目标服务的配置信息
+     * @return {@code Mono<ServerResponse>} 异步返回响应
+     */
+    Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets);
+
+}

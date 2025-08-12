@@ -25,59 +25,29 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.registry;
+package org.miaixz.bus.pager.handler;
 
-import org.miaixz.bus.vortex.Assets;
-import org.miaixz.bus.vortex.magic.Limiter;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.schema.Table;
 
 /**
- * 默认限流注册实现类，基于 AbstractRegistry 提供限流配置（Limiter）的注册和管理功能
+ * 数据权限提供者接口 定义数据权限SQL片段的生成逻辑
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-public class DefaultLimiterRegistry extends AbstractRegistry<Limiter> implements LimiterRegistry {
+public interface PermissionProvider {
 
     /**
-     * 添加限流配置到注册表，使用 IP、方法名和版本号的组合作为键
+     * 获取数据权限SQL片段
      *
-     * @param limiter 要添加的限流配置对象
+     * @param table             数据库表信息，包含表名和别名
+     * @param where             原有WHERE条件
+     * @param mappedStatementId MyBatis MappedStatement ID，用于判断具体执行方法
+     * @return JSqlParser条件表达式，拼接在原有WHERE条件后，不覆盖原有表达式
      */
-    @Override
-    public void addLimiter(Limiter limiter) {
-        String nameVersion = limiter.getMethod() + limiter.getVersion();
-        String ip = limiter.getIp();
-        add(ip + nameVersion, limiter);
-    }
-
-    /**
-     * 修改注册表中的限流配置（当前为空实现）
-     *
-     * @param limitCfg 要更新的限流配置对象
-     */
-    @Override
-    public void amendLimiter(Limiter limitCfg) {
-        // 空实现，待扩展
-    }
-
-    /**
-     * 根据方法名和版本号获取对应的资产（当前返回 null）
-     *
-     * @param method  方法名
-     * @param version 版本号
-     * @return 当前实现始终返回 null，待扩展
-     */
-    @Override
-    public Assets getLimiter(String method, String version) {
-        return null;
-    }
-
-    /**
-     * 初始化注册表（当前为空实现，子类可根据需要扩展）
-     */
-    @Override
-    public void init() {
-        // 空实现，留给子类扩展
+    default Expression getSqlSegment(final Table table, final Expression where, final String mappedStatementId) {
+        return where;
     }
 
 }

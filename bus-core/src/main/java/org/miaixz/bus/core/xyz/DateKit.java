@@ -289,7 +289,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 当前时间的时间戳
+     * 当前时间的时间戳(毫秒)
      *
      * @return 时间
      */

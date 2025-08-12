@@ -27,15 +27,12 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.vortex.provider.JsonProvider;
-import org.miaixz.bus.vortex.provider.XmlProvider;
-import org.springframework.http.MediaType;
+import org.miaixz.bus.core.basic.entity.Tracer;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
@@ -51,7 +48,7 @@ import org.springframework.web.server.ServerWebExchange;
 @SuperBuilder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Context {
+public class Context extends Tracer {
 
     /**
      * 上下文在 ServerWebExchange 或 ServerRequest 属性中的键名
@@ -76,12 +73,12 @@ public class Context {
     /**
      * 数据格式，默认使用 JSON 格式
      */
-    private Format format = Format.json;
+    private Format format = Format.JSON;
 
     /**
      * 请求渠道，默认使用 web 渠道
      */
-    private Channel channel = Channel.web;
+    private Channel channel = Channel.WEB;
 
     /**
      * 令牌，用于身份验证或会话管理
@@ -125,58 +122,6 @@ public class Context {
             request.attributes().put(Context.$, empty);
             return empty;
         });
-    }
-
-    /**
-     * 数据格式枚举，定义支持的响应格式及其对应的提供者和媒体类型
-     */
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public enum Format {
-        xml(new XmlProvider(), MediaType.parseMediaType(MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8")),
-        json(new JsonProvider(), MediaType.APPLICATION_JSON), pdf, binary;
-
-        /**
-         * 数据格式的提供者，用于处理特定格式的序列化/反序列化
-         */
-        private Provider provider;
-
-        /**
-         * 对应的 HTTP 媒体类型
-         */
-        private MediaType mediaType;
-    }
-
-    /**
-     * 请求渠道枚举，定义不同的请求来源及其属性
-     */
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public enum Channel {
-        web("1", 0), app("2", 1), ding("3", 1), wechat("4", 1), other("5", 0);
-
-        /**
-         * 渠道的字符串值
-         */
-        private String value;
-
-        /**
-         * 令牌类型，用于区分不同渠道的令牌处理方式
-         */
-        private Integer tokenType;
-
-        /**
-         * 根据渠道值获取对应的渠道枚举
-         *
-         * @param value 渠道的字符串值
-         * @return 匹配的渠道枚举，若无匹配则返回 other
-         */
-        public static Channel getChannel(String value) {
-            return Arrays.stream(Channel.values()).filter(c -> c.getValue().equals(value)).findFirst()
-                    .orElse(Channel.other);
-        }
     }
 
 }

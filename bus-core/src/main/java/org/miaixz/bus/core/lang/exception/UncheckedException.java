@@ -96,6 +96,18 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     * @param errmsg 消息
+     */
+    public UncheckedException(final Errors errors, String errmsg) {
+        super(errmsg);
+        this.errcode = errors.getKey();
+        this.errmsg = errmsg;
+    }
+
+    /**
      * 构造 使用指定消息和原因构造
      *
      * @param errmsg 详细消息

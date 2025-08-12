@@ -79,6 +79,16 @@ public class RevisedException extends RelevantException {
     /**
      * 构造
      *
+     * @param errors 错误码对象，包含键和值
+     * @param errmsg 消息
+     */
+    public RevisedException(final Errors errors, String errmsg) {
+        super(errors.getKey(), errmsg);
+    }
+
+    /**
+     * 构造
+     *
      * @param format 消息模板
      * @param args   参数
      */

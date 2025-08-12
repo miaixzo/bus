@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * 类型: 版本异常
@@ -67,6 +67,16 @@ public class VersionException extends UncheckedException {
      */
     public VersionException(final Errors errors) {
         super(errors);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     * @param errmsg 消息
+     */
+    public VersionException(final Errors errors, String errmsg) {
+        super(errors.getKey(), errmsg);
     }
 
     /**

@@ -25,49 +25,20 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.handler;
+package org.miaixz.bus.vortex;
 
-import org.springframework.boot.webmvc.autoconfigure.WebMvcRegistrations;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.server.WebFilter;
 
 /**
- * Spring Boot 专用 Web MVC 注册配置类，用于自定义 MVC 组件，避免直接继承 WebConfigurationSupport 破坏 Spring 的自动配置
+ * 定义一个过滤器接口，扩展 Spring WebFlux 的 {@link WebFilter} 接口。
+ * <p>
+ * 该接口用于在 WebFlux 应用中实现 HTTP 请求和响应的过滤逻辑。实现类需要提供具体的过滤逻辑， 通过处理 {@link org.springframework.web.server.ServerWebExchange}
+ * 对象来拦截和修改请求或响应， 并返回 {@link reactor.core.publisher.Mono} 以支持异步处理。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ApiWebMvcRegistrations implements WebMvcRegistrations {
-
-    /**
-     * 提供自定义的 RequestMappingHandlerMapping 实现
-     *
-     * @return 自定义的 ApiRequestMappingHandlerMapping 实例
-     */
-    @Override
-    public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
-        return new ApiRequestMappingHandlerMapping();
-    }
-
-    /**
-     * 提供自定义的 RequestMappingHandlerAdapter 实现（当前未自定义）
-     *
-     * @return 返回 null，保留 Spring Boot 默认配置
-     */
-    @Override
-    public RequestMappingHandlerAdapter getRequestMappingHandlerAdapter() {
-        return null;
-    }
-
-    /**
-     * 提供自定义的 ExceptionHandlerExceptionResolver 实现（当前未自定义）
-     *
-     * @return 返回 null，保留 Spring Boot 默认配置
-     */
-    @Override
-    public ExceptionHandlerExceptionResolver getExceptionHandlerExceptionResolver() {
-        return null;
-    }
+public interface Filter extends WebFilter {
 
 }

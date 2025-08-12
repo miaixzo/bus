@@ -29,8 +29,9 @@ package org.miaixz.bus.core.lang.exception;
 
 import java.io.Serial;
 
-import lombok.ToString;
 import org.miaixz.bus.core.basic.normal.Errors;
+
+import lombok.ToString;
 
 /**
  * 类型: 业务异常
@@ -73,6 +74,16 @@ public class BusinessException extends UncheckedException {
      */
     public BusinessException(final Errors errors) {
         super(errors);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errors 错误码对象，包含键和值
+     * @param errmsg 消息
+     */
+    public BusinessException(final Errors errors, String errmsg) {
+        super(errors.getKey(), errmsg);
     }
 
     /**

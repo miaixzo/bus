@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.vortex;
 
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 /**
- * 拦截器接口，类似于 Spring 的拦截器机制，用于在请求处理的不同阶段执行自定义逻辑
+ * 异步拦截器接口，定义请求处理的三个阶段
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,45 +39,52 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 public interface Handler {
 
     /**
-     * 预处理回调方法，在请求处理前执行 可用于权限验证、参数校验等，若返回 false，则终止请求处理，可通过 response 返回错误信息
+     * 获取处理器顺序
      *
-     * @param request  当前的 HTTP 请求对象
-     * @param response 当前的 HTTP 响应对象
-     * @param service  服务类实例（通常为控制器或处理类）
-     * @param args     方法参数
-     * @return 返回 true 继续处理请求，返回 false 终止处理
+     * @return 顺序值，越小越先执行
      */
-    default boolean preHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args) {
-        return true;
+    default int getOrder() {
+        return 0;
     }
 
     /**
-     * 后处理回调方法，在接口方法执行完成后但响应返回前执行 可用于修改响应数据或记录日志
+     * 异步预处理方法，在请求处理前执行
      *
-     * @param request  当前的 HTTP 请求对象
-     * @param response 当前的 HTTP 响应对象
-     * @param service  服务类实例
-     * @param args     方法参数
+     * @param exchange 当前 ServerWebExchange 对象
+     * @param service  服务实例（通常为策略对象）
+     * @param args     方法参数，可为 null
+     * @return {@code Mono<Boolean>} 返回 true 表示验证通过，false 表示验证失败
+     */
+    default Mono<Boolean> preHandle(ServerWebExchange exchange, Object service, Object args) {
+        return Mono.just(true);
+    }
+
+    /**
+     * 异步后处理方法，在请求处理后执行
+     *
+     * @param exchange 当前 ServerWebExchange 对象
+     * @param service  服务实例
+     * @param args     方法参数，可为 null
      * @param result   接口方法返回的结果
+     * @return {@code Mono<Void>} 表示异步处理完成
      */
-    default void postHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
-            Object result) {
-        // 默认空实现
+    default Mono<Void> postHandle(ServerWebExchange exchange, Object service, Object args, Object result) {
+        return Mono.empty();
     }
 
     /**
-     * 完成回调方法，在响应结果包装并返回客户端后执行 可用于清理资源、记录最终日志或处理异常
+     * 异步完成处理方法，在请求完成后执行（无论成功或失败）
      *
-     * @param request   当前的 HTTP 请求对象
-     * @param response  当前的 HTTP 响应对象
-     * @param service   服务类实例
-     * @param args      方法参数
-     * @param result    最终包装后的响应结果
-     * @param exception 业务异常（若有）
+     * @param exchange  当前 ServerWebExchange 对象
+     * @param service   服务实例
+     * @param args      方法参数，可为 null
+     * @param result    最终响应结果，可为 null
+     * @param exception 异常对象（若有），可为 null
+     * @return {@code Mono<Void>} 表示异步处理完成
      */
-    default void afterCompletion(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
-            Object result, Exception exception) {
-        // 默认空实现
+    default Mono<Void> afterCompletion(ServerWebExchange exchange, Object service, Object args, Object result,
+            Throwable exception) {
+        return Mono.empty();
     }
 
 }

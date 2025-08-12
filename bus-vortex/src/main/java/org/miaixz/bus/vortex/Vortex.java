@@ -25,31 +25,54 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.handler;
+package org.miaixz.bus.vortex;
 
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.miaixz.bus.logger.Logger;
+
+import reactor.netty.DisposableServer;
+import reactor.netty.http.server.HttpServer;
 
 /**
- * API 权限处理类，继承自 AbstractApiHandler，用于处理 API 请求的权限验证
+ * 服务端类，负责启动和管理基于 Reactor Netty 的 HTTP 服务器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ApiPermissionHandler extends AbstractApiHandler {
+public class Vortex {
 
     /**
-     * 前置处理方法，执行 API 请求的权限验证
-     *
-     * @param request  当前的 HTTP 请求对象
-     * @param response 当前的 HTTP 响应对象
-     * @param object   处理器对象（通常为控制器或处理方法）
-     * @param args     请求参数或上下文信息
-     * @return 始终返回 true，表示权限验证通过，允许继续处理请求
+     * Reactor Netty 的 HTTP 服务器实例，用于处理 HTTP 请求
      */
-    @Override
-    public boolean preHandle(ServerHttpRequest request, ServerHttpResponse response, Object object, Object args) {
-        return true;
+    private final HttpServer httpServer;
+
+    /**
+     * 可释放的服务器实例，表示已绑定的服务器资源
+     */
+    private DisposableServer disposableServer;
+
+    /**
+     * 构造器，初始化 Athlete 实例
+     *
+     * @param httpServer Reactor Netty 的 HTTP 服务器实例
+     */
+    public Vortex(HttpServer httpServer) {
+        this.httpServer = httpServer;
+    }
+
+    /**
+     * 初始化并启动 HTTP 服务器 将 httpServer 绑定到指定端口，并记录启动成功的日志
+     */
+    private void init() {
+        disposableServer = httpServer.bindNow();
+        Logger.info("reactor server start on port:{} success", disposableServer.port());
+    }
+
+    /**
+     * 停止并销毁 HTTP 服务器 释放服务器资源，并记录停止成功的日志
+     */
+    private void destroy() {
+        disposableServer.disposeNow();
+        Logger.info("reactor server stop on port:{} success", disposableServer.port());
     }
 
 }

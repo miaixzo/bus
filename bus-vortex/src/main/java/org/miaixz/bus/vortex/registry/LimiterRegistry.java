@@ -27,39 +27,41 @@
 */
 package org.miaixz.bus.vortex.registry;
 
-import org.miaixz.bus.vortex.Assets;
-import org.miaixz.bus.vortex.Registry;
 import org.miaixz.bus.vortex.magic.Limiter;
 
 /**
- * 限流注册接口，定义限流配置（Limiter）的注册、修改和查询功能
+ * 默认限流注册实现类，基于 AbstractRegistry 提供限流配置（Limiter）的注册和管理功能
  *
  * @author Justubborn
  * @since Java 17+
  */
-public interface LimiterRegistry extends Registry<Limiter> {
+public class LimiterRegistry extends AbstractRegistry<Limiter> {
 
     /**
-     * 添加限流配置到注册表
-     *
-     * @param limiter 要添加的限流配置对象
+     * 构造函数，设置键生成策略
      */
-    void addLimiter(Limiter limiter);
+    public LimiterRegistry() {
+        setKeyGenerator(limiter -> limiter.getIp() + limiter.getMethod() + limiter.getVersion());
+    }
 
     /**
-     * 修改注册表中的限流配置
+     * 根据 IP、方法名和版本号获取对应的限流配置
      *
-     * @param limiter 要更新的限流配置对象
+     * @param ip      IP 地址
+     * @param method  方法名
+     * @param version 版本号
+     * @return 匹配的限流配置对象，若不存在返回 null
      */
-    void amendLimiter(Limiter limiter);
+    public Limiter get(String ip, String method, String version) {
+        return this.get(ip + method + version);
+    }
 
     /**
-     * 根据 IP 和方法名版本号组合获取对应的资产
-     *
-     * @param ip          IP 地址
-     * @param nameVersion 方法名和版本号的组合
-     * @return 匹配的资产对象，若不存在返回 null
+     * 初始化注册表，当前实现为空，子类可根据需要扩展
      */
-    Assets getLimiter(String ip, String nameVersion);
+    @Override
+    public void init() {
+        // 空实现，留给子类扩展
+    }
 
 }

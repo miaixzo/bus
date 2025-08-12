@@ -375,6 +375,18 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     }
 
     /**
+     * 通用：根据条件查询单条记录
+     *
+     * @param condition 查询条件
+     * @return 实体
+     */
+    @Override
+    public Object selectFirst(Condition<T> condition) {
+        List<T> list = mapper.selectByCondition(condition);
+        return (list == null || list.isEmpty()) ? null : list.get(0);
+    }
+
+    /**
      * 通用：根据条件查询列表
      *
      * @param condition 查询条件

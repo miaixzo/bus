@@ -25,16 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.handler;
-
-import org.miaixz.bus.vortex.Handler;
-
 /**
- * 抽象 API 处理类，提供 API 处理的通用实现基础
+ * 路由策略
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AbstractApiHandler implements Handler {
-
-}
+package org.miaixz.bus.vortex.support;

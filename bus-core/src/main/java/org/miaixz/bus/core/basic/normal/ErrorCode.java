@@ -53,6 +53,11 @@ public class ErrorCode {
     public static final Errors _LIMITER = ErrorRegistry.builder().key("-2").value("请求过于频繁，请稍候后再试").build();
 
     /**
+     * 非法请求
+     */
+    public static final Errors _BLOCKED = ErrorRegistry.builder().key("-3").value("非法请求，请稍候后再试").build();
+
+    /**
      * 无效的令牌
      */
     public static final Errors _100100 = ErrorRegistry.builder().key("100100").value("无效的令牌").build();
@@ -146,6 +151,11 @@ public class ErrorCode {
      * 无效的签名
      */
     public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("无效的签名").build();
+
+    /**
+     * 无效的JSON
+     */
+    public static final Errors _100119 = ErrorRegistry.builder().key("100119").value("无效的JSON").build();
 
     /**
      * 请使用GET请求

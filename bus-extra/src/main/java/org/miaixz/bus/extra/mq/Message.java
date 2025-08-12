@@ -59,7 +59,7 @@ public interface Message {
      * @param charset 编码
      * @return 内容字符串
      */
-    default String contentStr(final Charset charset) {
+    default String content(final Charset charset) {
         return StringKit.toString(charset, charset);
     }
 
