@@ -43,8 +43,10 @@ public interface Strategy {
      * 路由请求到目标服务
      *
      * @param request 当前 ServerRequest 对象
+     * @param context 请求上下文，包含请求参数和配置信息
+     * @param assets  配置资产，包含目标服务的配置信息
      * @return {@code Mono<ServerResponse>} 异步返回响应
      */
-    Mono<ServerResponse> route(ServerRequest request);
+    Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets);
 
 }

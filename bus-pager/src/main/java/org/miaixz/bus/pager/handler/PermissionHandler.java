@@ -54,12 +54,12 @@ import net.sf.jsqlparser.statement.update.Update;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PermissionsHandler extends ConditionHandler implements MapperHandler {
+public class PermissionHandler extends ConditionHandler implements MapperHandler {
 
     /**
      * 数据权限提供者，用于生成权限相关的SQL片段
      */
-    private PermissionsProvider provider;
+    private PermissionProvider provider;
 
     /**
      * 预处理SQL语句，针对UPDATE和DELETE语句动态添加权限条件
@@ -140,7 +140,7 @@ public class PermissionsHandler extends ConditionHandler implements MapperHandle
         if (this.provider == null) {
             return;
         }
-        if (this.provider instanceof PermissionsProvider) {
+        if (this.provider instanceof PermissionProvider) {
             final String whereSegment = (String) obj;
             processSelectBody(select, whereSegment);
             List<WithItem<?>> withItemsList = select.getWithItemsList();
@@ -171,7 +171,7 @@ public class PermissionsHandler extends ConditionHandler implements MapperHandle
      *
      * @return 数据权限提供者
      */
-    public PermissionsProvider getProvider() {
+    public PermissionProvider getProvider() {
         return this.provider;
     }
 
@@ -180,7 +180,7 @@ public class PermissionsHandler extends ConditionHandler implements MapperHandle
      *
      * @param provider 数据权限提供者
      */
-    public void setProvider(PermissionsProvider provider) {
+    public void setProvider(PermissionProvider provider) {
         this.provider = provider;
     }
 

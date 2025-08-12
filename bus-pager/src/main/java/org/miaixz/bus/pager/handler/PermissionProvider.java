@@ -36,7 +36,7 @@ import net.sf.jsqlparser.schema.Table;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface PermissionsProvider {
+public interface PermissionProvider {
 
     /**
      * 获取数据权限SQL片段

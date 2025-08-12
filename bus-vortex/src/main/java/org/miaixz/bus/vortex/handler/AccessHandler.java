@@ -31,7 +31,6 @@ import org.miaixz.bus.logger.Logger;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -41,7 +40,6 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class AccessHandler extends AbstractHandler {
 

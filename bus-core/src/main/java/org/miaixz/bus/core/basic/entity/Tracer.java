@@ -53,6 +53,11 @@ public class Tracer extends Authorize {
     private static final long serialVersionUID = 2852291120377L;
 
     /**
+     * 当前请求ID
+     */
+    @Transient
+    protected String x_request_id;
+    /**
      * 当前主链ID
      */
     @Transient

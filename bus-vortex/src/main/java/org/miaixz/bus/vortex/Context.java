@@ -32,6 +32,7 @@ import java.util.Optional;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.basic.entity.Tracer;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
@@ -47,7 +48,7 @@ import org.springframework.web.server.ServerWebExchange;
 @SuperBuilder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Context {
+public class Context extends Tracer {
 
     /**
      * 上下文在 ServerWebExchange 或 ServerRequest 属性中的键名
