@@ -317,7 +317,7 @@ public class ContextBuilder extends WebUtils {
             return getThreadPoolContextValue("x_tenant_id");
         } catch (Exception e) {
             // 记录错误日志并在发生异常时返回 null
-            Logger.error("获取租户 ID 失败: ", e);
+            Logger.error("Error occurred while retrieving tenant ID: {}", e.getMessage());
             return null;
         }
     }
