@@ -92,6 +92,7 @@ module bus.extra {
     exports org.miaixz.bus.extra.json;
     exports org.miaixz.bus.extra.json.provider;
     exports org.miaixz.bus.extra.mail;
+    exports org.miaixz.bus.extra.mq;
     exports org.miaixz.bus.extra.nlp;
     exports org.miaixz.bus.extra.nlp.provider.analysis;
     exports org.miaixz.bus.extra.nlp.provider.ansj;

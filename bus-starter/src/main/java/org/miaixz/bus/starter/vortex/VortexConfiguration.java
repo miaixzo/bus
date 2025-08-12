@@ -34,6 +34,7 @@ import org.miaixz.bus.vortex.Filter;
 import org.miaixz.bus.vortex.Handler;
 import org.miaixz.bus.vortex.Vortex;
 import org.miaixz.bus.vortex.filter.*;
+import org.miaixz.bus.vortex.handler.AccessHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -135,6 +136,16 @@ public class VortexConfiguration {
     @Bean
     public Filter limitFilter(LimiterRegistry registry) {
         return this.properties.getServer().getLimit().isEnabled() ? new LimitFilter(registry) : null;
+    }
+
+    /**
+     * 业务处理类
+     *
+     * @return Handler 前置逻辑处理
+     */
+    @Bean
+    public Handler accessHandler() {
+        return new AccessHandler();
     }
 
     /**

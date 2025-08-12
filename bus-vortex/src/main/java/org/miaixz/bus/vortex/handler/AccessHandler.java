@@ -35,7 +35,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * API 权限处理类，继承自 AbstractHandler，用于异步处理 API 请求的权限验证
+ * 用于异步处理 API 请求的前置逻辑
  *
  * @author Kimi Liu
  * @since Java 17+

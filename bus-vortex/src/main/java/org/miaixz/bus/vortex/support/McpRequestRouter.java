@@ -64,7 +64,7 @@ import reactor.util.annotation.NonNull;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MCPStrategyRouter implements Strategy {
+public class McpRequestRouter implements Router {
 
     /**
      * 预定义的ExchangeStrategies实例，用于WebClient配置。
@@ -117,11 +117,6 @@ public class MCPStrategyRouter implements Strategy {
      * 默认权重值。
      */
     private static final int DEFAULT_WEIGHT = 1;
-
-    /**
-     * 默认健康检查间隔（毫秒）。
-     */
-    private static final long DEFAULT_HEALTH_CHECK_INTERVAL = 30000;
 
     /**
      * 处理客户端请求，构建并转发到目标服务，返回响应。

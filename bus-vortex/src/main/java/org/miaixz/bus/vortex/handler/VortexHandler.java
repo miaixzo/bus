@@ -35,9 +35,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.vortex.*;
-import org.miaixz.bus.vortex.support.HttpStrategyRouter;
-import org.miaixz.bus.vortex.support.MQStrategyRouter;
-import org.miaixz.bus.vortex.support.MCPStrategyRouter;
+import org.miaixz.bus.vortex.support.HttpRequestRouter;
+import org.miaixz.bus.vortex.support.MqRequestRouter;
+import org.miaixz.bus.vortex.support.McpRequestRouter;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
@@ -54,13 +54,14 @@ import reactor.util.annotation.NonNull;
  * @since Java 17+
  */
 public class VortexHandler {
+
     /**
      * 线程安全的策略映射，存储按协议名称索引的策略实现。
      * <p>
      * 该映射允许根据协议动态选择路由策略，支持HTTP、MQ和MCP协议。 使用ConcurrentHashMap保证线程安全。
      * </p>
      */
-    private final Map<String, Strategy> strategies = new ConcurrentHashMap<>();
+    private final Map<String, Router> strategies = new ConcurrentHashMap<>();
 
     /**
      * 默认策略，当未提供或未找到特定策略时使用。
@@ -68,7 +69,7 @@ public class VortexHandler {
      * 默认使用HTTP策略作为回退行为。
      * </p>
      */
-    private final Strategy defaultStrategy;
+    private final Router defaultRouter;
 
     /**
      * 按顺序排序的拦截器列表，用于按特定顺序处理请求。
@@ -85,11 +86,11 @@ public class VortexHandler {
      * @throws NullPointerException 如果handlers或默认策略为null
      */
     public VortexHandler(List<Handler> handlers) {
-        strategies.put(Protocol.HTTP.name, new HttpStrategyRouter());
-        strategies.put(Protocol.MQ.name, new MQStrategyRouter());
-        strategies.put(Protocol.MCP.name, new MCPStrategyRouter());
-        defaultStrategy = strategies.get(Protocol.HTTP.name);
-        Objects.requireNonNull(defaultStrategy, "Default strategy cannot be null");
+        strategies.put(Protocol.HTTP.name, new HttpRequestRouter());
+        strategies.put(Protocol.MQ.name, new MqRequestRouter());
+        strategies.put(Protocol.MCP.name, new McpRequestRouter());
+        defaultRouter = strategies.get(Protocol.HTTP.name);
+        Objects.requireNonNull(defaultRouter, "Default strategy cannot be null");
         // 如果handlers为空，使用默认AccessHandler
         this.handlers = handlers.isEmpty() ? List.of(new AccessHandler())
                 : handlers.stream().sorted(Comparator.comparingInt(Handler::getOrder)).collect(Collectors.toList());
@@ -137,26 +138,25 @@ public class VortexHandler {
                 Format.warn(exchange, "STRATEGY_NULL", "Strategy is null or empty, using default strategy");
                 strategyName = Protocol.HTTP.name;
             }
-            Strategy strategy = strategies.getOrDefault(strategyName, defaultStrategy);
-            Format.info(exchange, "STRATEGY_SELECTED", "Using route strategy: " + strategy.getClass().getSimpleName());
+            Router router = strategies.getOrDefault(strategyName, defaultRouter);
+            Format.info(exchange, "STRATEGY_SELECTED", "Using route strategy: " + router.getClass().getSimpleName());
 
             // 4. 执行前置处理
-            return executePreHandle(exchange, strategy).flatMap(preHandleResult -> {
+            return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
                     throw new RuntimeException("Request blocked by handler");
                 }
 
                 // 5. 委托给策略实现者处理请求
-                return strategy.route(request, context, assets)
-                        .flatMap(response -> executePostHandlers(exchange, strategy, response))
-                        .doOnSuccess(response -> {
+                return router.route(request, context, assets)
+                        .flatMap(response -> executePostHandlers(exchange, router, response)).doOnSuccess(response -> {
                             long duration = System.currentTimeMillis() - context.getStartTime();
                             Format.info(exchange, "REQUEST_DURATION",
                                     "Method: " + assets.getMethod() + ", Duration: " + duration + "ms");
                         }).onErrorResume(error -> {
                             Format.error(exchange, "REQUEST_ERROR", "Error processing request: " + error.getMessage());
                             return Mono.whenDelayError(handlers.stream()
-                                    .map(handler -> handler.afterCompletion(exchange, strategy, null, null, error))
+                                    .map(handler -> handler.afterCompletion(exchange, router, null, null, error))
                                     .collect(Collectors.toList())).then(Mono.error(error));
                         });
             });
@@ -170,12 +170,12 @@ public class VortexHandler {
      * </p>
      *
      * @param exchange 服务器Web交换对象，包含请求和响应的上下文信息
-     * @param strategy 路由策略，用于确定如何路由请求
+     * @param router   路由策略，用于确定如何路由请求
      * @return Mono<Boolean> 表示所有前置处理是否都通过，true表示全部通过，false表示有拦截器阻止了请求
      */
-    private Mono<Boolean> executePreHandle(ServerWebExchange exchange, Strategy strategy) {
+    private Mono<Boolean> executePreHandle(ServerWebExchange exchange, Router router) {
         return Mono.zip(
-                handlers.stream().map(handler -> handler.preHandle(exchange, strategy, null))
+                handlers.stream().map(handler -> handler.preHandle(exchange, router, null))
                         .collect(Collectors.toList()),
                 results -> results.length > 0 && java.util.Arrays.stream(results).allMatch(Boolean.class::cast));
     }
@@ -187,18 +187,18 @@ public class VortexHandler {
      * </p>
      *
      * @param exchange 服务器Web交换对象，包含请求和响应的上下文信息
-     * @param strategy 路由策略，用于确定如何路由请求
+     * @param router   路由策略，用于确定如何路由请求
      * @param response 服务器响应，包含响应状态、头和体
      * @return Mono<ServerResponse> 处理后的响应，可能被拦截器修改
      */
-    private Mono<ServerResponse> executePostHandlers(ServerWebExchange exchange, Strategy strategy,
+    private Mono<ServerResponse> executePostHandlers(ServerWebExchange exchange, Router router,
             ServerResponse response) {
         return Mono
-                .whenDelayError(handlers.stream().map(handler -> handler.postHandle(exchange, strategy, null, response))
+                .whenDelayError(handlers.stream().map(handler -> handler.postHandle(exchange, router, null, response))
                         .collect(Collectors.toList()))
                 .thenReturn(response)
                 .flatMap(res -> Mono.whenDelayError(
-                        handlers.stream().map(handler -> handler.afterCompletion(exchange, strategy, null, res, null))
+                        handlers.stream().map(handler -> handler.afterCompletion(exchange, router, null, res, null))
                                 .collect(Collectors.toList()))
                         .thenReturn(res));
     }

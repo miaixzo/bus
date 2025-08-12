@@ -32,12 +32,12 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
- * 策略接口，定义请求路由的基本行为
+ * 调度接口，定义请求路由的基本行为
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Strategy {
+public interface Router {
 
     /**
      * 路由请求到目标服务

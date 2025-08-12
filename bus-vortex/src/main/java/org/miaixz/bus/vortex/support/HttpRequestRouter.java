@@ -58,7 +58,8 @@ import reactor.util.annotation.NonNull;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HttpStrategyRouter implements Strategy {
+public class HttpRequestRouter implements Router {
+
     /**
      * 预定义的ExchangeStrategies实例，用于WebClient配置。
      * <p>
