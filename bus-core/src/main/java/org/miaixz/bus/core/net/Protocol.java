@@ -226,6 +226,11 @@ public enum Protocol {
      */
     RESP("RESP"),
 
+    /**
+     * 模型上下文协议。
+     */
+    MCP("MCP"),
+
     ;
 
     /**
