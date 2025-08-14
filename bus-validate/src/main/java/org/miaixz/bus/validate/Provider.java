@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -175,13 +174,6 @@ public class Provider {
     }
 
     /**
-     * 解析校验异常
-     *
-     * @param material 校验器属性
-     * @param context  校验上下文
-     * @return 最终确定的错误码
-     */
-    /**
      * 根据校验规则和上下文解析并创建校验异常
      *
      * @param material 校验规则材料，包含校验器、错误信息等配置
@@ -190,41 +182,40 @@ public class Provider {
      * @throws NoSuchException 当自定义异常类不符合要求时抛出
      */
     public static ValidateException resolve(Material material, Context context) {
-        // 1. 确定要使用的异常类：优先使用上下文中的异常类，如果为null则使用材料中的异常类
-        Class<? extends ValidateException> exceptionClass = context.getException();
+        // 1. 确定异常类：优先使用上下文的异常类，fallback 到材料的异常类，再 fallback 到 ValidateException
+        Class<? extends ValidateException> exceptionClass = ObjectKit.defaultIfNull(context.getException(),
+                ObjectKit.defaultIfNull(material.getException(), ValidateException.class));
+
+        // 2. 确定错误码：优先使用材料中的错误码，如果是默认值则尝试上下文的错误码
+        String errorCode = Builder.DEFAULT_ERRCODE.equals(material.getErrcode()) ? material.getErrcode()
+                : ObjectKit.defaultIfNull(context.getErrcode(), material.getErrcode());
+
+        // 3. 获取错误信息：从 Errors 获取，如果 key 为 null 则使用原始 errorCode
+        Errors error = Errors.require(errorCode);
+        String resolvedErrorCode = ObjectKit.defaultIfNull(error.getKey(), errorCode);
+        String resolvedErrorMsg = ObjectKit.defaultIfNull(error.getValue(), material.getFormatted());
+
+        // 4. 设置材料中的错误码和错误消息
+        material.setErrcode(resolvedErrorCode);
+        material.setErrmsg(resolvedErrorMsg);
+
+        // 5. 创建异常实例
         if (exceptionClass == null) {
-            exceptionClass = material.getException();
+            return new ValidateException(errorCode, resolvedErrorMsg);
         }
-
-        // 2. 确定错误码：如果材料中的错误码是默认错误码，则使用材料中的错误码；否则使用上下文中的错误码
-        String errorCode;
-        if (Builder.DEFAULT_ERRCODE.equals(material.getErrcode())) {
-            errorCode = material.getErrcode();
-        } else {
-            errorCode = context.getErrcode();
-        }
-
-        // 3. 构建错误信息对象：使用错误码和格式化后的错误消息
-        Errors errors = ErrorRegistry.builder().key(errorCode).value(material.getFormatted()).build();
-
-        // 4. 创建异常实例：如果没有指定异常类，使用默认异常；否则通过反射创建自定义异常
-        if (exceptionClass == null) {
-            return new ValidateException(errors);
-        } else {
-            try {
-                Constructor<? extends ValidateException> constructor = exceptionClass.getConstructor(String.class,
-                        String.class);
-                return constructor.newInstance(errors.getKey(), errors.getKey());
-            } catch (NoSuchMethodException e) {
-                throw new NoSuchException(
-                        "Illegal custom validation exception, no specified constructor: constructor(String, int)");
-            } catch (IllegalAccessException e) {
-                throw new NoSuchException("Unable to access custom validation exception constructor");
-            } catch (InstantiationException e) {
-                throw new NoSuchException("Failed to instantiate custom validation exception via reflection");
-            } catch (InvocationTargetException e) {
-                throw new NoSuchException("Failed to instantiate custom validation exception via reflection");
-            }
+        try {
+            Constructor<? extends ValidateException> constructor = exceptionClass.getConstructor(String.class,
+                    String.class);
+            return constructor.newInstance(resolvedErrorCode, resolvedErrorMsg);
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchException("Illegal custom validation exception, no constructor(String, String) found: "
+                    + exceptionClass.getName());
+        } catch (IllegalAccessException e) {
+            throw new NoSuchException(
+                    "Unable to access constructor of custom validation exception: " + exceptionClass.getName());
+        } catch (InstantiationException | InvocationTargetException e) {
+            throw new NoSuchException("Failed to instantiate custom validation exception: " + exceptionClass.getName(),
+                    e);
         }
     }
 
