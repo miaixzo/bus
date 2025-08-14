@@ -104,7 +104,7 @@ public class BaseAdvice extends Controller {
     public Object InternalException(InternalException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode._100510);
+            return write(ErrorCode._100805);
         }
         return write(e.getErrcode(), e.getErrmsg());
     }
@@ -120,7 +120,7 @@ public class BaseAdvice extends Controller {
     public Object businessException(BusinessException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode._100513);
+            return write(ErrorCode._100807);
         }
         return write(e.getErrcode());
     }
@@ -136,7 +136,7 @@ public class BaseAdvice extends Controller {
     public Object crontabException(CrontabException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode._100600);
+            return write(ErrorCode._100808);
         }
         return write(e.getErrcode(), e.getErrmsg());
     }
@@ -152,7 +152,7 @@ public class BaseAdvice extends Controller {
     public Object validateException(ValidateException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode._100510);
+            return write(ErrorCode._100805);
         }
         return write(e.getErrcode(), e.getErrmsg());
     }
@@ -167,7 +167,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public Object httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         this.defaultExceptionHandler(e);
-        return write(ErrorCode._100507);
+        return write(ErrorCode._100802);
     }
 
     /**
@@ -181,7 +181,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         this.defaultExceptionHandler(e);
-        return write(ErrorCode._100508);
+        return write(ErrorCode._100803);
     }
 
     /**
@@ -195,7 +195,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public Object noHandlerFoundException(NoHandlerFoundException e) {
         this.defaultExceptionHandler(e);
-        return write(ErrorCode._100509);
+        return write(ErrorCode._100804);
     }
 
     /**
@@ -209,7 +209,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler({ MethodArgumentNotValidException.class, BindException.class })
     public Object handleBodyValidException(MethodArgumentNotValidException e) {
         this.defaultExceptionHandler(e);
-        return write(ErrorCode._100511);
+        return write(ErrorCode._100809);
     }
 
     /**

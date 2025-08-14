@@ -85,11 +85,11 @@ public class ErrorsHandler implements WebExceptionHandler {
                 Format.error(exchange, "BUSINESS_EXCEPTION",
                         "ErrorCode: " + e.getErrcode() + ", Message: " + e.getMessage());
             } else {
-                message = Controller.write(ErrorCode._100513, e.getMessage()); // 通用业务异常
+                message = Controller.write(ErrorCode._100807, e.getMessage()); // 通用业务异常
                 Format.error(exchange, "BUSINESS_EXCEPTION", "Generic BusinessException: " + e.getMessage());
             }
         } else {
-            message = Controller.write(ErrorCode._100513); // 默认未知错误
+            message = Controller.write(ErrorCode._100807); // 默认未知错误
             Format.error(exchange, "UNKNOWN_EXCEPTION",
                     "Unknown exception type: " + ex.getClass().getName() + ", Message: " + ex.getMessage());
         }

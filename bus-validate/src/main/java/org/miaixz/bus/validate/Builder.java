@@ -41,10 +41,6 @@ import java.lang.annotation.Annotation;
 public class Builder extends Validator {
 
     /**
-     * 默认错误码
-     */
-    public static final String DEFAULT_ERRCODE = "-1";
-    /**
      * 默认属性名
      */
     public static final String DEFAULT_FIELD = "field";

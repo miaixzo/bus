@@ -120,7 +120,7 @@ public class PrimaryFilter extends AbstractFilter {
                                                 + (System.currentTimeMillis() - context.getStartTime()) + "ms"));
                     } catch (Exception e) {
                         Format.warn(mutate, "JSON_PARSING_ERROR", "Failed to parse JSON: " + e.getMessage());
-                        throw new InternalException(ErrorCode._100119);
+                        throw new InternalException(ErrorCode._100302);
                     }
                 });
             } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {

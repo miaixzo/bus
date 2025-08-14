@@ -161,7 +161,7 @@ public class Checker {
         material.setErrmsg("请检查${field}参数");
 
         // 设置默认错误码
-        material.setErrcode(Builder.DEFAULT_ERRCODE);
+        material.setErrcode(ErrorCode._116000);
 
         // 设置需要校验的字段名称
         material.setField(field.getName());

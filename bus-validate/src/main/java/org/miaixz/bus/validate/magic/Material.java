@@ -129,7 +129,7 @@ public class Material {
      *
      * @return the string
      */
-    public String getFormatted() {
+    public String getMessage() {
         StringBuilder text = new StringBuilder();
         HighMultiReplacer.of(this.param).replace(this.errmsg, 0, text);
         return text.toString();

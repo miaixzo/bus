@@ -164,7 +164,7 @@ public class AuthorizeFilter extends AbstractFilter {
             } else if (Objects.equals(assets.getHttpMethod(), HttpMethod.POST)) {
                 throw new BusinessException(ErrorCode._100201, error);
             } else {
-                throw new BusinessException(ErrorCode._100508, error);
+                throw new BusinessException(ErrorCode._100803, error);
             }
         }
     }
@@ -233,7 +233,7 @@ public class AuthorizeFilter extends AbstractFilter {
         String xAppId = requestParam.get("x_app_id");
         if (StringKit.isNotBlank(xAppId) && !appId.equals(xAppId)) {
             Format.warn(exchange, "AUTH_APPID_MISMATCH", "App ID mismatch, expected: " + appId + ", actual: " + xAppId);
-            throw new BusinessException(ErrorCode._100511, "App ID mismatch");
+            throw new BusinessException(ErrorCode._100806, "App ID mismatch");
         }
     }
 

@@ -36,10 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.magic.Material;
 import org.miaixz.bus.validate.magic.annotation.Complex;
 
@@ -183,30 +183,27 @@ public class Provider {
      */
     public static ValidateException resolve(Material material, Context context) {
         // 1. 确定异常类：优先使用上下文的异常类，fallback 到材料的异常类，再 fallback 到 ValidateException
-        Class<? extends ValidateException> exceptionClass = ObjectKit.defaultIfNull(context.getException(),
-                ObjectKit.defaultIfNull(material.getException(), ValidateException.class));
+        Class<? extends ValidateException> exceptionClass = ObjectKit.defaultIfNull(material.getException(),
+                context.getException());
 
         // 2. 确定错误码：优先使用材料中的错误码，如果是默认值则尝试上下文的错误码
-        String errorCode = Builder.DEFAULT_ERRCODE.equals(material.getErrcode()) ? material.getErrcode()
-                : ObjectKit.defaultIfNull(context.getErrcode(), material.getErrcode());
+        String errcode = ObjectKit.defaultIfNull(material.getErrcode(), context.getErrcode());
 
         // 3. 获取错误信息：从 Errors 获取，如果 key 为 null 则使用原始 errorCode
-        Errors error = Errors.require(errorCode);
-        String resolvedErrorCode = ObjectKit.defaultIfNull(error.getKey(), errorCode);
-        String resolvedErrorMsg = ObjectKit.defaultIfNull(error.getValue(), material.getFormatted());
+        String errmsg = ObjectKit.defaultIfNull(material.getErrmsg(), ErrorCode.__116000.getValue());
 
         // 4. 设置材料中的错误码和错误消息
-        material.setErrcode(resolvedErrorCode);
-        material.setErrmsg(resolvedErrorMsg);
+        material.setErrcode(errcode);
+        material.setErrmsg(errmsg);
 
         // 5. 创建异常实例
         if (exceptionClass == null) {
-            return new ValidateException(errorCode, resolvedErrorMsg);
+            return new ValidateException(errcode, material.getMessage());
         }
         try {
             Constructor<? extends ValidateException> constructor = exceptionClass.getConstructor(String.class,
                     String.class);
-            return constructor.newInstance(resolvedErrorCode, resolvedErrorMsg);
+            return constructor.newInstance(errcode, material.getMessage());
         } catch (NoSuchMethodException e) {
             throw new NoSuchException("Illegal custom validation exception, no constructor(String, String) found: "
                     + exceptionClass.getName());

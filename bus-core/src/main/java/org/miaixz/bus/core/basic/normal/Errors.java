@@ -30,6 +30,7 @@ package org.miaixz.bus.core.basic.normal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
@@ -66,6 +67,7 @@ public interface Errors {
      */
     default void register() {
         if (ERRORS_CACHE.containsKey(getKey())) {
+            Console.log("Key already exists for : " + getKey());
             return;
         }
         ERRORS_CACHE.putIfAbsent(getKey(), new Entry(getKey(), getValue()));
