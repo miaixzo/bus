@@ -219,7 +219,8 @@ public class Verified extends Provider {
      * @return 校验器属性对象
      */
     public Material build(Annotation annotation, Object object) {
-        Assert.isTrue(isAnnotation(annotation), "尝试从非校验注解上获取信息:" + annotation);
+        Assert.isTrue(isAnnotation(annotation),
+                "Attempt to get information from a non-validation annotation:" + annotation);
         Class<? extends Annotation> annotationType = annotation.annotationType();
         try {
             String[] groups = (String[]) annotationType.getMethod(Builder.GROUP).invoke(annotation);
@@ -229,18 +230,16 @@ public class Verified extends Provider {
             this.field = Builder.DEFAULT_FIELD.equals(name) ? this.field : name;
             Material material = new Material();
             material.setAnnotation(annotation);
-            material.setErrmsg(errmsg);
-            material.setGroup(groups);
-            material.setField(this.field);
             material.setErrcode(errcode);
+            material.setErrmsg(errmsg);
+            material.setField(this.field);
+            material.setGroup(groups);
             material.addParam(Builder.FIELD, this.field);
-
             if (ObjectKit.isNotEmpty(object) && object.getClass().isArray()) {
                 material.addParam(Builder.VALUE, Arrays.toString((Object[]) object));
             } else {
                 material.addParam(Builder.VALUE, String.valueOf(object));
             }
-
             Method[] declaredMethods = annotationType.getDeclaredMethods();
             for (Method m : declaredMethods) {
                 Filler filler = m.getAnnotation(Filler.class);
@@ -268,11 +267,15 @@ public class Verified extends Provider {
                 }
             }
             if (ObjectKit.isEmpty(material.getClazz()) || StringKit.isEmpty(material.getName())) {
-                throw new InternalException("非法的校验注解,没有使用Complex元注解表示校验器:" + annotationType.getName());
+                throw new InternalException(
+                        "Invalid validation annotation, missing Complex meta-annotation to specify validator:"
+                                + annotationType.getName());
             }
             return material;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new InternalException("非法的校验注解,没有定义通用的校验属性:" + annotationType.getName(), e);
+            throw new InternalException(
+                    "Invalid validation annotation, missing common validation attributes:" + annotationType.getName(),
+                    e);
         }
     }
 

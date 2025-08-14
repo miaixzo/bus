@@ -150,12 +150,12 @@ public class ErrorCode {
     /**
      * 无效的签名
      */
-    public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("无效的签名").build();
+    public static final Errors _100118 = ErrorRegistry.builder().key("100118").value("签名信息无效").build();
 
     /**
      * 无效的JSON
      */
-    public static final Errors _100119 = ErrorRegistry.builder().key("100119").value("无效的JSON").build();
+    public static final Errors _100119 = ErrorRegistry.builder().key("100119").value("JSON格式错误").build();
 
     /**
      * 请使用GET请求
@@ -273,14 +273,14 @@ public class ErrorCode {
     public static final Errors _100510 = ErrorRegistry.builder().key("100510").value("内部处理异常").build();
 
     /**
-     * 验证失败
+     * 授权处理异常
      */
-    public static final Errors _100511 = ErrorRegistry.builder().key("100511").value("验证失败!").build();
+    public static final Errors _100511 = ErrorRegistry.builder().key("100511").value("授权处理异常").build();
 
     /**
-     * 数据已存在
+     * 不支持的操作
      */
-    public static final Errors _100512 = ErrorRegistry.builder().key("100512").value("数据已存在").build();
+    public static final Errors _100512 = ErrorRegistry.builder().key("100512").value("不支持的操作").build();
 
     /**
      * 业务处理失败
@@ -288,9 +288,9 @@ public class ErrorCode {
     public static final Errors _100513 = ErrorRegistry.builder().key("100513").value("业务处理失败").build();
 
     /**
-     * 不支持的操作
+     * 数据已存在
      */
-    public static final Errors _100514 = ErrorRegistry.builder().key("100514").value("不支持的操作").build();
+    public static final Errors _100514 = ErrorRegistry.builder().key("100514").value("数据已存在").build();
 
     /**
      * 数据不存在
@@ -401,11 +401,6 @@ public class ErrorCode {
      * 未绑定手机号码
      */
     public static final Errors _100536 = ErrorRegistry.builder().key("100536").value("未绑定手机号码").build();
-
-    /**
-     * id不能为空
-     */
-    public static final Errors _100537 = ErrorRegistry.builder().key("100537").value("id不能为空").build();
 
     /**
      * 任务执行失败

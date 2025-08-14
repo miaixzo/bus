@@ -60,13 +60,13 @@ public interface Errors {
     String getValue();
 
     /**
-     * 将错误码注册到全局缓存中。 如果错误码已存在于缓存中，将抛出InternalException异常。
+     * 将错误码注册到全局缓存中。 如果错误码已存在于缓存中，直接退出，防止重复注册。
      *
      * @throws InternalException 如果尝试注册重复的错误码
      */
     default void register() {
         if (ERRORS_CACHE.containsKey(getKey())) {
-            throw new InternalException("重复注册错误码：" + getKey());
+            return;
         }
         ERRORS_CACHE.putIfAbsent(getKey(), new Entry(getKey(), getValue()));
     }

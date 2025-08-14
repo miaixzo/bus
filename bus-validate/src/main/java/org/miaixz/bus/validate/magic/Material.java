@@ -119,7 +119,7 @@ public class Material {
             this.param = new HashMap<>();
         }
         if (this.param.containsKey(name)) {
-            throw new IllegalArgumentException("当前异常信息格式化参数已经存在:" + name);
+            throw new ValidateException("Error message already exists:" + name);
         }
         this.param.put(name, value);
     }

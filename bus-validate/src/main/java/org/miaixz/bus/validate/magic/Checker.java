@@ -28,13 +28,13 @@
 package org.miaixz.bus.validate.magic;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -43,6 +43,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.*;
 import org.miaixz.bus.validate.magic.annotation.Inside;
+import org.miaixz.bus.validate.magic.annotation.NotBlank;
+import org.miaixz.bus.validate.metric.NotBlankMatcher;
 
 /**
  * 校验检查器
@@ -82,46 +84,99 @@ public class Checker {
      */
     public Collector inside(Verified verified) {
         Collector collector = new Collector(verified);
-        try {
-            Object object = verified.getObject();
-            if (ObjectKit.isNotEmpty(object)) {
-                Field[] fields = FieldKit.getFields(object.getClass());
-                for (Field field : fields) {
-                    Object value = FieldKit.getFieldValue(object, field);
-                    Annotation[] annotations = field.getDeclaredAnnotations();
 
-                    String[] xFields = verified.getContext().getField();
-                    String[] xSkip = null == verified.getContext().getSkip() ? null : verified.getContext().getSkip();
+        Object object = verified.getObject();
+        if (ObjectKit.isEmpty(object)) {
+            Logger.debug("The verified object is null, skip validation of internal fields: {}", verified);
+            return collector;
+        }
 
-                    // 过滤当前需跳过的属性
-                    if (ArrayKit.isNotEmpty(xSkip) && Arrays.asList(xSkip).contains(field.getName())) {
-                        continue;
-                    }
-                    // 过滤当前需要校验的属性
-                    if (ArrayKit.isNotEmpty(xFields) && !Arrays.asList(xFields).contains(field.getName())) {
-                        continue;
-                    }
-                    // 属性校验开始
-                    verified.getContext().setInside(false);
-                    verified = new Verified(value, annotations, verified.getContext(), field.getName());
-
-                    if (null != value && Provider.isCollection(value) && hasInside(annotations)) {
-                        collector.collect(doCollectionInside(verified));
-                    } else if (null != value && Provider.isArray(value) && hasInside(annotations)) {
-                        collector.collect(doArrayInside(verified));
-                    }
-                    if (verified.getList().isEmpty()) {
-                        continue;
-                    }
-                    collector.collect(verified.access());
-                }
-            } else {
-                Logger.debug("当前被校验的对象为null, 忽略校验对象内部字段: {}", verified);
+        Field[] fields = FieldKit.getFields(object.getClass());
+        for (Field field : fields) {
+            Object value = FieldKit.getFieldValue(object, field);
+            Annotation[] annotations = field.getDeclaredAnnotations();
+            String[] xFields = verified.getContext().getField();
+            String[] xSkip = null == verified.getContext().getSkip() ? null : verified.getContext().getSkip();
+            // 过滤当前需跳过的属性
+            if (ArrayKit.isNotEmpty(xSkip) && Arrays.asList(xSkip).contains(field.getName())) {
+                continue;
             }
-        } catch (InternalException e) {
-            throw new InternalException("无法校验指定字段", e);
+            // 过滤当前需要校验的属性
+            if (ArrayKit.isNotEmpty(xFields) && !Arrays.asList(xFields).contains(field.getName())) {
+                continue;
+            }
+
+            // 属性校验开始
+            verified.getContext().setInside(false);
+            verified = new Verified(value, annotations, verified.getContext(), field.getName());
+            if (null != value && Provider.isCollection(value) && hasInside(annotations)) {
+                collector.collect(doCollectionInside(verified));
+            } else if (null != value && Provider.isArray(value) && hasInside(annotations)) {
+                collector.collect(doArrayInside(verified));
+            }
+
+            if (verified.getList().isEmpty()) {
+                Logger.warn("Please check the annotation on property: {}", field.getName());
+                // throw new ValidateException(ErrorCode._100511);
+                // 创建包含默认Material的Verified对象
+                verified = new Verified(value, new Annotation[0], verified.getContext(), field.getName());
+                verified.getList().add(without(field));
+            }
+
+            collector.collect(verified.access());
         }
         return collector;
+    }
+
+    /**
+     * 创建一个表示字段不能为空的校验规则Material对象
+     *
+     * @param field 需要校验的字段
+     * @return 配置好校验规则的Material对象
+     */
+    public Material without(Field field) {
+        // 创建新的Material对象用于存储校验规则
+        Material material = new Material();
+
+        // 设置校验器名称为"NOT_BLANK"
+        material.setName(Builder._NOT_BLANK);
+
+        // 从Registry获取NotBlank校验器的类对象并设置
+        // 这里使用require方法确保校验器存在
+        material.setClazz(Registry.getInstance().require(Builder._NOT_BLANK).getClass());
+
+        // 使用动态代理创建NotBlank注解实例
+        // 代理对象会返回注解方法的默认值
+        material.setAnnotation((NotBlank) Proxy.newProxyInstance(
+                // 使用注解的类加载器
+                NotBlank.class.getClassLoader(),
+                // 实现的接口
+                new Class<?>[] { NotBlank.class },
+                // 调用处理器
+                (proxy, method, args) -> {
+                    // 返回注解方法的默认值
+                    return method.getDefaultValue();
+                }));
+
+        // 设置错误消息模板，使用${field}占位符
+        material.setErrmsg("请检查${field}参数");
+
+        // 设置默认错误码
+        material.setErrcode(Builder.DEFAULT_ERRCODE);
+
+        // 设置需要校验的字段名称
+        material.setField(field.getName());
+
+        // 设置校验分组为空数组（表示不分组）
+        material.setGroup(new String[0]);
+
+        // 添加校验参数：
+        // 1. FIELD参数：字段名称
+        material.addParam(Builder.FIELD, field.getName());
+        // 2. VALUE参数：空字符串（表示校验空值）
+        material.addParam(Builder.VALUE, Normal.EMPTY);
+
+        return material;
     }
 
     /**
@@ -131,11 +186,11 @@ public class Checker {
      * @param material 校验器属性
      * @return 校验结果
      */
-    private Collector doObject(Verified verified, Material material) {
+    public Collector doObject(Verified verified, Material material) {
         Matcher matcher = (Matcher) Registry.getInstance().require(material.getName(), material.getClazz());
         if (ObjectKit.isEmpty(matcher)) {
-            throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s", material.getName(),
-                    null == material.getClazz() ? Normal.NULL : material.getClazz().getName()));
+            throw new NoSuchException(String.format("Cannot find the specified validator, name:%s, class:%s",
+                    material.getName(), null == material.getClazz() ? Normal.NULL : material.getClazz().getName()));
         }
         Object validatedTarget = verified.getObject();
         if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray() && Provider.isArray(validatedTarget)) {
@@ -159,7 +214,7 @@ public class Checker {
      * @param material 校验器属性
      * @return 校验结果
      */
-    private Collector doCollection(Verified verified, Material material) {
+    public Collector doCollection(Verified verified, Material material) {
         Collector collector = new Collector(verified);
         Collection<?> collection = (Collection<?>) verified.getObject();
         for (Object item : collection) {
@@ -168,7 +223,6 @@ public class Checker {
             Collector checked = itemTarget.access();
             collector.collect(checked);
         }
-
         return collector;
     }
 
@@ -179,7 +233,7 @@ public class Checker {
      * @param material 校验器属性
      * @return 校验结果
      */
-    private Collector doArrayObject(Verified verified, Material material) {
+    public Collector doArrayObject(Verified verified, Material material) {
         Collector collector = new Collector(verified);
         Object[] array = (Object[]) verified.getObject();
         for (int i = 0; i < array.length; i++) {
@@ -197,7 +251,7 @@ public class Checker {
      * @param verified 被校验对象
      * @return 校验结果
      */
-    private Collector doArrayInside(Verified verified) {
+    public Collector doArrayInside(Verified verified) {
         Collector collector = new Collector(verified);
         Object[] array = (Object[]) verified.getObject();
         for (Object object : array) {
@@ -227,7 +281,7 @@ public class Checker {
      * @param annotations 注解
      * @return 校验结果
      */
-    private boolean hasInside(Annotation[] annotations) {
+    public boolean hasInside(Annotation[] annotations) {
         return Arrays.stream(annotations).anyMatch(an -> an instanceof Inside);
     }
 

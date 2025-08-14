@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 存储错误码: 115xxx
+ * 网关错误码: 115xxx
  * 
  * @author Kimi Liu
  * @since Java 17+
