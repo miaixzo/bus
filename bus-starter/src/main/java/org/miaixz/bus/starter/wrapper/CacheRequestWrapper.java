@@ -29,9 +29,11 @@ package org.miaixz.bus.starter.wrapper;
 
 import java.io.*;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.EscapeKit;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -57,10 +59,22 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
 
     CacheRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        // 从ParameterMap获取参数，并保存以便多次获取
-        Logger.info("==> Parameters:{}", JsonKit.toJsonString(request.getParameterMap()));
         // 从InputStream获取参数，并保存以便多次获取
         this.body = IoKit.readBytes(request.getInputStream());
+        if (this.body == null) {
+            this.body = new byte[0]; // 防止空指针
+        }
+        Object logOut = MapKit.isNotEmpty(request.getParameterMap()) ? request.getParameterMap()
+                : new String(this.body, Charset.UTF_8);
+
+        if (logOut instanceof String) {
+            // 移除换行符、制表符和多余空白
+            logOut = ((String) logOut).replaceAll("\\s+", Normal.EMPTY);
+        } else {
+            logOut = JsonKit.toJsonString(logOut);
+        }
+        Logger.info("==> Parameters:{}", logOut);
+
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
                 null != this.body ? this.body : Normal.EMPTY_BYTE_ARRAY);
         // 初始 ServletInputStreamWrapper

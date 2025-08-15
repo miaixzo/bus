@@ -343,46 +343,46 @@ public class ErrorCode {
     /**
      * 请求方式不支持
      */
-    public static final Errors _100802 = ErrorRegistry.builder().key("100507").value("请求方式不支持").build();
+    public static final Errors _100802 = ErrorRegistry.builder().key("100802").value("请求方式不支持").build();
 
     /**
      * 不支持此类型
      */
-    public static final Errors _100803 = ErrorRegistry.builder().key("100508").value("不支持此类型").build();
+    public static final Errors _100803 = ErrorRegistry.builder().key("100803").value("不支持此类型").build();
 
     /**
      * 未找到资源
      */
-    public static final Errors _100804 = ErrorRegistry.builder().key("100509").value("未找到资源").build();
+    public static final Errors _100804 = ErrorRegistry.builder().key("100804").value("未找到资源").build();
 
     /**
      * 内部处理异常
      */
-    public static final Errors _100805 = ErrorRegistry.builder().key("100510").value("内部处理异常").build();
+    public static final Errors _100805 = ErrorRegistry.builder().key("100805").value("内部处理异常").build();
 
     /**
      * 授权处理异常
      */
-    public static final Errors _100806 = ErrorRegistry.builder().key("100511").value("授权处理异常").build();
+    public static final Errors _100806 = ErrorRegistry.builder().key("100806").value("授权处理异常").build();
 
     /**
      * 业务处理失败
      */
-    public static final Errors _100807 = ErrorRegistry.builder().key("100813").value("业务处理失败").build();
+    public static final Errors _100807 = ErrorRegistry.builder().key("100807").value("业务处理失败").build();
 
     /**
      * 任务执行失败
      */
-    public static final Errors _100808 = ErrorRegistry.builder().key("100814").value("任务执行失败").build();
+    public static final Errors _100808 = ErrorRegistry.builder().key("100808").value("任务执行失败").build();
 
     /**
      * 参数绑定异常
      */
-    public static final Errors _100809 = ErrorRegistry.builder().key("100815").value("参数绑定异常").build();
+    public static final Errors _100809 = ErrorRegistry.builder().key("100809").value("参数绑定异常").build();
 
     /**
      * 链接已过期
      */
-    public static final Errors _100810 = ErrorRegistry.builder().key("100814").value("链接已过期").build();
+    public static final Errors _100810 = ErrorRegistry.builder().key("100810").value("链接已过期").build();
 
 }

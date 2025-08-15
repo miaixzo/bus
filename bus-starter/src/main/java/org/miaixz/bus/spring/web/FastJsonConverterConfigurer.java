@@ -140,7 +140,6 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                 Object result = autoTypes == null ? JSON.parseObject(jsonString, clazz, READER_FEATURES)
                         : JSON.parseObject(jsonString, clazz, JSONReader.autoTypeFilter(autoTypes), READER_FEATURES);
 
-                Logger.debug("Deserialization successful for class {}", clazz.getName());
                 return result;
             } catch (IOException e) {
                 Logger.error("IO error occurred during JSON deserialization, class {}: {}", clazz.getName(),
@@ -158,7 +157,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
         protected void writeInternal(Object object, HttpOutputMessage outputMessage)
                 throws HttpMessageNotWritableException {
             try {
-                Logger.debug("Serializing object: {}", object != null ? object.getClass().getName() : "null");
+                Logger.debug("==>     Object: {}", object != null ? object.getClass().getName() : "null");
                 PropertyFilter filter = (source, name, value) -> {
                     if (value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value)) {
                         return false;
@@ -181,7 +180,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
 
                 String jsonString = JSON.toJSONString(object, filter, WRITER_FEATURES);
                 outputMessage.getBody().write(jsonString.getBytes(StandardCharsets.UTF_8));
-                Logger.debug("Serialization successful, JSON length: {}", jsonString.length());
+                Logger.info("<==     Length: {}", jsonString.length());
             } catch (IOException e) {
                 Logger.error("IO error occurred during JSON serialization: {}", e.getMessage(), e);
                 throw new HttpMessageNotWritableException(
