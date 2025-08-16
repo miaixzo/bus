@@ -42,6 +42,7 @@ import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.web.RequestContext;
@@ -87,7 +88,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 线程本地存储请求上下文。
      */
-    private static final ThreadLocal<RequestContext> REQUEST_CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<RequestContext> REQUEST_CONTEXT = ThreadKit.createThreadLocal(false);
 
     /**
      * 默认缓存配置 - 最大缓存条目数。
@@ -102,7 +103,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 租户 ID 提供者实例。
      */
-    private static volatile ContextProvider provider;
+    public static volatile ContextProvider provider;
 
     /**
      * 设置用户信息提供者。
@@ -118,15 +119,8 @@ public class ContextBuilder extends WebUtils {
      *
      * @param request HTTP 请求对象
      */
-    public static void initRequestContext(HttpServletRequest request) {
+    public static void setRequestContext(HttpServletRequest request) {
         REQUEST_CONTEXT.set(new RequestContext(request));
-    }
-
-    /**
-     * 清除请求上下文。
-     */
-    public static void clearRequestContext() {
-        REQUEST_CONTEXT.remove();
     }
 
     /**
@@ -729,7 +723,7 @@ public class ContextBuilder extends WebUtils {
      */
     public static Authorize getAuthorize() {
         try {
-            // 1.如果有自定义用户提供者，优先使用
+            // 1.如果有自定义访问授权提供者，优先使用
             if (provider != null) {
                 return provider.getAuthorize();
             }
@@ -742,10 +736,11 @@ public class ContextBuilder extends WebUtils {
             if (StringKit.isEmpty(userId)) {
                 return null;
             }
+
             // 将 URL 解码后的用户数据转换为 Authorize 对象
             return JsonKit.toPojo(UrlDecoder.decode(userId, Charset.UTF_8), Authorize.class);
         } catch (Exception e) {
-            Logger.error("Error occurred while retrieving current user: {}", e.getMessage());
+            Logger.error("Error occurred while retrieving current authorize: {}", e.getMessage());
             return null;
         }
     }
@@ -760,7 +755,6 @@ public class ContextBuilder extends WebUtils {
      */
     public static String getTenantId() {
         try {
-
             // 1. 如果有自定义租户 ID 提供者，优先使用
             if (provider != null) {
                 return provider.getTenantId();
@@ -774,16 +768,19 @@ public class ContextBuilder extends WebUtils {
                     return tenantId;
                 }
             }
+
             // 3. 然后检查 'x_tenant_id' 请求头
             String tenantId = getValue("x_tenant_id", EnumValue.Params.HEADER);
             if (!StringKit.isEmpty(tenantId)) {
                 return tenantId;
             }
+
             // 4. 接着检查 'tenant_id' 参数（包括请求参数和 JSON 请求体）
             tenantId = getValue("tenant_id", EnumValue.Params.PARAMETER);
             if (!StringKit.isEmpty(tenantId)) {
                 return tenantId;
             }
+
             return getValue("tenant_id", EnumValue.Params.JSON_BODY);
         } catch (Exception e) {
             Logger.error("Error occurred while retrieving tenant ID: {}", e.getMessage());
@@ -803,11 +800,18 @@ public class ContextBuilder extends WebUtils {
     }
 
     /**
+     * 清除请求上下文。
+     */
+    public static void clear() {
+        REQUEST_CONTEXT.remove();
+    }
+
+    /**
      * 清除指定请求的缓存。
      *
      * @param requestId 请求 ID
      */
-    public static void clearCache(String requestId) {
+    public static void clear(String requestId) {
         CacheX<String, Map<String, String>> headerCache = getHeaderCache();
         if (headerCache != null) {
             headerCache.remove(requestId);
@@ -825,7 +829,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 清除所有缓存。
      */
-    public static void clearAllCache() {
+    public static void clearAll() {
         CacheX<String, Map<String, String>> headerCache = getHeaderCache();
         if (headerCache != null) {
             headerCache.clear();
@@ -843,7 +847,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 重置所有缓存实例（用于测试或重新初始化）。
      */
-    public static void resetCache() {
+    public static void reset() {
         HEADER_CACHE = null;
         PARAMETER_CACHE = null;
         JSON_BODY_CACHE = null;

@@ -28,6 +28,8 @@
 /**
  * 提供简易缓存实现，此模块参考了jodd中的相应模块
  *
+ * 高级功能/支持详见 bus-cache 模块
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
