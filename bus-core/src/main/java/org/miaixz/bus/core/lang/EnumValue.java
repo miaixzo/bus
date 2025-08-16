@@ -503,7 +503,45 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * S
+     * 参数来源枚举
+     */
+    enum Params {
+        /**
+         * 请求头
+         */
+        HEADER,
+        /**
+         * 请求参数（包括表单和 URL 参数）
+         */
+        PARAMETER,
+        /**
+         * JSON 请求体
+         */
+        JSON_BODY,
+        /**
+         * Cookie
+         */
+        COOKIE,
+        /**
+         * 路径变量
+         */
+        PATH_VARIABLE,
+        /**
+         * 文件上传参数
+         */
+        MULTIPART,
+        /**
+         * 线程上下文
+         */
+        CONTEXT,
+        /**
+         * 所有来源（按优先级：Header > Parameter > Path Variable > JSON Body > Cookie > Multipart > Context）
+         */
+        ALL
+    }
+
+    /**
+     * 策略模式枚举
      */
     @Getter
     @AllArgsConstructor

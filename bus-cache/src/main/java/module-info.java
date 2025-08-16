@@ -59,6 +59,7 @@ module bus.cache {
     requires curator.framework;
     requires curator.recipes;
     requires curator.client;
+    requires com.github.benmanes.caffeine;
 
     exports org.miaixz.bus.cache;
     exports org.miaixz.bus.cache.magic;

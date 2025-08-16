@@ -53,7 +53,7 @@ public class AuthorizerMethodResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer modelAndViewContainer,
             NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) {
-        return ContextBuilder.getCurrentUser();
+        return ContextBuilder.getAuthorize();
     }
 
 }

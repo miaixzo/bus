@@ -95,6 +95,7 @@
         <guava.version>33.4.8-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
         <mysql.version>9.4.0</mysql.version>
+        <caffeine.version>3.2.2</caffeine.version>
     </properties>
 
     <dependencies>
@@ -260,6 +261,11 @@
                     <artifactId>jackson-datatype-jsr310</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
     </dependencies>
 
