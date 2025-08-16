@@ -29,6 +29,7 @@ package org.miaixz.bus.spring.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
@@ -94,7 +95,8 @@ public class MultiFormatArgumentResolver implements HandlerMethodArgumentResolve
         String contentType = request.getContentType();
 
         // 处理 JSON 请求（POST/PUT 等）
-        if (contentType != null && contentType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
+        if (!HTTP.GET.equalsIgnoreCase(request.getMethod()) && contentType != null
+                && contentType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
             try (var inputStream = request.getInputStream()) {
                 return JsonKit.toPojo(new String(inputStream.readAllBytes(), Charset.UTF_8), parameterType);
             } catch (IOException e) {
@@ -123,7 +125,6 @@ public class MultiFormatArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         binder.bind(mpvs);
-        binder.validate();
         if (binder.getBindingResult().hasErrors()) {
             throw new IllegalArgumentException("Binding errors: " + binder.getBindingResult().getAllErrors());
         }
