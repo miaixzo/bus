@@ -215,4 +215,20 @@ public class TinyLoggingProvider extends AbstractProvider {
         return tinyLevel;
     }
 
+    @Override
+    public org.miaixz.bus.logger.Level getLevel() {
+        Level tinyLevel = provider.getMinimumLevel();
+        if (tinyLevel == null) {
+            return org.miaixz.bus.logger.Level.OFF;
+        }
+        return switch (tinyLevel) {
+        case TRACE -> org.miaixz.bus.logger.Level.TRACE;
+        case DEBUG -> org.miaixz.bus.logger.Level.DEBUG;
+        case INFO -> org.miaixz.bus.logger.Level.INFO;
+        case WARN -> org.miaixz.bus.logger.Level.WARN;
+        case ERROR -> org.miaixz.bus.logger.Level.ERROR;
+        case OFF -> org.miaixz.bus.logger.Level.OFF;
+        };
+    }
+
 }

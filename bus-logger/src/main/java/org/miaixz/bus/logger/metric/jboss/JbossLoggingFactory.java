@@ -42,7 +42,7 @@ public class JbossLoggingFactory extends AbstractFactory {
      * 构造
      */
     public JbossLoggingFactory() {
-        super("JBoss Logging");
+        super("org.jboss.logging.Logger");
         exists(org.jboss.logging.Logger.class);
     }
 

@@ -233,12 +233,108 @@ public class Logger {
     }
 
     /**
+     * 获取当前日志级别
+     *
+     * @return 当前日志级别，如果无法获取则返回 Level.OFF
+     */
+    public static Level getLevel() {
+        Provider provider = Registry.get(CallerKit.getCallers());
+        return provider != null ? provider.getLevel() : Level.OFF;
+    }
+
+    /**
+     * 设置日志级别
+     *
+     * @param level 日志级别
+     * @throws UnsupportedOperationException 如果底层日志框架不支持动态级别设置
+     */
+    public static void setLevel(Level level) {
+        Provider provider = Registry.get(CallerKit.getCallers());
+        if (provider != null) {
+            provider.setLevel(level);
+        }
+    }
+
+    /**
+     * 获取日志实现
+     *
+     * @return 日志实现类，例如org.jboss.logging.Logger
+     */
+    public static Class<?> getFactory() {
+        Factory factory = Holder.getFactory();
+        if (factory == null) {
+            return null;
+        }
+
+        // 如果无法直接获取，尝试通过工厂名称推断
+        String factoryName = factory.getName();
+        if (factoryName.contains("org.jboss.logging.Logger")) {
+            try {
+                return Class.forName("org.jboss.logging.Logger");
+            } catch (ClassNotFoundException ex) {
+                // 忽略异常，继续尝试其他方式
+            }
+        } else if (factoryName.contains("org.slf4j.Logger")) {
+            try {
+                return Class.forName("org.slf4j.Logger");
+            } catch (ClassNotFoundException ex) {
+                // 忽略异常，继续尝试其他方式
+            }
+        } else if (factoryName.contains("org.apache.logging.log4j.Logger")) {
+            try {
+                return Class.forName("org.apache.logging.log4j.Logger");
+            } catch (ClassNotFoundException ex) {
+                // 忽略异常，继续尝试其他方式
+            }
+        } else if (factoryName.contains("java.util.logging.Logger")) {
+            try {
+                return Class.forName("java.util.logging.Logger");
+            } catch (ClassNotFoundException ex) {
+                // 忽略异常，继续尝试其他方式
+            }
+        } else if (factoryName.contains("org.apache.commons.logging.Log")) {
+            try {
+                return Class.forName("org.apache.commons.logging.Log");
+            } catch (ClassNotFoundException ex) {
+                // 忽略异常，继续尝试其他方式
+            }
+        } else if (factoryName.contains("org.tinylog.Logger")) {
+            try {
+                return Class.forName("org.tinylog.Logger");
+            } catch (ClassNotFoundException ex) {
+                // 忽略异常，继续尝试其他方式
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 获得日志对象
+     *
+     * @return 当前日志提供者，可能为 null
+     */
+    public static Provider getProvider() {
+        return Registry.get(CallerKit.getCallers());
+    }
+
+    /**
+     * 检查指定日志级别是否启用
+     *
+     * @param level 日志级别
+     * @return 是否启用
+     */
+    public static boolean isEnabled(Level level) {
+        return getProvider().isEnabled(level);
+    }
+
+    /**
      * Trace 等级日志否开启
      *
      * @return the true/false
      */
     public static boolean isTraceEnabled() {
-        return Registry.get(CallerKit.getCallers()).isTraceEnabled();
+        return getProvider().isTraceEnabled();
     }
 
     /**
@@ -247,7 +343,7 @@ public class Logger {
      * @return the true/false
      */
     public static boolean isDebugEnabled() {
-        return Registry.get(CallerKit.getCallers()).isDebugEnabled();
+        return getProvider().isDebugEnabled();
     }
 
     /**
@@ -256,7 +352,7 @@ public class Logger {
      * @return the true/false
      */
     public static boolean isInfoEnabled() {
-        return Registry.get(CallerKit.getCallers()).isInfoEnabled();
+        return getProvider().isInfoEnabled();
     }
 
     /**
@@ -265,7 +361,7 @@ public class Logger {
      * @return the true/false
      */
     public static boolean isWarnEnabled() {
-        return Registry.get(CallerKit.getCallers()).isWarnEnabled();
+        return getProvider().isWarnEnabled();
     }
 
     /**
@@ -274,7 +370,7 @@ public class Logger {
      * @return the true/false
      */
     public static boolean isErrorEnabled() {
-        return Registry.get(CallerKit.getCallers()).isErrorEnabled();
+        return getProvider().isErrorEnabled();
     }
 
 }

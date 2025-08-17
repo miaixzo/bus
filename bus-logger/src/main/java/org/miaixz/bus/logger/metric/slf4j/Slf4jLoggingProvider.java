@@ -223,4 +223,35 @@ public class Slf4jLoggingProvider extends AbstractProvider {
         logger.log(null, fqcn, level_int, StringKit.format(format, args), null, t);
     }
 
+    @Override
+    public Level getLevel() {
+        // 尝试检查是否为 Logback 的 Logger
+        if (logger instanceof ch.qos.logback.classic.Logger logbackLogger) {
+            ch.qos.logback.classic.Level logbackLevel = logbackLogger.getLevel();
+            if (logbackLevel != null) {
+                return switch (logbackLevel.toString()) {
+                case "TRACE" -> Level.TRACE;
+                case "DEBUG" -> Level.DEBUG;
+                case "INFO" -> Level.INFO;
+                case "WARN" -> Level.WARN;
+                case "ERROR" -> Level.ERROR;
+                default -> Level.OFF;
+                };
+            }
+        }
+        // 回退到基于 isEnabled() 的推断
+        if (logger.isTraceEnabled()) {
+            return Level.TRACE;
+        } else if (logger.isDebugEnabled()) {
+            return Level.DEBUG;
+        } else if (logger.isInfoEnabled()) {
+            return Level.INFO;
+        } else if (logger.isWarnEnabled()) {
+            return Level.WARN;
+        } else if (logger.isErrorEnabled()) {
+            return Level.ERROR;
+        }
+        return Level.OFF;
+    }
+
 }

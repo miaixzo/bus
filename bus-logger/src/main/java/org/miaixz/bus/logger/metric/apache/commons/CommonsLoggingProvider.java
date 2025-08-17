@@ -31,6 +31,7 @@ import java.io.Serial;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.Logger;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
@@ -136,6 +137,9 @@ public class CommonsLoggingProvider extends AbstractProvider {
 
     @Override
     public void warn(final Throwable t, final String format, final Object... args) {
+        if (isWarnEnabled()) {
+            logger.warn(StringKit.format(format, args), t);
+        }
     }
 
     @Override
@@ -153,9 +157,8 @@ public class CommonsLoggingProvider extends AbstractProvider {
     @Override
     public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
         if (isErrorEnabled()) {
-            logger.warn(StringKit.format(format, args), t);
+            logger.error(StringKit.format(format, args), t);
         }
-
     }
 
     @Override
@@ -163,23 +166,44 @@ public class CommonsLoggingProvider extends AbstractProvider {
             final Object... args) {
         switch (level) {
         case TRACE:
-            trace(t, format, args);
+            trace(fqcn, t, format, args);
             break;
         case DEBUG:
-            debug(t, format, args);
+            debug(fqcn, t, format, args);
             break;
         case INFO:
-            info(t, format, args);
+            info(fqcn, t, format, args);
             break;
         case WARN:
-            warn(t, format, args);
+            warn(fqcn, t, format, args);
             break;
         case ERROR:
-            error(t, format, args);
+            error(fqcn, t, format, args);
             break;
         default:
             throw new Error(StringKit.format("Can not identify level: {}", level));
         }
+    }
+
+    @Override
+    public Level getLevel() {
+        // 尝试检查底层日志框架（如 Log4j 或 Logback）
+        if (logger instanceof Logger) { // Log4j 2.x
+            org.apache.logging.log4j.Level log4jLevel = ((Logger) logger).getLevel();
+            if (log4jLevel != null) {
+                return switch (log4jLevel.getStandardLevel().toString()) {
+                case "TRACE" -> Level.TRACE;
+                case "DEBUG" -> Level.DEBUG;
+                case "INFO" -> Level.INFO;
+                case "WARN" -> Level.WARN;
+                case "ERROR" -> Level.ERROR;
+                case "FATAL" -> Level.ERROR; // 映射 FATAL 到 ERROR
+                default -> Level.OFF;
+                };
+            }
+        }
+        // 回退到默认实现
+        return super.getLevel();
     }
 
 }

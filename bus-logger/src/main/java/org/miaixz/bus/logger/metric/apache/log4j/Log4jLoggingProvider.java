@@ -180,4 +180,21 @@ public class Log4jLoggingProvider extends AbstractProvider {
         }
     }
 
+    @Override
+    public org.miaixz.bus.logger.Level getLevel() {
+        Level log4jLevel = logger.getLevel();
+        if (log4jLevel == null) {
+            return org.miaixz.bus.logger.Level.OFF;
+        }
+        return switch (log4jLevel.getStandardLevel().toString()) {
+        case "TRACE" -> org.miaixz.bus.logger.Level.TRACE;
+        case "DEBUG" -> org.miaixz.bus.logger.Level.DEBUG;
+        case "INFO" -> org.miaixz.bus.logger.Level.INFO;
+        case "WARN" -> org.miaixz.bus.logger.Level.WARN;
+        case "ERROR" -> org.miaixz.bus.logger.Level.ERROR;
+        case "FATAL" -> org.miaixz.bus.logger.Level.ERROR; // 映射 FATAL 到 ERROR
+        default -> org.miaixz.bus.logger.Level.OFF;
+        };
+    }
+
 }

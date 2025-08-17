@@ -42,7 +42,7 @@ public class ColorLoggingFactory extends AbstractFactory {
      * 构造
      */
     public ColorLoggingFactory() {
-        super("Console Color Logging");
+        super("System.out.println");
     }
 
     @Override

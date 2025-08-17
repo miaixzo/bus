@@ -42,7 +42,7 @@ public class CommonsLoggingFactory extends AbstractFactory {
      * 构造
      */
     public CommonsLoggingFactory() {
-        super("Apache Common Logging");
+        super("org.apache.commons.logging.Log");
         exists(org.apache.commons.logging.LogFactory.class);
     }
 

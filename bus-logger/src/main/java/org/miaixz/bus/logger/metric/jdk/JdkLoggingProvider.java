@@ -207,4 +207,20 @@ public class JdkLoggingProvider extends AbstractProvider {
         }
     }
 
+    @Override
+    public org.miaixz.bus.logger.Level getLevel() {
+        Level jdkLevel = logger.getLevel();
+        if (jdkLevel == null) {
+            return org.miaixz.bus.logger.Level.OFF;
+        }
+        return switch (jdkLevel.getName()) {
+        case "FINEST" -> org.miaixz.bus.logger.Level.TRACE;
+        case "FINE", "FINER" -> org.miaixz.bus.logger.Level.DEBUG;
+        case "INFO" -> org.miaixz.bus.logger.Level.INFO;
+        case "WARNING" -> org.miaixz.bus.logger.Level.WARN;
+        case "SEVERE" -> org.miaixz.bus.logger.Level.ERROR;
+        default -> org.miaixz.bus.logger.Level.OFF;
+        };
+    }
+
 }

@@ -111,4 +111,35 @@ public interface Provider extends Trace, Debug, Info, Warn, Error {
      */
     void log(String fqcn, Level level, Throwable t, String format, Object... args);
 
+    /**
+     * 获取当前日志级别
+     *
+     * @return 当前日志级别，如果无法获取则返回 Level.OFF
+     */
+    default Level getLevel() {
+        if (isEnabled(Level.TRACE)) {
+            return Level.TRACE;
+        } else if (isEnabled(Level.DEBUG)) {
+            return Level.DEBUG;
+        } else if (isEnabled(Level.INFO)) {
+            return Level.INFO;
+        } else if (isEnabled(Level.WARN)) {
+            return Level.WARN;
+        } else if (isEnabled(Level.ERROR)) {
+            return Level.ERROR;
+        } else {
+            return Level.OFF;
+        }
+    }
+
+    /**
+     * 设置日志级别
+     *
+     * @param level 日志级别
+     * @throws UnsupportedOperationException 如果底层日志框架不支持动态级别设置
+     */
+    default void setLevel(Level level) {
+        // 默认实现为空，具体实现类可覆盖
+    }
+
 }

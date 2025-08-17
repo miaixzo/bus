@@ -77,7 +77,7 @@ public class NormalLoggingProvider extends AbstractProvider {
      *
      * @param level 自定义级别
      */
-    public static void setLevel(final Level level) {
+    public void setLevel(final Level level) {
         Assert.notNull(level);
         _level = level;
     }
@@ -159,6 +159,11 @@ public class NormalLoggingProvider extends AbstractProvider {
     @Override
     public boolean isEnabled(final Level level) {
         return _level.compareTo(level) <= 0;
+    }
+
+    @Override
+    public Level getLevel() {
+        return _level != null ? _level : Level.OFF;
     }
 
 }
