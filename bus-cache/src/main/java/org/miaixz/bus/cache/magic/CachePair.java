@@ -28,28 +28,66 @@
 package org.miaixz.bus.cache.magic;
 
 /**
+ * 缓存键值对类
+ * <p>
+ * 用于存储一对关联的键值，提供泛型支持以适应不同类型的数据。 采用不可变设计，一旦创建后不能修改其内容。
+ * </p>
+ *
+ * @param <L> 左值类型
+ * @param <R> 右值类型
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CachePair<L, R> {
 
-    private L left;
+    /**
+     * 左值
+     */
+    private final L left;
 
-    private R right;
+    /**
+     * 右值
+     */
+    private final R right;
 
+    /**
+     * 私有构造方法
+     *
+     * @param left  左值
+     * @param right 右值
+     */
     private CachePair(L left, R right) {
         this.left = left;
         this.right = right;
     }
 
+    /**
+     * 创建CachePair实例的工厂方法
+     *
+     * @param <L>   左值类型
+     * @param <R>   右值类型
+     * @param left  左值
+     * @param right 右值
+     * @return CachePair实例
+     */
     public static <L, R> CachePair<L, R> of(L left, R right) {
         return new CachePair<>(left, right);
     }
 
+    /**
+     * 获取左值
+     *
+     * @return 左值
+     */
     public L getLeft() {
         return left;
     }
 
+    /**
+     * 获取右值
+     *
+     * @return 右值
+     */
     public R getRight() {
         return right;
     }

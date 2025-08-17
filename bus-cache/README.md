@@ -1,9 +1,3 @@
-#### 项目说明
-
-该项目是微服务缓存基础项目，框架现在还只支持添加缓存和失效缓存两种操作, 暂时还不能支持缓存更新(
-但其实失效后再添加就是更新了O(∩_∩)O~).
-> 我们目标在将来提供`@CachePut`注解, 以提供根据方法的入参/返回值进行缓存写入/更新, 详见#TODO列表
-
 # 工业级缓存解决方案
 
 - 多级缓存设计&实现;
@@ -91,7 +85,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids){
     </constructor-arg>
 </bean>
 
-        org.miaixz.bus.cache.provider.cache.Cache实现 -->
+        org.miaixz.bus.cache.metrics.cache.Cache实现 -->
 <bean id="guava" class="GuavaCache">
     <constructor-arg name="expire" value="600000"/>
     <constructor-arg name="size" value="100000"/>
@@ -134,29 +128,46 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids){
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Cached {
 
-    /**
-     * @return Specifies the <b>Used cache implementation</b>,
-     * default the first {@code caches} config in {@code CacheXAspect}
-     */
-    String value() default "";
 
     /**
-     * @return Specifies the start prefix on every key,
-     * if the {@code Method} have non {@code param},
-     * {@code prefix}consts{@code Method}
+     * 指定使用的缓存实现
+     * <p>
+     * 默认使用在CacheAspect中配置的第一个caches
+     * </p>
+     *
+     * @return 缓存实现名称
      */
-    String prefix() default "";
+    String value() default Normal.EMPTY;
 
     /**
-     * @return use <b>SpEL</b>,
-     * when this spel is {@code true}, this {@code Method} will go through by cache
+     * 指定每个键的前缀
+     * <p>
+     * 如果方法没有参数，prefix将作为该方法使用的常量键
+     * </p>
+     *
+     * @return 键前缀
      */
-    String condition() default "";
+    String prefix() default Normal.EMPTY;
 
     /**
-     * @return expire time, time unit: <b>seconds</b>
+     * 使用SpEL表达式
+     * <p>
+     * 当这个SpEL表达式为true时，该方法会使用缓存
+     * </p>
+     *
+     * @return SpEL条件表达式
      */
-    int expire() default Expire.FOREVER;
+    String condition() default Normal.EMPTY;
+
+    /**
+     * 过期时间
+     * <p>
+     * 时间单位：毫秒
+     * </p>
+     *
+     * @return 过期时间（毫秒）
+     */
+    int expire() default CacheExpire.FOREVER;
 }
 ```
 
@@ -180,19 +191,35 @@ public @interface Cached {
 public @interface Invalid {
 
     /**
-     * @return as {@code @Cached}
+     * 指定使用的缓存实现
+     * <p>
+     * 与@Cached注解的value属性功能相同
+     * </p>
+     *
+     * @return 缓存实现名称
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
-     * @return as {@code @Cached}
+     * 指定每个键的前缀
+     * <p>
+     * 与@Cached注解的prefix属性功能相同
+     * </p>
+     *
+     * @return 键前缀
      */
-    String prefix() default "";
+    String prefix() default Normal.EMPTY;
 
     /**
-     * @return as {@code @Cached}
+     * 使用SpEL表达式
+     * <p>
+     * 与@Cached注解的condition属性功能相同 当这个SpEL表达式为true时，该方法会使缓存失效
+     * </p>
+     *
+     * @return SpEL条件表达式
      */
-    String condition() default "";
+    String condition() default Normal.EMPTY;
+
 }
 ```
 
@@ -210,16 +237,27 @@ public @interface Invalid {
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CacheKey {
 
-    /**
-     * @return use a part of param as a cache key part
-     */
-    String value() default "";
 
     /**
-     * @return used multi model(value has `#i` index) and method return {@code Collection},
-     * the {@code field} indicate which of the {@code Collection}'s entity field related with this param
+     * 使用参数的一部分作为缓存的关键部分
+     * <p>
+     * 可以使用SpEL表达式指定参数的特定部分作为键的组成部分
+     * </p>
+     *
+     * @return SpEL表达式，用于指定参数的哪部分作为键
      */
-    String field() default "";
+    String value() default Normal.EMPTY;
+
+    /**
+     * 使用多模型(value has `# i ` index)方法返回{@code Collection} {@code field} 指示与此参数相关的 {@code Collection} 实体字段中的哪个
+     * <p>
+     * 当方法返回Collection类型时，指定Collection中对象的哪个字段作为键的组成部分
+     * </p>
+     *
+     * @return 字段名称，用于指定Collection中对象的哪个字段作为键
+     */
+    String field() default Normal.EMPTY;
+
 }
 ```
 
@@ -244,23 +282,35 @@ public @interface CacheKey {
 public @interface CachedGet {
 
     /**
-     * @return Specifies the <b>Used cache implementation</b>,
-     * default the first {@code caches} config in {@code CacheXAspect}
+     * 指定使用的缓存实现
+     * <p>
+     * 默认使用在CacheAspect中配置的第一个caches
+     * </p>
+     *
+     * @return 缓存实现名称
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
-     * @return Specifies the start keyExp on every key,
-     * if the {@code Method} have non {@code param},
-     * {@code keyExp}consts{@code Method}
+     * 指定每个键的前缀
+     * <p>
+     * 如果方法没有参数，prefix将作为该方法使用的常量键
+     * </p>
+     *
+     * @return 键前缀
      */
-    String prefix() default "";
+    String prefix() default Normal.EMPTY;
 
     /**
-     * @return use <b>SpEL</b>,
-     * when this spel is {@code true}, this {@Code Method} will go through by cache
+     * 使用SpEL表达式
+     * <p>
+     * 当这个SpEL表达式为true时，该方法会使用缓存
+     * </p>
+     *
+     * @return SpEL条件表达式
      */
-    String condition() default "";
+    String condition() default Normal.EMPTY;
+
 }
 ```
 

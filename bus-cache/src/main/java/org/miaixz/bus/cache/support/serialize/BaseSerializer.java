@@ -25,10 +25,41 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cache.support.serialize;
+
 /**
- * 缓存方案实现
+ * 基础序列化器接口
+ * <p>
+ * 定义了序列化和反序列化的基本操作，用于在缓存系统中存储和检索对象。 实现类需要提供具体的序列化和反序列化逻辑。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.cache.provider;
+public interface BaseSerializer {
+
+    /**
+     * 序列化对象
+     * <p>
+     * 将对象转换为字节数组，以便在缓存中存储
+     * </p>
+     *
+     * @param <T>    对象类型
+     * @param object 要序列化的对象
+     * @return 序列化后的字节数组
+     */
+    <T> byte[] serialize(T object);
+
+    /**
+     * 反序列化字节数组
+     * <p>
+     * 将字节数组转换为对象，以便从缓存中检索
+     * </p>
+     *
+     * @param <T>   对象类型
+     * @param bytes 要反序列化的字节数组
+     * @return 反序列化后的对象
+     */
+    <T> T deserialize(byte[] bytes);
+
+}

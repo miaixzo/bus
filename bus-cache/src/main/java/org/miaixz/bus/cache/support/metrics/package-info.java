@@ -25,39 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.serialize;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 /**
+ * 缓存方案实现
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdkGzipSerializer extends AbstractSerializer {
-
-    @Override
-    protected byte[] doSerialize(Object object) throws Throwable {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                GZIPOutputStream gzout = new GZIPOutputStream(bos);
-                ObjectOutputStream out = new ObjectOutputStream(gzout)) {
-            out.writeObject(object);
-            return bos.toByteArray();
-        }
-    }
-
-    @Override
-    protected Object doDeserialize(byte[] bytes) throws Throwable {
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-                GZIPInputStream gzin = new GZIPInputStream(bis);
-                ObjectInputStream ois = new ObjectInputStream(gzin)) {
-
-            return ois.readObject();
-        }
-    }
-
-}
+package org.miaixz.bus.cache.support.metrics;

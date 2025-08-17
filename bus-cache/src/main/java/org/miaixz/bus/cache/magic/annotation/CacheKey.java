@@ -28,10 +28,14 @@
 package org.miaixz.bus.cache.magic.annotation;
 
 import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * 缓存键注解
+ * <p>
+ * 用于标记方法参数作为缓存键的一部分。可以指定参数的特定部分或字段作为键的组成部分。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -41,12 +45,22 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface CacheKey {
 
     /**
-     * @return 使用参数的一部分作为缓存的关键部分
+     * 使用参数的一部分作为缓存的关键部分
+     * <p>
+     * 可以使用SpEL表达式指定参数的特定部分作为键的组成部分
+     * </p>
+     *
+     * @return SpEL表达式，用于指定参数的哪部分作为键
      */
     String value() default Normal.EMPTY;
 
     /**
-     * @return 使用多模型(value has ` # i ` index)方法返回{@code Collection} {@code field} 指示与此参数相关的 {@code Collection} 实体字段中的哪个
+     * 使用多模型(value has `# i ` index)方法返回{@code Collection} {@code field} 指示与此参数相关的 {@code Collection} 实体字段中的哪个
+     * <p>
+     * 当方法返回Collection类型时，指定Collection中对象的哪个字段作为键的组成部分
+     * </p>
+     *
+     * @return 字段名称，用于指定Collection中对象的哪个字段作为键
      */
     String field() default Normal.EMPTY;
 

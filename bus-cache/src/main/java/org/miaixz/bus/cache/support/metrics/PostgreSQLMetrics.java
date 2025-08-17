@@ -25,35 +25,59 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.provider;
+package org.miaixz.bus.cache.support.metrics;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 /**
+ * PostgreSQL数据库缓存命中率统计实现
+ * <p>
+ * 基于PostgreSQL数据库实现的缓存命中率统计，使用HikariCP连接池和JdbcTemplate进行数据库操作。 自动创建缓存统计表，支持并发更新和乐观锁机制。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MySQLHitting extends AbstractHitting {
+public class PostgreSQLMetrics extends AbstractMetrics {
 
-    public MySQLHitting(Map<String, Object> context) {
+    /**
+     * 构造方法
+     *
+     * @param context 上下文参数
+     */
+    public PostgreSQLMetrics(Map<String, Object> context) {
         super(context);
     }
 
-    public MySQLHitting(String url, String username, String password) {
+    /**
+     * 构造方法
+     *
+     * @param url      数据库URL
+     * @param username 用户名
+     * @param password 密码
+     */
+    public PostgreSQLMetrics(String url, String username, String password) {
         super(url, username, password);
     }
 
+    /**
+     * 创建JdbcOperations并初始化数据库
+     * <p>
+     * 创建PostgreSQL数据库连接池，初始化JdbcTemplate，并创建缓存统计表
+     * </p>
+     *
+     * @param context 上下文参数
+     * @return 初始化完成的JdbcOperations对象
+     */
     @Override
     protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
         return () -> {
@@ -62,7 +86,6 @@ public class MySQLHitting extends AbstractHitting {
                 for (String key : context.keySet()) {
                     properties.setProperty(key, context.get(key).toString());
                 }
-
                 HikariDataSource dataSource = new HikariDataSource(new HikariConfig(properties));
                 JdbcTemplate template = new JdbcTemplate(dataSource);
                 template.execute("CREATE TABLE IF NOT EXISTS t_cache_rate("
@@ -70,7 +93,6 @@ public class MySQLHitting extends AbstractHitting {
                         + "hit_count     BIGINT      NOT NULL     DEFAULT 0,"
                         + "require_count BIGINT      NOT NULL     DEFAULT 0,"
                         + "version       BIGINT      NOT NULL     DEFAULT 0)");
-
                 return template;
             } catch (Exception e) {
                 throw new InternalException(e);
@@ -78,6 +100,15 @@ public class MySQLHitting extends AbstractHitting {
         };
     }
 
+    /**
+     * 将数据库查询结果转换为DataDO流
+     * <p>
+     * 将查询结果Map转换为DataDO对象流，便于后续处理
+     * </p>
+     *
+     * @param mapResults 数据库查询结果
+     * @return DataDO流
+     */
     @Override
     protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
         return mapResults.stream().map(result -> {
@@ -86,7 +117,6 @@ public class MySQLHitting extends AbstractHitting {
             dataDO.setHitCount((Long) result.get("hit_count"));
             dataDO.setPattern((String) result.get("pattern"));
             dataDO.setVersion((Long) result.get("version"));
-
             return dataDO;
         });
     }

@@ -44,7 +44,6 @@ module bus.pager {
     requires org.mybatis;
     requires druid;
     requires com.zaxxer.hikari;
-    requires com.google.common;
     requires net.sf.jsqlparser;
 
     exports org.miaixz.bus.pager;

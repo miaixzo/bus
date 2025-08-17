@@ -31,7 +31,11 @@ import java.lang.reflect.Constructor;
 import java.util.Properties;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cache.metric.CaffeineCache;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Property;
 
@@ -54,18 +58,22 @@ public abstract class CacheFactory {
      * @return the object
      */
     public static <K, V> CacheX<K, V> createCache(String sqlCacheClass, String prefix, Properties properties) {
+        if (ObjectKit.isEmpty(properties)) {
+            throw new PageException("Properties is empty");
+        }
+        properties.setProperty("prefix", StringKit.isNotEmpty(prefix) ? prefix + Symbol.DOT : Normal.EMPTY);
         if (StringKit.isEmpty(sqlCacheClass)) {
             try {
-                return new GuavaCache<>(properties, prefix);
+                return new CaffeineCache<>(properties);
             } catch (Throwable t) {
-                return new SimpleCache<>(properties, prefix);
+                return new SimpleCache<>(properties);
             }
         } else {
             try {
                 Class<? extends CacheX> clazz = (Class<? extends CacheX>) Class.forName(sqlCacheClass);
                 try {
                     Constructor<? extends CacheX> constructor = clazz.getConstructor(Properties.class, String.class);
-                    return constructor.newInstance(properties, prefix);
+                    return constructor.newInstance(properties);
                 } catch (Exception e) {
                     CacheX cache = clazz.newInstance();
                     if (cache instanceof Property) {

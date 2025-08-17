@@ -30,16 +30,26 @@ package org.miaixz.bus.cache.metric;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
 import org.miaixz.bus.cache.CacheX;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Caffeine 缓存支持 Caffeine 是一个高性能的 Java 缓存库，提供接近最优的命中率
+ * Caffeine 缓存支持
+ * <p>
+ * 基于Caffeine实现的高性能本地缓存，提供接近最优的命中率。 支持设置最大容量、过期时间等配置参数，并提供批量读写操作。
+ * </p>
  *
+ * @param <K> 键类型
+ * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -48,33 +58,64 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
     /**
      * Caffeine 缓存实例
      */
-    private final Cache<K, V> caffeineCache;
+    private LoadingCache<K, V> cache;
 
     /**
      * 构造函数
+     * <p>
+     * 使用指定的大小和过期时间创建缓存实例
+     * </p>
      *
      * @param size   最大缓存条目数
      * @param expire 过期时间（毫秒）
      */
     public CaffeineCache(long size, long expire) {
-        this.caffeineCache = Caffeine.newBuilder()
+        this.cache = Caffeine.newBuilder()
                 // 设置最大缓存条目数
                 .maximumSize(size)
                 // 设置写入后过期时间
                 .expireAfterWrite(expire, TimeUnit.MILLISECONDS)
                 // 构建缓存
-                .build();
+                .build(key -> null);
+    }
+
+    /**
+     * 构造方法
+     * <p>
+     * 使用Properties配置创建缓存实例，支持配置最大容量、过期时间等参数
+     * </p>
+     *
+     * @param properties 配置属性
+     */
+    public CaffeineCache(Properties properties) {
+        // 获取参数前缀
+        String prefix = StringKit.isNotEmpty(properties.getProperty("prefix")) ? properties.getProperty("prefix")
+                : Normal.EMPTY;
+        // 获取所有配置值
+        String maximumSize = properties.getProperty(prefix + "maximumSize");
+        String expireAfterAccess = properties.getProperty(prefix + "expireAfterAccess");
+        String expireAfterWrite = properties.getProperty(prefix + "expireAfterWrite");
+        String initialCapacity = properties.getProperty(prefix + "initialCapacity");
+        // 使用链式调用构建CacheBuilder
+        this.cache = Caffeine.newBuilder()
+                .maximumSize(StringKit.isNotEmpty(maximumSize) ? Long.parseLong(maximumSize) : 1000)
+                .expireAfterAccess(Long.parseLong(expireAfterAccess), TimeUnit.MILLISECONDS)
+                .expireAfterWrite(Long.parseLong(expireAfterWrite), TimeUnit.MILLISECONDS)
+                .initialCapacity(Integer.parseInt(initialCapacity)).build(key -> null);
     }
 
     /**
      * 构造函数（支持异步加载）
+     * <p>
+     * 使用指定的大小、过期时间和缓存加载器创建缓存实例
+     * </p>
      *
      * @param size        最大缓存条目数
      * @param expire      过期时间（毫秒）
      * @param cacheLoader 缓存加载器
      */
     public CaffeineCache(long size, long expire, CacheLoader<K, V> cacheLoader) {
-        this.caffeineCache = Caffeine.newBuilder()
+        this.cache = Caffeine.newBuilder()
                 // 设置最大缓存条目数
                 .maximumSize(size)
                 // 设置写入后过期时间
@@ -83,43 +124,76 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
                 .build(cacheLoader);
     }
 
+    /**
+     * 从缓存中读取单个值
+     *
+     * @param key 键
+     * @return 值，如果不存在则返回null
+     */
     @Override
     public V read(K key) {
         // 使用 getIfPresent 方法，如果键不存在则返回 null
-        return caffeineCache.getIfPresent(key);
+        return this.cache.getIfPresent(key);
     }
 
+    /**
+     * 从缓存中批量读取值
+     *
+     * @param keys 键集合
+     * @return 键值映射
+     */
     @Override
     public Map<K, V> read(Collection<K> keys) {
         // 使用 getAllPresent 方法批量获取存在的键值对
-        return caffeineCache.getAllPresent(keys);
+        return this.cache.getAllPresent(keys);
     }
 
+    /**
+     * 向缓存中写入单个键值对
+     *
+     * @param key    键
+     * @param value  值
+     * @param expire 过期时间（毫秒）
+     */
     @Override
     public void write(K key, V value, long expire) {
         // Caffeine 的 put 方法不直接支持单个键的过期时间设置
         // 过期时间在构建缓存时统一设置，这里忽略参数中的 expire
-        caffeineCache.put(key, value);
+        this.cache.put(key, value);
     }
 
+    /**
+     * 向缓存中批量写入键值对
+     *
+     * @param keyValueMap 键值映射
+     * @param expire      过期时间（毫秒）
+     */
     @Override
     public void write(Map<K, V> keyValueMap, long expire) {
         // 批量写入键值对，同样忽略参数中的 expire
-        caffeineCache.putAll(keyValueMap);
+        this.cache.putAll(keyValueMap);
     }
 
+    /**
+     * 从缓存中移除指定的键
+     *
+     * @param keys 要移除的键
+     */
     @Override
     public void remove(K... keys) {
         // 使用 invalidateAll 方法批量删除指定的键
-        caffeineCache.invalidateAll(Arrays.asList(keys));
+        this.cache.invalidateAll(Arrays.asList(keys));
     }
 
+    /**
+     * 清空缓存
+     */
     @Override
     public void clear() {
         // 使用 invalidateAll 方法清空整个缓存
-        caffeineCache.invalidateAll();
+        this.cache.invalidateAll();
         // 执行维护操作，清理被标记为删除的条目
-        caffeineCache.cleanUp();
+        this.cache.cleanUp();
     }
 
     /**
@@ -128,7 +202,7 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
      * @return 缓存统计信息
      */
     public String getStats() {
-        return caffeineCache.stats().toString();
+        return this.cache.stats().toString();
     }
 
     /**
@@ -137,7 +211,7 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
      * @return 缓存估算大小
      */
     public long estimatedSize() {
-        return caffeineCache.estimatedSize();
+        return this.cache.estimatedSize();
     }
 
     /**
@@ -146,7 +220,7 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
      * @return 内部缓存实例
      */
     public Cache<K, V> getNativeCache() {
-        return caffeineCache;
+        return this.cache;
     }
 
 }

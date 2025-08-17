@@ -25,67 +25,66 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.provider;
+package org.miaixz.bus.cache.support.serialize;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.miaixz.bus.cache.Hitting;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.extra.json.JsonKit;
 
 /**
+ * FastJson序列化器
+ * <p>
+ * 基于FastJson实现的序列化器，将对象序列化为JSON字符串，然后再转换为字节数组。 反序列化时，将字节数组转换为JSON字符串，然后再转换为对象。 这种序列化方式具有良好的可读性和跨语言兼容性，但性能相对二进制序列化较低。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MemoryHitting implements Hitting {
+public class FastJsonSerializer extends AbstractSerializer {
 
-    private ConcurrentMap<String, AtomicLong> hitMap = new ConcurrentHashMap<>();
+    /**
+     * 目标类型，用于反序列化时确定对象类型
+     */
+    private Class<?> type;
 
-    private ConcurrentMap<String, AtomicLong> requireMap = new ConcurrentHashMap<>();
-
-    @Override
-    public void hitIncr(String pattern, int count) {
-        hitMap.computeIfAbsent(pattern, (k) -> new AtomicLong()).addAndGet(count);
+    /**
+     * 构造方法
+     *
+     * @param type 目标类型，用于反序列化时确定对象类型
+     */
+    public FastJsonSerializer(Class<?> type) {
+        this.type = type;
     }
 
+    /**
+     * 执行序列化操作
+     * <p>
+     * 将对象序列化为JSON字符串，然后转换为字节数组
+     * </p>
+     *
+     * @param object 要序列化的对象
+     * @return 序列化后的字节数组
+     * @throws Throwable 可能抛出的异常
+     */
     @Override
-    public void reqIncr(String pattern, int count) {
-        requireMap.computeIfAbsent(pattern, (k) -> new AtomicLong()).addAndGet(count);
+    protected byte[] doSerialize(Object object) throws Throwable {
+        String json = JsonKit.toJsonString(object);
+        return json.getBytes(Charset.DEFAULT_UTF_8);
     }
 
+    /**
+     * 执行反序列化操作
+     * <p>
+     * 将字节数组转换为JSON字符串，然后反序列化为对象
+     * </p>
+     *
+     * @param bytes 要反序列化的字节数组
+     * @return 反序列化后的对象
+     * @throws Throwable 可能抛出的异常
+     */
     @Override
-    public Map<String, Hitting.HittingDO> getHitting() {
-        Map<String, Hitting.HittingDO> result = new LinkedHashMap<>();
-
-        AtomicLong statisticsHit = new AtomicLong(0);
-        AtomicLong statisticsRequired = new AtomicLong(0);
-        requireMap.forEach((pattern, count) -> {
-            long hit = hitMap.computeIfAbsent(pattern, (key) -> new AtomicLong(0)).get();
-            long require = count.get();
-
-            statisticsHit.addAndGet(hit);
-            statisticsRequired.addAndGet(require);
-
-            result.put(pattern, Hitting.HittingDO.newInstance(hit, require));
-        });
-
-        result.put(summaryName(), Hitting.HittingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
-
-        return result;
-    }
-
-    @Override
-    public void reset(String pattern) {
-        hitMap.remove(pattern);
-        requireMap.remove(pattern);
-    }
-
-    @Override
-    public void resetAll() {
-        hitMap.clear();
-        requireMap.clear();
+    protected Object doDeserialize(byte[] bytes) throws Throwable {
+        String json = new String(bytes, 0, bytes.length, Charset.DEFAULT_UTF_8);
+        return JsonKit.toPojo(json, type);
     }
 
 }

@@ -28,7 +28,7 @@
 package org.miaixz.bus.starter.cache;
 
 import org.miaixz.bus.cache.Context;
-import org.miaixz.bus.cache.provider.*;
+import org.miaixz.bus.cache.support.metrics.*;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -55,18 +55,18 @@ public class CacheConfiguration {
             if (StringKit.isNotEmpty(this.properties.getType())) {
                 Object provider = ClassKit.loadClass(this.properties.getType());
                 Context config = Context.newConfig(this.properties.getMap());
-                if (provider instanceof H2Hitting) {
-                    config.setHitting(new H2Hitting(this.properties.getProvider().getUrl(),
+                if (provider instanceof H2Metrics) {
+                    config.setHitting(new H2Metrics(this.properties.getProvider().getUrl(),
                             this.properties.getProvider().getUsername(), this.properties.getProvider().getPassword()));
-                } else if (provider instanceof MySQLHitting) {
-                    config.setHitting(new MySQLHitting(BeanKit.beanToMap(this.properties)));
-                } else if (provider instanceof SqliteHitting) {
-                    config.setHitting(new SqliteHitting(this.properties.getProvider().getUrl(),
+                } else if (provider instanceof MySQLMetrics) {
+                    config.setHitting(new MySQLMetrics(BeanKit.beanToMap(this.properties)));
+                } else if (provider instanceof SqliteMetrics) {
+                    config.setHitting(new SqliteMetrics(this.properties.getProvider().getUrl(),
                             this.properties.getProvider().getUsername(), this.properties.getProvider().getPassword()));
-                } else if (provider instanceof ZookeeperHitting) {
-                    config.setHitting(new ZookeeperHitting(this.properties.getProvider().getUrl()));
-                } else if (provider instanceof MemoryHitting) {
-                    config.setHitting(new MemoryHitting());
+                } else if (provider instanceof ZookeeperMetrics) {
+                    config.setHitting(new ZookeeperMetrics(this.properties.getProvider().getUrl()));
+                } else if (provider instanceof MemoryMetrics) {
+                    config.setHitting(new MemoryMetrics());
                 }
                 return new AspectjCacheProxy(config);
             }
