@@ -28,7 +28,8 @@
 package org.miaixz.bus.vortex.handler;
 
 import java.net.UnknownHostException;
-import org.miaixz.bus.core.basic.spring.Controller;
+
+import lombok.*;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Context;
@@ -41,6 +42,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
+
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
@@ -70,32 +72,36 @@ public class ErrorsHandler implements WebExceptionHandler {
         // 获取请求上下文和参数
         Context context = Context.get(exchange);
         // 根据异常类型生成错误消息
-        Object message;
+        Message message;
         if (ex instanceof WebClientException) {
             if (ex.getCause() instanceof UnknownHostException) {
-                message = Controller.write(ErrorCode._80010001); // 读取超时错误
+                message = Message.builder().errcode(ErrorCode._80010001.getKey()).errmsg(ErrorCode._80010001.getValue())
+                        .build(); // 读取超时错误
                 Format.error(exchange, "WEBCLIENT_EXCEPTION", "UnknownHostException: " + ex.getMessage());
             } else {
-                message = Controller.write(ErrorCode._80010002); // 其他 WebClient 异常
+                message = Message.builder().errcode(ErrorCode._80010002.getKey()).errmsg(ErrorCode._80010002.getValue())
+                        .build(); // 其他 WebClient 异常
                 Format.error(exchange, "WEBCLIENT_EXCEPTION", "WebClientException: " + ex.getMessage());
             }
         } else if (ex instanceof BusinessException e) {
             if (StringKit.isNotBlank(e.getErrcode())) {
-                message = Controller.write(e.getErrcode()); // 业务异常的特定错误码
+                message = Message.builder().errcode(e.getErrcode()).errmsg(e.getErrmsg()).build(); // 业务异常的特定错误码
                 Format.error(exchange, "BUSINESS_EXCEPTION",
                         "ErrorCode: " + e.getErrcode() + ", Message: " + e.getMessage());
             } else {
-                message = Controller.write(ErrorCode._100807, e.getMessage()); // 通用业务异常
+                message = Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue())
+                        .build(); // 通用业务异常
                 Format.error(exchange, "BUSINESS_EXCEPTION", "Generic BusinessException: " + e.getMessage());
             }
         } else {
-            message = Controller.write(ErrorCode._100807); // 默认未知错误
+            message = Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue())
+                    .build();// 默认未知错误
             Format.error(exchange, "UNKNOWN_EXCEPTION",
                     "Unknown exception type: " + ex.getClass().getName() + ", Message: " + ex.getMessage());
         }
 
         // 强制使用 JSON 序列化，确保返回JSON格式
-        String formatBody = Format.JSON.getProvider().serialize(message);
+        String formatBody = context.getFormat().getProvider().serialize(message);
 
         // 将格式化后的响应写入 DataBuffer
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes());
@@ -107,6 +113,23 @@ public class ErrorsHandler implements WebExceptionHandler {
                         + (System.currentTimeMillis() - context.getStartTime()) + "ms");
             }
         });
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    static class Message {
+
+        /**
+         * 响应码
+         */
+        public String errcode;
+
+        /**
+         * 提示信息
+         */
+        public String errmsg;
+
     }
 
 }

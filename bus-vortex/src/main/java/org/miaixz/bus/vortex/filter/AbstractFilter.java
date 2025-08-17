@@ -68,7 +68,7 @@ public abstract class AbstractFilter implements Filter {
         } catch (Exception e) {
             Format.error(exchange, "FILTER_FAILED",
                     "Failed in " + this.getClass().getSimpleName() + ": " + e.getMessage());
-            return Mono.error(e instanceof BusinessException ? e : new BusinessException("Filter execution failed", e));
+            return Mono.error(e instanceof BusinessException ? e : new BusinessException(ErrorCode._FAILURE));
         }
     }
 

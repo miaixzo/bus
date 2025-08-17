@@ -56,7 +56,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  */
 @ControllerAdvice
 @RestControllerAdvice
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@ConditionalOnWebApplication
 public class BaseAdvice extends Controller {
 
     /**
@@ -87,7 +87,6 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Object defaultException(Exception e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode._FAILURE);
@@ -177,7 +176,6 @@ public class BaseAdvice extends Controller {
      * @return 异常提示
      */
     @ResponseBody
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         this.defaultExceptionHandler(e);
@@ -191,7 +189,6 @@ public class BaseAdvice extends Controller {
      * @return 异常提示
      */
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public Object noHandlerFoundException(NoHandlerFoundException e) {
         this.defaultExceptionHandler(e);
@@ -205,7 +202,6 @@ public class BaseAdvice extends Controller {
      * @return 异常提示
      */
     @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ MethodArgumentNotValidException.class, BindException.class })
     public Object handleBodyValidException(MethodArgumentNotValidException e) {
         this.defaultExceptionHandler(e);

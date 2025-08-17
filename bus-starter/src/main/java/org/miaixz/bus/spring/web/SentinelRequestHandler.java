@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.spring.web;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
@@ -36,22 +40,21 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.starter.wrapper.CacheRequestWrapper;
 import org.miaixz.bus.starter.wrapper.CacheResponseWrapper;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 请求安全哨兵拦截器 - 提供API请求的全链路安全防护与审计功能
  *
  * 性能优化
  * <ul>
- * <li>使用{@link org.miaixz.bus.starter.wrapper.CacheRequestWrapper}实现请求体缓存， 解决InputStream只能读取一次的问题</li>
+ * <li>使用{@link CacheRequestWrapper}实现请求体缓存， 解决InputStream只能读取一次的问题</li>
  * <li>响应体记录限制长度(默认150字符)，防止大响应体导致内存溢出</li>
  * <li>支持异步日志记录，减少对主流程性能影响</li>
  * </ul>
@@ -75,7 +78,7 @@ import java.util.Map;
  * <li>自定义日志格式和输出目标</li>
  * <li>集成第三方安全服务</li>
  * </ul>
- * 
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -137,6 +140,8 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         } else {
             Logger.info("==>     Status: {}", response.getStatus());
         }
+        // 请求结束，清理缓存
+        ContextBuilder.clear();
     }
 
     /**
@@ -238,34 +243,24 @@ public class SentinelRequestHandler implements HandlerInterceptor {
      * @param request 网络请求
      */
     public void requestInfo(HttpServletRequest request, String method) {
-        String requestMethod = AnsiEncoder.encode(Ansi4BitColor.GREEN, " %s ", method);
-        switch (method) {
-        case HTTP.GET:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.GREEN, " %s ", method);
-            break;
-        case HTTP.ALL:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.WHITE, " %s ", method);
-            break;
-        case HTTP.POST:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.MAGENTA, " %s ", method);
-            break;
-        case HTTP.DELETE:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLUE, " %s ", method);
-            break;
-        case HTTP.PUT:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.RED, " %s ", method);
-            break;
-        case HTTP.OPTIONS:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.YELLOW, " %s ", method);
-            break;
-        case HTTP.BEFORE:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLACK, " %s ", method);
-            break;
-        case HTTP.AFTER:
-            requestMethod = AnsiEncoder.encode(Ansi4BitColor.CYAN, " %s ", method);
-            break;
-        }
-        Logger.info("{} {} {}", "==>", getClientIP(request), requestMethod, request.getRequestURL().toString());
+        // 定义 HTTP 方法与颜色的映射
+        Map<String, Ansi4BitColor> methodColorMap = new HashMap<>();
+        methodColorMap.put("GET", Ansi4BitColor.GREEN);
+        methodColorMap.put("POST", Ansi4BitColor.MAGENTA);
+        methodColorMap.put("DELETE", Ansi4BitColor.BLUE);
+        methodColorMap.put("PUT", Ansi4BitColor.RED);
+        methodColorMap.put("OPTIONS", Ansi4BitColor.YELLOW);
+        methodColorMap.put("ALL", Ansi4BitColor.WHITE);
+        methodColorMap.put("BEFORE", Ansi4BitColor.BLACK);
+        methodColorMap.put("AFTER", Ansi4BitColor.CYAN);
+
+        // 获取对应方法的颜色，默认为绿色
+        Ansi4BitColor color = methodColorMap.getOrDefault(method, Ansi4BitColor.GREEN);
+        // 格式化 HTTP 方法，添加 ANSI 颜色
+        String requestMethod = AnsiEncoder.encode(color, method);
+        // 记录日志
+        Logger.info("==>    Request: {ip={}, method={}, url={}}", getClientIP(request), requestMethod,
+                request.getRequestURL().toString());
     }
 
 }

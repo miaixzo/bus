@@ -157,7 +157,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
         protected void writeInternal(Object object, HttpOutputMessage outputMessage)
                 throws HttpMessageNotWritableException {
             try {
-                Logger.debug("==>     Object: {}", object != null ? object.getClass().getName() : "null");
+                Logger.debug("<==     Result: {}", object != null ? object.getClass().getName() : "null");
                 PropertyFilter filter = (source, name, value) -> {
                     if (value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value)) {
                         return false;

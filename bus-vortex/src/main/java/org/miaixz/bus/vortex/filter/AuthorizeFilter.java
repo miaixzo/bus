@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.miaixz.bus.core.basic.entity.Authorize;
-import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.BusinessException;
@@ -40,6 +39,7 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.Delegate;
+import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Token;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
@@ -121,7 +121,7 @@ public class AuthorizeFilter extends AbstractFilter {
         if (null == assets) {
             Format.warn(exchange, "AUTH_ASSETS_NOT_FOUND",
                     "Assets not found for method: " + method + ", version: " + version);
-            return Mono.error(new BusinessException(ErrorCode._100500, "Assets not found"));
+            return Mono.error(new BusinessException(ErrorCode._100800));
         }
 
         // 执行各种验证
@@ -160,11 +160,11 @@ public class AuthorizeFilter extends AbstractFilter {
                     + request.getMethod();
             Format.warn(exchange, "AUTH_METHOD_MISMATCH", error);
             if (Objects.equals(assets.getHttpMethod(), HttpMethod.GET)) {
-                throw new BusinessException(ErrorCode._100200, error);
+                throw new BusinessException(ErrorCode._100200);
             } else if (Objects.equals(assets.getHttpMethod(), HttpMethod.POST)) {
-                throw new BusinessException(ErrorCode._100201, error);
+                throw new BusinessException(ErrorCode._100201);
             } else {
-                throw new BusinessException(ErrorCode._100803, error);
+                throw new BusinessException(ErrorCode._100803);
             }
         }
     }
@@ -186,7 +186,7 @@ public class AuthorizeFilter extends AbstractFilter {
             // 检查令牌是否存在
             if (StringKit.isBlank(context.getToken())) {
                 Format.warn(exchange, "AUTH_TOKEN_MISSING", "Access token is missing");
-                throw new BusinessException(ErrorCode._100106, "Access token is missing");
+                throw new BusinessException(ErrorCode._100106);
             }
 
             // 创建令牌对象并进行授权验证
@@ -233,7 +233,7 @@ public class AuthorizeFilter extends AbstractFilter {
         String xAppId = requestParam.get("x_app_id");
         if (StringKit.isNotBlank(xAppId) && !appId.equals(xAppId)) {
             Format.warn(exchange, "AUTH_APPID_MISMATCH", "App ID mismatch, expected: " + appId + ", actual: " + xAppId);
-            throw new BusinessException(ErrorCode._100806, "App ID mismatch");
+            throw new BusinessException(ErrorCode._100806);
         }
     }
 

@@ -31,12 +31,14 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.metric.CaffeineCache;
 import org.miaixz.bus.cache.metric.MemoryCache;
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.MediaType;
@@ -46,7 +48,7 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.spring.web.RequestContext;
+import org.miaixz.bus.logger.Logger;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -60,7 +62,7 @@ import jakarta.servlet.http.Part;
 /**
  * HTTP 请求、用户信息等的便捷操作工具类
  * <p>
- * 使用 CacheX 接口实现缓存功能，支持延迟初始化和运行时替换。 优化了请求获取和上下文管理，提供从多种来源获取参数的功能。
+ * 使用 CacheX 接口实现缓存功能，支持延迟初始化和运行时替换。优化了请求获取和上下文管理，提供从多种来源获取参数的功能。
  * </p>
  *
  * @author Kimi Liu
@@ -79,14 +81,14 @@ public class ContextBuilder extends WebUtils {
     private static volatile CacheX<String, Map<String, String>> PARAMETER_CACHE;
 
     /**
-     * JSON 请求体缓存实现
+     * 请求体缓存实现
      */
-    private static volatile CacheX<String, String> JSON_BODY_CACHE;
+    private static volatile CacheX<String, String> BODY_CACHE;
 
     /**
-     * 线程本地存储请求上下文
+     * 线程本地存储请求 ID
      */
-    private static final ThreadLocal<RequestContext> REQUEST_CONTEXT = ThreadKit.createThreadLocal(false);
+    private static final ThreadLocal<String> REQUEST_ID = ThreadKit.createThreadLocal(false);
 
     /**
      * 默认缓存最大条目数
@@ -96,7 +98,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 默认缓存过期时间（毫秒）
      */
-    private static final long DEFAULT_CACHE_EXPIRE = TimeUnit.MINUTES.toMillis(5);
+    private static final long DEFAULT_CACHE_EXPIRE = TimeUnit.SECONDS.toMillis(10);
 
     /**
      * 租户 ID 提供者实例
@@ -106,7 +108,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 设置用户信息提供者
      * <p>
-     * 配置自定义用户信息提供者，用于获取用户授权信息。 示例代码：
+     * 配置自定义用户信息提供者，用于获取用户授权信息。
      * </p>
      *
      * <pre>{@code
@@ -123,51 +125,53 @@ public class ContextBuilder extends WebUtils {
     /**
      * 初始化请求上下文
      * <p>
-     * 使用 HTTP 请求对象初始化当前线程的请求上下文。 示例代码：
+     * 为当前请求生成新的请求 ID 并存储在 ThreadLocal 中。
      * </p>
      *
      * <pre>{@code
      * HttpServletRequest request = getRequest();
-     * ContextBuilder.setRequestContext(request);
+     * ContextBuilder.setRequestId();
      * }</pre>
-     *
-     * @param request HTTP 请求对象
      */
-    public static void setRequestContext(HttpServletRequest request) {
-        REQUEST_CONTEXT.set(new RequestContext(request));
+    public static void setRequestId() {
+        String requestId = ID.objectId();
+        REQUEST_ID.set(requestId);
     }
 
     /**
-     * 获取当前请求上下文
+     * 获取当前请求 ID
      * <p>
-     * 返回当前线程的请求上下文，如果不存在则尝试从 RequestContextHolder 初始化。 示例代码：
+     * 返回当前线程的请求 ID，如果不存在则生成新的 ID。
      * </p>
      *
      * <pre>{@code
-     * RequestContext context = ContextBuilder.getRequestContext();
-     * if (context != null) {
-     *     System.out.println("请求ID: " + context.getRequestId());
+     * String requestId = ContextBuilder.getRequestId();
+     * if (requestId != null) {
+     *     System.out.println("请求ID: " + requestId);
      * }
      * }</pre>
      *
-     * @return 请求上下文对象，或 null 如果无法获取
+     * @return 请求 ID，或 null 如果无法获取
      */
-    public static RequestContext getRequestContext() {
-        RequestContext context = REQUEST_CONTEXT.get();
-        if (context == null) {
+    public static String getRequestId() {
+        String requestId = REQUEST_ID.get();
+        if (requestId == null) {
             HttpServletRequest request = getRequest();
             if (request != null) {
-                context = new RequestContext(request);
-                REQUEST_CONTEXT.set(context);
+                requestId = ID.objectId();
+                REQUEST_ID.set(requestId);
+                Logger.debug("==> Request ID: {}", requestId);
+            } else {
+                Logger.debug("==> Request ID: No request available to generate request ID");
             }
         }
-        return context;
+        return requestId;
     }
 
     /**
      * 获取当前 HTTP 请求对象
      * <p>
-     * 从 RequestContextHolder 获取当前 HTTP 请求的 ServletRequestAttributes。 示例代码：
+     * 从 RequestContextHolder 获取当前 HTTP 请求的 ServletRequestAttributes。
      * </p>
      *
      * <pre>{@code
@@ -182,6 +186,7 @@ public class ContextBuilder extends WebUtils {
     public static HttpServletRequest getRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null || !(requestAttributes instanceof ServletRequestAttributes)) {
+            Logger.debug("No ServletRequestAttributes available");
             return null;
         }
         return ((ServletRequestAttributes) requestAttributes).getRequest();
@@ -190,7 +195,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取请求头缓存实例
      * <p>
-     * 返回延迟初始化的请求头缓存实例，优先使用 CaffeineCache，失败时回退到 MemoryCache。 示例代码：
+     * 返回延迟初始化的请求头缓存实例，优先使用 CaffeineCache，失败时回退到 MemoryCache。
      * </p>
      *
      * <pre>{@code
@@ -209,6 +214,8 @@ public class ContextBuilder extends WebUtils {
                     try {
                         cache = new CaffeineCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     } catch (Throwable t) {
+                        Logger.warn(
+                                "==>      Cache: Header cache failed to initialize CaffeineCache, falling back to MemoryCache");
                         cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     }
                     HEADER_CACHE = cache;
@@ -221,7 +228,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取请求参数缓存实例
      * <p>
-     * 返回延迟初始化的请求参数缓存实例，优先使用 CaffeineCache，失败时回退到 MemoryCache。 示例代码：
+     * 返回延迟初始化的请求参数缓存实例，优先使用 CaffeineCache，失败时回退到 MemoryCache。
      * </p>
      *
      * <pre>{@code
@@ -240,6 +247,8 @@ public class ContextBuilder extends WebUtils {
                     try {
                         cache = new CaffeineCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     } catch (Throwable t) {
+                        Logger.warn(
+                                "==>      Cache: Parameter cache failed to initialize CaffeineCache, falling back to MemoryCache");
                         cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     }
                     PARAMETER_CACHE = cache;
@@ -252,28 +261,30 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取 JSON 请求体缓存实例
      * <p>
-     * 返回延迟初始化的 JSON 请求体缓存实例，优先使用 CaffeineCache，失败时回退到 MemoryCache。 示例代码：
+     * 返回延迟初始化的 JSON 请求体缓存实例，优先使用 CaffeineCache，失败时回退到 MemoryCache。
      * </p>
      *
      * <pre>{@code
-     * CacheX<String, String> cache = ContextBuilder.getJsonBodyCache();
+     * CacheX<String, String> cache = ContextBuilder.getBodyCache();
      * String jsonBody = cache.read("request123");
      * }</pre>
      *
      * @return JSON 请求体缓存实例
      */
-    public static CacheX<String, String> getJsonBodyCache() {
-        CacheX<String, String> cache = JSON_BODY_CACHE;
+    public static CacheX<String, String> getBodyCache() {
+        CacheX<String, String> cache = BODY_CACHE;
         if (cache == null) {
             synchronized (ContextBuilder.class) {
-                cache = JSON_BODY_CACHE;
+                cache = BODY_CACHE;
                 if (cache == null) {
                     try {
                         cache = new CaffeineCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     } catch (Throwable t) {
+                        Logger.warn(
+                                "==>      Cache: Body cache failed to initialize CaffeineCache, falling back to MemoryCache");
                         cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
                     }
-                    JSON_BODY_CACHE = cache;
+                    BODY_CACHE = cache;
                 }
             }
         }
@@ -283,7 +294,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 设置请求头缓存实现
      * <p>
-     * 配置自定义的请求头缓存实现。 示例代码：
+     * 配置自定义的请求头缓存实现。
      * </p>
      *
      * <pre>{@code
@@ -300,7 +311,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 设置请求参数缓存实现
      * <p>
-     * 配置自定义的请求参数缓存实现。 示例代码：
+     * 配置自定义的请求参数缓存实现。
      * </p>
      *
      * <pre>{@code
@@ -317,24 +328,53 @@ public class ContextBuilder extends WebUtils {
     /**
      * 设置 JSON 请求体缓存实现
      * <p>
-     * 配置自定义的 JSON 请求体缓存实现。 示例代码：
+     * 配置自定义作为 JSON 请求体缓存实现。
      * </p>
      *
      * <pre>{@code
      * CacheX<String, String> customCache = new CustomCacheImpl<>();
-     * ContextBuilder.setJsonBodyCache(customCache);
+     * ContextBuilder.setBodyCache(customCache);
      * }</pre>
      *
      * @param cache 缓存实现
      */
-    public static void setJsonBodyCache(@NonNull CacheX<String, String> cache) {
-        JSON_BODY_CACHE = cache;
+    public static void setBodyCache(@NonNull CacheX<String, String> cache) {
+        BODY_CACHE = cache;
+    }
+
+    /**
+     * 通用缓存数据获取方法
+     * <p>
+     * 从缓存中读取数据，如果未命中则从供应商获取并写入缓存。
+     * </p>
+     *
+     * @param <T>          数据类型
+     * @param requestId    请求 ID
+     * @param dataSupplier 数据供应商
+     * @param cache        缓存实例
+     * @param defaultValue 默认值
+     * @return 缓存数据或默认值
+     */
+    private static <T> T getCached(String requestId, Supplier<T> dataSupplier, CacheX<String, T> cache,
+            T defaultValue) {
+        if (requestId == null) {
+            return defaultValue;
+        }
+        T data = cache.read(requestId);
+        if (data != null) {
+            return data;
+        }
+        data = dataSupplier.get();
+        if (data != null) {
+            cache.write(requestId, data, DEFAULT_CACHE_EXPIRE);
+        }
+        return data != null ? data : defaultValue;
     }
 
     /**
      * 获取 HTTP 请求的所有 Header
      * <p>
-     * 从请求上下文中获取所有请求头，优先从缓存读取，缓存未命中时从请求中获取并存入缓存。 示例代码：
+     * 从请求中获取所有请求头，优先从缓存读取，缓存未命中时从请求中获取并存入缓存。
      * </p>
      *
      * <pre>{@code
@@ -345,24 +385,29 @@ public class ContextBuilder extends WebUtils {
      * @return 请求头键值对映射（大小写不敏感）
      */
     public static Map<String, String> getHeaders() {
-        RequestContext context = getRequestContext();
-        if (context == null || context.getRequestId() == null) {
+        String requestId = getRequestId();
+        if (requestId == null) {
             return new CaseInsensitiveMap<>();
         }
-        String requestId = context.getRequestId();
-        Map<String, String> headers = getHeaderCache().read(requestId);
-        if (headers != null) {
+        return getCached(requestId, () -> {
+            HttpServletRequest request = getRequest();
+            Map<String, String> headers = new CaseInsensitiveMap<>();
+            if (request != null) {
+                request.getHeaderNames().asIterator().forEachRemaining(name -> {
+                    String value = request.getHeader(name);
+                    if (value != null) {
+                        headers.put(name, value);
+                    }
+                });
+            }
             return headers;
-        }
-        headers = context.getHeaders();
-        getHeaderCache().write(requestId, headers, DEFAULT_CACHE_EXPIRE);
-        return headers;
+        }, getHeaderCache(), new CaseInsensitiveMap<>());
     }
 
     /**
      * 获取 HTTP 请求的所有参数
      * <p>
-     * 从请求上下文中获取所有请求参数，优先从缓存读取，缓存未命中时从请求中获取并存入缓存。 示例代码：
+     * 从请求中获取所有请求参数，优先从缓存读取，缓存未命中时从请求中获取并存入缓存。
      * </p>
      *
      * <pre>{@code
@@ -373,24 +418,28 @@ public class ContextBuilder extends WebUtils {
      * @return 请求参数键值对映射（大小写不敏感）
      */
     public static Map<String, String> getParameters() {
-        RequestContext context = getRequestContext();
-        if (context == null || context.getRequestId() == null) {
+        String requestId = getRequestId();
+        if (requestId == null) {
             return new CaseInsensitiveMap<>();
         }
-        String requestId = context.getRequestId();
-        Map<String, String> parameters = getParameterCache().read(requestId);
-        if (parameters != null) {
+        return getCached(requestId, () -> {
+            HttpServletRequest request = getRequest();
+            Map<String, String> parameters = new CaseInsensitiveMap<>();
+            if (request != null) {
+                request.getParameterMap().forEach((key, values) -> {
+                    if (values != null && values.length > 0) {
+                        parameters.put(key, values[0]);
+                    }
+                });
+            }
             return parameters;
-        }
-        parameters = context.getParameters();
-        getParameterCache().write(requestId, parameters, DEFAULT_CACHE_EXPIRE);
-        return parameters;
+        }, getParameterCache(), new CaseInsensitiveMap<>());
     }
 
     /**
      * 从 JSON 请求体中获取指定键的值
      * <p>
-     * 从请求上下文中获取 JSON 请求体，优先从缓存读取，缓存未命中时从请求中读取并存入缓存。 示例代码：
+     * 从请求中获取 JSON 请求体，优先从缓存读取，缓存未命中时从请求中读取并存入缓存。
      * </p>
      *
      * <pre>{@code
@@ -404,20 +453,19 @@ public class ContextBuilder extends WebUtils {
      * @return JSON 请求体中指定键的值，或 null 如果未找到或非 JSON 请求
      */
     public static String getValueFromJsonBody(String key) {
-        RequestContext context = getRequestContext();
-        if (context == null || context.getRequest() == null) {
+        HttpServletRequest request = getRequest();
+        if (request == null) {
             return null;
         }
-        HttpServletRequest request = context.getRequest();
         String contentType = request.getContentType();
         if (contentType == null || !contentType.startsWith(MediaType.APPLICATION_JSON)) {
             return null;
         }
-        String requestId = context.getRequestId();
+        String requestId = getRequestId();
         if (requestId == null) {
             return null;
         }
-        String cachedBody = getJsonBodyCache().read(requestId);
+        String cachedBody = getBodyCache().read(requestId);
         if (cachedBody != null) {
             return extractValueFromJson(cachedBody, key);
         }
@@ -425,19 +473,21 @@ public class ContextBuilder extends WebUtils {
         try (var inputStream = request.getInputStream()) {
             requestBody = new String(inputStream.readAllBytes(), Charset.UTF_8);
         } catch (IOException e) {
+            Logger.error("Failed to read JSON body, key: {}", key, e);
             return null;
         }
         if (StringKit.isEmpty(requestBody)) {
+            Logger.debug("Empty JSON body, key: {}", key);
             return null;
         }
-        getJsonBodyCache().write(requestId, requestBody, DEFAULT_CACHE_EXPIRE);
+        getBodyCache().write(requestId, requestBody, DEFAULT_CACHE_EXPIRE);
         return extractValueFromJson(requestBody, key);
     }
 
     /**
      * 从 JSON 字符串中提取指定键的值
      * <p>
-     * 尝试解析 JSON 字符串并提取指定键的值，支持 Map 解析或直接字段提取。 示例代码：
+     * 尝试解析 JSON 字符串并提取指定键的值，支持 Map 解析或直接字段提取。
      * </p>
      *
      * <pre>{@code
@@ -461,6 +511,7 @@ public class ContextBuilder extends WebUtils {
                 return value;
             }
         } catch (Exception e) {
+            Logger.error("Failed to extract JSON value, key: {}, json: {}", key, json, e);
             return null;
         }
         return null;
@@ -469,7 +520,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 从请求头中获取指定键的值
      * <p>
-     * 从请求头映射中获取指定键的值。 示例代码：
+     * 从请求头映射中获取指定键的值。
      * </p>
      *
      * <pre>{@code
@@ -494,7 +545,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 从请求参数中获取指定键的值
      * <p>
-     * 从请求参数映射中获取指定键的值，包括表单和 URL 参数。 示例代码：
+     * 从请求参数映射中获取指定键的值，包括表单和 URL 参数。
      * </p>
      *
      * <pre>{@code
@@ -519,7 +570,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 从 JSON 请求体中获取指定键的值
      * <p>
-     * 从 JSON 请求体中提取指定键的值。 示例代码：
+     * 从 JSON 请求体中提取指定键的值。
      * </p>
      *
      * <pre>{@code
@@ -543,7 +594,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 从 Cookie 中获取指定键的值
      * <p>
-     * 从 HTTP 请求的 Cookie 中获取指定键的值。 示例代码：
+     * 从 HTTP 请求的 Cookie 中获取指定键的值。
      * </p>
      *
      * <pre>{@code
@@ -561,12 +612,14 @@ public class ContextBuilder extends WebUtils {
         if (StringKit.isEmpty(key)) {
             return null;
         }
-        RequestContext context = getRequestContext();
-        if (context == null || context.getRequest() == null) {
+        HttpServletRequest request = getRequest();
+        if (request == null) {
+            Logger.debug("No request available for cookie lookup, key: {}", key);
             return null;
         }
-        Cookie[] cookies = context.getRequest().getCookies();
+        Cookie[] cookies = request.getCookies();
         if (cookies == null) {
+            Logger.debug("No cookies found, key: {}", key);
             return null;
         }
         for (Cookie cookie : cookies) {
@@ -580,7 +633,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 从路径变量中获取指定键的值
      * <p>
-     * 从 HTTP 请求的路径变量中获取指定键的值。 示例代码：
+     * 从 HTTP 请求的路径变量中获取指定键的值。
      * </p>
      *
      * <pre>{@code
@@ -598,11 +651,12 @@ public class ContextBuilder extends WebUtils {
         if (StringKit.isEmpty(key)) {
             return null;
         }
-        RequestContext context = getRequestContext();
-        if (context == null || context.getRequest() == null) {
+        HttpServletRequest request = getRequest();
+        if (request == null) {
+            Logger.debug("No request available for path variable lookup, key: {}", key);
             return null;
         }
-        Map<String, String> pathVariables = (Map<String, String>) context.getRequest()
+        Map<String, String> pathVariables = (Map<String, String>) request
                 .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         if (pathVariables != null) {
             return pathVariables.get(key);
@@ -613,7 +667,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 从文件上传请求中获取指定键的值
      * <p>
-     * 从 multipart 请求的表单字段中获取指定键的值。 示例代码：
+     * 从 multipart 请求的表单字段中获取指定键的值。
      * </p>
      *
      * <pre>{@code
@@ -631,12 +685,13 @@ public class ContextBuilder extends WebUtils {
         if (StringKit.isEmpty(key)) {
             return null;
         }
-        RequestContext context = getRequestContext();
-        if (context == null || context.getRequest() == null) {
+        HttpServletRequest request = getRequest();
+        if (request == null) {
+            Logger.debug("No request available for multipart lookup, key: {}", key);
             return null;
         }
-        HttpServletRequest request = context.getRequest();
         if (!isMultipartContent(request)) {
+            Logger.debug("Request is not multipart, key: {}", key);
             return null;
         }
         try {
@@ -649,6 +704,7 @@ public class ContextBuilder extends WebUtils {
                 }
             }
         } catch (Exception e) {
+            Logger.error("Failed to get multipart parameter, key: {}", key, e);
             return null;
         }
         return null;
@@ -657,7 +713,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 从指定来源获取参数值
      * <p>
-     * 根据指定的参数来源（如请求头、参数、JSON 请求体等）获取键值。 示例代码：
+     * 根据指定的参数来源（如请求头、参数、JSON 请求体等）获取键值。
      * </p>
      *
      * <pre>{@code
@@ -714,7 +770,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取整型参数值
      * <p>
-     * 从所有来源获取指定键的整型值，失败时返回默认值。 示例代码：
+     * 从所有来源获取指定键的整型值，失败时返回默认值。
      * </p>
      *
      * <pre>{@code
@@ -734,6 +790,7 @@ public class ContextBuilder extends WebUtils {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
+            Logger.warn("Failed to parse int value, key: {}, value: {}", key, value, e);
             return defaultValue;
         }
     }
@@ -741,7 +798,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取长整型参数值
      * <p>
-     * 从所有来源获取指定键的长整型值，失败时返回默认值。 示例代码：
+     * 从所有来源获取指定键的长整型值，失败时返回默认值。
      * </p>
      *
      * <pre>{@code
@@ -761,6 +818,7 @@ public class ContextBuilder extends WebUtils {
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
+            Logger.warn("Failed to parse long value, key: {}, value: {}", key, value, e);
             return defaultValue;
         }
     }
@@ -768,7 +826,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取布尔型参数值
      * <p>
-     * 从所有来源获取指定键的布尔型值，失败时返回默认值。 示例代码：
+     * 从所有来源获取指定键的布尔型值，失败时返回默认值。
      * </p>
      *
      * <pre>{@code
@@ -791,7 +849,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取双精度浮点型参数值
      * <p>
-     * 从所有来源获取指定键的双精度浮点值，失败时返回默认值。 示例代码：
+     * 从所有来源获取指定键的双精度浮点值，失败时返回默认值。
      * </p>
      *
      * <pre>{@code
@@ -811,6 +869,7 @@ public class ContextBuilder extends WebUtils {
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
+            Logger.warn("Failed to parse double value, key: {}, value: {}", key, value, e);
             return defaultValue;
         }
     }
@@ -818,7 +877,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取指定类型的参数值
      * <p>
-     * 从所有来源获取指定键的值并转换为目标类型，失败时返回 null。 示例代码：
+     * 从所有来源获取指定键的值并转换为目标类型，失败时返回 null。
      * </p>
      *
      * <pre>{@code
@@ -842,19 +901,40 @@ public class ContextBuilder extends WebUtils {
         if (clazz == String.class) {
             return (T) value;
         } else if (clazz == Integer.class || clazz == int.class) {
-            return (T) Integer.valueOf(value);
+            try {
+                return (T) Integer.valueOf(value);
+            } catch (NumberFormatException e) {
+                Logger.warn("Failed to convert value to Integer, key: {}, value: {}", key, value, e);
+                return null;
+            }
         } else if (clazz == Long.class || clazz == long.class) {
-            return (T) Long.valueOf(value);
+            try {
+                return (T) Long.valueOf(value);
+            } catch (NumberFormatException e) {
+                Logger.warn("Failed to convert value to Long, key: {}, value: {}", key, value, e);
+                return null;
+            }
         } else if (clazz == Boolean.class || clazz == boolean.class) {
             return (T) Boolean.valueOf(value);
         } else if (clazz == Double.class || clazz == double.class) {
-            return (T) Double.valueOf(value);
+            try {
+                return (T) Double.valueOf(value);
+            } catch (NumberFormatException e) {
+                Logger.warn("Failed to convert value to Double, key: {}, value: {}", key, value, e);
+                return null;
+            }
         } else if (clazz == Float.class || clazz == float.class) {
-            return (T) Float.valueOf(value);
+            try {
+                return (T) Float.valueOf(value);
+            } catch (NumberFormatException e) {
+                Logger.warn("Failed to convert value to Float, key: {}, value: {}", key, value, e);
+                return null;
+            }
         } else {
             try {
                 return JsonKit.toPojo(value, clazz);
             } catch (Exception e) {
+                Logger.warn("Failed to convert value to {}, key: {}, value: {}", clazz.getSimpleName(), key, value, e);
                 return null;
             }
         }
@@ -863,7 +943,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取 JSON 对象参数值
      * <p>
-     * 从 JSON 请求体中获取指定键的值并转换为目标类型。 示例代码：
+     * 从 JSON 请求体中获取指定键的值并转换为目标类型。
      * </p>
      *
      * <pre>{@code
@@ -887,6 +967,7 @@ public class ContextBuilder extends WebUtils {
         try {
             return JsonKit.toPojo(value, clazz);
         } catch (Exception e) {
+            Logger.warn("Failed to convert JSON value to {}, key: {}, value: {}", clazz.getSimpleName(), key, value, e);
             return null;
         }
     }
@@ -894,7 +975,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取当前用户信息
      * <p>
-     * 从自定义提供者或请求头、上下文中的用户 ID 获取授权信息。 示例代码：
+     * 从自定义提供者或请求头、上下文中的用户 ID 获取授权信息。
      * </p>
      *
      * <pre>{@code
@@ -909,17 +990,21 @@ public class ContextBuilder extends WebUtils {
     public static Authorize getAuthorize() {
         try {
             if (provider != null) {
-                return provider.getAuthorize();
+                Authorize authorize = provider.getAuthorize();
+                Logger.info("==>  Authorize: {}", authorize);
+                return authorize;
             }
             String userId = getValue("x_user_id", EnumValue.Params.HEADER);
             if (StringKit.isEmpty(userId)) {
                 userId = getValue("x_user_id", EnumValue.Params.CONTEXT);
             }
             if (StringKit.isEmpty(userId)) {
+                Logger.info("==>  Authorize: No user ID found in headers or context");
                 return null;
             }
             return JsonKit.toPojo(UrlDecoder.decode(userId, Charset.UTF_8), Authorize.class);
         } catch (Exception e) {
+            Logger.info("==>  Authorize: Failed to get authorize");
             return null;
         }
     }
@@ -927,7 +1012,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取租户 ID
      * <p>
-     * 按优先级从用户授权数据、请求头、请求参数、JSON 请求体或上下文获取租户 ID。 示例代码：
+     * 按优先级从用户授权数据、请求头、请求参数、JSON 请求体或上下文获取租户 ID。
      * </p>
      *
      * <pre>{@code
@@ -942,25 +1027,33 @@ public class ContextBuilder extends WebUtils {
     public static String getTenantId() {
         try {
             if (provider != null) {
-                return provider.getTenantId();
+                String tenantId = provider.getTenantId();
+                Logger.info("==>  Tenant ID: {}", tenantId);
+                return tenantId;
             }
             Authorize authorize = getAuthorize();
             if (authorize != null) {
                 String tenantId = authorize.getX_tenant_id();
                 if (!StringKit.isEmpty(tenantId)) {
+                    Logger.info("==>  Tenant ID: {}", tenantId);
                     return tenantId;
                 }
             }
             String tenantId = getValue("x_tenant_id", EnumValue.Params.HEADER);
             if (!StringKit.isEmpty(tenantId)) {
+                Logger.info("==>  Tenant ID: {}", tenantId);
                 return tenantId;
             }
             tenantId = getValue("tenant_id", EnumValue.Params.PARAMETER);
             if (!StringKit.isEmpty(tenantId)) {
+                Logger.info("==>  Tenant ID: {}", tenantId);
                 return tenantId;
             }
-            return getValue("tenant_id", EnumValue.Params.JSON_BODY);
+            tenantId = getValue("tenant_id", EnumValue.Params.JSON_BODY);
+            Logger.info("==>  Tenant ID: {}", tenantId);
+            return tenantId;
         } catch (Exception e) {
+            Logger.info("==>  Tenant ID: Failed to get tenant ID");
             return null;
         }
     }
@@ -968,7 +1061,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 检查请求是否包含文件上传
      * <p>
-     * 检查 HTTP 请求的 Content-Type 是否为 multipart 类型。 示例代码：
+     * 检查 HTTP 请求的 Content-Type 是否为 multipart 类型。
      * </p>
      *
      * <pre>{@code
@@ -988,7 +1081,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 清除请求上下文
      * <p>
-     * 移除当前线程的请求上下文。 示例代码：
+     * 移除当前线程的请求 ID，并清除相关缓存。
      * </p>
      *
      * <pre>{@code
@@ -997,13 +1090,31 @@ public class ContextBuilder extends WebUtils {
      * }</pre>
      */
     public static void clear() {
-        REQUEST_CONTEXT.remove();
+        String requestId = REQUEST_ID.get();
+        if (requestId != null) {
+            CacheX<String, Map<String, String>> headerCache = getHeaderCache();
+            if (headerCache != null) {
+                headerCache.remove(requestId);
+            }
+            CacheX<String, Map<String, String>> parameterCache = getParameterCache();
+            if (parameterCache != null) {
+                parameterCache.remove(requestId);
+            }
+            CacheX<String, String> jsonBodyCache = getBodyCache();
+            if (jsonBodyCache != null) {
+                jsonBodyCache.remove(requestId);
+            }
+            REQUEST_ID.remove();
+            Logger.debug("<==    Cleared: {}", requestId);
+        } else {
+            Logger.debug("<==    Cleared: No request ID to clear");
+        }
     }
 
     /**
      * 清除指定请求的缓存
      * <p>
-     * 移除指定请求 ID 的请求头、参数和 JSON 请求体缓存。 示例代码：
+     * 移除指定请求 ID 的请求头、参数和 JSON 请求体缓存。
      * </p>
      *
      * <pre>{@code
@@ -1014,50 +1125,27 @@ public class ContextBuilder extends WebUtils {
      * @param requestId 请求 ID
      */
     public static void clear(String requestId) {
-        CacheX<String, Map<String, String>> headerCache = getHeaderCache();
-        if (headerCache != null) {
-            headerCache.remove(requestId);
-        }
-        CacheX<String, Map<String, String>> parameterCache = getParameterCache();
-        if (parameterCache != null) {
-            parameterCache.remove(requestId);
-        }
-        CacheX<String, String> jsonBodyCache = getJsonBodyCache();
-        if (jsonBodyCache != null) {
-            jsonBodyCache.remove(requestId);
-        }
-    }
-
-    /**
-     * 清除所有缓存
-     * <p>
-     * 清空所有请求头、参数和 JSON 请求体缓存。 示例代码：
-     * </p>
-     *
-     * <pre>{@code
-     * ContextBuilder.clearAll();
-     * System.out.println("所有缓存已清除");
-     * }</pre>
-     */
-    public static void clearAll() {
-        CacheX<String, Map<String, String>> headerCache = getHeaderCache();
-        if (headerCache != null) {
-            headerCache.clear();
-        }
-        CacheX<String, Map<String, String>> parameterCache = getParameterCache();
-        if (parameterCache != null) {
-            parameterCache.clear();
-        }
-        CacheX<String, String> jsonBodyCache = getJsonBodyCache();
-        if (jsonBodyCache != null) {
-            jsonBodyCache.clear();
+        if (requestId != null) {
+            CacheX<String, Map<String, String>> headerCache = getHeaderCache();
+            if (headerCache != null) {
+                headerCache.remove(requestId);
+            }
+            CacheX<String, Map<String, String>> parameterCache = getParameterCache();
+            if (parameterCache != null) {
+                parameterCache.remove(requestId);
+            }
+            CacheX<String, String> jsonBodyCache = getBodyCache();
+            if (jsonBodyCache != null) {
+                jsonBodyCache.remove(requestId);
+            }
+            Logger.debug("<==    Cleared: {}", requestId);
         }
     }
 
     /**
      * 重置所有缓存实例
      * <p>
-     * 将所有缓存实例置空，用于测试或重新初始化。 示例代码：
+     * 将所有缓存实例置空，用于测试或重新初始化。
      * </p>
      *
      * <pre>{@code
@@ -1068,7 +1156,8 @@ public class ContextBuilder extends WebUtils {
     public static void reset() {
         HEADER_CACHE = null;
         PARAMETER_CACHE = null;
-        JSON_BODY_CACHE = null;
+        BODY_CACHE = null;
+        Logger.debug("All cache instances reset");
     }
 
 }
