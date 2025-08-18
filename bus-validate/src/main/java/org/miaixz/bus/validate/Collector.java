@@ -97,7 +97,7 @@ public class Collector {
             if (collector instanceof Collector) {
                 list.addAll(collector.getResult());
             } else {
-                throw new IllegalArgumentException("不支持收集的校验结果对象：" + collector);
+                throw new IllegalArgumentException("Unsupported collector type for validation results: " + collector);
             }
         }
         return list;

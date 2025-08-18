@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>8.2.3</version>
+    <version>8.2.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,16 +85,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.3</bus.version>
+        <bus.version>8.2.5</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <spring.boot.version>4.0.0-M1</spring.boot.version>
-        <guice.version>7.0.0</guice.version>
         <jedis.version>6.0.0</jedis.version>
         <xmemcached.version>2.4.8</xmemcached.version>
         <curator.version>5.9.0</curator.version>
         <guava.version>33.4.8-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
         <mysql.version>9.4.0</mysql.version>
+        <caffeine.version>3.2.2</caffeine.version>
     </properties>
 
     <dependencies>
@@ -154,22 +154,6 @@
                 <exclusion>
                     <groupId>com.google.code.gson</groupId>
                     <artifactId>gson</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>aopalliance</groupId>
-                    <artifactId>aopalliance</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -261,6 +245,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -282,7 +271,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
+                <version>3.11.3</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

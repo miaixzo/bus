@@ -65,6 +65,134 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
+     * 追加模式
+     *
+     */
+    enum AppendMode {
+
+        /**
+         * 追加至首位
+         */
+        FIRST,
+
+        /**
+         * 追加至末尾
+         */
+        LAST
+
+    }
+
+    /**
+     * 比较模式
+     */
+    @Getter
+    @AllArgsConstructor
+    enum Compare {
+
+        /**
+         * 等于（equal to）
+         */
+        EQ("="),
+        /**
+         * 不等于（not equal to）
+         */
+        NE("!="),
+        /**
+         * 小于（less than）
+         */
+        LT("<"),
+        /**
+         * 小于等于（less than or equal to）
+         */
+        LE("<="),
+        /**
+         * 大于（greater than）
+         */
+        GT(">"),
+        /**
+         * 大于等于（greater than or equal to）
+         */
+        GE(">="),
+
+        LIKE("LIKE");
+
+        /**
+         * 代码值
+         */
+        String code;
+
+    }
+
+    /**
+     * 节日类型
+     */
+    @Getter
+    @AllArgsConstructor
+    enum Festival {
+        DAY(0, "日期"), TERM(1, "节气"), EVE(2, "除夕");
+
+        /**
+         * 代码
+         */
+        private final int code;
+
+        /**
+         * 名称
+         */
+        private final String name;
+
+        public static Festival fromCode(Integer code) {
+            if (null == code) {
+                return null;
+            }
+            for (Festival item : values()) {
+                if (item.getCode() == code) {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        public static Festival fromName(String name) {
+            if (null == name) {
+                return null;
+            }
+            for (Festival item : values()) {
+                if (item.getName().equals(name)) {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+    }
+
+    /**
+     * FTP连接模式 见：https://www.cnblogs.com/huhaoshida/p/5412615.html
+     *
+     * @author Kimi Liu
+     * @since Java 17+
+     */
+    @Getter
+    @AllArgsConstructor
+    enum FtpMode {
+
+        /**
+         * 主动模式
+         */
+        Active,
+        /**
+         * 被动模式
+         */
+        Passive
+    }
+
+    /**
      * 渐变方向
      */
     @Getter
@@ -89,58 +217,85 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 图片缩略类型
+     * 脱敏类型
      */
     @Getter
     @AllArgsConstructor
-    enum Type {
+    enum Masking {
         /**
-         * 默认
+         * 完全脱敏
          */
-        DEFAULT(Image.SCALE_DEFAULT),
-        /**
-         * 快速
-         */
-        FAST(Image.SCALE_FAST),
-        /**
-         * 平滑
-         */
-        SMOOTH(Image.SCALE_SMOOTH),
-        /**
-         * 使用 ReplicateScaleFilter 类中包含的图像缩放算法
-         */
-        REPLICATE(Image.SCALE_REPLICATE),
-        /**
-         * Area Averaging算法
-         */
-        AREA_AVERAGING(Image.SCALE_AREA_AVERAGING);
+        FULL,
 
-        private final int code;
+        /**
+         * 部分脱敏
+         */
+        PARTIAL,
 
-    }
-
-    /**
-     * 图片缩略模式
-     */
-    @Getter
-    @AllArgsConstructor
-    enum Zoom {
         /**
-         * 原始比例，不缩放
+         * 替换脱敏
          */
-        ORIGIN,
+        REPLACE,
         /**
-         * 指定宽度，高度按比例
+         * 用户id
          */
-        WIDTH,
+        USER_ID,
         /**
-         * 指定高度，宽度按比例
+         * 中文名
          */
-        HEIGHT,
+        CHINESE_NAME,
         /**
-         * 自定义高度和宽度，强制缩放
+         * 身份证号
          */
-        OPTIONAL
+        ID_CARD,
+        /**
+         * 座机号
+         */
+        FIXED_PHONE,
+        /**
+         * 手机号
+         */
+        MOBILE_PHONE,
+        /**
+         * 地址
+         */
+        ADDRESS,
+        /**
+         * 电子邮件
+         */
+        EMAIL,
+        /**
+         * 密码
+         */
+        PASSWORD,
+        /**
+         * 中国大陆车牌，包含普通车辆、新能源车辆
+         */
+        CAR_LICENSE,
+        /**
+         * 银行卡
+         */
+        BANK_CARD,
+        /**
+         * IPv4地址
+         */
+        IPV4,
+        /**
+         * IPv6地址
+         */
+        IPV6,
+        /**
+         * 定义了一个first_mask的规则，只显示第一个字符。
+         */
+        FIRST_MASK,
+        /**
+         * 清空为null
+         */
+        CLEAR_TO_NULL,
+        /**
+         * 清空为""
+         */
+        CLEAR_TO_EMPTY
     }
 
     /**
@@ -231,108 +386,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 脱敏类型
-     */
-    @Getter
-    @AllArgsConstructor
-    enum Masking {
-        /**
-         * 完全脱敏
-         */
-        FULL,
-
-        /**
-         * 部分脱敏
-         */
-        PARTIAL,
-
-        /**
-         * 替换脱敏
-         */
-        REPLACE,
-        /**
-         * 用户id
-         */
-        USER_ID,
-        /**
-         * 中文名
-         */
-        CHINESE_NAME,
-        /**
-         * 身份证号
-         */
-        ID_CARD,
-        /**
-         * 座机号
-         */
-        FIXED_PHONE,
-        /**
-         * 手机号
-         */
-        MOBILE_PHONE,
-        /**
-         * 地址
-         */
-        ADDRESS,
-        /**
-         * 电子邮件
-         */
-        EMAIL,
-        /**
-         * 密码
-         */
-        PASSWORD,
-        /**
-         * 中国大陆车牌，包含普通车辆、新能源车辆
-         */
-        CAR_LICENSE,
-        /**
-         * 银行卡
-         */
-        BANK_CARD,
-        /**
-         * IPv4地址
-         */
-        IPV4,
-        /**
-         * IPv6地址
-         */
-        IPV6,
-        /**
-         * 定义了一个first_mask的规则，只显示第一个字符。
-         */
-        FIRST_MASK,
-        /**
-         * 清空为null
-         */
-        CLEAR_TO_NULL,
-        /**
-         * 清空为""
-         */
-        CLEAR_TO_EMPTY
-    }
-
-    /**
-     * FTP连接模式 见：https://www.cnblogs.com/huhaoshida/p/5412615.html
-     *
-     * @author Kimi Liu
-     * @since Java 17+
-     */
-    @Getter
-    @AllArgsConstructor
-    enum FtpMode {
-
-        /**
-         * 主动模式
-         */
-        Active,
-        /**
-         * 被动模式
-         */
-        Passive
-    }
-
-    /**
      * 命名模式
      */
     @Getter
@@ -390,120 +443,45 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 节日类型
+     * 参数来源枚举
      */
-    @Getter
-    @AllArgsConstructor
-    enum Festival {
-        DAY(0, "日期"), TERM(1, "节气"), EVE(2, "除夕");
-
+    enum Params {
         /**
-         * 代码
+         * 请求头
          */
-        private final int code;
-
+        HEADER,
         /**
-         * 名称
+         * 请求参数（包括表单和 URL 参数）
          */
-        private final String name;
-
-        public static Festival fromCode(Integer code) {
-            if (null == code) {
-                return null;
-            }
-            for (Festival item : values()) {
-                if (item.getCode() == code) {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        public static Festival fromName(String name) {
-            if (null == name) {
-                return null;
-            }
-            for (Festival item : values()) {
-                if (item.getName().equals(name)) {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public String toString() {
-            return getName();
-        }
-
+        PARAMETER,
+        /**
+         * JSON 请求体
+         */
+        JSON_BODY,
+        /**
+         * Cookie
+         */
+        COOKIE,
+        /**
+         * 路径变量
+         */
+        PATH_VARIABLE,
+        /**
+         * 文件上传参数
+         */
+        MULTIPART,
+        /**
+         * 线程上下文
+         */
+        CONTEXT,
+        /**
+         * 所有来源（按优先级：Header > Parameter > Path Variable > JSON Body > Cookie > Multipart > Context）
+         */
+        ALL
     }
 
     /**
-     * 比较模式
-     */
-    @Getter
-    @AllArgsConstructor
-    enum Compare {
-
-        /**
-         * 等于（equal to）
-         */
-        EQ("="),
-        /**
-         * 不等于（not equal to）
-         */
-        NE("!="),
-        /**
-         * 小于（less than）
-         */
-        LT("<"),
-        /**
-         * 小于等于（less than or equal to）
-         */
-        LE("<="),
-        /**
-         * 大于（greater than）
-         */
-        GT(">"),
-        /**
-         * 大于等于（greater than or equal to）
-         */
-        GE(">="),
-
-        LIKE("LIKE");
-
-        /**
-         * 代码值
-         */
-        String code;
-
-    }
-
-    /**
-     * 排序方式
-     */
-    @Getter
-    @AllArgsConstructor
-    enum Sort {
-
-        /**
-         * 升序
-         */
-        ASC("ASC"),
-        /**
-         * 降序
-         */
-        DESC("DESC");
-
-        /**
-         * 代码值
-         */
-        String code;
-
-    }
-
-    /**
-     * S
+     * 策略模式枚举
      */
     @Getter
     @AllArgsConstructor
@@ -602,21 +580,96 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 追加模式
-     *
+     * 排序方式
      */
-    enum AppendMode {
+    @Getter
+    @AllArgsConstructor
+    enum Sort {
 
         /**
-         * 追加至首位
+         * 升序
          */
-        FIRST,
+        ASC("ASC"),
+        /**
+         * 降序
+         */
+        DESC("DESC");
 
         /**
-         * 追加至末尾
+         * 代码值
          */
-        LAST
+        String code;
 
+    }
+
+    /**
+     * 开关枚举
+     */
+    enum Switch {
+        /**
+         * 开启状态
+         */
+        ON,
+
+        /**
+         * 关闭状态
+         */
+        OFF
+    }
+
+    /**
+     * 图片缩略类型
+     */
+    @Getter
+    @AllArgsConstructor
+    enum Type {
+        /**
+         * 默认
+         */
+        DEFAULT(Image.SCALE_DEFAULT),
+        /**
+         * 快速
+         */
+        FAST(Image.SCALE_FAST),
+        /**
+         * 平滑
+         */
+        SMOOTH(Image.SCALE_SMOOTH),
+        /**
+         * 使用 ReplicateScaleFilter 类中包含的图像缩放算法
+         */
+        REPLICATE(Image.SCALE_REPLICATE),
+        /**
+         * Area Averaging算法
+         */
+        AREA_AVERAGING(Image.SCALE_AREA_AVERAGING);
+
+        private final int code;
+
+    }
+
+    /**
+     * 图片缩略模式
+     */
+    @Getter
+    @AllArgsConstructor
+    enum Zoom {
+        /**
+         * 原始比例，不缩放
+         */
+        ORIGIN,
+        /**
+         * 指定宽度，高度按比例
+         */
+        WIDTH,
+        /**
+         * 指定高度，宽度按比例
+         */
+        HEIGHT,
+        /**
+         * 自定义高度和宽度，强制缩放
+         */
+        OPTIONAL
     }
 
 }

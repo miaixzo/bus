@@ -25,61 +25,24 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support;
+package org.miaixz.bus.validate.magic;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.miaixz.bus.cache.Context;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.basic.normal.ErrorRegistry;
+import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
+ * 验证错误码: 116xxx
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KeyValue {
+public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
-    public static Map<String, Object> mapToKeyValue(Map proceedEntryValueMap, Set<String> missKeys,
-            Map<Object, String> multiEntry2Key, Context.Switch prevent) {
-        Map<String, Object> keyValueMap = new HashMap<>(proceedEntryValueMap.size());
-        proceedEntryValueMap.forEach((multiArgEntry, value) -> {
-            String key = multiEntry2Key.get(multiArgEntry);
-            if (StringKit.isEmpty(key)) {
-                return;
-            }
+    /**
+     * 默认错误码
+     */
+    public static final String _116000 = "116000";
 
-            missKeys.remove(key);
-            keyValueMap.put(key, value);
-        });
-
-        // 触发防击穿逻辑
-        if (prevent == Context.Switch.ON && !missKeys.isEmpty()) {
-            missKeys.forEach(key -> keyValueMap.put(key, PreventObjects.getPreventObject()));
-        }
-
-        return keyValueMap;
-    }
-
-    public static Map<String, Object> collectionToKeyValue(Collection proceedCollection, String idSpel,
-            Set<String> missKeys, Map<Object, String> id2Key, Context.Switch prevent) {
-        Map<String, Object> keyValueMap = new HashMap<>(proceedCollection.size());
-
-        for (Object value : proceedCollection) {
-            Object id = SpelCalculator.calcSpelWithNoContext(idSpel, value);
-            String key = id2Key.get(id);
-
-            if (StringKit.isEmpty(key)) {
-                missKeys.remove(key);
-                keyValueMap.put(key, value);
-            }
-        }
-
-        if (prevent == Context.Switch.ON && !missKeys.isEmpty()) {
-            missKeys.forEach(key -> keyValueMap.put(key, PreventObjects.getPreventObject()));
-        }
-        return keyValueMap;
-    }
+    public static final Errors __116000 = ErrorRegistry.builder().key(_116000).value("参数校验失败").build();
 
 }

@@ -167,4 +167,25 @@ public class JbossLoggingProvider extends AbstractProvider {
         }
     }
 
+    @Override
+    public Level getLevel() {
+        // JBoss Logging 不直接提供 getLevel() 方法，尝试检查底层实现
+        if (logger instanceof org.jboss.logging.Logger) {
+            // 检查常见的 JBoss Logging 级别
+            if (logger.isTraceEnabled()) {
+                return Level.TRACE;
+            } else if (logger.isDebugEnabled()) {
+                return Level.DEBUG;
+            } else if (logger.isInfoEnabled()) {
+                return Level.INFO;
+            } else if (logger.isEnabled(Logger.Level.WARN)) {
+                return Level.WARN;
+            } else if (logger.isEnabled(Logger.Level.ERROR)) {
+                return Level.ERROR;
+            }
+        }
+        // 回退到默认实现
+        return super.getLevel();
+    }
+
 }

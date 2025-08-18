@@ -28,11 +28,15 @@
 package org.miaixz.bus.cache.magic.annotation;
 
 import java.lang.annotation.*;
-
 import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * 缓存注解
+ * <p>
+ * 用于标记方法使用缓存功能。当方法被调用时，会先从缓存中查找结果， 如果缓存中没有，则执行方法并将结果存入缓存。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -42,24 +46,42 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface Cached {
 
     /**
-     * @return Specifies the <b>Used cache implementation</b>, default the first {@code caches} config in
-     *         {@code CacheAspect}
+     * 指定使用的缓存实现
+     * <p>
+     * 默认使用在CacheAspect中配置的第一个caches
+     * </p>
+     *
+     * @return 缓存实现名称
      */
     String value() default Normal.EMPTY;
 
     /**
-     * @return Specifies the start prefix on every key, if the {@code Method} have non {@code param}, {@code prefix} is
-     *         the <b>consts key</b> used by this {@code Method}
+     * 指定每个键的前缀
+     * <p>
+     * 如果方法没有参数，prefix将作为该方法使用的常量键
+     * </p>
+     *
+     * @return 键前缀
      */
     String prefix() default Normal.EMPTY;
 
     /**
-     * @return use <b>SpEL</b>, when this spel is {@code true}, this {@code Method} will go through by cache
+     * 使用SpEL表达式
+     * <p>
+     * 当这个SpEL表达式为true时，该方法会使用缓存
+     * </p>
+     *
+     * @return SpEL条件表达式
      */
     String condition() default Normal.EMPTY;
 
     /**
-     * @return expire time, time unit: <b>seconds</b>
+     * 过期时间
+     * <p>
+     * 时间单位：毫秒
+     * </p>
+     *
+     * @return 过期时间（毫秒）
      */
     int expire() default CacheExpire.FOREVER;
 

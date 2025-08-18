@@ -50,7 +50,7 @@ public class Registry {
     /**
      * 校验实例信息
      */
-    private static Registry instance;
+    private static Registry INSTANCE;
 
     static {
         register(Builder._ALWAYS, new AlwaysMatcher());
@@ -91,11 +91,11 @@ public class Registry {
      */
     public static Registry getInstance() {
         synchronized (Registry.class) {
-            if (ObjectKit.isEmpty(instance)) {
-                instance = new Registry();
+            if (ObjectKit.isEmpty(INSTANCE)) {
+                INSTANCE = new Registry();
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -106,11 +106,11 @@ public class Registry {
      */
     public static void register(String name, Object object) {
         if (COMPLEX_CACHE.containsKey(name)) {
-            throw new InternalException("重复注册同名称的校验器：" + name);
+            throw new InternalException("Duplicate registration of validator with the same name: " + name);
         }
         Class<?> clazz = object.getClass();
         if (COMPLEX_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new InternalException("重复注册同类型的校验器：" + clazz);
+            throw new InternalException("Duplicate registration of validator with the same type: " + clazz);
         }
         COMPLEX_CACHE.putIfAbsent(name, object);
         COMPLEX_CACHE.putIfAbsent(clazz.getSimpleName(), object);

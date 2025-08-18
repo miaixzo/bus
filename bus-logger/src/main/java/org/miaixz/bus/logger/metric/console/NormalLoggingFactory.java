@@ -42,7 +42,7 @@ public class NormalLoggingFactory extends AbstractFactory {
      * 构造
      */
     public NormalLoggingFactory() {
-        super("Console Normal Logging");
+        super("System.out.println");
     }
 
     @Override

@@ -25,73 +25,30 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache;
+package org.miaixz.bus.spring;
 
-import java.util.Map;
-
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.basic.entity.Authorize;
 
 /**
- * 缓存命中策略
+ * 请求上下文封装类。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Hitting {
+public interface ContextProvider {
 
-    void reqIncr(String pattern, int count);
+    /**
+     * 获取当前用户信息。
+     *
+     * @return Authorize 对象，如果无法获取则返回 null
+     */
+    Authorize getAuthorize();
 
-    void hitIncr(String pattern, int count);
-
-    Map<String, HittingDO> getHitting();
-
-    void reset(String pattern);
-
-    void resetAll();
-
-    default String summaryName() {
-        return "zh".equalsIgnoreCase(System.getProperty("user.language")) ? "全局" : "summary";
-    }
-
-    class HittingDO {
-
-        private long hit;
-
-        private long required;
-
-        private String rate;
-
-        private HittingDO(long hit, long required, String rate) {
-            this.hit = hit;
-            this.required = required;
-            this.rate = rate;
-        }
-
-        public static HittingDO newInstance(long hit, long required) {
-            double rate = (required == 0 ? 0.0 : hit * 100.0 / required);
-            String rateStr = String.format("%.1f%s", rate, Symbol.PERCENT);
-
-            return new HittingDO(hit, required, rateStr);
-        }
-
-        public static HittingDO mergeShootingDO(HittingDO do1, HittingDO do2) {
-            long hit = do1.getHit() + do2.getHit();
-            long required = do1.getRequired() + do2.getRequired();
-
-            return newInstance(hit, required);
-        }
-
-        public long getHit() {
-            return hit;
-        }
-
-        public long getRequired() {
-            return required;
-        }
-
-        public String getRate() {
-            return rate;
-        }
-    }
+    /**
+     * 获取租户 ID。
+     *
+     * @return 租户 ID 字符串，如果未找到则返回 null
+     */
+    String getTenantId();
 
 }

@@ -34,7 +34,6 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.Context;
@@ -100,17 +99,10 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
     public void prepare(StatementHandler statementHandler) {
         // 获取 MapperStatementHandler 对象
         MapperStatementHandler msh = mapperStatementHandler(statementHandler);
-        // 获取映射语句
-        MappedStatement mappedStatement = msh.mappedStatement();
-        // 获取 SQL 命令类型
-        SqlCommandType sct = mappedStatement.getSqlCommandType();
-        // 检查是否为 INSERT、UPDATE 或 DELETE 操作
-        if (sct == SqlCommandType.INSERT || sct == SqlCommandType.UPDATE || sct == SqlCommandType.DELETE) {
-            // 获取 MapperBoundSql 对象
-            MapperBoundSql mbs = msh.mapperBoundSql();
-            // 解析并添加租户条件
-            mbs.sql(parserMulti(mbs.sql(), null));
-        }
+        // 获取 MapperBoundSql 对象
+        MapperBoundSql mbs = msh.mapperBoundSql();
+        // 解析并添加租户条件
+        mbs.sql(parserMulti(mbs.sql(), null));
     }
 
     /**

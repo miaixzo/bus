@@ -57,7 +57,7 @@ public class Slf4jLoggingFactory extends AbstractFactory {
      * @param fail 如果未找到桥接包是否报错
      */
     public Slf4jLoggingFactory(final boolean fail) {
-        super("Slf4j");
+        super("org.slf4j.Logger");
         exists(LoggerFactory.class);
         if (!fail) {
             return;

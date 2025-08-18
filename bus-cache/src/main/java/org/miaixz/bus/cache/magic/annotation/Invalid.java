@@ -28,10 +28,14 @@
 package org.miaixz.bus.cache.magic.annotation;
 
 import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * 缓存失效注解
+ * <p>
+ * 用于标记方法执行后使缓存失效。当方法被调用时，会根据配置的键规则清除对应的缓存。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -41,17 +45,32 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface Invalid {
 
     /**
-     * @return as {@code @Cached}
+     * 指定使用的缓存实现
+     * <p>
+     * 与@Cached注解的value属性功能相同
+     * </p>
+     *
+     * @return 缓存实现名称
      */
     String value() default Normal.EMPTY;
 
     /**
-     * @return as {@code @Cached}
+     * 指定每个键的前缀
+     * <p>
+     * 与@Cached注解的prefix属性功能相同
+     * </p>
+     *
+     * @return 键前缀
      */
     String prefix() default Normal.EMPTY;
 
     /**
-     * @return as {@code @Cached}
+     * 使用SpEL表达式
+     * <p>
+     * 与@Cached注解的condition属性功能相同 当这个SpEL表达式为true时，该方法会使缓存失效
+     * </p>
+     *
+     * @return SpEL条件表达式
      */
     String condition() default Normal.EMPTY;
 

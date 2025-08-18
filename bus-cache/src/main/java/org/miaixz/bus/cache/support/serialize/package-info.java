@@ -25,36 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.support;
-
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import org.miaixz.bus.cache.magic.AnnoHolder;
-import org.miaixz.bus.cache.magic.annotation.CacheKey;
-
 /**
+ * 序列化支持
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PatternGenerator {
-
-    private static final ConcurrentMap<Method, String> patterns = new ConcurrentHashMap<>();
-
-    public static String generatePattern(AnnoHolder annoHolder) {
-        return patterns.computeIfAbsent(annoHolder.getMethod(), (method) -> doPatternCombiner(annoHolder));
-    }
-
-    private static String doPatternCombiner(AnnoHolder annoHolder) {
-        StringBuilder sb = new StringBuilder(annoHolder.getPrefix());
-        Collection<CacheKey> cacheKeys = annoHolder.getCacheKeyMap().values();
-        for (CacheKey cacheKey : cacheKeys) {
-            sb.append(cacheKey.value());
-        }
-
-        return sb.toString();
-    }
-
-}
+package org.miaixz.bus.cache.support.serialize;

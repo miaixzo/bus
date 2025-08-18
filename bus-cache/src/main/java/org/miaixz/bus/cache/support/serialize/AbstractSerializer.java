@@ -25,81 +25,76 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cache.serialize;
+package org.miaixz.bus.cache.support.serialize;
 
-import java.io.*;
-
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 
 /**
+ * 抽象序列化器
+ * <p>
+ * 提供序列化和反序列化的基本框架，包含异常处理和日志记录功能。 子类需要实现具体的序列化和反序列化逻辑。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdkSerializer extends AbstractSerializer {
+public abstract class AbstractSerializer implements BaseSerializer {
 
-    private static void serialize(Serializable object, OutputStream outputStream) {
-        if (null == outputStream) {
-            throw new IllegalArgumentException("The OutputStream must not be null");
-        } else {
-            ObjectOutputStream out = null;
+    /**
+     * 执行序列化操作
+     *
+     * @param object 要序列化的对象
+     * @return 序列化后的字节数组
+     * @throws Throwable 可能抛出的异常
+     */
+    protected abstract byte[] doSerialize(Object object) throws Throwable;
 
-            try {
-                out = new ObjectOutputStream(outputStream);
-                out.writeObject(object);
-            } catch (IOException e) {
-                throw new InternalException(e);
-            } finally {
-                try {
-                    if (null != out) {
-                        out.close();
-                    }
-                } catch (IOException var10) {
+    /**
+     * 执行反序列化操作
+     *
+     * @param bytes 要反序列化的字节数组
+     * @return 反序列化后的对象
+     * @throws Throwable 可能抛出的异常
+     */
+    protected abstract Object doDeserialize(byte[] bytes) throws Throwable;
 
-                }
-            }
+    /**
+     * 序列化对象
+     *
+     * @param <T>    对象类型
+     * @param object 要序列化的对象
+     * @return 序列化后的字节数组，如果对象为null或序列化失败则返回null
+     */
+    @Override
+    public <T> byte[] serialize(T object) {
+        if (null == object) {
+            return null;
+        }
+        try {
+            return doSerialize(object);
+        } catch (Throwable t) {
+            Logger.error("{} serialize error.", this.getClass().getName(), t);
+            return null;
         }
     }
 
-    private static Object deserialize(InputStream inputStream) {
-        if (null == inputStream) {
-            throw new IllegalArgumentException("The InputStream must not be null");
-        } else {
-            ObjectInputStream in = null;
-
-            Object result;
-            try {
-                in = new ObjectInputStream(inputStream);
-                result = in.readObject();
-            } catch (ClassCastException | IOException | ClassNotFoundException ce) {
-                throw new InternalException(ce);
-            } finally {
-                try {
-                    if (null != in) {
-                        in.close();
-                    }
-                } catch (IOException e) {
-                    Logger.error(e, "close stream failed when deserialize error: ", e.getMessage());
-                }
-            }
-            return result;
-        }
-    }
-
+    /**
+     * 反序列化字节数组
+     *
+     * @param <T>   对象类型
+     * @param bytes 要反序列化的字节数组
+     * @return 反序列化后的对象，如果字节数组为null或反序列化失败则返回null
+     */
     @Override
-    protected byte[] doSerialize(Object object) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(Normal._512);
-        serialize((Serializable) object, baos);
-        return baos.toByteArray();
-    }
-
-    @Override
-    protected Object doDeserialize(byte[] bytes) {
+    public <T> T deserialize(byte[] bytes) {
         if (null == bytes) {
-            throw new IllegalArgumentException("The byte[] must not be null");
-        } else {
-            return deserialize(new ByteArrayInputStream(bytes));
+            return null;
+        }
+        try {
+            return (T) doDeserialize(bytes);
+        } catch (Throwable t) {
+            Logger.error("{} deserialize error.", this.getClass().getName(), t);
+            return null;
         }
     }
 

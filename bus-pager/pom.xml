@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>8.2.3</version>
+    <version>8.2.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.3</bus.version>
+        <bus.version>8.2.5</bus.version>
         <mybatis.version>3.5.19</mybatis.version>
-        <guava.version>33.4.8-jre</guava.version>
         <jsqlparser.version>5.3</jsqlparser.version>
         <hikaricp.version>7.0.0</hikaricp.version>
         <druid.version>1.2.27</druid.version>
@@ -114,12 +113,6 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>${mybatis.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -164,7 +157,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
+                <version>3.11.3</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

@@ -48,7 +48,7 @@ public class JdkLoggingFactory extends AbstractFactory {
      * 构造
      */
     public JdkLoggingFactory() {
-        super("JDK Logging");
+        super("java.util.logging.Logger");
         readConfig();
     }
 

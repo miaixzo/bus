@@ -40,6 +40,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 
 /**
@@ -58,11 +60,25 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
 
     protected String autoType;
     protected String prefix;
+    protected SentinelRequestHandler handler;
 
-    public WebMvcConfigurer(String autoType, String prefix) {
+    public WebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler) {
         super();
         this.autoType = autoType;
         this.prefix = prefix;
+        this.handler = handler;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 确保拦截器正确注册
+        registry.addInterceptor(this.handler).addPathPatterns("/**").excludePathPatterns("/static/**", "/error",
+                "/favicon.ico");
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new MultiFormatArgumentResolver());
     }
 
     /**

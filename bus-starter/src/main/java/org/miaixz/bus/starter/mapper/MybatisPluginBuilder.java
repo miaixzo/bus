@@ -36,7 +36,9 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.handler.MapperHandler;
@@ -51,7 +53,6 @@ import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.springframework.core.env.Environment;
 
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.StringValue;
 
 /**
@@ -122,10 +123,13 @@ public class MybatisPluginBuilder {
             tenantHandler.setProvider(new TenantProvider() {
                 @Override
                 public Expression getTenantId() {
-                    if (ContextBuilder.getTenantId() != null) {
-                        return new StringValue(ContextBuilder.getTenantId());
+                    String tenantId = ContextBuilder.getTenantId();
+
+                    if (StringKit.isEmpty(tenantId)) {
+                        throw new MapperException("Tenant information not found");
                     }
-                    return new NullValue();
+
+                    return new StringValue(tenantId);
                 }
 
                 @Override

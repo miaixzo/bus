@@ -55,17 +55,18 @@ module bus.cache {
     requires zookeeper;
     requires hessian;
     requires com.google.common;
-    requires com.google.guice;
     requires curator.framework;
     requires curator.recipes;
     requires curator.client;
+    requires com.github.benmanes.caffeine;
 
     exports org.miaixz.bus.cache;
     exports org.miaixz.bus.cache.magic;
     exports org.miaixz.bus.cache.magic.annotation;
     exports org.miaixz.bus.cache.metric;
-    exports org.miaixz.bus.cache.provider;
-    exports org.miaixz.bus.cache.serialize;
+    exports org.miaixz.bus.cache.reader;
     exports org.miaixz.bus.cache.support;
+    exports org.miaixz.bus.cache.support.metrics;
+    exports org.miaixz.bus.cache.support.serialize;
 
 }

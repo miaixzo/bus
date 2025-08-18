@@ -59,7 +59,7 @@ public abstract class Registry {
      * @return 日志对象
      */
     public static Provider get(final Class<?> clazz) {
-        return Holder.getFactory().getProvider(clazz);
+        return Holder.getFactory().getProvider(clazz != null ? clazz : Logger.class);
     }
 
 }

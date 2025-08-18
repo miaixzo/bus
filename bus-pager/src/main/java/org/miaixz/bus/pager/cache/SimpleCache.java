@@ -35,6 +35,7 @@ import org.apache.ibatis.cache.decorators.FifoCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.CacheBuilder;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -47,9 +48,12 @@ public class SimpleCache<K, V> implements CacheX<K, V> {
 
     private final org.apache.ibatis.cache.Cache CACHE;
 
-    public SimpleCache(Properties properties, String prefix) {
+    public SimpleCache(Properties properties) {
+        // 获取参数前缀
+        String prefix = StringKit.isNotEmpty(properties.getProperty("prefix")) ? properties.getProperty("prefix")
+                : Normal.EMPTY;
         CacheBuilder cacheBuilder = new CacheBuilder("SQL_CACHE");
-        String typeClass = properties.getProperty(prefix + ".typeClass");
+        String typeClass = properties.getProperty(prefix + "typeClass");
         if (StringKit.isNotEmpty(typeClass)) {
             try {
                 cacheBuilder.implementation((Class<? extends org.apache.ibatis.cache.Cache>) Class.forName(typeClass));
@@ -59,7 +63,7 @@ public class SimpleCache<K, V> implements CacheX<K, V> {
         } else {
             cacheBuilder.implementation(PerpetualCache.class);
         }
-        String evictionClass = properties.getProperty(prefix + ".evictionClass");
+        String evictionClass = properties.getProperty(prefix + "evictionClass");
         if (StringKit.isNotEmpty(evictionClass)) {
             try {
                 cacheBuilder
@@ -70,11 +74,11 @@ public class SimpleCache<K, V> implements CacheX<K, V> {
         } else {
             cacheBuilder.addDecorator(FifoCache.class);
         }
-        String flushInterval = properties.getProperty(prefix + ".flushInterval");
+        String flushInterval = properties.getProperty(prefix + "flushInterval");
         if (StringKit.isNotEmpty(flushInterval)) {
             cacheBuilder.clearInterval(Long.parseLong(flushInterval));
         }
-        String size = properties.getProperty(prefix + ".size");
+        String size = properties.getProperty(prefix + "size");
         if (StringKit.isNotEmpty(size)) {
             cacheBuilder.size(Integer.parseInt(size));
         }

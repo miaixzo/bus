@@ -218,7 +218,7 @@ public class AuthProviderService {
         } else if (Registry.XIMALAYA.equals(type)) {
             return new XimalayaProvider(context, cache);
         }
-        throw new InternalException(ErrorCode._100508.getValue());
+        throw new InternalException(ErrorCode._100803.getValue());
     }
 
 }

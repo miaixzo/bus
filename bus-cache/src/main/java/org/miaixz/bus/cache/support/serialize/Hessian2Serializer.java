@@ -25,10 +25,62 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cache.support.serialize;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import com.caucho.hessian.io.Hessian2Input;
+import com.caucho.hessian.io.Hessian2Output;
+
 /**
- * 序列化支持
+ * Hessian2序列化器
+ * <p>
+ * 基于Hessian2实现的序列化器，提供高效的二进制序列化功能。 Hessian是一种轻量级的二进制RPC协议，具有跨语言支持和较高的序列化效率。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.cache.serialize;
+public class Hessian2Serializer extends AbstractSerializer {
+
+    /**
+     * 执行序列化操作
+     * <p>
+     * 使用Hessian2将对象序列化为字节数组
+     * </p>
+     *
+     * @param object 要序列化的对象
+     * @return 序列化后的字节数组
+     * @throws Throwable 可能抛出的异常
+     */
+    @Override
+    protected byte[] doSerialize(Object object) throws Throwable {
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            Hessian2Output out = new Hessian2Output(os);
+            out.writeObject(object);
+            os.close();
+            return os.toByteArray();
+        }
+    }
+
+    /**
+     * 执行反序列化操作
+     * <p>
+     * 使用Hessian2将字节数组反序列化为对象
+     * </p>
+     *
+     * @param bytes 要反序列化的字节数组
+     * @return 反序列化后的对象
+     * @throws Throwable 可能抛出的异常
+     */
+    @Override
+    protected Object doDeserialize(byte[] bytes) throws Throwable {
+        try (ByteArrayInputStream is = new ByteArrayInputStream(bytes)) {
+            Hessian2Input in = new Hessian2Input(is);
+            Object result = in.readObject();
+            in.close();
+            return result;
+        }
+    }
+
+}

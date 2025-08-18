@@ -38,6 +38,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.web.SentinelRequestHandler;
 import org.miaixz.bus.spring.web.WebMvcConfigurer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -94,9 +95,14 @@ public class WrapperConfiguration implements WebMvcRegistrations {
         return registrationBean;
     }
 
+    @Bean("supportRequestHandler")
+    public SentinelRequestHandler requestHandler() {
+        return new SentinelRequestHandler();
+    }
+
     @Bean("supportWebMvcConfigurer")
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer() {
-        return new WebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix());
+        return new WebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix(), requestHandler());
     }
 
     class RequestMappingHandler extends RequestMappingHandlerMapping {

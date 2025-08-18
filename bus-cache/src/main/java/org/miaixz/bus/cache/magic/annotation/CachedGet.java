@@ -28,10 +28,14 @@
 package org.miaixz.bus.cache.magic.annotation;
 
 import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Normal;
 
 /**
+ * 缓存获取注解
+ * <p>
+ * 用于标记方法使用只读缓存功能。当方法被调用时，会先从缓存中查找结果， 如果缓存中没有，则执行方法但不会将结果存入缓存。
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -41,18 +45,32 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface CachedGet {
 
     /**
-     * @return Specifies the Used cache implementation, default the first caches config in CacheAspect
+     * 指定使用的缓存实现
+     * <p>
+     * 默认使用在CacheAspect中配置的第一个caches
+     * </p>
+     *
+     * @return 缓存实现名称
      */
     String value() default Normal.EMPTY;
 
     /**
-     * @return Specifies the start keyExp on every key, if the Method have non param, keyExp is the consts key used by
-     *         this Method
+     * 指定每个键的前缀
+     * <p>
+     * 如果方法没有参数，prefix将作为该方法使用的常量键
+     * </p>
+     *
+     * @return 键前缀
      */
     String prefix() default Normal.EMPTY;
 
     /**
-     * @return the string when this spel is true, this Method will go through by cache
+     * 使用SpEL表达式
+     * <p>
+     * 当这个SpEL表达式为true时，该方法会使用缓存
+     * </p>
+     *
+     * @return SpEL条件表达式
      */
     String condition() default Normal.EMPTY;
 

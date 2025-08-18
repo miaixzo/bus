@@ -382,6 +382,29 @@ public final class Builder {
     }
 
     /**
+     * 从EDID中获取显示器型号
+     *
+     * @param edid EDID字节数组
+     * @return 纯文本显示器型号
+     */
+    public static String getModel(byte[] edid) {
+        byte[][] desc = getDescriptors(edid);
+        String model = null;
+        for (byte[] b : desc) {
+            if (getDescriptorType(b) == 0xfc) {
+                model = getDescriptorText(b);
+                break;
+            }
+        }
+        assert model != null;
+        String[] tokens = model.split("\\s+");
+        if (tokens.length >= 1) {
+            model = tokens[tokens.length - 1];
+        }
+        return model.trim();
+    }
+
+    /**
      * 将 EDID 字节数组解析为用户可读信息。
      *
      * @param edid EDID 字节数组

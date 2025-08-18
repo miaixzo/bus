@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.vortex.filter;
 
-import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Format;
 import org.reactivestreams.Publisher;
@@ -98,9 +96,9 @@ public class FormatFilter extends AbstractFilter {
                             .toString();
                     DataBufferUtils.release(dataBuffer); // 释放缓冲区
                     // 解析为 Message 对象
-                    Message message = JsonKit.toPojo(bodyString, Message.class);
+                    // Message message = JsonKit.toPojo(bodyString, Message.class);
                     // 使用上下文指定的提供者序列化消息
-                    String formatBody = context.getFormat().getProvider().serialize(message);
+                    String formatBody = context.getFormat().getProvider().serialize(bodyString);
                     // 记录 TRACE 日志（如果启用）
                     Format.trace(exchange, "RESPONSE_FORMATTED", formatBody);
                     // 将格式化后的数据写入新缓冲区

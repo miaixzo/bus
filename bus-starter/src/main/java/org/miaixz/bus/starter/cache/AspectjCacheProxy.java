@@ -58,8 +58,8 @@ public class AspectjCacheProxy {
         this(Context.newConfig(caches));
     }
 
-    public AspectjCacheProxy(Context config) {
-        core = Module.coreInstance(config);
+    public AspectjCacheProxy(Context context) {
+        core = Module.instance(context);
     }
 
     @Around("@annotation(org.miaixz.bus.cache.magic.annotation.CachedGet)")

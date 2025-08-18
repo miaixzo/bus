@@ -45,17 +45,10 @@ module bus.vortex {
     requires spring.core;
     requires spring.beans;
     requires spring.web;
-    requires spring.webmvc;
     requires spring.webflux;
-    requires spring.context;
-    requires spring.boot;
-    requires spring.boot.autoconfigure;
-    requires spring.boot.webflux;
-    requires spring.boot.webmvc;
     requires reactor.core;
     requires reactor.netty.http;
     requires reactor.netty.core;
-    requires io.netty.handler;
     requires org.reactivestreams;
     requires com.google.common;
 

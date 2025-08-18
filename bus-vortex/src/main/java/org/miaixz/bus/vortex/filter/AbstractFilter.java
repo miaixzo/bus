@@ -68,7 +68,7 @@ public abstract class AbstractFilter implements Filter {
         } catch (Exception e) {
             Format.error(exchange, "FILTER_FAILED",
                     "Failed in " + this.getClass().getSimpleName() + ": " + e.getMessage());
-            return Mono.error(e instanceof BusinessException ? e : new BusinessException("Filter execution failed", e));
+            return Mono.error(e instanceof BusinessException ? e : new BusinessException(ErrorCode._FAILURE));
         }
     }
 
@@ -91,7 +91,7 @@ public abstract class AbstractFilter implements Filter {
     protected Context getContext(ServerWebExchange exchange) {
         Context context = Context.get(exchange);
         if (context == null) {
-            throw new BusinessException(ErrorCode._100510);
+            throw new BusinessException(ErrorCode._100805);
         }
         return context;
     }
@@ -104,7 +104,7 @@ public abstract class AbstractFilter implements Filter {
      */
     protected Assets getAssets(Context context) {
         if (context == null) {
-            throw new BusinessException(ErrorCode._100510);
+            throw new BusinessException(ErrorCode._100805);
         }
         return context.getAssets();
     }
@@ -117,7 +117,7 @@ public abstract class AbstractFilter implements Filter {
      */
     protected Map<String, String> getRequestMap(Context context) {
         if (context == null) {
-            throw new BusinessException(ErrorCode._100510);
+            throw new BusinessException(ErrorCode._100805);
         }
         return context.getRequestMap();
     }

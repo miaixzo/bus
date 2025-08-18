@@ -42,7 +42,7 @@ public class TinyLoggingFactory extends AbstractFactory {
      * 构造
      */
     public TinyLoggingFactory() {
-        super("TinyLog");
+        super("org.tinylog.Logger");
         exists(org.tinylog.Logger.class);
     }
 

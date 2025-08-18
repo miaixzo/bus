@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.magic.Material;
 import org.miaixz.bus.validate.magic.annotation.Complex;
 
@@ -173,33 +174,45 @@ public class Provider {
     }
 
     /**
-     * 解析校验异常
+     * 根据校验规则和上下文解析并创建校验异常
      *
-     * @param material 校验器属性
-     * @param context  校验上下文
-     * @return 最终确定的错误码
+     * @param material 校验规则材料，包含校验器、错误信息等配置
+     * @param context  校验上下文，包含异常类、错误码等运行时信息
+     * @return 根据规则和上下文创建的校验异常实例
+     * @throws NoSuchException 当自定义异常类不符合要求时抛出
      */
     public static ValidateException resolve(Material material, Context context) {
-        Class<? extends ValidateException> clazz = context.getException();
-        clazz = null == clazz ? material.getException() : clazz;
-        String propertyEcode = material.getErrcode();
-        String globalEcode = context.getErrcode();
-        String ecode = Builder.DEFAULT_ERRCODE.equals(propertyEcode) ? globalEcode : propertyEcode;
-        if (ObjectKit.isEmpty(clazz)) {
-            return new ValidateException(ecode, material.getFormatted());
-        } else {
-            try {
-                Constructor<? extends ValidateException> constructor = clazz.getConstructor(String.class, int.class);
-                return constructor.newInstance(material.getFormatted(), ecode);
-            } catch (NoSuchMethodException e) {
-                throw new NoSuchException("非法的自定义校验异常, 没有指定的构造方法: constructor(String, int)");
-            } catch (IllegalAccessException e) {
-                throw new NoSuchException("无法访问自定义校验异常构造方法");
-            } catch (InstantiationException e) {
-                throw new NoSuchException("反射构建自定义校验异常失败");
-            } catch (InvocationTargetException e) {
-                throw new NoSuchException("反射构建自定义校验异常失败");
-            }
+        // 1. 确定异常类：优先使用上下文的异常类，fallback 到材料的异常类，再 fallback 到 ValidateException
+        Class<? extends ValidateException> exceptionClass = ObjectKit.defaultIfNull(material.getException(),
+                context.getException());
+
+        // 2. 确定错误码：优先使用材料中的错误码，如果是默认值则尝试上下文的错误码
+        String errcode = ObjectKit.defaultIfNull(material.getErrcode(), context.getErrcode());
+
+        // 3. 获取错误信息：从 Errors 获取，如果 key 为 null 则使用原始 errorCode
+        String errmsg = ObjectKit.defaultIfNull(material.getErrmsg(), ErrorCode.__116000.getValue());
+
+        // 4. 设置材料中的错误码和错误消息
+        material.setErrcode(errcode);
+        material.setErrmsg(errmsg);
+
+        // 5. 创建异常实例
+        if (exceptionClass == null) {
+            return new ValidateException(errcode, material.getMessage());
+        }
+        try {
+            Constructor<? extends ValidateException> constructor = exceptionClass.getConstructor(String.class,
+                    String.class);
+            return constructor.newInstance(errcode, material.getMessage());
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchException("Illegal custom validation exception, no constructor(String, String) found: "
+                    + exceptionClass.getName());
+        } catch (IllegalAccessException e) {
+            throw new NoSuchException(
+                    "Unable to access constructor of custom validation exception: " + exceptionClass.getName());
+        } catch (InstantiationException | InvocationTargetException e) {
+            throw new NoSuchException("Failed to instantiate custom validation exception: " + exceptionClass.getName(),
+                    e);
         }
     }
 

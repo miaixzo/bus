@@ -40,7 +40,6 @@ import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
@@ -63,7 +62,6 @@ import reactor.netty.http.server.HttpServer;
  * @author Kimi Liu
  * @since Java 17+
  */
-@ConditionalOnWebApplication
 @EnableConfigurationProperties(value = { VortexProperties.class })
 public class VortexConfiguration {
 

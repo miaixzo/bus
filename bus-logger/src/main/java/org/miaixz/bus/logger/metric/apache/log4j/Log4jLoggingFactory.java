@@ -42,7 +42,7 @@ public class Log4jLoggingFactory extends AbstractFactory {
      * 构造
      */
     public Log4jLoggingFactory() {
-        super("Log4j");
+        super("org.apache.logging.log4j.Logger");
         exists(org.apache.logging.log4j.LogManager.class);
     }
 

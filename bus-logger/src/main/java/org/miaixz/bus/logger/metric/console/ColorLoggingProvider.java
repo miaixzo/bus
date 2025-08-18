@@ -117,6 +117,26 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
                 COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
         System.out.format(template, DateKit.formatNow(), level.name(), " - ", ClassKit.getShortClassName(getName()),
                 StringKit.format(format, args));
+        if (t != null) {
+            t.printStackTrace();
+        }
+    }
+
+    @Override
+    public Level getLevel() {
+        if (isTraceEnabled()) {
+            return Level.TRACE;
+        } else if (isDebugEnabled()) {
+            return Level.DEBUG;
+        } else if (isInfoEnabled()) {
+            return Level.INFO;
+        } else if (isWarnEnabled()) {
+            return Level.WARN;
+        } else if (isErrorEnabled()) {
+            return Level.ERROR;
+        } else {
+            return Level.OFF;
+        }
     }
 
 }
