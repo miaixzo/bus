@@ -83,7 +83,25 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 授权服务提供
+ * 授权服务提供类，用于管理和创建各种第三方登录/授权服务提供者实例。 该类维护了一个授权组件的缓存，支持通过配置或手动注册方式添加授权组件。 该类支持多种第三方平台，包括但不限于：
+ * <ul>
+ * <li>国内平台：微信、QQ、微博、支付宝、淘宝、百度、华为等</li>
+ * <li>国外平台：GitHub、Google、Facebook、Twitter、Microsoft等</li>
+ * <li>企业平台：钉钉、飞书、企业微信等</li>
+ * </ul>
+ *
+ * <p>
+ * 使用示例：
+ * </p>
+ * 
+ * <pre>
+ * // 创建配置
+ * AuthProperties properties = new AuthProperties();
+ * // 创建服务
+ * AuthProviderService service = new AuthProviderService(properties);
+ * // 获取GitHub授权提供者
+ * Provider githubProvider = service.require(Registry.GITHUB);
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -91,26 +109,46 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class AuthProviderService {
 
     /**
-     * 组件配置
+     * 授权组件缓存，用于存储已注册的授权组件。 使用ConcurrentHashMap保证线程安全。
      */
     private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * 授权配置属性，包含各种授权组件的配置信息。
+     */
     public AuthProperties properties;
+
+    /**
+     * 缓存接口，用于存储授权过程中的临时数据。
+     */
     public CacheX cache;
 
+    /**
+     * 使用默认缓存创建授权服务提供者实例。
+     *
+     * @param properties 授权配置属性，不能为null
+     */
     public AuthProviderService(AuthProperties properties) {
         this(properties, AuthCache.INSTANCE);
     }
 
+    /**
+     * 使用指定缓存创建授权服务提供者实例。
+     *
+     * @param properties 授权配置属性，不能为null
+     * @param cache      缓存实现，不能为null
+     */
     public AuthProviderService(AuthProperties properties, CacheX cache) {
         this.properties = properties;
         this.cache = cache;
     }
 
     /**
-     * 注册组件
+     * 注册授权组件到缓存中。 如果已存在相同类型的组件，则抛出异常。
      *
-     * @param type    组件名称
-     * @param context 组件对象
+     * @param type    授权组件类型，不能为null
+     * @param context 授权组件上下文，不能为null
+     * @throws InternalException 如果已存在相同类型的组件
      */
     public static void register(Registry type, Context context) {
         if (CACHE.containsKey(type)) {
@@ -120,17 +158,21 @@ public class AuthProviderService {
     }
 
     /**
-     * 返回type对象
+     * 根据授权组件类型获取对应的授权服务提供者实例。 首先从缓存中查找，如果不存在则从配置中获取。
      *
-     * @param type {@link Registry}
-     * @return {@link Provider}
+     * @param type 授权组件类型，不能为null
+     * @return 对应的授权服务提供者实例
+     * @throws InternalException 如果找不到对应的授权组件
      */
-
     public Provider require(Registry type) {
+        // 从缓存中获取授权组件上下文
         Context context = CACHE.get(type);
+        // 如果缓存中不存在，则从配置中获取
         if (ObjectKit.isEmpty(context)) {
             context = properties.getType().get(type);
         }
+
+        // 根据不同的授权类型创建对应的授权服务提供者实例
         if (Registry.AFDIAN.equals(type)) {
             return new AfDianProvider(context, cache);
         } else if (Registry.ALIPAY.equals(type)) {
@@ -218,6 +260,7 @@ public class AuthProviderService {
         } else if (Registry.XIMALAYA.equals(type)) {
             return new XimalayaProvider(context, cache);
         }
+        // 如果没有匹配的授权类型，抛出异常
         throw new InternalException(ErrorCode._100803.getValue());
     }
 

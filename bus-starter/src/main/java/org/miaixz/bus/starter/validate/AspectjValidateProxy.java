@@ -34,7 +34,41 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
 
 /**
- * AOP切面切点
+ * AOP验证代理切面类，用于对控制器方法参数进行自动验证。
+ *
+ * <p>
+ * 该类使用Spring AOP技术，在控制器方法执行前对带有验证注解的参数进行验证， 如果验证失败则抛出异常，阻止方法继续执行。
+ * </p>
+ *
+ * <p>
+ * 该切面匹配以下类型的方法：
+ * </p>
+ * <ul>
+ * <li>带有Spring Web注解的方法：@RequestMapping、@GetMapping、@PostMapping等</li>
+ * <li>带有@CrossOrigin注解的方法</li>
+ * <li>带有@Valid注解参数的方法</li>
+ * </ul>
+ *
+ * <p>
+ * 使用示例：
+ * </p>
+ * 
+ * <pre>
+ * &#64;RestController
+ * &#64;RequestMapping("/user")
+ * public class UserController {
+ *
+ *     &#64;PostMapping("/register")
+ *     public UserDTO register(&#64;Valid UserRegisterDTO userDTO) {
+ *         // 如果userDTO验证失败，方法不会执行，直接抛出异常
+ *         return userService.register(userDTO);
+ *     }
+ * }
+ * </pre>
+ *
+ * <p>
+ * 在上述示例中，当调用{@code /user/register}接口时，{@code AspectjValidateProxy}会自动对 {@code userDTO}参数进行验证，如果验证失败则抛出异常，方法不会执行。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +78,22 @@ import org.springframework.core.annotation.Order;
 public class AspectjValidateProxy {
 
     /**
-     * requestMapping putMapping postMapping patchMapping modelAttribute getMapping deleteMapping CrossOrigin
+     * 定义切点，匹配所有带有Spring Web注解的方法或带有@Valid注解参数的方法。
+     *
+     * <p>
+     * 切点表达式匹配以下注解或方法：
+     * </p>
+     * <ul>
+     * <li>@RequestMapping</li>
+     * <li>@PutMapping</li>
+     * <li>@PostMapping</li>
+     * <li>@PatchMapping</li>
+     * <li>@ModelAttribute</li>
+     * <li>@GetMapping</li>
+     * <li>@DeleteMapping</li>
+     * <li>@CrossOrigin</li>
+     * <li>带有@Valid注解参数的方法</li>
+     * </ul>
      */
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping)"
             + "||@annotation(org.springframework.web.bind.annotation.PutMapping)"
@@ -56,15 +105,19 @@ public class AspectjValidateProxy {
             + "||@annotation(org.springframework.web.bind.annotation.CrossOrigin)"
             + "||execution(* *(@org.miaixz.bus.validate.magic.annotation.Valid (*), ..))")
     public void match() {
-
+        // 空方法体，仅用于定义切点
     }
 
     /**
-     * 执行结果
+     * 环绕通知，在匹配的方法执行前后进行验证处理。
      *
-     * @param point 切点
-     * @return 返回结果
-     * @throws Throwable 异常
+     * <p>
+     * 该方法在目标方法执行前，调用{@link AutoValidateAdvice}对方法参数进行验证， 验证通过后继续执行目标方法，验证失败则抛出异常。
+     * </p>
+     *
+     * @param point 切点，包含目标方法的信息
+     * @return 目标方法的执行结果
+     * @throws Throwable 如果验证失败或目标方法执行抛出异常
      */
     @Around("match()")
     public Object around(ProceedingJoinPoint point) throws Throwable {

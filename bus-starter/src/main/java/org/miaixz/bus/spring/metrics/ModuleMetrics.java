@@ -25,24 +25,30 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.boot.statics;
+package org.miaixz.bus.spring.metrics;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 接口自定义{@link BeanStatics}
+ * 记录模块刷新的状态模型，用于跟踪和记录Spring模块刷新过程中的各项指标。
+ * <p>
+ * 该类继承自 {@link ChildrenMetrics<BeanMetrics>}，可以管理多个BeanMetrics子指标， 同时记录执行刷新操作的线程名称，用于监控和分析模块刷新性能。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BeanStaticsCustomizer {
+@Getter
+@Setter
+public class ModuleMetrics extends ChildrenMetrics<BeanMetrics> {
 
     /**
-     * 自定义bean启动
-     *
-     * @param beanName 名称
-     * @param bean     实例
-     * @param beanStat 统计模型
-     * @return 如果{@code null}，则不会调用后续的BeanStatCustomizer
+     * 执行模块刷新操作的线程名称
+     * <p>
+     * 记录执行刷新操作的线程名称，用于分析并发性能和线程使用情况
+     * </p>
      */
-    BeanStatics customize(String beanName, Object bean, BeanStatics beanStat);
+    private String threadName;
 
 }

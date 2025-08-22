@@ -25,41 +25,57 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.boot.statics;
+package org.miaixz.bus.spring.metrics;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 启动状态的基本模型
+ * 启动消耗统计组件，用于收集和统计应用程序启动过程中的各项性能指标。
+ * <p>
+ * 该类提供了记录应用程序名称、启动耗时以及各阶段统计信息的功能， 可用于全面监控和分析应用程序的启动性能。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class BaseStatics {
+public class StartupMetrics {
 
-    private final Map<String, String> attributes = new HashMap<>();
-    private String name;
-    private long startTime;
-    private long endTime;
-    private long cost;
+    /**
+     * 应用程序名称
+     * <p>
+     * 记录当前启动的应用程序的名称，用于标识不同的应用程序实例
+     * </p>
+     */
+    private String appName;
 
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-        this.cost = this.endTime - this.startTime;
-    }
+    /**
+     * 应用程序启动耗时（毫秒）
+     * <p>
+     * 记录应用程序从开始启动到完成启动所花费的总时间
+     * </p>
+     */
+    private long applicationBootElapsedTime = 0;
 
-    public void putAttribute(String key, String value) {
-        this.attributes.put(key, value);
-    }
+    /**
+     * 应用程序启动时间戳
+     * <p>
+     * 记录应用程序启动的时间点（毫秒级时间戳）
+     * </p>
+     */
+    private long applicationBootTime;
 
-    public String getAttribute(String key) {
-        return this.attributes.get(key);
-    }
+    /**
+     * 启动阶段统计信息列表
+     * <p>
+     * 存储应用程序启动过程中各个阶段的统计信息，每个阶段都是一个BaseMetrics对象
+     * </p>
+     */
+    private List<BaseMetrics> stageStats = new ArrayList<>();
 
 }

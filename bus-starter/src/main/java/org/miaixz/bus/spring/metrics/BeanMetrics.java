@@ -25,21 +25,32 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.boot.statics;
+package org.miaixz.bus.spring.metrics;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 记录模块刷新的状态模型
+ * 记录bean初始化的状态模型，用于跟踪和记录Spring Bean初始化过程中的各项指标。
+ * <p>
+ * 该类继承自ChildrenMetrics，可以记录Bean的类型信息和实际刷新耗时， 用于监控和分析Bean初始化性能。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class ModuleStatics extends ChildrenStatics<BeanStatics> {
+public class BeanMetrics extends ChildrenMetrics<BeanMetrics> {
 
-    private String threadName;
+    /**
+     * Bean的类型信息，记录Bean的类名或类型标识
+     */
+    private String type;
+
+    /**
+     * 实际刷新耗时（毫秒），记录Bean实际刷新操作所花费的时间
+     */
+    private long realRefreshElapsedTime;
 
 }
