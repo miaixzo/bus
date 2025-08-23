@@ -49,7 +49,6 @@ public interface ErrorService {
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     default boolean before(Exception ex) {
-        Console.error("Before error of : " + ExceptionKit.stacktraceToString(ex));
         return true;
     }
 
@@ -60,7 +59,6 @@ public interface ErrorService {
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     default boolean after(Exception ex) {
-        Console.error("After error of : " + ExceptionKit.stacktraceToString(ex));
         return true;
     }
 

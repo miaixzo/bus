@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.web;
+package org.miaixz.bus.spring.http;
 
 import java.util.Comparator;
 import java.util.List;
@@ -51,7 +51,7 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
+public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
         implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
 
     // String 转换器的默认媒体类型，支持 JSON 和 UTF-8 纯文本
@@ -62,7 +62,7 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
     protected String prefix;
     protected SentinelRequestHandler handler;
 
-    public WebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler) {
+    public AwareWebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler) {
         super();
         this.autoType = autoType;
         this.prefix = prefix;
@@ -78,7 +78,7 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new MultiFormatArgumentResolver());
+        resolvers.add(new CompositeArgumentResolver());
     }
 
     /**

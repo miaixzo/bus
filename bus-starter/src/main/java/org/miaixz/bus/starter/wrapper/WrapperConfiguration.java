@@ -38,8 +38,10 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.web.SentinelRequestHandler;
-import org.miaixz.bus.spring.web.WebMvcConfigurer;
+import org.miaixz.bus.spring.http.MutableRequestWrapper;
+import org.miaixz.bus.spring.http.MutableResponseWrapper;
+import org.miaixz.bus.spring.http.SentinelRequestHandler;
+import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcRegistrations;
@@ -170,7 +172,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      */
     @Bean("supportWebMvcConfigurer")
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer() {
-        return new WebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix(), requestHandler());
+        return new AwareWebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix(), requestHandler());
     }
 
     /**
@@ -240,12 +242,12 @@ public class WrapperConfiguration implements WebMvcRegistrations {
             final String method = request.getMethod();
             // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能
             if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
-                if (!(request instanceof CacheRequestWrapper)) {
-                    request = new CacheRequestWrapper(request);
+                if (!(request instanceof MutableRequestWrapper)) {
+                    request = new MutableRequestWrapper(request);
                 }
             }
-            if (!(response instanceof CacheResponseWrapper)) {
-                response = new CacheResponseWrapper(response);
+            if (!(response instanceof MutableResponseWrapper)) {
+                response = new MutableResponseWrapper(response);
             }
             filterChain.doFilter(request, response);
         }

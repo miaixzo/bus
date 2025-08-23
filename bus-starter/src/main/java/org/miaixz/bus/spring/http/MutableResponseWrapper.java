@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.wrapper;
+package org.miaixz.bus.spring.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,7 +77,7 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CacheResponseWrapper extends HttpServletResponseWrapper {
+public class MutableResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * 字节数组输出流，用于缓存响应内容
@@ -99,7 +99,7 @@ public class CacheResponseWrapper extends HttpServletResponseWrapper {
      *
      * @param response 原始HTTP响应对象
      */
-    CacheResponseWrapper(HttpServletResponse response) {
+    public MutableResponseWrapper(HttpServletResponse response) {
         super(response);
         this.streaming();
     }
@@ -173,7 +173,7 @@ public class CacheResponseWrapper extends HttpServletResponseWrapper {
 
             @Override
             public void write(int b) throws IOException {
-                TeeOutputStream write = new TeeOutputStream(CacheResponseWrapper.super.getOutputStream(),
+                TeeOutputStream write = new TeeOutputStream(MutableResponseWrapper.super.getOutputStream(),
                         byteArrayOutputStream);
                 write.write(b);
             }

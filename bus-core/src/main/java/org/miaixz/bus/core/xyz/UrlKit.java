@@ -678,32 +678,32 @@ public class UrlKit {
      * 注意，此方法只能标准化整个URL，并不适合于单独编码参数值
      * </p>
      *
-     * @param urlWithParams url和参数，可以包含url本身，也可以单独参数
-     * @param charset       编码
+     * @param query   url和参数，可以包含url本身，也可以单独参数
+     * @param charset 编码
      * @return 编码后的url和参数
      */
-    public static String encodeQuery(final String urlWithParams, final java.nio.charset.Charset charset) {
-        if (StringKit.isBlank(urlWithParams)) {
+    public static String encodeQuery(final String query, final java.nio.charset.Charset charset) {
+        if (StringKit.isBlank(query)) {
             return Normal.EMPTY;
         }
 
         String urlPart = null; // url部分，不包括问号
         String paramPart; // 参数部分
-        final int pathEndPos = urlWithParams.indexOf(Symbol.C_QUESTION_MARK);
+        final int pathEndPos = query.indexOf(Symbol.C_QUESTION_MARK);
         if (pathEndPos > -1) {
             // url + 参数
-            urlPart = StringKit.subPre(urlWithParams, pathEndPos);
-            paramPart = StringKit.subSuf(urlWithParams, pathEndPos + 1);
+            urlPart = StringKit.subPre(query, pathEndPos);
+            paramPart = StringKit.subSuf(query, pathEndPos + 1);
             if (StringKit.isBlank(paramPart)) {
                 // 无参数，返回url
                 return urlPart;
             }
-        } else if (!StringKit.contains(urlWithParams, Symbol.C_EQUAL)) {
+        } else if (!StringKit.contains(query, Symbol.C_EQUAL)) {
             // 无参数的URL
-            return urlWithParams;
+            return query;
         } else {
             // 无URL的参数
-            paramPart = urlWithParams;
+            paramPart = query;
         }
 
         paramPart = normalizeQuery(paramPart, charset);
@@ -718,38 +718,38 @@ public class UrlKit {
      * 注意，此方法只能标准化整个URL，并不适合于单独编码参数值
      * </p>
      *
-     * @param queryPart 参数字符串
-     * @param charset   编码
+     * @param query   参数字符串
+     * @param charset 编码
      * @return 标准化的参数字符串
      */
-    public static String normalizeQuery(final String queryPart, final java.nio.charset.Charset charset) {
-        if (StringKit.isEmpty(queryPart)) {
-            return queryPart;
+    public static String normalizeQuery(final String query, final java.nio.charset.Charset charset) {
+        if (StringKit.isEmpty(query)) {
+            return query;
         }
-        final StringBuilder builder = new StringBuilder(queryPart.length() + 16);
-        final int len = queryPart.length();
+        final StringBuilder builder = new StringBuilder(query.length() + 16);
+        final int len = query.length();
         String name = null;
         int pos = 0; // 未处理字符开始位置
         char c; // 当前字符
         int i; // 当前字符位置
         for (i = 0; i < len; i++) {
-            c = queryPart.charAt(i);
+            c = query.charAt(i);
             if (c == Symbol.C_EQUAL) { // 键值对的分界点
                 if (null == name) {
                     // 只有=前未定义name时被当作键值分界符，否则做为普通字符
-                    name = (pos == i) ? Normal.EMPTY : queryPart.substring(pos, i);
+                    name = (pos == i) ? Normal.EMPTY : query.substring(pos, i);
                     pos = i + 1;
                 }
             } else if (c == Symbol.C_AND) { // 参数对的分界点
                 if (null == name) {
                     // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
                     if (pos != i) {
-                        name = queryPart.substring(pos, i);
+                        name = query.substring(pos, i);
                         builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL);
                     }
                 } else {
                     builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL)
-                            .append(RFC3986.QUERY_PARAM_VALUE.encode(queryPart.substring(pos, i), charset))
+                            .append(RFC3986.QUERY_PARAM_VALUE.encode(query.substring(pos, i), charset))
                             .append(Symbol.C_AND);
                 }
                 name = null;
@@ -765,7 +765,7 @@ public class UrlKit {
             if (null == name && pos > 0) {
                 builder.append(Symbol.C_EQUAL);
             }
-            builder.append(UrlEncoder.encodeQuery(queryPart.substring(pos, i), charset));
+            builder.append(UrlEncoder.encodeQuery(query.substring(pos, i), charset));
         }
 
         // 以&结尾则去除之
@@ -779,12 +779,12 @@ public class UrlKit {
     /**
      * 将URL参数解析为Map（也可以解析Post中的键值对参数）
      *
-     * @param paramsStr 参数字符串（或者带参数的Path）
-     * @param charset   字符集
+     * @param query   参数字符串（或者带参数的Path）
+     * @param charset 字符集
      * @return 参数Map
      */
-    public static Map<String, String> decodeQuery(final String paramsStr, final java.nio.charset.Charset charset) {
-        final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(paramsStr, charset).getQueryMap();
+    public static Map<String, String> decodeQuery(final String query, final java.nio.charset.Charset charset) {
+        final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(query, charset).getQueryMap();
         if (MapKit.isEmpty(queryMap)) {
             return MapKit.empty();
         }
@@ -794,26 +794,26 @@ public class UrlKit {
     /**
      * 将URL参数解析为Map（也可以解析Post中的键值对参数）
      *
-     * @param paramsStr 参数字符串（或者带参数的Path）
-     * @param charset   字符集
+     * @param query   参数字符串（或者带参数的Path）
+     * @param charset 字符集
      * @return 参数Map
      */
-    public static Map<String, List<String>> decodeQueryList(final String paramsStr,
+    public static Map<String, List<String>> decodeQueryList(final String query,
             final java.nio.charset.Charset charset) {
-        final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(paramsStr, charset).getQueryMap();
+        final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(query, charset).getQueryMap();
         if (MapKit.isEmpty(queryMap)) {
             return MapKit.empty();
         }
 
-        final Map<String, List<String>> params = new LinkedHashMap<>();
+        final Map<String, List<String>> map = new LinkedHashMap<>();
         queryMap.forEach((key, value) -> {
             if (null != key) {
-                final List<String> values = params.computeIfAbsent(key.toString(), k -> new ArrayList<>(1));
+                final List<String> values = map.computeIfAbsent(key.toString(), k -> new ArrayList<>(1));
                 // 一般是一个参数
                 values.add(StringKit.toStringOrNull(value));
             }
         });
-        return params;
+        return map;
     }
 
 }

@@ -43,6 +43,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -226,7 +227,7 @@ public class VKProvider extends AbstractProvider {
     }
 
     private Map<String, String> buildHeader() {
-        return Map.of("Content-Type", "application/x-www-form-urlencoded");
+        return Map.of("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     protected String doPostRevoke(AuthToken authToken) {

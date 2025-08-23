@@ -25,15 +25,19 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.web;
+package org.miaixz.bus.spring.http;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -43,7 +47,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * 自动参数解析器
@@ -59,7 +63,7 @@ import java.io.IOException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MultiFormatArgumentResolver implements HandlerMethodArgumentResolver {
+public class CompositeArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
      * 判断是否支持解析当前参数
@@ -69,7 +73,6 @@ public class MultiFormatArgumentResolver implements HandlerMethodArgumentResolve
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        // 支持 @ModelAttribute 或非简单类型的参数
         return parameter.hasParameterAnnotation(ModelAttribute.class) || !isSimpleType(parameter.getParameterType());
     }
 
@@ -91,23 +94,53 @@ public class MultiFormatArgumentResolver implements HandlerMethodArgumentResolve
             throw new IllegalStateException("No HttpServletRequest available");
         }
 
-        Class<?> parameterType = methodParameter.getParameterType();
+        byte[] body;
         String contentType = request.getContentType();
-
-        // 处理 JSON 请求（POST/PUT 等）
-        if (!HTTP.GET.equalsIgnoreCase(request.getMethod()) && contentType != null
-                && contentType.startsWith(MediaType.APPLICATION_JSON_VALUE)) {
-            try (var inputStream = request.getInputStream()) {
-                return JsonKit.toPojo(new String(inputStream.readAllBytes(), Charset.UTF_8), parameterType);
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Failed to parse JSON body", e);
+        // 如果是 MutableRequestWrapper，优先使用其缓存的 body
+        if (request instanceof MutableRequestWrapper wrapper) {
+            request = wrapper.getRequest();
+            body = wrapper.getBody();
+            contentType = wrapper.getContentType();
+        } else {
+            // 读取输入流
+            body = IoKit.readBytes(request.getInputStream());
+            if (body == null || body.length == 0) {
+                // 如果输入流为空且有参数，使用parameterMap
+                if (MapKit.isNotEmpty(request.getParameterMap())) {
+                    String paramString = request.getParameterMap().entrySet().stream()
+                            .map(entry -> entry.getKey() + Symbol.EQUAL + String.join(Symbol.COMMA, entry.getValue()))
+                            .collect(Collectors.joining(Symbol.AND));
+                    body = paramString.getBytes(Charset.UTF_8);
+                    contentType = MediaType.APPLICATION_FORM_URLENCODED;
+                } else {
+                    body = new byte[0];
+                }
             }
         }
 
         // 创建目标对象实例
+        Class<?> parameterType = methodParameter.getParameterType();
         Object target = parameterType.getDeclaredConstructor().newInstance();
         WebDataBinder binder = binderFactory.createBinder(webRequest, target, methodParameter.getParameterName());
+
+        // 添加 query 参数
         MutablePropertyValues mpvs = new MutablePropertyValues(request.getParameterMap());
+
+        // 处理 application/x-www-form-urlencoded 请求
+        if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
+            String bodyString = new String(body, Charset.UTF_8);
+            if (!StringKit.isEmpty(bodyString)) {
+                mpvs.addPropertyValues(UrlKit.decodeQuery(bodyString, Charset.UTF_8));
+            }
+        }
+
+        // 处理 JSON 请求
+        if (contentType != null && contentType.startsWith(MediaType.APPLICATION_JSON)) {
+            String bodyString = new String(body, Charset.UTF_8);
+            if (!bodyString.isEmpty() && JsonKit.isJson(bodyString)) {
+                return JsonKit.toPojo(bodyString, parameterType);
+            }
+        }
 
         // 处理 multipart/form-data 请求（文件上传）
         if (request instanceof MultipartHttpServletRequest multipartRequest) {

@@ -116,10 +116,10 @@ module bus.starter {
     exports org.miaixz.bus.spring.banner;
     exports org.miaixz.bus.spring.boot;
     exports org.miaixz.bus.spring.env;
+    exports org.miaixz.bus.spring.http;
     exports org.miaixz.bus.spring.listener;
     exports org.miaixz.bus.spring.metrics;
     exports org.miaixz.bus.spring.undertow;
-    exports org.miaixz.bus.spring.web;
     exports org.miaixz.bus.starter.annotation;
     exports org.miaixz.bus.starter.bridge;
     exports org.miaixz.bus.starter.cache;
