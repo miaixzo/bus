@@ -68,8 +68,8 @@ public class ProgressBody extends RequestBody {
     }
 
     @Override
-    public MediaType mediaType() {
-        return requestBody.mediaType();
+    public MediaType contentType() {
+        return requestBody.contentType();
     }
 
     @Override
@@ -92,9 +92,7 @@ public class ProgressBody extends RequestBody {
                         doneCalled = true;
                     }
                     step++;
-                    callbackExecutor.execute(() -> {
-                        onProcess.on(progress);
-                    });
+                    callbackExecutor.execute(() -> onProcess.on(progress));
                 }
 
             });

@@ -57,7 +57,7 @@
 - 🔍️:mag:改善搜索引擎优化
 - 🏷️:label:添加或更新类型
 - 🌱:seedling:添加或更新种子文件
-- 🚩:triangular_flag_on_post:添加、更新或删除功能标志
+- 🚩:triangular_flag_on_post:添加、更新或删除功能
 - 🥅:goal_net:捕捉错误
 - 💫:dizzy:添加或更新动画和过渡
 - 🗑️:wastebasket:弃用需要清理的代码

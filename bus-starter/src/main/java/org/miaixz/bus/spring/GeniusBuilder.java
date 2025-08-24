@@ -68,8 +68,6 @@ public class GeniusBuilder {
      */
     public static final String SPRING_BOOT_BANNER = " :: Spring Boot :: ";
 
-    public static final String BUS_MODULE_FILE = "bus-module.properties";
-
     public static final String SPRING_CONTEXT_PATH = "META-INF/spring";
 
     public static final String DEFAULT_PROFILE_VALUE = "default";

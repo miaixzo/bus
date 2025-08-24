@@ -48,7 +48,7 @@ public interface Convertor {
      *
      * @return 媒体类型
      */
-    String mediaType();
+    String contentType();
 
     /**
      * 解析 Mapper
@@ -121,7 +121,7 @@ public interface Convertor {
         }
 
         @Override
-        public String mediaType() {
+        public String contentType() {
             return MediaType.APPLICATION_FORM_URLENCODED;
         }
 

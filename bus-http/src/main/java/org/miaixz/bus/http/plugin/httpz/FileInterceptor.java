@@ -60,7 +60,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
 
         private final ResponseBody body;
         private final ProgressListener progressListener;
-        private BufferSource bufferedSource;
+        private BufferSource bufferSource;
 
         public DownloadFileProgressResponseBody(ResponseBody body, ProgressListener progressListener) {
             this.body = body;
@@ -68,8 +68,8 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
         }
 
         @Override
-        public MediaType mediaType() {
-            return body.mediaType();
+        public MediaType contentType() {
+            return body.contentType();
         }
 
         @Override
@@ -79,10 +79,10 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
 
         @Override
         public BufferSource source() {
-            if (null == bufferedSource) {
-                bufferedSource = IoKit.buffer(source(body.source()));
+            if (null == bufferSource) {
+                bufferSource = IoKit.buffer(source(body.source()));
             }
-            return bufferedSource;
+            return bufferSource;
         }
 
         private Source source(Source source) {

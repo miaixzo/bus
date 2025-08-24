@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.web;
+package org.miaixz.bus.spring.http;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -41,8 +41,6 @@ import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.ContextBuilder;
-import org.miaixz.bus.starter.wrapper.CacheRequestWrapper;
-import org.miaixz.bus.starter.wrapper.CacheResponseWrapper;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -54,7 +52,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * 性能优化
  * <ul>
- * <li>使用{@link CacheRequestWrapper}实现请求体缓存， 解决InputStream只能读取一次的问题</li>
+ * <li>使用{@link MutableRequestWrapper}实现请求体缓存， 解决InputStream只能读取一次的问题</li>
  * <li>响应体记录限制长度(默认150字符)，防止大响应体导致内存溢出</li>
  * <li>支持异步日志记录，减少对主流程性能影响</li>
  * </ul>
@@ -101,10 +99,10 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         // 根据请求方法类型处理日志
         if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
             // 对于有请求体的方法，如果是CacheRequestWrapper则输出请求体
-            if (request instanceof CacheRequestWrapper) {
-                String requestBody = new String(((CacheRequestWrapper) request).getBody()).replaceAll("\\s+",
+            if (request instanceof MutableRequestWrapper) {
+                String requestBody = new String(((MutableRequestWrapper) request).getBody()).replaceAll("\\s+",
                         Normal.EMPTY);
-                Logger.info("==>    Request: {}", requestBody);
+                Logger.info("==>       Body: {}", requestBody);
             } else {
                 // 如果没有被包装，则输出请求参数
                 requestParameters(request);
@@ -129,14 +127,14 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
             Exception exception) {
-        if (response instanceof CacheResponseWrapper) {
-            CacheResponseWrapper cacheResponseWrapper = ((CacheResponseWrapper) response);
-            String responseBody = new String(cacheResponseWrapper.getBody());
+        if (response instanceof MutableResponseWrapper) {
+            MutableResponseWrapper mutableResponseWrapper = ((MutableResponseWrapper) response);
+            String responseBody = new String(mutableResponseWrapper.getBody());
             // 只记录响应体的一部分，避免日志过大
             String logBody = responseBody.length() > 150
                     ? responseBody.substring(0, 150) + "... [truncated, total length: " + responseBody.length() + "]"
                     : responseBody;
-            Logger.info("<==   Response: (length: {}): {}", cacheResponseWrapper.getBody().length, logBody);
+            Logger.info("<==   Response: (length: {}): {}", mutableResponseWrapper.getBody().length, logBody);
         } else {
             Logger.info("==>     Status: {}", response.getStatus());
         }
@@ -156,7 +154,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
             ModelAndView modelAndView) {
-        Logger.info("==> RequestURI: {}", request.getRequestURI());
+        Logger.info("==>        URI: {}", request.getRequestURI());
     }
 
     /**
@@ -174,8 +172,7 @@ public class SentinelRequestHandler implements HandlerInterceptor {
                     params.put(entry.getKey(), StringKit.join(Symbol.COMMA, values));
                 }
             }
-
-            Logger.info("==> Parameters: {}", params);
+            Logger.info("==>       Body: {}", params);
         }
 
         // 记录请求头信息
@@ -245,14 +242,14 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     public void requestInfo(HttpServletRequest request, String method) {
         // 定义 HTTP 方法与颜色的映射
         Map<String, Ansi4BitColor> methodColorMap = new HashMap<>();
-        methodColorMap.put("GET", Ansi4BitColor.GREEN);
-        methodColorMap.put("POST", Ansi4BitColor.MAGENTA);
-        methodColorMap.put("DELETE", Ansi4BitColor.BLUE);
-        methodColorMap.put("PUT", Ansi4BitColor.RED);
-        methodColorMap.put("OPTIONS", Ansi4BitColor.YELLOW);
-        methodColorMap.put("ALL", Ansi4BitColor.WHITE);
-        methodColorMap.put("BEFORE", Ansi4BitColor.BLACK);
-        methodColorMap.put("AFTER", Ansi4BitColor.CYAN);
+        methodColorMap.put(HTTP.GET, Ansi4BitColor.GREEN);
+        methodColorMap.put(HTTP.POST, Ansi4BitColor.MAGENTA);
+        methodColorMap.put(HTTP.DELETE, Ansi4BitColor.BLUE);
+        methodColorMap.put(HTTP.PUT, Ansi4BitColor.RED);
+        methodColorMap.put(HTTP.OPTIONS, Ansi4BitColor.YELLOW);
+        methodColorMap.put(HTTP.ALL, Ansi4BitColor.WHITE);
+        methodColorMap.put(HTTP.BEFORE, Ansi4BitColor.BLACK);
+        methodColorMap.put(HTTP.AFTER, Ansi4BitColor.CYAN);
 
         // 获取对应方法的颜色，默认为绿色
         Ansi4BitColor color = methodColorMap.getOrDefault(method, Ansi4BitColor.GREEN);

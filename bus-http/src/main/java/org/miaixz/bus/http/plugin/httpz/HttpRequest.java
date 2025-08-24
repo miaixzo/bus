@@ -84,14 +84,14 @@ public abstract class HttpRequest {
         headers();
     }
 
-    public static RequestBody createRequestBody(final MediaType mediaType, final InputStream is) {
+    public static RequestBody createRequestBody(final MediaType contentType, final InputStream is) {
         if (null == is)
             throw new NullPointerException("is == null");
 
         return new RequestBody() {
             @Override
-            public MediaType mediaType() {
-                return mediaType;
+            public MediaType contentType() {
+                return contentType;
             }
 
             @Override

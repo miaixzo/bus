@@ -115,7 +115,7 @@ public class Checker {
             }
 
             if (verified.getList().isEmpty()) {
-                Logger.warn("Please check the annotation on property: {}", field.getName());
+                Logger.warn("==>    Request: Please check the annotation on property: {}", field.getName());
                 // throw new ValidateException(ErrorCode._100511);
                 // 创建包含默认Material的Verified对象
                 verified = new Verified(value, new Annotation[0], verified.getContext(), field.getName());

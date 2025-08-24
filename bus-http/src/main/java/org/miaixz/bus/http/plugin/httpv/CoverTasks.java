@@ -151,16 +151,16 @@ public class CoverTasks {
             Throwable cause = null;
             for (int i = convertors.length - 1; i >= 0; i--) {
                 Convertor convertor = convertors[i];
-                String mediaType = convertor.mediaType();
-                if (null != type && (null == mediaType || !mediaType.contains(type))) {
+                String contentType = convertor.contentType();
+                if (null != type && (null == contentType || !contentType.contains(type))) {
                     continue;
                 }
-                if (null == callable && null != mediaType) {
-                    return new Data<>(null, mediaType);
+                if (null == callable && null != contentType) {
+                    return new Data<>(null, contentType);
                 }
                 try {
                     assert null != callable;
-                    return new Data<>(callable.apply(convertor), mediaType);
+                    return new Data<>(callable.apply(convertor), contentType);
                 } catch (Exception e) {
                     if (null != cause) {
                         initRootCause(e, cause);
@@ -252,11 +252,11 @@ public class CoverTasks {
         public static class Data<T> {
 
             public T data;
-            public String mediaType;
+            public String contentType;
 
-            public Data(T data, String mediaType) {
+            public Data(T data, String contentType) {
                 this.data = data;
-                this.mediaType = mediaType;
+                this.contentType = contentType;
             }
         }
 

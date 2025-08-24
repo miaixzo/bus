@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.storage.magic;
 
+import org.miaixz.bus.core.basic.normal.ErrorRegistry;
+import org.miaixz.bus.core.basic.normal.Errors;
+
 /**
  * 存储错误码: 113xxx
  *
@@ -34,5 +37,40 @@ package org.miaixz.bus.storage.magic;
  * @since Java 17+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
+
+    /**
+     * 通用: 文件上传失败
+     */
+    public static final Errors _113000 = ErrorRegistry.builder().key("113000").value("文件上传失败").build();
+
+    /**
+     * 通用: 目录已存在
+     */
+    public static final Errors _113001 = ErrorRegistry.builder().key("113001").value("目录已存在").build();
+
+    /**
+     * 通用: 目录不存在
+     */
+    public static final Errors _113002 = ErrorRegistry.builder().key("113002").value("目录不存在").build();
+
+    /**
+     * 通用: 文件不存在
+     */
+    public static final Errors _113003 = ErrorRegistry.builder().key("113003").value("文件不存在").build();
+
+    /**
+     * 通用: 文件已存在
+     */
+    public static final Errors _113004 = ErrorRegistry.builder().key("113004").value("文件已存在").build();
+
+    /**
+     * 通用: 目录获取失败
+     */
+    public static final Errors _113005 = ErrorRegistry.builder().key("113005").value("目录获取失败").build();
+
+    /**
+     * 通用: 文件MD5计算失败
+     */
+    public static final Errors _113006 = ErrorRegistry.builder().key("113006").value("文件MD5计算失败").build();
 
 }

@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.2.5-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.2.6-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://travis-ci.org/818000/bus">
     <img src="https://app.travis-ci.com/818000/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
@@ -159,4 +159,4 @@ welcome.
 
 ### ✨ 项目状态
 
-![alt](https://repobeats.axiom.co/api/embed/e6aec865b2638153d492db3db4ab8f09b39725cd.svg "repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/52a2707cd51eecee830f6d596187122ba3ca8810.svg "Repobeats analytics image")

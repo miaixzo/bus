@@ -25,28 +25,57 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.boot.statics;
+package org.miaixz.bus.spring.metrics;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 统计模型持有的子模块
+ * 启动消耗统计组件，用于收集和统计应用程序启动过程中的各项性能指标。
+ * <p>
+ * 该类提供了记录应用程序名称、启动耗时以及各阶段统计信息的功能， 可用于全面监控和分析应用程序的启动性能。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class ChildrenStatics<T extends BaseStatics> extends BaseStatics {
+public class StartupMetrics {
 
-    private List<T> children = new CopyOnWriteArrayList<>();
+    /**
+     * 应用程序名称
+     * <p>
+     * 记录当前启动的应用程序的名称，用于标识不同的应用程序实例
+     * </p>
+     */
+    private String appName;
 
-    public void addChild(T child) {
-        this.children.add(child);
-    }
+    /**
+     * 应用程序启动耗时（毫秒）
+     * <p>
+     * 记录应用程序从开始启动到完成启动所花费的总时间
+     * </p>
+     */
+    private long applicationBootElapsedTime = 0;
+
+    /**
+     * 应用程序启动时间戳
+     * <p>
+     * 记录应用程序启动的时间点（毫秒级时间戳）
+     * </p>
+     */
+    private long applicationBootTime;
+
+    /**
+     * 启动阶段统计信息列表
+     * <p>
+     * 存储应用程序启动过程中各个阶段的统计信息，每个阶段都是一个BaseMetrics对象
+     * </p>
+     */
+    private List<BaseMetrics> stageStats = new ArrayList<>();
 
 }

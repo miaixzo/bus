@@ -65,11 +65,11 @@ RequestBody 需要指定MediaType，用于描述请求/响应
 body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，RequstBody的几种构造方式：
 
 ```java
-    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
+    MediaType contentType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
 String requestBody = "I am Jdqm.";
 Request request = new Request.Builder()
         .url("https://api.github.com/markdown/raw")
-        .post(RequestBody.create(mediaType, requestBody))
+        .post(RequestBody.create(contentType, requestBody))
         .build();
 Httpd httpd = new Httpd();
 
@@ -126,7 +126,7 @@ enqueue(new Callback() {
     RequestBody requestBody = new RequestBody() {
 
     @Override
-    public MediaType mediaType() {
+    public MediaType contentType() {
         return MediaType.valueOf("text/x-markdown; charsets=utf-8");
     }
 
@@ -166,12 +166,12 @@ enqueue(new Callback() {
 2.3. POST提交文件
 
 ```java
-    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
+    MediaType contentType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
 Httpd httpd = new Httpd();
 File file = new File("test.md");
 Request request = new Request.Builder()
         .url("https://api.github.com/markdown/raw")
-        .post(RequestBody.create(mediaType, file))
+        .post(RequestBody.create(contentType, file))
         .build();
     httpd.
 

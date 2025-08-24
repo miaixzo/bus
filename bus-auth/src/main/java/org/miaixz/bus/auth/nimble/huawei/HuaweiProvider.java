@@ -31,6 +31,7 @@ import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
@@ -90,7 +91,7 @@ public class HuaweiProvider extends AbstractProvider {
         }
 
         Map<String, String> header = new HashMap<>(8);
-        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         String response = Httpx.post(this.complex.accessToken(), header, form);
 
@@ -114,7 +115,7 @@ public class HuaweiProvider extends AbstractProvider {
             form.put("nsp_svc", "GOpen.User.getInfo");
 
             Map<String, String> header = new HashMap<>(7);
-            header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+            header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
             String response = Httpx.post(this.complex.userinfo(), header, form);
             try {
                 Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -174,7 +175,7 @@ public class HuaweiProvider extends AbstractProvider {
         form.put("grant_type", "refresh_token");
 
         Map<String, String> header = new HashMap<>(7);
-        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = Httpx.post(this.complex.refresh(), header, form);
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();

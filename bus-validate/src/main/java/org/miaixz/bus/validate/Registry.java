@@ -71,12 +71,14 @@ public class Registry {
         register(Builder._MOBILE, new MobileMatcher());
         register(Builder._MULTI, new MultiMatcher());
         register(Builder._NOT_BLANK, new NotBlankMatcher());
+        register(Builder._NOT_EMPTY, new NotEmptyMatcher());
         register(Builder._NOT_IN, new NotInMatcher());
         register(Builder._NOT_NULL, new NotNullMatcher());
         register(Builder._NULL, new NullMatcher());
         register(Builder._PHONE, new PhoneMatcher());
         register(Builder._REFLECT, new ReflectMatcher());
         register(Builder._REGEX, new RegexMatcher());
+        register(Builder._SIZE, new SizeMatcher());
         register(Builder._TRUE, new TrueMatcher());
     }
 

@@ -35,7 +35,6 @@ script:
   - cd ../bus-pay && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
   - cd ../bus-shade && mvn install -DskipTests=true
-  - cd ../bus-socket && mvn install -DskipTests=true
   - cd ../bus-storage && mvn install -DskipTests=true
   - cd ../bus-tracer && mvn install -DskipTests=true
   - cd ../bus-validate && mvn install -DskipTests=true

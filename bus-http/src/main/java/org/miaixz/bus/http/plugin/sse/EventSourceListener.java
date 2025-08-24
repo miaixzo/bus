@@ -25,24 +25,58 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.boot.statics;
+package org.miaixz.bus.http.plugin.sse;
+
+import org.miaixz.bus.http.Response;
 
 /**
- * 接口自定义{@link BeanStatics}
+ * 服务器推送事件（Server-Sent Events, SSE）监听器抽象类，定义了处理事件源生命周期和事件的回调方法。 子类可重写这些方法以响应事件源的打开、事件接收、关闭或失败等状态。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BeanStaticsCustomizer {
+public abstract class EventSourceListener {
 
     /**
-     * 自定义bean启动
+     * 当事件源被远程服务器接受并可以开始传输事件时调用。
      *
-     * @param beanName 名称
-     * @param bean     实例
-     * @param beanStat 统计模型
-     * @return 如果{@code null}，则不会调用后续的BeanStatCustomizer
+     * @param eventSource 事件源实例
+     * @param response    服务器返回的 HTTP 响应
      */
-    BeanStatics customize(String beanName, Object bean, BeanStatics beanStat);
+    public void onOpen(EventSource eventSource, Response response) {
+
+    }
+
+    /**
+     * 当接收到新的服务器推送事件时调用。
+     *
+     * @param eventSource 事件源实例
+     * @param id          事件 ID，可能为 null
+     * @param type        事件类型，可能为 null
+     * @param data        事件数据
+     */
+    public void onEvent(EventSource eventSource, String id, String type, String data) {
+
+    }
+
+    /**
+     * 当事件源正常关闭时调用。 此后不会再次调用该监听器的任何方法。
+     *
+     * @param eventSource 事件源实例
+     */
+    public void onClosed(EventSource eventSource) {
+
+    }
+
+    /**
+     * 当事件源因网络读写错误而关闭时调用。可能丢失部分传入事件。 此后不会再次调用该监听器的任何方法。
+     *
+     * @param eventSource 事件源实例
+     * @param throwable   发生的异常，可能为 null
+     * @param response    服务器返回的 HTTP 响应，可能为 null
+     */
+    public void onFailure(EventSource eventSource, Throwable throwable, Response response) {
+
+    }
 
 }

@@ -42,6 +42,49 @@ import lombok.Getter;
 public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
     /**
+     * 操作类型
+     */
+    enum Action {
+
+        /**
+         * 新增
+         */
+        INSERT,
+        /**
+         * 删除
+         */
+        DELETE,
+        /**
+         * 修改
+         */
+        UPDATE,
+        /**
+         * 授权
+         */
+        SELECT,
+        /**
+         * 导入
+         */
+        IMPORT,
+        /**
+         * 导出
+         */
+        EXPORT,
+        /**
+         * 授权
+         */
+        GRANT,
+        /**
+         * 清空数据
+         */
+        CLEAN,
+        /**
+         * 其它
+         */
+        OTHER,
+    }
+
+    /**
      * 对齐方式枚举
      *
      * @author Kimi Liu
@@ -618,11 +661,11 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * 图片缩略类型
+     * 图片缩略
      */
     @Getter
     @AllArgsConstructor
-    enum Type {
+    enum Thumb {
         /**
          * 默认
          */

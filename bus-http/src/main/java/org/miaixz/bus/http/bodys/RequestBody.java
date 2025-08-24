@@ -52,38 +52,38 @@ public abstract class RequestBody {
     /**
      * 从字符串创建请求体
      * <p>
-     * 如果 <code>mediaType</code> 非空且缺少字符集，则使用 UTF-8。
+     * 如果 <code>contentType</code> 非空且缺少字符集，则使用 UTF-8。
      * </p>
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param content   内容字符串
+     * @param contentType 媒体类型（可能为 null）
+     * @param content     内容字符串
      * @return 请求体实例
      */
-    public static RequestBody create(MediaType mediaType, String content) {
+    public static RequestBody create(MediaType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
-        if (mediaType != null) {
-            charset = mediaType.charset();
+        if (contentType != null) {
+            charset = contentType.charset();
             if (charset == null) {
                 charset = Charset.UTF_8;
-                mediaType = MediaType.valueOf(mediaType + "; charset=utf-8");
+                contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }
         byte[] bytes = content.getBytes(charset);
-        return create(mediaType, bytes);
+        return create(contentType, bytes);
     }
 
     /**
      * 从 ByteString 创建请求体
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param content   内容 ByteString
+     * @param contentType 媒体类型（可能为 null）
+     * @param content     内容 ByteString
      * @return 请求体实例
      */
-    public static RequestBody create(final MediaType mediaType, final ByteString content) {
+    public static RequestBody create(final MediaType contentType, final ByteString content) {
         return new RequestBody() {
             @Override
-            public MediaType mediaType() {
-                return mediaType;
+            public MediaType contentType() {
+                return contentType;
             }
 
             @Override
@@ -101,27 +101,27 @@ public abstract class RequestBody {
     /**
      * 从字节数组创建请求体
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param content   内容字节数组
+     * @param contentType 媒体类型（可能为 null）
+     * @param content     内容字节数组
      * @return 请求体实例
      * @throws NullPointerException 如果 content 为 null
      */
-    public static RequestBody create(final MediaType mediaType, final byte[] content) {
-        return create(mediaType, content, 0, content.length);
+    public static RequestBody create(final MediaType contentType, final byte[] content) {
+        return create(contentType, content, 0, content.length);
     }
 
     /**
      * 从字节数组部分创建请求体
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param content   内容字节数组
-     * @param offset    偏移量
-     * @param byteCount 字节数
+     * @param contentType 媒体类型（可能为 null）
+     * @param content     内容字节数组
+     * @param offset      偏移量
+     * @param byteCount   字节数
      * @return 请求体实例
      * @throws NullPointerException           如果 content 为 null
      * @throws ArrayIndexOutOfBoundsException 如果 offset 或 byteCount 无效
      */
-    public static RequestBody create(final MediaType mediaType, final byte[] content, final int offset,
+    public static RequestBody create(final MediaType contentType, final byte[] content, final int offset,
             final int byteCount) {
         if (null == content) {
             throw new NullPointerException("content == null");
@@ -129,8 +129,8 @@ public abstract class RequestBody {
         Builder.checkOffsetAndCount(content.length, offset, byteCount);
         return new RequestBody() {
             @Override
-            public MediaType mediaType() {
-                return mediaType;
+            public MediaType contentType() {
+                return contentType;
             }
 
             @Override
@@ -148,20 +148,20 @@ public abstract class RequestBody {
     /**
      * 从文件创建请求体
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param file      文件
+     * @param contentType 媒体类型（可能为 null）
+     * @param file        文件
      * @return 请求体实例
      * @throws NullPointerException 如果 file 为 null
      */
-    public static RequestBody create(final MediaType mediaType, final File file) {
+    public static RequestBody create(final MediaType contentType, final File file) {
         if (null == file) {
             throw new NullPointerException("file == null");
         }
 
         return new RequestBody() {
             @Override
-            public MediaType mediaType() {
-                return mediaType;
+            public MediaType contentType() {
+                return contentType;
             }
 
             @Override
@@ -183,7 +183,7 @@ public abstract class RequestBody {
      *
      * @return 媒体类型（可能为 null）
      */
-    public abstract MediaType mediaType();
+    public abstract MediaType contentType();
 
     /**
      * 获取内容长度

@@ -36,7 +36,7 @@ set -o errexit
 
 pwd=$(pwd)
 
-# show logo
+# 显示 LOGO
 "$(dirname ${BASH_SOURCE[0]})"/logo.sh
 
 if [ -z "$1" ]; then

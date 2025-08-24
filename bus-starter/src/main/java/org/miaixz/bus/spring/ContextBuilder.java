@@ -29,14 +29,15 @@ package org.miaixz.bus.spring;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.metric.CaffeineCache;
 import org.miaixz.bus.cache.metric.MemoryCache;
 import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Charset;
@@ -49,6 +50,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.http.MutableRequestWrapper;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -355,7 +357,7 @@ public class ContextBuilder extends WebUtils {
      * @param defaultValue 默认值
      * @return 缓存数据或默认值
      */
-    private static <T> T getCached(String requestId, Supplier<T> dataSupplier, CacheX<String, T> cache,
+    private static <T> T getCached(String requestId, SupplierX<T> dataSupplier, CacheX<String, T> cache,
             T defaultValue) {
         if (requestId == null) {
             return defaultValue;
@@ -407,7 +409,7 @@ public class ContextBuilder extends WebUtils {
     /**
      * 获取 HTTP 请求的所有参数
      * <p>
-     * 从请求中获取所有请求参数，优先从缓存读取，缓存未命中时从请求中获取并存入缓存。
+     * 从请求中获取所有请求参数，优先从缓存读取，缓存未命中时从请求中获取并存入缓存。 对于 MutableRequestWrapper，如果 body 包含 URL-encoded 数据，解析并合并到参数中。
      * </p>
      *
      * <pre>{@code
@@ -426,20 +428,64 @@ public class ContextBuilder extends WebUtils {
             HttpServletRequest request = getRequest();
             Map<String, String> parameters = new CaseInsensitiveMap<>();
             if (request != null) {
+                // 添加 getParameterMap 中的参数
                 request.getParameterMap().forEach((key, values) -> {
                     if (values != null && values.length > 0) {
                         parameters.put(key, values[0]);
                     }
                 });
+                // 如果是 MutableRequestWrapper 且 Content-Type 为 form-urlencoded，解析 body
+                if (request instanceof MutableRequestWrapper wrapper) {
+                    String contentType = request.getContentType();
+                    byte[] bodyBytes = wrapper.getBody();
+                    if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)
+                            && bodyBytes != null && bodyBytes.length > 0) {
+                        String bodyString = new String(bodyBytes, Charset.UTF_8);
+                        Map<String, String[]> urlEncodedParams = parseUrlEncoded(bodyString);
+                        urlEncodedParams.forEach((key, values) -> {
+                            if (values != null && values.length > 0) {
+                                parameters.put(key, values[0]);
+                            }
+                        });
+                    }
+                }
             }
             return parameters;
         }, getParameterCache(), new CaseInsensitiveMap<>());
     }
 
     /**
+     * 解析 URL-encoded 字符串为参数映射
+     *
+     * @param urlEncoded URL-encoded 字符串 (e.g., "id=1&name=test")
+     * @return 参数映射，键为参数名，值为参数值数组
+     */
+    private static Map<String, String[]> parseUrlEncoded(String urlEncoded) {
+        Map<String, String[]> paramMap = new HashMap<>();
+        if (StringKit.isEmpty(urlEncoded)) {
+            return paramMap;
+        }
+        String[] pairs = urlEncoded.split("&");
+        for (String pair : pairs) {
+            if (pair.isEmpty()) {
+                continue;
+            }
+            String[] keyValue = pair.split("=", 2);
+            if (keyValue.length == 2) {
+                String key = keyValue[0];
+                String[] values = keyValue[1].split(",");
+                paramMap.put(key, values);
+            } else if (keyValue.length == 1) {
+                paramMap.put(keyValue[0], new String[] { "" });
+            }
+        }
+        return paramMap;
+    }
+
+    /**
      * 从 JSON 请求体中获取指定键的值
      * <p>
-     * 从请求中获取 JSON 请求体，优先从缓存读取，缓存未命中时从请求中读取并存入缓存。
+     * 从请求中获取 JSON 请求体，优先从 MutableRequestWrapper 的 body 或缓存读取，缓存未命中时从请求中读取并存入缓存。
      * </p>
      *
      * <pre>{@code
@@ -455,14 +501,17 @@ public class ContextBuilder extends WebUtils {
     public static String getValueFromJsonBody(String key) {
         HttpServletRequest request = getRequest();
         if (request == null) {
+            Logger.debug("No request available for JSON body lookup, key: {}", key);
             return null;
         }
         String contentType = request.getContentType();
         if (contentType == null || !contentType.startsWith(MediaType.APPLICATION_JSON)) {
+            Logger.debug("Request is not JSON content, key: {}, contentType: {}", key, contentType);
             return null;
         }
         String requestId = getRequestId();
         if (requestId == null) {
+            Logger.debug("No request ID available for JSON body lookup, key: {}", key);
             return null;
         }
         String cachedBody = getBodyCache().read(requestId);
@@ -470,14 +519,21 @@ public class ContextBuilder extends WebUtils {
             return extractValueFromJson(cachedBody, key);
         }
         String requestBody;
-        try (var inputStream = request.getInputStream()) {
-            requestBody = new String(inputStream.readAllBytes(), Charset.UTF_8);
+        try {
+            if (request instanceof MutableRequestWrapper wrapper) {
+                byte[] bodyBytes = wrapper.getBody();
+                requestBody = bodyBytes != null && bodyBytes.length > 0 ? new String(bodyBytes, Charset.UTF_8) : "";
+            } else {
+                try (var inputStream = request.getInputStream()) {
+                    requestBody = new String(inputStream.readAllBytes(), Charset.UTF_8);
+                }
+            }
         } catch (IOException e) {
             Logger.error("Failed to read JSON body, key: {}", key, e);
             return null;
         }
-        if (StringKit.isEmpty(requestBody)) {
-            Logger.debug("Empty JSON body, key: {}", key);
+        if (StringKit.isEmpty(requestBody) || !JsonKit.isJson(requestBody)) {
+            Logger.debug("Empty or invalid JSON body, key: {}", key);
             return null;
         }
         getBodyCache().write(requestId, requestBody, DEFAULT_CACHE_EXPIRE);
@@ -502,13 +558,13 @@ public class ContextBuilder extends WebUtils {
      */
     public static String extractValueFromJson(String json, String key) {
         try {
+            String value = JsonKit.getValue(json, key);
+            if (StringKit.isNotEmpty(value)) {
+                return value;
+            }
             Map<String, Object> jsonMap = JsonKit.toMap(json);
             if (jsonMap.containsKey(key)) {
                 return StringKit.toString(jsonMap.get(key));
-            }
-            String value = JsonKit.toJsonString(json, key);
-            if (!StringKit.isEmpty(value)) {
-                return value;
             }
         } catch (Exception e) {
             Logger.error("Failed to extract JSON value, key: {}, json: {}", key, json, e);

@@ -44,7 +44,7 @@ public class RealResponseBody extends ResponseBody {
     /**
      * 媒体类型字符串
      */
-    private final String mediaType;
+    private final String contentType;
     /**
      * 内容长度
      */
@@ -57,12 +57,12 @@ public class RealResponseBody extends ResponseBody {
     /**
      * 构造函数，初始化 RealResponseBody 实例
      *
-     * @param mediaType 媒体类型字符串（可能为 null）
-     * @param length    内容长度
-     * @param source    数据源
+     * @param contentType 媒体类型字符串（可能为 null）
+     * @param length      内容长度
+     * @param source      数据源
      */
-    public RealResponseBody(String mediaType, long length, BufferSource source) {
-        this.mediaType = mediaType;
+    public RealResponseBody(String contentType, long length, BufferSource source) {
+        this.contentType = contentType;
         this.length = length;
         this.source = source;
     }
@@ -73,8 +73,8 @@ public class RealResponseBody extends ResponseBody {
      * @return 媒体类型（不存在时为 null）
      */
     @Override
-    public MediaType mediaType() {
-        return null != mediaType ? MediaType.valueOf(mediaType) : null;
+    public MediaType contentType() {
+        return null != contentType ? MediaType.valueOf(contentType) : null;
     }
 
     /**

@@ -584,11 +584,11 @@ public class Cache implements Closeable, Flushable {
         }
 
         public Response response(DiskLruCache.Snapshot snapshot) {
-            String mediaType = responseHeaders.get(HTTP.CONTENT_TYPE);
-            String length = responseHeaders.get(HTTP.CONTENT_LENGTH);
             Request request = new Request.Builder().url(url).method(requestMethod, null).headers(varyHeaders).build();
             return new Response.Builder().request(request).protocol(protocol).code(code).message(message)
-                    .headers(responseHeaders).body(new CacheResponseBody(snapshot, mediaType, length))
+                    .headers(responseHeaders)
+                    .body(new CacheResponseBody(snapshot, responseHeaders.get(HTTP.CONTENT_TYPE),
+                            responseHeaders.get(HTTP.CONTENT_LENGTH)))
                     .handshake(handshake).sentRequestAtMillis(sentRequestMillis)
                     .receivedResponseAtMillis(receivedResponseMillis).build();
         }
@@ -598,12 +598,12 @@ public class Cache implements Closeable, Flushable {
 
         final DiskLruCache.Snapshot snapshot;
         private final BufferSource bodySource;
-        private final String mediaType;
+        private final String contentType;
         private final String length;
 
-        CacheResponseBody(final DiskLruCache.Snapshot snapshot, String mediaType, String length) {
+        CacheResponseBody(final DiskLruCache.Snapshot snapshot, String contentType, String length) {
             this.snapshot = snapshot;
-            this.mediaType = mediaType;
+            this.contentType = contentType;
             this.length = length;
 
             Source source = snapshot.getSource(ENTRY_BODY);
@@ -617,8 +617,8 @@ public class Cache implements Closeable, Flushable {
         }
 
         @Override
-        public MediaType mediaType() {
-            return null != mediaType ? MediaType.valueOf(mediaType) : null;
+        public MediaType contentType() {
+            return null != contentType ? MediaType.valueOf(contentType) : null;
         }
 
         @Override

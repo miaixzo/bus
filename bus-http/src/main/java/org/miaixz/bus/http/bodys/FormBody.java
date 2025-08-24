@@ -123,7 +123,7 @@ public class FormBody extends RequestBody {
      * @return 媒体类型（application/x-www-form-urlencoded）
      */
     @Override
-    public MediaType mediaType() {
+    public MediaType contentType() {
         return MediaType.APPLICATION_FORM_URLENCODED_TYPE;
     }
 

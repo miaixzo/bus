@@ -82,6 +82,8 @@ public class RealCall implements NewCall {
      */
     public boolean executed;
 
+    private boolean timeoutEarlyExit;
+
     /**
      * 构造函数，初始化 RealCall 实例
      *
@@ -93,6 +95,7 @@ public class RealCall implements NewCall {
         this.client = client;
         this.originalRequest = originalRequest;
         this.forWebSocket = forWebSocket;
+        this.timeoutEarlyExit = false;
     }
 
     /**
@@ -176,6 +179,10 @@ public class RealCall implements NewCall {
     @Override
     public Timeout timeout() {
         return transmitter.timeout();
+    }
+
+    public void timeoutEarlyExit() {
+        timeoutEarlyExit = true;
     }
 
     /**

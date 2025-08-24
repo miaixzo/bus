@@ -25,21 +25,49 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.boot.statics;
+package org.miaixz.bus.spring.http;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.http.converter.HttpMessageConverter;
+
+import java.util.List;
 
 /**
- * 记录模块刷新的状态模型
+ * JSON 转换器配置器接口，用于配置 Spring MVC 的 HttpMessageConverter。 实现类需提供转换器名称、可用性检查、优先级顺序和配置逻辑。 支持设置 autoType 属性，用于序列化/反序列化配置（如
+ * Fastjson 的类型自动识别）。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-public class ModuleStatics extends ChildrenStatics<BeanStatics> {
+public interface JsonConverterConfigurer {
 
-    private String threadName;
+    /**
+     * 返回转换器的名称，用于日志和调试。
+     *
+     * @return 转换器名称
+     */
+    String name();
+
+    /**
+     * 返回转换器的优先级顺序（值越小，优先级越高）。
+     *
+     * @return 优先级顺序
+     */
+    int order();
+
+    /**
+     * 配置 HttpMessageConverter 列表。
+     *
+     * @param converters 要配置的消息转换器列表
+     */
+    void configure(List<HttpMessageConverter<?>> converters);
+
+    /**
+     * 设置 autoType 属性，用于序列化/反序列化配置。 默认实现为空，子类可覆盖以支持 autoType。
+     *
+     * @param autoType 自动类型配置字符串
+     */
+    default void autoType(String autoType) {
+        // 默认实现为空，兼容不依赖 autoType 的实现类
+    }
 
 }

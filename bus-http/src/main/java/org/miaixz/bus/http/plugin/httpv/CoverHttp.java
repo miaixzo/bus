@@ -605,7 +605,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             }
             for (String name : files.keySet()) {
                 FilePara file = files.get(name);
-                MediaType type = httpv.mediaType(file.type);
+                MediaType type = httpv.contentType(file.type);
                 RequestBody bodyPart;
                 if (null != file.file) {
                     bodyPart = RequestBody.create(type, file.file);
@@ -635,13 +635,15 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private RequestBody toRequestBody(Object object) {
         if (object instanceof byte[] || object instanceof String) {
-            String mediaType = httpv.executor().doMsgConvert(bodyType, null).mediaType;
             byte[] body = object instanceof byte[] ? (byte[]) object : ((String) object).getBytes(charset);
-            return RequestBody.create(MediaType.valueOf(mediaType + "; charset=" + charset.name()), body);
+            return RequestBody.create(
+                    MediaType.valueOf(
+                            httpv.executor().doMsgConvert(bodyType, null).contentType + "; charset=" + charset.name()),
+                    body);
         }
         CoverTasks.Executor.Data<byte[]> data = httpv.executor().doMsgConvert(bodyType,
                 (Convertor c) -> c.serialize(object, dateFormat, charset));
-        return RequestBody.create(MediaType.valueOf(data.mediaType + "; charset=" + charset.name()), data.data);
+        return RequestBody.create(MediaType.valueOf(data.contentType + "; charset=" + charset.name()), data.data);
     }
 
     private String buildUrlPath() {
@@ -736,8 +738,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     public Charset charset(Response response) {
         ResponseBody b = response.body();
-        MediaType mediaType = null != b ? b.mediaType() : null;
-        return null != mediaType ? mediaType.charset(charset) : charset;
+        MediaType contentType = null != b ? b.contentType() : null;
+        return null != contentType ? contentType.charset(charset) : charset;
     }
 
     static class FilePara {

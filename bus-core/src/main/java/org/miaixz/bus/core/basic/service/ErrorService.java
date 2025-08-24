@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.core.basic.service;
 
-import org.miaixz.bus.core.lang.Console;
-import org.miaixz.bus.core.xyz.ExceptionKit;
-
 /**
  * 异常信息处理 此类未找到实现的情况下，采用默认实现 可以根据不同业务需求，重写方法实现对应业务逻辑即可 项目中可通过SPI形式接入
  * 例：META-INF/services/org.miaixz.bus.core.basics.service.ErrorService <code>
@@ -49,7 +46,6 @@ public interface ErrorService {
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     default boolean before(Exception ex) {
-        Console.error("Before error of : " + ExceptionKit.stacktraceToString(ex));
         return true;
     }
 
@@ -60,7 +56,6 @@ public interface ErrorService {
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     default boolean after(Exception ex) {
-        Console.error("After error of : " + ExceptionKit.stacktraceToString(ex));
         return true;
     }
 

@@ -64,9 +64,9 @@ public class BridgeInterceptor implements Interceptor {
 
         RequestBody body = request.body();
         if (null != body) {
-            MediaType mediaType = body.mediaType();
-            if (null != mediaType) {
-                requestBuilder.header(HTTP.CONTENT_TYPE, mediaType.toString());
+            MediaType contentType = body.contentType();
+            if (null != contentType) {
+                requestBuilder.header(HTTP.CONTENT_TYPE, contentType.toString());
             }
 
             long length = body.length();
@@ -116,8 +116,8 @@ public class BridgeInterceptor implements Interceptor {
             Headers strippedHeaders = networkResponse.headers().newBuilder().removeAll(HTTP.CONTENT_ENCODING)
                     .removeAll(HTTP.CONTENT_LENGTH).build();
             responseBuilder.headers(strippedHeaders);
-            String mediaType = networkResponse.header(HTTP.CONTENT_TYPE);
-            responseBuilder.body(new RealResponseBody(mediaType, -1L, IoKit.buffer(responseBody)));
+            responseBuilder.body(
+                    new RealResponseBody(networkResponse.header(HTTP.CONTENT_TYPE), -1L, IoKit.buffer(responseBody)));
         }
 
         return responseBuilder.build();

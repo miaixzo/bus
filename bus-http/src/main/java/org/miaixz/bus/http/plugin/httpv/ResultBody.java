@@ -105,7 +105,7 @@ public class ResultBody implements CoverResult.Body {
     public MediaType getType() {
         ResponseBody body = response.body();
         if (null != body) {
-            return body.mediaType();
+            return body.contentType();
         }
         return null;
     }

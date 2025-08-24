@@ -25,23 +25,30 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.boot.statics;
-
-import lombok.Getter;
-import lombok.Setter;
+package org.miaixz.bus.spring.metrics;
 
 /**
- * 记录bean初始化的状态模型
+ * 用于自定义{@link BeanMetrics}的接口。
+ * <p>
+ * 实现此接口可以对Bean的指标进行自定义处理，例如添加额外的属性或修改现有指标。 该接口允许在Bean初始化过程中对指标进行定制化处理，以满足特定的监控需求。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-public class BeanStatics extends ChildrenStatics<BeanStatics> {
+public interface BeanMetricsCustomizer {
 
-    private String type;
-
-    private long realRefreshElapsedTime;
+    /**
+     * 自定义Bean的启动指标。
+     * <p>
+     * 此方法在Bean初始化过程中被调用，允许对Bean的指标进行自定义处理。 可以添加额外的属性或修改现有指标，以满足特定的监控需求。
+     * </p>
+     *
+     * @param beanName Bean的名称
+     * @param bean     Bean实例
+     * @param beanStat Bean的统计模型
+     * @return 自定义后的BeanMetrics对象，如果返回{@code null}，则不会调用后续的BeanMetricsCustomizer
+     */
+    BeanMetrics customize(String beanName, Object bean, BeanMetrics beanStat);
 
 }
