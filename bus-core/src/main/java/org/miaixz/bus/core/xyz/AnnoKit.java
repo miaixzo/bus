@@ -414,8 +414,7 @@ public class AnnoKit {
 
     /**
      * 判断方法是否为注解属性方法。
-     * <p>
-     * 需满足以下条件：
+     * 
      * <ul>
      * <li>非Object.equals方法</li>
      * <li>非Object.hashCode方法</li>
@@ -427,7 +426,6 @@ public class AnnoKit {
      * <li>无参数</li>
      * <li>有返回值（非void）</li>
      * </ul>
-     * </p>
      *
      * @param attribute 方法对象
      * @return 是否为注解属性方法
