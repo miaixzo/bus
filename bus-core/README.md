@@ -51,7 +51,7 @@ Loaders.std().load("org", true, (name, url) -> name.endsWith("Loader.class"));
 ```java
 // 上面的API默认采用的时当前线程的上下文类加载器，如果上下文类加载器不存在时则采用ClassLoader.getSystemClassLoader();
 // 同时也可以采用下面的方式指定类加载器
-Loaders.std(otherClassLoader);
+Loaders.std(classLoader);
 ```
 
 ```java
