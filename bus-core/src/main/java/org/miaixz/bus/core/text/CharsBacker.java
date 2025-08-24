@@ -1030,7 +1030,7 @@ public class CharsBacker extends CharsValidator {
         if (text == null || args == null || ordinal <= 0) {
             return Normal.__1;
         }
-        if (args.length() == 0) {
+        if (args.isEmpty()) {
             return 0;
         }
         int found = 0;
@@ -3409,7 +3409,7 @@ public class CharsBacker extends CharsValidator {
         if (null == text) {
             return null;
         }
-        if (0 == text.length()) {
+        if (text.isEmpty()) {
             return Normal.EMPTY;
         }
         return text.toString().toUpperCase();
