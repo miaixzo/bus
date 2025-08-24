@@ -74,7 +74,7 @@ public class MultipartBody extends RequestBody {
     /**
      * 完整媒体类型（包含分隔符）
      */
-    private final MediaType mediaType;
+    private final MediaType contentType;
     /**
      * 部分列表
      */
@@ -87,14 +87,14 @@ public class MultipartBody extends RequestBody {
     /**
      * 构造函数，初始化 MultipartBody 实例
      *
-     * @param boundary  分隔符
-     * @param mediaType 媒体类型
-     * @param parts     部分列表
+     * @param boundary    分隔符
+     * @param contentType 媒体类型
+     * @param parts       部分列表
      */
-    MultipartBody(ByteString boundary, MediaType mediaType, List<Part> parts) {
+    MultipartBody(ByteString boundary, MediaType contentType, List<Part> parts) {
         this.boundary = boundary;
-        this.originalType = mediaType;
-        this.mediaType = MediaType.valueOf(mediaType.toString() + "; boundary=" + boundary.utf8());
+        this.originalType = contentType;
+        this.contentType = MediaType.valueOf(contentType.toString() + "; boundary=" + boundary.utf8());
         this.parts = org.miaixz.bus.http.Builder.immutableList(parts);
     }
 
@@ -181,8 +181,8 @@ public class MultipartBody extends RequestBody {
      * @return 包含分隔符的媒体类型
      */
     @Override
-    public MediaType mediaType() {
-        return mediaType;
+    public MediaType contentType() {
+        return contentType;
     }
 
     /**
@@ -244,9 +244,9 @@ public class MultipartBody extends RequestBody {
                 }
             }
 
-            MediaType mediaType = body.mediaType();
-            if (null != mediaType) {
-                sink.writeUtf8(HTTP.CONTENT_TYPE + ": ").writeUtf8(mediaType.toString()).write(CRLF);
+            MediaType contentType = body.contentType();
+            if (null != contentType) {
+                sink.writeUtf8(HTTP.CONTENT_TYPE + ": ").writeUtf8(contentType.toString()).write(CRLF);
             }
 
             long contentLength = body.length();

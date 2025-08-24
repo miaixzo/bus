@@ -60,7 +60,7 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * 此包私有构造函数与其受信任的调用者共享一个缓冲区。 一般来说，我们不能共享 BufferedSource，因为 inflater 会保留输入字节，直到它们被溢出为止。
+     * 此包私有构造函数与其受信任的调用者共享一个缓冲区。 一般来说，我们不能共享 BufferSource，因为 inflater 会保留输入字节，直到它们被溢出为止。
      *
      * @param source   缓冲源
      * @param inflater 缓冲区

@@ -202,10 +202,10 @@ public class Httpv {
         }
     }
 
-    public MediaType mediaType(String type) {
-        String mediaType = mediaTypes.get(type);
-        if (null != mediaType) {
-            return MediaType.valueOf(mediaType);
+    public MediaType contentType(String type) {
+        String contentType = mediaTypes.get(type);
+        if (null != contentType) {
+            return MediaType.valueOf(contentType);
         }
         return MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM);
     }
@@ -440,7 +440,7 @@ public class Httpv {
                     // 若是下载文件，则必须指定在 IO 线程操作
                     return response;
                 }
-                ResponseBody newBody = ResponseBody.create(body.mediaType(), body.bytes());
+                ResponseBody newBody = ResponseBody.create(body.contentType(), body.bytes());
                 return response.newBuilder().body(newBody).build();
             });
         }

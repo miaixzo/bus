@@ -74,12 +74,14 @@ public class Builder extends Validator {
     public static final String _MOBILE = "Mobile";
     public static final String _MULTI = "Multi";
     public static final String _NOT_BLANK = "NotBlank";
+    public static final String _NOT_EMPTY = "NotEmpty";
     public static final String _NOT_IN = "NotIn";
     public static final String _NOT_NULL = "NotNull";
     public static final String _NULL = "Null";
     public static final String _PHONE = "Phone";
     public static final String _REFLECT = "Reflect";
     public static final String _REGEX = "Regex";
+    public static final String _SIZE = "Size";
     public static final String _TRUE = "True";
 
     /**

@@ -274,10 +274,8 @@ public class CacheInterceptor implements Interceptor {
             }
         };
 
-        String mediaType = response.header(HTTP.CONTENT_TYPE);
-        long contentLength = response.body().length();
-        return response.newBuilder()
-                .body(new RealResponseBody(mediaType, contentLength, IoKit.buffer(cacheWritingSource))).build();
+        return response.newBuilder().body(new RealResponseBody(response.header(HTTP.CONTENT_TYPE),
+                response.body().length(), IoKit.buffer(cacheWritingSource))).build();
     }
 
 }

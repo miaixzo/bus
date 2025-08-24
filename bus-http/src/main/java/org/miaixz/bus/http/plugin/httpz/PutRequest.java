@@ -76,13 +76,13 @@ public class PutRequest extends HttpRequest {
             }
             return builder.build();
         } else if (null != body && body.length() > 0) {
-            MediaType mediaType;
+            MediaType contentType;
             if (headers.containsKey(HTTP.CONTENT_TYPE)) {
-                mediaType = MediaType.valueOf(headers.get(HTTP.CONTENT_TYPE));
+                contentType = MediaType.valueOf(headers.get(HTTP.CONTENT_TYPE));
             } else {
-                mediaType = MediaType.TEXT_PLAIN_TYPE;
+                contentType = MediaType.TEXT_PLAIN_TYPE;
             }
-            return RequestBody.create(mediaType, body);
+            return RequestBody.create(contentType, body);
         } else {
             FormBody.Builder builder = new FormBody.Builder();
             addParam(builder);

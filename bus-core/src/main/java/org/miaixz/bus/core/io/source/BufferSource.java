@@ -607,14 +607,14 @@ public interface BufferSource extends Source, ReadableByteChannel {
     boolean rangeEquals(long offset, ByteString bytes, int bytesOffset, int byteCount) throws IOException;
 
     /**
-     * 返回一个新的 {@code BufferedSource}，可从此 {@code BufferedSource}读取数据但不使用它。 一旦下次读取或关闭此源，返回的源将变为无效。
+     * 返回一个新的 {@code BufferSource}，可从此 {@code BufferSource}读取数据但不使用它。 一旦下次读取或关闭此源，返回的源将变为无效。
      * 
      * <pre> {@code
      *   Buffer buffer = new Buffer();
      *   buffer.writeUtf8("abcdefghi");
      *   buffer.readUtf8(3) // returns "abc", buffer contains "defghi"
      *
-     *   BufferedSource peek = buffer.peek();
+     *   BufferSource peek = buffer.peek();
      *   peek.readUtf8(3); // returns "def", buffer contains "defghi"
      *   peek.readUtf8(3); // returns "ghi", buffer contains "defghi"
      *   buffer.readUtf8(3); // returns "def", buffer contains "ghi"

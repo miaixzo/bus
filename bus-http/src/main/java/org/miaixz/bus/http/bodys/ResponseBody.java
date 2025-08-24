@@ -56,68 +56,68 @@ public abstract class ResponseBody implements Closeable {
     /**
      * 从字符串创建响应体
      * <p>
-     * 如果 <code>mediaType</code> 非空且缺少字符集，则使用 UTF-8。
+     * 如果 <code>contentType</code> 非空且缺少字符集，则使用 UTF-8。
      * </p>
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param content   内容字符串
+     * @param contentType 媒体类型（可能为 null）
+     * @param content     内容字符串
      * @return 响应体实例
      */
-    public static ResponseBody create(MediaType mediaType, String content) {
+    public static ResponseBody create(MediaType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
-        if (mediaType != null) {
-            charset = mediaType.charset();
+        if (contentType != null) {
+            charset = contentType.charset();
             if (charset == null) {
                 charset = Charset.UTF_8;
-                mediaType = MediaType.valueOf(mediaType + "; charset=utf-8");
+                contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }
         Buffer buffer = new Buffer().writeString(content, charset);
-        return create(mediaType, buffer.size(), buffer);
+        return create(contentType, buffer.size(), buffer);
     }
 
     /**
      * 从字节数组创建响应体
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param content   内容字节数组
+     * @param contentType 媒体类型（可能为 null）
+     * @param content     内容字节数组
      * @return 响应体实例
      */
-    public static ResponseBody create(final MediaType mediaType, byte[] content) {
+    public static ResponseBody create(final MediaType contentType, byte[] content) {
         Buffer buffer = new Buffer().write(content);
-        return create(mediaType, content.length, buffer);
+        return create(contentType, content.length, buffer);
     }
 
     /**
      * 从 ByteString 创建响应体
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param content   内容 ByteString
+     * @param contentType 媒体类型（可能为 null）
+     * @param content     内容 ByteString
      * @return 响应体实例
      */
-    public static ResponseBody create(MediaType mediaType, ByteString content) {
+    public static ResponseBody create(MediaType contentType, ByteString content) {
         Buffer buffer = new Buffer().write(content);
-        return create(mediaType, content.size(), buffer);
+        return create(contentType, content.size(), buffer);
     }
 
     /**
      * 从数据源创建响应体
      *
-     * @param mediaType 媒体类型（可能为 null）
-     * @param length    内容长度
-     * @param content   数据源
+     * @param contentType 媒体类型（可能为 null）
+     * @param length      内容长度
+     * @param content     数据源
      * @return 响应体实例
      * @throws NullPointerException 如果 content 为 null
      */
-    public static ResponseBody create(final MediaType mediaType, final long length, final BufferSource content) {
+    public static ResponseBody create(final MediaType contentType, final long length, final BufferSource content) {
         if (null == content) {
             throw new NullPointerException("source == null");
         }
 
         return new ResponseBody() {
             @Override
-            public MediaType mediaType() {
-                return mediaType;
+            public MediaType contentType() {
+                return contentType;
             }
 
             @Override
@@ -137,7 +137,7 @@ public abstract class ResponseBody implements Closeable {
      *
      * @return 媒体类型（可能为 null）
      */
-    public abstract MediaType mediaType();
+    public abstract MediaType contentType();
 
     /**
      * 获取内容长度
@@ -227,8 +227,8 @@ public abstract class ResponseBody implements Closeable {
      * @return 字符集（默认 UTF-8）
      */
     private java.nio.charset.Charset charset() {
-        MediaType mediaType = mediaType();
-        return null != mediaType ? mediaType.charset(Charset.UTF_8) : Charset.UTF_8;
+        MediaType contentType = contentType();
+        return null != contentType ? contentType.charset(Charset.UTF_8) : Charset.UTF_8;
     }
 
     /**
