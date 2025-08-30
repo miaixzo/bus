@@ -30,7 +30,6 @@ package org.miaixz.bus.core.xyz;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -44,15 +43,6 @@ import org.miaixz.bus.core.lang.Assert;
  * @since Java 17+
  */
 public class EnumKit {
-
-    private static final Map<Class<?>, Enum<?>[]> CACHE = new ConcurrentHashMap<>();
-
-    /**
-     * 清空缓存，重新加载枚举类
-     */
-    public static void clear() {
-        CACHE.clear();
-    }
 
     /**
      * 指定类是否为Enum类
@@ -96,7 +86,7 @@ public class EnumKit {
         if (null == enumClass) {
             return null;
         }
-        final E[] enumConstants = getEnums(enumClass);
+        final E[] enumConstants = enumClass.getEnumConstants();
         if (index < 0) {
             index = enumConstants.length + index;
         }
@@ -168,7 +158,7 @@ public class EnumKit {
         }
 
         final Field[] fields = FieldKit.getFields(enumClass);
-        final E[] enums = getEnums(enumClass);
+        final Enum<?>[] enums = enumClass.getEnumConstants();
         String fieldName;
         for (final Field field : fields) {
             fieldName = field.getName();
@@ -176,9 +166,9 @@ public class EnumKit {
                 // 跳过一些特殊字段
                 continue;
             }
-            for (final E enumObj : enums) {
+            for (final Enum<?> enumObj : enums) {
                 if (ObjectKit.equals(value, FieldKit.getFieldValue(enumObj, field))) {
-                    return enumObj;
+                    return (E) enumObj;
                 }
             }
         }
@@ -191,16 +181,16 @@ public class EnumKit {
      * @param clazz 枚举类
      * @return name列表
      */
-    public static <E extends Enum<E>> List<String> getNames(final Class<E> clazz) {
+    public static List<String> getNames(final Class<? extends Enum<?>> clazz) {
         if (null == clazz) {
             return null;
         }
-        final E[] enums = getEnums(clazz);
+        final Enum<?>[] enums = clazz.getEnumConstants();
         if (null == enums) {
             return null;
         }
         final List<String> list = new ArrayList<>(enums.length);
-        for (final E e : enums) {
+        for (final Enum<?> e : enums) {
             list.add(e.name());
         }
         return list;
@@ -213,16 +203,16 @@ public class EnumKit {
      * @param fieldName 字段名，最终调用getXXX方法
      * @return 字段值列表
      */
-    public static <E extends Enum<E>> List<Object> getFieldValues(final Class<E> clazz, final String fieldName) {
+    public static List<Object> getFieldValues(final Class<? extends Enum<?>> clazz, final String fieldName) {
         if (null == clazz || StringKit.isBlank(fieldName)) {
             return null;
         }
-        final E[] enums = getEnums(clazz);
+        final Enum<?>[] enums = clazz.getEnumConstants();
         if (null == enums) {
             return null;
         }
         final List<Object> list = new ArrayList<>(enums.length);
-        for (final E e : enums) {
+        for (final Enum<?> e : enums) {
             list.add(FieldKit.getFieldValue(e, fieldName));
         }
         return list;
@@ -333,7 +323,7 @@ public class EnumKit {
         if (null == enumClass || null == predicate) {
             return null;
         }
-        return Arrays.stream(getEnums(enumClass)).filter(predicate).findAny().orElse(defaultEnum);
+        return Arrays.stream(enumClass.getEnumConstants()).filter(predicate).findAny().orElse(defaultEnum);
     }
 
     /**
@@ -356,7 +346,7 @@ public class EnumKit {
         if (Enum.class.equals(implClass)) {
             implClass = LambdaKit.getRealClass(field);
         }
-        return Arrays.stream(getEnums(implClass))
+        return Arrays.stream(implClass.getEnumConstants())
                 // 过滤
                 .filter(constant -> ObjectKit.equals(condition.apply(constant), value))
                 // 获取第一个并转换为结果
@@ -375,7 +365,7 @@ public class EnumKit {
             return null;
         }
         final LinkedHashMap<String, E> map = new LinkedHashMap<>();
-        for (final E e : getEnums(enumClass)) {
+        for (final E e : enumClass.getEnumConstants()) {
             map.put(e.name(), e);
         }
         return map;
@@ -388,15 +378,14 @@ public class EnumKit {
      * @param fieldName 字段名，最终调用getXXX方法
      * @return 枚举名对应指定字段值的Map
      */
-    public static <E extends Enum<E>> Map<String, Object> getNameFieldMap(final Class<E> clazz,
-            final String fieldName) {
+    public static Map<String, Object> getNameFieldMap(final Class<? extends Enum<?>> clazz, final String fieldName) {
         if (null == clazz || StringKit.isBlank(fieldName)) {
             return null;
         }
-        final E[] enums = getEnums(clazz);
+        final Enum<?>[] enums = clazz.getEnumConstants();
         Assert.notNull(enums, "Class [{}] is not an Enum type!", clazz);
         final Map<String, Object> map = MapKit.newHashMap(enums.length, true);
-        for (final E e : enums) {
+        for (final Enum<?> e : enums) {
             map.put(e.name(), FieldKit.getFieldValue(e, fieldName));
         }
         return map;
@@ -450,20 +439,6 @@ public class EnumKit {
      */
     public static boolean equals(final Enum<?> e, final String val) {
         return StringKit.equals(toString(e), val);
-    }
-
-    /**
-     * 获取枚举类中的枚举值，调用过的枚举值会缓存，下次调用会从缓存中获取
-     *
-     * @param <E>       枚举类型
-     * @param enumClass 枚举类
-     * @return 枚举类中的枚举值
-     */
-    private static <E extends Enum<E>> E[] getEnums(final Class<E> enumClass) {
-        if (null == enumClass) {
-            return null;
-        }
-        return (E[]) CACHE.computeIfAbsent(enumClass, (k) -> enumClass.getEnumConstants());
     }
 
 }

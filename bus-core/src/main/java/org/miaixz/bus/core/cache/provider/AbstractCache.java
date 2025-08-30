@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.cache.provider;
 
 import java.io.Serial;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -96,9 +97,14 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      */
     protected CacheListener<K, V> listener;
 
+    /**
+     * 相同线程key缓存，用于检查key循环引用导致的死锁
+     */
+    private final ThreadLocal<Set<K>> loadingKeys = ThreadLocal.withInitial(HashSet::new);
+
     @Override
     public void put(final K key, final V object) {
-        put(key, object, this.timeout);
+        put(key, object, timeout);
     }
 
     /**
@@ -111,21 +117,21 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     protected void putWithoutLock(final K key, final V object, final long timeout) {
         final CacheObject<K, V> co = new CacheObject<>(key, object, timeout);
         if (timeout != 0) {
-            this.existCustomTimeout = true;
+            existCustomTimeout = true;
         }
         final MutableObject<K> mKey = MutableObject.of(key);
 
         // 对于替换的键值对，不做满队列检查和清除
-        final CacheObject<K, V> oldObj = this.cacheMap.get(mKey);
+        final CacheObject<K, V> oldObj = cacheMap.get(mKey);
         if (null != oldObj) {
             onRemove(oldObj.key, oldObj.object);
             // 存在相同key，覆盖之
-            this.cacheMap.put(mKey, co);
+            cacheMap.put(mKey, co);
         } else {
             if (isFull()) {
                 pruneCache();
             }
-            this.cacheMap.put(mKey, co);
+            cacheMap.put(mKey, co);
         }
     }
 
@@ -148,10 +154,21 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     @Override
+    public V get(final K key, final boolean isUpdateLastAccess, final SupplierX<V> supplier) {
+        return get(key, isUpdateLastAccess, this.timeout, supplier);
+    }
+
+    @Override
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
         V v = get(key, isUpdateLastAccess);
         if (null == v && null != supplier) {
-            // 每个key单独获取一把锁，降低锁的粒度提高并发能力，see pr#1385@Github
+            // 在尝试加锁前，检查当前线程是否已经在加载这个 key
+            // 如果是，则说明发生了循环依赖。
+            if (loadingKeys.get().contains(key)) {
+                throw new IllegalStateException("Circular dependency detected for key: " + key);
+            }
+
+            // 每个key单独获取一把锁，降低锁的粒度提高并发能力
             final Lock keyLock = keyLockMap.computeIfAbsent(key, k -> new ReentrantLock());
             keyLock.lock();
             try {
@@ -160,9 +177,15 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
                 // 因此此处需要使用带全局锁的get获取值
                 v = get(key, isUpdateLastAccess);
                 if (null == v) {
+                    loadingKeys.get().add(key);
                     // supplier的创建是一个耗时过程，此处创建与全局锁无关，而与key锁相关，这样就保证每个key只创建一个value，且互斥
-                    v = supplier.get();
-                    put(key, v, timeout);
+                    try {
+                        v = supplier.get();
+                        put(key, v, timeout);
+                    } finally {
+                        // 无论 supplier 执行成功还是失败，都必须在 finally 块中移除标记
+                        loadingKeys.get().remove(key);
+                    }
                 }
             } finally {
                 keyLock.unlock();
@@ -182,23 +205,6 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         return this.cacheMap.get(MutableObject.of(key));
     }
 
-    /**
-     * 获得CacheObj或清除过期CacheObj，不加锁
-     *
-     * @param key 键
-     * @return 值或null
-     */
-    protected CacheObject<K, V> getOrRemoveExpiredWithoutLock(final K key) {
-        CacheObject<K, V> co = getWithoutLock(key);
-        if (null != co && co.isExpired()) {
-            // 过期移除
-            removeWithoutLock(key);
-            onRemove(co.key, co.object);
-            co = null;
-        }
-        return co;
-    }
-
     @Override
     public Iterator<V> iterator() {
         final CacheObjectIterator<K, V> copiedIterator = (CacheObjectIterator<K, V>) this.cacheObjIterator();
@@ -214,7 +220,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
     @Override
     public int capacity() {
-        return this.capacity;
+        return capacity;
     }
 
     /**
@@ -222,7 +228,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      */
     @Override
     public long timeout() {
-        return this.timeout;
+        return timeout;
     }
 
     /**
@@ -231,22 +237,22 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * @return 过期对象清理是否可用，内部使用
      */
     protected boolean isPruneExpiredActive() {
-        return (this.timeout != 0) || this.existCustomTimeout;
+        return (timeout != 0) || existCustomTimeout;
     }
 
     @Override
     public boolean isFull() {
-        return (this.capacity > 0) && (this.cacheMap.size() >= this.capacity);
+        return (capacity > 0) && (cacheMap.size() >= capacity);
     }
 
     @Override
     public int size() {
-        return this.cacheMap.size();
+        return cacheMap.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.cacheMap.isEmpty();
+        return cacheMap.isEmpty();
     }
 
     @Override
@@ -295,7 +301,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * @return 移除的对象，无返回null
      */
     protected CacheObject<K, V> removeWithoutLock(final K key) {
-        return this.cacheMap.remove(MutableObject.of(key));
+        return cacheMap.remove(MutableObject.of(key));
     }
 
     /**

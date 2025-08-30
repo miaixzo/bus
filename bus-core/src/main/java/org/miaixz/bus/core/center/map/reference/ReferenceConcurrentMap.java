@@ -55,17 +55,8 @@ public abstract class ReferenceConcurrentMap<K, V>
     @Serial
     private static final long serialVersionUID = 2852269377051L;
 
-    /**
-     * 键值对引用
-     */
     final ConcurrentMap<Ref<K>, Ref<V>> raw;
-    /**
-     * 因无强链接而清除的键队列
-     */
     private final ReferenceQueue<K> lastKeyQueue;
-    /**
-     * 因无强链接而清除的值队列
-     */
     private final ReferenceQueue<V> lastValueQueue;
     /**
      * 回收监听
