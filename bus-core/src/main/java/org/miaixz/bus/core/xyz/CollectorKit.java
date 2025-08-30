@@ -505,7 +505,7 @@ public class CollectorKit {
                     }
 
                     final RR finisherRightValue;
-                    if (lDownstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
+                    if (rDownstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
                         finisherRightValue = (RR) finisherPair.getRight();
                     } else {
                         finisherRightValue = rDownstream.finisher().apply(finisherPair.getRight());
@@ -589,7 +589,7 @@ public class CollectorKit {
                     }
 
                     final RR finisherRightValue;
-                    if (lDownstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
+                    if (rDownstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
                         finisherRightValue = (RR) finisherTriple.getRight();
                     } else {
                         finisherRightValue = rDownstream.finisher().apply(finisherTriple.getRight());

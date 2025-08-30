@@ -229,7 +229,7 @@ public class CollKit extends CollectionStream {
                 result.addAll(coll1);
             }
             result.removeAll(coll2);
-        } catch (UnsupportedOperationException e) {
+        } catch (final UnsupportedOperationException e) {
             // 针对 coll1 为只读集合的补偿
             result = create(AbstractCollection.class);
             result.addAll(coll1);
@@ -724,7 +724,7 @@ public class CollKit extends CollectionStream {
      */
     public static <T> List<List<T>> partition(final Collection<T> collection, final int size) {
         final List<List<T>> result = new ArrayList<>();
-        if (CollKit.isEmpty(collection)) {
+        if (isEmpty(collection)) {
             return result;
         }
 
@@ -1026,9 +1026,8 @@ public class CollKit extends CollectionStream {
      * @return 第一个元素，为空返回{@code null}
      */
     public static <T> T getFirst(final Iterable<T> iterable) {
-        if (iterable instanceof List) {
-            final List<T> list = (List<T>) iterable;
-            return CollKit.isEmpty(list) ? null : list.get(0);
+        if (iterable instanceof final List<T> list) {
+            return isEmpty(list) ? null : list.get(0);
         }
         return IteratorKit.getFirst(IteratorKit.getIter(iterable));
     }
@@ -1068,8 +1067,7 @@ public class CollKit extends CollectionStream {
      */
     public static <T> T getFirstByField(final Iterable<T> collection, final String fieldName, final Object fieldValue) {
         return getFirst(collection, t -> {
-            if (t instanceof Map) {
-                final Map<?, ?> map = (Map<?, ?>) t;
+            if (t instanceof final Map<?, ?> map) {
                 final Object value = map.get(fieldName);
                 return ObjectKit.equals(value, fieldValue);
             }
@@ -1505,8 +1503,7 @@ public class CollKit extends CollectionStream {
             return null;
         }
 
-        if (collection instanceof List) {
-            final List<T> list = ((List<T>) collection);
+        if (collection instanceof final List<T> list) {
             return list.get(index);
         } else {
             return IteratorKit.get(collection.iterator(), index);
@@ -1527,8 +1524,7 @@ public class CollKit extends CollectionStream {
         }
         final int size = collection.size();
         final List<T> result = new ArrayList<>(indexes.length);
-        if (collection instanceof List) {
-            final List<T> list = ((List<T>) collection);
+        if (collection instanceof final List<T> list) {
             for (int index : indexes) {
                 if (index < 0) {
                     index += size;
@@ -1799,7 +1795,7 @@ public class CollKit extends CollectionStream {
 
     /**
      * 根据元素的指定字段值分组，非Bean都放在第一个分组中 例如：{@code
-     * CollKit.groupByFunc(list, TestBean::getAge)
+     * groupByFunc(list, TestBean::getAge)
      * }
      *
      * @param <T>        元素类型
@@ -1808,7 +1804,7 @@ public class CollKit extends CollectionStream {
      * @return 分组列表
      */
     public static <T> List<List<T>> groupByFunc(final Collection<T> collection, final Function<T, ?> getter) {
-        return group(collection, new Hash32<T>() {
+        return group(collection, new Hash32<>() {
             private final List<Object> hashValList = new ArrayList<>();
 
             @Override
@@ -1875,27 +1871,59 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 取最大值
+     * 取最大值，情况如下：
+     * <ul>
+     * <li>集合为空，返回null</li>
+     * <li>集合元素全部为null，返回null</li>
+     * <li>集合中如果有非null元素，始终返回非null</li>
+     * </ul>
      *
      * @param <T>  元素类型
      * @param coll 集合
-     * @return 最大值
+     * @return 最大值，如果集合为空或者元素全部为null，返回null，否则始终返回非null元素
      * @see Collections#max(Collection)
      */
     public static <T extends Comparable<? super T>> T max(final Collection<T> coll) {
-        return isEmpty(coll) ? null : Collections.max(coll);
+        if (isEmpty(coll)) {
+            return null;
+        }
+
+        final Iterator<? extends T> i = coll.iterator();
+        T candidate = i.next();
+
+        while (i.hasNext()) {
+            candidate = CompareKit.max(candidate, i.next());
+        }
+        return candidate;
     }
 
     /**
-     * 取最小值
+     * 取最小值，情况如下：
+     * <ul>
+     * <li>集合为空，返回null</li>
+     * <li>集合元素全部为null，返回null</li>
+     * <li>集合中如果有非null元素，始终返回非null</li>
+     * </ul>
      *
      * @param <T>  元素类型
      * @param coll 集合
-     * @return 最小值
+     * @return 最小值，如果集合为空或者元素全部为null，返回null，否则始终返回非null元素
      * @see Collections#min(Collection)
      */
     public static <T extends Comparable<? super T>> T min(final Collection<T> coll) {
-        return isEmpty(coll) ? null : Collections.min(coll);
+        if (isEmpty(coll)) {
+            return null;
+        }
+
+        final Iterator<? extends T> i = coll.iterator();
+        T candidate = i.next();
+
+        T next;
+        while (i.hasNext()) {
+            next = i.next();
+            candidate = CompareKit.compare(candidate, next, true) < 0 ? candidate : next;
+        }
+        return candidate;
     }
 
     /**

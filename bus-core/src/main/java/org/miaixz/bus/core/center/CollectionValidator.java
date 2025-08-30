@@ -303,9 +303,8 @@ public class CollectionValidator {
             return IteratorKit.size((Iterable<?>) object);
         } else if (object instanceof Iterator<?>) {
             return IteratorKit.size((Iterator<?>) object);
-        } else if (object instanceof Enumeration<?>) {
+        } else if (object instanceof final Enumeration<?> it) {
             int total = 0;
-            final Enumeration<?> it = (Enumeration<?>) object;
             while (it.hasMoreElements()) {
                 total++;
                 it.nextElement();

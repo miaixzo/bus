@@ -82,16 +82,6 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public V get(final K key, final SupplierX<V> supplier) {
-        return get(key, true, supplier);
-    }
-
-    @Override
-    public V get(final K key, final boolean isUpdateLastAccess, final SupplierX<V> supplier) {
-        return get(key, isUpdateLastAccess, 0, supplier);
-    }
-
-    @Override
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
         return (null == supplier) ? null : supplier.get();
     }
