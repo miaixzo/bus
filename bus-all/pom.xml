@@ -32,11 +32,11 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
-    <version>8.2.6</version>
+    <version>8.2.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus All In One</description>
+    <description>Mock objects library for java</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.6</bus.version>
+        <bus.version>8.2.9</bus.version>
     </properties>
 
     <dependencies>

@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>8.2.6</version>
+    <version>8.2.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,15 +85,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.6</bus.version>
+        <bus.version>8.2.9</bus.version>
         <lombok.version>1.18.38</lombok.version>
-        <spring.boot.version>4.0.0-M1</spring.boot.version>
+        <spring.boot.version>3.5.5</spring.boot.version>
         <jedis.version>6.0.0</jedis.version>
         <xmemcached.version>2.4.8</xmemcached.version>
         <curator.version>5.9.0</curator.version>
         <guava.version>33.4.8-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
         <mysql.version>9.4.0</mysql.version>
+        <hikaricp.version>7.0.0</hikaricp.version>
         <caffeine.version>3.2.2</caffeine.version>
     </properties>
 
@@ -242,6 +243,18 @@
                 <exclusion>
                     <groupId>com.fasterxml.jackson.datatype</groupId>
                     <artifactId>jackson-datatype-jsr310</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

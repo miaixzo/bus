@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.2.6-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.2.9-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://travis-ci.org/818000/bus">
     <img src="https://app.travis-ci.com/818000/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/badge/Java-17+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-4.0.0.M1-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-3.5.5-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.mysql.com">
     <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
@@ -32,7 +32,7 @@
 
 ### ✨ 项目说明
 
-Bus (企业级应用/服务总线) 是一个基础框架、服务套件；基于Java 17+构建的轻量级企业级应用/服务框架，提供标准化服务套件与分布式中间件解决方案。通过模块化设计整合微服务架构核心能力，可作为后端系统开发的统一技术底座。
+Bus (企业级应用/服务总线) 是一个基础框架、服务套件；基于Java 17+构建的轻量级企业级应用/服务框架，提供标准化服务套件与分布式中间件解决方案。
 
 欢迎大家来 这里 踩踩,生命有限！少写重复代码！给颗星奖励下呗~
 

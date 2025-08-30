@@ -67,11 +67,6 @@ module bus.starter {
     requires jakarta.servlet;
     requires spring.boot;
     requires spring.boot.autoconfigure;
-    requires spring.boot.web.server;
-    requires spring.boot.undertow;
-    requires spring.boot.jdbc;
-    requires spring.boot.webmvc;
-    requires spring.boot.mongodb;
     requires spring.aop;
     requires spring.beans;
     requires spring.context;
@@ -89,7 +84,7 @@ module bus.starter {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jsr310;
     requires com.google.gson;
-    requires HikariCP;
+    requires com.zaxxer.hikari;
     requires curator.client;
     requires curator.framework;
     requires dubbo;

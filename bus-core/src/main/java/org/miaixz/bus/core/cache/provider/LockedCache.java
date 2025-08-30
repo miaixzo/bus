@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.iterator.CopiedIterator;
 import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.xyz.SetKit;
@@ -73,6 +74,31 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     @Override
     public V get(final K key, final boolean isUpdateLastAccess) {
         return getOrRemoveExpired(key, isUpdateLastAccess, true);
+    }
+
+    @Override
+    public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
+        V v = get(key, isUpdateLastAccess);
+
+        // 对象不存在，则加锁创建
+        if (null == v && null != supplier) {
+            // 使用key锁可以避免对象创建等待问题，但是会带来循环锁问题。
+            // 因此此处依旧采用全局锁，在对象创建过程中，全局等待，避免循环锁依赖
+            // 这样避免了循环锁，但是会存在一个缺点，即对象创建过程中，其它线程无法获得锁，从而无法使用缓存，因此需要考虑对象创建的耗时问题
+            lock.lock();
+            try {
+                // 双重检查锁，防止在竞争锁的过程中已经有其它线程写入
+                final CacheObject<K, V> co = getOrRemoveExpiredWithoutLock(key);
+                if (null == co) {
+                    // supplier的创建是一个耗时过程，此处创建与全局锁无关，而与key锁相关，这样就保证每个key只创建一个value，且互斥
+                    v = supplier.get();
+                    putWithoutLock(key, v, timeout);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+        return v;
     }
 
     @Override
