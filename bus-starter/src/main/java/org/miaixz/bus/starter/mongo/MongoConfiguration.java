@@ -30,8 +30,8 @@ package org.miaixz.bus.starter.mongo;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.boot.autoconfigure.mongo.MongoClientSettingsBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.mongodb.autoconfigure.MongoClientSettingsBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 

@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-crypto</artifactId>
-    <version>8.2.6</version>
+    <version>8.2.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.6</bus.version>
+        <bus.version>8.2.8</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <bcpkix.version>1.81</bcpkix.version>
     </properties>

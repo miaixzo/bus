@@ -49,7 +49,7 @@ module bus.cache {
     requires jakarta.annotation;
     requires spring.jdbc;
     requires spring.expression;
-    requires HikariCP;
+    requires com.zaxxer.hikari;
     requires redis.clients.jedis;
     requires xmemcached;
     requires zookeeper;
