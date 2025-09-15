@@ -68,10 +68,17 @@ public class Context {
      * 存储区域
      */
     private String region;
+
+    /**
+     * 扩展属性
+     */
+    private String extension;
+
     /**
      * 是否私有
      */
     private boolean secure;
+
     /**
      * 路径样式
      */

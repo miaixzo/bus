@@ -38,27 +38,39 @@ import java.net.PasswordAuthentication;
  */
 public class NonAuthenticator extends Authenticator {
 
-    private final PasswordAuthentication auth;
-
     /**
-     * 构造
-     *
-     * @param user 用户名
-     * @param pass 密码
+     * 用户名和密码存储
      */
-    public NonAuthenticator(final String user, final char[] pass) {
-        auth = new PasswordAuthentication(user, pass);
-    }
+    private final PasswordAuthentication auth;
 
     /**
      * 创建账号密码形式的{@link Authenticator} 实现。
      *
-     * @param user 用户名
-     * @param pass 密码
+     * @param userName 用户名
+     * @param password 密码
      * @return PassAuth
      */
-    public static NonAuthenticator of(final String user, final char[] pass) {
-        return new NonAuthenticator(user, pass);
+    public static NonAuthenticator of(final String userName, final char[] password) {
+        return new NonAuthenticator(userName, password);
+    }
+
+    /**
+     * 构造
+     *
+     * @param userName 用户名
+     * @param password 密码
+     */
+    public NonAuthenticator(final String userName, final char[] password) {
+        this(new PasswordAuthentication(userName, password));
+    }
+
+    /**
+     * 构造
+     *
+     * @param auth 账号密码
+     */
+    public NonAuthenticator(final PasswordAuthentication auth) {
+        this.auth = auth;
     }
 
     @Override

@@ -341,6 +341,21 @@ public class StringKit extends CharsBacker {
     }
 
     /**
+     * 检查字符串数组中的所有字符串是否都包含文本（非null、非空、非纯空白字符）。
+     *
+     * @param text 要检查的字符串数组
+     * @return 如果所有字符串都包含文本，则返回true，否则返回false
+     */
+    public static boolean hasText(String... text) {
+        for (String string : text) {
+            if (!hasText(string)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 构建新的字符串
      *
      * @param original     原始对象

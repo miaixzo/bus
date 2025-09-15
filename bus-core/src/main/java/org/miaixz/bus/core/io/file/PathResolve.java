@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.miaixz.bus.core.io.resource.FileResource;
 import org.miaixz.bus.core.io.resource.Resource;
@@ -44,6 +46,7 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.PredicateKit;
 
 /**
  * NIO中Path对象操作封装
@@ -100,6 +103,25 @@ public class PathResolve {
     public static boolean isDirEmpty(final Path dirPath) {
         try (final DirectoryStream<Path> dirStream = Files.newDirectoryStream(dirPath)) {
             return !dirStream.iterator().hasNext();
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 获取目录下所有文件和子目录，此方法不判断是否为目录
+     *
+     * @param dirPath 目录路径
+     * @param filter  文件过滤规则，{@code null}表示接收全部文件
+     * @return 文件列表
+     */
+    public static Path[] listFiles(final Path dirPath, Predicate<? super Path> filter) {
+        if (null == filter) {
+            filter = PredicateKit.alwaysTrue();
+        }
+
+        try (final Stream<Path> list = Files.list(dirPath)) {
+            return list.filter(filter).toArray(Path[]::new);
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -459,12 +481,25 @@ public class PathResolve {
      */
     public static BasicFileAttributes getAttributes(final Path path, final boolean isFollowLinks)
             throws InternalException {
+        return getAttributes(path, getLinkOptions(isFollowLinks));
+    }
+
+    /**
+     * 获取文件属性
+     *
+     * @param path    文件路径{@link Path}
+     * @param options {@link LinkOption}
+     * @return {@link BasicFileAttributes}
+     * @throws InternalException IO异常
+     */
+    public static BasicFileAttributes getAttributes(final Path path, final LinkOption... options)
+            throws InternalException {
         if (null == path) {
             return null;
         }
 
         try {
-            return Files.readAttributes(path, BasicFileAttributes.class, getLinkOptions(isFollowLinks));
+            return Files.readAttributes(path, BasicFileAttributes.class, options);
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -488,13 +523,30 @@ public class PathResolve {
     }
 
     /**
+     * 获得输入流
+     *
+     * @param path    Path
+     * @param options {@link OpenOption}
+     * @return 输入流
+     */
+    public static BufferedInputStream getInputStream(final Path path, final OpenOption... options) {
+        final InputStream in;
+        try {
+            in = Files.newInputStream(path, options);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+        return IoKit.toBuffered(in);
+    }
+
+    /**
      * 获得一个文件读取器
      *
      * @param path 文件Path
      * @return BufferedReader对象
      * @throws InternalException IO异常
      */
-    public static BufferedReader getUtf8Reader(final Path path) throws InternalException {
+    public static BufferedReader getReader(final Path path) throws InternalException {
         return getReader(path, Charset.UTF_8);
     }
 
@@ -509,6 +561,20 @@ public class PathResolve {
     public static BufferedReader getReader(final Path path, final java.nio.charset.Charset charset)
             throws InternalException {
         return IoKit.toReader(getInputStream(path), charset);
+    }
+
+    /**
+     * 获得一个文件读取器
+     *
+     * @param path    文件Path
+     * @param charset 字符集
+     * @param options {@link OpenOption}
+     * @return BufferedReader对象
+     * 
+     */
+    public static BufferedReader getReader(final Path path, final java.nio.charset.Charset charset,
+            final OpenOption... options) {
+        return IoKit.toReader(getInputStream(path, options), charset);
     }
 
     /**

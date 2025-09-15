@@ -459,7 +459,7 @@ public class EnumKit {
      * @param enumClass 枚举类
      * @return 枚举类中的枚举值
      */
-    private static <E extends Enum<E>> E[] getEnums(final Class<E> enumClass) {
+    public static <E extends Enum<E>> E[] getEnums(final Class<E> enumClass) {
         if (null == enumClass) {
             return null;
         }

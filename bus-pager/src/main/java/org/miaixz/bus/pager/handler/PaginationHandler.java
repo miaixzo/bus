@@ -213,7 +213,7 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
             }
             ((Object[]) result)[0] = dialect.afterPage(resultList, parameter, rowBounds);
         } catch (Exception e) {
-            Logger.error("Failed to process pagination SQL: {}", e.getMessage());
+            Logger.error("==>     Failed: {}", e.getMessage());
             throw new InternalException("Failed to process pagination SQL: " + e.getMessage(), e);
         } finally {
             if (dialect != null) {

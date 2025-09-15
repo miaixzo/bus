@@ -121,8 +121,7 @@ public class LunarMonth extends Loops {
         }
 
         // 冬至
-        SolarTerms dongZhi = SolarTerms.fromIndex(year, 0);
-        double dongZhiJd = dongZhi.getCursoryJulianDay();
+        double dongZhiJd = SolarTerms.fromIndex(year, 0).getCursoryJulianDay();
 
         // 冬至前的初一，今年首朔的日月黄经差
         double w = Galaxy.calcShuo(dongZhiJd);
@@ -378,8 +377,8 @@ public class LunarMonth extends Loops {
      */
     public Direction getJupiterDirection() {
         SixtyCycle sixtyCycle = getSixtyCycle();
-        int n = new int[] { 7, -1, 1, 3 }[sixtyCycle.getEarthBranch().next(-2).getIndex() % 4];
-        return n == -1 ? sixtyCycle.getHeavenStem().getDirection() : Direction.fromIndex(n);
+        int n = new int[]{7, -1, 1, 3}[sixtyCycle.getEarthBranch().next(-2).getIndex() % 4];
+        return n != -1 ? Direction.fromIndex(n) : sixtyCycle.getHeavenStem().getDirection();
     }
 
     /**

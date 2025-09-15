@@ -74,7 +74,12 @@ public class AnnoKit {
     private static final Map<AnnotatedElement, Annotation[]> DECLARED_ANNOTATIONS_CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 获取指定元素的直接声明注解，若存在缓存则从缓存中获取。
+     * 获取直接声明的注解，若已有缓存则从缓存中获取，主要为：
+     * <ul>
+     * <li>只返回直接声明在该元素上的注解</li>
+     * <li>不包括从父类或接口继承来的注解</li>
+     * <li>只获取当前类/方法/字段等自身定义的注解</li>
+     * </ul>
      *
      * @param element 被注解的元素，可以是Class、Method、Field、Constructor等
      * @return 注解数组
@@ -84,20 +89,12 @@ public class AnnoKit {
     }
 
     /**
-     * 将指定的被注解元素转换为组合注解元素，支持递归获取注解的注解。
-     *
-     * @param annotationEle 被注解的元素
-     * @return 组合注解元素
-     */
-    public static CombinationAnnotatedElement toCombination(final AnnotatedElement annotationEle) {
-        if (annotationEle instanceof CombinationAnnotatedElement) {
-            return (CombinationAnnotatedElement) annotationEle;
-        }
-        return new CombinationAnnotatedElement(annotationEle);
-    }
-
-    /**
-     * 获取指定元素的注解。
+     * 获取指定注解，主要为:
+     * <ul>
+     * <li>返回该元素上的所有注解</li>
+     * <li>包括从父类或接口继承来的注解</li>
+     * <li>获取当前元素以及继承自父类或接口的所有注解</li>
+     * </ul>
      *
      * @param annotationEle   被注解的元素，可以是Class、Method、Field、Constructor等
      * @param isToCombination 是否转换为组合注解，组合注解支持递归获取注解的注解
@@ -338,6 +335,16 @@ public class AnnoKit {
     }
 
     /**
+     * 判断注解是否为元注解
+     *
+     * @param annotationType 注解类型
+     * @return 是否为元注解
+     */
+    public static boolean isMetaAnnotation(final Class<? extends Annotation> annotationType) {
+        return Normal.META_ANNOTATIONS.contains(annotationType);
+    }
+
+    /**
      * 检查注解类是否会被记录到Javadoc文档中。
      *
      * @param annotationType 注解类型
@@ -436,6 +443,19 @@ public class AnnoKit {
                 && ObjectKit.notEquals(attribute.getReturnType(), Void.class)
                 && !Modifier.isStatic(attribute.getModifiers()) && Modifier.isPublic(attribute.getModifiers())
                 && !attribute.isBridge() && !attribute.isSynthetic();
+    }
+
+    /**
+     * 将指定的被注解元素转换为组合注解元素，支持递归获取注解的注解。
+     *
+     * @param annotationEle 被注解的元素
+     * @return 组合注解元素
+     */
+    public static CombinationAnnotatedElement toCombination(final AnnotatedElement annotationEle) {
+        if (annotationEle instanceof CombinationAnnotatedElement) {
+            return (CombinationAnnotatedElement) annotationEle;
+        }
+        return new CombinationAnnotatedElement(annotationEle);
     }
 
     /**

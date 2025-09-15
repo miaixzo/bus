@@ -272,6 +272,26 @@ public class ObjectValidator {
     }
 
     /**
+     * 检查对象是否与给定对象数组中的任何一个相等。
+     *
+     * @param object  要检查的对象
+     * @param objects 要比较的对象数组
+     * @return 如果对象与数组中的任何一个对象相等，则返回true，否则返回false
+     * @throws IllegalArgumentException 如果对象数组为null或空
+     */
+    public static boolean equalsAny(Object object, Object... objects) {
+        if (objects == null || objects.length == 0) {
+            throw new IllegalArgumentException("objects must not be null or empty.");
+        }
+        for (Object o : objects) {
+            if (Objects.equals(object, o)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 比较两个对象是否不相等
      *
      * @param obj1 对象1

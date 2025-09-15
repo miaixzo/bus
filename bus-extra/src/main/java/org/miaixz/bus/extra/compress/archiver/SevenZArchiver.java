@@ -36,12 +36,11 @@ import java.util.function.Predicate;
 
 import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.compress.CompressBuilder;
 
 /**
  * 7zip格式的归档封装
@@ -159,11 +158,7 @@ public class SevenZArchiver implements Archiver {
         }
         final SevenZOutputFile out = this.sevenZOutputFile;
 
-        String entryName = (null == fileNameEditor) ? file.getName() : fileNameEditor.apply(file.getName());
-        if (StringKit.isNotEmpty(path)) {
-            // 非空拼接路径，格式为：path/name
-            entryName = StringKit.addSuffixIfNot(path, Symbol.SLASH) + entryName;
-        }
+        final String entryName = CompressBuilder.getEntryName(file.getName(), path, fileNameEditor);
         out.putArchiveEntry(out.createArchiveEntry(file, entryName));
 
         if (file.isDirectory()) {

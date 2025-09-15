@@ -54,7 +54,7 @@ import org.springframework.context.ApplicationEventPublisher;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HealthProviderService {
+public class HealthService {
 
     /**
      * 健康状态配置属性
@@ -81,7 +81,7 @@ public class HealthProviderService {
      * @param publisher    Spring 应用事件发布器
      * @param availability Spring 应用可用性接口
      */
-    public HealthProviderService(HealthProperties properties, Provider provider, ApplicationEventPublisher publisher,
+    public HealthService(HealthProperties properties, Provider provider, ApplicationEventPublisher publisher,
             ApplicationAvailability availability) {
         this.properties = properties;
         this.provider = provider;

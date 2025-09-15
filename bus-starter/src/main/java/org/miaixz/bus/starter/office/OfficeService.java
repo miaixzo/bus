@@ -41,9 +41,9 @@ import lombok.RequiredArgsConstructor;
  */
 @Component
 @RequiredArgsConstructor
-public class OfficeProviderService {
+public class OfficeService {
 
-    public OfficeProviderService(Provider localProvider, Provider onlineProvider) {
+    public OfficeService(Provider localProvider, Provider onlineProvider) {
         Registry.getInstance().register(Registry.LOCAL, localProvider);
         Registry.getInstance().register(Registry.ONLINE, onlineProvider);
     }

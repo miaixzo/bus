@@ -47,10 +47,34 @@ import org.miaixz.bus.core.lang.exception.CrontabException;
  */
 public enum Part {
 
-    SECOND(Calendar.SECOND, 0, 59), MINUTE(Calendar.MINUTE, 0, 59), HOUR(Calendar.HOUR_OF_DAY, 0, 23),
-    DAY_OF_MONTH(Calendar.DAY_OF_MONTH, 1, 31),
+    /**
+     * 秒[0-59]
+     */
+    SECOND(Calendar.SECOND, 0, 59),
+    /**
+     * 分[0-59]
+     */
+    MINUTE(Calendar.MINUTE, 0, 59),
+    /**
+     * 时[0-23]
+     */
+    HOUR(Calendar.HOUR_OF_DAY, 0, 23),
+    /**
+     * 日[1-31]，32表示最后一天
+     */
+    DAY_OF_MONTH(Calendar.DAY_OF_MONTH, 1, 32),
+    /**
+     * 月[1-12]
+     */
     MONTH(Calendar.MONTH, Month.JANUARY.getIsoValue(), Month.DECEMBER.getIsoValue()),
-    DAY_OF_WEEK(Calendar.DAY_OF_WEEK, Week.SUNDAY.ordinal(), Week.SATURDAY.ordinal()), YEAR(Calendar.YEAR, 1970, 2099);
+    /**
+     * 周中的天，如周一、周日等，[0-6]即[SUNDAY-SATURDAY]
+     */
+    DAY_OF_WEEK(Calendar.DAY_OF_WEEK, Week.SUNDAY.ordinal(), Week.SATURDAY.ordinal()),
+    /**
+     * 年[1970-2099]
+     */
+    YEAR(Calendar.YEAR, 1970, 2099);
 
     private static final Part[] ENUMS = Part.values();
 

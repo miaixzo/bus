@@ -1781,11 +1781,7 @@ public class IoKit {
      * @return 字符串
      */
     public static String toString(final ByteArrayOutputStream out, final java.nio.charset.Charset charset) {
-        try {
-            return out.toString(charset.name());
-        } catch (final UnsupportedEncodingException e) {
-            throw new InternalException(e);
-        }
+        return out.toString(charset);
     }
 
     public static void checkOffsetAndCount(long size, long offset, long byteCount) {

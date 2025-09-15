@@ -343,28 +343,18 @@ public class SolarDay extends Loops {
         // 芒种
         SolarTerms grainInEar = SolarTerms.fromIndex(getYear(), 11);
         SolarDay start = grainInEar.getJulianDay().getSolarDay();
-        int add = 2 - start.getLunarDay().getSixtyCycle().getHeavenStem().getIndex();
-        if (add < 0) {
-            add += 10;
-        }
         // 芒种后的第1个丙日
-        start = start.next(add);
+        start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(2));
 
         // 小暑
-        SolarTerms slightHeat = grainInEar.next(2);
-        SolarDay end = slightHeat.getJulianDay().getSolarDay();
-        add = 7 - end.getLunarDay().getSixtyCycle().getEarthBranch().getIndex();
-        if (add < 0) {
-            add += 12;
-        }
+        SolarDay end = grainInEar.next(2).getJulianDay().getSolarDay();
         // 小暑后的第1个未日
-        end = end.next(add);
+        end = end.next(end.getLunarDay().getSixtyCycle().getEarthBranch().stepsTo(7));
 
         if (isBefore(start) || isAfter(end)) {
             return null;
         }
-        return equals(end) ? new PlumRainDay(PlumRain.fromIndex(1), 0)
-                : new PlumRainDay(PlumRain.fromIndex(0), subtract(start));
+        return equals(end) ? new PlumRainDay(PlumRain.fromIndex(1), 0) : new PlumRainDay(PlumRain.fromIndex(0), subtract(start));
     }
 
     /**

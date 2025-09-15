@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,7 @@ import java.util.*;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.cursor.Cursor;
+import org.miaixz.bus.core.lang.Optional;
 
 /**
  * 泛型类型解析器，基于 MyBatis 3 的源码，添加了 resolveMapperTypes 方法以支持接口泛型解析 源码来自 https://github.com/mybatis/mybatis-3

@@ -380,6 +380,28 @@ public class FileName {
     }
 
     /**
+     * 重命名文件主名称(不会修改后缀)
+     *
+     * @param filePath        文件
+     * @param newFileMainName 新的文件主名称(不含后缀)
+     * @return 重命名后的文件名称
+     */
+    public static String rename(final String filePath, final String newFileMainName) {
+        String fileName = getName(filePath);
+        if (StringKit.isBlank(fileName)) {
+            return newFileMainName;
+        }
+
+        // 如果原始文件名称有后缀则保留
+        final String suffix = getSuffix(fileName);
+        if (StringKit.isBlank(suffix)) {
+            return newFileMainName;
+        } else {
+            return newFileMainName + "." + suffix;
+        }
+    }
+
+    /**
      * 处理路径，将路径中的"."和".."转换为标准的路径元素
      *
      * @param pathList 路径列表，使用`/`隔开的路径元素列表

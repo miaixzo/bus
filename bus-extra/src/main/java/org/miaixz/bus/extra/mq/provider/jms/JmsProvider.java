@@ -63,14 +63,14 @@ public abstract class JmsProvider implements MQProvider, Closeable {
     private boolean isTopic;
 
     /**
-     * 生产者组名称，默认为"hutool.queue"
+     * 生产者组名称，默认为"bus.queue"
      */
-    private String producerGroup = "hutool.queue";
+    private String producerGroup = "bus.queue";
 
     /**
-     * 消费者组名称，默认为"hutool.queue"
+     * 消费者组名称，默认为"bus.queue"
      */
-    private String consumerGroup = "hutool.queue";
+    private String consumerGroup = "bus.queue";
 
     /**
      * 使用MQConfig初始化JMS连接和会话

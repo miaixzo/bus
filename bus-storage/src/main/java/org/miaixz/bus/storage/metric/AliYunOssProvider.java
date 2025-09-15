@@ -41,8 +41,10 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.http.Request;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
+import org.miaixz.bus.storage.ClientX;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
@@ -67,7 +69,14 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
  */
 public class AliYunOssProvider extends AbstractProvider {
 
+    /**
+     * S3客户端实例，用于与S3服务进行交互
+     */
     private final S3Client client;
+
+    /**
+     * S3预签名URL生成器，用于创建带有时效性的访问URL
+     */
     private final S3Presigner presigner;
 
     /**
@@ -94,11 +103,22 @@ public class AliYunOssProvider extends AbstractProvider {
         AwsBasicCredentials credentials = AwsBasicCredentials.create(this.context.getAccessKey(),
                 this.context.getSecretKey());
 
+        // 配置S3客户端以兼容阿里云OSS
+        S3Configuration s3Config = S3Configuration.builder().pathStyleAccessEnabled(this.context.isPathStyle())
+                // 禁用chunked编码，解决阿里云OSS兼容性问题
+                .chunkedEncodingEnabled(false).build();
+
+        // 创建自定义OkHttpClient
+        ClientX clientx = new ClientX.ClientBuilder().connectTimeout(Duration.ofSeconds(5))
+                .readTimeout(Duration.ofSeconds(30)).writeTimeout(Duration.ofSeconds(30)).addInterceptor(chain -> {
+                    Request request = chain.request();
+                    return chain.proceed(request);
+                }).build();
+
         this.client = S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
-                .endpointOverride(URI.create(this.context.getEndpoint()))
+                .httpClient(clientx).endpointOverride(URI.create(this.context.getEndpoint()))
                 .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
-                .overrideConfiguration(overrideConfig)
-                .serviceConfiguration(s -> s.pathStyleAccessEnabled(this.context.isPathStyle())).build();
+                .overrideConfiguration(overrideConfig).serviceConfiguration(s3Config).build();
 
         this.presigner = S3Presigner.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .endpointOverride(URI.create(this.context.getEndpoint()))

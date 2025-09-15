@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>8.2.9</version>
+    <version>8.3.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,12 +85,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.9</bus.version>
+        <bus.version>8.3.0</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <jackson.version>2.19.2</jackson.version>
         <sardine.version>5.13</sardine.version>
         <jsch.version>2.27.2</jsch.version>
         <amazon.s3.version>2.32.14</amazon.s3.version>
+        <smbj.version>0.14.0</smbj.version>
     </properties>
 
     <dependencies>
@@ -141,6 +142,12 @@
             <groupId>com.github.mwiede</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>smbj</artifactId>
+            <version>${smbj.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

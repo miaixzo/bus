@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.function.Function;
 
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.StreamingNotSupportedException;
@@ -38,6 +39,7 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -266,6 +268,25 @@ public class CompressBuilder {
             }
             throw e;
         }
+    }
+
+    /**
+     * 获取归档条目名
+     *
+     * @param fileName       文件名，包括主名称和扩展名，不包括路径
+     * @param path           路径
+     * @param fileNameEditor 文件名编辑器
+     * @return 归档条目名
+     */
+    public static String getEntryName(final String fileName, final String path,
+            final Function<String, String> fileNameEditor) {
+        String entryName = (fileNameEditor == null) ? fileName : fileNameEditor.apply(fileName);
+        if (StringKit.isNotEmpty(path)) {
+            // 非空拼接路径，格式为：path/name
+            entryName = StringKit.addSuffixIfNot(path, Symbol.SLASH) + entryName;
+        }
+
+        return entryName;
     }
 
 }

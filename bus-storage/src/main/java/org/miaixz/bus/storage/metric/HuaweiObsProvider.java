@@ -41,8 +41,10 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.http.Request;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
+import org.miaixz.bus.storage.ClientX;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
@@ -94,8 +96,15 @@ public class HuaweiObsProvider extends AbstractProvider {
         AwsBasicCredentials credentials = AwsBasicCredentials.create(this.context.getAccessKey(),
                 this.context.getSecretKey());
 
+        // 创建自定义HttpClient
+        ClientX clientx = new ClientX.ClientBuilder().connectTimeout(Duration.ofSeconds(5))
+                .readTimeout(Duration.ofSeconds(readTimeout)).writeTimeout(Duration.ofSeconds(writeTimeout))
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    return chain.proceed(request);
+                }).build();
         this.client = S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
-                .endpointOverride(URI.create(this.context.getEndpoint()))
+                .httpClient(clientx).endpointOverride(URI.create(this.context.getEndpoint()))
                 .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
                 .overrideConfiguration(overrideConfig)
                 .serviceConfiguration(s -> s.pathStyleAccessEnabled(this.context.isPathStyle())).build();

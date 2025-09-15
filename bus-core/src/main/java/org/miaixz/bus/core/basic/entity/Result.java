@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.basic.entity;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +49,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Result<T> {
+public class Result<T> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852291039338L;

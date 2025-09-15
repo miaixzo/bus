@@ -201,14 +201,19 @@ public class JschSession implements Session {
         channel.setInputStream(null);
 
         channel.setErrStream(errStream);
+
+        String result;
         InputStream in = null;
         try {
             channel.connect();
             in = channel.getInputStream();
-            return IoKit.read(in, charset);
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        } catch (final JSchException e) {
+            result = IoKit.read(in, charset);
+
+            if (channel.getExitStatus() != 0) {
+                throw new InternalException("Execute command [{}] error, exit status is [{}]", cmd,
+                        channel.getExitStatus());
+            }
+        } catch (final IOException | JSchException e) {
             throw new InternalException(e);
         } finally {
             IoKit.closeQuietly(in);
@@ -216,6 +221,8 @@ public class JschSession implements Session {
                 channel.disconnect();
             }
         }
+
+        return result;
     }
 
     /**

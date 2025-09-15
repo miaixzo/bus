@@ -100,6 +100,25 @@ public class Args {
     public static final String TABLE_PREFIX_KEY = "table.prefix";
 
     /**
+     * 租户-忽略表
+     */
+    public static final String TENANT_IGNORE_KEY = "tenant.ignore";
+    /**
+     * 租户-忽略表
+     */
+    public static final String TENANT_IGNORE_TABLE = "tenant";
+
+    /**
+     * 租户-字段名
+     */
+    public static final String TENANT_COLUMN_KEY = "tenant.column";
+
+    /**
+     * 租户-默认字段名
+     */
+    public static final String TENANT_TABLE_COLUMN = "tenant_id";
+
+    /**
      * 命名规则
      */
     public static final String NAMING_KEY = "provider.naming";

@@ -188,7 +188,6 @@ public class ContextBuilder extends WebUtils {
     public static HttpServletRequest getRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null || !(requestAttributes instanceof ServletRequestAttributes)) {
-            Logger.debug("No ServletRequestAttributes available");
             return null;
         }
         return ((ServletRequestAttributes) requestAttributes).getRequest();
@@ -506,12 +505,12 @@ public class ContextBuilder extends WebUtils {
         }
         String contentType = request.getContentType();
         if (contentType == null || !contentType.startsWith(MediaType.APPLICATION_JSON)) {
-            Logger.debug("Request is not JSON content, key: {}, contentType: {}", key, contentType);
+            Logger.debug("==>    Request: Request is not JSON content, key: {}, contentType: {}", key, contentType);
             return null;
         }
         String requestId = getRequestId();
         if (requestId == null) {
-            Logger.debug("No request ID available for JSON body lookup, key: {}", key);
+            Logger.debug("==>    Request: No request ID available for JSON body lookup, key: {}", key);
             return null;
         }
         String cachedBody = getBodyCache().read(requestId);
@@ -529,11 +528,11 @@ public class ContextBuilder extends WebUtils {
                 }
             }
         } catch (IOException e) {
-            Logger.error("Failed to read JSON body, key: {}", key, e);
+            Logger.error("==>    Request: Failed to read JSON body, key: {}", key, e);
             return null;
         }
         if (StringKit.isEmpty(requestBody) || !JsonKit.isJson(requestBody)) {
-            Logger.debug("Empty or invalid JSON body, key: {}", key);
+            Logger.debug("==>    Request: Empty or invalid JSON body, key: {}", key);
             return null;
         }
         getBodyCache().write(requestId, requestBody, DEFAULT_CACHE_EXPIRE);
@@ -567,7 +566,7 @@ public class ContextBuilder extends WebUtils {
                 return StringKit.toString(jsonMap.get(key));
             }
         } catch (Exception e) {
-            Logger.error("Failed to extract JSON value, key: {}, json: {}", key, json, e);
+            Logger.error("==>    Request: Failed to extract JSON value, key: {}, json: {}", key, json, e);
             return null;
         }
         return null;
@@ -670,12 +669,12 @@ public class ContextBuilder extends WebUtils {
         }
         HttpServletRequest request = getRequest();
         if (request == null) {
-            Logger.debug("No request available for cookie lookup, key: {}", key);
+            Logger.debug("==>    Request: No request available for cookie lookup, key: {}", key);
             return null;
         }
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            Logger.debug("No cookies found, key: {}", key);
+            Logger.debug("==>    Request: No cookies found, key: {}", key);
             return null;
         }
         for (Cookie cookie : cookies) {
@@ -709,7 +708,7 @@ public class ContextBuilder extends WebUtils {
         }
         HttpServletRequest request = getRequest();
         if (request == null) {
-            Logger.debug("No request available for path variable lookup, key: {}", key);
+            Logger.debug("==>    Request: No request available for path variable lookup, key: {}", key);
             return null;
         }
         Map<String, String> pathVariables = (Map<String, String>) request
@@ -743,11 +742,11 @@ public class ContextBuilder extends WebUtils {
         }
         HttpServletRequest request = getRequest();
         if (request == null) {
-            Logger.debug("No request available for multipart lookup, key: {}", key);
+            Logger.debug("==>    Request: No request available for multipart lookup, key: {}", key);
             return null;
         }
         if (!isMultipartContent(request)) {
-            Logger.debug("Request is not multipart, key: {}", key);
+            Logger.debug("==>    Request: Request is not multipart, key: {}", key);
             return null;
         }
         try {
@@ -760,7 +759,7 @@ public class ContextBuilder extends WebUtils {
                 }
             }
         } catch (Exception e) {
-            Logger.error("Failed to get multipart parameter, key: {}", key, e);
+            Logger.error("==>    Request: Failed to get multipart parameter, key: {}", key, e);
             return null;
         }
         return null;
@@ -846,7 +845,7 @@ public class ContextBuilder extends WebUtils {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            Logger.warn("Failed to parse int value, key: {}, value: {}", key, value, e);
+            Logger.warn("==>    Request: Failed to parse int value, key: {}, value: {}", key, value, e);
             return defaultValue;
         }
     }
@@ -874,7 +873,7 @@ public class ContextBuilder extends WebUtils {
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
-            Logger.warn("Failed to parse long value, key: {}, value: {}", key, value, e);
+            Logger.warn("==>    Request: Failed to parse long value, key: {}, value: {}", key, value, e);
             return defaultValue;
         }
     }
@@ -960,14 +959,14 @@ public class ContextBuilder extends WebUtils {
             try {
                 return (T) Integer.valueOf(value);
             } catch (NumberFormatException e) {
-                Logger.warn("Failed to convert value to Integer, key: {}, value: {}", key, value, e);
+                Logger.warn("==>    Request: Failed to convert value to Integer, key: {}, value: {}", key, value, e);
                 return null;
             }
         } else if (clazz == Long.class || clazz == long.class) {
             try {
                 return (T) Long.valueOf(value);
             } catch (NumberFormatException e) {
-                Logger.warn("Failed to convert value to Long, key: {}, value: {}", key, value, e);
+                Logger.warn("==>    Request: Failed to convert value to Long, key: {}, value: {}", key, value, e);
                 return null;
             }
         } else if (clazz == Boolean.class || clazz == boolean.class) {
@@ -976,21 +975,22 @@ public class ContextBuilder extends WebUtils {
             try {
                 return (T) Double.valueOf(value);
             } catch (NumberFormatException e) {
-                Logger.warn("Failed to convert value to Double, key: {}, value: {}", key, value, e);
+                Logger.warn("==>    Request: Failed to convert value to Double, key: {}, value: {}", key, value, e);
                 return null;
             }
         } else if (clazz == Float.class || clazz == float.class) {
             try {
                 return (T) Float.valueOf(value);
             } catch (NumberFormatException e) {
-                Logger.warn("Failed to convert value to Float, key: {}, value: {}", key, value, e);
+                Logger.warn("==>    Request: Failed to convert value to Float, key: {}, value: {}", key, value, e);
                 return null;
             }
         } else {
             try {
                 return JsonKit.toPojo(value, clazz);
             } catch (Exception e) {
-                Logger.warn("Failed to convert value to {}, key: {}, value: {}", clazz.getSimpleName(), key, value, e);
+                Logger.warn("==>    Request: Failed to convert value to {}, key: {}, value: {}", clazz.getSimpleName(),
+                        key, value, e);
                 return null;
             }
         }
@@ -1023,7 +1023,8 @@ public class ContextBuilder extends WebUtils {
         try {
             return JsonKit.toPojo(value, clazz);
         } catch (Exception e) {
-            Logger.warn("Failed to convert JSON value to {}, key: {}, value: {}", clazz.getSimpleName(), key, value, e);
+            Logger.warn("==>    Request: Failed to convert JSON value to {}, key: {}, value: {}", clazz.getSimpleName(),
+                    key, value, e);
             return null;
         }
     }
@@ -1213,7 +1214,7 @@ public class ContextBuilder extends WebUtils {
         HEADER_CACHE = null;
         PARAMETER_CACHE = null;
         BODY_CACHE = null;
-        Logger.debug("All cache instances reset");
+        Logger.debug("==>      Cache: All cache instances reset");
     }
 
 }

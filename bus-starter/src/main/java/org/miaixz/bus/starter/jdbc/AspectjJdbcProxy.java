@@ -27,19 +27,17 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import java.lang.reflect.Method;
-
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.miaixz.bus.core.xyz.ObjectKit;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.core.annotation.Order;
 
 /**
- * AOP切面切点
+ * AOP aspect for dynamic datasource switching.
+ * <p>
+ * This aspect intercepts methods annotated with {@link DataSource} and manages the datasource context before and after
+ * method execution.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,42 +47,59 @@ import org.springframework.core.annotation.Order;
 public class AspectjJdbcProxy {
 
     /**
-     * 扫描所有含有@DataSource注解的类
+     * Advice that runs before a method execution with {@link DataSource} annotation.
+     * <p>
+     * Sets the datasource context based on the value specified in the annotation. If no datasource is specified, the
+     * default datasource will be used.
+     * </p>
+     *
+     * @param joinPoint  the join point representing the method execution
+     * @param dataSource the datasource annotation on the method
      */
-    @Pointcut("@annotation(org.miaixz.bus.starter.jdbc.DataSource)"
-            + "||execution(* *(@org.miaixz.bus.starter.jdbc.DataSource (*), ..))")
-    public void match() {
+    @Before("@annotation(dataSource)")
+    public void before(JoinPoint joinPoint, DataSource dataSource) {
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+        String methodName = joinPoint.getSignature().getName();
+        String dataSourceName = dataSource.value();
+        if (dataSourceName.isEmpty()) {
+            Logger.debug("==>     Method: [{}.{}] No datasource specified, will use default datasource", className,
+                    methodName);
+            return;
+        }
+        Logger.info("==>     Method: [{}.{}] starts execution, switching to datasource: [{}]", className, methodName,
+                dataSourceName);
 
+        DataSourceHolder.setKey(dataSourceName);
     }
 
     /**
-     * 执行结果,使用around方式监控
+     * Advice that runs after a method execution with {@link DataSource} annotation.
+     * <p>
+     * Cleans up the datasource context based on the configuration in the annotation. If {@link DataSource#clear()} is
+     * true, the datasource context will be cleared. Otherwise, the datasource context will be maintained for subsequent
+     * operations.
+     * </p>
      *
-     * @param point 切点
-     * @return 返回结果
-     * @throws Throwable 异常
+     * @param joinPoint  the join point representing the method execution
+     * @param dataSource the datasource annotation on the method
      */
-    @Around("match()")
-    public Object around(ProceedingJoinPoint point) throws Throwable {
-        // 获取执行方法
-        Method method = ((MethodSignature) point.getSignature()).getMethod();
-        // 获取方法的@DataSource注解
-        DataSource dataSource = method.getAnnotation(DataSource.class);
-        if (!ObjectKit.isEmptyIfString(dataSource.value())) {
-            // 获取类级别的@DataSource注解
-            dataSource = method.getDeclaringClass().getAnnotation(DataSource.class);
+    @After("@annotation(dataSource)")
+    public void after(JoinPoint joinPoint, DataSource dataSource) {
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+        String methodName = joinPoint.getSignature().getName();
+        String dataSourceName = dataSource.value();
+        if (dataSourceName.isEmpty()) {
+            Logger.debug("==>     Method: [{}.{}] execution completed, no datasource switched", className, methodName);
+            return;
         }
-        if (null != dataSource) {
-            // 设置数据源key值
-            DataSourceHolder.setKey(dataSource.value());
-            Logger.info("Switch datasource to [{}] in method [{}]", DataSourceHolder.getKey(), point.getSignature());
+        if (dataSource.clear()) {
+            Logger.info("==>     Method: [{}.{}] execution completed, clearing datasource setting: [{}]", className,
+                    methodName, dataSourceName);
+            DataSourceHolder.remove();
+        } else {
+            Logger.info("==>     Method: [{}.{}] execution completed, keeping datasource setting: [{}]", className,
+                    methodName, dataSourceName);
         }
-        // 继续执行该方法
-        Object object = point.proceed();
-        // 恢复默认数据源
-        DataSourceHolder.remove();
-        Logger.info("Restore datasource to [{}] in method [{}]", DataSourceHolder.getKey(), point.getSignature());
-        return object;
     }
 
 }

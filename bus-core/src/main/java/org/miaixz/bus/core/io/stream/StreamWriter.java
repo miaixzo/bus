@@ -36,6 +36,7 @@ import java.nio.charset.Charset;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
@@ -99,6 +100,10 @@ public class StreamWriter {
     public void writeObject(final Object... contents) throws InternalException {
         ObjectOutputStream osw = null;
         try {
+            if (ArrayKit.isEmpty(contents)) {
+                return;
+            }
+
             osw = out instanceof ObjectOutputStream ? (ObjectOutputStream) out : new ObjectOutputStream(out);
             for (final Object content : contents) {
                 if (content != null) {

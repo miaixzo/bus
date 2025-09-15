@@ -98,15 +98,15 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * // 创建配置
  * AuthProperties properties = new AuthProperties();
  * // 创建服务
- * AuthProviderService service = new AuthProviderService(properties);
+ * AuthService service = new AuthService(properties);
  * // 获取GitHub授权提供者
- * Provider githubProvider = service.require(Registry.GITHUB);
+ * Provider provider = service.require(Registry.GITHUB);
  * </pre>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AuthProviderService {
+public class AuthService {
 
     /**
      * 授权组件缓存，用于存储已注册的授权组件。 使用ConcurrentHashMap保证线程安全。
@@ -128,7 +128,7 @@ public class AuthProviderService {
      *
      * @param properties 授权配置属性，不能为null
      */
-    public AuthProviderService(AuthProperties properties) {
+    public AuthService(AuthProperties properties) {
         this(properties, AuthCache.INSTANCE);
     }
 
@@ -138,7 +138,7 @@ public class AuthProviderService {
      * @param properties 授权配置属性，不能为null
      * @param cache      缓存实现，不能为null
      */
-    public AuthProviderService(AuthProperties properties, CacheX cache) {
+    public AuthService(AuthProperties properties, CacheX cache) {
         this.properties = properties;
         this.cache = cache;
     }

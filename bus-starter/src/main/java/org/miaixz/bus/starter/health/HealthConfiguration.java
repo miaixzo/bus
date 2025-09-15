@@ -80,13 +80,13 @@ public class HealthConfiguration {
      * @param publisher    Spring 应用事件发布器
      * @param availability Spring 应用可用性接口
      * @param provider     系统信息提供者
-     * @return {@link HealthProviderService}
+     * @return {@link HealthService}
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
-    public HealthProviderService healthProviderService(ApplicationEventPublisher publisher,
+    public HealthService healthProviderService(ApplicationEventPublisher publisher,
             ApplicationAvailability availability, Provider provider) {
-        return new HealthProviderService(properties, provider, publisher, availability);
+        return new HealthService(properties, provider, publisher, availability);
     }
 
     /**
@@ -127,8 +127,7 @@ public class HealthConfiguration {
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
-    public HealthController healthController(HealthProviderService healthService,
-            RequestMappingHandlerMapping handlerMapping) {
+    public HealthController healthController(HealthService healthService, RequestMappingHandlerMapping handlerMapping) {
         HealthController controller = new HealthController(healthService);
         try {
             // 注册/healthz端点（支持GET和POST）

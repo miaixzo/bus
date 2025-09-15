@@ -42,7 +42,7 @@ import org.miaixz.bus.core.center.date.culture.cn.Week;
 public class SolarWeek extends Loops {
 
     /**
-     * 月
+     * 公历月
      */
     protected SolarMonth month;
 

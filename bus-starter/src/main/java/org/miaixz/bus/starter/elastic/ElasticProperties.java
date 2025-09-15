@@ -54,6 +54,17 @@ public class ElasticProperties {
      * 集群主机地址, 多个用英文逗号,隔开 格式: ip1:port,ip2:port
      */
     private String hosts;
+
+    /**
+     * 用户
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
     /**
      * 通讯协议
      */

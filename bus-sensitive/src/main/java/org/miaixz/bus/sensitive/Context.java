@@ -78,6 +78,11 @@ public class Context {
     private Object entry;
 
     /**
+     * 扩展属性
+     */
+    private String extension;
+
+    /**
      * 新建一个对象实例
      *
      * @return this

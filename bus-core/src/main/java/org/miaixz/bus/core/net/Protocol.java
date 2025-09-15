@@ -29,6 +29,7 @@ package org.miaixz.bus.core.net;
 
 import java.io.IOException;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -328,6 +329,77 @@ public enum Protocol {
         default:
             throw new IOException("Unexpected protocol: " + protocol);
         }
+    }
+
+    /**
+     * 根据URL获取对应的host。
+     *
+     * @param url 待处理的URL
+     * @return 对应的协议枚举实例
+     */
+    public static String getHost(String url) {
+        if (StringKit.isEmpty(url)) {
+            return url;
+        }
+        return url.replaceFirst("^[a-zA-Z]+://", Normal.EMPTY);
+    }
+
+    /**
+     * 从地址中获取端口号
+     *
+     * @param address 地址，格式为 "主机名:端口号" 或 "协议://主机名:端口号"
+     * @return 端口号
+     * @throws IllegalArgumentException 如果地址格式无效或未包含端口号
+     */
+    public static int getPort(String address) {
+        return getPort(address, -1);
+    }
+
+    /**
+     * 从地址中获取端口号，如果未找到则返回默认值
+     *
+     * @param address     地址，格式为 "主机名:端口号" 或 "协议://主机名:端口号"
+     * @param defaultPort 默认端口号，当地址中未指定端口时返回此值
+     * @return 端口号或默认端口号
+     * @throws IllegalArgumentException 如果地址格式无效且未提供默认端口
+     */
+    public static int getPort(String address, int defaultPort) {
+        if (address == null || address.isEmpty()) {
+            if (defaultPort >= 0) {
+                return defaultPort;
+            }
+            throw new IllegalArgumentException("Address cannot be null or empty");
+        }
+
+        // 移除协议部分（如果有）
+        String hostPort = address;
+        int protocolIndex = address.indexOf("://");
+        if (protocolIndex >= 0) {
+            hostPort = address.substring(protocolIndex + 3);
+        }
+
+        // 查找端口分隔符
+        int portIndex = hostPort.lastIndexOf(':');
+        if (portIndex >= 0) {
+            // 确保不是IPv6地址中的冒号
+            if (hostPort.lastIndexOf(']') < portIndex) {
+                String portStr = hostPort.substring(portIndex + 1);
+                try {
+                    return Integer.parseInt(portStr);
+                } catch (NumberFormatException e) {
+                    if (defaultPort >= 0) {
+                        return defaultPort;
+                    }
+                    throw new IllegalArgumentException("Invalid port number: " + portStr);
+                }
+            }
+        }
+
+        // 未找到端口
+        if (defaultPort >= 0) {
+            return defaultPort;
+        }
+        throw new IllegalArgumentException("Port not specified in address: " + address);
     }
 
     /**

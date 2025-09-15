@@ -166,7 +166,7 @@ public class SolarMonth extends Loops {
      * 获取本月的公历周列表
      *
      * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
-     * @return 周列表
+     * @return 公历周列表
      */
     public List<SolarWeek> getWeeks(int start) {
         int size = getWeekCount(start);

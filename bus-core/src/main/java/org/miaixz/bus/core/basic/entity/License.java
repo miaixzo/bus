@@ -33,6 +33,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 许可协议属性
  *
@@ -44,7 +47,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class License {
+public class License implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2852291039638L;
 
     /**
      * ID

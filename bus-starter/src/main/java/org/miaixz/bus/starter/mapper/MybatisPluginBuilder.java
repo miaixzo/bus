@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.Context;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
@@ -50,6 +49,7 @@ import org.miaixz.bus.pager.handler.TenantProvider;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.starter.jdbc.DataSourceHolder;
 import org.springframework.core.env.Environment;
 
 import net.sf.jsqlparser.expression.Expression;
@@ -116,41 +116,64 @@ public class MybatisPluginBuilder {
     private static void configureTenant(Environment environment, List<MapperHandler> handlers) {
         MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
                 GeniusBuilder.MYBATIS);
-        if (ObjectKit.isNotEmpty(properties.getConfigurationProperties())
-                && ObjectKit.isNotEmpty(properties.getConfigurationProperties().get("tenant.column"))) {
-            Logger.info("Enable multi-tenant support, all database operations will include tenant ID support.");
-            TenantHandler tenantHandler = new TenantHandler();
-            tenantHandler.setProvider(new TenantProvider() {
-                @Override
-                public Expression getTenantId() {
-                    String tenantId = ContextBuilder.getTenantId();
 
-                    if (StringKit.isEmpty(tenantId)) {
-                        throw new MapperException("Tenant information not found");
-                    }
+        if (ObjectKit.isNotEmpty(properties) && ObjectKit.isNotEmpty(properties.getConfigurationProperties())) {
+            Properties configProps = properties.getConfigurationProperties();
 
-                    return new StringValue(tenantId);
-                }
-
-                @Override
-                public String getColumn() {
-                    // 租户id,默认tenant_id
-                    return Context.INSTANCE.getProperty("tenant.column", "tenant_id");
-                }
-
-                @Override
-                public boolean ignore(String name) {
-                    // 忽略租户隔离主表
-                    String prefix = Context.INSTANCE.getProperty(Args.TABLE_PREFIX_KEY, Normal.EMPTY);
-                    String ignoreTables = Context.INSTANCE.getProperty("tenant.ignore", "tenant");
-                    // 分割 tenant.ignore 的值并加上前缀
-                    List<String> ignoreTableList = Arrays.stream(ignoreTables.split(Symbol.COMMA))
-                            .map(table -> prefix + table.trim()).collect(Collectors.toList());
-                    return ignoreTableList.contains(name);
-                }
+            // 检查是否有任何数据源配置了租户
+            boolean hasTenantConfig = configProps.stringPropertyNames().stream().anyMatch(key -> {
+                String value = configProps.getProperty(key);
+                return value != null && value.contains(Args.TENANT_IGNORE_TABLE);
             });
 
-            handlers.add(tenantHandler);
+            if (hasTenantConfig) {
+                Logger.info("Enable multi-tenant support, all database operations will include tenant ID support.");
+
+                TenantHandler tenantHandler = new TenantHandler();
+                tenantHandler.setProvider(new TenantProvider() {
+                    @Override
+                    public Expression getTenantId() {
+                        String tenantId = ContextBuilder.getTenantId();
+                        if (StringKit.isEmpty(tenantId)) {
+                            throw new MapperException("Tenant information not found");
+                        }
+                        return new StringValue(tenantId);
+                    }
+
+                    @Override
+                    public String getColumn() {
+                        // 获取当前数据源的租户列配置
+                        String currentDataSourceKey = DataSourceHolder.getKey();
+
+                        // 构建配置键名，例如: com_deepparser.tenant.column
+                        String tenantColumnKey = currentDataSourceKey + Symbol.DOT + Args.TENANT_COLUMN_KEY;
+                        String tenantColumn = configProps.getProperty(tenantColumnKey);
+
+                        return ObjectKit.isNotEmpty(tenantColumn) ? tenantColumn : Args.TENANT_TABLE_COLUMN;
+                    }
+
+                    @Override
+                    public boolean ignore(String name) {
+                        // 获取当前数据源的配置
+                        String currentDataSourceKey = DataSourceHolder.getKey();
+
+                        // 获取表前缀
+                        String prefixKey = currentDataSourceKey + Symbol.DOT + Args.TABLE_PREFIX_KEY;
+                        String prefix = configProps.getProperty(prefixKey, Normal.EMPTY);
+
+                        // 获取忽略表列表
+                        String ignoreKey = currentDataSourceKey + Symbol.DOT + Args.TENANT_IGNORE_KEY;
+                        String ignoreTables = configProps.getProperty(ignoreKey, Args.TENANT_IGNORE_TABLE);
+
+                        // 分割 ignoreTables 的值并加上前缀
+                        List<String> ignoreTableList = Arrays.stream(ignoreTables.split(Symbol.COMMA))
+                                .map(table -> prefix + table.trim()).collect(Collectors.toList());
+
+                        return ignoreTableList.contains(name);
+                    }
+                });
+                handlers.add(tenantHandler);
+            }
         }
     }
 

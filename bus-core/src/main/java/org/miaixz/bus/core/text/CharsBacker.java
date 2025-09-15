@@ -3752,6 +3752,31 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
+     * 使用指定的分隔符连接集合中的元素，并通过指定的函数将每个元素转换为字符串。
+     *
+     * @param <T>       集合中元素的类型
+     * @param delimiter 用于连接元素的分隔符
+     * @param objs      要连接的元素集合
+     * @param function  用于将集合中的每个元素转换为字符串的函数
+     * @return 连接后的字符串，如果集合为空则返回空字符串
+     */
+    public static <T> String join(String delimiter, Collection<T> objs, Function<T, String> function) {
+        if (CollKit.isEmpty(objs)) {
+            return Normal.EMPTY;
+        } else if (objs.size() == 1) {
+            T next = objs.iterator().next();
+            return String.valueOf(function.apply(next));
+        } else {
+            String[] strings = new String[objs.size()];
+            int index = 0;
+            for (T obj : objs) {
+                strings[index++] = function.apply(obj);
+            }
+            return String.join(delimiter, strings);
+        }
+    }
+
+    /**
      * 检查字符串是否都为数字组成
      *
      * @param text 字符串

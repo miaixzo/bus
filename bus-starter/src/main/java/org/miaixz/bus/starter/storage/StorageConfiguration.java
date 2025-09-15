@@ -42,7 +42,7 @@ import jakarta.annotation.Resource;
  *
  * 该类负责创建并配置以下主要组件：
  * <ul>
- * <li>{@link StorageProviderService} - 存储服务提供者工厂，用于创建各种存储服务</li>
+ * <li>{@link StorageService} - 存储服务提供者工厂，用于创建各种存储服务</li>
  * <li>{@link CacheX} - 存储缓存实现，默认使用{@link StorageCache}作为缓存实现</li>
  * </ul>
  * 
@@ -79,15 +79,15 @@ public class StorageConfiguration {
      * 创建存储服务提供者工厂Bean。
      *
      * <p>
-     * 该方法创建一个{@link StorageProviderService}实例，用于管理和创建各种存储服务提供者。 该实例会使用传入的缓存实现和配置属性来初始化。
+     * 该方法创建一个{@link StorageService}实例，用于管理和创建各种存储服务提供者。 该实例会使用传入的缓存实现和配置属性来初始化。
      * </p>
      *
      * @param CacheX 缓存实现，用于存储文件元数据等临时数据
      * @return 配置好的存储服务提供者工厂实例
      */
     @Bean
-    public StorageProviderService storageProviderFactory(CacheX CacheX) {
-        return new StorageProviderService(this.properties, CacheX);
+    public StorageService storageProviderFactory(CacheX CacheX) {
+        return new StorageService(this.properties, CacheX);
     }
 
     /**

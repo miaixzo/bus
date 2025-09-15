@@ -86,7 +86,7 @@ import org.miaixz.bus.notify.metric.yunpian.YunpianSmsProvider;
  * @author Justubborn
  * @since Java 17+
  */
-public class NotifyProviderService {
+public class NotifyService {
 
     /**
      * 通知组件缓存，用于存储已注册的通知组件。 使用ConcurrentHashMap保证线程安全。
@@ -103,7 +103,7 @@ public class NotifyProviderService {
      *
      * @param properties 通知配置属性，不能为null
      */
-    public NotifyProviderService(NotifyProperties properties) {
+    public NotifyService(NotifyProperties properties) {
         this.properties = properties;
     }
 

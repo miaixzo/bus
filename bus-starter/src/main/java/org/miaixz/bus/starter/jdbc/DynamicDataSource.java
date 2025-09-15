@@ -28,9 +28,9 @@
 package org.miaixz.bus.starter.jdbc;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -54,7 +54,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     /**
      * 单例句柄
      */
-    private static volatile DynamicDataSource instance;
+    private static volatile DynamicDataSource INSTANCE;
 
     /**
      * 单例方法
@@ -62,43 +62,14 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * @return the DynamicDataSource
      */
     public static synchronized DynamicDataSource getInstance() {
-        if (null == instance) {
+        if (null == INSTANCE) {
             synchronized (lock) {
-                if (null == instance) {
-                    instance = new DynamicDataSource();
+                if (null == INSTANCE) {
+                    INSTANCE = new DynamicDataSource();
                 }
             }
         }
-        return instance;
-    }
-
-    /**
-     * 动态增加数据源
-     *
-     * @param key        数据源key
-     * @param dataSource 数据源信息
-     */
-    public synchronized static void addDataSource(String key, javax.sql.DataSource dataSource) {
-        if (null != dataSource && dataSource instanceof AbstractRoutingDataSource) {
-            try {
-                Field sourceMapField = AbstractRoutingDataSource.class.getDeclaredField("resolvedDataSources");
-                sourceMapField.setAccessible(true);
-                Map<Object, javax.sql.DataSource> sourceMap = (Map<Object, javax.sql.DataSource>) sourceMapField
-                        .get(getInstance().getDefaultDataSource());
-                sourceMap.put(key, dataSource);
-                keySet.add(key);
-                sourceMapField.setAccessible(false);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void setTargetDataSources(Map<Object, Object> map) {
-        super.setTargetDataSources(map);
-        keySet.add(map.keySet());
-        this.afterPropertiesSet();
+        return INSTANCE;
     }
 
     /**
@@ -110,10 +81,10 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         String key = DataSourceHolder.getKey();
         if (!keySet.contains(key)) {
-            Logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource",
+            Logger.info(String.format("==> DataSource: Unable to locate datasource by key '%s'. Default will be used.",
                     key));
         }
-        Logger.debug("==> DataSource: {}", Objects.requireNonNullElse(key, "dataSource"));
+        Logger.debug("==> DataSource: [{}]", key);
         return key;
     }
 
@@ -134,6 +105,53 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         }
     }
 
+    @Override
+    public void setTargetDataSources(Map<Object, Object> map) {
+        super.setTargetDataSources(map);
+        keySet.add(map.keySet());
+        this.afterPropertiesSet();
+    }
+
+    /**
+     * 获取所有数据源
+     *
+     * @return 数据源映射
+     */
+    public Map<Object, Object> getAllDataSources() {
+        try {
+            Field targetDataSourcesField = AbstractRoutingDataSource.class.getDeclaredField("targetDataSources");
+            targetDataSourcesField.setAccessible(true);
+
+            Map<Object, Object> targetDataSources = (Map<Object, Object>) targetDataSourcesField.get(this);
+            return targetDataSources;
+        } catch (Exception e) {
+            Logger.error("==> DataSource: [{}]", "Failed to get all datasources");
+            return new HashMap<>();
+        }
+    }
+
+    /**
+     * 动态增加数据源
+     *
+     * @param key        数据源key
+     * @param dataSource 数据源信息
+     */
+    public synchronized static void addDataSource(String key, javax.sql.DataSource dataSource) {
+        if (null != dataSource && dataSource instanceof AbstractRoutingDataSource) {
+            try {
+                Field sourceMapField = AbstractRoutingDataSource.class.getDeclaredField("resolvedDataSources");
+                sourceMapField.setAccessible(true);
+                Map<Object, javax.sql.DataSource> sourceMap = (Map<Object, javax.sql.DataSource>) sourceMapField
+                        .get(getInstance().getDefaultDataSource());
+                sourceMap.put(key, dataSource);
+                keySet.add(key);
+                sourceMapField.setAccessible(false);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                Logger.error("==> DataSource: [{}]", "Failed to add  datasource");
+            }
+        }
+    }
+
     /**
      * 判断指定DataSrouce当前是否存在
      *
@@ -142,6 +160,19 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      */
     public boolean containsKey(String key) {
         return keySet.contains(key);
+    }
+
+    /**
+     * 移除数据源
+     * 
+     * @param key 数据源名称
+     */
+    public void remove(String key) {
+        Map<Object, Object> targetDataSources = getAllDataSources();
+        targetDataSources.remove(key);
+        keySet.remove(key);
+        super.setTargetDataSources(targetDataSources);
+        super.afterPropertiesSet();
     }
 
     /**

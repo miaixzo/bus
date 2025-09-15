@@ -207,7 +207,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
     public long remove(T entity) {
         entity.setStatus(Consts.STATUS_MINUS_ONE);
         entity.setUpdate(entity);
-        return mapper.updateByPrimaryKey(entity);
+        return mapper.updateByPrimaryKeySelective(entity);
     }
 
     /**
@@ -264,7 +264,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
      */
     @Override
     public Object selectById(I id) {
-        return mapper.selectByPrimaryKey(id).orElse(null);
+        return mapper.selectByPrimaryKey(id);
     }
 
     /**
@@ -275,7 +275,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
      */
     @Override
     public Object selectOne(T entity) {
-        return mapper.selectOne(entity).orElse(null);
+        return mapper.selectOne(entity);
     }
 
     /**

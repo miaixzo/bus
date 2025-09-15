@@ -33,6 +33,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cron.pattern.Part;
 
 /**
@@ -336,7 +337,15 @@ public class PatternMatcher {
 
     @Override
     public String toString() {
-        return "PatternMatcher{" + "matchers=" + Arrays.toString(matchers) + '}';
+        return StringKit.format("""
+                	SECOND      : {}
+                	MINUTE      : {}
+                	HOUR        : {}
+                	DAY_OF_MONTH: {}
+                	MONTH       : {}
+                	DAY_OF_WEEK : {}
+                	YEAR        : {}
+                """, (Object[]) this.matchers);
     }
 
 }

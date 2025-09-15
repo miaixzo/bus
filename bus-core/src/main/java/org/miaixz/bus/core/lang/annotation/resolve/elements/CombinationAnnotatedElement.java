@@ -29,20 +29,19 @@ package org.miaixz.bus.core.lang.annotation.resolve.elements;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.lang.annotation.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.map.TableMap;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.SetKit;
 
 /**
- * 组合注解 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
+ * 组合注解元素, 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,11 +51,6 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
     @Serial
     private static final long serialVersionUID = 2852250737317L;
 
-    /**
-     * 元注解
-     */
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = SetKit.of(Target.class, Retention.class,
-            Inherited.class, Documented.class, SuppressWarnings.class, Override.class, Deprecated.class);
     /**
      * 过滤器
      */
@@ -159,7 +153,7 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
         // 直接注解
         for (final Annotation annotation : annotations) {
             annotationType = annotation.annotationType();
-            if (!META_ANNOTATIONS.contains(annotationType)
+            if (!Normal.META_ANNOTATIONS.contains(annotationType)
                     // 跳过元注解和已经处理过的注解，防止递归调用
                     && !declaredAnnotationMap.containsKey(annotationType)) {
                 if (test(annotation)) {
@@ -180,7 +174,7 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
         Class<? extends Annotation> annotationType;
         for (final Annotation annotation : annotations) {
             annotationType = annotation.annotationType();
-            if (!META_ANNOTATIONS.contains(annotationType)
+            if (!Normal.META_ANNOTATIONS.contains(annotationType)
                     // 跳过元注解和已经处理过的注解，防止递归调用
                     && !annotationMap.containsKey(annotationType)) {
                 if (test(annotation)) {

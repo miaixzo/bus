@@ -36,6 +36,7 @@ import javax.sql.DataSource;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
@@ -72,6 +73,9 @@ import jakarta.annotation.Resource;
 @Import(AspectjJdbcProxy.class)
 public class JdbcConfiguration {
 
+    @Resource
+    JdbcProperties properties;
+
     private static final ConfigurationPropertyNameAliases aliases;
 
     static {
@@ -79,10 +83,6 @@ public class JdbcConfiguration {
         aliases.addAliases("url", "jdbc-url");
         aliases.addAliases("username", "user");
     }
-
-    private final Map<Object, Object> sourceMap = new HashMap<>();
-    @Resource
-    JdbcProperties properties;
 
     /**
      * 初始化数据源/多数据源
@@ -94,9 +94,10 @@ public class JdbcConfiguration {
     public DynamicDataSource dataSource() {
         Map defaultConfig = beanToMap(this.properties);
         DataSource defaultDatasource = bind(defaultConfig);
-        sourceMap.put("dataSource", defaultDatasource);
+        Map<Object, Object> sourceMap = MapKit.of(this.properties.getName(), defaultDatasource);
+        DataSourceHolder.setKey(this.properties.getName());
         if (ObjectKit.isNotEmpty(this.properties.getMulti())) {
-            Logger.info("Enabled Multiple DataSource");
+            Logger.info("Enable support for multiple data sources");
             List<JdbcProperties> list = this.properties.getMulti();
             for (int i = 0; i < list.size(); i++) {
                 Map config = beanToMap(list.get(i));
@@ -104,12 +105,16 @@ public class JdbcConfiguration {
                     Map properties = new HashMap(defaultConfig);
                     properties.putAll(config);
                 }
-                sourceMap.put(config.get("key").toString(), bind(config));
+                sourceMap.put(config.get("name").toString(), bind(config));
             }
         }
         DynamicDataSource dataSource = new DynamicDataSource();
         dataSource.setDefaultTargetDataSource(defaultDatasource);
         dataSource.setTargetDataSources(sourceMap);
+        dataSource.afterPropertiesSet();
+        // 在上下文中设置默认数据源名称
+        DataSourceHolder.setDefault(this.properties.getName());
+
         return dataSource;
     }
 

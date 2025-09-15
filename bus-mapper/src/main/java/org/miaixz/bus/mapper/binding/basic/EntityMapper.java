@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -30,7 +30,6 @@ package org.miaixz.bus.mapper.binding.basic;
 import java.util.List;
 
 import org.apache.ibatis.annotations.*;
-import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.provider.EntityProvider;
 
@@ -112,7 +111,7 @@ public interface EntityMapper<T, I> extends ClassMapper<T> {
      */
     @Lang(Caching.class)
     @SelectProvider(type = EntityProvider.class, method = "selectByPrimaryKey")
-    Optional<T> selectByPrimaryKey(I id);
+    T selectByPrimaryKey(I id);
 
     /**
      * 根据实体条件查询唯一实体
@@ -122,7 +121,7 @@ public interface EntityMapper<T, I> extends ClassMapper<T> {
      */
     @Lang(Caching.class)
     @SelectProvider(type = EntityProvider.class, method = "select")
-    Optional<T> selectOne(T entity);
+    T selectOne(T entity);
 
     /**
      * 根据实体条件批量查询

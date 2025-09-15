@@ -39,7 +39,6 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 
 import jakarta.mail.Authenticator;
-import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 
 /**
@@ -383,12 +382,7 @@ public class MailKit {
     public static Session getSession(final MailAccount mailAccount, final boolean isSingleton) {
         Authenticator authenticator = null;
         if (mailAccount.isAuth()) {
-            authenticator = new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(mailAccount.getUser(), String.valueOf(mailAccount.getPass()));
-                }
-            };
+            authenticator = new MailAuthenticator(mailAccount);
         }
 
         return isSingleton ? Session.getDefaultInstance(mailAccount.getSmtpProps(), authenticator) //
@@ -429,7 +423,7 @@ public class MailKit {
         mail.setTitle(subject);
         mail.setContent(content);
         mail.setHtml(isHtml);
-        mail.setFiles(files);
+        mail.addFiles(files);
 
         // 图片
         if (MapKit.isNotEmpty(imageMap)) {

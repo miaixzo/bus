@@ -38,7 +38,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.2.9</version>
+    <version>8.3.0</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -91,7 +91,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.2.9</bus.version>
+        <bus.version>8.3.0</bus.version>
         <lombok.version>1.18.38</lombok.version>
         <spring.boot.version>3.5.5</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
@@ -109,6 +109,7 @@
         <yaml.version>2.4</yaml.version>
         <aspectj.version>1.9.24</aspectj.version>
         <bcpkix.version>1.81</bcpkix.version>
+        <temporal.version>1.31.0</temporal.version>
         <fastjson.version>2.0.58</fastjson.version>
         <gson.version>2.13.1</gson.version>
         <jackson.version>2.19.2</jackson.version>
@@ -119,6 +120,7 @@
         <houbb.version>0.4.0</houbb.version>
         <jsch.version>2.27.2</jsch.version>
         <sshj.version>0.40.0</sshj.version>
+        <smbj.version>0.14.0</smbj.version>
         <zxing.version>3.5.3</zxing.version>
         <net.version>3.11.1</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
@@ -134,7 +136,7 @@
         <hessian.version>4.0.66</hessian.version>
         <postgresql.version>42.7.7</postgresql.version>
         <mysql.version>9.4.0</mysql.version>
-        <h2.version>2.2.232</h2.version>
+        <h2.version>2.3.232</h2.version>
         <jersey.version>3.1.10</jersey.version>
         <jna.version>5.17.0</jna.version>
         <sentinel.version>1.8.8</sentinel.version>
@@ -384,6 +386,12 @@
                 <version>${bcpkix.version}</version>
             </dependency>
             <dependency>
+                <groupId>io.temporal</groupId>
+                <artifactId>temporal-sdk</artifactId>
+                <version>${temporal.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>
                 <version>${fastjson.version}</version>
@@ -427,6 +435,21 @@
                 <groupId>com.github.mwiede</groupId>
                 <artifactId>jsch</artifactId>
                 <version>${jsch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hierynomus</groupId>
+                <artifactId>smbj</artifactId>
+                <version>${smbj.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk18on</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.hierynomus</groupId>
