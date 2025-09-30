@@ -68,6 +68,7 @@ public interface CoreGraphics extends Library {
      */
     @FieldOrder({ "x", "y" })
     class CGPoint extends Structure {
+
         public double x;
         public double y;
 
@@ -78,6 +79,7 @@ public interface CoreGraphics extends Library {
      */
     @FieldOrder({ "width", "height" })
     class CGSize extends Structure {
+
         public double width;
         public double height;
     }
@@ -87,6 +89,7 @@ public interface CoreGraphics extends Library {
      */
     @FieldOrder({ "origin", "size" })
     class CGRect extends Structure implements AutoCloseable {
+
         public CGPoint origin;
         public CGSize size;
 

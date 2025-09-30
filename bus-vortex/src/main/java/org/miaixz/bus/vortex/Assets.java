@@ -27,13 +27,11 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.util.List;
 import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.http.HttpMethod;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -67,35 +65,41 @@ public class Assets {
     /**
      * 端口
      */
-    private int port;
+    private Integer port;
     /**
      * 方法URL
      */
     private String url;
     /**
-     * 完整地址
-     */
-    private String uri;
-    /**
      * 方法
      */
     private String method;
     /**
-     * 授权
+     * 路由模式 1.HTTP 2.MQ 3.MCP
      */
-    private boolean token;
+    private Integer mode;
+    /**
+     * 请求类型 1.GET 2.POST 3.HEAD 4.PUT 5.PATCH 6.DELETE 7.OPTIONS 8.TRACE
+     */
+    private Integer type;
+    /**
+     * 授权 0.不做校验 1.校验
+     */
+    private Integer token;
     /**
      * 签名
+     *
      */
-    private boolean sign;
+    private Integer sign;
     /**
-     * 策略
+     * 适用范围
+     *
      */
-    private boolean firewall;
+    private Integer scope;
     /**
-     * 规则
+     * 例外规则
      */
-    private String strategy;
+    private Integer firewall;
     /**
      * 版本
      */
@@ -104,14 +108,7 @@ public class Assets {
      * 描述
      */
     private String description;
-    /**
-     * 角色
-     */
-    private List<String> roleIds;
-    /**
-     * 请求方式
-     */
-    private HttpMethod httpMethod;
+
     /**
      * 超时时间
      */

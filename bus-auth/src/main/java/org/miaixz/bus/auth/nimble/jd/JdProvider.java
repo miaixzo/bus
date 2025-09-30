@@ -171,9 +171,10 @@ public class JdProvider extends AbstractProvider {
             String scope = (String) object.get("scope");
             String openId = (String) object.get("open_id");
 
-            return Message
-                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AuthToken.builder().accessToken(accessToken)
-                            .expireIn(expiresIn).refreshToken(refreshToken).scope(scope).openId(openId).build())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
+                                    .scope(scope).openId(openId).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());

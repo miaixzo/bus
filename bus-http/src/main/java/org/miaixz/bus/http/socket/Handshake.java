@@ -138,7 +138,10 @@ public class Handshake {
      * @return Handshake 实例
      * @throws NullPointerException 如果 tlsVersion 或 cipherSuite 为 null
      */
-    public static Handshake get(TlsVersion tlsVersion, CipherSuite cipherSuite, List<Certificate> peerCertificates,
+    public static Handshake get(
+            TlsVersion tlsVersion,
+            CipherSuite cipherSuite,
+            List<Certificate> peerCertificates,
             List<Certificate> localCertificates) {
         if (tlsVersion == null)
             throw new NullPointerException("tlsVersion == null");

@@ -208,15 +208,16 @@ public class ImageProcessor {
         while (!iterator.isDone()) {
             int segType = iterator.currentSegment(pts);
             switch (segType) {
-            case PathIterator.SEG_MOVETO -> {
-                addSegment(p, cvPts, points);
-                p = new MatOfPoint();
-                cvPts.add(new Point(pts[0] - b.x, pts[1] - b.y));
-            }
-            case PathIterator.SEG_LINETO, PathIterator.SEG_CLOSE -> cvPts.add(new Point(pts[0] - b.x, pts[1] - b.y));
-            default -> {
-                // should never append with FlatteningPathIterator
-            }
+                case PathIterator.SEG_MOVETO -> {
+                    addSegment(p, cvPts, points);
+                    p = new MatOfPoint();
+                    cvPts.add(new Point(pts[0] - b.x, pts[1] - b.y));
+                }
+                case PathIterator.SEG_LINETO, PathIterator.SEG_CLOSE -> cvPts
+                        .add(new Point(pts[0] - b.x, pts[1] - b.y));
+                default -> {
+                    // should never append with FlatteningPathIterator
+                }
             }
             iterator.next();
         }
@@ -449,7 +450,12 @@ public class ImageProcessor {
             throw new IllegalArgumentException(UNSUPPORTED_SIZE + dim);
         }
         ImageCV dstImg = new ImageCV();
-        Imgproc.resize(Objects.requireNonNull(source), dstImg, new Size(dim.getWidth(), dim.getHeight()), 0, 0,
+        Imgproc.resize(
+                Objects.requireNonNull(source),
+                dstImg,
+                new Size(dim.getWidth(), dim.getHeight()),
+                0,
+                0,
                 interpolation);
         return dstImg;
     }
@@ -563,16 +569,28 @@ public class ImageProcessor {
             Imgproc.rectangle(dstImg, new Point(0.0, 0.0), new Point(dstImg.width(), b.getMinY()), new Scalar(0), -1);
         }
         if (b.getX() > 0) {
-            Imgproc.rectangle(dstImg, new Point(0.0, b.getMinY()), new Point(b.getMinX(), b.getMaxY()), new Scalar(0),
+            Imgproc.rectangle(
+                    dstImg,
+                    new Point(0.0, b.getMinY()),
+                    new Point(b.getMinX(), b.getMaxY()),
+                    new Scalar(0),
                     -1);
         }
         if (b.getX() < dstImg.width()) {
-            Imgproc.rectangle(dstImg, new Point(b.getMaxX(), b.getMinY()), new Point(dstImg.width(), b.getMaxY()),
-                    new Scalar(0), -1);
+            Imgproc.rectangle(
+                    dstImg,
+                    new Point(b.getMaxX(), b.getMinY()),
+                    new Point(dstImg.width(), b.getMaxY()),
+                    new Scalar(0),
+                    -1);
         }
         if (b.getY() < dstImg.height()) {
-            Imgproc.rectangle(dstImg, new Point(0.0, b.getMaxY()), new Point(dstImg.width(), dstImg.height()),
-                    new Scalar(0), -1);
+            Imgproc.rectangle(
+                    dstImg,
+                    new Point(0.0, b.getMaxY()),
+                    new Point(dstImg.width(), dstImg.height()),
+                    new Scalar(0),
+                    -1);
         }
         Core.addWeighted(dstImg, alpha, srcImg, 1 - alpha, 0.0, dstImg);
         return dstImg;
@@ -677,7 +695,11 @@ public class ImageProcessor {
         if (interpolation == null) {
             interpolation = Imgproc.INTER_LINEAR;
         }
-        Imgproc.warpAffine(srcImg, dstImg, Objects.requireNonNull(matrix), Objects.requireNonNull(boxSize),
+        Imgproc.warpAffine(
+                srcImg,
+                dstImg,
+                Objects.requireNonNull(matrix),
+                Objects.requireNonNull(boxSize),
                 interpolation);
 
         return dstImg;

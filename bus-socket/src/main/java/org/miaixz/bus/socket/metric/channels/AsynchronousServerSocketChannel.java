@@ -127,15 +127,15 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
             else if (selectionKey == null) {
                 asynchronousChannelGroup.commonWorker.addRegister(selector -> {
                     try {
-                        selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT,
-                                AsynchronousServerSocketChannel.this);
+                        selectionKey = serverSocketChannel
+                                .register(selector, SelectionKey.OP_ACCEPT, AsynchronousServerSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         acceptCompletionHandler.failed(e, attachment);
                     }
                 });
             } else {
-                AsynchronousChannelGroup.interestOps(asynchronousChannelGroup.commonWorker, selectionKey,
-                        SelectionKey.OP_ACCEPT);
+                AsynchronousChannelGroup
+                        .interestOps(asynchronousChannelGroup.commonWorker, selectionKey, SelectionKey.OP_ACCEPT);
             }
         } catch (IOException e) {
             this.acceptCompletionHandler.failed(e, attachment);

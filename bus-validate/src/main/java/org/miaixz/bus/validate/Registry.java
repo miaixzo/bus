@@ -69,7 +69,7 @@ public class Registry {
         register(Builder._IP_ADDRESS, new IPAddressMatcher());
         register(Builder._LENGTH, new LengthMatcher());
         register(Builder._MOBILE, new MobileMatcher());
-        register(Builder._MULTI, new MultiMatcher());
+        register(Builder._MULTI, new MultipleMatcher());
         register(Builder._NOT_BLANK, new NotBlankMatcher());
         register(Builder._NOT_EMPTY, new NotEmptyMatcher());
         register(Builder._NOT_IN, new NotInMatcher());

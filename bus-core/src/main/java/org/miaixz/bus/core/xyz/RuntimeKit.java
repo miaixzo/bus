@@ -347,33 +347,35 @@ public class RuntimeKit {
         for (int i = 0; i < length; i++) {
             c = cmd.charAt(i);
             switch (c) {
-            case Symbol.C_SINGLE_QUOTE:
-            case Symbol.C_DOUBLE_QUOTES:
-                if (inWrap) {
-                    if (c == stack.peek()) {
-                        // 结束包装
-                        stack.pop();
-                        inWrap = false;
+                case Symbol.C_SINGLE_QUOTE:
+                case Symbol.C_DOUBLE_QUOTES:
+                    if (inWrap) {
+                        if (c == stack.peek()) {
+                            // 结束包装
+                            stack.pop();
+                            inWrap = false;
+                        }
+                        cache.append(c);
+                    } else {
+                        stack.push(c);
+                        cache.append(c);
+                        inWrap = true;
                     }
+                    break;
+
+                case Symbol.C_SPACE:
+                    if (inWrap) {
+                        // 处于包装内
+                        cache.append(c);
+                    } else {
+                        cmds.add(cache.toString());
+                        cache.setLength(0);
+                    }
+                    break;
+
+                default:
                     cache.append(c);
-                } else {
-                    stack.push(c);
-                    cache.append(c);
-                    inWrap = true;
-                }
-                break;
-            case Symbol.C_SPACE:
-                if (inWrap) {
-                    // 处于包装内
-                    cache.append(c);
-                } else {
-                    cmds.add(cache.toString());
-                    cache.setLength(0);
-                }
-                break;
-            default:
-                cache.append(c);
-                break;
+                    break;
             }
         }
 

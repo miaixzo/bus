@@ -38,7 +38,6 @@ import org.miaixz.bus.validate.magic.Checker;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.validate.magic.ErrorCode;
 
 /**
  * 当前校验的上下文信息
@@ -53,7 +52,7 @@ public class Context {
     /**
      * 全局定义的错误码, 如果校验注解使用了-1 作为错误码,默认替换为该全局错误码
      */
-    private String errcode = ErrorCode._116000;
+    private String errcode = Builder.DEFAULT_ERRCODE;
 
     /**
      * 当前被激活的校验组

@@ -95,12 +95,13 @@ public class FPE implements Serializable {
 
         if (null == tweak) {
             switch (mode) {
-            case FF1:
-                tweak = new byte[0];
-                break;
-            case FF3_1:
-                // FF3-1要求必须为56 bits
-                tweak = new byte[7];
+                case FF1:
+                    tweak = new byte[0];
+                    break;
+
+                case FF3_1:
+                    // FF3-1要求必须为56 bits
+                    tweak = new byte[7];
             }
         }
         this.aes = new AES(mode.value, Padding.NoPadding.name(), Keeper.generateKey(mode.value, key),
@@ -166,6 +167,7 @@ public class FPE implements Serializable {
      * FPE模式 FPE包括两种模式：FF1和FF3（FF2弃用），核心均为Feistel网络结构。
      */
     public enum FPEMode {
+
         /**
          * FF1模式
          */

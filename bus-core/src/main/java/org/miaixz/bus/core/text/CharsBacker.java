@@ -178,7 +178,8 @@ public class CharsBacker extends CharsValidator {
      * @return 被检查字符串不为 {@code null} 返回原值，否则返回 {@link Supplier#get()} 提供的默认值
      * @see ObjectKit#defaultIfNull(Object, Supplier)
      */
-    public static <T extends CharSequence> T defaultIfNull(final T source,
+    public static <T extends CharSequence> T defaultIfNull(
+            final T source,
             final Supplier<? extends T> defaultSupplier) {
         return ObjectKit.defaultIfNull(source, defaultSupplier);
     }
@@ -194,8 +195,10 @@ public class CharsBacker extends CharsValidator {
      * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
      * @see ObjectKit#defaultIfNull(Object, Function, Supplier)
      */
-    public static <T extends CharSequence, R> R defaultIfNull(final T source,
-            final Function<? super T, ? extends R> handler, final Supplier<? extends R> defaultSupplier) {
+    public static <T extends CharSequence, R> R defaultIfNull(
+            final T source,
+            final Function<? super T, ? extends R> handler,
+            final Supplier<? extends R> defaultSupplier) {
         return ObjectKit.defaultIfNull(source, handler, defaultSupplier);
     }
 
@@ -241,7 +244,9 @@ public class CharsBacker extends CharsValidator {
      * @param defaultSupplier empty时的处理方法
      * @return 处理后的返回值
      */
-    public static <T extends CharSequence, V> V defaultIfEmpty(final T text, final Function<T, V> handler,
+    public static <T extends CharSequence, V> V defaultIfEmpty(
+            final T text,
+            final Function<T, V> handler,
             final Supplier<? extends V> defaultSupplier) {
         return isEmpty(text) ? defaultSupplier.get() : handler.apply(text);
     }
@@ -277,7 +282,9 @@ public class CharsBacker extends CharsValidator {
      * @return 被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
      * @throws NullPointerException {@code defaultValueSupplier == null} 时，抛出
      */
-    public static <T extends CharSequence, V> V defaultIfBlank(final T text, final Function<T, V> handler,
+    public static <T extends CharSequence, V> V defaultIfBlank(
+            final T text,
+            final Function<T, V> handler,
             final Supplier<? extends V> defaultSupplier) {
         if (isBlank(text)) {
             return defaultSupplier.get();
@@ -412,7 +419,9 @@ public class CharsBacker extends CharsValidator {
      * @param predicate 断言是否过掉字符，返回{@code true}表述过滤掉，{@code false}表示不过滤
      * @return 除去指定字符后的的字符串，如果原字串为{@code null}，则返回{@code null}
      */
-    public static String trim(final CharSequence text, final StringTrimer.TrimMode mode,
+    public static String trim(
+            final CharSequence text,
+            final StringTrimer.TrimMode mode,
             final Predicate<Character> predicate) {
         return new StringTrimer(mode, predicate).apply(text);
     }
@@ -531,7 +540,10 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreEquals 是否忽略字符串相等的情况
      * @return 是否以指定字符串开头
      */
-    public static boolean startWith(final CharSequence text, final CharSequence prefix, final boolean ignoreCase,
+    public static boolean startWith(
+            final CharSequence text,
+            final CharSequence prefix,
+            final boolean ignoreCase,
             final boolean ignoreEquals) {
         return new OffsetMatcher(ignoreCase, ignoreEquals, true).test(text, prefix);
     }
@@ -633,7 +645,10 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreEquals 是否忽略字符串相等的情况
      * @return 是否以指定字符串结尾
      */
-    public static boolean endWith(final CharSequence text, final CharSequence suffix, final boolean ignoreCase,
+    public static boolean endWith(
+            final CharSequence text,
+            final CharSequence suffix,
+            final boolean ignoreCase,
             final boolean ignoreEquals) {
         return new OffsetMatcher(ignoreCase, ignoreEquals, false).test(text, suffix);
     }
@@ -875,7 +890,10 @@ public class CharsBacker extends CharsValidator {
      * @param end     终止位置，如果超过str.length()则默认查找到字符串末尾
      * @return 位置
      */
-    public static int indexOf(final CharSequence text, final Predicate<Character> matcher, final int start,
+    public static int indexOf(
+            final CharSequence text,
+            final Predicate<Character> matcher,
+            final int start,
             final int end) {
         if (isEmpty(text)) {
             return Normal.__1;
@@ -943,7 +961,10 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase 是否忽略大小写
      * @return 位置
      */
-    public static int indexOf(final CharSequence text, final CharSequence args, final int from,
+    public static int indexOf(
+            final CharSequence text,
+            final CharSequence args,
+            final int from,
             final boolean ignoreCase) {
         if (isEmpty(text) || isEmpty(args)) {
             if (equals(text, args)) {
@@ -987,7 +1008,10 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase 是否忽略大小写
      * @return 位置
      */
-    public static int lastIndexOf(final CharSequence text, final CharSequence args, final int from,
+    public static int lastIndexOf(
+            final CharSequence text,
+            final CharSequence args,
+            final int from,
             final boolean ignoreCase) {
         if (isEmpty(text) || isEmpty(args)) {
             if (equals(text, args)) {
@@ -1320,7 +1344,10 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase 是否忽略大小写
      * @return 处理后的字符串
      */
-    public static String strip(final CharSequence text, final CharSequence prefix, final CharSequence suffix,
+    public static String strip(
+            final CharSequence text,
+            final CharSequence prefix,
+            final CharSequence suffix,
             final boolean ignoreCase) {
         if (isEmpty(text)) {
             return toStringOrNull(text);
@@ -1359,7 +1386,9 @@ public class CharsBacker extends CharsValidator {
      * @param suffix 后缀
      * @return 处理后的字符串
      */
-    public static String stripIgnoreCase(final CharSequence text, final CharSequence prefix,
+    public static String stripIgnoreCase(
+            final CharSequence text,
+            final CharSequence prefix,
             final CharSequence suffix) {
         return strip(text, prefix, suffix, true);
     }
@@ -1648,7 +1677,9 @@ public class CharsBacker extends CharsValidator {
      * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
      * @return 切割后的字符串
      */
-    public static String subBefore(final CharSequence text, final CharSequence separator,
+    public static String subBefore(
+            final CharSequence text,
+            final CharSequence separator,
             final boolean isLastSeparator) {
         if (isEmpty(text) || separator == null) {
             return null == text ? null : text.toString();
@@ -1721,7 +1752,9 @@ public class CharsBacker extends CharsValidator {
      * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
      * @return 切割后的字符串
      */
-    public static String subAfter(final CharSequence text, final CharSequence separator,
+    public static String subAfter(
+            final CharSequence text,
+            final CharSequence separator,
             final boolean isLastSeparator) {
         if (isEmpty(text)) {
             return null == text ? null : Normal.EMPTY;
@@ -1849,7 +1882,9 @@ public class CharsBacker extends CharsValidator {
      * @param suffix 截取到的字符串标识
      * @return 截取后的字符串
      */
-    public static String[] subBetweenAll(final CharSequence text, final CharSequence prefix,
+    public static String[] subBetweenAll(
+            final CharSequence text,
+            final CharSequence prefix,
             final CharSequence suffix) {
         if (hasEmpty(text, prefix, suffix) ||
         // 不包含起始字符串，则肯定没有子串
@@ -2114,7 +2149,10 @@ public class CharsBacker extends CharsValidator {
      * @return 子串是否相同
      * @see String#regionMatches(boolean, int, String, int, int)
      */
-    public static boolean isSubEquals(final CharSequence text1, final int offset1, final CharSequence text2,
+    public static boolean isSubEquals(
+            final CharSequence text1,
+            final int offset1,
+            final CharSequence text2,
             final boolean ignoreCase) {
         return isSubEquals(text1, offset1, text2, 0, text2.length(), ignoreCase);
     }
@@ -2131,8 +2169,13 @@ public class CharsBacker extends CharsValidator {
      * @return 子串是否相同
      * @see String#regionMatches(boolean, int, String, int, int)
      */
-    public static boolean isSubEquals(final CharSequence text1, final int offset1, final CharSequence text2,
-            final int offset2, final int length, final boolean ignoreCase) {
+    public static boolean isSubEquals(
+            final CharSequence text1,
+            final int offset1,
+            final CharSequence text2,
+            final int offset2,
+            final int length,
+            final boolean ignoreCase) {
         if (null == text1 || null == text2) {
             return false;
         }
@@ -2283,7 +2326,9 @@ public class CharsBacker extends CharsValidator {
      * @param strs   多个字符串
      * @return 包装的字符串数组
      */
-    public static String[] wrapAllIfMissing(final CharSequence prefix, final CharSequence suffix,
+    public static String[] wrapAllIfMissing(
+            final CharSequence prefix,
+            final CharSequence suffix,
             final CharSequence... strs) {
         final String[] results = new String[strs.length];
         for (int i = 0; i < strs.length; i++) {
@@ -2849,7 +2894,9 @@ public class CharsBacker extends CharsValidator {
      * @param suffixes 需要额外检查的结尾字符串，如果以这些中的一个为结尾，则不再添加
      * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
      */
-    public static String appendIfMissing(final CharSequence text, final CharSequence suffix,
+    public static String appendIfMissing(
+            final CharSequence text,
+            final CharSequence suffix,
             final CharSequence... suffixes) {
         return appendIfMissing(text, suffix, false, suffixes);
     }
@@ -2862,7 +2909,9 @@ public class CharsBacker extends CharsValidator {
      * @param suffixes 需要额外检查的结尾字符串，如果以这些中的一个为结尾，则不再添加
      * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
      */
-    public static String appendIfMissingIgnoreCase(final CharSequence text, final CharSequence suffix,
+    public static String appendIfMissingIgnoreCase(
+            final CharSequence text,
+            final CharSequence suffix,
             final CharSequence... suffixes) {
         return appendIfMissing(text, suffix, true, suffixes);
     }
@@ -2876,7 +2925,10 @@ public class CharsBacker extends CharsValidator {
      * @param testSuffixes 需要额外检查的结尾字符串，如果以这些中的一个为结尾，则不再添加
      * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
      */
-    public static String appendIfMissing(final CharSequence text, final CharSequence suffix, final boolean ignoreCase,
+    public static String appendIfMissing(
+            final CharSequence text,
+            final CharSequence suffix,
+            final boolean ignoreCase,
             final CharSequence... testSuffixes) {
         if (text == null || isEmpty(suffix) || endWith(text, suffix, ignoreCase)) {
             return toStringOrNull(text);
@@ -2899,7 +2951,9 @@ public class CharsBacker extends CharsValidator {
      * @param prefixes 需要额外检查的首部字符串，如果以这些中的一个为起始，则不再添加
      * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
      */
-    public static String prependIfMissing(final CharSequence text, final CharSequence prefix,
+    public static String prependIfMissing(
+            final CharSequence text,
+            final CharSequence prefix,
             final CharSequence... prefixes) {
         return prependIfMissing(text, prefix, false, prefixes);
     }
@@ -2912,7 +2966,9 @@ public class CharsBacker extends CharsValidator {
      * @param prefixes 需要额外检查的首部字符串，如果以这些中的一个为起始，则不再添加
      * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
      */
-    public static String prependIfMissingIgnoreCase(final CharSequence text, final CharSequence prefix,
+    public static String prependIfMissingIgnoreCase(
+            final CharSequence text,
+            final CharSequence prefix,
             final CharSequence... prefixes) {
         return prependIfMissing(text, prefix, true, prefixes);
     }
@@ -2926,7 +2982,10 @@ public class CharsBacker extends CharsValidator {
      * @param prefixes   需要额外检查的首部字符串，如果以这些中的一个为起始，则不再添加
      * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
      */
-    public static String prependIfMissing(final CharSequence text, final CharSequence prefix, final boolean ignoreCase,
+    public static String prependIfMissing(
+            final CharSequence text,
+            final CharSequence prefix,
+            final boolean ignoreCase,
             final CharSequence... prefixes) {
         if (text == null || isEmpty(prefix) || startWith(text, prefix, ignoreCase)) {
             return toStringOrNull(text);
@@ -2950,8 +3009,11 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replaceFirst(final CharSequence text, final CharSequence searchStr,
-            final CharSequence replacedStr, final boolean ignoreCase) {
+    public static String replaceFirst(
+            final CharSequence text,
+            final CharSequence searchStr,
+            final CharSequence replacedStr,
+            final boolean ignoreCase) {
         if (isEmpty(text)) {
             return toStringOrNull(text);
         }
@@ -2971,8 +3033,11 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replaceLast(final CharSequence text, final CharSequence searchStr,
-            final CharSequence replacedStr, final boolean ignoreCase) {
+    public static String replaceLast(
+            final CharSequence text,
+            final CharSequence searchStr,
+            final CharSequence replacedStr,
+            final boolean ignoreCase) {
         if (isEmpty(text)) {
             return toStringOrNull(text);
         }
@@ -2991,7 +3056,9 @@ public class CharsBacker extends CharsValidator {
      * @param replacement 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replaceIgnoreCase(final CharSequence text, final CharSequence searchStr,
+    public static String replaceIgnoreCase(
+            final CharSequence text,
+            final CharSequence searchStr,
             final CharSequence replacement) {
         return replace(text, 0, searchStr, replacement, true);
     }
@@ -3004,7 +3071,9 @@ public class CharsBacker extends CharsValidator {
      * @param replacement 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replace(final CharSequence text, final CharSequence searchStr,
+    public static String replace(
+            final CharSequence text,
+            final CharSequence searchStr,
             final CharSequence replacement) {
         return replace(text, 0, searchStr, replacement, false);
     }
@@ -3018,7 +3087,10 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(final CharSequence text, final CharSequence searchStr, final CharSequence replacement,
+    public static String replace(
+            final CharSequence text,
+            final CharSequence searchStr,
+            final CharSequence replacement,
             final boolean ignoreCase) {
         return replace(text, 0, searchStr, replacement, ignoreCase);
     }
@@ -3033,8 +3105,12 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(final CharSequence text, final int fromIndex, final CharSequence searchStr,
-            final CharSequence replacement, final boolean ignoreCase) {
+    public static String replace(
+            final CharSequence text,
+            final int fromIndex,
+            final CharSequence searchStr,
+            final CharSequence replacement,
+            final boolean ignoreCase) {
         if (isEmpty(text) || isEmpty(searchStr)) {
             return toStringOrNull(text);
         }
@@ -3050,7 +3126,10 @@ public class CharsBacker extends CharsValidator {
      * @param replacedChar 被替换的字符
      * @return 替换后的字符串
      */
-    public static String replaceByCodePoint(final CharSequence text, final int beginInclude, final int endExclude,
+    public static String replaceByCodePoint(
+            final CharSequence text,
+            final int beginInclude,
+            final int endExclude,
             final char replacedChar) {
         return new CharRangeReplacer(beginInclude, endExclude, replacedChar, true).apply(text);
     }
@@ -3064,7 +3143,10 @@ public class CharsBacker extends CharsValidator {
      * @param replacedStr  被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replaceByCodePoint(final CharSequence text, final int beginInclude, final int endExclude,
+    public static String replaceByCodePoint(
+            final CharSequence text,
+            final int beginInclude,
+            final int endExclude,
             final CharSequence replacedStr) {
         return new StringRangeReplacer(beginInclude, endExclude, replacedStr, true).apply(text);
     }
@@ -3083,7 +3165,9 @@ public class CharsBacker extends CharsValidator {
      * @return 替换后的字符串
      * @see PatternKit#replaceAll(CharSequence, java.util.regex.Pattern, FunctionX)
      */
-    public static String replace(final CharSequence text, final java.util.regex.Pattern pattern,
+    public static String replace(
+            final CharSequence text,
+            final java.util.regex.Pattern pattern,
             final FunctionX<Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, pattern, replaceFun);
     }
@@ -3097,7 +3181,9 @@ public class CharsBacker extends CharsValidator {
      * @return 替换后的字符串
      * @see PatternKit#replaceAll(CharSequence, String, FunctionX)
      */
-    public static String replace(final CharSequence text, final String regex,
+    public static String replace(
+            final CharSequence text,
+            final String regex,
             final FunctionX<Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, regex, replaceFun);
     }
@@ -3275,7 +3361,9 @@ public class CharsBacker extends CharsValidator {
      * @param appendDots     截断后是否追加省略号(...)
      * @return 限制后的长度
      */
-    public static String limitByteLengthUtf8(final CharSequence text, final int maxBytesLength,
+    public static String limitByteLengthUtf8(
+            final CharSequence text,
+            final int maxBytesLength,
             final boolean appendDots) {
         return limitByteLength(text, Charset.UTF_8, maxBytesLength, 4, appendDots);
     }
@@ -3291,8 +3379,12 @@ public class CharsBacker extends CharsValidator {
      * @param appendDots     截断后是否追加省略号(...)
      * @return 限制后的长度
      */
-    public static String limitByteLength(final CharSequence text, final java.nio.charset.Charset charset,
-            final int maxBytesLength, final int factor, final boolean appendDots) {
+    public static String limitByteLength(
+            final CharSequence text,
+            final java.nio.charset.Charset charset,
+            final int maxBytesLength,
+            final int factor,
+            final boolean appendDots) {
         // 字符数*速算因子<=最大字节数
         if (text == null || text.length() * factor <= maxBytesLength) {
             return toStringOrNull(text);
@@ -3710,14 +3802,17 @@ public class CharsBacker extends CharsValidator {
 
         // 特殊长度
         switch (maxLength) {
-        case 1:
-            return String.valueOf(text.charAt(0));
-        case 2:
-            return text.charAt(0) + ".";
-        case 3:
-            return text.charAt(0) + "." + text.charAt(strLength - 1);
-        case 4:
-            return text.charAt(0) + ".." + text.charAt(strLength - 1);
+            case 1:
+                return String.valueOf(text.charAt(0));
+
+            case 2:
+                return text.charAt(0) + ".";
+
+            case 3:
+                return text.charAt(0) + "." + text.charAt(strLength - 1);
+
+            case 4:
+                return text.charAt(0) + ".." + text.charAt(strLength - 1);
         }
 
         final int suffixLength = (maxLength - 3) / 2;
@@ -4002,7 +4097,10 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(final CharSequence text, final CharSequence separator, final boolean isTrim,
+    public static List<String> split(
+            final CharSequence text,
+            final CharSequence separator,
+            final boolean isTrim,
             final boolean ignoreEmpty) {
         return split(text, separator, Normal.__1, isTrim, ignoreEmpty, false);
     }
@@ -4017,8 +4115,12 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(final CharSequence text, final CharSequence separator, final int limit,
-            final boolean isTrim, final boolean ignoreEmpty) {
+    public static List<String> split(
+            final CharSequence text,
+            final CharSequence separator,
+            final int limit,
+            final boolean isTrim,
+            final boolean ignoreEmpty) {
         return split(text, separator, limit, isTrim, ignoreEmpty, false);
     }
 
@@ -4034,8 +4136,13 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
      */
-    public static List<String> split(final CharSequence text, final CharSequence separator, final int limit,
-            final boolean isTrim, final boolean ignoreEmpty, final boolean ignoreCase) {
+    public static List<String> split(
+            final CharSequence text,
+            final CharSequence separator,
+            final int limit,
+            final boolean isTrim,
+            final boolean ignoreEmpty,
+            final boolean ignoreCase) {
         return split(text, separator, limit, ignoreEmpty, ignoreCase, trimFunc(isTrim));
     }
 
@@ -4052,8 +4159,13 @@ public class CharsBacker extends CharsValidator {
      * @param mapping     切分后字段映射函数
      * @return 切分后的集合
      */
-    public static <R> List<R> split(final CharSequence text, final CharSequence separator, final int limit,
-            final boolean ignoreEmpty, final boolean ignoreCase, final Function<String, R> mapping) {
+    public static <R> List<R> split(
+            final CharSequence text,
+            final CharSequence separator,
+            final int limit,
+            final boolean ignoreEmpty,
+            final boolean ignoreCase,
+            final Function<String, R> mapping) {
         if (null == text) {
             return ListKit.zero();
         } else if (0 == text.length() && ignoreEmpty) {
@@ -4150,11 +4262,18 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreEmpty    是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitByRegex(final CharSequence text, final String separatorRegex, final int limit,
-            final boolean isTrim, final boolean ignoreEmpty) {
-        return splitByRegex(text,
+    public static List<String> splitByRegex(
+            final CharSequence text,
+            final String separatorRegex,
+            final int limit,
+            final boolean isTrim,
+            final boolean ignoreEmpty) {
+        return splitByRegex(
+                text,
                 // 给定字符串或正则为empty，就不再需要解析pattern
-                (isEmpty(text) || isEmpty(separatorRegex)) ? null : Pattern.get(separatorRegex), limit, isTrim,
+                (isEmpty(text) || isEmpty(separatorRegex)) ? null : Pattern.get(separatorRegex),
+                limit,
+                isTrim,
                 ignoreEmpty);
     }
 
@@ -4173,8 +4292,12 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreEmpty      是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitByRegex(final CharSequence text, final java.util.regex.Pattern separatorPattern,
-            final int limit, final boolean isTrim, final boolean ignoreEmpty) {
+    public static List<String> splitByRegex(
+            final CharSequence text,
+            final java.util.regex.Pattern separatorPattern,
+            final int limit,
+            final boolean isTrim,
+            final boolean ignoreEmpty) {
         if (null == text) {
             return ListKit.zero();
         }
@@ -4203,8 +4326,12 @@ public class CharsBacker extends CharsValidator {
      * @param ignoreEmpty      是否忽略空串
      * @return 切分后的集合
      */
-    public static String[] splitByRegexToArray(final CharSequence text, final java.util.regex.Pattern separatorPattern,
-            final int limit, final boolean isTrim, final boolean ignoreEmpty) {
+    public static String[] splitByRegexToArray(
+            final CharSequence text,
+            final java.util.regex.Pattern separatorPattern,
+            final int limit,
+            final boolean isTrim,
+            final boolean ignoreEmpty) {
         return splitByRegex(text, separatorPattern, limit, isTrim, ignoreEmpty).toArray(new String[0]);
     }
 

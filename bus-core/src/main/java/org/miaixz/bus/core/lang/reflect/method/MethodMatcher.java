@@ -264,7 +264,8 @@ public class MethodMatcher {
      * @param parameterTypes 参数类型
      * @return 方法匹配器
      */
-    public static Predicate<Method> forNameAndParameterTypes(final String methodName,
+    public static Predicate<Method> forNameAndParameterTypes(
+            final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(parameterTypes);
@@ -278,7 +279,8 @@ public class MethodMatcher {
      * @param parameterTypes 参数类型
      * @return 方法匹配器
      */
-    public static Predicate<Method> forNameAndStrictParameterTypes(final String methodName,
+    public static Predicate<Method> forNameAndStrictParameterTypes(
+            final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(parameterTypes);
@@ -292,7 +294,8 @@ public class MethodMatcher {
      * @param parameterTypes 参数类型
      * @return 方法匹配器
      */
-    public static Predicate<Method> forNameIgnoreCaseAndParameterTypes(final String methodName,
+    public static Predicate<Method> forNameIgnoreCaseAndParameterTypes(
+            final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(parameterTypes);
@@ -306,7 +309,8 @@ public class MethodMatcher {
      * @param parameterTypes 参数类型
      * @return 方法匹配器
      */
-    public static Predicate<Method> forNameIgnoreCaseAndStrictParameterTypes(final String methodName,
+    public static Predicate<Method> forNameIgnoreCaseAndStrictParameterTypes(
+            final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(parameterTypes);
@@ -342,7 +346,9 @@ public class MethodMatcher {
      * @param parameterTypes 参数类型，若为{@code null}则表示匹配无参数的方法
      * @return 方法匹配器
      */
-    public static Predicate<Method> forMethodSignature(final String methodName, final Class<?> returnType,
+    public static Predicate<Method> forMethodSignature(
+            final String methodName,
+            final Class<?> returnType,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
         final Predicate<Method> resultMatcher = Objects.isNull(returnType) ? forNoneReturnType()
@@ -365,7 +371,9 @@ public class MethodMatcher {
      * @param parameterTypes 参数类型，若为{@code null}则表示匹配无参数的方法
      * @return 方法匹配器
      */
-    public static Predicate<Method> forStrictMethodSignature(final String methodName, final Class<?> returnType,
+    public static Predicate<Method> forStrictMethodSignature(
+            final String methodName,
+            final Class<?> returnType,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
         final Predicate<Method> resultMatcher = Objects.isNull(returnType) ? forNoneReturnType()
@@ -541,7 +549,8 @@ public class MethodMatcher {
         return method -> ArrayKit.equals(method.getParameterTypes(), parameterTypes);
     }
 
-    private static Predicate<Method> mostSpecificStrictParameterTypesMatcher(final Class<?>[] parameterTypes,
+    private static Predicate<Method> mostSpecificStrictParameterTypesMatcher(
+            final Class<?>[] parameterTypes,
             final BiPredicate<Class<?>, Class<?>> typeMatcher) {
         Objects.requireNonNull(parameterTypes);
         // 若参数为空，则表示匹配无参数方法

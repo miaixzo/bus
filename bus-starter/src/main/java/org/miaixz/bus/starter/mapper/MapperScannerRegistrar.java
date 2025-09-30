@@ -59,9 +59,13 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     private Environment environment;
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry,
+    public void registerBeanDefinitions(
+            AnnotationMetadata importingClassMetadata,
+            BeanDefinitionRegistry registry,
             BeanNameGenerator importBeanNameGenerator) {
-        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry,
+        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(
+                importingClassMetadata,
+                registry,
                 importBeanNameGenerator);
     }
 
@@ -114,8 +118,8 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         }
 
         if (CollKit.isEmpty(basePackage)) {
-            MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
-                    GeniusBuilder.MYBATIS);
+            MapperProperties properties = PlaceHolderBinder
+                    .bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
             if (properties != null && properties.getBasePackage() != null && properties.getBasePackage().length > 0) {
                 basePackage.addAll(Arrays.asList(properties.getBasePackage()));
             } else {

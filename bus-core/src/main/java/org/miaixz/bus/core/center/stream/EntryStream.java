@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.miaixz.bus.core.center.map.multi.RowKeyTable;
-import org.miaixz.bus.core.center.map.multi.Table;
+import org.miaixz.bus.core.center.map.multiple.RowKeyTable;
+import org.miaixz.bus.core.center.map.multiple.Table;
 import org.miaixz.bus.core.center.set.ConcurrentHashSet;
 import org.miaixz.bus.core.xyz.CollectorKit;
 import org.miaixz.bus.core.xyz.IteratorKit;
@@ -135,8 +135,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <V>         值类型
      * @return {@code EntryStream}实例
      */
-    public static <T, K, V> EntryStream<K, V> of(final Iterable<T> source,
-            final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends V> valueMapper) {
+    public static <T, K, V> EntryStream<K, V> of(
+            final Iterable<T> source,
+            final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends V> valueMapper) {
         Objects.requireNonNull(keyMapper);
         Objects.requireNonNull(valueMapper);
         if (ObjectKit.isNull(source)) {
@@ -459,6 +461,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
      * 
      * <pre>{@code
+     * 
      * FastStream<Long> ids = FastStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
@@ -559,13 +562,17 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @return 集合
      * @see Collectors#groupingBy(Function, Supplier, Collector)
      */
-    public <N> Table<N, K, V> toTable(final BiFunction<? super K, ? super V, ? extends N> rowKeyMapper,
-            final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
+    public <N> Table<N, K, V> toTable(
+            final BiFunction<? super K, ? super V, ? extends N> rowKeyMapper,
+            final Supplier<Map<K, V>> colMapFactory,
+            final BinaryOperator<V> operator) {
         Objects.requireNonNull(rowKeyMapper);
         Objects.requireNonNull(colMapFactory);
         Objects.requireNonNull(operator);
         final Map<N, Map<K, V>> rawMap = collect(
-                Collectors.groupingBy(e -> rowKeyMapper.apply(e.getKey(), e.getValue()), HashMap::new,
+                Collectors.groupingBy(
+                        e -> rowKeyMapper.apply(e.getKey(), e.getValue()),
+                        HashMap::new,
                         Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, operator, colMapFactory)));
         return new RowKeyTable<>(rawMap, colMapFactory::get);
     }
@@ -591,8 +598,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <N>           父集合的键类型
      * @return 集合
      */
-    public <N> Table<N, K, V> toTableByKey(final Function<? super K, ? extends N> rowKeyMapper,
-            final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
+    public <N> Table<N, K, V> toTableByKey(
+            final Function<? super K, ? extends N> rowKeyMapper,
+            final Supplier<Map<K, V>> colMapFactory,
+            final BinaryOperator<V> operator) {
         return toTable((k, v) -> rowKeyMapper.apply(k), colMapFactory, operator);
     }
 
@@ -617,8 +626,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <N>           父集合的键类型
      * @return 集合
      */
-    public <N> Table<N, K, V> toTableByValue(final Function<? super V, ? extends N> rowKeyMapper,
-            final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
+    public <N> Table<N, K, V> toTableByValue(
+            final Function<? super V, ? extends N> rowKeyMapper,
+            final Supplier<Map<K, V>> colMapFactory,
+            final BinaryOperator<V> operator) {
         return toTable((k, v) -> rowKeyMapper.apply(v), colMapFactory, operator);
     }
 
@@ -663,10 +674,16 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <M>        返回的map集合类型
      * @return 集合
      */
-    public <C extends Collection<V>, M extends Map<K, C>> M groupByKey(final Supplier<M> mapFactory,
+    public <C extends Collection<V>, M extends Map<K, C>> M groupByKey(
+            final Supplier<M> mapFactory,
             final Collector<V, ?, C> collector) {
-        return super.collect(Collectors.groupingBy(Map.Entry::getKey, mapFactory,
-                CollectorKit.transform(ArrayList::new, s -> s.stream().map(Map.Entry::getValue).collect(collector))));
+        return super.collect(
+                Collectors.groupingBy(
+                        Map.Entry::getKey,
+                        mapFactory,
+                        CollectorKit.transform(
+                                ArrayList::new,
+                                s -> s.stream().map(Map.Entry::getValue).collect(collector))));
     }
 
     /**

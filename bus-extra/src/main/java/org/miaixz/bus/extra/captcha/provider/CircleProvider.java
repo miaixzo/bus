@@ -152,7 +152,10 @@ public class CircleProvider extends AbstractProvider {
 
         for (int i = 0; i < this.interfereCount; i++) {
             g.setColor(ColorKit.randomColor(random));
-            g.drawOval(random.nextInt(width), random.nextInt(height), random.nextInt(height >> 1),
+            g.drawOval(
+                    random.nextInt(width),
+                    random.nextInt(height),
+                    random.nextInt(height >> 1),
                     random.nextInt(height >> 1));
         }
     }

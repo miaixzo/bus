@@ -52,32 +52,38 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.AutoWindowExpansion:
-            return VR.DS;
-        case PrivateTag.TableObjectDistance:
-        case PrivateTag.TableDetectorDistance:
-            return VR.FD;
-        case PrivateTag._0019_xx00_:
-        case PrivateTag._0019_xx01_:
-        case PrivateTag.TotalDoseAreaProduct:
-        case PrivateTag._0019_xx04_:
-        case PrivateTag.SystemType:
-            return VR.LO;
-        case PrivateTag.AnatomicSortNumber:
-        case PrivateTag.AcquisitionSortNumber:
-            return VR.SH;
-        case PrivateTag.AutoWindowCenter:
-        case PrivateTag.AutoWindowWidth:
-            return VR.SL;
-        case PrivateTag.FilterID:
-        case PrivateTag.AutoWindowShift:
-            return VR.SS;
-        case PrivateTag._0019_xx03_:
-        case PrivateTag._0019_xx05_:
-        case PrivateTag.OrthoStepDistance:
-        case PrivateTag.AutoWindowFlag:
-        case PrivateTag.AnatomicCorrectView:
-            return VR.US;
+            case PrivateTag.AutoWindowExpansion:
+                return VR.DS;
+
+            case PrivateTag.TableObjectDistance:
+            case PrivateTag.TableDetectorDistance:
+                return VR.FD;
+
+            case PrivateTag._0019_xx00_:
+            case PrivateTag._0019_xx01_:
+            case PrivateTag.TotalDoseAreaProduct:
+            case PrivateTag._0019_xx04_:
+            case PrivateTag.SystemType:
+                return VR.LO;
+
+            case PrivateTag.AnatomicSortNumber:
+            case PrivateTag.AcquisitionSortNumber:
+                return VR.SH;
+
+            case PrivateTag.AutoWindowCenter:
+            case PrivateTag.AutoWindowWidth:
+                return VR.SL;
+
+            case PrivateTag.FilterID:
+            case PrivateTag.AutoWindowShift:
+                return VR.SS;
+
+            case PrivateTag._0019_xx03_:
+            case PrivateTag._0019_xx05_:
+            case PrivateTag.OrthoStepDistance:
+            case PrivateTag.AutoWindowFlag:
+            case PrivateTag.AnatomicCorrectView:
+                return VR.US;
         }
         return VR.UN;
     }

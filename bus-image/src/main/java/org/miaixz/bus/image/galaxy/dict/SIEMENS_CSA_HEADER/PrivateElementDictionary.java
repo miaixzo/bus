@@ -52,15 +52,17 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.CSAImageHeaderType:
-        case PrivateTag.CSASeriesHeaderType:
-            return VR.CS;
-        case PrivateTag.CSAImageHeaderVersion:
-        case PrivateTag.CSASeriesHeaderVersion:
-            return VR.LO;
-        case PrivateTag.CSAImageHeaderInfo:
-        case PrivateTag.CSASeriesHeaderInfo:
-            return VR.OB;
+            case PrivateTag.CSAImageHeaderType:
+            case PrivateTag.CSASeriesHeaderType:
+                return VR.CS;
+
+            case PrivateTag.CSAImageHeaderVersion:
+            case PrivateTag.CSASeriesHeaderVersion:
+                return VR.LO;
+
+            case PrivateTag.CSAImageHeaderInfo:
+            case PrivateTag.CSASeriesHeaderInfo:
+                return VR.OB;
         }
         return VR.UN;
     }

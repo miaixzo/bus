@@ -52,31 +52,33 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.HistogramVersion:
-        case PrivateTag.InjectionDecayCorrection:
-        case PrivateTag.RebinningVersion:
-        case PrivateTag.ReconstructionVersion:
-        case PrivateTag.Version:
-        case PrivateTag.XOffset:
-        case PrivateTag.YOffset:
-        case PrivateTag.Zoom:
-            return VR.DS;
-        case PrivateTag.BedMotion:
-        case PrivateTag.RebinningType:
-        case PrivateTag.Reconstruction:
-        case PrivateTag.SubjectOrientation:
-            return VR.IS;
-        case PrivateTag.Analgesia:
-        case PrivateTag.Anesthesia:
-        case PrivateTag.FoodAccess:
-        case PrivateTag.Isotope:
-        case PrivateTag.OtherDrugs:
-        case PrivateTag.InjectedCompound:
-        case PrivateTag.StudyModel:
-        case PrivateTag.SubjectGenus:
-        case PrivateTag.SubjectPhenotype:
-        case PrivateTag.WaterAccess:
-            return VR.LO;
+            case PrivateTag.HistogramVersion:
+            case PrivateTag.InjectionDecayCorrection:
+            case PrivateTag.RebinningVersion:
+            case PrivateTag.ReconstructionVersion:
+            case PrivateTag.Version:
+            case PrivateTag.XOffset:
+            case PrivateTag.YOffset:
+            case PrivateTag.Zoom:
+                return VR.DS;
+
+            case PrivateTag.BedMotion:
+            case PrivateTag.RebinningType:
+            case PrivateTag.Reconstruction:
+            case PrivateTag.SubjectOrientation:
+                return VR.IS;
+
+            case PrivateTag.Analgesia:
+            case PrivateTag.Anesthesia:
+            case PrivateTag.FoodAccess:
+            case PrivateTag.Isotope:
+            case PrivateTag.OtherDrugs:
+            case PrivateTag.InjectedCompound:
+            case PrivateTag.StudyModel:
+            case PrivateTag.SubjectGenus:
+            case PrivateTag.SubjectPhenotype:
+            case PrivateTag.WaterAccess:
+                return VR.LO;
         }
         return VR.UN;
     }

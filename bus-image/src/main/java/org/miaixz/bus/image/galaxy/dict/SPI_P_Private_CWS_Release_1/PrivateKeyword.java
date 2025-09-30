@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.WindowOfImagesID:
-            return "WindowOfImagesID";
-        case PrivateTag.WindowOfImagesType:
-            return "WindowOfImagesType";
-        case PrivateTag.WindowOfImagesScope:
-            return "WindowOfImagesScope";
+            case PrivateTag.WindowOfImagesID:
+                return "WindowOfImagesID";
+
+            case PrivateTag.WindowOfImagesType:
+                return "WindowOfImagesType";
+
+            case PrivateTag.WindowOfImagesScope:
+                return "WindowOfImagesScope";
         }
         return "";
     }

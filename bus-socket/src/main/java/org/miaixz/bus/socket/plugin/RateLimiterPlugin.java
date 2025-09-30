@@ -77,6 +77,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
      * 具备流控能力的通道
      */
     class RateLimiterChannel extends AsynchronousSocketChannelProxy {
+
         private final int readRateLimiter;
         private final int writeRateLimiter;
         /**
@@ -105,7 +106,11 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
         }
 
         @Override
-        public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+        public <A> void read(
+                ByteBuffer dst,
+                long timeout,
+                TimeUnit unit,
+                A attachment,
                 CompletionHandler<Integer, ? super A> handler) {
             if (dst.remaining() == 0 || readRateLimiter <= 0) {
                 super.read(dst, timeout, unit, attachment, handler);
@@ -121,8 +126,10 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             availReadSize = Math.min(readRateLimiter - readSize, dst.remaining());
             // 触发流控
             if (availReadSize <= 0) {
-                executorService.schedule(() -> RateLimiterChannel.this.read(dst, timeout, unit, attachment, handler),
-                        remainTime, TimeUnit.MILLISECONDS);
+                executorService.schedule(
+                        () -> RateLimiterChannel.this.read(dst, timeout, unit, attachment, handler),
+                        remainTime,
+                        TimeUnit.MILLISECONDS);
                 return;
             }
 
@@ -130,6 +137,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             // 限制limit,防止流控溢出
             dst.limit(dst.position() + availReadSize);
             super.read(dst, timeout, unit, attachment, new CompletionHandler<>() {
+
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {
@@ -154,7 +162,11 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
         }
 
         @Override
-        public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+        public <A> void write(
+                ByteBuffer src,
+                long timeout,
+                TimeUnit unit,
+                A attachment,
                 CompletionHandler<Integer, ? super A> handler) {
             if (src.remaining() == 0 || writeRateLimiter <= 0) {
                 super.write(src, timeout, unit, attachment, handler);
@@ -170,8 +182,10 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             availWriteSize = Math.min(writeRateLimiter - writeCount, src.remaining());
             // 触发流控
             if (availWriteSize <= 0) {
-                executorService.schedule(() -> RateLimiterChannel.this.write(src, timeout, unit, attachment, handler),
-                        remainTime, TimeUnit.MILLISECONDS);
+                executorService.schedule(
+                        () -> RateLimiterChannel.this.write(src, timeout, unit, attachment, handler),
+                        remainTime,
+                        TimeUnit.MILLISECONDS);
                 return;
             }
 
@@ -179,6 +193,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             // 限制limit,防止流控溢出
             src.limit(src.position() + availWriteSize);
             super.write(src, timeout, unit, attachment, new CompletionHandler<>() {
+
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {

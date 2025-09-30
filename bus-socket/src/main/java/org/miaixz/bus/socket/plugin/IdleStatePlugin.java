@@ -79,6 +79,7 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
     }
 
     class IdleMonitorChannel extends AsynchronousSocketChannelProxy {
+
         SocketTask task;
         long readTimestamp;
         long writeTimestamp;
@@ -97,7 +98,8 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
                         || (currentTime - writeTimestamp) > IdleStatePlugin.this.idleTimeout) {
                     try {
                         if (asynchronousSocketChannel.isOpen() && Logger.isDebugEnabled()) {
-                            Logger.debug("close session:{} by IdleStatePlugin",
+                            Logger.debug(
+                                    "close session:{} by IdleStatePlugin",
                                     asynchronousSocketChannel.getRemoteAddress());
                         }
                         close();
@@ -109,7 +111,11 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         }
 
         @Override
-        public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+        public <A> void read(
+                ByteBuffer dst,
+                long timeout,
+                TimeUnit unit,
+                A attachment,
                 CompletionHandler<Integer, ? super A> handler) {
             if (IdleStatePlugin.this.readMonitor) {
                 readTimestamp = System.currentTimeMillis();
@@ -118,7 +124,11 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         }
 
         @Override
-        public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+        public <A> void write(
+                ByteBuffer src,
+                long timeout,
+                TimeUnit unit,
+                A attachment,
                 CompletionHandler<Integer, ? super A> handler) {
             if (IdleStatePlugin.this.writeMonitor) {
                 writeTimestamp = System.currentTimeMillis();

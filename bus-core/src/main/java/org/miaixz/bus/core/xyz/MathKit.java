@@ -622,7 +622,10 @@ public class MathKit extends NumberValidator {
      * @param values       集合
      * @return 集合
      */
-    public static Collection<Integer> appendRange(final int startInclude, final int stopInclude, int step,
+    public static Collection<Integer> appendRange(
+            final int startInclude,
+            final int stopInclude,
+            int step,
             final Collection<Integer> values) {
         if (startInclude < stopInclude) {
             step = Math.abs(step);
@@ -1059,7 +1062,10 @@ public class MathKit extends NumberValidator {
      * @param n            指数，如果为负数，则返回1/a的-n次方
      * @return 幂的积
      */
-    public static BigDecimal pow(final BigDecimal number, final int n, final int scale,
+    public static BigDecimal pow(
+            final BigDecimal number,
+            final int n,
+            final int scale,
             final RoundingMode roundingMode) {
         if (n < 0) {
             // a的n次方，如果n为负数，则返回1/a的-n次方

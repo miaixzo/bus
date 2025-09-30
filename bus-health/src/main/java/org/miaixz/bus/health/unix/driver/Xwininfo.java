@@ -104,7 +104,8 @@ public final class Xwininfo {
                     if (!StringKit.isBlank(windowPath)) {
                         windowPathMap.put(id, windowPath);
                     }
-                    windowMap.put(id,
+                    windowMap.put(
+                            id,
                             new Rectangle(Parsing.parseIntOrDefault(m.group(6), 0),
                                     Parsing.parseIntOrDefault(m.group(7), 0), Parsing.parseIntOrDefault(m.group(4), 0),
                                     Parsing.parseIntOrDefault(m.group(5), 0)));
@@ -118,9 +119,10 @@ public final class Xwininfo {
             String id = e.getKey();
             long pid = queryPidFromId(id);
             boolean visible = zOrderMap.containsKey(id);
-            windowList.add(new OSDesktopWindow(Parsing.hexStringToLong(id, 0L),
-                    windowNameMap.getOrDefault(id, Normal.EMPTY), windowPathMap.getOrDefault(id, Normal.EMPTY),
-                    e.getValue(), pid, zOrderMap.getOrDefault(id, 0), visible));
+            windowList.add(
+                    new OSDesktopWindow(Parsing.hexStringToLong(id, 0L), windowNameMap.getOrDefault(id, Normal.EMPTY),
+                            windowPathMap.getOrDefault(id, Normal.EMPTY), e.getValue(), pid,
+                            zOrderMap.getOrDefault(id, 0), visible));
         }
         return windowList;
     }

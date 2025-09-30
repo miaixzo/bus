@@ -29,7 +29,8 @@ package org.miaixz.bus.starter.vortex;
 
 import java.util.List;
 
-import org.miaixz.bus.vortex.Config;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.vortex.Filter;
 import org.miaixz.bus.vortex.Handler;
 import org.miaixz.bus.vortex.Vortex;
@@ -38,6 +39,7 @@ import org.miaixz.bus.vortex.handler.AccessHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
+import org.miaixz.bus.vortex.provider.LicenseProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -81,6 +83,16 @@ public class VortexConfiguration {
     List<Handler> handlers;
 
     /**
+     * 配置格式化过滤器
+     *
+     * @return WebFilter 格式化过滤器实例
+     */
+    @Bean
+    public Filter licenseFilter(LicenseProvider provider) {
+        return new LicenseFilter(provider);
+    }
+
+    /**
      * 配置主过滤器
      *
      * @return WebFilter 主过滤器实例
@@ -116,13 +128,13 @@ public class VortexConfiguration {
     /**
      * 配置授权过滤器
      *
-     * @param authorizeProvider 授权提供者
-     * @param registry          资产注册表
+     * @param provider 授权提供者
+     * @param registry 资产注册表
      * @return WebFilter 授权过滤器实例
      */
     @Bean
-    public Filter authorizeFilter(AuthorizeProvider authorizeProvider, AssetsRegistry registry) {
-        return new AuthorizeFilter(authorizeProvider, registry);
+    public Filter authorizeFilter(AuthorizeProvider provider, AssetsRegistry registry) {
+        return new AuthorizeFilter(provider, registry);
     }
 
     /**
@@ -164,7 +176,7 @@ public class VortexConfiguration {
 
         // 配置编解码器，设置最大内存大小
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
-        configurer.defaultCodecs().maxInMemorySize(Config.MAX_INMEMORY_SIZE);
+        configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128));
 
         // 构建 WebHandler，集成过滤器和异常处理器
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
@@ -173,7 +185,9 @@ public class VortexConfiguration {
 
         // 创建 HTTP 服务器适配器
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
-        HttpServer server = HttpServer.create().port(properties.getServer().getPort()).handle(adapter);
+        HttpServer server = HttpServer.create()
+                .port(properties.getServer().getPort() != 0 ? properties.getServer().getPort() : PORT._8765)
+                .handle(adapter);
 
         return new Vortex(server);
     }

@@ -192,7 +192,10 @@ public class Img_hash {
 
     // C++: void cv::img_hash::radialVarianceHash(Mat inputArr, Mat& outputArr, double sigma = 1, int numOfAngleLine =
     // 180)
-    private static native void radialVarianceHash_0(long inputArr_nativeObj, long outputArr_nativeObj, double sigma,
+    private static native void radialVarianceHash_0(
+            long inputArr_nativeObj,
+            long outputArr_nativeObj,
+            double sigma,
             int numOfAngleLine);
 
     private static native void radialVarianceHash_1(long inputArr_nativeObj, long outputArr_nativeObj, double sigma);
@@ -200,7 +203,10 @@ public class Img_hash {
     private static native void radialVarianceHash_2(long inputArr_nativeObj, long outputArr_nativeObj);
 
     // C++: void cv::img_hash::marrHildrethHash(Mat inputArr, Mat& outputArr, float alpha = 2.0f, float scale = 1.0f)
-    private static native void marrHildrethHash_0(long inputArr_nativeObj, long outputArr_nativeObj, float alpha,
+    private static native void marrHildrethHash_0(
+            long inputArr_nativeObj,
+            long outputArr_nativeObj,
+            float alpha,
             float scale);
 
     private static native void marrHildrethHash_1(long inputArr_nativeObj, long outputArr_nativeObj, float alpha);

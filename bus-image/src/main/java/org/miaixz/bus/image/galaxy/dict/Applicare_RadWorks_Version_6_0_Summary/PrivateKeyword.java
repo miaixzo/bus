@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.Status:
-            return "Status";
-        case PrivateTag.ReceiveOriginSiteName:
-            return "ReceiveOriginSiteName";
-        case PrivateTag.ReceiveOriginDescription:
-            return "ReceiveOriginDescription";
-        case PrivateTag.ReceiveDate:
-            return "ReceiveDate";
-        case PrivateTag.ReceiveTime:
-            return "ReceiveTime";
+            case PrivateTag.Status:
+                return "Status";
+
+            case PrivateTag.ReceiveOriginSiteName:
+                return "ReceiveOriginSiteName";
+
+            case PrivateTag.ReceiveOriginDescription:
+                return "ReceiveOriginDescription";
+
+            case PrivateTag.ReceiveDate:
+                return "ReceiveDate";
+
+            case PrivateTag.ReceiveTime:
+                return "ReceiveTime";
         }
         return "";
     }

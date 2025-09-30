@@ -52,69 +52,79 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.XA3DReconstructionAlgorithmVersion:
-        case PrivateTag.DLXCalibrationStatus:
-            return VR.CS;
-        case PrivateTag.DLXCalibrationDate:
-            return VR.DA;
-        case PrivateTag.VolumeVoxelRatio:
-        case PrivateTag.VolumeVoxelSize:
-        case PrivateTag.VolumeBaseLine:
-        case PrivateTag.VolumeCenterPoint:
-        case PrivateTag.VolumeRegistrationTransformRotationMatrix:
-        case PrivateTag.VolumeRegistrationTransformTranslationVector:
-        case PrivateTag.KVPList:
-        case PrivateTag.ContrastAgentVolumeList:
-        case PrivateTag.TransformRotationMatrix:
-        case PrivateTag.TransformTranslationVector:
-        case PrivateTag.WireframePointsCoordinates:
-        case PrivateTag.VolumeUpperLeftHighCornerRAS:
-        case PrivateTag.VolumeSliceToRASRotationMatrix:
-        case PrivateTag.VolumeUpperLeftHighCornerTLOC:
-            return VR.DS;
-        case PrivateTag.XRayTubeCurrentList:
-        case PrivateTag.ExposureList:
-        case PrivateTag.UsedFrames:
-            return VR.IS;
-        case PrivateTag.AcquisitionDLXIdentifier:
-        case PrivateTag.XA3DReconstructionAlgorithmName:
-        case PrivateTag.TransformLabel:
-        case PrivateTag.WireframeName:
-        case PrivateTag.WireframeGroupName:
-        case PrivateTag.WireframeColor:
-            return VR.LO;
-        case PrivateTag.VolumeSegmentList:
-        case PrivateTag.VolumeGradientList:
-        case PrivateTag.VolumeDensityList:
-        case PrivateTag.VolumeZPositionList:
-        case PrivateTag.VolumeOriginalIndexList:
-            return VR.OB;
-        case PrivateTag.VolumeThresholdValue:
-        case PrivateTag.VolumeSkewBase:
-        case PrivateTag.WireframeAttributes:
-        case PrivateTag.WireframePointCount:
-        case PrivateTag.WireframeTimestamp:
-            return VR.SL;
-        case PrivateTag.ReconstructionParametersSequence:
-        case PrivateTag.AcquisitionDLX2DSeriesSequence:
-        case PrivateTag.TransformSequence:
-        case PrivateTag.WireframeList:
-        case PrivateTag.WireframePointList:
-            return VR.SQ;
-        case PrivateTag.DLXCalibrationTime:
-            return VR.TM;
-        case PrivateTag.VolumeVoxelCount:
-        case PrivateTag.VolumeSegmentCount:
-            return VR.UL;
-        case PrivateTag.VolumeSliceSize:
-        case PrivateTag.VolumeSliceCount:
-        case PrivateTag.VolumeZPositionSize:
-        case PrivateTag.NumberOfInjections:
-        case PrivateTag.FrameCount:
-        case PrivateTag.TransformCount:
-        case PrivateTag.WireframeCount:
-        case PrivateTag.LocationSystem:
-            return VR.US;
+            case PrivateTag.XA3DReconstructionAlgorithmVersion:
+            case PrivateTag.DLXCalibrationStatus:
+                return VR.CS;
+
+            case PrivateTag.DLXCalibrationDate:
+                return VR.DA;
+
+            case PrivateTag.VolumeVoxelRatio:
+            case PrivateTag.VolumeVoxelSize:
+            case PrivateTag.VolumeBaseLine:
+            case PrivateTag.VolumeCenterPoint:
+            case PrivateTag.VolumeRegistrationTransformRotationMatrix:
+            case PrivateTag.VolumeRegistrationTransformTranslationVector:
+            case PrivateTag.KVPList:
+            case PrivateTag.ContrastAgentVolumeList:
+            case PrivateTag.TransformRotationMatrix:
+            case PrivateTag.TransformTranslationVector:
+            case PrivateTag.WireframePointsCoordinates:
+            case PrivateTag.VolumeUpperLeftHighCornerRAS:
+            case PrivateTag.VolumeSliceToRASRotationMatrix:
+            case PrivateTag.VolumeUpperLeftHighCornerTLOC:
+                return VR.DS;
+
+            case PrivateTag.XRayTubeCurrentList:
+            case PrivateTag.ExposureList:
+            case PrivateTag.UsedFrames:
+                return VR.IS;
+
+            case PrivateTag.AcquisitionDLXIdentifier:
+            case PrivateTag.XA3DReconstructionAlgorithmName:
+            case PrivateTag.TransformLabel:
+            case PrivateTag.WireframeName:
+            case PrivateTag.WireframeGroupName:
+            case PrivateTag.WireframeColor:
+                return VR.LO;
+
+            case PrivateTag.VolumeSegmentList:
+            case PrivateTag.VolumeGradientList:
+            case PrivateTag.VolumeDensityList:
+            case PrivateTag.VolumeZPositionList:
+            case PrivateTag.VolumeOriginalIndexList:
+                return VR.OB;
+
+            case PrivateTag.VolumeThresholdValue:
+            case PrivateTag.VolumeSkewBase:
+            case PrivateTag.WireframeAttributes:
+            case PrivateTag.WireframePointCount:
+            case PrivateTag.WireframeTimestamp:
+                return VR.SL;
+
+            case PrivateTag.ReconstructionParametersSequence:
+            case PrivateTag.AcquisitionDLX2DSeriesSequence:
+            case PrivateTag.TransformSequence:
+            case PrivateTag.WireframeList:
+            case PrivateTag.WireframePointList:
+                return VR.SQ;
+
+            case PrivateTag.DLXCalibrationTime:
+                return VR.TM;
+
+            case PrivateTag.VolumeVoxelCount:
+            case PrivateTag.VolumeSegmentCount:
+                return VR.UL;
+
+            case PrivateTag.VolumeSliceSize:
+            case PrivateTag.VolumeSliceCount:
+            case PrivateTag.VolumeZPositionSize:
+            case PrivateTag.NumberOfInjections:
+            case PrivateTag.FrameCount:
+            case PrivateTag.TransformCount:
+            case PrivateTag.WireframeCount:
+            case PrivateTag.LocationSystem:
+                return VR.US;
         }
         return VR.UN;
     }

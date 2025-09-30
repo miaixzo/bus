@@ -38,56 +38,80 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.StudyDose:
-            return "StudyDose";
-        case PrivateTag.StudyTotalDap:
-            return "StudyTotalDap";
-        case PrivateTag.FluoroDoseAreaProduct:
-            return "FluoroDoseAreaProduct";
-        case PrivateTag.StudyFluoroTime:
-            return "StudyFluoroTime";
-        case PrivateTag.CineDoseAreaProduct:
-            return "CineDoseAreaProduct";
-        case PrivateTag.StudyRecordTime:
-            return "StudyRecordTime";
-        case PrivateTag.LastXANumber:
-            return "LastXANumber";
-        case PrivateTag.DefOperatorName:
-            return "DefOperatorName";
-        case PrivateTag.DefPerformingPhysicianName:
-            return "DefPerformingPhysicianName";
-        case PrivateTag.DefPatientOrientation:
-            return "DefPatientOrientation";
-        case PrivateTag.LastScNumber:
-            return "LastScNumber";
-        case PrivateTag.CommonSeriesInstanceUID:
-            return "CommonSeriesInstanceUID";
-        case PrivateTag.StudyNumber:
-            return "StudyNumber";
-        case PrivateTag._0015_xx92_:
-            return "_0015_xx92_";
-        case PrivateTag._0015_xx93_:
-            return "_0015_xx93_";
-        case PrivateTag._0015_xx94_:
-            return "_0015_xx94_";
-        case PrivateTag._0015_xx95_:
-            return "_0015_xx95_";
-        case PrivateTag._0015_xx96_:
-            return "_0015_xx96_";
-        case PrivateTag._0015_xx97_:
-            return "_0015_xx97_";
-        case PrivateTag._0015_xx98_:
-            return "_0015_xx98_";
-        case PrivateTag._0015_xx99_:
-            return "_0015_xx99_";
-        case PrivateTag._0015_xx9A_:
-            return "_0015_xx9A_";
-        case PrivateTag._0015_xx9B_:
-            return "_0015_xx9B_";
-        case PrivateTag._0015_xx9C_:
-            return "_0015_xx9C_";
-        case PrivateTag._0015_xx9D_:
-            return "_0015_xx9D_";
+            case PrivateTag.StudyDose:
+                return "StudyDose";
+
+            case PrivateTag.StudyTotalDap:
+                return "StudyTotalDap";
+
+            case PrivateTag.FluoroDoseAreaProduct:
+                return "FluoroDoseAreaProduct";
+
+            case PrivateTag.StudyFluoroTime:
+                return "StudyFluoroTime";
+
+            case PrivateTag.CineDoseAreaProduct:
+                return "CineDoseAreaProduct";
+
+            case PrivateTag.StudyRecordTime:
+                return "StudyRecordTime";
+
+            case PrivateTag.LastXANumber:
+                return "LastXANumber";
+
+            case PrivateTag.DefOperatorName:
+                return "DefOperatorName";
+
+            case PrivateTag.DefPerformingPhysicianName:
+                return "DefPerformingPhysicianName";
+
+            case PrivateTag.DefPatientOrientation:
+                return "DefPatientOrientation";
+
+            case PrivateTag.LastScNumber:
+                return "LastScNumber";
+
+            case PrivateTag.CommonSeriesInstanceUID:
+                return "CommonSeriesInstanceUID";
+
+            case PrivateTag.StudyNumber:
+                return "StudyNumber";
+
+            case PrivateTag._0015_xx92_:
+                return "_0015_xx92_";
+
+            case PrivateTag._0015_xx93_:
+                return "_0015_xx93_";
+
+            case PrivateTag._0015_xx94_:
+                return "_0015_xx94_";
+
+            case PrivateTag._0015_xx95_:
+                return "_0015_xx95_";
+
+            case PrivateTag._0015_xx96_:
+                return "_0015_xx96_";
+
+            case PrivateTag._0015_xx97_:
+                return "_0015_xx97_";
+
+            case PrivateTag._0015_xx98_:
+                return "_0015_xx98_";
+
+            case PrivateTag._0015_xx99_:
+                return "_0015_xx99_";
+
+            case PrivateTag._0015_xx9A_:
+                return "_0015_xx9A_";
+
+            case PrivateTag._0015_xx9B_:
+                return "_0015_xx9B_";
+
+            case PrivateTag._0015_xx9C_:
+                return "_0015_xx9C_";
+
+            case PrivateTag._0015_xx9D_:
+                return "_0015_xx9D_";
         }
         return "";
     }

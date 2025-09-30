@@ -68,7 +68,7 @@ provider.login(callback);
 注：`refresh`功能，并不是每个平台都支持
 
 ```
-provider.refresh(AuthToken.builder().refreshToken(token).build());
+provider.refresh(AuthToken.builder().refreshToken(principal).build());
 ```
 
 ### 取消授权
@@ -76,7 +76,7 @@ provider.refresh(AuthToken.builder().refreshToken(token).build());
 注：`revoke`功能，并不是每个平台都支持
 
 ```
-provider.revoke(AuthToken.builder().accessToken(token).build());
+provider.revoke(AuthToken.builder().accessToken(principal).build());
 ```
 
 #### API列表
@@ -93,7 +93,7 @@ provider.revoke(AuthToken.builder().accessToken(token).build());
 |    oschina    |       [OschinaProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/OschinaProvider.java)       |                                      <a href="https://www.oschina.net/openapi/docs/oauth2_authorize" target="_blank">参考文档</a>                                       |
 |    alipay     |        [AlipayProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/AlipayProvider.java)        |      <a href="https://alipay.open.taobao.com/docs/doc.htm?spm=a219a.7629140.0.0.336d4b70GUKXOl&treeId=193&articleId=105809&docType=1" target="_blank">参考文档</a>      |
 |      qq       |            [QqProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/QqProvider.java)            |                  <a href="https://wiki.connect.qq.com/%E4%BD%BF%E7%94%A8authorization_code%E8%8E%B7%E5%8F%96access_token" target="_blank">参考文档</a>                  |
-|    wechat     |        [WeChatProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/WeChatProvider.java)        | <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN" target="_blank">参考文档</a> |
+|    wechat     |        [WeChatProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/WeChatProvider.java)        | <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&principal=&lang=zh_CN" target="_blank">参考文档</a> |
 |    taobao     |        [TaobaoProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/TaobaoProvider.java)        |            <a href="https://open.taobao.com/doc.htm?spm=a219a.7386797.0.0.4e00669acnkQy6&source=search&docId=105590&docType=1" target="_blank">参考文档</a>             |
 |    google     |        [GoogleProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/GoogleProvider.java)        |                                  <a href="https://developers.google.com/identity/protocols/OpenIDConnect" target="_blank">参考文档</a>                                  |
 |   facebook    |      [FacebookProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/FacebookProvider.java)      |                         <a href="https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow" target="_blank">参考文档</a>                          |
@@ -107,7 +107,7 @@ provider.revoke(AuthToken.builder().accessToken(token).build());
 |   pinterest   |     [PinterestProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/PinterestProvider.java)     |                                        <a href="https://developers.pinterest.com/docs/api/overview" target="_blank">参考文档</a>                                        |
 | stackoverflow | [StackOverflowProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/StackOverflowProvider.java) |                                        <a href="https://api.stackexchange.com/docs/authentication" target="_blank">参考文档</a>                                         |
 |    huawei     |        [HuaweiProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/HuaweiProvider.java)        |                                  <a href="https://developer.huawei.com/consumer/cn/devservice/doc/30101" target="_blank">参考文档</a>                                   |
-|    微信开放平台     |      [WeChatOPProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/WeChatOPProvider.java)      | <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN" target="_blank">参考文档</a> |
+|    微信开放平台     |      [WeChatOPProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/WeChatOPProvider.java)      | <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&principal=&lang=zh_CN" target="_blank">参考文档</a> |
 |    微信公众平台     |      [WeChatMpProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/WeChatMpProvider.java)      |                  <a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html" target="_blank">参考文档</a>                  |
 |     企业微信      |      [WeChatEEProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/WeChatEEProvider.java)      |                                    <a href="https://open.work.weixin.qq.com/api/doc#90000/90135/90664" target="_blank">参考文档</a>                                     |
 |    kujiale    |       [KujialeProvider](https://github.com/818000/bus/tree/master/bus-oauth/src/main/java/org/miaixz/bus/oauth/provider/KujialeProvider.java)       |                                       <a href="https://open.kujiale.com/open/apps/2/docs?doc_id=95" target="_blank">参考文档</a>                                        |

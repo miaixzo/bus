@@ -28,7 +28,6 @@
 package org.miaixz.bus.core.xyz;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.FileSystem;
 import java.util.ArrayList;
@@ -149,7 +148,10 @@ public class ZipKit {
      * @return 压缩文件
      * @throws InternalException IO异常
      */
-    public static File zip(final String srcPath, final String zipPath, final java.nio.charset.Charset charset,
+    public static File zip(
+            final String srcPath,
+            final String zipPath,
+            final java.nio.charset.Charset charset,
             final boolean withSrcDir) throws InternalException {
         final File srcFile = FileKit.file(srcPath);
         final File zipFile = FileKit.file(zipPath);
@@ -181,7 +183,10 @@ public class ZipKit {
      * @return 压缩文件
      * @throws InternalException IO异常
      */
-    public static File zip(final File zipFile, final java.nio.charset.Charset charset, final boolean withSrcDir,
+    public static File zip(
+            final File zipFile,
+            final java.nio.charset.Charset charset,
+            final boolean withSrcDir,
             final File... srcFiles) throws InternalException {
         return zip(zipFile, charset, withSrcDir, null, srcFiles);
     }
@@ -197,8 +202,12 @@ public class ZipKit {
      * @return 压缩文件
      * @throws InternalException IO异常
      */
-    public static File zip(final File zipFile, final java.nio.charset.Charset charset, final boolean withSrcDir,
-            final FileFilter filter, final File... srcFiles) throws InternalException {
+    public static File zip(
+            final File zipFile,
+            final java.nio.charset.Charset charset,
+            final boolean withSrcDir,
+            final FileFilter filter,
+            final File... srcFiles) throws InternalException {
         validateFiles(zipFile, srcFiles);
         // noinspection resource
         ZipWriter.of(zipFile, charset).add(withSrcDir, filter, srcFiles).close();
@@ -215,8 +224,12 @@ public class ZipKit {
      * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      * @throws InternalException IO异常
      */
-    public static void zip(final OutputStream out, final java.nio.charset.Charset charset, final boolean withSrcDir,
-            final FileFilter filter, final File... srcFiles) throws InternalException {
+    public static void zip(
+            final OutputStream out,
+            final java.nio.charset.Charset charset,
+            final boolean withSrcDir,
+            final FileFilter filter,
+            final File... srcFiles) throws InternalException {
         ZipWriter.of(out, charset).add(withSrcDir, filter, srcFiles).close();
     }
 
@@ -243,7 +256,10 @@ public class ZipKit {
      * @return 压缩文件
      * @throws InternalException IO异常
      */
-    public static File zip(final File zipFile, final String path, final String data,
+    public static File zip(
+            final File zipFile,
+            final String path,
+            final String data,
             final java.nio.charset.Charset charset) throws InternalException {
         return zip(zipFile, path, IoKit.toStream(data, charset), charset);
     }
@@ -271,7 +287,10 @@ public class ZipKit {
      * @return 压缩文件
      * @throws InternalException IO异常
      */
-    public static File zip(final File zipFile, final String path, final InputStream in,
+    public static File zip(
+            final File zipFile,
+            final String path,
+            final InputStream in,
             final java.nio.charset.Charset charset) throws InternalException {
         return zip(zipFile, new String[] { path }, new InputStream[] { in }, charset);
     }
@@ -299,7 +318,10 @@ public class ZipKit {
      * @return 压缩文件
      * @throws InternalException IO异常
      */
-    public static File zip(final File zipFile, final String[] paths, final InputStream[] ins,
+    public static File zip(
+            final File zipFile,
+            final String[] paths,
+            final InputStream[] ins,
             final java.nio.charset.Charset charset) throws InternalException {
         try (final ZipWriter zipWriter = ZipWriter.of(zipFile, charset)) {
             zipWriter.add(paths, ins);
@@ -544,7 +566,9 @@ public class ZipKit {
      * @param name        文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
      * @return 文件内容bytes
      */
-    public static byte[] unzipFileBytes(final String zipFilePath, final java.nio.charset.Charset charset,
+    public static byte[] unzipFileBytes(
+            final String zipFilePath,
+            final java.nio.charset.Charset charset,
             final String name) {
         return unzipFileBytes(FileKit.file(zipFilePath), charset, name);
     }
@@ -578,7 +602,7 @@ public class ZipKit {
      * Gzip压缩处理
      *
      * @param content 被压缩的字符串
-     * @param charset 编码 {@link StandardCharsets#UTF_8}、 {@link Charset#UTF_8}
+     * @param charset 编码 {@link Charset#UTF_8}、 {@link Charset#UTF_8}
      * @return 压缩后的字节流
      * @throws InternalException IO异常
      */

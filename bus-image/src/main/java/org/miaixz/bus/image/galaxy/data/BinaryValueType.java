@@ -42,6 +42,7 @@ import org.miaixz.bus.image.Tag;
 enum BinaryValueType implements ValueType {
 
     BYTE(1, 1) {
+
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
             return b;
@@ -59,6 +60,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     SHORT(2, 2) {
+
         @Override
         public boolean isIntValue() {
             return true;
@@ -90,6 +92,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     USHORT(2, 2) {
+
         @Override
         public boolean isIntValue() {
             return true;
@@ -121,6 +124,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     INT(4, 4) {
+
         @Override
         public boolean isIntValue() {
             return true;
@@ -152,6 +156,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     UINT(4, 4) {
+
         @Override
         public boolean isIntValue() {
             return true;
@@ -188,6 +193,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     TAG(4, 2) {
+
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
             return ByteKit.swapShorts(preserve ? b.clone() : b, 0, b.length);
@@ -214,6 +220,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     LONG(8, 8) {
+
         @Override
         public boolean isIntValue() {
             return true;
@@ -245,6 +252,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     ULONG(8, 8) {
+
         @Override
         public boolean isIntValue() {
             return true;
@@ -286,6 +294,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     FLOAT(4, 4) {
+
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
             return ByteKit.swapInts(preserve ? b.clone() : b, 0, b.length);
@@ -322,6 +331,7 @@ enum BinaryValueType implements ValueType {
         }
     },
     DOUBLE(8, 8) {
+
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
             return ByteKit.swapLongs(preserve ? b.clone() : b, 0, b.length);

@@ -29,7 +29,6 @@ package org.miaixz.bus.pay.metric.alipay;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +36,7 @@ import java.util.Map;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -160,7 +160,10 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @param authToken 应用授权token
      * @return WAP支付的HTML表单
      */
-    public String wapPayByOutputWithToken(Map<String, String> model, String returnUrl, String notifyUrl,
+    public String wapPayByOutputWithToken(
+            Map<String, String> model,
+            String returnUrl,
+            String notifyUrl,
             String authToken) {
         return buildWapPay(model, returnUrl, notifyUrl, authToken);
     }
@@ -253,7 +256,9 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @param authToken 应用授权token
      * @return API响应
      */
-    public Map<String, Object> tradePrecreateWithCertAndToken(Map<String, String> model, String notifyUrl,
+    public Map<String, Object> tradePrecreateWithCertAndToken(
+            Map<String, String> model,
+            String notifyUrl,
             String authToken) {
         return executeRequest(true, model, notifyUrl, authToken, "alipay.trade.precreate");
     }
@@ -591,7 +596,10 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return 对账单下载URL
      */
     public String billDownloadUrl(Map<String, String> model) {
-        Map<String, Object> response = executeRequest(model, null, null,
+        Map<String, Object> response = executeRequest(
+                model,
+                null,
+                null,
                 "alipay.data.dataservice.bill.downloadurl.query");
         return (String) response.get("bill_download_url");
     }
@@ -603,7 +611,11 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return 对账单下载URL
      */
     public String billDownloadUrlWithCert(Map<String, String> model) {
-        Map<String, Object> response = executeRequest(true, model, null, null,
+        Map<String, Object> response = executeRequest(
+                true,
+                model,
+                null,
+                null,
                 "alipay.data.dataservice.bill.downloadurl.query");
         return (String) response.get("bill_download_url");
     }
@@ -742,7 +754,10 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return HTML表单
      * @throws IOException IO异常
      */
-    public String tradePageByOutputWithToken(Map<String, String> model, String notifyUrl, String returnUrl,
+    public String tradePageByOutputWithToken(
+            Map<String, String> model,
+            String notifyUrl,
+            String returnUrl,
             String authToken) throws IOException {
         return buildPagePay("POST", model, notifyUrl, returnUrl, authToken);
     }
@@ -1376,8 +1391,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
         StringBuilder result = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            result.append(entry.getKey()).append("=")
-                    .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8)).append("&");
+            result.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), Charset.UTF_8))
+                    .append("&");
         }
         return result.substring(0, result.length() - 1);
     }
@@ -1417,7 +1432,11 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @param authToken 应用授权token
      * @return HTML表单或URL
      */
-    private String buildPagePay(String method, Map<String, String> model, String notifyUrl, String returnUrl,
+    private String buildPagePay(
+            String method,
+            Map<String, String> model,
+            String notifyUrl,
+            String returnUrl,
             String authToken) {
         Map<String, String> params = buildCommonParams("alipay.trade.page.pay", notifyUrl, authToken);
         params.put("return_url", returnUrl);
@@ -1426,8 +1445,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         if ("GET".equalsIgnoreCase(method)) {
             StringBuilder url = new StringBuilder(getUrl()).append("?");
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                url.append(entry.getKey()).append("=")
-                        .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8)).append("&");
+                url.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), Charset.UTF_8))
+                        .append("&");
             }
             return url.substring(0, url.length() - 1);
         } else {
@@ -1476,7 +1495,10 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @param method    支付宝API方法
      * @return API响应
      */
-    private Map<String, Object> executeRequest(Map<String, String> model, String notifyUrl, String authToken,
+    private Map<String, Object> executeRequest(
+            Map<String, String> model,
+            String notifyUrl,
+            String authToken,
             String method) {
         return executeRequest(context.isCertMode(), model, notifyUrl, authToken, method);
     }
@@ -1491,8 +1513,12 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @param method    支付宝API方法
      * @return API响应
      */
-    private Map<String, Object> executeRequest(Boolean certModel, Map<String, String> model, String notifyUrl,
-            String authToken, String method) {
+    private Map<String, Object> executeRequest(
+            Boolean certModel,
+            Map<String, String> model,
+            String notifyUrl,
+            String authToken,
+            String method) {
         Map<String, String> params = buildCommonParams(method, notifyUrl, authToken);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
@@ -1512,7 +1538,10 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
                     verifyParams.put(entry.getKey(), entry.getValue().toString());
                 }
             }
-            boolean isValid = AliPayBuilder.rsaCertCheckV1ByContent(verifyParams, context.getPublicKey(), CHARSET_UTF8,
+            boolean isValid = AliPayBuilder.rsaCertCheckV1ByContent(
+                    verifyParams,
+                    context.getPublicKey(),
+                    CHARSET_UTF8,
                     Algorithm.RSA2.getValue());
             if (!isValid) {
                 throw new RuntimeException("Signature verification failed");

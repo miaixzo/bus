@@ -73,20 +73,28 @@ public class ImageConversion {
         int dataType = convertToDataType(type);
 
         switch (channels) {
-        case 1:
-            cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-            colorModel = new ComponentColorModel(cs, new int[] { bpp }, false, true, Transparency.OPAQUE, dataType);
-            raster = colorModel.createCompatibleWritableRaster(cols, rows);
-            break;
-        case 3:
-            cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-            colorModel = new ComponentColorModel(cs, new int[] { bpp, bpp, bpp }, false, false, Transparency.OPAQUE,
-                    dataType);
-            raster = Raster.createInterleavedRaster(dataType, cols, rows, cols * channels, channels,
-                    new int[] { 2, 1, 0 }, null);
-            break;
-        default:
-            throw new UnsupportedOperationException("No implementation to handle " + channels + " channels");
+            case 1:
+                cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+                colorModel = new ComponentColorModel(cs, new int[] { bpp }, false, true, Transparency.OPAQUE, dataType);
+                raster = colorModel.createCompatibleWritableRaster(cols, rows);
+                break;
+
+            case 3:
+                cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+                colorModel = new ComponentColorModel(cs, new int[] { bpp, bpp, bpp }, false, false, Transparency.OPAQUE,
+                        dataType);
+                raster = Raster.createInterleavedRaster(
+                        dataType,
+                        cols,
+                        rows,
+                        cols * channels,
+                        channels,
+                        new int[] { 2, 1, 0 },
+                        null);
+                break;
+
+            default:
+                throw new UnsupportedOperationException("No implementation to handle " + channels + " channels");
         }
 
         DataBuffer buf = raster.getDataBuffer();
@@ -149,13 +157,13 @@ public class ImageConversion {
      */
     public static int convertToDataType(int cvType) {
         return switch (CvType.depth(cvType)) {
-        case CvType.CV_8U, CvType.CV_8S -> DataBuffer.TYPE_BYTE;
-        case CvType.CV_16U -> DataBuffer.TYPE_USHORT;
-        case CvType.CV_16S -> DataBuffer.TYPE_SHORT;
-        case CvType.CV_32S -> DataBuffer.TYPE_INT;
-        case CvType.CV_32F -> DataBuffer.TYPE_FLOAT;
-        case CvType.CV_64F -> DataBuffer.TYPE_DOUBLE;
-        default -> throw new UnsupportedOperationException("Unsupported CvType value: " + cvType);
+            case CvType.CV_8U, CvType.CV_8S -> DataBuffer.TYPE_BYTE;
+            case CvType.CV_16U -> DataBuffer.TYPE_USHORT;
+            case CvType.CV_16S -> DataBuffer.TYPE_SHORT;
+            case CvType.CV_32S -> DataBuffer.TYPE_INT;
+            case CvType.CV_32F -> DataBuffer.TYPE_FLOAT;
+            case CvType.CV_64F -> DataBuffer.TYPE_DOUBLE;
+            default -> throw new UnsupportedOperationException("Unsupported CvType value: " + cvType);
         };
     }
 

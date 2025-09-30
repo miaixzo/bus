@@ -103,6 +103,7 @@ public class Locale {
      * 语言包接口，定义获取格式化文本的方法。
      */
     public interface Language {
+
         /**
          * 获取对应语言的格式化文本。
          *

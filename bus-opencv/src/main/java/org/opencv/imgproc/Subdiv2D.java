@@ -123,7 +123,11 @@ public class Subdiv2D {
     //
 
     // C++: int cv::Subdiv2D::locate(Point2f pt, int& edge, int& vertex)
-    private static native int locate_0(long nativeObj, double pt_x, double pt_y, double[] edge_out,
+    private static native int locate_0(
+            long nativeObj,
+            double pt_x,
+            double pt_y,
+            double[] edge_out,
             double[] vertex_out);
 
     // C++: int cv::Subdiv2D::findNearest(Point2f pt, Point2f* nearestPt = 0)
@@ -163,8 +167,11 @@ public class Subdiv2D {
 
     // C++: void cv::Subdiv2D::getVoronoiFacetList(vector_int idx, vector_vector_Point2f& facetList, vector_Point2f&
     // facetCenters)
-    private static native void getVoronoiFacetList_0(long nativeObj, long idx_mat_nativeObj,
-            long facetList_mat_nativeObj, long facetCenters_mat_nativeObj);
+    private static native void getVoronoiFacetList_0(
+            long nativeObj,
+            long idx_mat_nativeObj,
+            long facetList_mat_nativeObj,
+            long facetCenters_mat_nativeObj);
 
     // C++: Point2f cv::Subdiv2D::getVertex(int vertex, int* firstEdge = 0)
     private static native double[] getVertex_0(long nativeObj, int vertex, double[] firstEdge_out);

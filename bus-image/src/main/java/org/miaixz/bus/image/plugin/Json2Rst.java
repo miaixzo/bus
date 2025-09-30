@@ -116,11 +116,11 @@ public class Json2Rst {
 
     private boolean isDefinedByDicom(String outFileName) {
         switch (outFileName) {
-        case "device.rst":
-        case "networkAE.rst":
-        case "networkConnection.rst":
-        case "transferCapability.rst":
-            return true;
+            case "device.rst":
+            case "networkAE.rst":
+            case "networkConnection.rst":
+            case "transferCapability.rst":
+                return true;
         }
         return false;
     }
@@ -179,9 +179,10 @@ public class Json2Rst {
         out.print("\",");
         out.print(isObj ? "object" : typeObj.getString("type"));
         out.print(",\"");
-        out.print(ensureNoUndefinedSubstitutionReferenced(
-                formatURL(property.getString("description")).replace("\"", "\"\"").replaceAll("<br>", "\n\n\t")
-                        .replaceAll("\\(hover on options to see their descriptions\\)", "")));
+        out.print(
+                ensureNoUndefinedSubstitutionReferenced(
+                        formatURL(property.getString("description")).replace("\"", "\"\"").replaceAll("<br>", "\n\n\t")
+                                .replaceAll("\\(hover on options to see their descriptions\\)", "")));
         JsonArray anEnum = typeObj.getJsonArray("enum");
         if (anEnum != null) {
             out.println();

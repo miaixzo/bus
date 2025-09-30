@@ -374,8 +374,8 @@ public class StopWatch {
         if (null == unit) {
             unit = TimeUnit.NANOSECONDS;
         }
-        return StringKit.format("StopWatch '{}': running time = {} {}", this.id, getTotal(unit),
-                DateKit.getShortName(unit));
+        return StringKit
+                .format("StopWatch '{}': running time = {} {}", this.id, getTotal(unit), DateKit.getShortName(unit));
     }
 
     /**

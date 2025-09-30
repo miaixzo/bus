@@ -43,8 +43,8 @@ import org.miaixz.bus.health.builtin.hardware.Sensors;
 @ThreadSafe
 public abstract class AbstractSensors implements Sensors {
 
-    private final Supplier<Double> cpuTemperature = Memoizer.memoize(this::queryCpuTemperature,
-            Memoizer.defaultExpiration());
+    private final Supplier<Double> cpuTemperature = Memoizer
+            .memoize(this::queryCpuTemperature, Memoizer.defaultExpiration());
 
     private final Supplier<int[]> fanSpeeds = Memoizer.memoize(this::queryFanSpeeds, Memoizer.defaultExpiration());
 

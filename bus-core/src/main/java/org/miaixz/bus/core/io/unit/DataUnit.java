@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.io.unit;
 
+import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -94,11 +95,16 @@ public enum DataUnit {
     /**
      * 通过后缀返回对应的 DataUnit
      *
-     * @param suffix 单位后缀
+     * @param suffix 单位后缀，如KB、GB、GiB等
      * @return 匹配到的{@link DataUnit}
      * @throws IllegalArgumentException 后缀无法识别报错
      */
-    public static DataUnit fromSuffix(final String suffix) {
+    public static DataUnit fromSuffix(String suffix) {
+        // 兼容KiB、MiB、GiB
+        if (StringKit.length(suffix) == 3 && CharKit.equals(suffix.charAt(1), 'i', true)) {
+            suffix = new String(new char[] { suffix.charAt(0), suffix.charAt(2) });
+        }
+
         for (final DataUnit candidate : values()) {
             // 支持类似于 3MB，3M，3m等写法
             if (StringKit.startWithIgnoreCase(candidate.suffix, suffix)) {

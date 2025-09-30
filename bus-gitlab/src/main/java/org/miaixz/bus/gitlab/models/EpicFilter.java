@@ -282,6 +282,7 @@ public class EpicFilter implements Serializable {
     }
 
     public enum EpicField {
+
         AUTHOR_ID, AUTHOR_USERNAME, LABELS;
 
         private static JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);

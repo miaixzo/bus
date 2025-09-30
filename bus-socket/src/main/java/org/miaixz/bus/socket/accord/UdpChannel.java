@@ -210,6 +210,7 @@ public class UdpChannel {
     }
 
     static final class ResponseUnit {
+
         /**
          * 待输出数据的接受地址
          */

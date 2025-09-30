@@ -164,7 +164,10 @@ public class PartitionObjectPool<T> implements ObjectPool<T> {
 
     @Override
     public String toString() {
-        return StringKit.format("PartitionObjectPool: total: {}, idle: {}, active: {}", getTotal(), getIdleCount(),
+        return StringKit.format(
+                "PartitionObjectPool: total: {}, idle: {}, active: {}",
+                getTotal(),
+                getIdleCount(),
                 getActiveCount());
     }
 

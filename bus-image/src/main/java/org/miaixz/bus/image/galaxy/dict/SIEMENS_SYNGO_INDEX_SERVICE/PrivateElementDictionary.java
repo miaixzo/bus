@@ -52,28 +52,34 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.Location:
-            return VR.AE;
-        case PrivateTag.DeleteProtectedStatus:
-        case PrivateTag.ReceivedfromArchiveStatus:
-        case PrivateTag.ArchiveStatus:
-        case PrivateTag.LogicalDeletedStatus:
-        case PrivateTag.HiddenInstance:
-            return VR.CS;
-        case PrivateTag.ObjectInsertionDate:
-            return VR.DA;
-        case PrivateTag.LastAccessTime:
-        case PrivateTag.InsertTime:
-            return VR.DT;
-        case PrivateTag.VisibleInstancesonSeriesLevel:
-        case PrivateTag.UnarchivedInstances:
-        case PrivateTag.VisibleInstancesonStudyLevel:
-            return VR.IS;
-        case PrivateTag.SenderSystemDeviceName:
-            return VR.LO;
-        case PrivateTag.SeriesObjectStates:
-        case PrivateTag.InstanceObjectStates:
-            return VR.SQ;
+            case PrivateTag.Location:
+                return VR.AE;
+
+            case PrivateTag.DeleteProtectedStatus:
+            case PrivateTag.ReceivedfromArchiveStatus:
+            case PrivateTag.ArchiveStatus:
+            case PrivateTag.LogicalDeletedStatus:
+            case PrivateTag.HiddenInstance:
+                return VR.CS;
+
+            case PrivateTag.ObjectInsertionDate:
+                return VR.DA;
+
+            case PrivateTag.LastAccessTime:
+            case PrivateTag.InsertTime:
+                return VR.DT;
+
+            case PrivateTag.VisibleInstancesonSeriesLevel:
+            case PrivateTag.UnarchivedInstances:
+            case PrivateTag.VisibleInstancesonStudyLevel:
+                return VR.IS;
+
+            case PrivateTag.SenderSystemDeviceName:
+                return VR.LO;
+
+            case PrivateTag.SeriesObjectStates:
+            case PrivateTag.InstanceObjectStates:
+                return VR.SQ;
         }
         return VR.UN;
     }

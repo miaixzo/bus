@@ -76,39 +76,54 @@ public class HL7Charset {
         if (value != null)
             return value;
         switch (code) {
-        case "8859/1":
-            return "ISO-8859-1";
-        case "8859/2":
-            return "ISO-8859-2";
-        case "8859/3":
-            return "ISO-8859-3";
-        case "8859/4":
-            return "ISO-8859-4";
-        case "8859/5":
-            return "ISO-8859-5";
-        case "8859/6":
-            return "ISO-8859-6";
-        case "8859/7":
-            return "ISO-8859-7";
-        case "8859/8":
-            return "ISO-8859-8";
-        case "8859/9":
-            return "ISO-8859-9";
-        case "ISO IR14":
-            return "JIS_X0201";
-        case "ISO IR87":
-            return "x-JIS0208";
-        case "ISO IR159":
-            return "JIS_X0212-1990";
-        case "GB 18030-2000":
-            return "GB18030";
-        case "KS X 1001":
-            return "EUC-KR";
-        case "CNS 11643-1992":
-            return "TIS-620";
-        case "UNICODE":
-        case "UNICODE UTF-8":
-            return "UTF-8";
+            case "8859/1":
+                return "ISO-8859-1";
+
+            case "8859/2":
+                return "ISO-8859-2";
+
+            case "8859/3":
+                return "ISO-8859-3";
+
+            case "8859/4":
+                return "ISO-8859-4";
+
+            case "8859/5":
+                return "ISO-8859-5";
+
+            case "8859/6":
+                return "ISO-8859-6";
+
+            case "8859/7":
+                return "ISO-8859-7";
+
+            case "8859/8":
+                return "ISO-8859-8";
+
+            case "8859/9":
+                return "ISO-8859-9";
+
+            case "ISO IR14":
+                return "JIS_X0201";
+
+            case "ISO IR87":
+                return "x-JIS0208";
+
+            case "ISO IR159":
+                return "JIS_X0212-1990";
+
+            case "GB 18030-2000":
+                return "GB18030";
+
+            case "KS X 1001":
+                return "EUC-KR";
+
+            case "CNS 11643-1992":
+                return "TIS-620";
+
+            case "UNICODE":
+            case "UNICODE UTF-8":
+                return "UTF-8";
         }
         return "US-ASCII";
     }
@@ -116,39 +131,54 @@ public class HL7Charset {
     public static String toDicomCharacterSetCode(String code) {
         if (code != null && !code.isEmpty())
             switch (code) {
-            case "8859/1":
-                return "ISO_IR 100";
-            case "8859/2":
-                return "ISO_IR 101";
-            case "8859/3":
-                return "ISO_IR 109";
-            case "8859/4":
-                return "ISO_IR 110";
-            case "8859/5":
-                return "ISO_IR 144";
-            case "8859/6":
-                return "ISO_IR 127";
-            case "8859/7":
-                return "ISO_IR 126";
-            case "8859/8":
-                return "ISO_IR 138";
-            case "8859/9":
-                return "ISO_IR 148";
-            case "ISO IR14":
-                return "ISO_IR 13";
-            case "ISO IR87":
-                return "ISO 2022 IR 87";
-            case "ISO IR159":
-                return "ISO 2022 IR 159";
-            case "GB 18030-2000":
-                return "GB18030";
-            case "KS X 1001":
-                return "ISO 2022 IR 149";
-            case "CNS 11643-1992":
-                return "ISO_IR 166";
-            case "UNICODE":
-            case "UNICODE UTF-8":
-                return "ISO_IR 192";
+                case "8859/1":
+                    return "ISO_IR 100";
+
+                case "8859/2":
+                    return "ISO_IR 101";
+
+                case "8859/3":
+                    return "ISO_IR 109";
+
+                case "8859/4":
+                    return "ISO_IR 110";
+
+                case "8859/5":
+                    return "ISO_IR 144";
+
+                case "8859/6":
+                    return "ISO_IR 127";
+
+                case "8859/7":
+                    return "ISO_IR 126";
+
+                case "8859/8":
+                    return "ISO_IR 138";
+
+                case "8859/9":
+                    return "ISO_IR 148";
+
+                case "ISO IR14":
+                    return "ISO_IR 13";
+
+                case "ISO IR87":
+                    return "ISO 2022 IR 87";
+
+                case "ISO IR159":
+                    return "ISO 2022 IR 159";
+
+                case "GB 18030-2000":
+                    return "GB18030";
+
+                case "KS X 1001":
+                    return "ISO 2022 IR 149";
+
+                case "CNS 11643-1992":
+                    return "ISO_IR 166";
+
+                case "UNICODE":
+                case "UNICODE UTF-8":
+                    return "ISO_IR 192";
             }
         return null;
     }

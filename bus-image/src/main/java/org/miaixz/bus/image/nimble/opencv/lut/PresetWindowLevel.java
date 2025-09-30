@@ -121,8 +121,12 @@ public class PresetWindowLevel {
         return defaultLutShape;
     }
 
-    private static void buildPresetFromLutData(ImageAdapter adapter, WlPresentation wl, VoiLutModule vLut,
-            String dicomKeyWord, ArrayList<PresetWindowLevel> presetList) {
+    private static void buildPresetFromLutData(
+            ImageAdapter adapter,
+            WlPresentation wl,
+            VoiLutModule vLut,
+            String dicomKeyWord,
+            ArrayList<PresetWindowLevel> presetList) {
         List<LookupTableCV> voiLUTsData = getVoiLutData(vLut, wl);
         List<String> voiLUTsExplanation = getVoiLUTExplanation(vLut, wl);
 
@@ -131,7 +135,10 @@ public class PresetWindowLevel {
 
             for (int i = 0; i < voiLUTsData.size(); i++) {
                 String explanation = getPresetExplanation(voiLUTsExplanation, i, defaultExplanation + Symbol.SPACE + i);
-                PresetWindowLevel preset = buildPresetFromLutData(adapter, voiLUTsData.get(i), wl,
+                PresetWindowLevel preset = buildPresetFromLutData(
+                        adapter,
+                        voiLUTsData.get(i),
+                        wl,
                         explanation + dicomKeyWord);
                 if (preset == null) {
                     continue;
@@ -159,8 +166,13 @@ public class PresetWindowLevel {
         return explanation;
     }
 
-    private static void buildPreset(List<Double> levelList, List<Double> windowList, List<String> wlExplanationList,
-            String dicomKeyWord, LutShape defaultLutShape, ArrayList<PresetWindowLevel> presetList) {
+    private static void buildPreset(
+            List<Double> levelList,
+            List<Double> windowList,
+            List<String> wlExplanationList,
+            String dicomKeyWord,
+            LutShape defaultLutShape,
+            ArrayList<PresetWindowLevel> presetList) {
         if (!levelList.isEmpty() && !windowList.isEmpty()) {
             String defaultExplanation = "Default";
 
@@ -233,8 +245,11 @@ public class PresetWindowLevel {
         return luts;
     }
 
-    public static PresetWindowLevel buildPresetFromLutData(ImageAdapter adapter, LookupTableCV voiLUTsData,
-            WlPresentation wl, String explanation) {
+    public static PresetWindowLevel buildPresetFromLutData(
+            ImageAdapter adapter,
+            LookupTableCV voiLUTsData,
+            WlPresentation wl,
+            String explanation) {
         if (adapter == null || voiLUTsData == null || explanation == null) {
             return null;
         }

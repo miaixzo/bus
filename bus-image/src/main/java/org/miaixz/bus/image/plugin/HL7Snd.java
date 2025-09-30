@@ -119,6 +119,7 @@ public class HL7Snd extends Device {
     }
 
     class HL7Send extends SimpleFileVisitor<Path> {
+
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
             send(readFromFile(file));

@@ -106,7 +106,12 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
         if (isTraceEnabled()) {
             if (this.isLocationAwareLogger) {
-                locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.TRACE_INT, t, format,
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.TRACE_INT,
+                        t,
+                        format,
                         args);
             } else {
                 logger.trace(StringKit.format(format, args), t);
@@ -123,7 +128,12 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
         if (isDebugEnabled()) {
             if (this.isLocationAwareLogger) {
-                locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.DEBUG_INT, t, format,
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.DEBUG_INT,
+                        t,
+                        format,
                         args);
             } else {
                 logger.debug(StringKit.format(format, args), t);
@@ -140,7 +150,12 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
         if (isInfoEnabled()) {
             if (this.isLocationAwareLogger) {
-                locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.INFO_INT, t, format,
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.INFO_INT,
+                        t,
+                        format,
                         args);
             } else {
                 logger.info(StringKit.format(format, args), t);
@@ -157,7 +172,12 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
         if (isWarnEnabled()) {
             if (this.isLocationAwareLogger) {
-                locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.WARN_INT, t, format,
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.WARN_INT,
+                        t,
+                        format,
                         args);
             } else {
                 logger.warn(StringKit.format(format, args), t);
@@ -174,7 +194,12 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
         if (isErrorEnabled()) {
             if (this.isLocationAwareLogger) {
-                locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.ERROR_INT, t, format,
+                locationAwareLog(
+                        (LocationAwareLogger) this.logger,
+                        fqcn,
+                        LocationAwareLogger.ERROR_INT,
+                        t,
+                        format,
                         args);
             } else {
                 logger.error(StringKit.format(format, args), t);
@@ -183,26 +208,35 @@ public class Slf4jLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final Level level, final Throwable t, final String format,
+    public void log(
+            final String fqcn,
+            final Level level,
+            final Throwable t,
+            final String format,
             final Object... args) {
         switch (level) {
-        case TRACE:
-            trace(fqcn, t, format, args);
-            break;
-        case DEBUG:
-            debug(fqcn, t, format, args);
-            break;
-        case INFO:
-            info(fqcn, t, format, args);
-            break;
-        case WARN:
-            warn(fqcn, t, format, args);
-            break;
-        case ERROR:
-            error(fqcn, t, format, args);
-            break;
-        default:
-            throw new Error(StringKit.format("Can not identify level: {}", level));
+            case TRACE:
+                trace(fqcn, t, format, args);
+                break;
+
+            case DEBUG:
+                debug(fqcn, t, format, args);
+                break;
+
+            case INFO:
+                info(fqcn, t, format, args);
+                break;
+
+            case WARN:
+                warn(fqcn, t, format, args);
+                break;
+
+            case ERROR:
+                error(fqcn, t, format, args);
+                break;
+
+            default:
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 
@@ -216,8 +250,13 @@ public class Slf4jLoggingProvider extends AbstractProvider {
      * @param format    消息模板
      * @param args      参数
      */
-    private void locationAwareLog(final LocationAwareLogger logger, final String fqcn, final int level_int,
-            final Throwable t, final String format, final Object[] args) {
+    private void locationAwareLog(
+            final LocationAwareLogger logger,
+            final String fqcn,
+            final int level_int,
+            final Throwable t,
+            final String format,
+            final Object[] args) {
         // ((LocationAwareLogger)this.logger).log(null, fqcn, level_int, msgTemplate, args, t);
         // 由于slf4j-log4j12中此方法的实现存在bug，故在此拼接参数
         logger.log(null, fqcn, level_int, StringKit.format(format, args), null, t);
@@ -230,12 +269,12 @@ public class Slf4jLoggingProvider extends AbstractProvider {
             ch.qos.logback.classic.Level logbackLevel = logbackLogger.getLevel();
             if (logbackLevel != null) {
                 return switch (logbackLevel.toString()) {
-                case "TRACE" -> Level.TRACE;
-                case "DEBUG" -> Level.DEBUG;
-                case "INFO" -> Level.INFO;
-                case "WARN" -> Level.WARN;
-                case "ERROR" -> Level.ERROR;
-                default -> Level.OFF;
+                    case "TRACE" -> Level.TRACE;
+                    case "DEBUG" -> Level.DEBUG;
+                    case "INFO" -> Level.INFO;
+                    case "WARN" -> Level.WARN;
+                    case "ERROR" -> Level.ERROR;
+                    default -> Level.OFF;
                 };
             }
         }

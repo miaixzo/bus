@@ -34,6 +34,7 @@ package org.miaixz.bus.pay;
  * @since Java 17+
  */
 public enum Mode {
+
     /**
      * 商户模式
      */

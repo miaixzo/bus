@@ -87,7 +87,10 @@ public class ExcelSaxKit {
      * @param numFmtString  数字格式名
      * @return 数据值
      */
-    public static Object getDataValue(CellDataType cellDataType, final String value, final SharedStrings sharedStrings,
+    public static Object getDataValue(
+            CellDataType cellDataType,
+            final String value,
+            final SharedStrings sharedStrings,
             final String numFmtString) {
         if (null == value) {
             return null;
@@ -99,43 +102,49 @@ public class ExcelSaxKit {
 
         Object result = null;
         switch (cellDataType) {
-        case BOOL:
-            result = (value.charAt(0) != '0');
-            break;
-        case ERROR:
-            result = StringKit.format("\\\"ERROR: {} ", value);
-            break;
-        case FORMULA:
-            result = StringKit.format("\"{}\"", value);
-            break;
-        case INLINESTR:
-            result = new XSSFRichTextString(value).toString();
-            break;
-        case SSTINDEX:
-            try {
-                final int index = Integer.parseInt(value);
-                result = sharedStrings.getItemAt(index).getString();
-            } catch (final NumberFormatException e) {
-                result = value;
-            }
-            break;
-        case DATE:
-            try {
-                result = getDateValue(value);
-            } catch (final Exception e) {
-                result = value;
-            }
-            break;
-        default:
-            try {
-                result = getNumberValue(value, numFmtString);
-            } catch (final NumberFormatException ignore) {
-            }
+            case BOOL:
+                result = (value.charAt(0) != '0');
+                break;
 
-            if (null == result) {
-                result = value;
-            }
-            break;
+            case ERROR:
+                result = StringKit.format("\\\"ERROR: {} ", value);
+                break;
+
+            case FORMULA:
+                result = StringKit.format("\"{}\"", value);
+                break;
+
+            case INLINESTR:
+                result = new XSSFRichTextString(value).toString();
+                break;
+
+            case SSTINDEX:
+                try {
+                    final int index = Integer.parseInt(value);
+                    result = sharedStrings.getItemAt(index).getString();
+                } catch (final NumberFormatException e) {
+                    result = value;
+                }
+                break;
+
+            case DATE:
+                try {
+                    result = getDateValue(value);
+                } catch (final Exception e) {
+                    result = value;
+                }
+                break;
+
+            default:
+                try {
+                    result = getNumberValue(value, numFmtString);
+                } catch (final NumberFormatException ignore) {
+                }
+
+                if (null == result) {
+                    result = value;
+                }
+                break;
         }
         return result;
     }
@@ -226,7 +235,8 @@ public class ExcelSaxKit {
      * @param formatListener {@link FormatTrackingHSSFListener}
      * @return 是否为日期格式
      */
-    public static boolean isDateFormat(final CellValueRecordInterface cell,
+    public static boolean isDateFormat(
+            final CellValueRecordInterface cell,
             final FormatTrackingHSSFListener formatListener) {
         final int formatIndex = formatListener.getFormatIndex(cell);
         final String formatString = formatListener.getFormatString(cell);
@@ -273,7 +283,9 @@ public class ExcelSaxKit {
      * @param formatListener {@link FormatTrackingHSSFListener}
      * @return 值，可能为Date或Double或Long
      */
-    public static Object getNumberOrDateValue(final CellValueRecordInterface cell, final double value,
+    public static Object getNumberOrDateValue(
+            final CellValueRecordInterface cell,
+            final double value,
             final FormatTrackingHSSFListener formatListener) {
         if (isDateFormat(cell, formatListener)) {
             // 可能为日期格式

@@ -206,12 +206,14 @@ public class AppleProvider extends AbstractProvider {
 
     @Data
     static class AppleUserInfo {
+
         private AppleUsername name;
         private String email;
     }
 
     @Data
     static class AppleUsername {
+
         private String firstName;
         private String lastName;
     }

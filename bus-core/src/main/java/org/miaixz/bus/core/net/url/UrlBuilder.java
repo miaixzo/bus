@@ -122,8 +122,14 @@ public final class UrlBuilder implements Builder<String> {
      * @return UrlBuilder
      */
     public static UrlBuilder of(final UrlBuilder builder) {
-        return of(builder.getScheme(), builder.getHost(), builder.getPort(), builder.getPaths(), builder.getQuerys(),
-                builder.getFragment(), builder.getCharset());
+        return of(
+                builder.getScheme(),
+                builder.getHost(),
+                builder.getPort(),
+                builder.getPaths(),
+                builder.getQuerys(),
+                builder.getFragment(),
+                builder.getCharset());
     }
 
     /**
@@ -134,7 +140,13 @@ public final class UrlBuilder implements Builder<String> {
      * @return UrlBuilder
      */
     public static UrlBuilder of(final URI uri, final java.nio.charset.Charset charset) {
-        return of(uri.getScheme(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getRawQuery(), uri.getFragment(),
+        return of(
+                uri.getScheme(),
+                uri.getHost(),
+                uri.getPort(),
+                uri.getPath(),
+                uri.getRawQuery(),
+                uri.getFragment(),
                 charset);
     }
 
@@ -216,7 +228,13 @@ public final class UrlBuilder implements Builder<String> {
      * @return UrlBuilder
      */
     public static UrlBuilder of(final URL url, final java.nio.charset.Charset charset) {
-        return of(url.getProtocol(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef(),
+        return of(
+                url.getProtocol(),
+                url.getHost(),
+                url.getPort(),
+                url.getPath(),
+                url.getQuery(),
+                url.getRef(),
                 charset);
     }
 
@@ -232,8 +250,14 @@ public final class UrlBuilder implements Builder<String> {
      * @param charset  编码，用于URLEncode和URLDecode
      * @return UrlBuilder
      */
-    public static UrlBuilder of(final String scheme, final String host, final int port, final String path,
-            final String query, final String fragment, final java.nio.charset.Charset charset) {
+    public static UrlBuilder of(
+            final String scheme,
+            final String host,
+            final int port,
+            final String path,
+            final String query,
+            final String fragment,
+            final java.nio.charset.Charset charset) {
         return of(scheme, host, port, UrlPath.of(path, charset), UrlQuery.of(query, charset, false), fragment, charset);
     }
 
@@ -249,8 +273,14 @@ public final class UrlBuilder implements Builder<String> {
      * @param charset  编码，用于URLEncode和URLDecode
      * @return UrlBuilder
      */
-    public static UrlBuilder of(final String scheme, final String host, final int port, final UrlPath path,
-            final UrlQuery query, final String fragment, final java.nio.charset.Charset charset) {
+    public static UrlBuilder of(
+            final String scheme,
+            final String host,
+            final int port,
+            final UrlPath path,
+            final UrlQuery query,
+            final String fragment,
+            final java.nio.charset.Charset charset) {
         return new UrlBuilder(scheme, host, port, path, query, fragment, charset);
     }
 

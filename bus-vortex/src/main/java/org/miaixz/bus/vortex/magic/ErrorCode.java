@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 网关错误码: 115xxx
+ * 网关错误码: 116xxx
  * 
  * @author Kimi Liu
  * @since Java 17+
@@ -39,12 +39,23 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 服务端超时
+     * 服务未响应
      */
-    public static final Errors _80010001 = ErrorRegistry.builder().key("80010003").value("服务请求超时").build();
+    public static final Errors _116000 = ErrorRegistry.builder().key("116000").value("服务未响应").build();
+
     /**
-     * 服务端未响应
+     * 角色异常
      */
-    public static final Errors _80010002 = ErrorRegistry.builder().key("80010004").value("服务请求异常").build();
+    public static final Errors _116001 = ErrorRegistry.builder().key("116001").value("角色异常").build();
+
+    /**
+     * ApiKey无效
+     */
+    public static final Errors _116002 = ErrorRegistry.builder().key("116002").value("ApiKey无效").build();
+
+    /**
+     * ApiKey已过期
+     */
+    public static final Errors _116003 = ErrorRegistry.builder().key("116003").value("ApiKey已过期").build();
 
 }

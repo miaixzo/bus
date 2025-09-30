@@ -2114,7 +2114,12 @@ public class Attributes implements Serializable {
      * @param precision      用作返回值：包含有关包含的日期/时间精度以及标签值本身是否包含时区信息（仅适用于 {@link VR#DT} 标签）的信息。
      * @return {@link ZonedDateTime}、{@link LocalDateTime}、{@link LocalDate} 或 {@link LocalTime} 的实例，或 defVal
      */
-    public Temporal getTemporal(String privateCreator, int tag, VR vr, int valueIndex, Temporal defVal,
+    public Temporal getTemporal(
+            String privateCreator,
+            int tag,
+            VR vr,
+            int valueIndex,
+            Temporal defVal,
             DatePrecision precision) {
         int index = indexOf(privateCreator, tag);
         if (index < 0)
@@ -2746,8 +2751,8 @@ public class Attributes implements Serializable {
         try {
             TimeZone tz = getTimeZone();
             while (i < tm.length)
-                dates[i++] = VR.DT.toDate(da[i] + tm[i], tz, 0, false, null,
-                        precision.precisions[i] = new DatePrecision());
+                dates[i++] = VR.DT
+                        .toDate(da[i] + tm[i], tz, 0, false, null, precision.precisions[i] = new DatePrecision());
             while (i < da.length)
                 dates[i++] = VR.DA.toDate(da[i], tz, 0, false, null, precision.precisions[i] = new DatePrecision());
         } catch (IllegalArgumentException e) {
@@ -2951,10 +2956,20 @@ public class Attributes implements Serializable {
         DatePrecision precision = new DatePrecision();
         return new DateRange(
                 darange[0] == null ? null
-                        : VR.DT.toDate(tmrange[0] == null ? darange[0] : darange[0] + tmrange[0], tz, 0, false, null,
+                        : VR.DT.toDate(
+                                tmrange[0] == null ? darange[0] : darange[0] + tmrange[0],
+                                tz,
+                                0,
+                                false,
+                                null,
                                 precision),
                 darange[1] == null ? null
-                        : VR.DT.toDate(tmrange[1] == null ? darange[1] : darange[1] + tmrange[1], tz, 0, true, null,
+                        : VR.DT.toDate(
+                                tmrange[1] == null ? darange[1] : darange[1] + tmrange[1],
+                                tz,
+                                0,
+                                true,
+                                null,
                                 precision));
     }
 
@@ -3657,7 +3672,12 @@ public class Attributes implements Serializable {
      * @param ds                  日期数组
      * @return 之前的值
      */
-    public Object setDate(String privateCreator, int tag, VR vr, boolean applyTimezoneOffset, DatePrecision precision,
+    public Object setDate(
+            String privateCreator,
+            int tag,
+            VR vr,
+            boolean applyTimezoneOffset,
+            DatePrecision precision,
             Date... ds) {
         ensureModifiable();
         return set(privateCreator, tag, vr, vr.toValue(ds, applyTimezoneOffset ? getTimeZone() : null, precision));
@@ -4190,15 +4210,29 @@ public class Attributes implements Serializable {
      * @param modified                        修改的属性集合
      * @return 是否添加了属性
      */
-    private boolean add(Attributes other, int[] include, int[] exclude, int fromIndex, int toIndex,
-            Attributes selection, UpdatePolicy updatePolicy, boolean mergeOriginalAttributesSequence, boolean simulate,
+    private boolean add(
+            Attributes other,
+            int[] include,
+            int[] exclude,
+            int fromIndex,
+            int toIndex,
+            Attributes selection,
+            UpdatePolicy updatePolicy,
+            boolean mergeOriginalAttributesSequence,
+            boolean simulate,
             Attributes modified) {
         if (updatePolicy == UpdatePolicy.REPLACE)
             throw new IllegalArgumentException("updatePolicy:" + updatePolicy);
         boolean decodeStringValue = false;
         if (updatePolicy != UpdatePolicy.PRESERVE && !isEmpty()) {
-            boolean updateSpecificCharacterSet = isUpdateSpecificCharacterSet(other, include, exclude, fromIndex,
-                    toIndex, selection, updatePolicy);
+            boolean updateSpecificCharacterSet = isUpdateSpecificCharacterSet(
+                    other,
+                    include,
+                    exclude,
+                    fromIndex,
+                    toIndex,
+                    selection,
+                    updatePolicy);
             if (!(updateSpecificCharacterSet
                     ? other.getSpecificCharacterSet().contains(getSpecificCharacterSet())
                             || !containsNonASCIIStringValues(null, null, 0, 0, null)
@@ -4281,7 +4315,10 @@ public class Attributes implements Serializable {
                         } else if (origValue instanceof Fragments) {
                             modified.set(privateCreator, tag, (Fragments) origValue);
                         } else {
-                            modified.set(privateCreator, tag, vrs[j],
+                            modified.set(
+                                    privateCreator,
+                                    tag,
+                                    vrs[j],
                                     toggleEndian(vrs[j], origValue, modifiedToggleEndian));
                         }
                     }
@@ -4294,7 +4331,10 @@ public class Attributes implements Serializable {
                             && (dest = getSequence(tag)) != null)
                         mergeOriginalAttributesSequence((Sequence) value, dest);
                     else
-                        set(privateCreator0, tag, (Sequence) value,
+                        set(
+                                privateCreator0,
+                                tag,
+                                (Sequence) value,
                                 selection != null ? selection.getNestedDataset(privateCreator, tag) : null);
                 } else if (value instanceof Fragments) {
                     set(privateCreator0, tag, (Fragments) value);
@@ -4322,7 +4362,11 @@ public class Attributes implements Serializable {
      * @param selection 选择属性集合
      * @return 是否包含非ASCII字符串值
      */
-    private boolean containsNonASCIIStringValues(int[] include, int[] exclude, int fromIndex, int toIndex,
+    private boolean containsNonASCIIStringValues(
+            int[] include,
+            int[] exclude,
+            int fromIndex,
+            int toIndex,
             Attributes selection) {
         for (int i = 0; i < size; i++) {
             int tag = tags[i];
@@ -4357,21 +4401,28 @@ public class Attributes implements Serializable {
      * @param updatePolicy 更新策略
      * @return 是否更新特定字符集
      */
-    private boolean isUpdateSpecificCharacterSet(Attributes other, int[] include, int[] exclude, int fromIndex,
-            int toIndex, Attributes selection, UpdatePolicy updatePolicy) {
+    private boolean isUpdateSpecificCharacterSet(
+            Attributes other,
+            int[] include,
+            int[] exclude,
+            int fromIndex,
+            int toIndex,
+            Attributes selection,
+            UpdatePolicy updatePolicy) {
         String[] oscs = other.getStrings(Tag.SpecificCharacterSet);
         if (oscs == null)
             return false;
         if (updatePolicy != null)
             switch (updatePolicy) {
-            case PRESERVE:
-                return false;
-            case SUPPLEMENT:
-                if (containsValue(Tag.SpecificCharacterSet))
+                case PRESERVE:
                     return false;
-            case MERGE:
-                if (oscs.length == 0)
-                    return false;
+
+                case SUPPLEMENT:
+                    if (containsValue(Tag.SpecificCharacterSet))
+                        return false;
+                case MERGE:
+                    if (oscs.length == 0)
+                        return false;
             }
         return (include == null || Arrays.binarySearch(include, fromIndex, toIndex, Tag.SpecificCharacterSet) >= 0)
                 && (exclude == null || Arrays.binarySearch(exclude, fromIndex, toIndex, Tag.SpecificCharacterSet) < 0)
@@ -4435,7 +4486,10 @@ public class Attributes implements Serializable {
      * @param modified                        修改的属性集合
      * @return 是否更新了属性
      */
-    public boolean update(UpdatePolicy updatePolicy, boolean mergeOriginalAttributesSequence, Attributes newAttrs,
+    public boolean update(
+            UpdatePolicy updatePolicy,
+            boolean mergeOriginalAttributesSequence,
+            Attributes newAttrs,
             Attributes modified) {
         ensureModifiable();
         return add(newAttrs, null, null, 0, 0, null, updatePolicy, mergeOriginalAttributesSequence, false, modified);
@@ -4462,7 +4516,10 @@ public class Attributes implements Serializable {
      * @param selection 排序的标签值
      * @return 如果添加或覆盖了一个或多个属性，则为 true
      */
-    public boolean updateSelected(UpdatePolicy updatePolicy, Attributes newAttrs, Attributes modified,
+    public boolean updateSelected(
+            UpdatePolicy updatePolicy,
+            Attributes newAttrs,
+            Attributes modified,
             int... selection) {
         ensureModifiable();
         return add(newAttrs, selection, null, 0, selection.length, null, updatePolicy, false, false, modified);
@@ -4476,7 +4533,10 @@ public class Attributes implements Serializable {
      * @param selection 排序的标签值
      * @return 如果会添加或覆盖一个或多个属性，则为 true
      */
-    public boolean testUpdateSelected(UpdatePolicy updatePolicy, Attributes newAttrs, Attributes modified,
+    public boolean testUpdateSelected(
+            UpdatePolicy updatePolicy,
+            Attributes newAttrs,
+            Attributes modified,
             int... selection) {
         return add(newAttrs, selection, null, 0, selection.length, null, updatePolicy, false, true, modified);
     }
@@ -4490,7 +4550,10 @@ public class Attributes implements Serializable {
      * @param selection 排序的标签值
      * @return 如果添加或覆盖了一个或多个属性，则为 true
      */
-    public boolean updateNotSelected(UpdatePolicy updatePolicy, Attributes newAttrs, Attributes modified,
+    public boolean updateNotSelected(
+            UpdatePolicy updatePolicy,
+            Attributes newAttrs,
+            Attributes modified,
             int... selection) {
         ensureModifiable();
         return add(newAttrs, null, selection, 0, selection.length, null, updatePolicy, false, false, modified);
@@ -4504,7 +4567,10 @@ public class Attributes implements Serializable {
      * @param selection 排序的标签值
      * @return 如果会添加或覆盖一个或多个属性，则为 true
      */
-    public boolean testUpdateNotSelected(UpdatePolicy updatePolicy, Attributes newAttrs, Attributes modified,
+    public boolean testUpdateNotSelected(
+            UpdatePolicy updatePolicy,
+            Attributes newAttrs,
+            Attributes modified,
             int... selection) {
         return add(newAttrs, null, selection, 0, selection.length, null, updatePolicy, false, true, modified);
     }
@@ -4519,8 +4585,12 @@ public class Attributes implements Serializable {
      * @param originalAttributes     原始属性
      * @return 相同的属性实例
      */
-    public Attributes addOriginalAttributes(String sourceOfPreviousValues, Date modificationDateTime,
-            String reasonForModification, String modifyingSystem, Attributes originalAttributes) {
+    public Attributes addOriginalAttributes(
+            String sourceOfPreviousValues,
+            Date modificationDateTime,
+            String reasonForModification,
+            String modifyingSystem,
+            Attributes originalAttributes) {
         ensureModifiable();
         if (originalAttributes.isEmpty())
             return this;
@@ -4567,32 +4637,34 @@ public class Attributes implements Serializable {
         for (int i = 0; i < size; i++) {
             int tag = tags[i];
             switch (Tag.Type.typeOf(tag)) {
-            case PRIVATE_CREATOR:
-                continue;
-            case PRIVATE:
-                int tmp = Tag.creatorTagOf(tag);
-                if (creatorTag != tmp) {
-                    creatorTag = tmp;
-                    privateCreator = privateCreatorAt(indexOf(tmp));
-                    if (privateCreator != null) {
-                        otherCreatorTag = other.creatorTagOf(privateCreator, tag, false);
-                        if (otherCreatorTag == -1)
-                            return false; // other has no matching private creator
-                    } else {
-                        if (other.privateCreatorAt(other.indexOf(tmp)) != null)
-                            return false; // other attribute has associated private creator
-                    }
-                }
-                if (privateCreator != null) {
-                    int j = other.indexOf(Tag.toPrivateTag(otherCreatorTag, tag));
-                    if (j < 0 || !equalValues(other, i, j))
-                        return false;
+                case PRIVATE_CREATOR:
                     continue;
-                }
-                // fall through: treat private attributes without associated private creator like standard attributes
-            case STANDARD:
-                if (tag != other.tags[i] || !equalValues(other, i, i))
-                    return false;
+
+                case PRIVATE:
+                    int tmp = Tag.creatorTagOf(tag);
+                    if (creatorTag != tmp) {
+                        creatorTag = tmp;
+                        privateCreator = privateCreatorAt(indexOf(tmp));
+                        if (privateCreator != null) {
+                            otherCreatorTag = other.creatorTagOf(privateCreator, tag, false);
+                            if (otherCreatorTag == -1)
+                                return false; // other has no matching private creator
+                        } else {
+                            if (other.privateCreatorAt(other.indexOf(tmp)) != null)
+                                return false; // other attribute has associated private creator
+                        }
+                    }
+                    if (privateCreator != null) {
+                        int j = other.indexOf(Tag.toPrivateTag(otherCreatorTag, tag));
+                        if (j < 0 || !equalValues(other, i, j))
+                            return false;
+                        continue;
+                    }
+                    // fall through: treat private attributes without associated private creator like standard
+                    // attributes
+                case STANDARD:
+                    if (tag != other.tags[i] || !equalValues(other, i, i))
+                        return false;
             }
         }
         return true;
@@ -4739,8 +4811,9 @@ public class Attributes implements Serializable {
     private void set(String privateCreator, int tag, Sequence src, Attributes selection) {
         Sequence dst = newSequence(privateCreator, tag, src.size());
         for (Attributes item : src)
-            dst.add(selection != null && !selection.isEmpty() ? new Attributes(item, bigEndian, selection)
-                    : new Attributes(item, bigEndian));
+            dst.add(
+                    selection != null && !selection.isEmpty() ? new Attributes(item, bigEndian, selection)
+                            : new Attributes(item, bigEndian));
     }
 
     /**
@@ -4894,8 +4967,14 @@ public class Attributes implements Serializable {
      * @param prefix         前缀
      * @return 字符串构建器
      */
-    private StringBuilder appendAttribute(String privateCreator, int tag, VR vr, Object value, int maxLength,
-            StringBuilder sb, String prefix) {
+    private StringBuilder appendAttribute(
+            String privateCreator,
+            int tag,
+            VR vr,
+            Object value,
+            int maxLength,
+            StringBuilder sb,
+            String prefix) {
         sb.append(prefix).append(Tag.toString(tag)).append(' ').append(vr).append(" [");
         if (vr.prompt(value, bigEndian, getSpecificCharacterSet(vr), maxLength - sb.length() - 1, sb)) {
             sb.append("] ").append(ElementDictionary.keywordOf(tag, privateCreator));
@@ -4930,7 +5009,10 @@ public class Attributes implements Serializable {
      * @param groupLengths 组长度数组
      * @return 长度
      */
-    private int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, SpecificCharacterSet cs,
+    private int calcLength(
+            ImageEncodingOptions encOpts,
+            boolean explicitVR,
+            SpecificCharacterSet cs,
             int[] groupLengths) {
         int len, totlen = 0;
         int groupLengthTag = -1;
@@ -5185,7 +5267,10 @@ public class Attributes implements Serializable {
      * @return 创建的 DICOM 文件元信息
      */
     public Attributes createFileMetaInformation(String tsuid, boolean includeImplementationVersionName) {
-        return createFileMetaInformation(getString(Tag.SOPInstanceUID, null), getString(Tag.SOPClassUID, null), tsuid,
+        return createFileMetaInformation(
+                getString(Tag.SOPInstanceUID, null),
+                getString(Tag.SOPClassUID, null),
+                tsuid,
                 includeImplementationVersionName);
     }
 
@@ -5213,7 +5298,10 @@ public class Attributes implements Serializable {
      *                                         如果要省略它。
      * @return 创建的 DICOM 文件元信息
      */
-    public static Attributes createFileMetaInformation(String iuid, String cuid, String tsuid,
+    public static Attributes createFileMetaInformation(
+            String iuid,
+            String cuid,
+            String tsuid,
             boolean includeImplementationVersionName) {
         if (iuid == null || iuid.isEmpty())
             throw new IllegalArgumentException("Missing SOP Instance UID");
@@ -5265,7 +5353,12 @@ public class Attributes implements Serializable {
             if (isEmpty(keyValue))
                 continue;
             if (keyVrs[i].isStringType()) {
-                if (!matches(privateCreator, tag, keyVrs[i], ignorePNCase, matchNoValue,
+                if (!matches(
+                        privateCreator,
+                        tag,
+                        keyVrs[i],
+                        ignorePNCase,
+                        matchNoValue,
                         keys.getStrings(privateCreator, tag, null)))
                     return false;
             } else if (keyValue instanceof Sequence) {
@@ -5289,7 +5382,12 @@ public class Attributes implements Serializable {
      * @param keyVals        键值数组
      * @return 是否匹配
      */
-    private boolean matches(String privateCreator, int tag, VR vr, boolean ignorePNCase, boolean matchNoValue,
+    private boolean matches(
+            String privateCreator,
+            int tag,
+            VR vr,
+            boolean ignorePNCase,
+            boolean matchNoValue,
             String[] keyVals) {
         String[] vals = getStrings(privateCreator, tag, null);
         if (vals == null || vals.length == 0)
@@ -5298,14 +5396,15 @@ public class Attributes implements Serializable {
         for (String keyVal : keyVals) {
             DateRange dateRange = null;
             switch (vr) {
-            case PN:
-                keyVal = new PersonName(keyVals[0]).toString();
-                break;
-            case DA:
-            case DT:
-            case TM:
-                dateRange = toDateRange(keyVal, vr);
-                break;
+                case PN:
+                    keyVal = new PersonName(keyVals[0]).toString();
+                    break;
+
+                case DA:
+                case DT:
+                case TM:
+                    dateRange = toDateRange(keyVal, vr);
+                    break;
             }
             if (Builder.containsWildCard(keyVal)) {
                 Pattern pattern = Builder.compilePattern(keyVal, ignoreCase);
@@ -5352,11 +5451,17 @@ public class Attributes implements Serializable {
      * @param keySeq         键序列
      * @return 是否匹配
      */
-    private boolean matches(String privateCreator, int tag, boolean ignorePNCase, boolean matchNoValue,
+    private boolean matches(
+            String privateCreator,
+            int tag,
+            boolean ignorePNCase,
+            boolean matchNoValue,
             Sequence keySeq) {
         int n = keySeq.size();
         if (n > 1)
-            Logger.info("Matching Key {} with VR: SQ contains {} Items - only consider first Item", Tag.toString(tag),
+            Logger.info(
+                    "Matching Key {} with VR: SQ contains {} Items - only consider first Item",
+                    Tag.toString(tag),
                     n);
         Attributes keys = keySeq.get(0);
         if (keys.isEmpty())
@@ -5526,7 +5631,10 @@ public class Attributes implements Serializable {
                 }
                 IOD[] missingItems = checkforMissingItems(matchingItems, itemIODs);
                 if (invalidItem || missingItems != null) {
-                    result.addInvalidAttributeValue(el, ValidationResult.Invalid.Item, itemValidationResults,
+                    result.addInvalidAttributeValue(
+                            el,
+                            ValidationResult.Invalid.Item,
+                            itemValidationResults,
                             missingItems);
                 }
             }

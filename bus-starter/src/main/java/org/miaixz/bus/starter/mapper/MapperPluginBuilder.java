@@ -61,7 +61,7 @@ import net.sf.jsqlparser.expression.StringValue;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MybatisPluginBuilder {
+public class MapperPluginBuilder {
 
     /**
      * 构建并配置 MyBatis 拦截器
@@ -92,8 +92,7 @@ public class MybatisPluginBuilder {
      * @param handlers    处理器列表
      */
     private static void configurePagination(Environment environment, List<MapperHandler> handlers) {
-        MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
-                GeniusBuilder.MYBATIS);
+        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
         if (ObjectKit.isNotEmpty(properties)) {
             Properties props = new Properties();
             props.setProperty("autoDelimitKeywords", properties.getAutoDelimitKeywords());
@@ -114,8 +113,7 @@ public class MybatisPluginBuilder {
      * @param handlers    处理器列表
      */
     private static void configureTenant(Environment environment, List<MapperHandler> handlers) {
-        MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
-                GeniusBuilder.MYBATIS);
+        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
 
         if (ObjectKit.isNotEmpty(properties) && ObjectKit.isNotEmpty(properties.getConfigurationProperties())) {
             Properties configProps = properties.getConfigurationProperties();
@@ -131,6 +129,7 @@ public class MybatisPluginBuilder {
 
                 TenantHandler tenantHandler = new TenantHandler();
                 tenantHandler.setProvider(new TenantProvider() {
+
                     @Override
                     public Expression getTenantId() {
                         String tenantId = ContextBuilder.getTenantId();

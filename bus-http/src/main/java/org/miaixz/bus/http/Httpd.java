@@ -74,8 +74,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     /**
      * 默认支持的协议（HTTP/2 和 HTTP/1.1）
      */
-    static final List<Protocol> DEFAULT_PROTOCOLS = org.miaixz.bus.http.Builder.immutableList(Protocol.HTTP_2,
-            Protocol.HTTP_1_1);
+    static final List<Protocol> DEFAULT_PROTOCOLS = org.miaixz.bus.http.Builder
+            .immutableList(Protocol.HTTP_2, Protocol.HTTP_1_1);
 
     /**
      * 默认连接套件（现代 TLS 和明文）
@@ -88,6 +88,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
      */
     static {
         Internal.instance = new Internal() {
+
             @Override
             public void addLenient(Headers.Builder builder, String line) {
                 builder.addLenient(line);
@@ -801,8 +802,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @throws IllegalArgumentException 如果超时值无效
          */
         public Builder callTimeout(Duration duration) {
-            callTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", duration.toMillis(),
-                    TimeUnit.MILLISECONDS);
+            callTimeout = org.miaixz.bus.http.Builder
+                    .checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
@@ -827,8 +828,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @throws IllegalArgumentException 如果超时值无效
          */
         public Builder connectTimeout(Duration duration) {
-            connectTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", duration.toMillis(),
-                    TimeUnit.MILLISECONDS);
+            connectTimeout = org.miaixz.bus.http.Builder
+                    .checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
@@ -857,8 +858,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @throws IllegalArgumentException 如果超时值无效
          */
         public Builder readTimeout(Duration duration) {
-            readTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", duration.toMillis(),
-                    TimeUnit.MILLISECONDS);
+            readTimeout = org.miaixz.bus.http.Builder
+                    .checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
@@ -885,8 +886,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @throws IllegalArgumentException 如果超时值无效
          */
         public Builder writeTimeout(Duration duration) {
-            writeTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", duration.toMillis(),
-                    TimeUnit.MILLISECONDS);
+            writeTimeout = org.miaixz.bus.http.Builder
+                    .checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
@@ -911,8 +912,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @throws IllegalArgumentException 如果间隔值无效
          */
         public Builder pingInterval(Duration duration) {
-            pingInterval = org.miaixz.bus.http.Builder.checkDuration("timeout", duration.toMillis(),
-                    TimeUnit.MILLISECONDS);
+            pingInterval = org.miaixz.bus.http.Builder
+                    .checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 

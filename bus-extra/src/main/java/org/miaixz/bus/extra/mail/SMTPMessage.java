@@ -63,7 +63,9 @@ public class SMTPMessage extends MimeMessage {
      * @param debugOutput      输出调试信息
      * @return this
      */
-    public static SMTPMessage of(final MailAccount mailAccount, final boolean useGlobalSession,
+    public static SMTPMessage of(
+            final MailAccount mailAccount,
+            final boolean useGlobalSession,
             final PrintStream debugOutput) {
         final Session session = MailKit.getSession(mailAccount, useGlobalSession);
         if (null != debugOutput) {

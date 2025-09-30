@@ -52,9 +52,9 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.AttenuationThreshold:
-        case PrivateTag.DLPEstimate:
-            return VR.DS;
+            case PrivateTag.AttenuationThreshold:
+            case PrivateTag.DLPEstimate:
+                return VR.DS;
         }
         return VR.UN;
     }

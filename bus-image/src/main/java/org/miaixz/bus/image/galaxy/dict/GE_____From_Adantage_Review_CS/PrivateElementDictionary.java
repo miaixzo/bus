@@ -52,13 +52,13 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.CREDRMode:
-        case PrivateTag.CRLatitude:
-        case PrivateTag.CRGroupNumber:
-        case PrivateTag.CRImageSerialNumber:
-        case PrivateTag.CRBarCodeNumber:
-        case PrivateTag.CRFilmOutputExposures:
-            return VR.LO;
+            case PrivateTag.CREDRMode:
+            case PrivateTag.CRLatitude:
+            case PrivateTag.CRGroupNumber:
+            case PrivateTag.CRImageSerialNumber:
+            case PrivateTag.CRBarCodeNumber:
+            case PrivateTag.CRFilmOutputExposures:
+                return VR.LO;
         }
         return VR.UN;
     }

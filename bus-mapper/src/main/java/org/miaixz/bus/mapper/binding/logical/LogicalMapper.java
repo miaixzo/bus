@@ -62,7 +62,8 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     @Override
     @Lang(Caching.class)
     @UpdateProvider(type = LogicalProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
-    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(@Param("entity") S entity,
+    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(
+            @Param("entity") S entity,
             @Param("fns") Fn.FnArray<T> fields);
 
     /**

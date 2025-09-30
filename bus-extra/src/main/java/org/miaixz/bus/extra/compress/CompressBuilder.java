@@ -278,7 +278,9 @@ public class CompressBuilder {
      * @param fileNameEditor 文件名编辑器
      * @return 归档条目名
      */
-    public static String getEntryName(final String fileName, final String path,
+    public static String getEntryName(
+            final String fileName,
+            final String path,
             final Function<String, String> fileNameEditor) {
         String entryName = (fileNameEditor == null) ? fileName : fileNameEditor.apply(fileName);
         if (StringKit.isNotEmpty(path)) {

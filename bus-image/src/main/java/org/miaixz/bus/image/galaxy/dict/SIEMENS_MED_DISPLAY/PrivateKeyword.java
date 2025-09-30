@@ -38,34 +38,47 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.PhotometricInterpretation:
-            return "PhotometricInterpretation";
-        case PrivateTag.RowsOfSubmatrix:
-            return "RowsOfSubmatrix";
-        case PrivateTag.ColumnsOfSubmatrix:
-            return "ColumnsOfSubmatrix";
-        case PrivateTag._0029_xx20_:
-            return "_0029_xx20_";
-        case PrivateTag._0029_xx21_:
-            return "_0029_xx21_";
-        case PrivateTag.OriginOfSubmatrix:
-            return "OriginOfSubmatrix";
-        case PrivateTag._0029_xx80_:
-            return "_0029_xx80_";
-        case PrivateTag.ShutterType:
-            return "ShutterType";
-        case PrivateTag.RowsOfRectangularShutter:
-            return "RowsOfRectangularShutter";
-        case PrivateTag.ColumnsOfRectangularShutter:
-            return "ColumnsOfRectangularShutter";
-        case PrivateTag.OriginOfRectangularShutter:
-            return "OriginOfRectangularShutter";
-        case PrivateTag.RadiusOfCircularShutter:
-            return "RadiusOfCircularShutter";
-        case PrivateTag.OriginOfCircularShutter:
-            return "OriginOfCircularShutter";
-        case PrivateTag.ContourOfIrregularShutter:
-            return "ContourOfIrregularShutter";
+            case PrivateTag.PhotometricInterpretation:
+                return "PhotometricInterpretation";
+
+            case PrivateTag.RowsOfSubmatrix:
+                return "RowsOfSubmatrix";
+
+            case PrivateTag.ColumnsOfSubmatrix:
+                return "ColumnsOfSubmatrix";
+
+            case PrivateTag._0029_xx20_:
+                return "_0029_xx20_";
+
+            case PrivateTag._0029_xx21_:
+                return "_0029_xx21_";
+
+            case PrivateTag.OriginOfSubmatrix:
+                return "OriginOfSubmatrix";
+
+            case PrivateTag._0029_xx80_:
+                return "_0029_xx80_";
+
+            case PrivateTag.ShutterType:
+                return "ShutterType";
+
+            case PrivateTag.RowsOfRectangularShutter:
+                return "RowsOfRectangularShutter";
+
+            case PrivateTag.ColumnsOfRectangularShutter:
+                return "ColumnsOfRectangularShutter";
+
+            case PrivateTag.OriginOfRectangularShutter:
+                return "OriginOfRectangularShutter";
+
+            case PrivateTag.RadiusOfCircularShutter:
+                return "RadiusOfCircularShutter";
+
+            case PrivateTag.OriginOfCircularShutter:
+                return "OriginOfCircularShutter";
+
+            case PrivateTag.ContourOfIrregularShutter:
+                return "ContourOfIrregularShutter";
         }
         return "";
     }

@@ -52,40 +52,43 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.SequenceType:
-            return VR.CS;
-        case PrivateTag.AcquiredSpectralRange:
-        case PrivateTag.VOIPosition:
-        case PrivateTag.VOISize:
-        case PrivateTag.SpatialGridShift:
-        case PrivateTag.SignalLimitsMinimum:
-        case PrivateTag.SignalLimitsMaximum:
-        case PrivateTag.SpecInfoMask:
-        case PrivateTag.EPITimeRateOfChangeOfMagnitude:
-        case PrivateTag.EPITimeRateOfChangeOfXComponent:
-        case PrivateTag.EPITimeRateOfChangeOfYComponent:
-        case PrivateTag.EPITimeRateOfChangeOfZComponent:
-        case PrivateTag.EPITimeRateOfChangeLegalLimit1:
-        case PrivateTag.EPIFieldCalculationSafetyFactor:
-        case PrivateTag.EPILegalLimit1OfChangeValue:
-        case PrivateTag.EPILegalLimit2OfChangeValue:
-        case PrivateTag.EPIRiseTime:
-        case PrivateTag.ArrayCoilADCOffset:
-        case PrivateTag.ArrayCoilPreamplifierGain:
-        case PrivateTag.SaturationNormalVector:
-        case PrivateTag.SaturationPositionVector:
-        case PrivateTag.SaturationThickness:
-        case PrivateTag.SaturationWidth:
-        case PrivateTag.SaturationDistance:
-            return VR.DS;
-        case PrivateTag.VectorSizeOriginal:
-        case PrivateTag.VectorSizeExtended:
-        case PrivateTag.CSIMatrixSizeOriginal:
-        case PrivateTag.CSIMatrixSizeExtended:
-        case PrivateTag.EPIOperationModeFlag:
-            return VR.IS;
-        case PrivateTag.SaturationType:
-            return VR.LO;
+            case PrivateTag.SequenceType:
+                return VR.CS;
+
+            case PrivateTag.AcquiredSpectralRange:
+            case PrivateTag.VOIPosition:
+            case PrivateTag.VOISize:
+            case PrivateTag.SpatialGridShift:
+            case PrivateTag.SignalLimitsMinimum:
+            case PrivateTag.SignalLimitsMaximum:
+            case PrivateTag.SpecInfoMask:
+            case PrivateTag.EPITimeRateOfChangeOfMagnitude:
+            case PrivateTag.EPITimeRateOfChangeOfXComponent:
+            case PrivateTag.EPITimeRateOfChangeOfYComponent:
+            case PrivateTag.EPITimeRateOfChangeOfZComponent:
+            case PrivateTag.EPITimeRateOfChangeLegalLimit1:
+            case PrivateTag.EPIFieldCalculationSafetyFactor:
+            case PrivateTag.EPILegalLimit1OfChangeValue:
+            case PrivateTag.EPILegalLimit2OfChangeValue:
+            case PrivateTag.EPIRiseTime:
+            case PrivateTag.ArrayCoilADCOffset:
+            case PrivateTag.ArrayCoilPreamplifierGain:
+            case PrivateTag.SaturationNormalVector:
+            case PrivateTag.SaturationPositionVector:
+            case PrivateTag.SaturationThickness:
+            case PrivateTag.SaturationWidth:
+            case PrivateTag.SaturationDistance:
+                return VR.DS;
+
+            case PrivateTag.VectorSizeOriginal:
+            case PrivateTag.VectorSizeExtended:
+            case PrivateTag.CSIMatrixSizeOriginal:
+            case PrivateTag.CSIMatrixSizeExtended:
+            case PrivateTag.EPIOperationModeFlag:
+                return VR.IS;
+
+            case PrivateTag.SaturationType:
+                return VR.LO;
         }
         return VR.UN;
     }

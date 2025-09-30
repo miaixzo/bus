@@ -83,7 +83,9 @@ public class JWTCreator {
      * @param signer  签名算法
      * @return JWT Token
      */
-    public static String create(final Map<String, Object> headers, final Map<String, Object> payload,
+    public static String create(
+            final Map<String, Object> headers,
+            final Map<String, Object> payload,
             final JWTSigner signer) {
         return JWT.of().addHeaders(headers).addPayloads(payload).setSigner(signer).sign();
     }

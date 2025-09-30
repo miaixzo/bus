@@ -69,6 +69,7 @@ public final class LoadAverage {
             return;
         }
         loadAvgThread = new Thread("OSHI Load Average daemon") {
+
             @Override
             public void run() {
                 // Initialize tick counters

@@ -67,7 +67,7 @@ public class HttpRequestRouter implements Router {
      * </p>
      */
     private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Config.MAX_INMEMORY_SIZE)).build();
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
 
     /**
      * 线程安全的 WebClient 缓存，按 baseUrl 存储已初始化的 WebClient 实例
@@ -89,14 +89,15 @@ public class HttpRequestRouter implements Router {
         String baseUrl = buildBaseUrl(assets);
 
         // 2. 获取或创建WebClient
-        WebClient webClient = clients.computeIfAbsent(baseUrl,
+        WebClient webClient = clients.computeIfAbsent(
+                baseUrl,
                 client -> WebClient.builder().exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build());
 
         // 3. 构建目标URI
         String targetUri = buildTargetUri(assets, context);
 
         // 4. 配置请求
-        WebClient.RequestBodySpec bodySpec = webClient.method(assets.getHttpMethod()).uri(targetUri);
+        WebClient.RequestBodySpec bodySpec = webClient.method(context.getHttpMethod()).uri(targetUri);
 
         // 5. 配置请求头
         bodySpec.headers(headers -> {
@@ -106,7 +107,7 @@ public class HttpRequestRouter implements Router {
         });
 
         // 6. 处理请求体（仅对非GET请求）
-        if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
+        if (!HttpMethod.GET.equals(context.getHttpMethod())) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
@@ -125,7 +126,9 @@ public class HttpRequestRouter implements Router {
                 } else if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
                     // 处理JSON请求体
                     return request.bodyToMono(String.class).defaultIfEmpty(Normal.EMPTY).flatMap(jsonBody -> {
-                        Format.debug(request.exchange(), "JSON_REQUEST_BODY",
+                        Format.debug(
+                                request.exchange(),
+                                "JSON_REQUEST_BODY",
                                 "JSON request body size: " + jsonBody.length());
                         return bodySpec.contentType(MediaType.APPLICATION_JSON).bodyValue(jsonBody)
                                 .httpRequest(clientHttpRequest -> {
@@ -206,7 +209,7 @@ public class HttpRequestRouter implements Router {
      */
     private String buildTargetUri(Assets assets, Context context) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
-        if (HttpMethod.GET.equals(assets.getHttpMethod())) {
+        if (HttpMethod.GET.equals(context.getHttpMethod())) {
             Map<String, String> params = context.getRequestMap();
             if (!params.isEmpty()) {
                 MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
@@ -214,7 +217,7 @@ public class HttpRequestRouter implements Router {
                 builder.queryParams(multiValueMap);
             }
         }
-        return builder.build().encode().toUriString();
+        return builder.build().toUriString();
     }
 
     /**
@@ -230,8 +233,9 @@ public class HttpRequestRouter implements Router {
         return ServerResponse.ok().headers(headers -> {
             headers.addAll(responseEntity.getHeaders());
             headers.remove(HttpHeaders.CONTENT_LENGTH);
-        }).body(responseEntity.getBody() == null ? BodyInserters.empty()
-                : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody())));
+        }).body(
+                responseEntity.getBody() == null ? BodyInserters.empty()
+                        : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody())));
     }
 
 }

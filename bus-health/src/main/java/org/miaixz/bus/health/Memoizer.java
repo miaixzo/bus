@@ -44,7 +44,8 @@ public final class Memoizer {
     /**
      * 默认过期时间（纳秒）的供应商，记忆化值的默认过期时间配置
      */
-    private static final Supplier<Long> DEFAULT_EXPIRATION_NANOS = memoize(Memoizer::queryExpirationConfig,
+    private static final Supplier<Long> DEFAULT_EXPIRATION_NANOS = memoize(
+            Memoizer::queryExpirationConfig,
             TimeUnit.MINUTES.toNanos(1));
 
     /**
@@ -85,6 +86,7 @@ public final class Memoizer {
     public static <T> Supplier<T> memoize(Supplier<T> original, long ttlNanos) {
         // 改编自 Guava 的 ExpiringMemoizingSupplier
         return new Supplier<>() {
+
             /**
              * 原始供应商
              */

@@ -91,7 +91,12 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label getProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "labels",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "labels",
                 getLabelIdOrName(labelIdOrName));
         return (response.readEntity(Label.class));
     }
@@ -140,7 +145,11 @@ public class LabelsApi extends AbstractApi {
      */
     public Label createProjectLabel(Object projectIdOrPath, Label labelProperties) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(labelProperties.getForm(true));
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "labels");
         return (response.readEntity(Label.class));
     }
@@ -172,8 +181,13 @@ public class LabelsApi extends AbstractApi {
     public Label updateProjectLabel(Object projectIdOrPath, Object labelIdOrName, Label labelConfig)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(labelConfig.getForm(false));
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "labels", getLabelIdOrName(labelIdOrName));
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "labels",
+                getLabelIdOrName(labelIdOrName));
         return (response.readEntity(Label.class));
     }
 
@@ -185,7 +199,12 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "labels",
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "labels",
                 getLabelIdOrName(labelIdOrName));
     }
 
@@ -198,8 +217,14 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label subscribeProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        Response response = post(Response.Status.NOT_MODIFIED, getDefaultPerPageParam(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "labels", getLabelIdOrName(labelIdOrName), "subscribe");
+        Response response = post(
+                Response.Status.NOT_MODIFIED,
+                getDefaultPerPageParam(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "labels",
+                getLabelIdOrName(labelIdOrName),
+                "subscribe");
         return (response.readEntity(Label.class));
     }
 
@@ -212,8 +237,14 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label unsubscribeProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        Response response = post(Response.Status.NOT_MODIFIED, getDefaultPerPageParam(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "labels", getLabelIdOrName(labelIdOrName), "unsubscribe");
+        Response response = post(
+                Response.Status.NOT_MODIFIED,
+                getDefaultPerPageParam(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "labels",
+                getLabelIdOrName(labelIdOrName),
+                "unsubscribe");
         return (response.readEntity(Label.class));
     }
 
@@ -261,7 +292,12 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label getGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "labels",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
+                "labels",
                 getLabelIdOrName(labelIdOrName));
         return (response.readEntity(Label.class));
     }
@@ -307,7 +343,11 @@ public class LabelsApi extends AbstractApi {
      */
     public Label createGroupLabel(Object groupIdOrPath, Label labelProperties) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(labelProperties.getForm(true));
-        Response response = post(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
                 "labels");
         return (response.readEntity(Label.class));
     }
@@ -339,8 +379,13 @@ public class LabelsApi extends AbstractApi {
     public Label updateGroupLabel(Object groupIdOrPath, Object labelIdOrName, Label labelConfig)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(labelConfig.getForm(false));
-        Response response = putWithFormData(Response.Status.OK, formData, "groups", getGroupIdOrPath(groupIdOrPath),
-                "labels", getLabelIdOrName(labelIdOrName));
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
+                "labels",
+                getLabelIdOrName(labelIdOrName));
         return (response.readEntity(Label.class));
     }
 
@@ -352,7 +397,12 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        delete(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "labels",
+        delete(
+                Response.Status.OK,
+                null,
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
+                "labels",
                 getLabelIdOrName(labelIdOrName));
     }
 
@@ -365,8 +415,14 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label subscribeGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        Response response = post(Response.Status.NOT_MODIFIED, getDefaultPerPageParam(), "groups",
-                getGroupIdOrPath(groupIdOrPath), "labels", getLabelIdOrName(labelIdOrName), "subscribe");
+        Response response = post(
+                Response.Status.NOT_MODIFIED,
+                getDefaultPerPageParam(),
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
+                "labels",
+                getLabelIdOrName(labelIdOrName),
+                "subscribe");
         return (response.readEntity(Label.class));
     }
 
@@ -379,8 +435,14 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Label unsubscribeGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
-        Response response = post(Response.Status.NOT_MODIFIED, getDefaultPerPageParam(), "groups",
-                getGroupIdOrPath(groupIdOrPath), "labels", getLabelIdOrName(labelIdOrName), "unsubscribe");
+        Response response = post(
+                Response.Status.NOT_MODIFIED,
+                getDefaultPerPageParam(),
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
+                "labels",
+                getLabelIdOrName(labelIdOrName),
+                "unsubscribe");
         return (response.readEntity(Label.class));
     }
 

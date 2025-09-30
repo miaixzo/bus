@@ -52,39 +52,40 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._200D_xx50_:
-        case PrivateTag._200D_xx51_:
-        case PrivateTag._200D_xx52_:
-        case PrivateTag._200D_xx53_:
-        case PrivateTag._200D_xx54_:
-        case PrivateTag._200D_xx55_:
-        case PrivateTag._200D_xx56_:
-        case PrivateTag._200D_xx57_:
-        case PrivateTag._200D_xx58_:
-        case PrivateTag._200D_xx59_:
-        case PrivateTag._200D_xx60_:
-        case PrivateTag._200D_xx61_:
-            return VR.IS;
-        case PrivateTag._200D_xx01_:
-        case PrivateTag._200D_xx02_:
-        case PrivateTag._200D_xx03_:
-        case PrivateTag._200D_xx04_:
-        case PrivateTag._200D_xx05_:
-        case PrivateTag._200D_xx06_:
-        case PrivateTag._200D_xx07_:
-        case PrivateTag._200D_xx08_:
-        case PrivateTag._200D_xx09_:
-        case PrivateTag._200D_xx0A_:
-        case PrivateTag._200D_xx0B_:
-        case PrivateTag._200D_xx0C_:
-        case PrivateTag._200D_xx0D_:
-        case PrivateTag._200D_xx10_:
-        case PrivateTag._200D_xx11_:
-        case PrivateTag._200D_xx12_:
-        case PrivateTag._200D_xx13_:
-        case PrivateTag._200D_xx14_:
-        case PrivateTag._200D_xx15_:
-            return VR.LO;
+            case PrivateTag._200D_xx50_:
+            case PrivateTag._200D_xx51_:
+            case PrivateTag._200D_xx52_:
+            case PrivateTag._200D_xx53_:
+            case PrivateTag._200D_xx54_:
+            case PrivateTag._200D_xx55_:
+            case PrivateTag._200D_xx56_:
+            case PrivateTag._200D_xx57_:
+            case PrivateTag._200D_xx58_:
+            case PrivateTag._200D_xx59_:
+            case PrivateTag._200D_xx60_:
+            case PrivateTag._200D_xx61_:
+                return VR.IS;
+
+            case PrivateTag._200D_xx01_:
+            case PrivateTag._200D_xx02_:
+            case PrivateTag._200D_xx03_:
+            case PrivateTag._200D_xx04_:
+            case PrivateTag._200D_xx05_:
+            case PrivateTag._200D_xx06_:
+            case PrivateTag._200D_xx07_:
+            case PrivateTag._200D_xx08_:
+            case PrivateTag._200D_xx09_:
+            case PrivateTag._200D_xx0A_:
+            case PrivateTag._200D_xx0B_:
+            case PrivateTag._200D_xx0C_:
+            case PrivateTag._200D_xx0D_:
+            case PrivateTag._200D_xx10_:
+            case PrivateTag._200D_xx11_:
+            case PrivateTag._200D_xx12_:
+            case PrivateTag._200D_xx13_:
+            case PrivateTag._200D_xx14_:
+            case PrivateTag._200D_xx15_:
+                return VR.LO;
         }
         return VR.UN;
     }

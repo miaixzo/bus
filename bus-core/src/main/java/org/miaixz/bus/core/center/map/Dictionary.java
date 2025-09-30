@@ -173,6 +173,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * </p>
      *
      * <pre>
+     * 
      * Dictionary dict = Dictionary.of("RED", "#FF0000", "GREEN", "#00FF00", "BLUE", "#0000FF");
      * </pre>
      *

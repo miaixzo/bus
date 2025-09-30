@@ -93,7 +93,11 @@ public class Dcm2Jpg {
         }
     }
 
-    public void initImageWriter(String formatName, String suffix, String clazz, String compressionType,
+    public void initImageWriter(
+            String formatName,
+            String suffix,
+            String clazz,
+            String compressionType,
             Number quality) {
         this.suffix = suffix != null ? suffix : formatName.toLowerCase();
         Iterator<ImageWriter> imageWriters = ImageIO.getImageWritersByFormatName(formatName);
@@ -235,6 +239,7 @@ public class Dcm2Jpg {
     }
 
     private interface ReadImage {
+
         BufferedImage apply(File src) throws IOException;
     }
 

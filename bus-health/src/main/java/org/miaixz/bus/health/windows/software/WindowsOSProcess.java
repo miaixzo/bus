@@ -356,20 +356,25 @@ public class WindowsOSProcess extends AbstractOSProcess {
         if (pHandle != null) {
             try (ByRef.CloseableHANDLEByReference phToken = new ByRef.CloseableHANDLEByReference()) {
                 try {
-                    if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY,
-                            phToken)) {
+                    if (Advapi32.INSTANCE
+                            .OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
                         Account account = Advapi32Util.getTokenAccount(phToken.getValue());
                         pair = Pair.of(account.name, account.sidString);
                     } else {
                         int error = Kernel32.INSTANCE.GetLastError();
                         // Access denied errors are common. Fail silently.
                         if (error != WinError.ERROR_ACCESS_DENIED) {
-                            Logger.error("Failed to get process token for process {}: {}", getProcessID(),
+                            Logger.error(
+                                    "Failed to get process token for process {}: {}",
+                                    getProcessID(),
                                     Kernel32.INSTANCE.GetLastError());
                         }
                     }
                 } catch (Win32Exception e) {
-                    Logger.warn("Failed to query user info for process {} ({}): {}", getProcessID(), getName(),
+                    Logger.warn(
+                            "Failed to query user info for process {} ({}): {}",
+                            getProcessID(),
+                            getName(),
                             e.getMessage());
                 } finally {
                     final HANDLE token = phToken.getValue();
@@ -398,7 +403,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
                     int error = Kernel32.INSTANCE.GetLastError();
                     // Access denied errors are common. Fail silently.
                     if (error != WinError.ERROR_ACCESS_DENIED) {
-                        Logger.error("Failed to get process token for process {}: {}", getProcessID(),
+                        Logger.error(
+                                "Failed to get process token for process {}: {}",
+                                getProcessID(),
                                 Kernel32.INSTANCE.GetLastError());
                     }
                 }
@@ -500,8 +507,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     private Triplet<String, String, Map<String, String>> queryCwdCommandlineEnvironment() {
         // Get the process handle
-        HANDLE h = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION | WinNT.PROCESS_VM_READ, false,
-                getProcessID());
+        HANDLE h = Kernel32.INSTANCE
+                .OpenProcess(WinNT.PROCESS_QUERY_INFORMATION | WinNT.PROCESS_VM_READ, false, getProcessID());
         if (h != null) {
             try {
                 // Can't check 32-bit procs from a 64-bit one
@@ -509,9 +516,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
                     try (ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
                         // Start by getting the address of the PEB
                         org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION pbi = new org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION();
-                        int ret = org.miaixz.bus.health.windows.jna.NtDll.INSTANCE.NtQueryInformationProcess(h,
-                                org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION, pbi.getPointer(),
-                                pbi.size(), nRead);
+                        int ret = org.miaixz.bus.health.windows.jna.NtDll.INSTANCE.NtQueryInformationProcess(
+                                h,
+                                org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION,
+                                pbi.getPointer(),
+                                pbi.size(),
+                                nRead);
                         if (ret != 0) {
                             return defaultCwdCommandlineEnvironment();
                         }
@@ -527,8 +537,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
                         // Now fetch the Process Parameters structure containing our data
                         org.miaixz.bus.health.windows.jna.NtDll.RTL_USER_PROCESS_PARAMETERS upp = new org.miaixz.bus.health.windows.jna.NtDll.RTL_USER_PROCESS_PARAMETERS();
-                        Kernel32.INSTANCE.ReadProcessMemory(h, peb.ProcessParameters, upp.getPointer(), upp.size(),
-                                nRead);
+                        Kernel32.INSTANCE
+                                .ReadProcessMemory(h, peb.ProcessParameters, upp.getPointer(), upp.size(), nRead);
                         if (nRead.getValue() == 0) {
                             return defaultCwdCommandlineEnvironment();
                         }

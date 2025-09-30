@@ -96,6 +96,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public OutputStream outputStream() {
         return new OutputStream() {
+
             @Override
             public void write(int b) {
                 writeByte((byte) b);
@@ -155,6 +156,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public InputStream inputStream() {
         return new InputStream() {
+
             @Override
             public int read() {
                 if (size > 0)
@@ -1745,7 +1747,11 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * Returns true if the range within this buffer starting at {@code segmentPos} in {@code segment} is equal to
      * {@code bytes[bytesOffset..bytesLimit)}.
      */
-    private boolean rangeEquals(SectionBuffer segment, int segmentPos, ByteString bytes, int bytesOffset,
+    private boolean rangeEquals(
+            SectionBuffer segment,
+            int segmentPos,
+            ByteString bytes,
+            int bytesOffset,
             int bytesLimit) {
         int segmentLimit = segment.limit;
         byte[] data = segment.data;

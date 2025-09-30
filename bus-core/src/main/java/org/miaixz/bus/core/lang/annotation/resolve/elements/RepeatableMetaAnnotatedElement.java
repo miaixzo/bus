@@ -104,7 +104,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * @return {@link AnnotatedElement}上的注解结构
      */
     public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> create(
-            final AnnotatedElement element, final BiFunction<A, Annotation, A> mappingFactory) {
+            final AnnotatedElement element,
+            final BiFunction<A, Annotation, A> mappingFactory) {
         return create(RepeatableAnnotationCollector.standard(), element, mappingFactory);
     }
 
@@ -118,7 +119,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * @return {@link AnnotatedElement}上的注解结构
      */
     public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> create(
-            final RepeatableAnnotationCollector collector, final AnnotatedElement element,
+            final RepeatableAnnotationCollector collector,
+            final AnnotatedElement element,
             final BiFunction<A, Annotation, A> mappingFactory) {
         return new RepeatableMetaAnnotatedElement<>(collector, element, mappingFactory);
     }

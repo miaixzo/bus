@@ -117,46 +117,54 @@ public class StorageOptions implements Serializable {
     }
 
     public enum LevelOfSupport {
+
         LEVEL_0, LEVEL_1, LEVEL_2, UNSPECIFIED;
 
         public static LevelOfSupport valueOf(int level) {
             switch (level) {
-            case 0:
-                return LEVEL_0;
-            case 1:
-                return LEVEL_1;
-            case 2:
-                return LEVEL_2;
+                case 0:
+                    return LEVEL_0;
+
+                case 1:
+                    return LEVEL_1;
+
+                case 2:
+                    return LEVEL_2;
             }
             return UNSPECIFIED;
         }
     }
 
     public enum DigitalSignatureSupport {
+
         UNSPECIFIED, LEVEL_1, LEVEL_2, LEVEL_3;
 
         public static DigitalSignatureSupport valueOf(int level) {
             switch (level) {
-            case 1:
-                return LEVEL_1;
-            case 2:
-                return LEVEL_2;
-            case 3:
-                return LEVEL_3;
+                case 1:
+                    return LEVEL_1;
+
+                case 2:
+                    return LEVEL_2;
+
+                case 3:
+                    return LEVEL_3;
             }
             return UNSPECIFIED;
         }
     }
 
     public enum ElementCoercion {
+
         NO, YES, UNSPECIFIED;
 
         public static ElementCoercion valueOf(int i) {
             switch (i) {
-            case 0:
-                return NO;
-            case 1:
-                return YES;
+                case 0:
+                    return NO;
+
+                case 1:
+                    return YES;
             }
             return UNSPECIFIED;
         }

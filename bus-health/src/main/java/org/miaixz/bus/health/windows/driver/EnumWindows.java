@@ -77,9 +77,10 @@ public final class EnumWindows {
                     }
                     try (ByRef.CloseableIntByReference pProcessId = new ByRef.CloseableIntByReference()) {
                         User32.INSTANCE.GetWindowThreadProcessId(hWnd, pProcessId);
-                        windowList.add(new OSDesktopWindow(Pointer.nativeValue(hWnd.getPointer()), window.getTitle(),
-                                window.getFilePath(), window.getLocAndSize(), pProcessId.getValue(),
-                                zOrderMap.get(hWnd), visible));
+                        windowList.add(
+                                new OSDesktopWindow(Pointer.nativeValue(hWnd.getPointer()), window.getTitle(),
+                                        window.getFilePath(), window.getLocAndSize(), pProcessId.getValue(),
+                                        zOrderMap.get(hWnd), visible));
                     }
                 }
             }

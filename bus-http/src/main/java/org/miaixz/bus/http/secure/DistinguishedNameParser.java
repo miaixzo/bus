@@ -183,31 +183,34 @@ public class DistinguishedNameParser {
             }
 
             switch (chars[pos]) {
-            case Symbol.C_PLUS:
-            case Symbol.C_COMMA:
-            case Symbol.C_SEMICOLON:
-                return new String(chars, beg, end - beg);
-            case Symbol.C_BACKSLASH:
-                chars[end++] = getEscaped();
-                pos++;
-                break;
-            case Symbol.C_SPACE:
-                cur = end;
+                case Symbol.C_PLUS:
+                case Symbol.C_COMMA:
+                case Symbol.C_SEMICOLON:
+                    return new String(chars, beg, end - beg);
 
-                pos++;
-                chars[end++] = Symbol.C_SPACE;
+                case Symbol.C_BACKSLASH:
+                    chars[end++] = getEscaped();
+                    pos++;
+                    break;
 
-                for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
+                case Symbol.C_SPACE:
+                    cur = end;
+
+                    pos++;
                     chars[end++] = Symbol.C_SPACE;
-                }
-                if (pos == length || chars[pos] == Symbol.C_COMMA || chars[pos] == Symbol.C_PLUS
-                        || chars[pos] == Symbol.C_SEMICOLON) {
-                    return new String(chars, beg, cur - beg);
-                }
-                break;
-            default:
-                chars[end++] = chars[pos];
-                pos++;
+
+                    for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
+                        chars[end++] = Symbol.C_SPACE;
+                    }
+                    if (pos == length || chars[pos] == Symbol.C_COMMA || chars[pos] == Symbol.C_PLUS
+                            || chars[pos] == Symbol.C_SEMICOLON) {
+                        return new String(chars, beg, cur - beg);
+                    }
+                    break;
+
+                default:
+                    chars[end++] = chars[pos];
+                    pos++;
             }
         }
     }
@@ -220,22 +223,23 @@ public class DistinguishedNameParser {
         }
 
         switch (chars[pos]) {
-        case Symbol.C_DOUBLE_QUOTES:
-        case Symbol.C_BACKSLASH:
-        case Symbol.C_COMMA:
-        case Symbol.C_EQUAL:
-        case Symbol.C_PLUS:
-        case Symbol.C_LT:
-        case Symbol.C_GT:
-        case Symbol.C_HASH:
-        case Symbol.C_SEMICOLON:
-        case Symbol.C_SPACE:
-        case Symbol.C_STAR:
-        case Symbol.C_PERCENT:
-        case Symbol.C_UNDERLINE:
-            return chars[pos];
-        default:
-            return getUTF8();
+            case Symbol.C_DOUBLE_QUOTES:
+            case Symbol.C_BACKSLASH:
+            case Symbol.C_COMMA:
+            case Symbol.C_EQUAL:
+            case Symbol.C_PLUS:
+            case Symbol.C_LT:
+            case Symbol.C_GT:
+            case Symbol.C_HASH:
+            case Symbol.C_SEMICOLON:
+            case Symbol.C_SPACE:
+            case Symbol.C_STAR:
+            case Symbol.C_PERCENT:
+            case Symbol.C_UNDERLINE:
+                return chars[pos];
+
+            default:
+                return getUTF8();
         }
     }
 
@@ -344,18 +348,21 @@ public class DistinguishedNameParser {
             }
 
             switch (chars[pos]) {
-            case Symbol.C_DOUBLE_QUOTES:
-                attValue = quotedAV();
-                break;
-            case Symbol.C_HASH:
-                attValue = hexAV();
-                break;
-            case Symbol.C_PLUS:
-            case Symbol.C_COMMA:
-            case Symbol.C_SEMICOLON:
-                break;
-            default:
-                attValue = escapedAV();
+                case Symbol.C_DOUBLE_QUOTES:
+                    attValue = quotedAV();
+                    break;
+
+                case Symbol.C_HASH:
+                    attValue = hexAV();
+                    break;
+
+                case Symbol.C_PLUS:
+                case Symbol.C_COMMA:
+                case Symbol.C_SEMICOLON:
+                    break;
+
+                default:
+                    attValue = escapedAV();
             }
 
             // Values are ordered from most specific to least specific

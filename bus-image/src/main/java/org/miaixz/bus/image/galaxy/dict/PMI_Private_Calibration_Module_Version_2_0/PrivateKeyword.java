@@ -38,32 +38,44 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CalibrationMethod:
-            return "CalibrationMethod";
-        case PrivateTag.CalibrationMethodInfo:
-            return "CalibrationMethodInfo";
-        case PrivateTag.CalibrationObjectSize:
-            return "CalibrationObjectSize";
-        case PrivateTag.CalibrationObjectSDev:
-            return "CalibrationObjectSDev";
-        case PrivateTag.CalibrationHorizontalPixelSpacing:
-            return "CalibrationHorizontalPixelSpacing";
-        case PrivateTag.CalibrationVerticalPixelSpacing:
-            return "CalibrationVerticalPixelSpacing";
-        case PrivateTag.CalibrationFileName:
-            return "CalibrationFileName";
-        case PrivateTag.CalibrationFrameNumber:
-            return "CalibrationFrameNumber";
-        case PrivateTag.CalibrationObjectUnit:
-            return "CalibrationObjectUnit";
-        case PrivateTag.AveragedCalibrationsPerformed:
-            return "AveragedCalibrationsPerformed";
-        case PrivateTag.AutoMagnifyFactor:
-            return "AutoMagnifyFactor";
-        case PrivateTag.HorizontalPixelSDev:
-            return "HorizontalPixelSDev";
-        case PrivateTag.VerticalPixelSDev:
-            return "VerticalPixelSDev";
+            case PrivateTag.CalibrationMethod:
+                return "CalibrationMethod";
+
+            case PrivateTag.CalibrationMethodInfo:
+                return "CalibrationMethodInfo";
+
+            case PrivateTag.CalibrationObjectSize:
+                return "CalibrationObjectSize";
+
+            case PrivateTag.CalibrationObjectSDev:
+                return "CalibrationObjectSDev";
+
+            case PrivateTag.CalibrationHorizontalPixelSpacing:
+                return "CalibrationHorizontalPixelSpacing";
+
+            case PrivateTag.CalibrationVerticalPixelSpacing:
+                return "CalibrationVerticalPixelSpacing";
+
+            case PrivateTag.CalibrationFileName:
+                return "CalibrationFileName";
+
+            case PrivateTag.CalibrationFrameNumber:
+                return "CalibrationFrameNumber";
+
+            case PrivateTag.CalibrationObjectUnit:
+                return "CalibrationObjectUnit";
+
+            case PrivateTag.AveragedCalibrationsPerformed:
+                return "AveragedCalibrationsPerformed";
+
+            case PrivateTag.AutoMagnifyFactor:
+                return "AutoMagnifyFactor";
+
+            case PrivateTag.HorizontalPixelSDev:
+                return "HorizontalPixelSDev";
+
+            case PrivateTag.VerticalPixelSDev:
+                return "VerticalPixelSDev";
         }
         return "";
     }

@@ -50,7 +50,8 @@ public class ConditionProvider {
      * @return 生成的SQL缓存键
      */
     public static String deleteByCondition(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext,
+        return SqlScript.caching(
+                providerContext,
                 (entity, util) -> util.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
                         + "DELETE FROM " + entity.tableName() + util.parameterNotNull("Condition cannot be null")
                         // 是否允许空条件，默认允许，允许时不检查查询条件
@@ -68,13 +69,15 @@ public class ConditionProvider {
      */
     public static String updateByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + "UPDATE " + entity.tableName()
-                        + set(() -> entity.updateColumns().stream()
-                                .map(column -> column.columnEqualsProperty("entity."))
-                                .collect(Collectors.joining(Symbol.COMMA)))
+                        + set(
+                                () -> entity.updateColumns().stream()
+                                        .map(column -> column.columnEqualsProperty("entity."))
+                                        .collect(Collectors.joining(Symbol.COMMA)))
                         + variableNotNull("condition", "Condition cannot be null")
                 // 是否允许空条件，默认允许，允许时不检查查询条件
                         + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
@@ -93,6 +96,7 @@ public class ConditionProvider {
      */
     public static String updateByConditionSetValues(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
@@ -116,14 +120,18 @@ public class ConditionProvider {
      */
     public static String updateByConditionSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("condition.startSql != null and condition.startSql != ''", () -> "${condition.startSql}")
                         + "UPDATE " + entity.tableName()
-                        + set(() -> entity.updateColumns().stream()
-                                .map(column -> ifTest(column.notNullTest("entity."),
-                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA))
-                                .collect(Collectors.joining(Symbol.LF)))
+                        + set(
+                                () -> entity.updateColumns().stream()
+                                        .map(
+                                                column -> ifTest(
+                                                        column.notNullTest("entity."),
+                                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA))
+                                        .collect(Collectors.joining(Symbol.LF)))
                         + variableNotNull("condition", "Condition cannot be null")
                 // 是否允许空条件，默认允许，允许时不检查查询条件
                         + (entity.getBoolean("updateByConditionSelective.allowEmpty", true) ? ""
@@ -142,6 +150,7 @@ public class ConditionProvider {
      */
     public static String selectByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT "
@@ -164,11 +173,13 @@ public class ConditionProvider {
      */
     public static String countByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "SELECT COUNT("
                         + ifTest("distinct", () -> "distinct ")
-                        + ifTest("simpleSelectColumns != null and simpleSelectColumns != ''",
+                        + ifTest(
+                                "simpleSelectColumns != null and simpleSelectColumns != ''",
                                 () -> "${simpleSelectColumns}")
                         + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> "*") + ") FROM "
                         + entity.tableName() + ifParameterNotNull(() -> Args.CONDITION_WHERE_CLAUSE)

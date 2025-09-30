@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.Geometry:
-            return "Geometry";
-        case PrivateTag.Spacing:
-            return "Spacing";
-        case PrivateTag.Origin:
-            return "Origin";
+            case PrivateTag.Geometry:
+                return "Geometry";
+
+            case PrivateTag.Spacing:
+                return "Spacing";
+
+            case PrivateTag.Origin:
+                return "Origin";
         }
         return "";
     }

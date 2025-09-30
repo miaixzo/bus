@@ -50,7 +50,9 @@ public class Calculate extends Resolver {
      * @param endDate   结束日期（包含）
      * @return 是否在范围内
      */
-    public static boolean isIn(final TemporalAccessor date, final TemporalAccessor beginDate,
+    public static boolean isIn(
+            final TemporalAccessor date,
+            final TemporalAccessor beginDate,
             final TemporalAccessor endDate) {
         return isIn(date, beginDate, endDate, true, true);
     }
@@ -66,8 +68,12 @@ public class Calculate extends Resolver {
      * @param includeEnd   时间范围是否包含结束日期
      * @return 是否在范围内
      */
-    public static boolean isIn(final TemporalAccessor date, final TemporalAccessor beginDate,
-            final TemporalAccessor endDate, final boolean includeBegin, final boolean includeEnd) {
+    public static boolean isIn(
+            final TemporalAccessor date,
+            final TemporalAccessor beginDate,
+            final TemporalAccessor endDate,
+            final boolean includeBegin,
+            final boolean includeEnd) {
         if (date == null || beginDate == null || endDate == null) {
             throw new IllegalArgumentException("参数不可为null");
         }
@@ -108,8 +114,10 @@ public class Calculate extends Resolver {
      * @param endTime       第二个时间段的结束时间
      * @return true 表示时间有重合
      */
-    public static boolean isOverlap(final ChronoLocalDateTime<?> realStartTime,
-            final ChronoLocalDateTime<?> realEndTime, final ChronoLocalDateTime<?> startTime,
+    public static boolean isOverlap(
+            final ChronoLocalDateTime<?> realStartTime,
+            final ChronoLocalDateTime<?> realEndTime,
+            final ChronoLocalDateTime<?> startTime,
             final ChronoLocalDateTime<?> endTime) {
         // x>b||a>y 无交集
         // 则有交集的逻辑为 !(x>b||a>y)

@@ -89,6 +89,7 @@ public abstract class HttpRequest {
             throw new NullPointerException("is == null");
 
         return new RequestBody() {
+
             @Override
             public MediaType contentType() {
                 return contentType;

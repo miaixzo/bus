@@ -72,8 +72,10 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
         Class<?> actualEditable = target.getClass();
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
-            Assert.isTrue(copyOptions.editable.isInstance(target),
-                    "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(),
+            Assert.isTrue(
+                    copyOptions.editable.isInstance(target),
+                    "Target class [{}] not assignable to Editable class [{}]",
+                    actualEditable.getName(),
                     copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
@@ -130,7 +132,11 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
             sValue = copyOptions.convertField(fieldType, sValue);
 
             // 目标赋值
-            tDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
+            tDesc.setValue(
+                    this.target,
+                    sValue,
+                    copyOptions.ignoreNullValue,
+                    copyOptions.ignoreError,
                     copyOptions.override);
         });
         return this.target;

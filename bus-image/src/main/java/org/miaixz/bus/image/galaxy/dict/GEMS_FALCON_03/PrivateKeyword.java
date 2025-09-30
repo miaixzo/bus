@@ -38,22 +38,29 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ACoefficients:
-            return "ACoefficients";
-        case PrivateTag.UserWindowCenter:
-            return "UserWindowCenter";
-        case PrivateTag.UserWindowWidth:
-            return "UserWindowWidth";
-        case PrivateTag.RequestedDetectorEntranceDose:
-            return "RequestedDetectorEntranceDose";
-        case PrivateTag.VOILUTAssymmetryParameterBeta:
-            return "VOILUTAssymmetryParameterBeta";
-        case PrivateTag.CollimatorRotation:
-            return "CollimatorRotation";
-        case PrivateTag.CollimatorWidth:
-            return "CollimatorWidth";
-        case PrivateTag.CollimatorHeight:
-            return "CollimatorHeight";
+            case PrivateTag.ACoefficients:
+                return "ACoefficients";
+
+            case PrivateTag.UserWindowCenter:
+                return "UserWindowCenter";
+
+            case PrivateTag.UserWindowWidth:
+                return "UserWindowWidth";
+
+            case PrivateTag.RequestedDetectorEntranceDose:
+                return "RequestedDetectorEntranceDose";
+
+            case PrivateTag.VOILUTAssymmetryParameterBeta:
+                return "VOILUTAssymmetryParameterBeta";
+
+            case PrivateTag.CollimatorRotation:
+                return "CollimatorRotation";
+
+            case PrivateTag.CollimatorWidth:
+                return "CollimatorWidth";
+
+            case PrivateTag.CollimatorHeight:
+                return "CollimatorHeight";
         }
         return "";
     }

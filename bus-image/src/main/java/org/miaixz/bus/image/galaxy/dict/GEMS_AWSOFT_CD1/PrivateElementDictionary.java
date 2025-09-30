@@ -52,22 +52,28 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.DPOType:
-            return VR.CS;
-        case PrivateTag.DPODate:
-            return VR.DA;
-        case PrivateTag.ReferenceToOriginalInstance:
-        case PrivateTag.DPONumber:
-            return VR.IS;
-        case PrivateTag.DPOInvocationString:
-            return VR.LO;
-        case PrivateTag.DPOData:
-            return VR.OB;
-        case PrivateTag.DPOTime:
-            return VR.TM;
-        case PrivateTag.ReferenceToStudyUID:
-        case PrivateTag.ReferenceToSeriesUID:
-            return VR.UI;
+            case PrivateTag.DPOType:
+                return VR.CS;
+
+            case PrivateTag.DPODate:
+                return VR.DA;
+
+            case PrivateTag.ReferenceToOriginalInstance:
+            case PrivateTag.DPONumber:
+                return VR.IS;
+
+            case PrivateTag.DPOInvocationString:
+                return VR.LO;
+
+            case PrivateTag.DPOData:
+                return VR.OB;
+
+            case PrivateTag.DPOTime:
+                return VR.TM;
+
+            case PrivateTag.ReferenceToStudyUID:
+            case PrivateTag.ReferenceToSeriesUID:
+                return VR.UI;
         }
         return VR.UN;
     }

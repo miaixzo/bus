@@ -129,10 +129,12 @@ public class SpringApplication extends org.springframework.boot.SpringApplicatio
         for (ApplicationContextInitializer initializer : getInitializers()) {
             try {
                 // 解析初始化器所需的上下文类型
-                Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
-                        ApplicationContextInitializer.class);
+                Class<?> requiredType = GenericTypeResolver
+                        .resolveTypeArgument(initializer.getClass(), ApplicationContextInitializer.class);
                 // 验证上下文类型是否匹配
-                Assert.isInstanceOf(requiredType, context,
+                Assert.isInstanceOf(
+                        requiredType,
+                        context,
                         "Unable to call initializer: " + initializer.getClass().getName());
 
                 // 创建统计对象并记录开始时间

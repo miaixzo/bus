@@ -70,8 +70,8 @@ public abstract class AbstractProvider implements StrategyProvider {
         int side = Math.max((int) Math.floor((length - middle) / 2.0), 1);
         // 修正中间被mask的长度
         middle = length - side * 2;
-        resultBuilder.append(rawVal, 0, side).append(StringKit.repeat(shadow, middle)).append(rawVal, side + middle,
-                length);
+        resultBuilder.append(rawVal, 0, side).append(StringKit.repeat(shadow, middle))
+                .append(rawVal, side + middle, length);
         return resultBuilder.toString();
     }
 
@@ -85,36 +85,42 @@ public abstract class AbstractProvider implements StrategyProvider {
      * @param shadow          遮挡字符
      * @return the string
      */
-    public static String build(Builder.Mode mode, int fixedHeaderSize, int fixedTailorSize, String rawVal,
+    public static String build(
+            Builder.Mode mode,
+            int fixedHeaderSize,
+            int fixedTailorSize,
+            String rawVal,
             String shadow) {
         StringBuilder resultBuilder = new StringBuilder();
         int length = rawVal.length();
         int maskLength;
         switch (mode) {
-        case TAIL:
-            if (length <= fixedHeaderSize) {
-                return rawVal;
-            }
-            maskLength = length - fixedHeaderSize;
-            resultBuilder.append(rawVal, 0, fixedHeaderSize).append(StringKit.repeat(shadow, maskLength));
-            break;
-        default:
-        case HEAD:
-            if (length <= fixedTailorSize) {
-                return rawVal;
-            }
-            maskLength = length - fixedTailorSize;
-            resultBuilder.append(StringKit.repeat(shadow, maskLength)).append(rawVal.substring(maskLength));
-            break;
-        case MIDDLE:
-            int unmaskLength = fixedTailorSize + fixedHeaderSize;
-            if (length <= unmaskLength) {
-                return rawVal;
-            }
-            maskLength = length - unmaskLength;
-            resultBuilder.append(rawVal, 0, fixedHeaderSize).append(StringKit.repeat(shadow, maskLength)).append(rawVal,
-                    fixedHeaderSize + maskLength, length);
-            break;
+            case TAIL:
+                if (length <= fixedHeaderSize) {
+                    return rawVal;
+                }
+                maskLength = length - fixedHeaderSize;
+                resultBuilder.append(rawVal, 0, fixedHeaderSize).append(StringKit.repeat(shadow, maskLength));
+                break;
+
+            default:
+            case HEAD:
+                if (length <= fixedTailorSize) {
+                    return rawVal;
+                }
+                maskLength = length - fixedTailorSize;
+                resultBuilder.append(StringKit.repeat(shadow, maskLength)).append(rawVal.substring(maskLength));
+                break;
+
+            case MIDDLE:
+                int unmaskLength = fixedTailorSize + fixedHeaderSize;
+                if (length <= unmaskLength) {
+                    return rawVal;
+                }
+                maskLength = length - unmaskLength;
+                resultBuilder.append(rawVal, 0, fixedHeaderSize).append(StringKit.repeat(shadow, maskLength))
+                        .append(rawVal, fixedHeaderSize + maskLength, length);
+                break;
         }
         return resultBuilder.toString();
     }

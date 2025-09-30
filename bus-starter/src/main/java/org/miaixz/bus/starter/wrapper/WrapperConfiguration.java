@@ -38,17 +38,19 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
 import org.miaixz.bus.spring.http.MutableRequestWrapper;
 import org.miaixz.bus.spring.http.MutableResponseWrapper;
 import org.miaixz.bus.spring.http.SentinelRequestHandler;
-import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -176,6 +178,23 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     }
 
     /**
+     * 注册 ForwardedHeaderFilter Bean。
+     * <p>
+     * ForwardedHeaderFilter 是 Spring 框架提供的标准 Servlet Filter， 用于包装 HttpServletRequest 对象，使其 getScheme(), getServerName()
+     * 等方法 能够返回原始客户端的请求信息。
+     *
+     * @return FilterRegistrationBean 实例，用于向 Servlet 容器注册 Filter。
+     */
+    @Bean
+    public FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
+        FilterRegistrationBean<ForwardedHeaderFilter> bean = new FilterRegistrationBean<>();
+        bean.setFilter(new ForwardedHeaderFilter());
+        // 可以设置 Filter 的执行顺序，例如最先执行
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
+    }
+
+    /**
      * 自定义的请求映射处理器，支持基于包名的URL前缀自动生成。
      */
     class RequestMappingHandler extends RequestMappingHandlerMapping {
@@ -206,9 +225,11 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                         String[] arrays = StringKit.splitToArray(basePackage, Symbol.DOT);
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1]
                                 .replace(Symbol.C_DOT, Symbol.C_SLASH);
-                        Logger.debug("Create a URL request mapping '" + prefix
-                                + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
-                                + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());
+                        Logger.debug(
+                                "Create a URL request mapping '" + prefix
+                                        + Arrays.toString(
+                                                requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
+                                        + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());
                         requestMappingInfo = RequestMappingInfo.paths(prefix).options(getBuilderConfiguration()).build()
                                 .combine(requestMappingInfo);
                     }
@@ -237,7 +258,9 @@ public class WrapperConfiguration implements WebMvcRegistrations {
          * @throws IOException      如果发生I/O异常
          */
         @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+        protected void doFilterInternal(
+                HttpServletRequest request,
+                HttpServletResponse response,
                 FilterChain filterChain) throws ServletException, IOException {
             final String method = request.getMethod();
             // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能

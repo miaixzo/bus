@@ -126,8 +126,12 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         // across all IOCTL entries if there are more than one.
 
         try (PowrProf.SystemBatteryState batteryState = new PowrProf.SystemBatteryState()) {
-            if (0 == PowrProf.INSTANCE.CallNtPowerInformation(PowrProf.POWER_INFORMATION_LEVEL.SystemBatteryState, null,
-                    0, batteryState.getPointer(), batteryState.size()) && batteryState.batteryPresent > 0) {
+            if (0 == PowrProf.INSTANCE.CallNtPowerInformation(
+                    PowrProf.POWER_INFORMATION_LEVEL.SystemBatteryState,
+                    null,
+                    0,
+                    batteryState.getPointer(),
+                    batteryState.size()) && batteryState.batteryPresent > 0) {
                 if (batteryState.acOnLine == 0 && batteryState.charging == 0 && batteryState.discharging > 0) {
                     psTimeRemainingEstimated = batteryState.estimatedTime;
                 } else if (batteryState.charging > 0) {
@@ -144,7 +148,10 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         // Ported from:
         // https://docs.microsoft.com/en-us/windows/win32/power/enumerating-battery-devices
 
-        WinNT.HANDLE hdev = SetupApi.INSTANCE.SetupDiGetClassDevs(GUID_DEVCLASS_BATTERY, null, null,
+        WinNT.HANDLE hdev = SetupApi.INSTANCE.SetupDiGetClassDevs(
+                GUID_DEVCLASS_BATTERY,
+                null,
+                null,
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hdev)) {
             boolean batteryFound = false;
@@ -166,15 +173,24 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                 // This must be set properly for the method to work but is otherwise ignored
                                 pdidd.setInt(0, Integer.BYTES + (X64 ? 4 : CHAR_WIDTH));
                                 // Regardless of this setting the string portion starts after one byte
-                                if (SetupApi.INSTANCE.SetupDiGetDeviceInterfaceDetail(hdev, did, pdidd,
-                                        (int) pdidd.size(), requiredSize, null)) {
+                                if (SetupApi.INSTANCE.SetupDiGetDeviceInterfaceDetail(
+                                        hdev,
+                                        did,
+                                        pdidd,
+                                        (int) pdidd.size(),
+                                        requiredSize,
+                                        null)) {
                                     // Enumerated a battery. Ask it for information.
                                     String devicePath = CHAR_WIDTH > 1 ? pdidd.getWideString(Integer.BYTES)
                                             : pdidd.getString(Integer.BYTES);
-                                    WinNT.HANDLE hBattery = Kernel32.INSTANCE.CreateFile(devicePath, // pdidd->DevicePath
+                                    WinNT.HANDLE hBattery = Kernel32.INSTANCE.CreateFile(
+                                            devicePath, // pdidd->DevicePath
                                             WinNT.GENERIC_READ | WinNT.GENERIC_WRITE,
-                                            WinNT.FILE_SHARE_READ | WinNT.FILE_SHARE_WRITE, null, WinNT.OPEN_EXISTING,
-                                            WinNT.FILE_ATTRIBUTE_NORMAL, null);
+                                            WinNT.FILE_SHARE_READ | WinNT.FILE_SHARE_WRITE,
+                                            null,
+                                            WinNT.OPEN_EXISTING,
+                                            WinNT.FILE_ATTRIBUTE_NORMAL,
+                                            null);
                                     if (!WinBase.INVALID_HANDLE_VALUE.equals(hBattery)) {
                                         try (PowrProf.BATTERY_QUERY_INFORMATION bqi = new PowrProf.BATTERY_QUERY_INFORMATION();
                                                 PowrProf.BATTERY_INFORMATION bi = new PowrProf.BATTERY_INFORMATION();
@@ -182,9 +198,15 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                 PowrProf.BATTERY_STATUS bs = new PowrProf.BATTERY_STATUS();
                                                 PowrProf.BATTERY_MANUFACTURE_DATE bmd = new PowrProf.BATTERY_MANUFACTURE_DATE()) {
                                             // Ask the battery for its tag.
-                                            if (Kernel32.INSTANCE.DeviceIoControl(hBattery, IOCTL_BATTERY_QUERY_TAG,
-                                                    dwWait.getPointer(), Integer.BYTES, dwTag.getPointer(),
-                                                    Integer.BYTES, dwOut, null)) {
+                                            if (Kernel32.INSTANCE.DeviceIoControl(
+                                                    hBattery,
+                                                    IOCTL_BATTERY_QUERY_TAG,
+                                                    dwWait.getPointer(),
+                                                    Integer.BYTES,
+                                                    dwTag.getPointer(),
+                                                    Integer.BYTES,
+                                                    dwOut,
+                                                    null)) {
                                                 bqi.BatteryTag = dwTag.getValue();
                                                 if (bqi.BatteryTag > 0) {
                                                     // With the tag, you can query the battery info.
@@ -192,9 +214,15 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                             .ordinal();
                                                     bqi.write();
 
-                                                    if (Kernel32.INSTANCE.DeviceIoControl(hBattery,
-                                                            IOCTL_BATTERY_QUERY_INFORMATION, bqi.getPointer(),
-                                                            bqi.size(), bi.getPointer(), bi.size(), dwOut, null)) {
+                                                    if (Kernel32.INSTANCE.DeviceIoControl(
+                                                            hBattery,
+                                                            IOCTL_BATTERY_QUERY_INFORMATION,
+                                                            bqi.getPointer(),
+                                                            bqi.size(),
+                                                            bi.getPointer(),
+                                                            bi.size(),
+                                                            dwOut,
+                                                            null)) {
                                                         // Only non-UPS system batteries count
                                                         bi.read();
                                                         if (0 != (bi.Capabilities & BATTERY_SYSTEM_BATTERY)
@@ -203,8 +231,8 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                             if (0 == (bi.Capabilities & BATTERY_CAPACITY_RELATIVE)) {
                                                                 psCapacityUnits = PowerSource.CapacityUnits.MWH;
                                                             }
-                                                            psChemistry = Native.toString(bi.Chemistry,
-                                                                    Charset.US_ASCII);
+                                                            psChemistry = Native
+                                                                    .toString(bi.Chemistry, Charset.US_ASCII);
                                                             psDesignCapacity = bi.DesignedCapacity;
                                                             psMaxCapacity = bi.FullChargedCapacity;
                                                             psCycleCount = bi.CycleCount;
@@ -212,9 +240,14 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                             // Query the battery status.
                                                             bws.BatteryTag = bqi.BatteryTag;
                                                             bws.write();
-                                                            if (Kernel32.INSTANCE.DeviceIoControl(hBattery,
-                                                                    IOCTL_BATTERY_QUERY_STATUS, bws.getPointer(),
-                                                                    bws.size(), bs.getPointer(), bs.size(), dwOut,
+                                                            if (Kernel32.INSTANCE.DeviceIoControl(
+                                                                    hBattery,
+                                                                    IOCTL_BATTERY_QUERY_STATUS,
+                                                                    bws.getPointer(),
+                                                                    bws.size(),
+                                                                    bs.getPointer(),
+                                                                    bs.size(),
+                                                                    dwOut,
                                                                     null)) {
                                                                 bs.read();
                                                                 if (0 != (bs.PowerState & BATTERY_POWER_ON_LINE)) {
@@ -236,13 +269,19 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                             }
                                                         }
 
-                                                        psDeviceName = batteryQueryString(hBattery, dwTag.getValue(),
+                                                        psDeviceName = batteryQueryString(
+                                                                hBattery,
+                                                                dwTag.getValue(),
                                                                 PowrProf.BATTERY_QUERY_INFORMATION_LEVEL.BatteryDeviceName
                                                                         .ordinal());
-                                                        psManufacturer = batteryQueryString(hBattery, dwTag.getValue(),
+                                                        psManufacturer = batteryQueryString(
+                                                                hBattery,
+                                                                dwTag.getValue(),
                                                                 PowrProf.BATTERY_QUERY_INFORMATION_LEVEL.BatteryManufactureName
                                                                         .ordinal());
-                                                        psSerialNumber = batteryQueryString(hBattery, dwTag.getValue(),
+                                                        psSerialNumber = batteryQueryString(
+                                                                hBattery,
+                                                                dwTag.getValue(),
                                                                 PowrProf.BATTERY_QUERY_INFORMATION_LEVEL.BatterySerialNumber
                                                                         .ordinal());
 
@@ -250,15 +289,20 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 .ordinal();
                                                         bqi.write();
 
-                                                        if (Kernel32.INSTANCE.DeviceIoControl(hBattery,
-                                                                IOCTL_BATTERY_QUERY_INFORMATION, bqi.getPointer(),
-                                                                bqi.size(), bmd.getPointer(), bmd.size(), dwOut,
+                                                        if (Kernel32.INSTANCE.DeviceIoControl(
+                                                                hBattery,
+                                                                IOCTL_BATTERY_QUERY_INFORMATION,
+                                                                bqi.getPointer(),
+                                                                bqi.size(),
+                                                                bmd.getPointer(),
+                                                                bmd.size(),
+                                                                dwOut,
                                                                 null)) {
                                                             bmd.read();
                                                             // If failed, returns -1 for each field
                                                             if (bmd.Year > 1900 && bmd.Month > 0 && bmd.Day > 0) {
-                                                                psManufactureDate = LocalDate.of(bmd.Year, bmd.Month,
-                                                                        bmd.Day);
+                                                                psManufactureDate = LocalDate
+                                                                        .of(bmd.Year, bmd.Month, bmd.Day);
                                                             }
                                                         }
 
@@ -267,10 +311,15 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                         bqi.write();
                                                         try (ByRef.CloseableIntByReference tempK = new ByRef.CloseableIntByReference()) {
                                                             // 1/10 degree K
-                                                            if (Kernel32.INSTANCE.DeviceIoControl(hBattery,
-                                                                    IOCTL_BATTERY_QUERY_INFORMATION, bqi.getPointer(),
-                                                                    bqi.size(), tempK.getPointer(), Integer.BYTES,
-                                                                    dwOut, null)) {
+                                                            if (Kernel32.INSTANCE.DeviceIoControl(
+                                                                    hBattery,
+                                                                    IOCTL_BATTERY_QUERY_INFORMATION,
+                                                                    bqi.getPointer(),
+                                                                    bqi.size(),
+                                                                    tempK.getPointer(),
+                                                                    Integer.BYTES,
+                                                                    dwOut,
+                                                                    null)) {
                                                                 psTemperature = tempK.getValue() / 10d - 273.15;
                                                             }
                                                         }
@@ -283,9 +332,14 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                         }
                                                         bqi.write();
                                                         try (ByRef.CloseableIntByReference tr = new ByRef.CloseableIntByReference()) {
-                                                            if (Kernel32.INSTANCE.DeviceIoControl(hBattery,
-                                                                    IOCTL_BATTERY_QUERY_INFORMATION, bqi.getPointer(),
-                                                                    bqi.size(), tr.getPointer(), Integer.BYTES, dwOut,
+                                                            if (Kernel32.INSTANCE.DeviceIoControl(
+                                                                    hBattery,
+                                                                    IOCTL_BATTERY_QUERY_INFORMATION,
+                                                                    bqi.getPointer(),
+                                                                    bqi.size(),
+                                                                    tr.getPointer(),
+                                                                    Integer.BYTES,
+                                                                    dwOut,
                                                                     null)) {
                                                                 psTimeRemainingInstant = tr.getValue();
                                                             }
@@ -333,8 +387,15 @@ public final class WindowsPowerSource extends AbstractPowerSource {
             long bufSize = 256;
             Memory nameBuf = new Memory(bufSize);
             do {
-                ret = Kernel32.INSTANCE.DeviceIoControl(hBattery, IOCTL_BATTERY_QUERY_INFORMATION, bqi.getPointer(),
-                        bqi.size(), nameBuf, (int) nameBuf.size(), dwOut, null);
+                ret = Kernel32.INSTANCE.DeviceIoControl(
+                        hBattery,
+                        IOCTL_BATTERY_QUERY_INFORMATION,
+                        bqi.getPointer(),
+                        bqi.size(),
+                        nameBuf,
+                        (int) nameBuf.size(),
+                        dwOut,
+                        null);
                 if (!ret) {
                     bufSize += 256;
                     nameBuf.close();

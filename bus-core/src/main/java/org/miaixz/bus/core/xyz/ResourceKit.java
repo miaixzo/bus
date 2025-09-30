@@ -304,7 +304,9 @@ public class ResourceKit {
      * @param resource   资源
      * @param charset    编码，对XML无效，默认UTF-8
      */
-    public static void loadTo(final Properties properties, final Resource resource,
+    public static void loadTo(
+            final Properties properties,
+            final Resource resource,
             final java.nio.charset.Charset charset) {
         Assert.notNull(properties);
         Assert.notNull(resource);
@@ -335,8 +337,12 @@ public class ResourceKit {
      * @param charset      编码，对XML无效，默认UTF-8
      * @param isOverride   是否覆盖模式
      */
-    public static void loadAllTo(final Properties properties, final String resourceName, final ClassLoader classLoader,
-            final java.nio.charset.Charset charset, final boolean isOverride) {
+    public static void loadAllTo(
+            final Properties properties,
+            final String resourceName,
+            final ClassLoader classLoader,
+            final java.nio.charset.Charset charset,
+            final boolean isOverride) {
         if (isOverride) {
             for (final Resource resource : getResources(resourceName, classLoader)) {
                 loadTo(properties, resource, charset);

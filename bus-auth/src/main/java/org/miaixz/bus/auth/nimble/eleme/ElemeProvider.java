@@ -78,7 +78,12 @@ public class ElemeProvider extends AbstractProvider {
      * @param parameters 加密参数
      * @return Signature
      */
-    public static String sign(String appKey, String secret, long timestamp, String action, String token,
+    public static String sign(
+            String appKey,
+            String secret,
+            long timestamp,
+            String action,
+            String token,
             Map<String, Object> parameters) {
         final Map<String, Object> sorted = new TreeMap<>(parameters);
         sorted.put("app_key", appKey);
@@ -154,8 +159,9 @@ public class ElemeProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .data(AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
-                            .expireIn(expiresIn).build())
+                    .data(
+                            AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).tokenType(tokenType)
+                                    .expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
@@ -173,8 +179,13 @@ public class ElemeProvider extends AbstractProvider {
         Map<String, Object> metasHashMap = new HashMap<>(4);
         metasHashMap.put("app_key", context.getAppKey());
         metasHashMap.put("timestamp", timestamp);
-        String signature = sign(context.getAppKey(), context.getAppSecret(), timestamp, action,
-                authToken.getAccessToken(), parameters);
+        String signature = sign(
+                context.getAppKey(),
+                context.getAppSecret(),
+                timestamp,
+                action,
+                authToken.getAccessToken(),
+                parameters);
 
         String requestId = this.getRequestId();
 
@@ -188,8 +199,8 @@ public class ElemeProvider extends AbstractProvider {
         paramsMap.put("signature", signature);
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_JSON, requestId, false);
-        String response = Httpx.post(this.complex.userinfo(), JsonKit.toJsonString(paramsMap), header,
-                MediaType.APPLICATION_JSON);
+        String response = Httpx
+                .post(this.complex.userinfo(), JsonKit.toJsonString(paramsMap), header, MediaType.APPLICATION_JSON);
 
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);

@@ -62,18 +62,30 @@ public class NetAuthenticator implements Authenticator {
             PasswordAuthentication auth;
             if (proxyAuthorization) {
                 InetSocketAddress proxyAddress = (InetSocketAddress) proxy.address();
-                auth = java.net.Authenticator.requestPasswordAuthentication(proxyAddress.getHostName(),
-                        getConnectToInetAddress(proxy, url), proxyAddress.getPort(), url.scheme(), challenge.realm(),
-                        challenge.scheme(), url.url(), java.net.Authenticator.RequestorType.PROXY);
+                auth = java.net.Authenticator.requestPasswordAuthentication(
+                        proxyAddress.getHostName(),
+                        getConnectToInetAddress(proxy, url),
+                        proxyAddress.getPort(),
+                        url.scheme(),
+                        challenge.realm(),
+                        challenge.scheme(),
+                        url.url(),
+                        java.net.Authenticator.RequestorType.PROXY);
             } else {
-                auth = java.net.Authenticator.requestPasswordAuthentication(url.host(),
-                        getConnectToInetAddress(proxy, url), url.port(), url.scheme(), challenge.realm(),
-                        challenge.scheme(), url.url(), java.net.Authenticator.RequestorType.SERVER);
+                auth = java.net.Authenticator.requestPasswordAuthentication(
+                        url.host(),
+                        getConnectToInetAddress(proxy, url),
+                        url.port(),
+                        url.scheme(),
+                        challenge.realm(),
+                        challenge.scheme(),
+                        url.url(),
+                        java.net.Authenticator.RequestorType.SERVER);
             }
 
             if (null != auth) {
-                String credential = Credentials.basic(auth.getUserName(), new String(auth.getPassword()),
-                        challenge.charset());
+                String credential = Credentials
+                        .basic(auth.getUserName(), new String(auth.getPassword()), challenge.charset());
                 return request.newBuilder()
                         .header(proxyAuthorization ? HTTP.PROXY_AUTHENTICATE : HTTP.AUTHORIZATION, credential).build();
             }

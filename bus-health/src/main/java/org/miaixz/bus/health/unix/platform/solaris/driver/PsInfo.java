@@ -235,7 +235,11 @@ public final class PsInfo {
      * @param addr     THe address whose page to read into the buffer
      * @return The new starting pointer for the buffer
      */
-    private static long conditionallyReadBufferFromStartOfPage(int fd, Memory buffer, size_t bufSize, long bufStart,
+    private static long conditionallyReadBufferFromStartOfPage(
+            int fd,
+            Memory buffer,
+            size_t bufSize,
+            long bufStart,
             long addr) {
         // If we don't have the right buffer, update it
         if (addr < bufStart || addr - bufStart > PAGE_SIZE) {

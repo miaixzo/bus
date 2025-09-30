@@ -88,6 +88,12 @@ public class BaseEntity extends Tracer {
     protected Long modified;
 
     /**
+     * 随机数
+     */
+    @Transient
+    protected transient String nonce;
+
+    /**
      * 搜索参数
      */
     @Transient

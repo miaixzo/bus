@@ -85,15 +85,15 @@ public class VKProvider extends AbstractProvider {
     public String authorize(String state) {
         String realState = getRealState(state);
 
-        Builder builder = Builder.fromUrl(super.authorize(state)).queryParam("scope",
-                this.getScopes(" ", false, this.getDefaultScopes(VKScope.values())));
+        Builder builder = Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(VKScope.values())));
         if (this.context.isPkce()) {
             String cacheKey = this.complex.getName().concat(":code_verifier:").concat(realState);
             String codeVerifier = Builder.codeVerifier();
             String codeChallengeMethod = "S256";
             String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
-            builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
-                    codeChallengeMethod);
+            builder.queryParam("code_challenge", codeChallenge)
+                    .queryParam("code_challenge_method", codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }

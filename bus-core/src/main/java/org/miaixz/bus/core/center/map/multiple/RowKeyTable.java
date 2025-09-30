@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.core.center.map.multiple;
 
 import java.util.*;
 
@@ -166,6 +166,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     private class ColumnMap extends AbstractMap<C, Map<R, V>> {
+
         @Override
         public Set<Entry<C, Map<R, V>>> entrySet() {
             return new ColumnMapEntrySet();
@@ -173,6 +174,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     private class ColumnMapEntrySet extends AbstractSet<Map.Entry<C, Map<R, V>>> {
+
         private final Set<C> columnKeySet = columnKeySet();
 
         @Override
@@ -200,6 +202,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     private class ColumnKeyIterator extends ComputeIterator<C> {
+
         final Map<C, V> seen = columnBuilder.build();
         final Iterator<Map<C, V>> mapIterator = raw.values().iterator();
         Iterator<Map.Entry<C, V>> entryIterator = IteratorKit.empty();
@@ -223,6 +226,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     private class Column extends AbstractMap<R, V> {
+
         final C columnKey;
 
         Column(final C columnKey) {
@@ -254,6 +258,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
 
         private class EntrySetIterator extends ComputeIterator<Entry<R, V>> {
+
             final Iterator<Entry<R, Map<C, V>>> iterator = raw.entrySet().iterator();
 
             @Override
@@ -262,6 +267,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                     final Entry<R, Map<C, V>> entry = iterator.next();
                     if (entry.getValue().containsKey(columnKey)) {
                         return new AbstractEntry<>() {
+
                             @Override
                             public R getKey() {
                                 return entry.getKey();

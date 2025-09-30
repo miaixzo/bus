@@ -61,10 +61,12 @@ public class EntityProvider {
      * @return 缓存键
      */
     public static String insert(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, entity -> "INSERT INTO " + entity.tableName() + "("
-                + entity.insertColumnList() + ")" + " VALUES ("
-                + entity.insertColumns().stream().map(ColumnMeta::variables).collect(Collectors.joining(Symbol.COMMA))
-                + ")");
+        return SqlScript.caching(
+                providerContext,
+                entity -> "INSERT INTO " + entity.tableName() + "(" + entity.insertColumnList() + ")" + " VALUES ("
+                        + entity.insertColumns().stream().map(ColumnMeta::variables)
+                                .collect(Collectors.joining(Symbol.COMMA))
+                        + ")");
     }
 
     /**
@@ -75,13 +77,20 @@ public class EntityProvider {
      */
     public static String insertSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
-                return "INSERT INTO " + entity.tableName() + trimSuffixOverrides("(", ")", Symbol.COMMA,
+                return "INSERT INTO " + entity.tableName() + trimSuffixOverrides(
+                        "(",
+                        ")",
+                        Symbol.COMMA,
                         () -> entity.insertColumns().stream()
                                 .map(column -> ifTest(column.notNullTest(), () -> column.column() + Symbol.COMMA))
                                 .collect(Collectors.joining(Symbol.LF)))
-                        + trimSuffixOverrides(" VALUES (", ")", Symbol.COMMA,
+                        + trimSuffixOverrides(
+                                " VALUES (",
+                                ")",
+                                Symbol.COMMA,
                                 () -> entity.insertColumns().stream().map(
                                         column -> ifTest(column.notNullTest(), () -> column.variables() + Symbol.COMMA))
                                         .collect(Collectors.joining(Symbol.LF)));
@@ -96,8 +105,10 @@ public class EntityProvider {
      * @return 缓存键
      */
     public static String deleteByPrimaryKey(ProviderContext providerContext) {
-        return SqlScript.caching(providerContext, entity -> "DELETE FROM " + entity.tableName() + " WHERE " + entity
-                .idColumns().stream().map(ColumnMeta::columnEqualsProperty).collect(Collectors.joining(" AND ")));
+        return SqlScript.caching(
+                providerContext,
+                entity -> "DELETE FROM " + entity.tableName() + " WHERE " + entity.idColumns().stream()
+                        .map(ColumnMeta::columnEqualsProperty).collect(Collectors.joining(" AND ")));
     }
 
     /**
@@ -108,10 +119,11 @@ public class EntityProvider {
      */
     public static String delete(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
-                return "DELETE FROM " + entity.tableName() + parameterNotNull("Parameter cannot be null")
-                        + where(() -> entity.columns().stream().map(
+                return "DELETE FROM " + entity.tableName() + parameterNotNull("Parameter cannot be null") + where(
+                        () -> entity.columns().stream().map(
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
                                 .collect(Collectors.joining(Symbol.LF)));
             }
@@ -126,13 +138,15 @@ public class EntityProvider {
      */
     public static String updateByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return "UPDATE " + entity.tableName() + " SET "
                         + entity.updateColumns().stream().map(ColumnMeta::columnEqualsProperty)
                                 .collect(Collectors.joining(Symbol.COMMA))
-                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
-                                .collect(Collectors.joining(" AND ")));
+                        + where(
+                                () -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
+                                        .collect(Collectors.joining(" AND ")));
             }
         });
     }
@@ -145,13 +159,20 @@ public class EntityProvider {
      */
     public static String updateByPrimaryKeySelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
-                return "UPDATE " + entity.tableName() + set(() -> entity.updateColumns().stream()
-                        .map(column -> ifTest(column.notNullTest(), () -> column.columnEqualsProperty() + Symbol.COMMA))
-                        .collect(Collectors.joining(Symbol.LF)))
-                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
-                                .collect(Collectors.joining(" AND ")));
+                return "UPDATE " + entity.tableName()
+                        + set(
+                                () -> entity.updateColumns().stream()
+                                        .map(
+                                                column -> ifTest(
+                                                        column.notNullTest(),
+                                                        () -> column.columnEqualsProperty() + Symbol.COMMA))
+                                        .collect(Collectors.joining(Symbol.LF)))
+                        + where(
+                                () -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
+                                        .collect(Collectors.joining(" AND ")));
             }
         });
     }
@@ -164,11 +185,13 @@ public class EntityProvider {
      */
     public static String selectByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
-                        + where(() -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
-                                .collect(Collectors.joining(" AND ")));
+                        + where(
+                                () -> entity.idColumns().stream().map(ColumnMeta::columnEqualsProperty)
+                                        .collect(Collectors.joining(" AND ")));
             }
         });
     }
@@ -181,12 +204,18 @@ public class EntityProvider {
      */
     public static String select(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return "SELECT " + entity.baseColumnAsPropertyList() + " FROM " + entity.tableName()
-                        + ifParameterNotNull(() -> where(() -> entity.whereColumns().stream().map(
-                                column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
-                                .collect(Collectors.joining(Symbol.LF))))
+                        + ifParameterNotNull(
+                                () -> where(
+                                        () -> entity.whereColumns().stream()
+                                                .map(
+                                                        column -> ifTest(
+                                                                column.notNullTest(),
+                                                                () -> "AND " + column.columnEqualsProperty()))
+                                                .collect(Collectors.joining(Symbol.LF))))
                         + entity.groupByColumn().orElse("") + entity.havingColumn().orElse("")
                         + entity.orderByColumn().orElse("");
             }
@@ -201,12 +230,18 @@ public class EntityProvider {
      */
     public static String selectCount(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return "SELECT COUNT(*)  FROM " + entity.tableName() + Symbol.LF
-                        + ifParameterNotNull(() -> where(() -> entity.whereColumns().stream().map(
-                                column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
-                                .collect(Collectors.joining(Symbol.LF))));
+                        + ifParameterNotNull(
+                                () -> where(
+                                        () -> entity.whereColumns().stream()
+                                                .map(
+                                                        column -> ifTest(
+                                                                column.notNullTest(),
+                                                                () -> "AND " + column.columnEqualsProperty()))
+                                                .collect(Collectors.joining(Symbol.LF))));
             }
         });
     }

@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.AnnotationElementPosition:
-            return "AnnotationElementPosition";
-        case PrivateTag.AnnotationElementText:
-            return "AnnotationElementText";
+            case PrivateTag.AnnotationElementPosition:
+                return "AnnotationElementPosition";
+
+            case PrivateTag.AnnotationElementText:
+                return "AnnotationElementText";
         }
         return "";
     }

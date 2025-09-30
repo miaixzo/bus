@@ -163,8 +163,8 @@ public class Authorizer {
             if (this.cache == null) {
                 return targetClass.getDeclaredConstructor(Context.class).newInstance(this.context);
             } else {
-                return targetClass.getDeclaredConstructor(Context.class, CacheX.class).newInstance(this.context,
-                        this.cache);
+                return targetClass.getDeclaredConstructor(Context.class, CacheX.class)
+                        .newInstance(this.context, this.cache);
             }
         } catch (Exception e) {
             e.printStackTrace();

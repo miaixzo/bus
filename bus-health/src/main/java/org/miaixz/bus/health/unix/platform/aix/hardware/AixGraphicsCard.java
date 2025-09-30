@@ -86,9 +86,11 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 } else if (s.contains("Level")) {
                     versionInfo.add(s.replaceAll("\\.\\.+", Symbol.EQUAL));
                 } else if (s.startsWith("Hardware Location Code")) {
-                    cardList.add(new AixGraphicsCard(name, Normal.UNKNOWN,
-                            StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
-                            versionInfo.isEmpty() ? Normal.UNKNOWN : String.join(Symbol.COMMA, versionInfo), 0L));
+                    cardList.add(
+                            new AixGraphicsCard(name, Normal.UNKNOWN,
+                                    StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
+                                    versionInfo.isEmpty() ? Normal.UNKNOWN : String.join(Symbol.COMMA, versionInfo),
+                                    0L));
                     display = false;
                 }
             }

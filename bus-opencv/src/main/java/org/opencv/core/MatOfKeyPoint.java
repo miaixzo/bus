@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MatOfKeyPoint extends Mat {
+
     // 32FC7
     private static final int _depth = CvType.CV_32F;
     private static final int _channels = 7;

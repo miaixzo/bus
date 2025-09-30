@@ -53,18 +53,23 @@ public abstract class AbstractProvider implements Provider, Serializable {
     @Override
     public boolean isEnabled(final Level level) {
         switch (level) {
-        case TRACE:
-            return isTraceEnabled();
-        case DEBUG:
-            return isDebugEnabled();
-        case INFO:
-            return isInfoEnabled();
-        case WARN:
-            return isWarnEnabled();
-        case ERROR:
-            return isErrorEnabled();
-        default:
-            throw new Error(StringKit.format("Can not identify level: {}", level));
+            case TRACE:
+                return isTraceEnabled();
+
+            case DEBUG:
+                return isDebugEnabled();
+
+            case INFO:
+                return isInfoEnabled();
+
+            case WARN:
+                return isWarnEnabled();
+
+            case ERROR:
+                return isErrorEnabled();
+
+            default:
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 

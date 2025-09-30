@@ -70,8 +70,11 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
      * @param type 类型
      * @return 转换器
      */
-    private static Converter getConverterFromSet(final Set<? extends MatcherConverter> converterSet, final Type type,
-            final Class<?> rawType, final Object value) {
+    private static Converter getConverterFromSet(
+            final Set<? extends MatcherConverter> converterSet,
+            final Type type,
+            final Class<?> rawType,
+            final Object value) {
         return StreamKit.of(converterSet).filter((predicate) -> predicate.match(type, rawType, value)).findFirst()
                 .orElse(null);
     }

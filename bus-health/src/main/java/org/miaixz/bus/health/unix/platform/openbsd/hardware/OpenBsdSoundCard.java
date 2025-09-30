@@ -104,8 +104,9 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
         }
         List<SoundCard> soundCards = new ArrayList<>();
         for (Entry<String, String> entry : nameMap.entrySet()) {
-            soundCards.add(new OpenBsdSoundCard(versionMap.get(entry.getKey()), entry.getValue(),
-                    codecMap.get(entry.getKey())));
+            soundCards.add(
+                    new OpenBsdSoundCard(versionMap.get(entry.getKey()), entry.getValue(),
+                            codecMap.get(entry.getKey())));
         }
         return soundCards;
     }

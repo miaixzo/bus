@@ -73,6 +73,7 @@ public class Transmitter {
     private boolean exchangeResponseDone;
     private boolean canceled;
     private final AsyncTimeout timeout = new AsyncTimeout() {
+
         @Override
         protected void timedOut() {
             cancel();
@@ -360,6 +361,7 @@ public class Transmitter {
     }
 
     static class TransmitterReference extends WeakReference<Transmitter> {
+
         /**
          * 捕获调用执行或加入队列时的堆栈跟踪。这有助于识别连接泄漏的来源
          */

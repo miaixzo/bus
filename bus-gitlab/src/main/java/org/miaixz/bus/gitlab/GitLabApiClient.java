@@ -650,14 +650,23 @@ public class GitLabApiClient implements AutoCloseable {
         return upload(filePart, formData, url);
     }
 
-    protected Response upload(String name, InputStream inputStream, String filename, String mediaTypeString,
+    protected Response upload(
+            String name,
+            InputStream inputStream,
+            String filename,
+            String mediaTypeString,
             Object... pathArgs) throws IOException {
         URL url = getApiUrl(pathArgs);
         return (upload(name, inputStream, filename, mediaTypeString, null, url));
     }
 
-    protected Response upload(String name, InputStream inputStream, String filename, String mediaTypeString,
-            Form formData, URL url) throws IOException {
+    protected Response upload(
+            String name,
+            InputStream inputStream,
+            String filename,
+            String mediaTypeString,
+            Form formData,
+            URL url) throws IOException {
         StreamDataBodyPart streamDataBodyPart = new StreamDataBodyPart(name, inputStream, filename);
         return upload(streamDataBodyPart, formData, url);
     }
@@ -881,21 +890,24 @@ public class GitLabApiClient implements AutoCloseable {
 
     private String getAuthValue() {
         switch (tokenType) {
-        case OAUTH2_ACCESS:
-            return "Bearer " + authToken.get();
-        default:
-            return authToken.get();
+            case OAUTH2_ACCESS:
+                return "Bearer " + authToken.get();
+
+            default:
+                return authToken.get();
         }
     }
 
     private String getAuthHeader() {
         switch (tokenType) {
-        case OAUTH2_ACCESS:
-            return AUTHORIZATION_HEADER;
-        case JOB_TOKEN:
-            return JOB_TOKEN_HEADER;
-        default:
-            return PRIVATE_TOKEN_HEADER;
+            case OAUTH2_ACCESS:
+                return AUTHORIZATION_HEADER;
+
+            case JOB_TOKEN:
+                return JOB_TOKEN_HEADER;
+
+            default:
+                return PRIVATE_TOKEN_HEADER;
         }
     }
 
@@ -973,6 +985,7 @@ public class GitLabApiClient implements AutoCloseable {
 
         // Create a TrustManager that trusts all certificates
         TrustManager[] trustAllCerts = new TrustManager[] { new X509ExtendedTrustManager() {
+
             @Override
             public X509Certificate[] getAcceptedIssuers() {
                 return null;

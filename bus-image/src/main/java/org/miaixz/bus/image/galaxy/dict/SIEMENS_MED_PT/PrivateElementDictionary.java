@@ -52,14 +52,17 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.DecayCorrectionDateTime:
-            return VR.DT;
-        case PrivateTag.TimeSliceDuration:
-            return VR.IS;
-        case PrivateTag.RegistrationMatrixUID:
-            return VR.UI;
-        case PrivateTag.VolumeIndex:
-            return VR.US;
+            case PrivateTag.DecayCorrectionDateTime:
+                return VR.DT;
+
+            case PrivateTag.TimeSliceDuration:
+                return VR.IS;
+
+            case PrivateTag.RegistrationMatrixUID:
+                return VR.UI;
+
+            case PrivateTag.VolumeIndex:
+                return VR.US;
         }
         return VR.UN;
     }

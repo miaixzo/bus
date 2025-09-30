@@ -87,8 +87,11 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
      * @throws Exception 解析过程中可能抛出的异常
      */
     @Override
-    public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(
+            MethodParameter methodParameter,
+            ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if (request == null) {
             throw new IllegalStateException("No HttpServletRequest available");

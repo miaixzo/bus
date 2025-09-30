@@ -66,7 +66,9 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * @param allDescendants If false, only gets immediate children of this process. If true, gets all descendants.
      * @return Set of children or descendants of parentPid
      */
-    protected static Set<Integer> getChildrenOrDescendants(Collection<OSProcess> allProcs, int parentPid,
+    protected static Set<Integer> getChildrenOrDescendants(
+            Collection<OSProcess> allProcs,
+            int parentPid,
             boolean allDescendants) {
         Map<Integer, Integer> parentPidMap = allProcs.stream()
                 .collect(Collectors.toMap(OSProcess::getProcessID, OSProcess::getParentProcessID));
@@ -82,7 +84,9 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * @param allDescendants If false, only gets immediate children of this process. If true, gets all descendants.
      * @return Set of children or descendants of parentPid, including the parent
      */
-    protected static Set<Integer> getChildrenOrDescendants(Map<Integer, Integer> parentPidMap, int parentPid,
+    protected static Set<Integer> getChildrenOrDescendants(
+            Map<Integer, Integer> parentPidMap,
+            int parentPid,
             boolean allDescendants) {
         // Set to hold results
         Set<Integer> descendantPids = new HashSet<>();
@@ -160,7 +164,10 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     protected abstract List<OSProcess> queryAllProcesses();
 
     @Override
-    public List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
+    public List<OSProcess> getChildProcesses(
+            int parentPid,
+            Predicate<OSProcess> filter,
+            Comparator<OSProcess> sort,
             int limit) {
         // Get this pid and its children
         List<OSProcess> childProcs = queryChildProcesses(parentPid);
@@ -178,8 +185,11 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     protected abstract List<OSProcess> queryChildProcesses(int parentPid);
 
     @Override
-    public List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter,
-            Comparator<OSProcess> sort, int limit) {
+    public List<OSProcess> getDescendantProcesses(
+            int parentPid,
+            Predicate<OSProcess> filter,
+            Comparator<OSProcess> sort,
+            int limit) {
         // Get this pid and its descendants
         List<OSProcess> descendantProcs = queryDescendantProcesses(parentPid);
         // Extract the parent from the list

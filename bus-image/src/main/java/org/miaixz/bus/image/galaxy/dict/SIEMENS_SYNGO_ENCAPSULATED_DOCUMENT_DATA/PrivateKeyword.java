@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.StudyModel:
-            return "StudyModel";
-        case PrivateTag.ReportXMLSchema:
-            return "ReportXMLSchema";
-        case PrivateTag.ReportIdentifier:
-            return "ReportIdentifier";
+            case PrivateTag.StudyModel:
+                return "StudyModel";
+
+            case PrivateTag.ReportXMLSchema:
+                return "ReportXMLSchema";
+
+            case PrivateTag.ReportIdentifier:
+                return "ReportIdentifier";
         }
         return "";
     }

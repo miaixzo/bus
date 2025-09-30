@@ -245,8 +245,9 @@ public class Condition<T> {
         }
         TableMeta table = fns[0].toEntityColumn().tableMeta();
         Set<String> excludeColumnSet = Arrays.stream(fns).map(Fn::toColumn).collect(Collectors.toSet());
-        selectColumns(table.selectColumns().stream().filter(c -> !excludeColumnSet.contains(c.column()))
-                .collect(Collectors.toList()));
+        selectColumns(
+                table.selectColumns().stream().filter(c -> !excludeColumnSet.contains(c.column()))
+                        .collect(Collectors.toList()));
         return this;
     }
 

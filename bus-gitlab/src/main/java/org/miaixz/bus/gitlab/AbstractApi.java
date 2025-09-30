@@ -288,7 +288,9 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response get(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams,
+    protected Response get(
+            Response.Status expectedStatus,
+            MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().get(queryParams, pathArgs), expectedStatus);
@@ -308,8 +310,11 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response getWithAccepts(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams,
-            String accepts, Object... pathArgs) throws GitLabApiException {
+    protected Response getWithAccepts(
+            Response.Status expectedStatus,
+            MultivaluedMap<String, String> queryParams,
+            String accepts,
+            Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().getWithAccepts(queryParams, accepts, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -346,7 +351,9 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response head(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams,
+    protected Response head(
+            Response.Status expectedStatus,
+            MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().head(queryParams, pathArgs), expectedStatus);
@@ -365,7 +372,9 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response patch(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams,
+    protected Response patch(
+            Response.Status expectedStatus,
+            MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().patch(queryParams, pathArgs), expectedStatus);
@@ -442,7 +451,10 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response post(Response.Status expectedStatus, StreamingOutput stream, String mediaType,
+    protected Response post(
+            Response.Status expectedStatus,
+            StreamingOutput stream,
+            String mediaType,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().post(stream, mediaType, pathArgs), expectedStatus);
@@ -461,7 +473,9 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response post(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams,
+    protected Response post(
+            Response.Status expectedStatus,
+            MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().post(queryParams, pathArgs), expectedStatus);
@@ -500,7 +514,11 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response upload(Response.Status expectedStatus, String name, File fileToUpload, String mediaType,
+    protected Response upload(
+            Response.Status expectedStatus,
+            String name,
+            File fileToUpload,
+            String mediaType,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, pathArgs), expectedStatus);
@@ -509,8 +527,13 @@ public abstract class AbstractApi implements Constants {
         }
     }
 
-    protected Response upload(Response.Status expectedStatus, String name, InputStream inputStream, String filename,
-            String mediaType, Object... pathArgs) throws GitLabApiException {
+    protected Response upload(
+            Response.Status expectedStatus,
+            String name,
+            InputStream inputStream,
+            String filename,
+            String mediaType,
+            Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().upload(name, inputStream, filename, mediaType, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -552,8 +575,13 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response upload(Response.Status expectedStatus, String name, File fileToUpload, String mediaType,
-            Form formData, URL url) throws GitLabApiException {
+    protected Response upload(
+            Response.Status expectedStatus,
+            String name,
+            File fileToUpload,
+            String mediaType,
+            Form formData,
+            URL url) throws GitLabApiException {
 
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, formData, url), expectedStatus);
@@ -572,7 +600,9 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response put(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams,
+    protected Response put(
+            Response.Status expectedStatus,
+            MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().put(queryParams, pathArgs), expectedStatus);
@@ -707,7 +737,9 @@ public abstract class AbstractApi implements Constants {
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
-    protected Response delete(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams,
+    protected Response delete(
+            Response.Status expectedStatus,
+            MultivaluedMap<String, String> queryParams,
             Object... pathArgs) throws GitLabApiException {
         try {
             return validate(getApiClient().delete(queryParams, pathArgs), expectedStatus);
@@ -849,7 +881,9 @@ public abstract class AbstractApi implements Constants {
      * @param customAttributesEnabled enables customAttributes for this query
      * @return a MultivaluedMap instance containing "page" and "per_page" params
      */
-    protected MultivaluedMap<String, String> getPageQueryParams(int page, int perPage,
+    protected MultivaluedMap<String, String> getPageQueryParams(
+            int page,
+            int perPage,
             boolean customAttributesEnabled) {
 
         GitLabApiForm form = new GitLabApiForm().withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);

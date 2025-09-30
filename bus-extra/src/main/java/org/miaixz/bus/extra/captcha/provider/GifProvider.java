@@ -210,7 +210,10 @@ public class GifProvider extends AbstractProvider {
      * @param flag      透明度使用
      * @return BufferedImage
      */
-    private BufferedImage graphicsImage(final char[] chars, final Color[] fontColor, final char[] words,
+    private BufferedImage graphicsImage(
+            final char[] chars,
+            final Color[] fontColor,
+            final char[] words,
             final int flag) {
         final BufferedImage image = new BufferedImage(width, height,
                 (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
@@ -232,7 +235,10 @@ public class GifProvider extends AbstractProvider {
                 ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha(chars.length, flag, i));
                 g2d.setComposite(ac);
                 g2d.setColor(fontColor[i]);
-                g2d.drawOval(RandomKit.randomInt(width), RandomKit.randomInt(height), RandomKit.randomInt(5, 30),
+                g2d.drawOval(
+                        RandomKit.randomInt(width),
+                        RandomKit.randomInt(height),
+                        RandomKit.randomInt(5, 30),
                         5 + RandomKit.randomInt(5, 30));// 绘制椭圆边框
                 g2d.drawString(words[i] + "", x + (font.getSize() + m) * i, y);
             }

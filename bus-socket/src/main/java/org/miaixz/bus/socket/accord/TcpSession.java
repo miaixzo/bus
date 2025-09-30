@@ -228,6 +228,7 @@ public class TcpSession extends Session {
      * 读事件回调处理
      */
     private static final CompletionHandler<Integer, TcpSession> READ_COMPLETION_HANDLER = new CompletionHandler<>() {
+
         @Override
         public void completed(Integer result, TcpSession session) {
             try {
@@ -413,6 +414,7 @@ public class TcpSession extends Session {
      * 同步读操作的InputStream
      */
     private class InnerInputStream extends InputStream {
+
         /**
          * 当前InputSteam可读字节数
          */
@@ -494,6 +496,7 @@ public class TcpSession extends Session {
      * 写事件回调处理
      */
     private static final CompletionHandler<Integer, TcpSession> WRITE_COMPLETION_HANDLER = new CompletionHandler<Integer, TcpSession>() {
+
         @Override
         public void completed(Integer result, TcpSession session) {
             try {

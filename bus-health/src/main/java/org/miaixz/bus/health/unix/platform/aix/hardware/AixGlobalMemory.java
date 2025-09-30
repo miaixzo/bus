@@ -54,8 +54,8 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
     // AIX has multiple page size units, but for purposes of "pages" in perfstat,
     // the docs specify 4KB pages so we hardcode this
     private static final long PAGESIZE = 4096L;
-    private final Supplier<perfstat_memory_total_t> perfstatMem = Memoizer.memoize(AixGlobalMemory::queryPerfstat,
-            Memoizer.defaultExpiration());
+    private final Supplier<perfstat_memory_total_t> perfstatMem = Memoizer
+            .memoize(AixGlobalMemory::queryPerfstat, Memoizer.defaultExpiration());
     private final Supplier<List<String>> lscfg;
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
@@ -115,8 +115,9 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                 } else if (s.startsWith("Hardware Location Code")) {
                     // Save previous bank
                     if (capacity > 0) {
-                        pmList.add(new PhysicalMemory(bankLabel + locator, capacity, 0L, "IBM", Normal.UNKNOWN,
-                                Normal.UNKNOWN, Normal.UNKNOWN));
+                        pmList.add(
+                                new PhysicalMemory(bankLabel + locator, capacity, 0L, "IBM", Normal.UNKNOWN,
+                                        Normal.UNKNOWN, Normal.UNKNOWN));
                     }
                     bankLabel = Normal.UNKNOWN;
                     locator = Normal.EMPTY;
@@ -133,8 +134,9 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                 } else if (s.startsWith("Physical Location:")) {
                     // Save previous bank
                     if (capacity > 0) {
-                        pmList.add(new PhysicalMemory(locator, capacity, 0L, "IBM", Normal.UNKNOWN, partNumber,
-                                Normal.UNKNOWN));
+                        pmList.add(
+                                new PhysicalMemory(locator, capacity, 0L, "IBM", Normal.UNKNOWN, partNumber,
+                                        Normal.UNKNOWN));
                     }
                     partNumber = Normal.UNKNOWN;
                     locator = Normal.EMPTY;

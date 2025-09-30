@@ -5416,6 +5416,7 @@ public class Tag {
     }
 
     public enum Type {
+
         STANDARD, PRIVATE, PRIVATE_CREATOR;
 
         public static Type typeOf(int tag) {

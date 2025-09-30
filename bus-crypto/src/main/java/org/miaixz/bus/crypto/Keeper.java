@@ -476,7 +476,9 @@ public class Keeper {
      * @param seed      种子
      * @return {@link KeyPair}
      */
-    public static KeyPair generateKeyPair(final String algorithm, final byte[] seed,
+    public static KeyPair generateKeyPair(
+            final String algorithm,
+            final byte[] seed,
             final AlgorithmParameterSpec param) {
         return generateKeyPair(algorithm, DEFAULT_KEY_SIZE, seed, param);
     }
@@ -512,7 +514,10 @@ public class Keeper {
      * @param params    {@link AlgorithmParameterSpec}
      * @return {@link KeyPair}
      */
-    public static KeyPair generateKeyPair(final String algorithm, final int keySize, final byte[] seed,
+    public static KeyPair generateKeyPair(
+            final String algorithm,
+            final int keySize,
+            final byte[] seed,
             final AlgorithmParameterSpec... params) {
         return generateKeyPair(algorithm, keySize, RandomKit.createSecureRandom(seed), params);
     }
@@ -548,7 +553,10 @@ public class Keeper {
      * @param params    {@link AlgorithmParameterSpec}
      * @return {@link KeyPair}
      */
-    public static KeyPair generateKeyPair(String algorithm, int keySize, final SecureRandom random,
+    public static KeyPair generateKeyPair(
+            String algorithm,
+            int keySize,
+            final SecureRandom random,
             final AlgorithmParameterSpec... params) {
         algorithm = getAlgorithmAfterWith(algorithm);
         final KeyPairGenerator keyPairGen = getKeyPairGenerator(algorithm);
@@ -596,7 +604,10 @@ public class Keeper {
      * @param alias    别名
      * @return {@link KeyPair}
      */
-    public static KeyPair getKeyPair(final String type, final InputStream in, final char[] password,
+    public static KeyPair getKeyPair(
+            final String type,
+            final InputStream in,
+            final char[] password,
             final String alias) {
         final KeyStore keyStore = readKeyStore(type, in, password);
         return getKeyPair(keyStore, password, alias);
@@ -1068,7 +1079,8 @@ public class Keeper {
      * @param spec       密钥规范
      * @return EC公钥
      */
-    public static PublicKey getECPublicKey(final org.bouncycastle.jce.interfaces.ECPrivateKey privateKey,
+    public static PublicKey getECPublicKey(
+            final org.bouncycastle.jce.interfaces.ECPrivateKey privateKey,
             final org.bouncycastle.jce.spec.ECParameterSpec spec) {
         final org.bouncycastle.jce.spec.ECPublicKeySpec keySpec = new org.bouncycastle.jce.spec.ECPublicKeySpec(
                 getQFromD(privateKey.getD(), spec), spec);
@@ -1082,7 +1094,8 @@ public class Keeper {
      * @param spec 密钥规范
      * @return 公钥的点坐标
      */
-    public static org.bouncycastle.math.ec.ECPoint getQFromD(final BigInteger d,
+    public static org.bouncycastle.math.ec.ECPoint getQFromD(
+            final BigInteger d,
             final org.bouncycastle.jce.spec.ECParameterSpec spec) {
         return spec.getG().multiply(d).normalize();
     }
@@ -1161,8 +1174,8 @@ public class Keeper {
      */
     public static ECPublicKeyParameters getPublicParams(final ECPrivateKeyParameters privateKeyParameters) {
         final ECDomainParameters domainParameters = privateKeyParameters.getParameters();
-        final org.bouncycastle.math.ec.ECPoint q = new FixedPointCombMultiplier().multiply(domainParameters.getG(),
-                privateKeyParameters.getD());
+        final org.bouncycastle.math.ec.ECPoint q = new FixedPointCombMultiplier()
+                .multiply(domainParameters.getG(), privateKeyParameters.getD());
         return new ECPublicKeyParameters(q, domainParameters);
     }
 
@@ -1216,7 +1229,9 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters，x或y为{@code null}则返回{@code null}
      */
-    public static ECPublicKeyParameters toPublicParams(final String x, final String y,
+    public static ECPublicKeyParameters toPublicParams(
+            final String x,
+            final String y,
             final ECDomainParameters domainParameters) {
         return toPublicParams(Builder.decode(x), Builder.decode(y), domainParameters);
     }
@@ -1229,12 +1244,16 @@ public class Keeper {
      * @param domainParameters ECDomainParameters曲线参数
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final byte[] xBytes, final byte[] yBytes,
+    public static ECPublicKeyParameters toPublicParams(
+            final byte[] xBytes,
+            final byte[] yBytes,
             final ECDomainParameters domainParameters) {
         if (null == xBytes || null == yBytes) {
             return null;
         }
-        return toPublicParams(BigIntegers.fromUnsignedByteArray(xBytes), BigIntegers.fromUnsignedByteArray(yBytes),
+        return toPublicParams(
+                BigIntegers.fromUnsignedByteArray(xBytes),
+                BigIntegers.fromUnsignedByteArray(yBytes),
                 domainParameters);
     }
 
@@ -1246,7 +1265,9 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final BigInteger x, final BigInteger y,
+    public static ECPublicKeyParameters toPublicParams(
+            final BigInteger x,
+            final BigInteger y,
             final ECDomainParameters domainParameters) {
         if (null == x || null == y) {
             return null;
@@ -1262,7 +1283,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final String pointEncoded,
+    public static ECPublicKeyParameters toPublicParams(
+            final String pointEncoded,
             final ECDomainParameters domainParameters) {
         final ECCurve curve = domainParameters.getCurve();
         return toPublicParams(curve.decodePoint(Builder.decode(pointEncoded)), domainParameters);
@@ -1275,7 +1297,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final byte[] pointEncoded,
+    public static ECPublicKeyParameters toPublicParams(
+            final byte[] pointEncoded,
             final ECDomainParameters domainParameters) {
         final ECCurve curve = domainParameters.getCurve();
         return toPublicParams(curve.decodePoint(pointEncoded), domainParameters);
@@ -1288,7 +1311,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final org.bouncycastle.math.ec.ECPoint point,
+    public static ECPublicKeyParameters toPublicParams(
+            final org.bouncycastle.math.ec.ECPoint point,
             final ECDomainParameters domainParameters) {
         return new ECPublicKeyParameters(point, domainParameters);
     }
@@ -1351,7 +1375,8 @@ public class Keeper {
         if (null == d) {
             return null;
         }
-        return toPrivateParams(BigIntegers.fromUnsignedByteArray(Objects.requireNonNull(Builder.decode(d))),
+        return toPrivateParams(
+                BigIntegers.fromUnsignedByteArray(Objects.requireNonNull(Builder.decode(d))),
                 domainParameters);
     }
 
@@ -1376,7 +1401,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPrivateKeyParameters
      */
-    public static ECPrivateKeyParameters toPrivateParams(final BigInteger d,
+    public static ECPrivateKeyParameters toPrivateParams(
+            final BigInteger d,
             final ECDomainParameters domainParameters) {
         if (null == d) {
             return null;
@@ -1539,7 +1565,10 @@ public class Keeper {
      * @param alias    别名
      * @return {@link KeyStore}
      */
-    public static Certificate readCertificate(final String type, final InputStream in, final char[] password,
+    public static Certificate readCertificate(
+            final String type,
+            final InputStream in,
+            final char[] password,
             final String alias) {
         final KeyStore keyStore = readKeyStore(type, in, password);
         try {
@@ -1636,7 +1665,8 @@ public class Keeper {
      * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
      * @return ECPrivateKeySpec
      */
-    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(final byte[] d,
+    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(
+            final byte[] d,
             final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
         return getPrivateKeySpec(BigIntegers.fromUnsignedByteArray(d), parameterSpec);
     }
@@ -1648,7 +1678,8 @@ public class Keeper {
      * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
      * @return ECPrivateKeySpec
      */
-    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(final BigInteger d,
+    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(
+            final BigInteger d,
             final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
         return new org.bouncycastle.jce.spec.ECPrivateKeySpec(d, parameterSpec);
     }
@@ -1660,7 +1691,8 @@ public class Keeper {
      * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
      * @return ECPublicKeySpec
      */
-    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(final byte[] q,
+    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
+            final byte[] q,
             final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
         return getPublicKeySpec(parameterSpec.getCurve().decodePoint(q), parameterSpec);
     }
@@ -1673,9 +1705,13 @@ public class Keeper {
      * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
      * @return ECPublicKeySpec
      */
-    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(final byte[] x, final byte[] y,
+    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
+            final byte[] x,
+            final byte[] y,
             final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
-        return getPublicKeySpec(BigIntegers.fromUnsignedByteArray(x), BigIntegers.fromUnsignedByteArray(y),
+        return getPublicKeySpec(
+                BigIntegers.fromUnsignedByteArray(x),
+                BigIntegers.fromUnsignedByteArray(y),
                 parameterSpec);
     }
 
@@ -1687,7 +1723,9 @@ public class Keeper {
      * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
      * @return ECPublicKeySpec
      */
-    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(final BigInteger x, final BigInteger y,
+    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
+            final BigInteger x,
+            final BigInteger y,
             final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
         return getPublicKeySpec(parameterSpec.getCurve().createPoint(x, y), parameterSpec);
     }

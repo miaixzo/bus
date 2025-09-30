@@ -73,8 +73,11 @@ public class Overlays {
             if (attrs.getInt(Tag.OverlayBitsAllocated | gg0000, 1) != 1) {
                 int ovlyBitPosition = attrs.getInt(Tag.OverlayBitPosition | gg0000, 0);
                 if (ovlyBitPosition < bitsStored)
-                    Logger.info("Ignore embedded overlay #{} from bit #{} < bits stored: {}", (gg0000 >>> 17) + 1,
-                            ovlyBitPosition, bitsStored);
+                    Logger.info(
+                            "Ignore embedded overlay #{} from bit #{} < bits stored: {}",
+                            (gg0000 >>> 17) + 1,
+                            ovlyBitPosition,
+                            bitsStored);
                 else
                     result[len++] = gg0000;
             }
@@ -89,22 +92,56 @@ public class Overlays {
         int stride = sm.getScanlineStride();
         DataBuffer db = raster.getDataBuffer();
         switch (db.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            extractFromPixeldata(((DataBufferByte) db).getData(), rows, columns, stride, mask, ovlyData, off, length);
-            break;
-        case DataBuffer.TYPE_USHORT:
-            extractFromPixeldata(((DataBufferUShort) db).getData(), rows, columns, stride, mask, ovlyData, off, length);
-            break;
-        case DataBuffer.TYPE_SHORT:
-            extractFromPixeldata(((DataBufferShort) db).getData(), rows, columns, stride, mask, ovlyData, off, length);
-            break;
-        default:
-            throw new UnsupportedOperationException("Unsupported DataBuffer type: " + db.getDataType());
+            case DataBuffer.TYPE_BYTE:
+                extractFromPixeldata(
+                        ((DataBufferByte) db).getData(),
+                        rows,
+                        columns,
+                        stride,
+                        mask,
+                        ovlyData,
+                        off,
+                        length);
+                break;
+
+            case DataBuffer.TYPE_USHORT:
+                extractFromPixeldata(
+                        ((DataBufferUShort) db).getData(),
+                        rows,
+                        columns,
+                        stride,
+                        mask,
+                        ovlyData,
+                        off,
+                        length);
+                break;
+
+            case DataBuffer.TYPE_SHORT:
+                extractFromPixeldata(
+                        ((DataBufferShort) db).getData(),
+                        rows,
+                        columns,
+                        stride,
+                        mask,
+                        ovlyData,
+                        off,
+                        length);
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unsupported DataBuffer type: " + db.getDataType());
         }
     }
 
-    private static void extractFromPixeldata(byte[] pixeldata, int rows, int columns, int stride, int mask,
-            byte[] ovlyData, int off, int length) {
+    private static void extractFromPixeldata(
+            byte[] pixeldata,
+            int rows,
+            int columns,
+            int stride,
+            int mask,
+            byte[] ovlyData,
+            int off,
+            int length) {
         for (int y = 0, i = off, imax = off + length; y < columns && i < imax; y++) {
             for (int j = y * stride, jmax = j + rows; j < jmax && i < imax; j++, i++) {
                 if ((pixeldata[j] & mask) != 0)
@@ -113,8 +150,15 @@ public class Overlays {
         }
     }
 
-    private static void extractFromPixeldata(short[] pixeldata, int rows, int columns, int stride, int mask,
-            byte[] ovlyData, int off, int length) {
+    private static void extractFromPixeldata(
+            short[] pixeldata,
+            int rows,
+            int columns,
+            int stride,
+            int mask,
+            byte[] ovlyData,
+            int off,
+            int length) {
         for (int y = 0, i = off, imax = off + length; y < rows && i < imax; y++) {
             for (int j = y * stride, jmax = j + columns; j < jmax && i < imax; j++, i++) {
                 if ((pixeldata[j] & mask) != 0) {
@@ -138,7 +182,9 @@ public class Overlays {
         return getRecommendedRGBPixelValue(psAttrs, gg0000, cspace::fromRGB);
     }
 
-    private static int[] getRecommendedRGBPixelValue(Attributes psAttrs, int gg0000,
+    private static int[] getRecommendedRGBPixelValue(
+            Attributes psAttrs,
+            int gg0000,
             Function<float[], float[]> fromRGB) {
         int[] cieLabValue = getRecommendedPixelValue(Tag.RecommendedDisplayCIELabValue, psAttrs, gg0000);
         return cieLabValue != null && cieLabValue.length == 3 ? cieLab2RGB(cieLabValue, fromRGB) : null;
@@ -174,13 +220,23 @@ public class Overlays {
         throw new IllegalArgumentException("No Graphic Layer: " + layerName);
     }
 
-    public static void applyOverlay(int frameIndex, WritableRaster raster, Attributes attrs, int gg0000, int pixelValue,
+    public static void applyOverlay(
+            int frameIndex,
+            WritableRaster raster,
+            Attributes attrs,
+            int gg0000,
+            int pixelValue,
             byte[] ovlyData) {
         applyOverlay(frameIndex, raster, attrs, gg0000, new int[] { pixelValue }, ovlyData);
     }
 
-    public static void applyOverlay(int frameIndex, WritableRaster raster, Attributes attrs, int gg0000,
-            int[] pixelValue, byte[] ovlyData) {
+    public static void applyOverlay(
+            int frameIndex,
+            WritableRaster raster,
+            Attributes attrs,
+            int gg0000,
+            int[] pixelValue,
+            byte[] ovlyData) {
         int imageFrameOrigin = attrs.getInt(Tag.ImageFrameOrigin | gg0000, 1);
         int framesInOverlay = attrs.getInt(Tag.NumberOfFramesInOverlay | gg0000, 1);
         int ovlyFrameIndex = frameIndex - imageFrameOrigin + 1;
@@ -218,7 +274,10 @@ public class Overlays {
         int ovlyOff = ovlyLen * ovlyFrameIndex;
         int end = (ovlyOff + ovlyLen + 7) >>> 3;
         if (end > ovlyData.length) {
-            Logger.warn("OverlayData to small ({} vs. {})! Skip this overlay:{}", ovlyData.length, end,
+            Logger.warn(
+                    "OverlayData to small ({} vs. {})! Skip this overlay:{}",
+                    ovlyData.length,
+                    end,
                     Tag.toString(tagOverlayData));
             return;
         }

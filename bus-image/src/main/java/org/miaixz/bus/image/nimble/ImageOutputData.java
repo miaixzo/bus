@@ -103,70 +103,77 @@ public class ImageOutputData {
 
     public static String adaptSuitableSyntax(int bitStored, int type, String dstTsuid) {
         switch (UID.from(dstTsuid)) {
-        case UID.ImplicitVRLittleEndian:
-        case UID.ExplicitVRLittleEndian:
-            return UID.ExplicitVRLittleEndian.uid;
-        case UID.JPEGBaseline8Bit:
-            return type <= CvType.CV_8S ? dstTsuid
-                    : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-        case UID.JPEGExtended12Bit:
-        case UID.JPEGSpectralSelectionNonHierarchical68:
-        case UID.JPEGFullProgressionNonHierarchical1012:
-            return type <= CvType.CV_16U && bitStored <= 12 ? dstTsuid
-                    : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-        case UID.JPEGLossless:
-        case UID.JPEGLosslessSV1:
-        case UID.JPEGLSLossless:
-        case UID.JPEGLSNearLossless:
-        case UID.JPEG2000Lossless:
-        case UID.JPEG2000:
-            return type <= CvType.CV_16S ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
-        default:
-            return dstTsuid;
+            case UID.ImplicitVRLittleEndian:
+            case UID.ExplicitVRLittleEndian:
+                return UID.ExplicitVRLittleEndian.uid;
+
+            case UID.JPEGBaseline8Bit:
+                return type <= CvType.CV_8S ? dstTsuid
+                        : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+
+            case UID.JPEGExtended12Bit:
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+            case UID.JPEGFullProgressionNonHierarchical1012:
+                return type <= CvType.CV_16U && bitStored <= 12 ? dstTsuid
+                        : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+
+            case UID.JPEGLossless:
+            case UID.JPEGLosslessSV1:
+            case UID.JPEGLSLossless:
+            case UID.JPEGLSNearLossless:
+            case UID.JPEG2000Lossless:
+            case UID.JPEG2000:
+                return type <= CvType.CV_16S ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
+
+            default:
+                return dstTsuid;
         }
     }
 
     public static boolean isAdaptableSyntax(String uid) {
         switch (UID.from(uid)) {
-        case UID.JPEGBaseline8Bit:
-        case UID.JPEGExtended12Bit:
-        case UID.JPEGSpectralSelectionNonHierarchical68:
-        case UID.JPEGFullProgressionNonHierarchical1012:
-            return true;
-        default:
-            return false;
+            case UID.JPEGBaseline8Bit:
+            case UID.JPEGExtended12Bit:
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+            case UID.JPEGFullProgressionNonHierarchical1012:
+                return true;
+
+            default:
+                return false;
         }
     }
 
     public static boolean isNativeSyntax(String uid) {
         switch (UID.from(uid)) {
-        case UID.ImplicitVRLittleEndian:
-        case UID.ExplicitVRLittleEndian:
-            return true;
-        default:
-            return false;
+            case UID.ImplicitVRLittleEndian:
+            case UID.ExplicitVRLittleEndian:
+                return true;
+
+            default:
+                return false;
         }
     }
 
     public static boolean isSupportedSyntax(String uid) {
         switch (UID.from(uid)) {
-        case UID.ImplicitVRLittleEndian:
-        case UID.ExplicitVRLittleEndian:
-        case UID.JPEGBaseline8Bit:
-        case UID.JPEGExtended12Bit:
-        case UID.JPEGSpectralSelectionNonHierarchical68:
-        case UID.JPEGFullProgressionNonHierarchical1012:
-        case UID.JPEGLossless:
-        case UID.JPEGLosslessSV1:
-        case UID.JPEGLSLossless:
-        case UID.JPEGLSNearLossless:
-        case UID.JPEG2000Lossless:
-        case UID.JPEG2000:
-            // case UID.JPEG2000Part2MultiComponentLosslessOnly:
-            // case UID.JPEG2000Part2MultiComponent:
-            return true;
-        default:
-            return false;
+            case UID.ImplicitVRLittleEndian:
+            case UID.ExplicitVRLittleEndian:
+            case UID.JPEGBaseline8Bit:
+            case UID.JPEGExtended12Bit:
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+            case UID.JPEGFullProgressionNonHierarchical1012:
+            case UID.JPEGLossless:
+            case UID.JPEGLosslessSV1:
+            case UID.JPEGLSLossless:
+            case UID.JPEGLSNearLossless:
+            case UID.JPEG2000Lossless:
+            case UID.JPEG2000:
+                // case UID.JPEG2000Part2MultiComponentLosslessOnly:
+                // case UID.JPEG2000Part2MultiComponent:
+                return true;
+
+            default:
+                return false;
         }
     }
 
@@ -245,8 +252,8 @@ public class ImageOutputData {
             } else {
                 destArray = Arrays.copyOf(old, old.length + 1);
                 destArray[destArray.length - 1] = ratio;
-                String[] oldM = Builder.getStringArrayFromDicomElement(dataSet, Tag.LossyImageCompressionMethod,
-                        new String[0]);
+                String[] oldM = Builder
+                        .getStringArrayFromDicomElement(dataSet, Tag.LossyImageCompressionMethod, new String[0]);
                 methods = Arrays.copyOf(oldM, old.length + 1);
                 methods[methods.length - 1] = method;
                 for (int i = 0; i < methods.length; i++) {
@@ -327,7 +334,10 @@ public class ImageOutputData {
         }
     }
 
-    public int[] adaptTagsToCompressedImage(Attributes data, PlanarImage img, ImageDescriptor desc,
+    public int[] adaptTagsToCompressedImage(
+            Attributes data,
+            PlanarImage img,
+            ImageDescriptor desc,
             JpegWriteParam param) {
         int cvType = img.type();
         int elemSize = (int) img.elemSize1();

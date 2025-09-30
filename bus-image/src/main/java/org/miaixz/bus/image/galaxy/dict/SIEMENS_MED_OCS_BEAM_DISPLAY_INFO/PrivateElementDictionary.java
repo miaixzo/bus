@@ -52,8 +52,8 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.BeamDisplayProperties:
-            return VR.CS;
+            case PrivateTag.BeamDisplayProperties:
+                return VR.CS;
         }
         return VR.UN;
     }

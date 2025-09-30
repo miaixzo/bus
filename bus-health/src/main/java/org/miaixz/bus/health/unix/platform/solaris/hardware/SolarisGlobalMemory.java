@@ -47,8 +47,8 @@ import org.miaixz.bus.health.unix.platform.solaris.driver.kstat.SystemPages;
 @ThreadSafe
 final class SolarisGlobalMemory extends AbstractGlobalMemory {
 
-    private final Supplier<Pair<Long, Long>> availTotal = Memoizer.memoize(SystemPages::queryAvailableTotal,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> availTotal = Memoizer
+            .memoize(SystemPages::queryAvailableTotal, Memoizer.defaultExpiration());
 
     private final Supplier<Long> pageSize = Memoizer.memoize(SolarisGlobalMemory::queryPageSize);
 

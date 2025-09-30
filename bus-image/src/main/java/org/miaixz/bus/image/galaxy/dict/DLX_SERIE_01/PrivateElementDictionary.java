@@ -52,45 +52,50 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.AngleLabelLArm:
-        case PrivateTag.AngleLabelPArm:
-        case PrivateTag.AngleLabelCArm:
-        case PrivateTag.AutoInject:
-        case PrivateTag.CameraRotationEnabled:
-        case PrivateTag.ReverseSweep:
-        case PrivateTag.Dose:
-            return VR.CS;
-        case PrivateTag.AngleValueLArm:
-        case PrivateTag.AngleValuePArm:
-        case PrivateTag.AngleValueCArm:
-        case PrivateTag.InjectorDelay:
-        case PrivateTag.Focus:
-        case PrivateTag.ExposureDuration:
-        case PrivateTag.TablePositionZ:
-        case PrivateTag.TablePositionX:
-        case PrivateTag.TablePositionY:
-        case PrivateTag.Lambda:
-        case PrivateTag.RegressionSlope:
-        case PrivateTag.RegressionIntercept:
-        case PrivateTag.ImageChainFWHMPsfMmMin:
-        case PrivateTag.ImageChainFWHMPsfMmMax:
-            return VR.DS;
-        case PrivateTag.RecordView:
-        case PrivateTag.AcquisitionMode:
-        case PrivateTag.UserSpatialFilterStrength:
-        case PrivateTag.UserZoomFactor:
-        case PrivateTag.XZoomCenter:
-        case PrivateTag.YZoomCenter:
-        case PrivateTag.SideMark:
-        case PrivateTag.PercentageLandscape:
-            return VR.IS;
-        case PrivateTag.IpAddress:
-            return VR.LO;
-        case PrivateTag.PatientSize:
-            return VR.SH;
-        case PrivateTag.ProcedureName:
-        case PrivateTag.ExamName:
-            return VR.ST;
+            case PrivateTag.AngleLabelLArm:
+            case PrivateTag.AngleLabelPArm:
+            case PrivateTag.AngleLabelCArm:
+            case PrivateTag.AutoInject:
+            case PrivateTag.CameraRotationEnabled:
+            case PrivateTag.ReverseSweep:
+            case PrivateTag.Dose:
+                return VR.CS;
+
+            case PrivateTag.AngleValueLArm:
+            case PrivateTag.AngleValuePArm:
+            case PrivateTag.AngleValueCArm:
+            case PrivateTag.InjectorDelay:
+            case PrivateTag.Focus:
+            case PrivateTag.ExposureDuration:
+            case PrivateTag.TablePositionZ:
+            case PrivateTag.TablePositionX:
+            case PrivateTag.TablePositionY:
+            case PrivateTag.Lambda:
+            case PrivateTag.RegressionSlope:
+            case PrivateTag.RegressionIntercept:
+            case PrivateTag.ImageChainFWHMPsfMmMin:
+            case PrivateTag.ImageChainFWHMPsfMmMax:
+                return VR.DS;
+
+            case PrivateTag.RecordView:
+            case PrivateTag.AcquisitionMode:
+            case PrivateTag.UserSpatialFilterStrength:
+            case PrivateTag.UserZoomFactor:
+            case PrivateTag.XZoomCenter:
+            case PrivateTag.YZoomCenter:
+            case PrivateTag.SideMark:
+            case PrivateTag.PercentageLandscape:
+                return VR.IS;
+
+            case PrivateTag.IpAddress:
+                return VR.LO;
+
+            case PrivateTag.PatientSize:
+                return VR.SH;
+
+            case PrivateTag.ProcedureName:
+            case PrivateTag.ExamName:
+                return VR.ST;
         }
         return VR.UN;
     }

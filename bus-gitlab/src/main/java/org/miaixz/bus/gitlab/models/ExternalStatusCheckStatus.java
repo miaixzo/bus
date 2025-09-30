@@ -47,6 +47,7 @@ public class ExternalStatusCheckStatus implements Serializable {
     private Status status;
 
     public enum Status {
+
         PASSED, FAILED, PENDING;
 
         private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);

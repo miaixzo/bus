@@ -57,7 +57,10 @@ public class ExcelDrawing {
      * @param clientAnchor 图片的位置和大小信息
      * 
      */
-    public static void drawingPicture(final Sheet sheet, final byte[] pictureData, final ExcelPictureType imgType,
+    public static void drawingPicture(
+            final Sheet sheet,
+            final byte[] pictureData,
+            final ExcelPictureType imgType,
             final SimpleAnchor clientAnchor) {
         final Drawing<?> patriarch = sheet.createDrawingPatriarch();
         final Workbook workbook = sheet.getWorkbook();

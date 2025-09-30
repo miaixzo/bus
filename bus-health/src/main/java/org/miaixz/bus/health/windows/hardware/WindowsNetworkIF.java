@@ -178,7 +178,9 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
                 ifRow.InterfaceIndex = queryNetworkInterface().getIndex();
                 if (0 != IPHlpAPI.INSTANCE.GetIfEntry2(ifRow)) {
                     // Error, abort
-                    Logger.error("Failed to retrieve data for interface {}, {}", queryNetworkInterface().getIndex(),
+                    Logger.error(
+                            "Failed to retrieve data for interface {}, {}",
+                            queryNetworkInterface().getIndex(),
                             getName());
                     return false;
                 }
@@ -203,7 +205,9 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
                 ifRow.dwIndex = queryNetworkInterface().getIndex();
                 if (0 != IPHlpAPI.INSTANCE.GetIfEntry(ifRow)) {
                     // Error, abort
-                    Logger.error("Failed to retrieve data for interface {}, {}", queryNetworkInterface().getIndex(),
+                    Logger.error(
+                            "Failed to retrieve data for interface {}, {}",
+                            queryNetworkInterface().getIndex(),
                             getName());
                     return false;
                 }

@@ -85,10 +85,12 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
             // card
             if (line.contains("Node 0x")) {
                 if (PCI_CLASS_DISPLAY.equals(classCode)) {
-                    cardList.add(new SolarisGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                            productId.isEmpty() ? Normal.UNKNOWN : productId,
-                            vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
-                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), 0L));
+                    cardList.add(
+                            new SolarisGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
+                                    productId.isEmpty() ? Normal.UNKNOWN : productId,
+                                    vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                                    0L));
                 }
                 // Reset strings
                 name = Normal.EMPTY;
@@ -127,9 +129,11 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
         }
         // In case we reached end before saving
         if (PCI_CLASS_DISPLAY.equals(classCode)) {
-            cardList.add(new SolarisGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                    productId.isEmpty() ? Normal.UNKNOWN : productId, vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
-                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), 0L));
+            cardList.add(
+                    new SolarisGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
+                            productId.isEmpty() ? Normal.UNKNOWN : productId,
+                            vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), 0L));
         }
         return cardList;
     }

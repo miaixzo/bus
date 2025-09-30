@@ -46,6 +46,7 @@ public class ImportStatus implements Serializable {
      * Enum representing the status of the import.
      */
     public enum Status {
+
         NONE, SCHEDULED, FAILED, STARTED, FINISHED;
 
         private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);

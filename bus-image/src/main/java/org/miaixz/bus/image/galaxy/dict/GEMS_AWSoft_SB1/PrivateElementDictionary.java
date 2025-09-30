@@ -52,13 +52,15 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ReferenceToOriginalInstance:
-            return VR.IS;
-        case PrivateTag.PrivateEntityLaunchCommand:
-            return VR.LO;
-        case PrivateTag.ReferenceToStudyUID:
-        case PrivateTag.ReferenceToSeriesUID:
-            return VR.UI;
+            case PrivateTag.ReferenceToOriginalInstance:
+                return VR.IS;
+
+            case PrivateTag.PrivateEntityLaunchCommand:
+                return VR.LO;
+
+            case PrivateTag.ReferenceToStudyUID:
+            case PrivateTag.ReferenceToSeriesUID:
+                return VR.UI;
         }
         return VR.UN;
     }

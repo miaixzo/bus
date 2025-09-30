@@ -112,8 +112,8 @@ public class Pinyin4JProvider implements PinyinProvider {
                 } else {
                     result.append(separator);
                 }
-                final String[] pinyinStringArray = PinyinHelper.toHanyuPinyinStringArray(str.charAt(i),
-                        tone ? WITH_TONE_MARK : WITHOUT_TONE);
+                final String[] pinyinStringArray = PinyinHelper
+                        .toHanyuPinyinStringArray(str.charAt(i), tone ? WITH_TONE_MARK : WITHOUT_TONE);
                 if (ArrayKit.isEmpty(pinyinStringArray)) {
                     result.append(str.charAt(i));
                 } else {

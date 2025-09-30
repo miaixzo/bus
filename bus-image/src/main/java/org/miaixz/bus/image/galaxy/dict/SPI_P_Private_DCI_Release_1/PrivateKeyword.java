@@ -38,22 +38,29 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ECGTimeMapDataBitsAllocated:
-            return "ECGTimeMapDataBitsAllocated";
-        case PrivateTag.ECGTimeMapDataBitsStored:
-            return "ECGTimeMapDataBitsStored";
-        case PrivateTag.ECGTimeMapDataHighBit:
-            return "ECGTimeMapDataHighBit";
-        case PrivateTag.ECGTimeMapDataRepresentation:
-            return "ECGTimeMapDataRepresentation";
-        case PrivateTag.ECGTimeMapDataSmallestDataValue:
-            return "ECGTimeMapDataSmallestDataValue";
-        case PrivateTag.ECGTimeMapDataLargestDataValue:
-            return "ECGTimeMapDataLargestDataValue";
-        case PrivateTag.ECGTimeMapDataNumberOfDataValues:
-            return "ECGTimeMapDataNumberOfDataValues";
-        case PrivateTag.ECGTimeMapData:
-            return "ECGTimeMapData";
+            case PrivateTag.ECGTimeMapDataBitsAllocated:
+                return "ECGTimeMapDataBitsAllocated";
+
+            case PrivateTag.ECGTimeMapDataBitsStored:
+                return "ECGTimeMapDataBitsStored";
+
+            case PrivateTag.ECGTimeMapDataHighBit:
+                return "ECGTimeMapDataHighBit";
+
+            case PrivateTag.ECGTimeMapDataRepresentation:
+                return "ECGTimeMapDataRepresentation";
+
+            case PrivateTag.ECGTimeMapDataSmallestDataValue:
+                return "ECGTimeMapDataSmallestDataValue";
+
+            case PrivateTag.ECGTimeMapDataLargestDataValue:
+                return "ECGTimeMapDataLargestDataValue";
+
+            case PrivateTag.ECGTimeMapDataNumberOfDataValues:
+                return "ECGTimeMapDataNumberOfDataValues";
+
+            case PrivateTag.ECGTimeMapData:
+                return "ECGTimeMapData";
         }
         return "";
     }

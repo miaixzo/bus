@@ -157,7 +157,8 @@ public class TransferCapability implements Serializable {
 
     public void setTransferSyntaxes(String... transferSyntaxes) {
         this.transferSyntaxes = Builder.requireContainsNoEmpty(
-                Builder.requireNotEmpty(transferSyntaxes, "missing transferSyntax"), "empty transferSyntax");
+                Builder.requireNotEmpty(transferSyntaxes, "missing transferSyntax"),
+                "empty transferSyntax");
     }
 
     public String[] getPreferredTransferSyntaxes() {

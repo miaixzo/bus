@@ -203,6 +203,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
     }
 
     private static final class SmbiosStrings {
+
         private final String biosVendor;
         private final String biosVersion;
         private final String biosDate;

@@ -185,6 +185,7 @@ public final class Weighers {
     }
 
     enum SingletonEntryWeigher implements EntryWeigher<Object, Object> {
+
         INSTANCE;
 
         @Override
@@ -194,6 +195,7 @@ public final class Weighers {
     }
 
     enum SingletonWeigher implements Weigher<Object> {
+
         INSTANCE;
 
         @Override
@@ -203,6 +205,7 @@ public final class Weighers {
     }
 
     enum ByteArrayWeigher implements Weigher<byte[]> {
+
         INSTANCE;
 
         @Override
@@ -212,6 +215,7 @@ public final class Weighers {
     }
 
     enum IterableWeigher implements Weigher<Iterable<?>> {
+
         INSTANCE;
 
         @Override
@@ -224,6 +228,7 @@ public final class Weighers {
     }
 
     enum CollectionWeigher implements Weigher<Collection<?>> {
+
         INSTANCE;
 
         @Override
@@ -233,6 +238,7 @@ public final class Weighers {
     }
 
     enum ListWeigher implements Weigher<List<?>> {
+
         INSTANCE;
 
         @Override
@@ -242,6 +248,7 @@ public final class Weighers {
     }
 
     enum SetWeigher implements Weigher<Set<?>> {
+
         INSTANCE;
 
         @Override
@@ -251,6 +258,7 @@ public final class Weighers {
     }
 
     enum MapWeigher implements Weigher<Map<?, ?>> {
+
         INSTANCE;
 
         @Override

@@ -93,19 +93,35 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
         for (Entry<String, Tuple> entry : deviceStringMap.entrySet()) {
             String storeName = entry.getKey();
             Tuple val = entry.getValue();
-            storeList.add(createStore(storeName, val.get(0), val.get(1), val.get(2), val.get(3), val.get(4),
-                    deviceMap.getOrDefault(storeName, Normal.EMPTY), majorMap.getOrDefault(storeName, 0)));
+            storeList.add(
+                    createStore(
+                            storeName,
+                            val.get(0),
+                            val.get(1),
+                            val.get(2),
+                            val.get(3),
+                            val.get(4),
+                            deviceMap.getOrDefault(storeName, Normal.EMPTY),
+                            majorMap.getOrDefault(storeName, 0)));
         }
 
         return storeList;
     }
 
-    private static SolarisHWDiskStore createStore(String diskName, String model, String vendor, String product,
-            String serial, long size, String mount, int major) {
+    private static SolarisHWDiskStore createStore(
+            String diskName,
+            String model,
+            String vendor,
+            String product,
+            String serial,
+            long size,
+            String mount,
+            int major) {
         SolarisHWDiskStore store = new SolarisHWDiskStore(diskName,
                 model.isEmpty() ? (vendor + Symbol.SPACE + product).trim() : model, serial, size);
-        store.partitionList = Collections.unmodifiableList(Prtvtoc.queryPartitions(mount, major).stream()
-                .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
+        store.partitionList = Collections.unmodifiableList(
+                Prtvtoc.queryPartitions(mount, major).stream().sorted(Comparator.comparing(HWPartition::getName))
+                        .collect(Collectors.toList()));
         store.updateAttributes();
         return store;
     }
@@ -187,12 +203,28 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
             }
         }
         // Try device style notation
-        Object[] results = KstatKit.queryKstat2("kstat:/disk/" + alpha + "/" + getName() + "/0", "reads", "writes",
-                "nread", "nwritten", "wcnt", "rcnt", "rtime", "snaptime");
+        Object[] results = KstatKit.queryKstat2(
+                "kstat:/disk/" + alpha + "/" + getName() + "/0",
+                "reads",
+                "writes",
+                "nread",
+                "nwritten",
+                "wcnt",
+                "rcnt",
+                "rtime",
+                "snaptime");
         // If failure try io notation
         if (results[results.length - 1] == null) {
-            results = KstatKit.queryKstat2("kstat:/disk/" + alpha + "/" + numeric + "/io", "reads", "writes", "nread",
-                    "nwritten", "wcnt", "rcnt", "rtime", "snaptime");
+            results = KstatKit.queryKstat2(
+                    "kstat:/disk/" + alpha + "/" + numeric + "/io",
+                    "reads",
+                    "writes",
+                    "nread",
+                    "nwritten",
+                    "wcnt",
+                    "rcnt",
+                    "rtime",
+                    "snaptime");
         }
         if (results[results.length - 1] == null) {
             return false;

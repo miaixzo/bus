@@ -125,17 +125,20 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                     // NumberFormatException
                     long parsedVal = Parsing.hexStringToLong(firstVal, 0);
                     switch (groupLevel) {
-                    case 1:
-                        group1 = parsedVal;
-                        break;
-                    case 2:
-                        group2.add(parsedVal);
-                        break;
-                    case 3:
-                        group3.add(parsedVal);
-                        break;
-                    default:
-                        break;
+                        case 1:
+                            group1 = parsedVal;
+                            break;
+
+                        case 2:
+                            group2.add(parsedVal);
+                            break;
+
+                        case 3:
+                            group3.add(parsedVal);
+                            break;
+
+                        default:
+                            break;
                     }
                 }
             }
@@ -143,7 +146,9 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return matchBitmasks(group1, group2, group3);
     }
 
-    private static List<CentralProcessor.LogicalProcessor> matchBitmasks(long group1, List<Long> group2,
+    private static List<CentralProcessor.LogicalProcessor> matchBitmasks(
+            long group1,
+            List<Long> group2,
             List<Long> group3) {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         // Lowest and Highest set bits, indexing from 0
@@ -290,21 +295,25 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         for (String checkLine : Executor.runNative("lscpu")) {
             if (checkLine.contains("L1d cache:")) {
-                caches.add(new CentralProcessor.ProcessorCache(1, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
-                        CentralProcessor.ProcessorCache.Type.DATA));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 0, 0,
+                                Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                                CentralProcessor.ProcessorCache.Type.DATA));
             } else if (checkLine.contains("L1i cache:")) {
-                caches.add(new CentralProcessor.ProcessorCache(1, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
-                        CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 0, 0,
+                                Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                                CentralProcessor.ProcessorCache.Type.INSTRUCTION));
             } else if (checkLine.contains("L2 cache:")) {
-                caches.add(new CentralProcessor.ProcessorCache(2, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
-                        CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(2, 0, 0,
+                                Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
             } else if (checkLine.contains("L3 cache:")) {
-                caches.add(new CentralProcessor.ProcessorCache(3, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
-                        CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(3, 0, 0,
+                                Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
             }
         }
         return orderedProcCaches(caches);

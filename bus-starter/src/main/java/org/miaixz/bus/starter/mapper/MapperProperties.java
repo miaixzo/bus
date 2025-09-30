@@ -46,28 +46,28 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * mybatis配置项
+ * Mapper配置项
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = GeniusBuilder.MYBATIS)
-public class MybatisProperties {
+@ConfigurationProperties(prefix = GeniusBuilder.MAPPER)
+public class MapperProperties {
 
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
     /**
-     * 扫描MyBatis接口的基本包
+     * 扫描Mapper接口的基本包
      */
     private String[] basePackage;
     /**
-     * MyBatis xml配置文件的位置
+     * Mapper xml配置文件的位置
      */
     private String configLocation;
     /**
-     * MyBatis映射器文件的位置
+     * Mapper映射器文件的位置
      */
     private String[] mapperLocations;
     /**
@@ -75,7 +75,7 @@ public class MybatisProperties {
      */
     private String typeAliasesPackage;
     /**
-     * 用于过滤类型别名的超类 如果没有指定，MyBatis将从typeAliasesPackage中搜索的所有类作为类型别名处理
+     * 用于过滤类型别名的超类 如果没有指定，Mapper将从typeAliasesPackage中搜索的所有类作为类型别名处理
      */
     private Class<?> typeAliasesSuperType;
     /**
@@ -83,7 +83,7 @@ public class MybatisProperties {
      */
     private String typeHandlersPackage;
     /**
-     * 指示是否对MyBatis xml配置文件进行presence检查
+     * 指示是否对Mapper xml配置文件进行presence检查
      */
     private boolean checkConfigLocation = false;
     /**
@@ -91,7 +91,7 @@ public class MybatisProperties {
      */
     private ExecutorType executorType;
     /**
-     * MyBatis配置的外部化属性
+     * Mapper配置的外部化属性
      */
     private Properties configurationProperties;
     /**

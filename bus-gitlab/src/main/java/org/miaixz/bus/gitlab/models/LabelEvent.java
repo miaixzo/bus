@@ -43,6 +43,7 @@ public class LabelEvent implements Serializable {
 
     /** Enum to use for specifying the label event resource type. */
     public enum ResourceType {
+
         ISSUE, EPIC, MERGE_REQUEST;
 
         private static JacksonJsonEnumHelper<ResourceType> enumHelper = new JacksonJsonEnumHelper<>(ResourceType.class,

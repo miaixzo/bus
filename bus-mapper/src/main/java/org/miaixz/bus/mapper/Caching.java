@@ -118,8 +118,10 @@ public class Caching extends XMLLanguageDriver {
             isAnnotationPresentLang(providerContext);
             synchronized (cacheKey) {
                 if (!CACHE_SQL.containsKey(cacheKey)) {
-                    CACHE_SQL.put(cacheKey, new SqlMetaCache(Objects.requireNonNull(providerContext),
-                            Objects.requireNonNull(entity), Objects.requireNonNull(sqlScriptSupplier)));
+                    CACHE_SQL.put(
+                            cacheKey,
+                            new SqlMetaCache(Objects.requireNonNull(providerContext), Objects.requireNonNull(entity),
+                                    Objects.requireNonNull(sqlScriptSupplier)));
                 }
             }
         }
@@ -149,8 +151,8 @@ public class Caching extends XMLLanguageDriver {
                                     + " => CACHE_SQL is NULL, you need to configure mapper.provider.cacheSql.useOnce=false");
                         }
                         cache.getTableMeta().initRuntimeContext(configuration, cache.getProviderContext(), cacheKey);
-                        Map<String, SqlSource> cachekeyMap = CONFIGURATION_CACHE_KEY_MAP.computeIfAbsent(configuration,
-                                k -> new ConcurrentHashMap<>());
+                        Map<String, SqlSource> cachekeyMap = CONFIGURATION_CACHE_KEY_MAP
+                                .computeIfAbsent(configuration, k -> new ConcurrentHashMap<>());
                         MappedStatement ms = configuration.getMappedStatement(cacheKey);
                         Registry.SPI.customize(cache.getTableMeta(), ms, cache.getProviderContext());
                         String sqlScript = cache.getSqlScript();
@@ -158,8 +160,8 @@ public class Caching extends XMLLanguageDriver {
                             Logger.trace("cacheKey - " + cacheKey + " :\n" + sqlScript + "\n");
                         }
                         SqlSource sqlSource = super.createSqlSource(configuration, sqlScript, parameterType);
-                        sqlSource = SqlSourceEnhancer.SPI.customize(sqlSource, cache.getTableMeta(), ms,
-                                cache.getProviderContext());
+                        sqlSource = SqlSourceEnhancer.SPI
+                                .customize(sqlSource, cache.getTableMeta(), ms, cache.getProviderContext());
                         cachekeyMap.put(cacheKey, sqlSource);
                         if (USE_ONCE) {
                             CACHE_SQL.put(cacheKey, SqlMetaCache.NULL);

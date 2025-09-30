@@ -138,11 +138,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                     // Use the model as a key to get serial from IOKit
                     if (!"Disk Image".equals(model)) {
                         CFStringRef modelNameRef = CFStringRef.createCFString(model);
-                        CFMutableDictionaryRef propertyDict = CF.CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(),
-                                new CFIndex(0), null, null);
+                        CFMutableDictionaryRef propertyDict = CF
+                                .CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(), new CFIndex(0), null, null);
                         propertyDict.setValue(cfKeyMap.get(CFKey.MODEL), modelNameRef);
-                        CFMutableDictionaryRef matchingDict = CF.CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(),
-                                new CFIndex(0), null, null);
+                        CFMutableDictionaryRef matchingDict = CF
+                                .CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(), new CFIndex(0), null, null);
                         matchingDict.setValue(cfKeyMap.get(CFKey.IO_PROPERTY_MATCH), propertyDict);
 
                         // search for all IOservices that match the model
@@ -263,7 +263,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         return diskFound;
     }
 
-    private boolean updateDiskStats(DASessionRef session, Map<String, String> mountPointMap,
+    private boolean updateDiskStats(
+            DASessionRef session,
+            Map<String, String> mountPointMap,
             Map<CFKey, CFStringRef> cfKeyMap) {
         // Now look up the device using the BSD Name to get its
         // statistics
@@ -338,12 +340,12 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         result = properties.getValue(cfKeyMap.get(CFKey.LEAF));
                         CFBooleanRef cfFalse = new CFBooleanRef(result);
                         // create a matching dict for BSD Unit
-                        CFMutableDictionaryRef propertyDict = CF.CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(),
-                                new CFIndex(0), null, null);
+                        CFMutableDictionaryRef propertyDict = CF
+                                .CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(), new CFIndex(0), null, null);
                         propertyDict.setValue(cfKeyMap.get(CFKey.BSD_UNIT), bsdUnit);
                         propertyDict.setValue(cfKeyMap.get(CFKey.WHOLE), cfFalse);
-                        matchingDict = CF.CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(), new CFIndex(0), null,
-                                null);
+                        matchingDict = CF
+                                .CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(), new CFIndex(0), null, null);
                         matchingDict.setValue(cfKeyMap.get(CFKey.IO_PROPERTY_MATCH), propertyDict);
 
                         // search for IOservices that match the BSD Unit
@@ -363,8 +365,8 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                 String type = Normal.EMPTY;
                                 // Get the DiskArbitration dictionary for
                                 // this partition
-                                DADiskRef disk = DA.DADiskCreateFromBSDName(CF.CFAllocatorGetDefault(), session,
-                                        partBsdName);
+                                DADiskRef disk = DA
+                                        .DADiskCreateFromBSDName(CF.CFAllocatorGetDefault(), session, partBsdName);
                                 if (disk != null) {
                                     CFDictionaryRef diskInfo = DA.DADiskCopyDescription(disk);
                                     if (diskInfo != null) {
@@ -386,17 +388,19 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                 Integer bsdMajor = sdService.getIntegerProperty("BSD Major");
                                 Integer bsdMinor = sdService.getIntegerProperty("BSD Minor");
                                 String uuid = sdService.getStringProperty("UUID");
-                                partitions.add(new HWPartition(partBsdName, name, type,
-                                        uuid == null ? Normal.UNKNOWN : uuid, size == null ? 0L : size,
-                                        bsdMajor == null ? 0 : bsdMajor, bsdMinor == null ? 0 : bsdMinor, mountPoint));
+                                partitions.add(
+                                        new HWPartition(partBsdName, name, type, uuid == null ? Normal.UNKNOWN : uuid,
+                                                size == null ? 0L : size, bsdMajor == null ? 0 : bsdMajor,
+                                                bsdMinor == null ? 0 : bsdMinor, mountPoint));
                                 // iterate
                                 sdService.release();
                                 sdService = IOKit.INSTANCE.IOIteratorNext(serviceIterator);
                             }
                             serviceIterator.release();
                         }
-                        this.partitionList = Collections.unmodifiableList(partitions.stream()
-                                .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
+                        this.partitionList = Collections.unmodifiableList(
+                                partitions.stream().sorted(Comparator.comparing(HWPartition::getName))
+                                        .collect(Collectors.toList()));
                         if (parent != null) {
                             parent.release();
                         }
@@ -416,6 +420,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
      * Strings to convert to CFStringRef for pointer lookups
      */
     private enum CFKey {
+
         IO_PROPERTY_MATCH("IOPropertyMatch"), //
 
         STATISTICS("Statistics"), //

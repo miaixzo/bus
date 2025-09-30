@@ -62,11 +62,16 @@ public class AspectjJdbcProxy {
         String methodName = joinPoint.getSignature().getName();
         String dataSourceName = dataSource.value();
         if (dataSourceName.isEmpty()) {
-            Logger.debug("==>     Method: [{}.{}] No datasource specified, will use default datasource", className,
+            Logger.debug(
+                    "==>     Method: [{}.{}] No datasource specified, will use default datasource",
+                    className,
                     methodName);
             return;
         }
-        Logger.info("==>     Method: [{}.{}] starts execution, switching to datasource: [{}]", className, methodName,
+        Logger.info(
+                "==>     Method: [{}.{}] starts execution, switching to datasource: [{}]",
+                className,
+                methodName,
                 dataSourceName);
 
         DataSourceHolder.setKey(dataSourceName);
@@ -93,12 +98,18 @@ public class AspectjJdbcProxy {
             return;
         }
         if (dataSource.clear()) {
-            Logger.info("==>     Method: [{}.{}] execution completed, clearing datasource setting: [{}]", className,
-                    methodName, dataSourceName);
+            Logger.info(
+                    "==>     Method: [{}.{}] execution completed, clearing datasource setting: [{}]",
+                    className,
+                    methodName,
+                    dataSourceName);
             DataSourceHolder.remove();
         } else {
-            Logger.info("==>     Method: [{}.{}] execution completed, keeping datasource setting: [{}]", className,
-                    methodName, dataSourceName);
+            Logger.info(
+                    "==>     Method: [{}.{}] execution completed, keeping datasource setting: [{}]",
+                    className,
+                    methodName,
+                    dataSourceName);
         }
     }
 

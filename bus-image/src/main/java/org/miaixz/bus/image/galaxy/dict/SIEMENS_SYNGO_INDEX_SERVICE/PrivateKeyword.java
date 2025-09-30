@@ -38,36 +38,50 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ObjectInsertionDate:
-            return "ObjectInsertionDate";
-        case PrivateTag.SenderSystemDeviceName:
-            return "SenderSystemDeviceName";
-        case PrivateTag.LastAccessTime:
-            return "LastAccessTime";
-        case PrivateTag.DeleteProtectedStatus:
-            return "DeleteProtectedStatus";
-        case PrivateTag.ReceivedfromArchiveStatus:
-            return "ReceivedfromArchiveStatus";
-        case PrivateTag.ArchiveStatus:
-            return "ArchiveStatus";
-        case PrivateTag.Location:
-            return "Location";
-        case PrivateTag.LogicalDeletedStatus:
-            return "LogicalDeletedStatus";
-        case PrivateTag.InsertTime:
-            return "InsertTime";
-        case PrivateTag.VisibleInstancesonSeriesLevel:
-            return "VisibleInstancesonSeriesLevel";
-        case PrivateTag.UnarchivedInstances:
-            return "UnarchivedInstances";
-        case PrivateTag.VisibleInstancesonStudyLevel:
-            return "VisibleInstancesonStudyLevel";
-        case PrivateTag.SeriesObjectStates:
-            return "SeriesObjectStates";
-        case PrivateTag.InstanceObjectStates:
-            return "InstanceObjectStates";
-        case PrivateTag.HiddenInstance:
-            return "HiddenInstance";
+            case PrivateTag.ObjectInsertionDate:
+                return "ObjectInsertionDate";
+
+            case PrivateTag.SenderSystemDeviceName:
+                return "SenderSystemDeviceName";
+
+            case PrivateTag.LastAccessTime:
+                return "LastAccessTime";
+
+            case PrivateTag.DeleteProtectedStatus:
+                return "DeleteProtectedStatus";
+
+            case PrivateTag.ReceivedfromArchiveStatus:
+                return "ReceivedfromArchiveStatus";
+
+            case PrivateTag.ArchiveStatus:
+                return "ArchiveStatus";
+
+            case PrivateTag.Location:
+                return "Location";
+
+            case PrivateTag.LogicalDeletedStatus:
+                return "LogicalDeletedStatus";
+
+            case PrivateTag.InsertTime:
+                return "InsertTime";
+
+            case PrivateTag.VisibleInstancesonSeriesLevel:
+                return "VisibleInstancesonSeriesLevel";
+
+            case PrivateTag.UnarchivedInstances:
+                return "UnarchivedInstances";
+
+            case PrivateTag.VisibleInstancesonStudyLevel:
+                return "VisibleInstancesonStudyLevel";
+
+            case PrivateTag.SeriesObjectStates:
+                return "SeriesObjectStates";
+
+            case PrivateTag.InstanceObjectStates:
+                return "InstanceObjectStates";
+
+            case PrivateTag.HiddenInstance:
+                return "HiddenInstance";
         }
         return "";
     }

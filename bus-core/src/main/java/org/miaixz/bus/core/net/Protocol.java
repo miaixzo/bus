@@ -29,6 +29,8 @@ package org.miaixz.bus.core.net;
 
 import java.io.IOException;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,6 +42,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
+@AllArgsConstructor
 public enum Protocol {
 
     /**
@@ -290,15 +294,6 @@ public enum Protocol {
     public final String name;
 
     /**
-     * 构造函数，初始化协议名称。
-     *
-     * @param name 协议名称
-     */
-    Protocol(String name) {
-        this.name = name;
-    }
-
-    /**
      * 根据协议名称获取对应的协议枚举实例。
      *
      * @param protocol 协议名称
@@ -310,24 +305,32 @@ public enum Protocol {
             throw new IOException("Protocol cannot be null or empty");
         }
         switch (protocol) {
-        case "HTTP/1.0":
-            return HTTP_1_0;
-        case "HTTP/1.1":
-            return HTTP_1_1;
-        case "h2_prior_knowledge":
-            return H2_PRIOR_KNOWLEDGE;
-        case "h2":
-            return HTTP_2;
-        case "spdy/3.1":
-            return SPDY_3;
-        case "quic":
-            return QUIC;
-        case "soap 1.1 protocol":
-            return SOAP_1_1;
-        case "SOAP 1.2 Protocol":
-            return SOAP_1_2;
-        default:
-            throw new IOException("Unexpected protocol: " + protocol);
+            case "HTTP/1.0":
+                return HTTP_1_0;
+
+            case "HTTP/1.1":
+                return HTTP_1_1;
+
+            case "h2_prior_knowledge":
+                return H2_PRIOR_KNOWLEDGE;
+
+            case "h2":
+                return HTTP_2;
+
+            case "spdy/3.1":
+                return SPDY_3;
+
+            case "quic":
+                return QUIC;
+
+            case "soap 1.1 protocol":
+                return SOAP_1_1;
+
+            case "SOAP 1.2 Protocol":
+                return SOAP_1_2;
+
+            default:
+                throw new IOException("Unexpected protocol: " + protocol);
         }
     }
 
@@ -338,10 +341,37 @@ public enum Protocol {
      * @return 对应的协议枚举实例
      */
     public static String getHost(String url) {
+        return getHost(url, true);
+    }
+
+    /**
+     * 根据URL获取对应的host。
+     *
+     * @param url      待处理的URL
+     * @param withPort 是否包含端口
+     * @return 对应的host
+     */
+    public static String getHost(String url, boolean withPort) {
         if (StringKit.isEmpty(url)) {
             return url;
         }
-        return url.replaceFirst("^[a-zA-Z]+://", Normal.EMPTY);
+
+        // 首先移除协议部分
+        String withoutProtocol = url.replaceFirst("^[a-zA-Z]+://", Normal.EMPTY);
+
+        // 如果需要包含端口，直接返回
+        if (withPort) {
+            return withoutProtocol;
+        }
+
+        // 如果不需要包含端口，检查是否存在端口号
+        int portIndex = withoutProtocol.indexOf(':');
+        if (portIndex != -1) {
+            return withoutProtocol.substring(0, portIndex);
+        }
+
+        // 如果没有端口，直接返回
+        return withoutProtocol;
     }
 
     /**
@@ -379,10 +409,10 @@ public enum Protocol {
         }
 
         // 查找端口分隔符
-        int portIndex = hostPort.lastIndexOf(':');
+        int portIndex = hostPort.lastIndexOf(Symbol.C_COLON);
         if (portIndex >= 0) {
             // 确保不是IPv6地址中的冒号
-            if (hostPort.lastIndexOf(']') < portIndex) {
+            if (hostPort.lastIndexOf(Symbol.C_BRACKET_RIGHT) < portIndex) {
                 String portStr = hostPort.substring(portIndex + 1);
                 try {
                     return Integer.parseInt(portStr);

@@ -217,8 +217,8 @@ public class GroupParams implements Serializable {
         if (isCreate) {
             form.withParam("parent_id", parentId);
         } else {
-            form.withParam("membership_lock", membershipLock).withParam("file_template_project_id",
-                    fileTemplateProjectId);
+            form.withParam("membership_lock", membershipLock)
+                    .withParam("file_template_project_id", fileTemplateProjectId);
         }
 
         return (form);

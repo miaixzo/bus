@@ -89,6 +89,7 @@ public class NoCache<K, V> implements Cache<K, V> {
     @Override
     public Iterator<V> iterator() {
         return new Iterator<>() {
+
             @Override
             public boolean hasNext() {
                 return false;

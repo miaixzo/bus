@@ -144,8 +144,8 @@ public class OperationHandler<T> extends SqlParserHandler implements MapperHandl
             return StringKit.equals(equalsTo.getLeftExpression().toString(), equalsTo.getRightExpression().toString());
         } else if (where instanceof NotEqualsTo) {
             NotEqualsTo notEqualsTo = (NotEqualsTo) where;
-            return !StringKit.equals(notEqualsTo.getLeftExpression().toString(),
-                    notEqualsTo.getRightExpression().toString());
+            return !StringKit
+                    .equals(notEqualsTo.getLeftExpression().toString(), notEqualsTo.getRightExpression().toString());
         } else if (where instanceof OrExpression) {
             OrExpression orExpression = (OrExpression) where;
             return fullMatch(orExpression.getLeftExpression(), column)

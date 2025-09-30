@@ -30,10 +30,10 @@ package org.miaixz.bus.spring.http;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
@@ -67,8 +67,8 @@ import jakarta.persistence.Transient;
 @ConditionalOnClass({ JSON.class })
 public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
 
-    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(MediaType.APPLICATION_JSON,
-            new MediaType(MediaType.TEXT_PLAIN, StandardCharsets.UTF_8));
+    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List
+            .of(MediaType.APPLICATION_JSON, new MediaType(MediaType.TEXT_PLAIN, Charset.UTF_8));
 
     private String autoType;
 
@@ -108,7 +108,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
         private final String[] autoTypes;
 
         public FastJson2HttpMessageConverter(String autoType) {
-            super(StandardCharsets.UTF_8, DEFAULT_MEDIA_TYPES.toArray(new MediaType[0]));
+            super(Charset.UTF_8, DEFAULT_MEDIA_TYPES.toArray(new MediaType[0]));
             this.autoTypes = StringKit.isEmpty(autoType) ? null
                     : Arrays.stream(autoType.split(Symbol.COMMA)).map(String::trim).filter(StringKit::isNotEmpty)
                             .toArray(String[]::new);
@@ -128,7 +128,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
         protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage)
                 throws HttpMessageNotReadableException {
             try (var inputStream = inputMessage.getBody()) {
-                String jsonString = new String(IoKit.readBytes(inputStream), StandardCharsets.UTF_8);
+                String jsonString = new String(IoKit.readBytes(inputStream), Charset.UTF_8);
                 Logger.debug("Deserializing JSON for class {}", clazz.getName());
 
                 if (autoTypes != null && !isSafeJson(jsonString)) {
@@ -142,8 +142,11 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
 
                 return result;
             } catch (IOException e) {
-                Logger.error("IO error occurred during JSON deserialization, class {}: {}", clazz.getName(),
-                        e.getMessage(), e);
+                Logger.error(
+                        "IO error occurred during JSON deserialization, class {}: {}",
+                        clazz.getName(),
+                        e.getMessage(),
+                        e);
                 throw new HttpMessageNotReadableException(
                         "IO error occurred during JSON deserialization: " + e.getMessage(), e, inputMessage);
             } catch (Exception e) {
@@ -179,7 +182,7 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
                 };
 
                 String jsonString = JSON.toJSONString(object, filter, WRITER_FEATURES);
-                outputMessage.getBody().write(jsonString.getBytes(StandardCharsets.UTF_8));
+                outputMessage.getBody().write(jsonString.getBytes(Charset.UTF_8));
                 Logger.info("<==     Length: {}", jsonString.length());
             } catch (IOException e) {
                 Logger.error("IO error occurred during JSON serialization: {}", e.getMessage(), e);

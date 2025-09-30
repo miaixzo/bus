@@ -92,8 +92,11 @@ public class AnyKeyManager {
      * @param provider  算法提供者，{@code null}使用JDK默认
      * @return {@link KeyManager}列表
      */
-    public static KeyManagerFactory getKeyManagerFactory(final KeyStore keyStore, final char[] password,
-            final String algorithm, final Provider provider) {
+    public static KeyManagerFactory getKeyManagerFactory(
+            final KeyStore keyStore,
+            final char[] password,
+            final String algorithm,
+            final Provider provider) {
         final KeyManagerFactory keyManagerFactory = getKeyManagerFactory(algorithm, provider);
         try {
             keyManagerFactory.init(keyStore, password);
@@ -123,7 +126,10 @@ public class AnyKeyManager {
      * @param provider  算法提供者，{@code null}使用JDK默认
      * @return {@link KeyManager}列表
      */
-    public static KeyManager[] getKeyManagers(final KeyStore keyStore, final char[] password, final String algorithm,
+    public static KeyManager[] getKeyManagers(
+            final KeyStore keyStore,
+            final char[] password,
+            final String algorithm,
             final Provider provider) {
         return getKeyManagerFactory(keyStore, password, algorithm, provider).getKeyManagers();
     }

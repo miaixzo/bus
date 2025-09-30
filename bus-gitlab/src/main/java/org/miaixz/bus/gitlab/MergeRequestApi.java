@@ -180,8 +180,12 @@ public class MergeRequestApi extends AbstractApi {
      */
     public List<MergeRequest> getMergeRequests(Object projectIdOrPath, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests");
         return (response.readEntity(new GenericType<List<MergeRequest>>() {
         }));
     }
@@ -255,7 +259,11 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("state", state).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
-        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "merge_requests");
         return (response.readEntity(new GenericType<List<MergeRequest>>() {
         }));
@@ -336,15 +344,24 @@ public class MergeRequestApi extends AbstractApi {
      * @return a MergeRequest instance as specified by the parameters
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest getMergeRequest(Object projectIdOrPath, Long mergeRequestIid, Boolean renderHtml,
-            Boolean includeDivergedCommitCount, Boolean includeRebaseInProgress) throws GitLabApiException {
+    public MergeRequest getMergeRequest(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
+            Boolean renderHtml,
+            Boolean includeDivergedCommitCount,
+            Boolean includeRebaseInProgress) throws GitLabApiException {
 
         GitLabApiForm queryParams = new GitLabApiForm().withParam("render_html", renderHtml)
                 .withParam("include_diverged_commits_count", includeDivergedCommitCount)
                 .withParam("include_rebase_in_progress", includeRebaseInProgress);
 
-        Response response = get(Response.Status.OK, queryParams.asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid);
+        Response response = get(
+                Response.Status.OK,
+                queryParams.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid);
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -386,11 +403,20 @@ public class MergeRequestApi extends AbstractApi {
      *                                   null
      * @return the specified MergeRequest as an Optional instance instance
      */
-    public Optional<MergeRequest> getOptionalMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
-            Boolean renderHtml, Boolean includeDivergedCommitCount, Boolean includeRebaseInProgress) {
+    public Optional<MergeRequest> getOptionalMergeRequest(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
+            Boolean renderHtml,
+            Boolean includeDivergedCommitCount,
+            Boolean includeRebaseInProgress) {
         try {
-            return (Optional.ofNullable(getMergeRequest(projectIdOrPath, mergeRequestIid, renderHtml,
-                    includeDivergedCommitCount, includeRebaseInProgress)));
+            return (Optional.ofNullable(
+                    getMergeRequest(
+                            projectIdOrPath,
+                            mergeRequestIid,
+                            renderHtml,
+                            includeDivergedCommitCount,
+                            includeRebaseInProgress)));
         } catch (GitLabApiException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
@@ -438,8 +464,14 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("owned", true).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
-        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "commits");
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "commits");
         return (response.readEntity(new GenericType<List<Commit>>() {
         }));
     }
@@ -555,8 +587,15 @@ public class MergeRequestApi extends AbstractApi {
      */
     public MergeRequestDiff getDiffVersion(Object projectIdOrPath, Long mergeRequestIid, Long versionId)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "versions", versionId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "versions",
+                versionId);
         return (response.readEntity(MergeRequestDiff.class));
     }
 
@@ -572,7 +611,9 @@ public class MergeRequestApi extends AbstractApi {
      * @param versionId       the ID of the merge request diff version
      * @return the specified MergeRequestVersion as an Optional instance instance
      */
-    public Optional<MergeRequestDiff> getOptionalDiffVersion(Object projectIdOrPath, Long mergeRequestIid,
+    public Optional<MergeRequestDiff> getOptionalDiffVersion(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
             Long versionId) {
         try {
             return (Optional.ofNullable(getDiffVersion(projectIdOrPath, mergeRequestIid, versionId)));
@@ -648,7 +689,11 @@ public class MergeRequestApi extends AbstractApi {
     public MergeRequest createMergeRequest(Object projectIdOrPath, MergeRequestParams params)
             throws GitLabApiException {
         GitLabApiForm form = new GitLabApiForm(params.getForm(true));
-        Response response = post(Response.Status.CREATED, form, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                form,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "merge_requests");
         return (response.readEntity(MergeRequest.class));
     }
@@ -676,9 +721,18 @@ public class MergeRequestApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      * @since GitLab Starter 8.17, GitLab CE 11.0.
      */
-    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch,
-            String title, String description, Long assigneeId, Long targetProjectId, String[] labels, Long milestoneId,
-            Boolean removeSourceBranch, Boolean squash) throws GitLabApiException {
+    public MergeRequest createMergeRequest(
+            Object projectIdOrPath,
+            String sourceBranch,
+            String targetBranch,
+            String title,
+            String description,
+            Long assigneeId,
+            Long targetProjectId,
+            String[] labels,
+            Long milestoneId,
+            Boolean removeSourceBranch,
+            Boolean squash) throws GitLabApiException {
 
         MergeRequestParams params = new MergeRequestParams().withSourceBranch(sourceBranch)
                 .withTargetBranch(targetBranch).withTitle(title).withDescription(description).withAssigneeId(assigneeId)
@@ -709,8 +763,16 @@ public class MergeRequestApi extends AbstractApi {
      * @return the created MergeRequest instance
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch,
-            String title, String description, Long assigneeId, Long targetProjectId, String[] labels, Long milestoneId,
+    public MergeRequest createMergeRequest(
+            Object projectIdOrPath,
+            String sourceBranch,
+            String targetBranch,
+            String title,
+            String description,
+            Long assigneeId,
+            Long targetProjectId,
+            String[] labels,
+            Long milestoneId,
             Boolean removeSourceBranch) throws GitLabApiException {
 
         MergeRequestParams params = new MergeRequestParams().withSourceBranch(sourceBranch)
@@ -737,8 +799,13 @@ public class MergeRequestApi extends AbstractApi {
      * @return the created MergeRequest instance
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch,
-            String title, String description, Long assigneeId) throws GitLabApiException {
+    public MergeRequest createMergeRequest(
+            Object projectIdOrPath,
+            String sourceBranch,
+            String targetBranch,
+            String title,
+            String description,
+            Long assigneeId) throws GitLabApiException {
 
         MergeRequestParams params = new MergeRequestParams().withSourceBranch(sourceBranch)
                 .withTargetBranch(targetBranch).withTitle(title).withDescription(description)
@@ -763,8 +830,13 @@ public class MergeRequestApi extends AbstractApi {
     public MergeRequest updateMergeRequest(Object projectIdOrPath, Long mergeRequestIid, MergeRequestParams params)
             throws GitLabApiException {
         GitLabApiForm form = new GitLabApiForm(params.getForm(false));
-        Response response = put(Response.Status.OK, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid);
+        Response response = put(
+                Response.Status.OK,
+                form.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid);
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -796,10 +868,20 @@ public class MergeRequestApi extends AbstractApi {
      * @return the updated merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest updateMergeRequest(Object projectIdOrPath, Long mergeRequestIid, String targetBranch,
-            String title, Long assigneeId, String description, StateEvent stateEvent, String labels, Long milestoneId,
-            Boolean removeSourceBranch, Boolean squash, Boolean discussionLocked, Boolean allowCollaboration)
-            throws GitLabApiException {
+    public MergeRequest updateMergeRequest(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
+            String targetBranch,
+            String title,
+            Long assigneeId,
+            String description,
+            StateEvent stateEvent,
+            String labels,
+            Long milestoneId,
+            Boolean removeSourceBranch,
+            Boolean squash,
+            Boolean discussionLocked,
+            Boolean allowCollaboration) throws GitLabApiException {
 
         String[] labelsArray = null;
         if (labels != null) {
@@ -835,7 +917,12 @@ public class MergeRequestApi extends AbstractApi {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
                 mergeRequestIid);
     }
 
@@ -860,10 +947,18 @@ public class MergeRequestApi extends AbstractApi {
      * @return the merged merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
+    public MergeRequest acceptMergeRequest(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
             AcceptMergeRequestParams params) throws GitLabApiException {
-        Response response = put(Response.Status.OK, new GitLabApiForm(params.getForm()).asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "merge");
+        Response response = put(
+                Response.Status.OK,
+                new GitLabApiForm(params.getForm()).asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "merge");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -915,10 +1010,19 @@ public class MergeRequestApi extends AbstractApi {
      * @return the merged merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Long mergeRequestIid, String mergeCommitMessage,
-            Boolean shouldRemoveSourceBranch, Boolean mergeWhenPipelineSucceeds) throws GitLabApiException {
-        return (acceptMergeRequest(projectIdOrPath, mergeRequestIid, mergeCommitMessage, shouldRemoveSourceBranch,
-                mergeWhenPipelineSucceeds, null));
+    public MergeRequest acceptMergeRequest(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
+            String mergeCommitMessage,
+            Boolean shouldRemoveSourceBranch,
+            Boolean mergeWhenPipelineSucceeds) throws GitLabApiException {
+        return (acceptMergeRequest(
+                projectIdOrPath,
+                mergeRequestIid,
+                mergeCommitMessage,
+                shouldRemoveSourceBranch,
+                mergeWhenPipelineSucceeds,
+                null));
     }
 
     /**
@@ -947,8 +1051,13 @@ public class MergeRequestApi extends AbstractApi {
      * @return the merged merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Long mergeRequestIid, String mergeCommitMessage,
-            Boolean shouldRemoveSourceBranch, Boolean mergeWhenPipelineSucceeds, String sha) throws GitLabApiException {
+    public MergeRequest acceptMergeRequest(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
+            String mergeCommitMessage,
+            Boolean shouldRemoveSourceBranch,
+            Boolean mergeWhenPipelineSucceeds,
+            String sha) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -958,8 +1067,14 @@ public class MergeRequestApi extends AbstractApi {
                 .withParam("should_remove_source_branch", shouldRemoveSourceBranch)
                 .withParam("merge_when_pipeline_succeeds", mergeWhenPipelineSucceeds).withParam("sha", sha);
 
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "merge");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "merge");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -987,8 +1102,14 @@ public class MergeRequestApi extends AbstractApi {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        Response response = post(Response.Status.OK, (Form) null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "cancel_merge_when_pipeline_succeeds");
+        Response response = post(
+                Response.Status.OK,
+                (Form) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "cancel_merge_when_pipeline_succeeds");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -1031,8 +1152,14 @@ public class MergeRequestApi extends AbstractApi {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "approvals");
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "approvals");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -1054,8 +1181,14 @@ public class MergeRequestApi extends AbstractApi {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "approval_state");
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "approval_state");
         return (response.readEntity(ApprovalState.class));
     }
 
@@ -1133,7 +1266,10 @@ public class MergeRequestApi extends AbstractApi {
      * @return a ApprovalRule instance with approval configuration
      * @throws GitLabApiException if any exception occurs
      */
-    public ApprovalRule createApprovalRule(Object projectIdOrPath, Long mergeRequestIid, Long projectRuleId,
+    public ApprovalRule createApprovalRule(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
+            Long projectRuleId,
             ApprovalRuleParams params) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
@@ -1142,8 +1278,14 @@ public class MergeRequestApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm(params.getForm());
         formData.withParam("approval_project_rule_id", projectRuleId);
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "approval_rules");
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "approval_rules");
         return (response.readEntity(ApprovalRule.class));
     }
 
@@ -1162,7 +1304,10 @@ public class MergeRequestApi extends AbstractApi {
      * @return a ApprovalRule instance with approval configuration
      * @throws GitLabApiException if any exception occurs
      */
-    public ApprovalRule updateApprovalRule(Object projectIdOrPath, Long mergeRequestIid, Long approvalRuleId,
+    public ApprovalRule updateApprovalRule(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
+            Long approvalRuleId,
             ApprovalRuleParams params) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
@@ -1174,8 +1319,14 @@ public class MergeRequestApi extends AbstractApi {
         }
 
         GitLabApiForm formData = new GitLabApiForm(params.getForm());
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "approval_rules",
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "approval_rules",
                 approvalRuleId);
         return (response.readEntity(ApprovalRule.class));
     }
@@ -1204,8 +1355,15 @@ public class MergeRequestApi extends AbstractApi {
             throw new RuntimeException("approvalRuleId cannot be null");
         }
 
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests",
-                mergeRequestIid, "approval_rules", approvalRuleId);
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "approval_rules",
+                approvalRuleId);
     }
 
     /**
@@ -1231,8 +1389,14 @@ public class MergeRequestApi extends AbstractApi {
         }
 
         Form formData = new GitLabApiForm().withParam("sha", sha);
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "approve");
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "approve");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -1256,8 +1420,14 @@ public class MergeRequestApi extends AbstractApi {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        Response response = post(Response.Status.OK, (Form) null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "unapprove");
+        Response response = post(
+                Response.Status.OK,
+                (Form) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "unapprove");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -1274,8 +1444,14 @@ public class MergeRequestApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public MergeRequest getMergeRequestChanges(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "changes");
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "changes");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -1311,8 +1487,14 @@ public class MergeRequestApi extends AbstractApi {
      */
     public List<Participant> getParticipants(Object projectIdOrPath, Long mergeRequestIid, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "participants");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "participants");
         return (response.readEntity(new GenericType<List<Participant>>() {
         }));
     }
@@ -1385,8 +1567,14 @@ public class MergeRequestApi extends AbstractApi {
      */
     public List<Issue> getClosesIssues(Object projectIdOrPath, Long mergeRequestIid, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "closes_issues");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "closes_issues");
         return (response.readEntity(new GenericType<List<Issue>>() {
         }));
     }
@@ -1458,8 +1646,14 @@ public class MergeRequestApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public MergeRequest rebaseMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
-        Response response = put(Response.Status.ACCEPTED, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "rebase");
+        Response response = put(
+                Response.Status.ACCEPTED,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "rebase");
         return (response.readEntity(MergeRequest.class));
     }
 
@@ -1551,8 +1745,14 @@ public class MergeRequestApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pipeline createMergeRequestPipeline(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
-        Response response = post(Response.Status.CREATED, (Form) null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "pipelines");
+        Response response = post(
+                Response.Status.CREATED,
+                (Form) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "pipelines");
         return (response.readEntity(Pipeline.class));
     }
 

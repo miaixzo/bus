@@ -52,24 +52,26 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ConcatenatedSat:
-        case PrivateTag.DeltaStartTime:
-            return VR.DS;
-        case PrivateTag.ScanPitchRatio:
-            return VR.SH;
-        case PrivateTag.AxialType:
-        case PrivateTag.SwapPhaseFrequency:
-        case PrivateTag.PulseSequenceName:
-        case PrivateTag.CoilType:
-        case PrivateTag.SATFatWaterBone:
-        case PrivateTag.BitmapOfSATSelections:
-        case PrivateTag.SurfaceCoilIntensityCorrectionFlag:
-        case PrivateTag.PhaseContrastFlowAxis:
-        case PrivateTag.PhaseContrastVelocityEncoding:
-        case PrivateTag.FractionalEcho:
-        case PrivateTag.VariableEchoFlag:
-        case PrivateTag.NumberOfPhases:
-            return VR.SS;
+            case PrivateTag.ConcatenatedSat:
+            case PrivateTag.DeltaStartTime:
+                return VR.DS;
+
+            case PrivateTag.ScanPitchRatio:
+                return VR.SH;
+
+            case PrivateTag.AxialType:
+            case PrivateTag.SwapPhaseFrequency:
+            case PrivateTag.PulseSequenceName:
+            case PrivateTag.CoilType:
+            case PrivateTag.SATFatWaterBone:
+            case PrivateTag.BitmapOfSATSelections:
+            case PrivateTag.SurfaceCoilIntensityCorrectionFlag:
+            case PrivateTag.PhaseContrastFlowAxis:
+            case PrivateTag.PhaseContrastVelocityEncoding:
+            case PrivateTag.FractionalEcho:
+            case PrivateTag.VariableEchoFlag:
+            case PrivateTag.NumberOfPhases:
+                return VR.SS;
         }
         return VR.UN;
     }

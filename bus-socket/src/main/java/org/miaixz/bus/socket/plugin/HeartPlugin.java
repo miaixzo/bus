@@ -107,17 +107,19 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     @Override
     public final void stateEvent(Status status, Session session, Throwable throwable) {
         switch (status) {
-        case NEW_SESSION:
-            sessionMap.put(session, System.currentTimeMillis());
-            registerHeart(session, heartRate);
-            // 注册心跳监测
-            break;
-        case SESSION_CLOSED:
-            // 移除心跳监测
-            sessionMap.remove(session);
-            break;
-        default:
-            break;
+            case NEW_SESSION:
+                sessionMap.put(session, System.currentTimeMillis());
+                registerHeart(session, heartRate);
+                // 注册心跳监测
+                break;
+
+            case SESSION_CLOSED:
+                // 移除心跳监测
+                sessionMap.remove(session);
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -145,6 +147,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
         }
         Logger.debug("session:{}注册心跳任务,心跳间隔:{}", session, heartRate);
         HashedWheelTimer.DEFAULT_TIMER.schedule(new TimerTask() {
+
             @Override
             public void run() {
                 if (session.isInvalid()) {
@@ -179,6 +182,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     }
 
     public interface TimeoutCallback {
+
         void callback(Session session, long lastTime);
     }
 

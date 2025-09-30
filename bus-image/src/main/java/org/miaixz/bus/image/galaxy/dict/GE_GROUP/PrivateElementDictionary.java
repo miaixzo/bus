@@ -52,8 +52,8 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._6005_xx10_:
-            return VR.UT;
+            case PrivateTag._6005_xx10_:
+                return VR.UT;
         }
         return VR.UN;
     }

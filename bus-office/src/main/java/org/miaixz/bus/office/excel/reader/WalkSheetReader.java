@@ -67,10 +67,10 @@ public class WalkSheetReader extends AbstractSheetReader<Void> {
         for (int y = startRowIndex; y <= endRowIndex; y++) {
             row = sheet.getRow(y);
             if (null != row) {
-                final short startColumnIndex = (short) Math.max(this.cellRangeAddress.getFirstColumn(),
-                        row.getFirstCellNum());
-                final short endColumnIndex = (short) Math.min(this.cellRangeAddress.getLastColumn(),
-                        row.getLastCellNum());
+                final short startColumnIndex = (short) Math
+                        .max(this.cellRangeAddress.getFirstColumn(), row.getFirstCellNum());
+                final short endColumnIndex = (short) Math
+                        .min(this.cellRangeAddress.getLastColumn(), row.getLastCellNum());
                 Cell cell;
                 for (short x = startColumnIndex; x < endColumnIndex; x++) {
                     cell = CellKit.getCell(row, x);

@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ReportType:
-            return "ReportType";
-        case PrivateTag.ReportVersion:
-            return "ReportVersion";
-        case PrivateTag.SRVariant:
-            return "SRVariant";
-        case PrivateTag.SCSOPInstanceUID:
-            return "SCSOPInstanceUID";
+            case PrivateTag.ReportType:
+                return "ReportType";
+
+            case PrivateTag.ReportVersion:
+                return "ReportVersion";
+
+            case PrivateTag.SRVariant:
+                return "SRVariant";
+
+            case PrivateTag.SCSOPInstanceUID:
+                return "SCSOPInstanceUID";
         }
         return "";
     }

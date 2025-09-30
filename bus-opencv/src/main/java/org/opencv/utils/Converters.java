@@ -51,44 +51,44 @@ public class Converters {
         int count = (pts != null) ? pts.size() : 0;
         if (count > 0) {
             switch (typeDepth) {
-            case CvType.CV_32S: {
-                res = new Mat(count, 1, CvType.CV_32SC2);
-                int[] buff = new int[count * 2];
-                for (int i = 0; i < count; i++) {
-                    Point p = pts.get(i);
-                    buff[i * 2] = (int) p.x;
-                    buff[i * 2 + 1] = (int) p.y;
+                case CvType.CV_32S: {
+                    res = new Mat(count, 1, CvType.CV_32SC2);
+                    int[] buff = new int[count * 2];
+                    for (int i = 0; i < count; i++) {
+                        Point p = pts.get(i);
+                        buff[i * 2] = (int) p.x;
+                        buff[i * 2 + 1] = (int) p.y;
+                    }
+                    res.put(0, 0, buff);
                 }
-                res.put(0, 0, buff);
-            }
-                break;
+                    break;
 
-            case CvType.CV_32F: {
-                res = new Mat(count, 1, CvType.CV_32FC2);
-                float[] buff = new float[count * 2];
-                for (int i = 0; i < count; i++) {
-                    Point p = pts.get(i);
-                    buff[i * 2] = (float) p.x;
-                    buff[i * 2 + 1] = (float) p.y;
+                case CvType.CV_32F: {
+                    res = new Mat(count, 1, CvType.CV_32FC2);
+                    float[] buff = new float[count * 2];
+                    for (int i = 0; i < count; i++) {
+                        Point p = pts.get(i);
+                        buff[i * 2] = (float) p.x;
+                        buff[i * 2 + 1] = (float) p.y;
+                    }
+                    res.put(0, 0, buff);
                 }
-                res.put(0, 0, buff);
-            }
-                break;
+                    break;
 
-            case CvType.CV_64F: {
-                res = new Mat(count, 1, CvType.CV_64FC2);
-                double[] buff = new double[count * 2];
-                for (int i = 0; i < count; i++) {
-                    Point p = pts.get(i);
-                    buff[i * 2] = p.x;
-                    buff[i * 2 + 1] = p.y;
+                case CvType.CV_64F: {
+                    res = new Mat(count, 1, CvType.CV_64FC2);
+                    double[] buff = new double[count * 2];
+                    for (int i = 0; i < count; i++) {
+                        Point p = pts.get(i);
+                        buff[i * 2] = p.x;
+                        buff[i * 2 + 1] = p.y;
+                    }
+                    res.put(0, 0, buff);
                 }
-                res.put(0, 0, buff);
-            }
-                break;
+                    break;
 
-            default:
-                throw new IllegalArgumentException("'typeDepth' can be CV_32S, CV_32F or CV_64F");
+                default:
+                    throw new IllegalArgumentException("'typeDepth' can be CV_32S, CV_32F or CV_64F");
             }
         } else {
             res = new Mat();
@@ -113,47 +113,47 @@ public class Converters {
         int count = (pts != null) ? pts.size() : 0;
         if (count > 0) {
             switch (typeDepth) {
-            case CvType.CV_32S: {
-                res = new Mat(count, 1, CvType.CV_32SC3);
-                int[] buff = new int[count * 3];
-                for (int i = 0; i < count; i++) {
-                    Point3 p = pts.get(i);
-                    buff[i * 3] = (int) p.x;
-                    buff[i * 3 + 1] = (int) p.y;
-                    buff[i * 3 + 2] = (int) p.z;
+                case CvType.CV_32S: {
+                    res = new Mat(count, 1, CvType.CV_32SC3);
+                    int[] buff = new int[count * 3];
+                    for (int i = 0; i < count; i++) {
+                        Point3 p = pts.get(i);
+                        buff[i * 3] = (int) p.x;
+                        buff[i * 3 + 1] = (int) p.y;
+                        buff[i * 3 + 2] = (int) p.z;
+                    }
+                    res.put(0, 0, buff);
                 }
-                res.put(0, 0, buff);
-            }
-                break;
+                    break;
 
-            case CvType.CV_32F: {
-                res = new Mat(count, 1, CvType.CV_32FC3);
-                float[] buff = new float[count * 3];
-                for (int i = 0; i < count; i++) {
-                    Point3 p = pts.get(i);
-                    buff[i * 3] = (float) p.x;
-                    buff[i * 3 + 1] = (float) p.y;
-                    buff[i * 3 + 2] = (float) p.z;
+                case CvType.CV_32F: {
+                    res = new Mat(count, 1, CvType.CV_32FC3);
+                    float[] buff = new float[count * 3];
+                    for (int i = 0; i < count; i++) {
+                        Point3 p = pts.get(i);
+                        buff[i * 3] = (float) p.x;
+                        buff[i * 3 + 1] = (float) p.y;
+                        buff[i * 3 + 2] = (float) p.z;
+                    }
+                    res.put(0, 0, buff);
                 }
-                res.put(0, 0, buff);
-            }
-                break;
+                    break;
 
-            case CvType.CV_64F: {
-                res = new Mat(count, 1, CvType.CV_64FC3);
-                double[] buff = new double[count * 3];
-                for (int i = 0; i < count; i++) {
-                    Point3 p = pts.get(i);
-                    buff[i * 3] = p.x;
-                    buff[i * 3 + 1] = p.y;
-                    buff[i * 3 + 2] = p.z;
+                case CvType.CV_64F: {
+                    res = new Mat(count, 1, CvType.CV_64FC3);
+                    double[] buff = new double[count * 3];
+                    for (int i = 0; i < count; i++) {
+                        Point3 p = pts.get(i);
+                        buff[i * 3] = p.x;
+                        buff[i * 3 + 1] = p.y;
+                        buff[i * 3 + 2] = p.z;
+                    }
+                    res.put(0, 0, buff);
                 }
-                res.put(0, 0, buff);
-            }
-                break;
+                    break;
 
-            default:
-                throw new IllegalArgumentException("'typeDepth' can be CV_32S, CV_32F or CV_64F");
+                default:
+                    throw new IllegalArgumentException("'typeDepth' can be CV_32S, CV_32F or CV_64F");
             }
         } else {
             res = new Mat();
@@ -511,8 +511,10 @@ public class Converters {
         double[] buff = new double[7 * count];
         m.get(0, 0, buff);
         for (int i = 0; i < count; i++) {
-            kps.add(new KeyPoint((float) buff[7 * i], (float) buff[7 * i + 1], (float) buff[7 * i + 2],
-                    (float) buff[7 * i + 3], (float) buff[7 * i + 4], (int) buff[7 * i + 5], (int) buff[7 * i + 6]));
+            kps.add(
+                    new KeyPoint((float) buff[7 * i], (float) buff[7 * i + 1], (float) buff[7 * i + 2],
+                            (float) buff[7 * i + 3], (float) buff[7 * i + 4], (int) buff[7 * i + 5],
+                            (int) buff[7 * i + 6]));
         }
     }
 
@@ -701,8 +703,9 @@ public class Converters {
         double[] buff = new double[4 * count];
         m.get(0, 0, buff);
         for (int i = 0; i < count; i++) {
-            matches.add(new DMatch((int) buff[4 * i], (int) buff[4 * i + 1], (int) buff[4 * i + 2],
-                    (float) buff[4 * i + 3]));
+            matches.add(
+                    new DMatch((int) buff[4 * i], (int) buff[4 * i + 1], (int) buff[4 * i + 2],
+                            (float) buff[4 * i + 3]));
         }
     }
 
@@ -800,8 +803,9 @@ public class Converters {
         float[] buff = new float[5 * count];
         m.get(0, 0, buff);
         for (int i = 0; i < count; i++) {
-            rs.add(new RotatedRect(new Point(buff[5 * i], buff[5 * i + 1]), new Size(buff[5 * i + 2], buff[5 * i + 3]),
-                    buff[5 * i + 4]));
+            rs.add(
+                    new RotatedRect(new Point(buff[5 * i], buff[5 * i + 1]), new Size(buff[5 * i + 2], buff[5 * i + 3]),
+                            buff[5 * i + 4]));
         }
     }
 

@@ -38,38 +38,53 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.FileLocation:
-            return "FileLocation";
-        case PrivateTag.FileSize:
-            return "FileSize";
-        case PrivateTag.AlternateImageSequence:
-            return "AlternateImageSequence";
-        case PrivateTag.ImageBlankingShape:
-            return "ImageBlankingShape";
-        case PrivateTag.ImageBlankingLeftVerticalEdge:
-            return "ImageBlankingLeftVerticalEdge";
-        case PrivateTag.ImageBlankingRightVerticalEdge:
-            return "ImageBlankingRightVerticalEdge";
-        case PrivateTag.ImageBlankingUpperHorizontalEdge:
-            return "ImageBlankingUpperHorizontalEdge";
-        case PrivateTag.ImageBlankingLowerHorizontalEdge:
-            return "ImageBlankingLowerHorizontalEdge";
-        case PrivateTag.CenterOfCircularImageBlanking:
-            return "CenterOfCircularImageBlanking";
-        case PrivateTag.RadiusOfCircularImageBlanking:
-            return "RadiusOfCircularImageBlanking";
-        case PrivateTag.MaximumImageFrameSize:
-            return "MaximumImageFrameSize";
-        case PrivateTag.ImageSequenceNumber:
-            return "ImageSequenceNumber";
-        case PrivateTag.EdgeEnhancementSequence:
-            return "EdgeEnhancementSequence";
-        case PrivateTag.ConvolutionKernelSize:
-            return "ConvolutionKernelSize";
-        case PrivateTag.ConvolutionKernelCoefficients:
-            return "ConvolutionKernelCoefficients";
-        case PrivateTag.EdgeEnhancementGain:
-            return "EdgeEnhancementGain";
+            case PrivateTag.FileLocation:
+                return "FileLocation";
+
+            case PrivateTag.FileSize:
+                return "FileSize";
+
+            case PrivateTag.AlternateImageSequence:
+                return "AlternateImageSequence";
+
+            case PrivateTag.ImageBlankingShape:
+                return "ImageBlankingShape";
+
+            case PrivateTag.ImageBlankingLeftVerticalEdge:
+                return "ImageBlankingLeftVerticalEdge";
+
+            case PrivateTag.ImageBlankingRightVerticalEdge:
+                return "ImageBlankingRightVerticalEdge";
+
+            case PrivateTag.ImageBlankingUpperHorizontalEdge:
+                return "ImageBlankingUpperHorizontalEdge";
+
+            case PrivateTag.ImageBlankingLowerHorizontalEdge:
+                return "ImageBlankingLowerHorizontalEdge";
+
+            case PrivateTag.CenterOfCircularImageBlanking:
+                return "CenterOfCircularImageBlanking";
+
+            case PrivateTag.RadiusOfCircularImageBlanking:
+                return "RadiusOfCircularImageBlanking";
+
+            case PrivateTag.MaximumImageFrameSize:
+                return "MaximumImageFrameSize";
+
+            case PrivateTag.ImageSequenceNumber:
+                return "ImageSequenceNumber";
+
+            case PrivateTag.EdgeEnhancementSequence:
+                return "EdgeEnhancementSequence";
+
+            case PrivateTag.ConvolutionKernelSize:
+                return "ConvolutionKernelSize";
+
+            case PrivateTag.ConvolutionKernelCoefficients:
+                return "ConvolutionKernelCoefficients";
+
+            case PrivateTag.EdgeEnhancementGain:
+                return "EdgeEnhancementGain";
         }
         return "";
     }

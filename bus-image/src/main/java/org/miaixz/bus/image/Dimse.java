@@ -83,54 +83,77 @@ public enum Dimse {
 
     public static Dimse valueOf(int commandField) {
         switch (commandField) {
-        case 0x0001:
-            return C_STORE_RQ;
-        case 0x8001:
-            return C_STORE_RSP;
-        case 0x0010:
-            return C_GET_RQ;
-        case 0x8010:
-            return C_GET_RSP;
-        case 0x0020:
-            return C_FIND_RQ;
-        case 0x8020:
-            return C_FIND_RSP;
-        case 0x0021:
-            return C_MOVE_RQ;
-        case 0x8021:
-            return C_MOVE_RSP;
-        case 0x0030:
-            return C_ECHO_RQ;
-        case 0x8030:
-            return C_ECHO_RSP;
-        case 0x0100:
-            return N_EVENT_REPORT_RQ;
-        case 0x8100:
-            return N_EVENT_REPORT_RSP;
-        case 0x0110:
-            return N_GET_RQ;
-        case 0x8110:
-            return N_GET_RSP;
-        case 0x0120:
-            return N_SET_RQ;
-        case 0x8120:
-            return N_SET_RSP;
-        case 0x0130:
-            return N_ACTION_RQ;
-        case 0x8130:
-            return N_ACTION_RSP;
-        case 0x0140:
-            return N_CREATE_RQ;
-        case 0x8140:
-            return N_CREATE_RSP;
-        case 0x0150:
-            return N_DELETE_RQ;
-        case 0x8150:
-            return N_DELETE_RSP;
-        case 0x0FFF:
-            return C_CANCEL_RQ;
-        default:
-            throw new IllegalArgumentException("commandField: " + commandField);
+            case 0x0001:
+                return C_STORE_RQ;
+
+            case 0x8001:
+                return C_STORE_RSP;
+
+            case 0x0010:
+                return C_GET_RQ;
+
+            case 0x8010:
+                return C_GET_RSP;
+
+            case 0x0020:
+                return C_FIND_RQ;
+
+            case 0x8020:
+                return C_FIND_RSP;
+
+            case 0x0021:
+                return C_MOVE_RQ;
+
+            case 0x8021:
+                return C_MOVE_RSP;
+
+            case 0x0030:
+                return C_ECHO_RQ;
+
+            case 0x8030:
+                return C_ECHO_RSP;
+
+            case 0x0100:
+                return N_EVENT_REPORT_RQ;
+
+            case 0x8100:
+                return N_EVENT_REPORT_RSP;
+
+            case 0x0110:
+                return N_GET_RQ;
+
+            case 0x8110:
+                return N_GET_RSP;
+
+            case 0x0120:
+                return N_SET_RQ;
+
+            case 0x8120:
+                return N_SET_RSP;
+
+            case 0x0130:
+                return N_ACTION_RQ;
+
+            case 0x8130:
+                return N_ACTION_RSP;
+
+            case 0x0140:
+                return N_CREATE_RQ;
+
+            case 0x8140:
+                return N_CREATE_RSP;
+
+            case 0x0150:
+                return N_DELETE_RQ;
+
+            case 0x8150:
+                return N_DELETE_RSP;
+
+            case 0x0FFF:
+                return C_CANCEL_RQ;
+
+            default:
+                throw new IllegalArgumentException("commandField: " + commandField);
         }
     }
 
@@ -231,33 +254,39 @@ public enum Dimse {
         StringBuilder sb = new StringBuilder();
         sb.append(cmdAttrs.getInt(tagOfMessageID, -1)).append(prompt).append("[pcid=").append(pcid);
         switch (this) {
-        case C_STORE_RQ:
-            promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
-            promptMoveOriginatorTo(cmdAttrs, sb);
-            break;
-        case C_FIND_RQ:
-        case C_GET_RQ:
-            promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
-            break;
-        case C_MOVE_RQ:
-            promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
-            promptMoveDestination(cmdAttrs, sb);
-            break;
-        case C_GET_RSP:
-        case C_MOVE_RSP:
-            promptNumberOfSubOpsTo(cmdAttrs, sb);
-            break;
-        case N_EVENT_REPORT_RQ:
-        case N_EVENT_REPORT_RSP:
-            promptIntTo(cmdAttrs, ", eventID=", Tag.EventTypeID, sb);
-            break;
-        case N_GET_RQ:
-            promptAttributeIdentifierListTo(cmdAttrs, sb);
-            break;
-        case N_ACTION_RQ:
-        case N_ACTION_RSP:
-            promptIntTo(cmdAttrs, ", actionID=", Tag.ActionTypeID, sb);
-            break;
+            case C_STORE_RQ:
+                promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
+                promptMoveOriginatorTo(cmdAttrs, sb);
+                break;
+
+            case C_FIND_RQ:
+            case C_GET_RQ:
+                promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
+                break;
+
+            case C_MOVE_RQ:
+                promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
+                promptMoveDestination(cmdAttrs, sb);
+                break;
+
+            case C_GET_RSP:
+            case C_MOVE_RSP:
+                promptNumberOfSubOpsTo(cmdAttrs, sb);
+                break;
+
+            case N_EVENT_REPORT_RQ:
+            case N_EVENT_REPORT_RSP:
+                promptIntTo(cmdAttrs, ", eventID=", Tag.EventTypeID, sb);
+                break;
+
+            case N_GET_RQ:
+                promptAttributeIdentifierListTo(cmdAttrs, sb);
+                break;
+
+            case N_ACTION_RQ:
+            case N_ACTION_RSP:
+                promptIntTo(cmdAttrs, ", actionID=", Tag.ActionTypeID, sb);
+                break;
         }
         if (isRSP()) {
             sb.append(", status=").append(Integer.toHexString(cmdAttrs.getInt(Tag.Status, -1))).append('H');

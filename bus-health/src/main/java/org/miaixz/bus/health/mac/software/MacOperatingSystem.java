@@ -72,9 +72,10 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             if (!SysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec.longValue() == 0L) {
                 // Usually this works. If it doesn't, fall back to text parsing.
                 // Boot time will be the first consecutive string of digits.
-                BOOTTIME = Parsing
-                        .parseLongOrDefault(Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0]
-                                .replaceAll("\\D", Normal.EMPTY), System.currentTimeMillis() / 1000);
+                BOOTTIME = Parsing.parseLongOrDefault(
+                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0]
+                                .replaceAll("\\D", Normal.EMPTY),
+                        System.currentTimeMillis() / 1000);
             } else {
                 // tv now points to a 64-bit timeval structure for boot time.
                 // First 4 bytes are seconds, second 4 bytes are microseconds
@@ -84,12 +85,16 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         }
     }
 
-    private final String osXVersion;
-    private final int major;
-    private final int minor;
-    private int maxProc = 1024;
+    protected final String osXVersion;
+    protected final int major;
+    protected final int minor;
+    protected int maxProc;
 
     public MacOperatingSystem() {
+        this(SysctlKit.sysctl("kern.maxproc", 0x1000));
+    }
+
+    protected MacOperatingSystem(int maxproc) {
         String version = System.getProperty("os.version");
         int verMajor = Parsing.getFirstIntValue(version);
         int verMinor = Parsing.getNthIntValue(version, 2);
@@ -106,7 +111,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         this.major = verMajor;
         this.minor = verMinor;
         // Set max processes
-        this.maxProc = SysctlKit.sysctl("kern.maxproc", 0x1000);
+        this.maxProc = maxproc;
     }
 
     @Override
@@ -165,8 +170,8 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         List<OSProcess> procs = new ArrayList<>();
         int[] pids = new int[this.maxProc];
         Arrays.fill(pids, -1);
-        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids,
-                pids.length * SystemB.INT_SIZE) / SystemB.INT_SIZE;
+        int numberOfProcesses = SystemB.INSTANCE
+                .proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE) / SystemB.INT_SIZE;
         for (int i = 0; i < numberOfProcesses; i++) {
             if (pids[i] >= 0) {
                 OSProcess proc = getProcess(pids[i]);
@@ -234,8 +239,8 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         int numberOfThreads = 0;
         try (Struct.CloseableProcTaskInfo taskInfo = new Struct.CloseableProcTaskInfo()) {
             for (int i = 0; i < numberOfProcesses; i++) {
-                int exit = SystemB.INSTANCE.proc_pidinfo(pids[i], SystemB.PROC_PIDTASKINFO, 0, taskInfo,
-                        taskInfo.size());
+                int exit = SystemB.INSTANCE
+                        .proc_pidinfo(pids[i], SystemB.PROC_PIDTASKINFO, 0, taskInfo, taskInfo.size());
                 if (exit != -1) {
                     numberOfThreads += taskInfo.pti_threadnum;
                 }
@@ -246,7 +251,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public long getSystemUptime() {
-        return System.currentTimeMillis() / 1000 - BOOTTIME;
+        return System.currentTimeMillis() / 1000 - getSystemBootTime();
     }
 
     @Override
@@ -264,8 +269,11 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES,
-                OperatingSystem.ProcessSorting.PID_ASC, 0)) {
+        for (OSProcess p : getChildProcesses(
+                1,
+                OperatingSystem.ProcessFiltering.ALL_PROCESSES,
+                OperatingSystem.ProcessSorting.PID_ASC,
+                0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

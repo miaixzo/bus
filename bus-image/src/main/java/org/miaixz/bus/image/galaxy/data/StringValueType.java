@@ -52,6 +52,7 @@ public enum StringValueType implements ValueType {
      * 字符串类型，使用反斜杠作为分隔符，使用特定字符集
      */
     STRING(Symbol.BACKSLASH, null) {
+
         @Override
         public boolean useSpecificCharacterSet() {
             return true;
@@ -67,6 +68,7 @@ public enum StringValueType implements ValueType {
      * 文本类型，使用制表符、换行符、换页符和回车符作为分隔符，使用特定字符集
      */
     TEXT("\t\n\f\r", null) {
+
         @Override
         public boolean useSpecificCharacterSet() {
             return true;
@@ -92,6 +94,7 @@ public enum StringValueType implements ValueType {
      * URI类型，不使用分隔符
      */
     UR(null, null) {
+
         @Override
         protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
             return Builder.trimTrailing(s);
@@ -122,6 +125,7 @@ public enum StringValueType implements ValueType {
      * 个人名称类型，使用^、=和\作为分隔符，使用特定字符集
      */
     PN("^=\\", null) {
+
         @Override
         public boolean useSpecificCharacterSet() {
             return true;
@@ -137,6 +141,7 @@ public enum StringValueType implements ValueType {
      * 十进制字符串类型，使用反斜杠作为分隔符
      */
     DS(Symbol.BACKSLASH, null) {
+
         @Override
         public byte[] toBytes(Object val, SpecificCharacterSet cs) {
             if (val instanceof double[])
@@ -224,6 +229,7 @@ public enum StringValueType implements ValueType {
      * 整数字符串类型，使用反斜杠作为分隔符
      */
     IS("\\", null) {
+
         @Override
         public boolean isIntValue() {
             return true;

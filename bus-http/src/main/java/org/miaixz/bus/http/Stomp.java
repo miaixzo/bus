@@ -157,8 +157,9 @@ public class Stomp {
         cover.setOnOpen((ws, res) -> {
             List<Header> cHeaders = new ArrayList<>();
             cHeaders.add(new Header(Header.VERSION, SUPPORTED_VERSIONS));
-            cHeaders.add(new Header(Header.HEART_BEAT,
-                    cover.pingSeconds() * 1000 + Symbol.COMMA + cover.pongSeconds() * 1000));
+            cHeaders.add(
+                    new Header(Header.HEART_BEAT,
+                            cover.pingSeconds() * 1000 + Symbol.COMMA + cover.pongSeconds() * 1000));
             if (null != headers) {
                 cHeaders.addAll(headers);
             }

@@ -55,19 +55,22 @@ import org.miaixz.bus.core.xyz.ListKit;
  * 本类的构建方法是通过{@code BeanTree.of} 进行构建，例如：
  * 
  * <pre>{@code
- * final BeanTree beanTree = BeanTree.of(JavaBean::getId, JavaBean::getParentId, null, JavaBean::getChildren,
- *         JavaBean::setChildren);
+ * 
+ * final BeanTree beanTree = BeanTree
+ *         .of(JavaBean::getId, JavaBean::getParentId, null, JavaBean::getChildren, JavaBean::setChildren);
  * }</pre>
  * 
  * 得到的BeanTree实例可以调用toTree方法，将集合转换为树，例如：
  * 
  * <pre>{@code
+ * 
  * final List<JavaBean> javaBeanTree = beanTree.toTree(originJavaBeanList);
  * }</pre>
  * 
  * 也可以将已有的树转换为集合，例如：
  * 
  * <pre>{@code
+ * 
  * final List<JavaBean> javaBeanList = beanTree.flat(originJavaBeanTree);
  * }</pre>
  *
@@ -130,8 +133,11 @@ public class BeanTree<T, R extends Comparable<R>> {
      * @param <R>            主键、外键类型
      * @return BeanTree
      */
-    public static <T, R extends Comparable<R>> BeanTree<T, R> of(final FunctionX<T, R> idGetter,
-            final FunctionX<T, R> pidGetter, final R pidValue, final FunctionX<T, List<T>> childrenGetter,
+    public static <T, R extends Comparable<R>> BeanTree<T, R> of(
+            final FunctionX<T, R> idGetter,
+            final FunctionX<T, R> pidGetter,
+            final R pidValue,
+            final FunctionX<T, List<T>> childrenGetter,
             final BiConsumerX<T, List<T>> childrenSetter) {
         return new BeanTree<>(idGetter, pidGetter, pidValue, null, childrenGetter, childrenSetter);
     }
@@ -148,9 +154,12 @@ public class BeanTree<T, R extends Comparable<R>> {
      * @param <R>             主键、外键类型
      * @return BeanTree
      */
-    public static <T, R extends Comparable<R>> BeanTree<T, R> ofMatch(final FunctionX<T, R> idGetter,
-            final FunctionX<T, R> pidGetter, final PredicateX<T> parentPredicate,
-            final FunctionX<T, List<T>> childrenGetter, final BiConsumerX<T, List<T>> childrenSetter) {
+    public static <T, R extends Comparable<R>> BeanTree<T, R> ofMatch(
+            final FunctionX<T, R> idGetter,
+            final FunctionX<T, R> pidGetter,
+            final PredicateX<T> parentPredicate,
+            final FunctionX<T, List<T>> childrenGetter,
+            final BiConsumerX<T, List<T>> childrenSetter) {
         return new BeanTree<>(idGetter, pidGetter, null,
                 Objects.requireNonNull(parentPredicate, "parentPredicate must not be null"), childrenGetter,
                 childrenSetter);
@@ -213,7 +222,8 @@ public class BeanTree<T, R extends Comparable<R>> {
     public List<T> filter(final List<T> tree, final PredicateX<T> condition) {
         Objects.requireNonNull(condition, "filter condition must be not null");
         final AtomicReference<Predicate<T>> recursiveRef = new AtomicReference<>();
-        final Predicate<T> recursive = PredicateX.multiOr(condition::test,
+        final Predicate<T> recursive = PredicateX.multiOr(
+                condition::test,
                 e -> Optional.ofEmptyAble(childrenGetter.apply(e))
                         .map(children -> EasyStream.of(children).filter(recursiveRef.get()).toList())
                         .ifPresent(children -> childrenSetter.accept(e, children)).filter(s -> !s.isEmpty())
@@ -232,8 +242,10 @@ public class BeanTree<T, R extends Comparable<R>> {
     public List<T> forEach(final List<T> tree, final ConsumerX<T> action) {
         Objects.requireNonNull(action, "action must be not null");
         final AtomicReference<Consumer<T>> recursiveRef = new AtomicReference<>();
-        final Consumer<T> recursive = ConsumerX.multi(action::accept, e -> Optional.ofEmptyAble(childrenGetter.apply(e))
-                .ifPresent(children -> EasyStream.of(children).forEach(recursiveRef.get())));
+        final Consumer<T> recursive = ConsumerX.multi(
+                action::accept,
+                e -> Optional.ofEmptyAble(childrenGetter.apply(e))
+                        .ifPresent(children -> EasyStream.of(children).forEach(recursiveRef.get())));
         recursiveRef.set(recursive);
         EasyStream.of(tree).forEach(recursive);
         return tree;

@@ -200,6 +200,7 @@ public class ContextBuilder extends WebUtils {
      * </p>
      *
      * <pre>{@code
+     * 
      * CacheX<String, Map<String, String>> cache = ContextBuilder.getHeaderCache();
      * Map<String, String> headers = cache.read("request123");
      * }</pre>
@@ -233,6 +234,7 @@ public class ContextBuilder extends WebUtils {
      * </p>
      *
      * <pre>{@code
+     * 
      * CacheX<String, Map<String, String>> cache = ContextBuilder.getParameterCache();
      * Map<String, String> params = cache.read("request123");
      * }</pre>
@@ -266,6 +268,7 @@ public class ContextBuilder extends WebUtils {
      * </p>
      *
      * <pre>{@code
+     * 
      * CacheX<String, String> cache = ContextBuilder.getBodyCache();
      * String jsonBody = cache.read("request123");
      * }</pre>
@@ -356,7 +359,10 @@ public class ContextBuilder extends WebUtils {
      * @param defaultValue 默认值
      * @return 缓存数据或默认值
      */
-    private static <T> T getCached(String requestId, SupplierX<T> dataSupplier, CacheX<String, T> cache,
+    private static <T> T getCached(
+            String requestId,
+            SupplierX<T> dataSupplier,
+            CacheX<String, T> cache,
             T defaultValue) {
         if (requestId == null) {
             return defaultValue;
@@ -788,37 +794,44 @@ public class ContextBuilder extends WebUtils {
             return null;
         }
         switch (source) {
-        case HEADER:
-            return getHeaderValue(key);
-        case PARAMETER:
-            return getParameterValue(key);
-        case JSON_BODY:
-            return getJsonBodyValue(key);
-        case COOKIE:
-            return getCookieValue(key);
-        case PATH_VARIABLE:
-            return getPathVariable(key);
-        case MULTIPART:
-            return getMultipartParameterValue(key);
-        case ALL:
-            String value = getHeaderValue(key);
-            if (value != null)
-                return value;
-            value = getParameterValue(key);
-            if (value != null)
-                return value;
-            value = getPathVariable(key);
-            if (value != null)
-                return value;
-            value = getJsonBodyValue(key);
-            if (value != null)
-                return value;
-            value = getCookieValue(key);
-            if (value != null)
-                return value;
-            return getMultipartParameterValue(key);
-        default:
-            return null;
+            case HEADER:
+                return getHeaderValue(key);
+
+            case PARAMETER:
+                return getParameterValue(key);
+
+            case JSON_BODY:
+                return getJsonBodyValue(key);
+
+            case COOKIE:
+                return getCookieValue(key);
+
+            case PATH_VARIABLE:
+                return getPathVariable(key);
+
+            case MULTIPART:
+                return getMultipartParameterValue(key);
+
+            case ALL:
+                String value = getHeaderValue(key);
+                if (value != null)
+                    return value;
+                value = getParameterValue(key);
+                if (value != null)
+                    return value;
+                value = getPathVariable(key);
+                if (value != null)
+                    return value;
+                value = getJsonBodyValue(key);
+                if (value != null)
+                    return value;
+                value = getCookieValue(key);
+                if (value != null)
+                    return value;
+                return getMultipartParameterValue(key);
+
+            default:
+                return null;
         }
     }
 
@@ -989,8 +1002,12 @@ public class ContextBuilder extends WebUtils {
             try {
                 return JsonKit.toPojo(value, clazz);
             } catch (Exception e) {
-                Logger.warn("==>    Request: Failed to convert value to {}, key: {}, value: {}", clazz.getSimpleName(),
-                        key, value, e);
+                Logger.warn(
+                        "==>    Request: Failed to convert value to {}, key: {}, value: {}",
+                        clazz.getSimpleName(),
+                        key,
+                        value,
+                        e);
                 return null;
             }
         }
@@ -1023,8 +1040,12 @@ public class ContextBuilder extends WebUtils {
         try {
             return JsonKit.toPojo(value, clazz);
         } catch (Exception e) {
-            Logger.warn("==>    Request: Failed to convert JSON value to {}, key: {}, value: {}", clazz.getSimpleName(),
-                    key, value, e);
+            Logger.warn(
+                    "==>    Request: Failed to convert JSON value to {}, key: {}, value: {}",
+                    clazz.getSimpleName(),
+                    key,
+                    value,
+                    e);
             return null;
         }
     }

@@ -56,7 +56,8 @@ public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
                 .queryParam("agentid", context.getUnionId())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("response_type", "code")
-                .queryParam("scope",
+                .queryParam(
+                        "scope",
                         this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(WeChatEeWebScope.values())))
                 .queryParam("state", getRealState(state).concat("#wechat_redirect")).build();
     }

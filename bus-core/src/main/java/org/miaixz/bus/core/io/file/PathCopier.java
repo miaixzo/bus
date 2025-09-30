@@ -76,7 +76,9 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
      * @return {@code PathCopier}
      */
     public static PathCopier of(final Path src, final Path target, final boolean isOverride) {
-        return of(src, target,
+        return of(
+                src,
+                target,
                 isOverride ? new CopyOption[] { StandardCopyOption.REPLACE_EXISTING } : new CopyOption[] {});
     }
 

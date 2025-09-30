@@ -52,8 +52,8 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
     private static final long PAGE_SIZE = LinuxOperatingSystem.getPageSize();
 
-    private final Supplier<Pair<Long, Long>> availTotal = Memoizer.memoize(LinuxGlobalMemory::readMemInfo,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> availTotal = Memoizer
+            .memoize(LinuxGlobalMemory::readMemInfo, Memoizer.defaultExpiration());
 
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
@@ -83,28 +83,34 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
             String[] memorySplit = Pattern.SPACES_PATTERN.split(checkLine, 2);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
-                case "MemTotal:":
-                    memTotal = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
-                    break;
-                case "MemAvailable:":
-                    memAvailable = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
-                    // We're done!
-                    return Pair.of(memAvailable, memTotal);
-                case "MemFree:":
-                    memFree = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
-                    break;
-                case "Active(file):":
-                    activeFile = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
-                    break;
-                case "Inactive(file):":
-                    inactiveFile = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
-                    break;
-                case "SReclaimable:":
-                    sReclaimable = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
-                    break;
-                default:
-                    // do nothing with other lines
-                    break;
+                    case "MemTotal:":
+                        memTotal = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        break;
+
+                    case "MemAvailable:":
+                        memAvailable = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        // We're done!
+                        return Pair.of(memAvailable, memTotal);
+
+                    case "MemFree:":
+                        memFree = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        break;
+
+                    case "Active(file):":
+                        activeFile = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        break;
+
+                    case "Inactive(file):":
+                        inactiveFile = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        break;
+
+                    case "SReclaimable:":
+                        sReclaimable = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        break;
+
+                    default:
+                        // do nothing with other lines
+                        break;
                 }
             }
         }

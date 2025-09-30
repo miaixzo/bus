@@ -96,6 +96,7 @@ public interface InternetProtocolStats {
      */
     @Immutable
     final class TcpStats {
+
         private final long connectionsEstablished;
         private final long connectionsActive;
         private final long connectionsPassive;
@@ -238,6 +239,7 @@ public interface InternetProtocolStats {
      */
     @Immutable
     final class UdpStats {
+
         private final long datagramsSent;
         private final long datagramsReceived;
         private final long datagramsNoPort;
@@ -302,6 +304,7 @@ public interface InternetProtocolStats {
      */
     @Immutable
     final class IPConnection {
+
         private final String type;
         private final byte[] localAddress;
         private final int localPort;

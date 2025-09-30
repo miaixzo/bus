@@ -116,7 +116,9 @@ public final class RealEventSource implements EventSource, ServerSentEventReader
             }
 
             if (!isEventStream(body)) {
-                listener.onFailure(this, new IllegalStateException("Invalid content-type: " + body.contentType()),
+                listener.onFailure(
+                        this,
+                        new IllegalStateException("Invalid content-type: " + body.contentType()),
                         response);
                 return;
             }

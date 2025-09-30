@@ -171,8 +171,10 @@ public class RecyclableBatchThreadPoolExecutor {
      * @param resultArr  结果存储数组
      * @throws RuntimeException 如果任务执行过程中发生异常
      */
-    private <R> void processRemainingTasks(final Queue<IdempotentTask<R>> taskQueue,
-            final Map<Integer, Future<TaskResult<R>>> futuresMap, final List<R>[] resultArr) {
+    private <R> void processRemainingTasks(
+            final Queue<IdempotentTask<R>> taskQueue,
+            final Map<Integer, Future<TaskResult<R>>> futuresMap,
+            final List<R>[] resultArr) {
         // 主线程消费未执行任务
         IdempotentTask<R> task;
         while ((task = taskQueue.poll()) != null) {
@@ -271,6 +273,7 @@ public class RecyclableBatchThreadPoolExecutor {
     private static <T> List<List<T>> splitData(final List<T> data, final int batchSize) {
         final int batchCount = (data.size() + batchSize - 1) / batchSize;
         return new AbstractList<>() {
+
             @Override
             public List<T> get(final int index) {
                 final int from = index * batchSize;

@@ -52,12 +52,14 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.MedComOOGType:
-            return VR.CS;
-        case PrivateTag.MedComOOGVersion:
-            return VR.LO;
-        case PrivateTag.MedComOOGInfo:
-            return VR.OB;
+            case PrivateTag.MedComOOGType:
+                return VR.CS;
+
+            case PrivateTag.MedComOOGVersion:
+                return VR.LO;
+
+            case PrivateTag.MedComOOGInfo:
+                return VR.OB;
         }
         return VR.UN;
     }

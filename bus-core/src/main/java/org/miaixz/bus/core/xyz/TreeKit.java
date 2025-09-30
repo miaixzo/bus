@@ -102,7 +102,9 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return {@link MapTree}
      */
-    public static <T, E> MapTree<E> buildSingle(final Iterable<T> list, final E parentId,
+    public static <T, E> MapTree<E> buildSingle(
+            final Iterable<T> list,
+            final E parentId,
             final NodeParser<T, E> nodeParser) {
         return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
     }
@@ -117,7 +119,9 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return List
      */
-    public static <T, E> List<MapTree<E>> build(final Iterable<T> list, final E parentId,
+    public static <T, E> List<MapTree<E>> build(
+            final Iterable<T> list,
+            final E parentId,
             final NodeParser<T, E> nodeParser) {
         return build(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
     }
@@ -133,7 +137,10 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return List
      */
-    public static <T, E> List<MapTree<E>> build(final Iterable<T> list, final E rootId, final NodeConfig NodeConfig,
+    public static <T, E> List<MapTree<E>> build(
+            final Iterable<T> list,
+            final E rootId,
+            final NodeConfig NodeConfig,
             final NodeParser<T, E> nodeParser) {
         return buildSingle(list, rootId, NodeConfig, nodeParser).getChildren();
     }
@@ -149,7 +156,10 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return {@link MapTree}
      */
-    public static <T, E> MapTree<E> buildSingle(final Iterable<T> list, final E rootId, final NodeConfig NodeConfig,
+    public static <T, E> MapTree<E> buildSingle(
+            final Iterable<T> list,
+            final E rootId,
+            final NodeConfig NodeConfig,
             final NodeParser<T, E> nodeParser) {
         return TreeBuilder.of(rootId, NodeConfig).append(list, nodeParser).build();
     }
@@ -249,7 +259,9 @@ public class TreeKit {
      * @param fieldFunc          获取父节点名称的函数
      * @return 所有父节点字段值列表，node为null返回空List
      */
-    public static <T, E> List<E> getParents(final MapTree<T> node, final boolean includeCurrentNode,
+    public static <T, E> List<E> getParents(
+            final MapTree<T> node,
+            final boolean includeCurrentNode,
             final Function<MapTree<T>, E> fieldFunc) {
         final List<E> result = new ArrayList<>();
         if (null == node) {

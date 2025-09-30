@@ -38,6 +38,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Callback;
 
 public class CoverTasks {
+
     /**
      * 任务监听接口
      *
@@ -107,7 +108,10 @@ public class CoverTasks {
             executor.execute(command);
         }
 
-        public void executeOnResponse(CoverHttp<?> task, Callback<CoverResult> onResponse, CoverResult result,
+        public void executeOnResponse(
+                CoverHttp<?> task,
+                Callback<CoverResult> onResponse,
+                CoverResult result,
                 boolean onIo) {
             if (null != responseListener) {
                 if (responseListener.listen(task, result) && null != onResponse) {
@@ -118,7 +122,10 @@ public class CoverTasks {
             }
         }
 
-        public boolean executeOnException(CoverHttp<?> task, Callback<IOException> onException, IOException error,
+        public boolean executeOnException(
+                CoverHttp<?> task,
+                Callback<IOException> onException,
+                IOException error,
                 boolean onIo) {
             if (null != exceptionListener) {
                 if (exceptionListener.listen(task, error) && null != onException) {
@@ -132,8 +139,11 @@ public class CoverTasks {
             return true;
         }
 
-        public void executeOnComplete(CoverHttp<?> task, Callback<CoverResult.State> onComplete,
-                CoverResult.State state, boolean onIo) {
+        public void executeOnComplete(
+                CoverHttp<?> task,
+                Callback<CoverResult.State> onComplete,
+                CoverResult.State state,
+                boolean onIo) {
             if (null != completeListener) {
                 if (completeListener.listen(task, state) && null != onComplete) {
                     execute(() -> onComplete.on(state), onIo);

@@ -48,6 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 17+
  */
 public enum ExcelPictureType {
+
     /**
      * Extended windows meta file
      */

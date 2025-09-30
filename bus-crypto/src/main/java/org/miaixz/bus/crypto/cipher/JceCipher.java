@@ -189,6 +189,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
      * JCE的{@link AlgorithmParameterSpec} 参数包装
      */
     public static class JceParameters implements Parameters {
+
         private final Key key;
         /**
          * 算法参数

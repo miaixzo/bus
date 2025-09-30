@@ -145,8 +145,11 @@ public class Builder {
     /**
      * Unicode BOM 标记
      */
-    private static final SegmentBuffer UNICODE_BOMS = SegmentBuffer.of(ByteString.decodeHex("efbbbf"),
-            ByteString.decodeHex("feff"), ByteString.decodeHex("fffe"), ByteString.decodeHex("0000ffff"),
+    private static final SegmentBuffer UNICODE_BOMS = SegmentBuffer.of(
+            ByteString.decodeHex("efbbbf"),
+            ByteString.decodeHex("feff"),
+            ByteString.decodeHex("fffe"),
+            ByteString.decodeHex("0000ffff"),
             ByteString.decodeHex("ffff0000"));
     /**
      * 异常抑制的反射方法
@@ -400,14 +403,15 @@ public class Builder {
     public static int skipLeadingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = pos; i < limit; i++) {
             switch (input.charAt(i)) {
-            case Symbol.C_HT:
-            case Symbol.C_LF:
-            case '\f':
-            case Symbol.C_CR:
-            case Symbol.C_SPACE:
-                continue;
-            default:
-                return i;
+                case Symbol.C_HT:
+                case Symbol.C_LF:
+                case '\f':
+                case Symbol.C_CR:
+                case Symbol.C_SPACE:
+                    continue;
+
+                default:
+                    return i;
             }
         }
         return limit;
@@ -424,14 +428,15 @@ public class Builder {
     public static int skipTrailingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = limit - 1; i >= pos; i--) {
             switch (input.charAt(i)) {
-            case Symbol.C_HT:
-            case Symbol.C_LF:
-            case '\f':
-            case Symbol.C_CR:
-            case Symbol.C_SPACE:
-                continue;
-            default:
-                return i + 1;
+                case Symbol.C_HT:
+                case Symbol.C_LF:
+                case '\f':
+                case Symbol.C_CR:
+                case Symbol.C_SPACE:
+                    continue;
+
+                default:
+                    return i + 1;
             }
         }
         return pos;
@@ -576,20 +581,26 @@ public class Builder {
      */
     public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {
         switch (source.select(UNICODE_BOMS)) {
-        case 0:
-            return org.miaixz.bus.core.lang.Charset.UTF_8;
-        case 1:
-            return org.miaixz.bus.core.lang.Charset.UTF_16_BE;
-        case 2:
-            return org.miaixz.bus.core.lang.Charset.UTF_16_LE;
-        case 3:
-            return org.miaixz.bus.core.lang.Charset.UTF_32_BE;
-        case 4:
-            return org.miaixz.bus.core.lang.Charset.UTF_32_LE;
-        case -1:
-            return charset;
-        default:
-            throw new AssertionError();
+            case 0:
+                return org.miaixz.bus.core.lang.Charset.UTF_8;
+
+            case 1:
+                return org.miaixz.bus.core.lang.Charset.UTF_16_BE;
+
+            case 2:
+                return org.miaixz.bus.core.lang.Charset.UTF_16_LE;
+
+            case 3:
+                return org.miaixz.bus.core.lang.Charset.UTF_32_BE;
+
+            case 4:
+                return org.miaixz.bus.core.lang.Charset.UTF_32_LE;
+
+            case -1:
+                return charset;
+
+            default:
+                throw new AssertionError();
         }
     }
 

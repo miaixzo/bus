@@ -67,14 +67,17 @@ public class JPEGImageWriteParam extends ImageWriteParam {
 
     public int getMode() {
         switch (compressionType.charAt(0)) {
-        case 'B':
-            return 0;
-        case 'E':
-            return 1;
-        case 'S':
-            return 2;
-        case 'P':
-            return 3;
+            case 'B':
+                return 0;
+
+            case 'E':
+                return 1;
+
+            case 'S':
+                return 2;
+
+            case 'P':
+                return 3;
         }
         return 4;
     }

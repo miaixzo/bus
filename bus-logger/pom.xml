@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-logger</artifactId>
-    <version>8.3.0</version>
+    <version>8.3.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,11 +85,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.0</bus.version>
+        <bus.version>8.3.1</bus.version>
         <commons.logging.version>1.3.5</commons.logging.version>
         <jboss.version>3.6.1.Final</jboss.version>
         <logback.version>1.5.18</logback.version>
-        <log4j.version>2.25.1</log4j.version>
+        <log4j.version>2.25.2</log4j.version>
         <slf4j.version>2.0.17</slf4j.version>
         <tinylog.version>2.7.0</tinylog.version>
     </properties>
@@ -194,7 +194,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.9.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -204,7 +204,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.46.1</version>
+                <version>3.0.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

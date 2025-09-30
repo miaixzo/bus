@@ -82,14 +82,27 @@ public class ImageReader extends javax.imageio.ImageReader {
     /**
      * 需要批量处理的DICOM标签集合
      */
-    public static Set<Integer> BULK_TAGS = Set.of(Tag.PixelDataProviderURL, Tag.AudioSampleData, Tag.CurveData,
-            Tag.SpectroscopyData, Tag.RedPaletteColorLookupTableData, Tag.GreenPaletteColorLookupTableData,
-            Tag.BluePaletteColorLookupTableData, Tag.AlphaPaletteColorLookupTableData,
-            Tag.LargeRedPaletteColorLookupTableData, Tag.LargeGreenPaletteColorLookupTableData,
-            Tag.LargeBluePaletteColorLookupTableData, Tag.SegmentedRedPaletteColorLookupTableData,
-            Tag.SegmentedGreenPaletteColorLookupTableData, Tag.SegmentedBluePaletteColorLookupTableData,
-            Tag.SegmentedAlphaPaletteColorLookupTableData, Tag.OverlayData, Tag.EncapsulatedDocument,
-            Tag.FloatPixelData, Tag.DoubleFloatPixelData, Tag.PixelData);
+    public static Set<Integer> BULK_TAGS = Set.of(
+            Tag.PixelDataProviderURL,
+            Tag.AudioSampleData,
+            Tag.CurveData,
+            Tag.SpectroscopyData,
+            Tag.RedPaletteColorLookupTableData,
+            Tag.GreenPaletteColorLookupTableData,
+            Tag.BluePaletteColorLookupTableData,
+            Tag.AlphaPaletteColorLookupTableData,
+            Tag.LargeRedPaletteColorLookupTableData,
+            Tag.LargeGreenPaletteColorLookupTableData,
+            Tag.LargeBluePaletteColorLookupTableData,
+            Tag.SegmentedRedPaletteColorLookupTableData,
+            Tag.SegmentedGreenPaletteColorLookupTableData,
+            Tag.SegmentedBluePaletteColorLookupTableData,
+            Tag.SegmentedAlphaPaletteColorLookupTableData,
+            Tag.OverlayData,
+            Tag.EncapsulatedDocument,
+            Tag.FloatPixelData,
+            Tag.DoubleFloatPixelData,
+            Tag.PixelData);
 
     /**
      * 批量数据描述符
@@ -105,8 +118,8 @@ public class ImageReader extends javax.imageio.ImageReader {
             return length > 1000; // 不将超过1KB的私有值读入内存
         }
         return switch (vr) {
-        case OB, OD, OF, OL, OW, UN -> length > 64;
-        default -> false;
+            case OB, OD, OF, OL, OW, UN -> length > 64;
+            default -> false;
         };
     };
 
@@ -191,23 +204,24 @@ public class ImageReader extends javax.imageio.ImageReader {
     private static boolean ybr2rgb(Photometric pmi, String tsuid, BooleanSupplier isYbrModel) {
         // 仅适用于IJG本地解码器的选项
         switch (pmi) {
-        case MONOCHROME1:
-        case MONOCHROME2:
-        case PALETTE_COLOR:
-        case YBR_ICT:
-        case YBR_RCT:
-            return false;
-        default:
-            break;
+            case MONOCHROME1:
+            case MONOCHROME2:
+            case PALETTE_COLOR:
+            case YBR_ICT:
+            case YBR_RCT:
+                return false;
+
+            default:
+                break;
         }
         return switch (UID.from(tsuid)) {
-        case UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012 -> {
-            if (pmi == Photometric.RGB) {
-                yield isYbrModel.getAsBoolean();
+            case UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012 -> {
+                if (pmi == Photometric.RGB) {
+                    yield isYbrModel.getAsBoolean();
+                }
+                yield true;
             }
-            yield true;
-        }
-        default -> pmi.name().startsWith("YBR");
+            default -> pmi.name().startsWith("YBR");
         };
     }
 
@@ -254,8 +268,8 @@ public class ImageReader extends javax.imageio.ImageReader {
      */
     public static boolean isSupportedSyntax(String uid) {
         return switch (UID.from(uid)) {
-        case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian, UID.RLELossless, UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012, UID.JPEGLossless, UID.JPEGLosslessSV1, UID.JPEGLSLossless, UID.JPEGLSNearLossless, UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC -> true;
-        default -> false;
+            case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian, UID.RLELossless, UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012, UID.JPEGLossless, UID.JPEGLosslessSV1, UID.JPEGLSLossless, UID.JPEGLSNearLossless, UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC -> true;
+            default -> false;
         };
     }
 
@@ -476,7 +490,11 @@ public class ImageReader extends javax.imageio.ImageReader {
      * @param param 图像读取参数
      * @return 如果需要转换返回true，否则返回false
      */
-    private boolean fileYbr2rgb(Photometric pmi, String tsuid, ExtendSegmentedInputImageStream seg, int frame,
+    private boolean fileYbr2rgb(
+            Photometric pmi,
+            String tsuid,
+            ExtendSegmentedInputImageStream seg,
+            int frame,
             ImageReadParam param) {
         BooleanSupplier isYbrModel = () -> {
             try (SeekableByteChannel channel = Files.newByteChannel(dis.getPath(), StandardOpenOption.READ)) {
@@ -518,13 +536,15 @@ public class ImageReader extends javax.imageio.ImageReader {
      * @param editor 图像编辑器
      * @return 延迟加载的平面图像供应者列表
      */
-    public List<SupplierEx<PlanarImage, IOException>> getLazyPlanarImages(ImageReadParam param,
+    public List<SupplierEx<PlanarImage, IOException>> getLazyPlanarImages(
+            ImageReadParam param,
             Editable<PlanarImage> editor) {
         int size = getImageDescriptor().getFrames();
         List<SupplierEx<PlanarImage, IOException>> suppliers = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             final int index = i;
             suppliers.add(new SupplierEx<>() {
+
                 boolean initialized;
 
                 @Override
@@ -685,7 +705,9 @@ public class ImageReader extends javax.imageio.ImageReader {
      * @param minMax    最小最大值结果
      * @return 重缩放斜率和截距对
      */
-    private static Pair<Double, Double> getRescaleSlopeAndIntercept(double slope, double intercept,
+    private static Pair<Double, Double> getRescaleSlopeAndIntercept(
+            double slope,
+            double intercept,
             Core.MinMaxLocResult minMax) {
         double min = minMax.minVal * slope + intercept;
         double max = minMax.maxVal * slope + intercept;
@@ -799,8 +821,13 @@ public class ImageReader extends javax.imageio.ImageReader {
                         Imgcodecs.dicomRawFileRead(seg.path().toString(), positions, lengths, dicomparams, pmi.name()));
                 return applyReleaseImageAfterProcessing(imageCV, param);
             }
-            ImageCV imageCV = ImageCV.toImageCV(Imgcodecs.dicomJpgFileRead(seg.path().toString(), positions, lengths,
-                    dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
+            ImageCV imageCV = ImageCV.toImageCV(
+                    Imgcodecs.dicomJpgFileRead(
+                            seg.path().toString(),
+                            positions,
+                            lengths,
+                            dcmFlags,
+                            Imgcodecs.IMREAD_UNCHANGED));
             return applyReleaseImageAfterProcessing(imageCV, param);
         } finally {
             closeMat(positions);
@@ -873,15 +900,17 @@ public class ImageReader extends javax.imageio.ImageReader {
      * @return 分段图像输入流
      * @throws IOException 如果发生I/O错误
      */
-    private ExtendSegmentedInputImageStream buildSegmentedImageInputStream(int frameIndex, Fragments fragments,
+    private ExtendSegmentedInputImageStream buildSegmentedImageInputStream(
+            int frameIndex,
+            Fragments fragments,
             BulkData bulkData) throws IOException {
         long[] offsets;
         int[] length;
         ImageDescriptor desc = getImageDescriptor();
         boolean hasFragments = fragments != null;
         if (!hasFragments && bulkData != null) {
-            int frameLength = desc.getPhotometricInterpretation().frameLength(desc.getColumns(), desc.getRows(),
-                    desc.getSamples(), desc.getBitsAllocated());
+            int frameLength = desc.getPhotometricInterpretation()
+                    .frameLength(desc.getColumns(), desc.getRows(), desc.getSamples(), desc.getBitsAllocated());
             offsets = new long[1];
             length = new int[offsets.length];
             offsets[0] = bulkData.offset() + (long) frameIndex * frameLength;
@@ -909,8 +938,8 @@ public class ImageReader extends javax.imageio.ImageReader {
                 } else {
                     // 多帧图像，每帧可以有多个片段。
                     if (fragmentsPositions.isEmpty()) {
-                        try (SeekableByteChannel channel = Files.newByteChannel(dis.getPath(),
-                                StandardOpenOption.READ)) {
+                        try (SeekableByteChannel channel = Files
+                                .newByteChannel(dis.getPath(), StandardOpenOption.READ)) {
                             for (int i = 1; i < nbFragments; i++) {
                                 BulkData b = (BulkData) fragments.get(i);
                                 channel.position(b.offset());

@@ -30,7 +30,6 @@ package org.miaixz.bus.pay.metric.wechat;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
@@ -47,6 +46,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.HTTP;
@@ -76,8 +76,10 @@ public class WechatPayBuilder {
     private static final int MAX_ENCRYPT_BLOCK = 117;
 
     public static Map<String, String> getBaseHeaders(String authorization) {
-        String userAgent = String.format("Wechatpay-Http/%s (%s) Java/%s",
-                WechatPayBuilder.class.getPackage().getImplementationVersion(), OS,
+        String userAgent = String.format(
+                "Wechatpay-Http/%s (%s) Java/%s",
+                WechatPayBuilder.class.getPackage().getImplementationVersion(),
+                OS,
                 VERSION == null ? "Unknown" : VERSION);
 
         Map<String, String> headers = new HashMap<>(5);
@@ -153,7 +155,10 @@ public class WechatPayBuilder {
      * @param signKey    签名字符
      * @return {boolean}
      */
-    public static boolean verifyNotify(Map<String, String> params, String partnerKey, Algorithm algorithm,
+    public static boolean verifyNotify(
+            Map<String, String> params,
+            String partnerKey,
+            Algorithm algorithm,
             String signKey) {
         if (StringKit.isEmpty(signKey)) {
             signKey = FIELD_SIGN;
@@ -208,7 +213,10 @@ public class WechatPayBuilder {
      * @param signKey    签名字符
      * @return 签名后的数据
      */
-    public static String createSign(Map<String, String> params, String partnerKey, Algorithm algorithm,
+    public static String createSign(
+            Map<String, String> params,
+            String partnerKey,
+            Algorithm algorithm,
             String signKey) {
         if (algorithm == null) {
             algorithm = Algorithm.MD5;
@@ -264,7 +272,10 @@ public class WechatPayBuilder {
      * @param haveSignType 签名是否包含 sign_type 字段
      * @return 签名后的 Map
      */
-    public static Map<String, String> buildSign(Map<String, String> params, String partnerKey, Algorithm algorithm,
+    public static Map<String, String> buildSign(
+            Map<String, String> params,
+            String partnerKey,
+            Algorithm algorithm,
             boolean haveSignType) {
         return buildSign(params, partnerKey, algorithm, null, null, haveSignType);
     }
@@ -280,8 +291,13 @@ public class WechatPayBuilder {
      * @param haveSignType 签名是否包含签名类型字符串
      * @return 签名后的 Map
      */
-    public static Map<String, String> buildSign(Map<String, String> params, String partnerKey, Algorithm algorithm,
-            String signKey, String signTypeKey, boolean haveSignType) {
+    public static Map<String, String> buildSign(
+            Map<String, String> params,
+            String partnerKey,
+            Algorithm algorithm,
+            String signKey,
+            String signTypeKey,
+            boolean haveSignType) {
         if (StringKit.isEmpty(signKey)) {
             signKey = FIELD_SIGN;
         }
@@ -316,7 +332,12 @@ public class WechatPayBuilder {
      * @param nonceStr  随机字符串
      * @return {String}
      */
-    public static String bizPayUrl(String sign, String appId, String mchId, String productId, String timeStamp,
+    public static String bizPayUrl(
+            String sign,
+            String appId,
+            String mchId,
+            String productId,
+            String timeStamp,
             String nonceStr) {
         String rules = "weixin://wxpay/bizpayurl?sign=Temp&appid=Temp&mch_id=Temp&product_id=Temp&time_stamp=Temp&nonce_str=Temp";
         return replace(rules, "Temp", sign, appId, mchId, productId, timeStamp, nonceStr);
@@ -339,12 +360,19 @@ public class WechatPayBuilder {
      * @param algorithm  签名类型
      * @return {String}
      */
-    public static String bizPayUrl(String partnerKey, String appId, String mchId, String productId, String timeStamp,
-            String nonceStr, Algorithm algorithm) {
+    public static String bizPayUrl(
+            String partnerKey,
+            String appId,
+            String mchId,
+            String productId,
+            String timeStamp,
+            String nonceStr,
+            Algorithm algorithm) {
         HashMap<String, String> map = new HashMap<>(5);
         map.put("appid", appId);
         map.put("mch_id", mchId);
-        map.put("time_stamp",
+        map.put(
+                "time_stamp",
                 StringKit.isEmpty(timeStamp) ? Long.toString(System.currentTimeMillis() / 1000) : timeStamp);
         map.put("nonce_str", StringKit.isEmpty(nonceStr) ? String.valueOf(DateKit.current()) : nonceStr);
         map.put("product_id", productId);
@@ -416,7 +444,10 @@ public class WechatPayBuilder {
      * @param algorithm  签名方式
      * @return 再次签名后的 Map
      */
-    public static Map<String, String> prepayIdCreateSign(String prepayId, String appId, String partnerKey,
+    public static Map<String, String> prepayIdCreateSign(
+            String prepayId,
+            String appId,
+            String partnerKey,
             Algorithm algorithm) {
         Map<String, String> packageParams = new HashMap<>(6);
         packageParams.put("appId", appId);
@@ -490,8 +521,12 @@ public class WechatPayBuilder {
      * @param algorithm  签名方式
      * @return 再次签名后的 Map
      */
-    public static Map<String, String> appPrepayIdCreateSign(String appId, String partnerId, String prepayId,
-            String partnerKey, Algorithm algorithm) {
+    public static Map<String, String> appPrepayIdCreateSign(
+            String appId,
+            String partnerId,
+            String prepayId,
+            String partnerKey,
+            Algorithm algorithm) {
         Map<String, String> packageParams = new HashMap<>(8);
         packageParams.put("appid", appId);
         packageParams.put("partnerid", partnerId);
@@ -532,7 +567,10 @@ public class WechatPayBuilder {
      * @return 唤起支付需要的参数
      * @throws Exception 错误信息
      */
-    public static Map<String, String> appCreateSign(String appId, String partnerId, String prepayId,
+    public static Map<String, String> appCreateSign(
+            String appId,
+            String partnerId,
+            String prepayId,
             PrivateKey privateKey) throws Exception {
         String timeStamp = String.valueOf(System.currentTimeMillis() / 1000);
         String nonceStr = String.valueOf(System.currentTimeMillis());
@@ -568,7 +606,10 @@ public class WechatPayBuilder {
      * @param algorithm  签名方式
      * @return 再次签名后的 Map
      */
-    public static Map<String, String> miniAppPrepayIdCreateSign(String appId, String prepayId, String partnerKey,
+    public static Map<String, String> miniAppPrepayIdCreateSign(
+            String appId,
+            String prepayId,
+            String partnerKey,
             Algorithm algorithm) {
         Map<String, String> packageParams = new HashMap<>(6);
         packageParams.put("appId", appId);
@@ -599,8 +640,16 @@ public class WechatPayBuilder {
      * @return {@link String} 返回 v3 所需的 Authorization
      * @throws Exception 异常信息
      */
-    public static String buildAuthorization(String method, String urlSuffix, String mchId, String serialNo,
-            String keyPath, String body, String nonceStr, long timestamp, String authType) throws Exception {
+    public static String buildAuthorization(
+            String method,
+            String urlSuffix,
+            String mchId,
+            String serialNo,
+            String keyPath,
+            String body,
+            String nonceStr,
+            long timestamp,
+            String authType) throws Exception {
         // 构建签名参数
         String buildSignMessage = Builder.buildSignMessage(method, urlSuffix, timestamp, nonceStr, body);
         String signature = Builder.createSign(buildSignMessage, keyPath, authType);
@@ -623,8 +672,16 @@ public class WechatPayBuilder {
      * @return {@link String} 返回 v3 所需的 Authorization
      * @throws Exception 异常信息
      */
-    public static String buildAuthorization(String method, String urlSuffix, String mchId, String serialNo,
-            PrivateKey privateKey, String body, String nonceStr, long timestamp, String authType) throws Exception {
+    public static String buildAuthorization(
+            String method,
+            String urlSuffix,
+            String mchId,
+            String serialNo,
+            PrivateKey privateKey,
+            String body,
+            String nonceStr,
+            long timestamp,
+            String authType) throws Exception {
         // 构建签名参数
         String buildSignMessage = Builder.buildSignMessage(method, urlSuffix, timestamp, nonceStr, body);
         String signature = Builder.createSign(buildSignMessage, privateKey);
@@ -644,10 +701,23 @@ public class WechatPayBuilder {
      * @return {@link String} 返回 v3 所需的 Authorization
      * @throws Exception 异常信息
      */
-    public static String buildAuthorization(String method, String urlSuffix, String mchId, String serialNo,
-            String keyPath, String body) throws Exception {
-        return buildAuthorization(method, urlSuffix, mchId, serialNo, keyPath, body, String.valueOf(DateKit.current()),
-                DateKit.current() / 1000, AuthType.RSA.getCode());
+    public static String buildAuthorization(
+            String method,
+            String urlSuffix,
+            String mchId,
+            String serialNo,
+            String keyPath,
+            String body) throws Exception {
+        return buildAuthorization(
+                method,
+                urlSuffix,
+                mchId,
+                serialNo,
+                keyPath,
+                body,
+                String.valueOf(DateKit.current()),
+                DateKit.current() / 1000,
+                AuthType.RSA.getCode());
     }
 
     /**
@@ -662,10 +732,23 @@ public class WechatPayBuilder {
      * @return {@link String} 返回 v3 所需的 Authorization
      * @throws Exception 异常信息
      */
-    public static String buildAuthorization(String method, String urlSuffix, String mchId, String serialNo,
-            PrivateKey privateKey, String body) throws Exception {
-        return buildAuthorization(method, urlSuffix, mchId, serialNo, privateKey, body,
-                String.valueOf(DateKit.current()), DateKit.current() / 1000, AuthType.RSA.getCode());
+    public static String buildAuthorization(
+            String method,
+            String urlSuffix,
+            String mchId,
+            String serialNo,
+            PrivateKey privateKey,
+            String body) throws Exception {
+        return buildAuthorization(
+                method,
+                urlSuffix,
+                mchId,
+                serialNo,
+                privateKey,
+                body,
+                String.valueOf(DateKit.current()),
+                DateKit.current() / 1000,
+                AuthType.RSA.getCode());
     }
 
     /**
@@ -687,7 +770,12 @@ public class WechatPayBuilder {
         Logger.info("signature:" + signature);
         Logger.info("signatureType:" + signatureType);
         Logger.info("body:" + body);
-        return verifySignature(signatureType, signature, body, nonceStr, timestamp,
+        return verifySignature(
+                signatureType,
+                signature,
+                body,
+                nonceStr,
+                timestamp,
                 Builder.getCertFileInputStream(certPath));
     }
 
@@ -719,7 +807,11 @@ public class WechatPayBuilder {
      * @return 签名结果
      * @throws Exception 异常信息
      */
-    public static boolean verifySignature(String signature, String body, String nonce, String timestamp,
+    public static boolean verifySignature(
+            String signature,
+            String body,
+            String nonce,
+            String timestamp,
             String publicKey) throws Exception {
         String buildSignMessage = Builder.buildSignMessage(timestamp, nonce, body);
         return checkByPublicKey(buildSignMessage, signature, publicKey);
@@ -736,7 +828,11 @@ public class WechatPayBuilder {
      * @return 签名结果
      * @throws Exception 异常信息
      */
-    public static boolean verifySignature(String signature, String body, String nonce, String timestamp,
+    public static boolean verifySignature(
+            String signature,
+            String body,
+            String nonce,
+            String timestamp,
             PublicKey publicKey) throws Exception {
         String buildSignMessage = Builder.buildSignMessage(timestamp, nonce, body);
         return checkByPublicKey(buildSignMessage, signature, publicKey);
@@ -754,8 +850,13 @@ public class WechatPayBuilder {
      * @return 签名结果
      * @throws Exception 异常信息
      */
-    public static boolean verifySignature(String signatureType, String signature, String body, String nonce,
-            String timestamp, InputStream certInputStream) throws Exception {
+    public static boolean verifySignature(
+            String signatureType,
+            String signature,
+            String body,
+            String nonce,
+            String timestamp,
+            InputStream certInputStream) throws Exception {
         String buildSignMessage = Builder.buildSignMessage(timestamp, nonce, body);
         // 获取证书
         X509Certificate certificate = Builder.getCertificate(certInputStream);
@@ -779,15 +880,21 @@ public class WechatPayBuilder {
      * @return 异步通知明文
      * @throws Exception 异常信息
      */
-    public static String verifyNotify(String serialNo, String body, String signature, String nonce, String timestamp,
-            String key, InputStream certInputStream) throws Exception {
+    public static String verifyNotify(
+            String serialNo,
+            String body,
+            String signature,
+            String nonce,
+            String timestamp,
+            String key,
+            InputStream certInputStream) throws Exception {
         // 获取平台证书序列号
         X509Certificate certificate = Builder.getCertificate(certInputStream);
         String serialNumber = certificate.getSerialNumber().toString(16).toUpperCase();
         // 验证证书序列号
         if (serialNumber.equals(serialNo)) {
-            boolean verifySignature = WechatPayBuilder.verifySignature(signature, body, nonce, timestamp,
-                    certificate.getPublicKey());
+            boolean verifySignature = WechatPayBuilder
+                    .verifySignature(signature, body, nonce, timestamp, certificate.getPublicKey());
             if (verifySignature) {
                 String json = JsonKit.toJsonString(body);
                 String resource = JsonKit.getValue(json, "resource");
@@ -797,8 +904,10 @@ public class WechatPayBuilder {
                 String associatedData = JsonKit.getValue(resource, "associated_data");
 
                 // 密文解密
-                return decryptToString(key.getBytes(StandardCharsets.UTF_8),
-                        associatedData.getBytes(StandardCharsets.UTF_8), nonceStr.getBytes(StandardCharsets.UTF_8),
+                return decryptToString(
+                        key.getBytes(Charset.UTF_8),
+                        associatedData.getBytes(Charset.UTF_8),
+                        nonceStr.getBytes(Charset.UTF_8),
                         cipherText);
             } else {
                 throw new Exception("签名错误");
@@ -821,8 +930,14 @@ public class WechatPayBuilder {
      * @return 异步通知明文
      * @throws Exception 异常信息
      */
-    public static String verifyNotify(String serialNo, String body, String signature, String nonce, String timestamp,
-            String key, String certPath) throws Exception {
+    public static String verifyNotify(
+            String serialNo,
+            String body,
+            String signature,
+            String nonce,
+            String timestamp,
+            String key,
+            String certPath) throws Exception {
         InputStream inputStream = Builder.getCertFileInputStream(certPath);
         return verifyNotify(serialNo, body, signature, nonce, timestamp, key, inputStream);
     }
@@ -922,7 +1037,7 @@ public class WechatPayBuilder {
      * @throws Exception 异常信息
      */
     public static String encryptByPublicKey(String data, String publicKey, String fillMode) throws Exception {
-        byte[] dataByte = data.getBytes(StandardCharsets.UTF_8);
+        byte[] dataByte = data.getBytes(Charset.UTF_8);
         byte[] keyBytes = Base64.decode(publicKey);
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(Algorithm.RSA.getValue());
@@ -966,7 +1081,7 @@ public class WechatPayBuilder {
         Signature signature = Signature.getInstance("SHA256WithRSA");
 
         signature.initSign(priKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
+        signature.update(data.getBytes(Charset.UTF_8));
         byte[] signed = signature.sign();
         return StringKit.toString(Base64.encode(signed));
     }
@@ -982,7 +1097,7 @@ public class WechatPayBuilder {
     public static String encryptByPrivateKey(String data, PrivateKey privateKey) throws Exception {
         Signature signature = Signature.getInstance("SHA256WithRSA");
         signature.initSign(privateKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
+        signature.update(data.getBytes(Charset.UTF_8));
         byte[] signed = signature.sign();
         return StringKit.toString(Base64.encode(signed));
     }
@@ -1002,8 +1117,8 @@ public class WechatPayBuilder {
         PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
         Signature signature = Signature.getInstance("SHA256WithRSA");
         signature.initVerify(pubKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
-        return signature.verify(Base64.decode(sign.getBytes(StandardCharsets.UTF_8)));
+        signature.update(data.getBytes(Charset.UTF_8));
+        return signature.verify(Base64.decode(sign.getBytes(Charset.UTF_8)));
     }
 
     /**
@@ -1018,8 +1133,8 @@ public class WechatPayBuilder {
     public static boolean checkByPublicKey(String data, String sign, PublicKey publicKey) throws Exception {
         Signature signature = Signature.getInstance("SHA256WithRSA");
         signature.initVerify(publicKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
-        return signature.verify(Base64.decode(sign.getBytes(StandardCharsets.UTF_8)));
+        signature.update(data.getBytes(Charset.UTF_8));
+        return signature.verify(Base64.decode(sign.getBytes(Charset.UTF_8)));
     }
 
     /**
@@ -1148,7 +1263,7 @@ public class WechatPayBuilder {
             cipher.init(Cipher.DECRYPT_MODE, aesKey, spec);
             cipher.updateAAD(associatedData);
 
-            return new String(cipher.doFinal(Base64.decode(cipherText)), StandardCharsets.UTF_8);
+            return new String(cipher.doFinal(Base64.decode(cipherText)), Charset.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new IllegalStateException(e);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {

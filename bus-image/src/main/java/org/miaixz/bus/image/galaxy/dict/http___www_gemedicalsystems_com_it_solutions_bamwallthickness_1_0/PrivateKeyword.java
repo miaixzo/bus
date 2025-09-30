@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.BAMWallThicknessSessionDateTime:
-            return "BAMWallThicknessSessionDateTime";
-        case PrivateTag.BAMWallThicknessSessionCreator:
-            return "BAMWallThicknessSessionCreator";
-        case PrivateTag.BAMWallThicknessSessionCompletionFlag:
-            return "BAMWallThicknessSessionCompletionFlag";
-        case PrivateTag.BAMWallThicknessFileSequence:
-            return "BAMWallThicknessFileSequence";
-        case PrivateTag.BAMWallThicknessFileName:
-            return "BAMWallThicknessFileName";
-        case PrivateTag.BAMWallThicknessFileContent:
-            return "BAMWallThicknessFileContent";
+            case PrivateTag.BAMWallThicknessSessionDateTime:
+                return "BAMWallThicknessSessionDateTime";
+
+            case PrivateTag.BAMWallThicknessSessionCreator:
+                return "BAMWallThicknessSessionCreator";
+
+            case PrivateTag.BAMWallThicknessSessionCompletionFlag:
+                return "BAMWallThicknessSessionCompletionFlag";
+
+            case PrivateTag.BAMWallThicknessFileSequence:
+                return "BAMWallThicknessFileSequence";
+
+            case PrivateTag.BAMWallThicknessFileName:
+                return "BAMWallThicknessFileName";
+
+            case PrivateTag.BAMWallThicknessFileContent:
+                return "BAMWallThicknessFileContent";
         }
         return "";
     }

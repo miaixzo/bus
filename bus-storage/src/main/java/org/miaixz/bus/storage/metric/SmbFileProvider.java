@@ -157,8 +157,13 @@ public class SmbFileProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
 
-            com.hierynomus.smbj.share.File smbFile = share.openFile(objectKey, EnumSet.of(AccessMask.GENERIC_READ),
-                    null, SMB2ShareAccess.ALL, SMB2CreateDisposition.FILE_OPEN, null);
+            com.hierynomus.smbj.share.File smbFile = share.openFile(
+                    objectKey,
+                    EnumSet.of(AccessMask.GENERIC_READ),
+                    null,
+                    SMB2ShareAccess.ALL,
+                    SMB2CreateDisposition.FILE_OPEN,
+                    null);
 
             InputStream inputStream = smbFile.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -199,8 +204,13 @@ public class SmbFileProvider extends AbstractProvider {
                 return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
             }
 
-            com.hierynomus.smbj.share.File smbFile = share.openFile(objectKey, EnumSet.of(AccessMask.GENERIC_READ),
-                    null, SMB2ShareAccess.ALL, SMB2CreateDisposition.FILE_OPEN, null);
+            com.hierynomus.smbj.share.File smbFile = share.openFile(
+                    objectKey,
+                    EnumSet.of(AccessMask.GENERIC_READ),
+                    null,
+                    SMB2ShareAccess.ALL,
+                    SMB2CreateDisposition.FILE_OPEN,
+                    null);
 
             try (InputStream inputStream = smbFile.getInputStream()) {
                 byte[] buffer = new byte[4096];
@@ -212,8 +222,13 @@ public class SmbFileProvider extends AbstractProvider {
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {} to local file: {}. Error: {}", fileName, bucket,
-                    file.getAbsolutePath(), e.getMessage(), e);
+            Logger.error(
+                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    file.getAbsolutePath(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -288,9 +303,13 @@ public class SmbFileProvider extends AbstractProvider {
 
             // 使用 smbj 的正确方式重命名文件
             // 1. 打开文件
-            DiskEntry diskEntry = share.open(oldObjectKey, EnumSet.of(AccessMask.GENERIC_WRITE, AccessMask.DELETE),
-                    EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL), SMB2ShareAccess.ALL,
-                    SMB2CreateDisposition.FILE_OPEN, EnumSet.of(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE));
+            DiskEntry diskEntry = share.open(
+                    oldObjectKey,
+                    EnumSet.of(AccessMask.GENERIC_WRITE, AccessMask.DELETE),
+                    EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
+                    SMB2ShareAccess.ALL,
+                    SMB2CreateDisposition.FILE_OPEN,
+                    EnumSet.of(SMB2CreateOptions.FILE_NON_DIRECTORY_FILE));
 
             try {
                 // 2. 设置重命名信息 - 修正构造函数参数顺序
@@ -308,8 +327,14 @@ public class SmbFileProvider extends AbstractProvider {
                 diskEntry.close();
             }
         } catch (Exception e) {
-            Logger.error("Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}", oldName, newName,
-                    bucket, path, e.getMessage(), e);
+            Logger.error(
+                    "Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}",
+                    oldName,
+                    newName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -396,8 +421,13 @@ public class SmbFileProvider extends AbstractProvider {
             // 确保目录存在
             ensureDirectoryExists(dirPath);
 
-            com.hierynomus.smbj.share.File smbFile = share.openFile(objectKey, EnumSet.of(AccessMask.GENERIC_WRITE),
-                    null, SMB2ShareAccess.ALL, SMB2CreateDisposition.FILE_OVERWRITE_IF, null);
+            com.hierynomus.smbj.share.File smbFile = share.openFile(
+                    objectKey,
+                    EnumSet.of(AccessMask.GENERIC_WRITE),
+                    null,
+                    SMB2ShareAccess.ALL,
+                    SMB2CreateDisposition.FILE_OVERWRITE_IF,
+                    null);
 
             try (OutputStream outputStream = smbFile.getOutputStream()) {
                 byte[] buffer = new byte[4096];
@@ -410,8 +440,13 @@ public class SmbFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
-            Logger.error("Failed to upload file: {} to bucket: {} path: {}. Error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -456,8 +491,13 @@ public class SmbFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to remove file: {} from bucket: {} path: {}. Error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to remove file: {} from bucket: {} path: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }

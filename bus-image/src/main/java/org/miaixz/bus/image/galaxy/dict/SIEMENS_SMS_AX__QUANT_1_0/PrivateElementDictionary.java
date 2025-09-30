@@ -52,19 +52,22 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.HorizontalCalibrationPixelSize:
-        case PrivateTag.VerticalCalibrationPixelSize:
-        case PrivateTag.CalibrationObjectSize:
-            return VR.DS;
-        case PrivateTag.FrameNumber:
-        case PrivateTag.CalibrationFactorMultiplicity:
-        case PrivateTag.CalibrationTableObjectDistance:
-            return VR.IS;
-        case PrivateTag.CalibrationObject:
-        case PrivateTag.CalibrationMethod:
-            return VR.LO;
-        case PrivateTag.Filename:
-            return VR.ST;
+            case PrivateTag.HorizontalCalibrationPixelSize:
+            case PrivateTag.VerticalCalibrationPixelSize:
+            case PrivateTag.CalibrationObjectSize:
+                return VR.DS;
+
+            case PrivateTag.FrameNumber:
+            case PrivateTag.CalibrationFactorMultiplicity:
+            case PrivateTag.CalibrationTableObjectDistance:
+                return VR.IS;
+
+            case PrivateTag.CalibrationObject:
+            case PrivateTag.CalibrationMethod:
+                return VR.LO;
+
+            case PrivateTag.Filename:
+                return VR.ST;
         }
         return VR.UN;
     }

@@ -106,8 +106,13 @@ public class EnvironmentsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Environment getEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "environments", environmentId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "environments",
+                environmentId);
         return (response.readEntity(Environment.class));
     }
 
@@ -148,7 +153,11 @@ public class EnvironmentsApi extends AbstractApi {
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("external_url", externalUrl).withParam("tier", tier);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "environments");
         return (response.readEntity(Environment.class));
     }
@@ -168,12 +177,22 @@ public class EnvironmentsApi extends AbstractApi {
      * @return the created Environment instance
      * @throws GitLabApiException if any exception occurs
      */
-    public Environment updateEnvironment(Object projectIdOrPath, Long environmentId, String name, String externalUrl,
+    public Environment updateEnvironment(
+            Object projectIdOrPath,
+            Long environmentId,
+            String name,
+            String externalUrl,
             String tier) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name).withParam("external_url", externalUrl)
                 .withParam("tier", tier);
-        Response response = putWithFormData(Response.Status.OK, formData, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "environments", environmentId);
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "environments",
+                environmentId);
         return (response.readEntity(Environment.class));
     }
 
@@ -190,8 +209,14 @@ public class EnvironmentsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Environment stopEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
-        Response response = post(Response.Status.OK, (GitLabApiForm) null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "environments", environmentId, "stop");
+        Response response = post(
+                Response.Status.OK,
+                (GitLabApiForm) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "environments",
+                environmentId,
+                "stop");
         return (response.readEntity(Environment.class));
     }
 
@@ -207,7 +232,12 @@ public class EnvironmentsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "environments",
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "environments",
                 environmentId);
     }
 
@@ -225,8 +255,14 @@ public class EnvironmentsApi extends AbstractApi {
      */
     public Environment createEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm();
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
-                "environments", environmentId, "stop");
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "environments",
+                environmentId,
+                "stop");
         return (response.readEntity(Environment.class));
     }
 

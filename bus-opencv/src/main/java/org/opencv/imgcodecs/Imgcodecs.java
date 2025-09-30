@@ -252,7 +252,11 @@ public class Imgcodecs {
      * @param flags       Flag that can take values of cv::ImreadModes.
      * @return automatically generated
      */
-    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, int dicomflags,
+    public static Mat dicomJpgFileRead(
+            String filename,
+            MatOfDouble segposition,
+            MatOfDouble seglength,
+            int dicomflags,
             int flags) {
         Mat segposition_mat = segposition;
         Mat seglength_mat = seglength;
@@ -272,7 +276,10 @@ public class Imgcodecs {
      *                    grfmt_dcm_dicom.hpp.
      * @return automatically generated
      */
-    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength,
+    public static Mat dicomJpgFileRead(
+            String filename,
+            MatOfDouble segposition,
+            MatOfDouble seglength,
             int dicomflags) {
         Mat segposition_mat = segposition;
         Mat seglength_mat = seglength;
@@ -357,13 +364,21 @@ public class Imgcodecs {
      * @param dicomparams automatically generated
      * @return automatically generated
      */
-    public static Mat dicomRawFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength,
-            MatOfInt dicomparams, String colormodel) {
+    public static Mat dicomRawFileRead(
+            String filename,
+            MatOfDouble segposition,
+            MatOfDouble seglength,
+            MatOfInt dicomparams,
+            String colormodel) {
         Mat segposition_mat = segposition;
         Mat seglength_mat = seglength;
         Mat dicomparams_mat = dicomparams;
-        return new Mat(dicomRawFileRead_0(filename, segposition_mat.nativeObj, seglength_mat.nativeObj,
-                dicomparams_mat.nativeObj, colormodel));
+        return new Mat(dicomRawFileRead_0(
+                filename,
+                segposition_mat.nativeObj,
+                seglength_mat.nativeObj,
+                dicomparams_mat.nativeObj,
+                colormodel));
     }
 
     //
@@ -786,13 +801,22 @@ public class Imgcodecs {
 
     // C++: Mat cv::dicomJpgFileRead(String filename, vector_double segposition, vector_double seglength, int dicomflags
     // = 0, int flags = IMREAD_UNCHANGED)
-    private static native long dicomJpgFileRead_0(String filename, long segposition_mat_nativeObj,
-            long seglength_mat_nativeObj, int dicomflags, int flags);
+    private static native long dicomJpgFileRead_0(
+            String filename,
+            long segposition_mat_nativeObj,
+            long seglength_mat_nativeObj,
+            int dicomflags,
+            int flags);
 
-    private static native long dicomJpgFileRead_1(String filename, long segposition_mat_nativeObj,
-            long seglength_mat_nativeObj, int dicomflags);
+    private static native long dicomJpgFileRead_1(
+            String filename,
+            long segposition_mat_nativeObj,
+            long seglength_mat_nativeObj,
+            int dicomflags);
 
-    private static native long dicomJpgFileRead_2(String filename, long segposition_mat_nativeObj,
+    private static native long dicomJpgFileRead_2(
+            String filename,
+            long segposition_mat_nativeObj,
             long seglength_mat_nativeObj);
 
     // C++: Mat cv::dicomJpgMatRead(Mat buf, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
@@ -804,8 +828,12 @@ public class Imgcodecs {
 
     // C++: Mat cv::dicomRawFileRead(String filename, vector_double segposition, vector_double seglength, vector_int
     // dicomparams, String colormodel)
-    private static native long dicomRawFileRead_0(String filename, long segposition_mat_nativeObj,
-            long seglength_mat_nativeObj, long dicomparams_mat_nativeObj, String colormodel);
+    private static native long dicomRawFileRead_0(
+            String filename,
+            long segposition_mat_nativeObj,
+            long seglength_mat_nativeObj,
+            long dicomparams_mat_nativeObj,
+            String colormodel);
 
     // C++: Mat cv::dicomRawMatRead(Mat buf, vector_int dicomParams, String colormodel)
     private static native long dicomRawMatRead_0(long buf_nativeObj, long dicomParams_mat_nativeObj, String colormodel);
@@ -819,7 +847,11 @@ public class Imgcodecs {
     private static native boolean imreadmulti_1(String filename, long mats_mat_nativeObj);
 
     // C++: bool cv::imreadmulti(String filename, vector_Mat& mats, int start, int count, int flags = IMREAD_ANYCOLOR)
-    private static native boolean imreadmulti_2(String filename, long mats_mat_nativeObj, int start, int count,
+    private static native boolean imreadmulti_2(
+            String filename,
+            long mats_mat_nativeObj,
+            int start,
+            int count,
             int flags);
 
     private static native boolean imreadmulti_3(String filename, long mats_mat_nativeObj, int start, int count);
@@ -843,13 +875,20 @@ public class Imgcodecs {
     private static native long imdecode_0(long buf_nativeObj, int flags);
 
     // C++: bool cv::imdecodemulti(Mat buf, int flags, vector_Mat& mats, Range range = Range::all())
-    private static native boolean imdecodemulti_0(long buf_nativeObj, int flags, long mats_mat_nativeObj,
-            int range_start, int range_end);
+    private static native boolean imdecodemulti_0(
+            long buf_nativeObj,
+            int flags,
+            long mats_mat_nativeObj,
+            int range_start,
+            int range_end);
 
     private static native boolean imdecodemulti_1(long buf_nativeObj, int flags, long mats_mat_nativeObj);
 
     // C++: bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
-    private static native boolean imencode_0(String ext, long img_nativeObj, long buf_mat_nativeObj,
+    private static native boolean imencode_0(
+            String ext,
+            long img_nativeObj,
+            long buf_mat_nativeObj,
             long params_mat_nativeObj);
 
     private static native boolean imencode_1(String ext, long img_nativeObj, long buf_mat_nativeObj);

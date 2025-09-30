@@ -65,24 +65,29 @@ final class MacNetworkParams extends AbstractNetworkParams {
         String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
+            if (hostname == null || hostname.isEmpty()) {
+                Logger.debug("Could not determine hostname");
+                return Normal.EMPTY;
+            }
         } catch (UnknownHostException e) {
-            Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
+            Logger.debug("Unknown host exception when getting address of local host: {}", e.getMessage());
             return Normal.EMPTY;
         }
         try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
                 ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
             hint.ai_flags = CLibrary.AI_CANONNAME;
             int res = SYS.getaddrinfo(hostname, null, hint, ptr);
-            if (res > 0) {
-                if (Logger.isErrorEnabled()) {
-                    Logger.error("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
+            if (res != 0) {
+                if (Logger.isDebugEnabled()) {
+                    Logger.debug("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
                 }
                 return Normal.EMPTY;
             }
-            CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue()); // NOSONAR
-            String canonname = info.ai_canonname.trim();
-            SYS.freeaddrinfo(ptr.getValue());
-            return canonname;
+            try (CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue())) {
+                String canonname = info.ai_canonname.trim();
+                SYS.freeaddrinfo(ptr.getValue());
+                return canonname;
+            }
         }
     }
 

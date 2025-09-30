@@ -84,8 +84,10 @@ public class HealthConfiguration {
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
-    public HealthService healthProviderService(ApplicationEventPublisher publisher,
-            ApplicationAvailability availability, Provider provider) {
+    public HealthService healthProviderService(
+            ApplicationEventPublisher publisher,
+            ApplicationAvailability availability,
+            Provider provider) {
         return new HealthService(properties, provider, publisher, availability);
     }
 
@@ -133,7 +135,9 @@ public class HealthConfiguration {
             // 注册/healthz端点（支持GET和POST）
             RequestMappingInfo healthzMapping = RequestMappingInfo.paths("/healthz")
                     .methods(RequestMethod.GET, RequestMethod.POST).build();
-            handlerMapping.registerMapping(healthzMapping, controller,
+            handlerMapping.registerMapping(
+                    healthzMapping,
+                    controller,
                     HealthController.class.getMethod("healthz", String.class));
 
             // 注册/broken端点
@@ -167,6 +171,7 @@ public class HealthConfiguration {
      * 条件类：检查是否应用了 @EnableHealth 注解
      */
     static class EnableHealthCondition implements Condition {
+
         /**
          * 检查 Spring 上下文中是否存在 @EnableHealth 注解的 Bean
          *

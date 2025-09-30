@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.OsteoContourComment:
-            return "OsteoContourComment";
-        case PrivateTag.OsteoContourBuffer:
-            return "OsteoContourBuffer";
+            case PrivateTag.OsteoContourComment:
+                return "OsteoContourComment";
+
+            case PrivateTag.OsteoContourBuffer:
+                return "OsteoContourBuffer";
         }
         return "";
     }

@@ -397,6 +397,7 @@ public class BulkData implements Value, Serializable {
      */
     @FunctionalInterface
     public interface Creator {
+
         /**
          * 创建BulkData对象
          *

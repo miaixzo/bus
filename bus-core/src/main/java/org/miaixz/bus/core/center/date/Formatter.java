@@ -220,8 +220,8 @@ public class Formatter {
     /**
      * HTTP头中日期时间格式 {@link FormatBuilder}：EEE, dd MMM yyyy HH:mm:ss GMT
      */
-    public static final FormatBuilder HTTP_DATETIME_FORMAT_GMT = FormatBuilder.getInstance(Fields.HTTP_DATETIME,
-            TimeZone.getTimeZone("GMT"), Locale.US);
+    public static final FormatBuilder HTTP_DATETIME_FORMAT_GMT = FormatBuilder
+            .getInstance(Fields.HTTP_DATETIME, TimeZone.getTimeZone("GMT"), Locale.US);
     /**
      * HTTP头中日期时间格式 {@link FormatBuilder}：EEE, dd MMM yyyy HH:mm:ss z
      */
@@ -483,7 +483,10 @@ public class Formatter {
      * @param lenient  是否宽松模式
      * @return {@link SimpleDateFormat}
      */
-    public static SimpleDateFormat newSimpleFormat(final String pattern, Locale locale, final TimeZone timeZone,
+    public static SimpleDateFormat newSimpleFormat(
+            final String pattern,
+            Locale locale,
+            final TimeZone timeZone,
             final boolean lenient) {
         if (null == locale) {
             locale = Locale.getDefault(Locale.Category.FORMAT);

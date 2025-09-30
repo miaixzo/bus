@@ -741,12 +741,13 @@ public class SM2 extends AbstractCrypto<SM2> {
      */
     private CipherParameters getCipherParameters(final KeyType keyType) {
         switch (keyType) {
-        case PublicKey:
-            Assert.notNull(this.publicKeyParams, "PublicKey must be not null !");
-            return this.publicKeyParams;
-        case PrivateKey:
-            Assert.notNull(this.privateKeyParams, "PrivateKey must be not null !");
-            return this.privateKeyParams;
+            case PublicKey:
+                Assert.notNull(this.publicKeyParams, "PublicKey must be not null !");
+                return this.publicKeyParams;
+
+            case PrivateKey:
+                Assert.notNull(this.privateKeyParams, "PrivateKey must be not null !");
+                return this.privateKeyParams;
         }
 
         return null;

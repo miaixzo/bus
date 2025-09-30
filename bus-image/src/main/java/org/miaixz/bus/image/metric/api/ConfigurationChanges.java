@@ -50,7 +50,9 @@ public class ConfigurationChanges {
         return diffs != null && diffs.isVerbose() ? object : null;
     }
 
-    public static ModifiedObject addModifiedObjectIfVerbose(ConfigurationChanges diffs, String dn,
+    public static ModifiedObject addModifiedObjectIfVerbose(
+            ConfigurationChanges diffs,
+            String dn,
             ChangeType changeType) {
         if (diffs == null || !diffs.isVerbose())
             return null;
@@ -117,6 +119,7 @@ public class ConfigurationChanges {
     }
 
     public static class ModifiedAttribute {
+
         private final String name;
         private final List<Object> addedValues = new ArrayList<>(1);
         private final List<Object> removedValues = new ArrayList<>(1);
@@ -156,6 +159,7 @@ public class ConfigurationChanges {
     }
 
     public static class ModifiedObject {
+
         private final String dn;
         private final ChangeType changeType;
         private final List<ModifiedAttribute> attributes = new ArrayList<>();

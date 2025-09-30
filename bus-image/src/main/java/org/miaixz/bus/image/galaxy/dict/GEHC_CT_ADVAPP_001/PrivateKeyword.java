@@ -38,40 +38,56 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ShuttleFlag:
-            return "ShuttleFlag";
-        case PrivateTag.IterativeReconAnnotation:
-            return "IterativeReconAnnotation";
-        case PrivateTag.IterativeReconMode:
-            return "IterativeReconMode";
-        case PrivateTag.IterativeReconConfiguration:
-            return "IterativeReconConfiguration";
-        case PrivateTag.IterativeReconLevel:
-            return "IterativeReconLevel";
-        case PrivateTag.ReconFlipRotateAnno:
-            return "ReconFlipRotateAnno";
-        case PrivateTag.HighResolutionFlag:
-            return "HighResolutionFlag";
-        case PrivateTag.RespiratoryFlag:
-            return "RespiratoryFlag";
-        case PrivateTag.ShutterMode:
-            return "ShutterMode";
-        case PrivateTag.ShutterModePercent:
-            return "ShutterModePercent";
-        case PrivateTag.ImageBrowserAnnotation:
-            return "ImageBrowserAnnotation";
-        case PrivateTag.OverlappedReconFlag:
-            return "OverlappedReconFlag";
-        case PrivateTag.RowNumberAnotationFlag:
-            return "RowNumberAnotationFlag";
-        case PrivateTag.ODMFlag:
-            return "ODMFlag";
-        case PrivateTag.ODMReductionPercent:
-            return "ODMReductionPercent";
-        case PrivateTag.SubOptimalIQString:
-            return "SubOptimalIQString";
-        case PrivateTag.MARsAnnotation:
-            return "MARsAnnotation";
+            case PrivateTag.ShuttleFlag:
+                return "ShuttleFlag";
+
+            case PrivateTag.IterativeReconAnnotation:
+                return "IterativeReconAnnotation";
+
+            case PrivateTag.IterativeReconMode:
+                return "IterativeReconMode";
+
+            case PrivateTag.IterativeReconConfiguration:
+                return "IterativeReconConfiguration";
+
+            case PrivateTag.IterativeReconLevel:
+                return "IterativeReconLevel";
+
+            case PrivateTag.ReconFlipRotateAnno:
+                return "ReconFlipRotateAnno";
+
+            case PrivateTag.HighResolutionFlag:
+                return "HighResolutionFlag";
+
+            case PrivateTag.RespiratoryFlag:
+                return "RespiratoryFlag";
+
+            case PrivateTag.ShutterMode:
+                return "ShutterMode";
+
+            case PrivateTag.ShutterModePercent:
+                return "ShutterModePercent";
+
+            case PrivateTag.ImageBrowserAnnotation:
+                return "ImageBrowserAnnotation";
+
+            case PrivateTag.OverlappedReconFlag:
+                return "OverlappedReconFlag";
+
+            case PrivateTag.RowNumberAnotationFlag:
+                return "RowNumberAnotationFlag";
+
+            case PrivateTag.ODMFlag:
+                return "ODMFlag";
+
+            case PrivateTag.ODMReductionPercent:
+                return "ODMReductionPercent";
+
+            case PrivateTag.SubOptimalIQString:
+                return "SubOptimalIQString";
+
+            case PrivateTag.MARsAnnotation:
+                return "MARsAnnotation";
         }
         return "";
     }

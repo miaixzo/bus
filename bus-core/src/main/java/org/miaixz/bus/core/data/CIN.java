@@ -250,30 +250,41 @@ public class CIN {
      */
     private static char getVerifyCode18(final int iSum) {
         switch (iSum % 11) {
-        case 10:
-            return '2';
-        case 9:
-            return '3';
-        case 8:
-            return '4';
-        case 7:
-            return '5';
-        case 6:
-            return '6';
-        case 5:
-            return '7';
-        case 4:
-            return '8';
-        case 3:
-            return '9';
-        case 2:
-            return Symbol.C_X;
-        case 1:
-            return '0';
-        case 0:
-            return '1';
-        default:
-            return Symbol.C_SPACE;
+            case 10:
+                return '2';
+
+            case 9:
+                return '3';
+
+            case 8:
+                return '4';
+
+            case 7:
+                return '5';
+
+            case 6:
+                return '6';
+
+            case 5:
+                return '7';
+
+            case 4:
+                return '8';
+
+            case 3:
+                return '9';
+
+            case 2:
+                return Symbol.C_X;
+
+            case 1:
+                return '0';
+
+            case 0:
+                return '1';
+
+            default:
+                return Symbol.C_SPACE;
         }
     }
 

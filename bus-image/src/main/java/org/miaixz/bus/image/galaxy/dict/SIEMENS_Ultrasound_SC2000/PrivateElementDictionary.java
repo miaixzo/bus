@@ -52,56 +52,67 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.RawDataObjectType:
-            return VR.CS;
-        case PrivateTag.VectorOfBROIPoints:
-        case PrivateTag.StartEndTimestampsOfStripStream:
-        case PrivateTag.TimestampsOfVisibleRWaves:
-            return VR.FD;
-        case PrivateTag.VolumeRate:
-            return VR.IS;
-        case PrivateTag._0019_xx89_:
-        case PrivateTag.AcousticMetaInformationVersion:
-            return VR.LO;
-        case PrivateTag.CommonAcousticMetaInformation:
-        case PrivateTag.PerTransactionAcousticControlInformation:
-        case PrivateTag.VisualizationInformation:
-        case PrivateTag.ApplicationStateInformation:
-        case PrivateTag.CineParametersSchema:
-        case PrivateTag.ValuesOfCineParameters:
-        case PrivateTag._0129_xx29_:
-        case PrivateTag.AcousticImageAndFooterData:
-        case PrivateTag.VolumePayload:
-        case PrivateTag.AfterPayload:
-            return VR.OB;
-        case PrivateTag.AcousticStreamType:
-        case PrivateTag._0119_xx21_:
-            return VR.SH;
-        case PrivateTag.PhysioCaptureROI:
-            return VR.SL;
-        case PrivateTag.MultiStreamSequence:
-        case PrivateTag.AcousticDataSequence:
-        case PrivateTag.MPRViewSequence:
-        case PrivateTag.VisualizationSequence:
-        case PrivateTag.ApplicationStateSequence:
-        case PrivateTag.ReferencedBookmarkSequence:
-        case PrivateTag.CineParametersSequence:
-            return VR.SQ;
-        case PrivateTag.AcousticStreamNumber:
-            return VR.SS;
-        case PrivateTag.BookmarkUID:
-        case PrivateTag.ReferencedBookmarkUID:
-        case PrivateTag.VolumeVersionID:
-            return VR.UI;
-        case PrivateTag.AcousticDataOffset:
-        case PrivateTag.AcousticDataLength:
-        case PrivateTag.FooterOffset:
-        case PrivateTag.FooterLength:
-            return VR.UL;
-        case PrivateTag.BModeTintIndex:
-        case PrivateTag.DopplerTintIndex:
-        case PrivateTag.MModeTintIndex:
-            return VR.US;
+            case PrivateTag.RawDataObjectType:
+                return VR.CS;
+
+            case PrivateTag.VectorOfBROIPoints:
+            case PrivateTag.StartEndTimestampsOfStripStream:
+            case PrivateTag.TimestampsOfVisibleRWaves:
+                return VR.FD;
+
+            case PrivateTag.VolumeRate:
+                return VR.IS;
+
+            case PrivateTag._0019_xx89_:
+            case PrivateTag.AcousticMetaInformationVersion:
+                return VR.LO;
+
+            case PrivateTag.CommonAcousticMetaInformation:
+            case PrivateTag.PerTransactionAcousticControlInformation:
+            case PrivateTag.VisualizationInformation:
+            case PrivateTag.ApplicationStateInformation:
+            case PrivateTag.CineParametersSchema:
+            case PrivateTag.ValuesOfCineParameters:
+            case PrivateTag._0129_xx29_:
+            case PrivateTag.AcousticImageAndFooterData:
+            case PrivateTag.VolumePayload:
+            case PrivateTag.AfterPayload:
+                return VR.OB;
+
+            case PrivateTag.AcousticStreamType:
+            case PrivateTag._0119_xx21_:
+                return VR.SH;
+
+            case PrivateTag.PhysioCaptureROI:
+                return VR.SL;
+
+            case PrivateTag.MultiStreamSequence:
+            case PrivateTag.AcousticDataSequence:
+            case PrivateTag.MPRViewSequence:
+            case PrivateTag.VisualizationSequence:
+            case PrivateTag.ApplicationStateSequence:
+            case PrivateTag.ReferencedBookmarkSequence:
+            case PrivateTag.CineParametersSequence:
+                return VR.SQ;
+
+            case PrivateTag.AcousticStreamNumber:
+                return VR.SS;
+
+            case PrivateTag.BookmarkUID:
+            case PrivateTag.ReferencedBookmarkUID:
+            case PrivateTag.VolumeVersionID:
+                return VR.UI;
+
+            case PrivateTag.AcousticDataOffset:
+            case PrivateTag.AcousticDataLength:
+            case PrivateTag.FooterOffset:
+            case PrivateTag.FooterLength:
+                return VR.UL;
+
+            case PrivateTag.BModeTintIndex:
+            case PrivateTag.DopplerTintIndex:
+            case PrivateTag.MModeTintIndex:
+                return VR.US;
         }
         return VR.UN;
     }

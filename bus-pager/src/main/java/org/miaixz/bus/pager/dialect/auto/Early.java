@@ -73,7 +73,10 @@ public class Early implements AutoDialect<String> {
     }
 
     @Override
-    public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource,
+    public AbstractPaging extractDialect(
+            String dialectKey,
+            MappedStatement ms,
+            DataSource dataSource,
             Properties properties) {
         String dialectStr = PageAutoDialect.fromJdbcUrl(dialectKey);
         if (dialectStr == null) {

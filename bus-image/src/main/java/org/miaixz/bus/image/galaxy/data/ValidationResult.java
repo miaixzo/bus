@@ -93,8 +93,11 @@ public class ValidationResult {
         addInvalidAttributeValue(dataElement, reason, null, null);
     }
 
-    public void addInvalidAttributeValue(IOD.DataElement dataElement, Invalid reason,
-            ValidationResult[] itemValidationResult, IOD[] missingItems) {
+    public void addInvalidAttributeValue(
+            IOD.DataElement dataElement,
+            Invalid reason,
+            ValidationResult[] itemValidationResult,
+            IOD[] missingItems) {
         if (invalidAttributeValues == null)
             invalidAttributeValues = new ArrayList<>();
         invalidAttributeValues.add(new InvalidAttributeValue(dataElement, reason, itemValidationResult, missingItems));
@@ -130,7 +133,10 @@ public class ValidationResult {
     }
 
     public int[] getOffendingElements() {
-        return cat(tagsOfMissingAttributes(), tagsOfMissingAttributeValues(), tagsOfInvalidAttributeValues(),
+        return cat(
+                tagsOfMissingAttributes(),
+                tagsOfMissingAttributeValues(),
+                tagsOfInvalidAttributeValues(),
                 tagsOfNotAllowedAttributes());
     }
 
@@ -279,6 +285,7 @@ public class ValidationResult {
     }
 
     public class InvalidAttributeValue {
+
         public final IOD.DataElement dataElement;
         public final Invalid reason;
         public final ValidationResult[] itemValidationResults;

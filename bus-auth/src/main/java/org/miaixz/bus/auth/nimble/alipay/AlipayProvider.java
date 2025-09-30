@@ -142,10 +142,11 @@ public class AlipayProvider extends AbstractProvider {
         }
 
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(AuthToken.builder().accessToken((String) tokenResponse.get("access_token"))
-                        .uid((String) tokenResponse.get("user_id"))
-                        .expireIn(Integer.parseInt((String) tokenResponse.get("expires_in")))
-                        .refreshToken((String) tokenResponse.get("refresh_token")).build())
+                .data(
+                        AuthToken.builder().accessToken((String) tokenResponse.get("access_token"))
+                                .uid((String) tokenResponse.get("user_id"))
+                                .expireIn(Integer.parseInt((String) tokenResponse.get("expires_in")))
+                                .refreshToken((String) tokenResponse.get("refresh_token")).build())
                 .build();
     }
 
@@ -171,13 +172,14 @@ public class AlipayProvider extends AbstractProvider {
 
         String province = (String) userResponse.get("province");
         String city = (String) userResponse.get("city");
-        String location = String.format("%s %s", StringKit.isEmpty(province) ? "" : province,
-                StringKit.isEmpty(city) ? "" : city);
+        String location = String
+                .format("%s %s", StringKit.isEmpty(province) ? "" : province, StringKit.isEmpty(city) ? "" : city);
 
         return Material.builder().rawJson(JsonKit.toJsonString(userResponse)).uuid((String) userResponse.get("user_id"))
-                .username(StringKit.isEmpty((String) userResponse.get("user_name"))
-                        ? (String) userResponse.get("nick_name")
-                        : (String) userResponse.get("user_name"))
+                .username(
+                        StringKit.isEmpty((String) userResponse.get("user_name"))
+                                ? (String) userResponse.get("nick_name")
+                                : (String) userResponse.get("user_name"))
                 .nickname((String) userResponse.get("nick_name")).avatar((String) userResponse.get("avatar"))
                 .location(location).gender(Gender.of((String) userResponse.get("gender"))).token(authToken)
                 .source(complex.toString()).build();

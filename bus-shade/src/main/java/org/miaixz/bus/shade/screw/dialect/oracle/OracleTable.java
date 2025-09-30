@@ -42,6 +42,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OracleTable implements Table {
+
     /**
      * TABLE_CAT
      */

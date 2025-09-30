@@ -207,7 +207,9 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * @param next    用上一个元素作为参数执行并返回一个新的元素
      * @return 无限有序流
      */
-    public static <T> EasyStream<T> iterate(final T seed, final Predicate<? super T> hasNext,
+    public static <T> EasyStream<T> iterate(
+            final T seed,
+            final Predicate<? super T> hasNext,
             final UnaryOperator<T> next) {
         Objects.requireNonNull(next);
         Objects.requireNonNull(hasNext);
@@ -234,7 +236,9 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * @param <T>        对象类型
      * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
      */
-    public static <T> EasyStream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer,
+    public static <T> EasyStream<T> iterateHierarchies(
+            final T root,
+            final Function<T, Collection<T>> discoverer,
             final Predicate<T> filter) {
         return of(StreamKit.iterateHierarchies(root, discoverer, filter));
     }
@@ -395,15 +399,18 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * @param roundingMode 舍入模式
      * @return 计算后的平均值 如果元素的长度为0 那么会返回 {@link Optional#empty()}
      */
-    public Optional<BigDecimal> avg(final Function<? super T, BigDecimal> mapper, final int scale,
+    public Optional<BigDecimal> avg(
+            final Function<? super T, BigDecimal> mapper,
+            final int scale,
             final RoundingMode roundingMode) {
         // 元素列表
         final List<BigDecimal> bigDecimalList = stream.map(mapper).collect(Collectors.toList());
         if (CollKit.isEmpty(bigDecimalList)) {
             return Optional.empty();
         }
-        return Optional.ofNullable(EasyStream.of(bigDecimalList).reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(MathKit.toBigDecimal(bigDecimalList.size()), scale, roundingMode));
+        return Optional.ofNullable(
+                EasyStream.of(bigDecimalList).reduce(BigDecimal.ZERO, BigDecimal::add)
+                        .divide(MathKit.toBigDecimal(bigDecimalList.size()), scale, roundingMode));
     }
 
     /**

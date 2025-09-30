@@ -170,8 +170,11 @@ public class ImageBanner {
         double deltaB = b1 - b2;
         double deltaH = Math.sqrt(Math.max(0.0, deltaA * deltaA + deltaB * deltaB - deltaC * deltaC));
 
-        return Math.sqrt(Math.max(0.0, Math.pow((L1 - L2) / (kL * sl), 2) + Math.pow(deltaC / (kc * (1 + K1 * c1)), 2)
-                + Math.pow(deltaH / (kh * (1 + K2 * c1)), 2.0)));
+        return Math.sqrt(
+                Math.max(
+                        0.0,
+                        Math.pow((L1 - L2) / (kL * sl), 2) + Math.pow(deltaC / (kc * (1 + K1 * c1)), 2)
+                                + Math.pow(deltaH / (kh * (1 + K2 * c1)), 2.0)));
     }
 
     /**
@@ -231,8 +234,9 @@ public class ImageBanner {
             BufferedImage resizedImage = resizeImage(sourceImage, maxWidth, aspectRatio);
             banner = imageToBanner(resizedImage, invert, cie94);
         } catch (Exception ex) {
-            Logger.warn("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
-                    + ex.getMessage() + "')");
+            Logger.warn(
+                    "WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
+                            + ex.getMessage() + "')");
             ex.printStackTrace();
         } finally {
             if (null != headlessProperty) {

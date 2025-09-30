@@ -28,7 +28,7 @@
 package org.miaixz.bus.vortex.provider;
 
 import org.miaixz.bus.vortex.magic.Delegate;
-import org.miaixz.bus.vortex.magic.Token;
+import org.miaixz.bus.vortex.magic.Principal;
 
 /**
  * 访问授权认证接口，定义授权认证相关的功能
@@ -39,12 +39,12 @@ import org.miaixz.bus.vortex.magic.Token;
 public interface AuthorizeProvider {
 
     /**
-     * 执行认证操作，验证授权令牌并返回认证结果
+     * 执行认证操作，验证授权主体并返回认证结果
      *
-     * @param token 授权令牌，包含认证所需的信息
+     * @param principal 授权主体，包含认证所需的信息
      * @return Delegate 认证结果对象，默认为空 Delegate 实例
      */
-    default Delegate authorize(Token token) {
+    default Delegate authorize(Principal principal) {
         return new Delegate();
     }
 

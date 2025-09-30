@@ -369,7 +369,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
      * @throws IOException 如果发生I/O错误
      */
     @Override
-    public WatchKey register(final WatchService watcher, final WatchEvent.Kind<?>[] events,
+    public WatchKey register(
+            final WatchService watcher,
+            final WatchEvent.Kind<?>[] events,
             final WatchEvent.Modifier... modifiers) throws IOException {
         return raw.register(watcher, events, modifiers);
     }
@@ -395,6 +397,7 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     @Override
     public Iterator<Path> iterator() {
         return new Iterator<>() {
+
             private final Iterator<Path> itr = raw.iterator();
 
             @Override
@@ -780,7 +783,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
      * @param visitor  {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
      * @throws InternalException 如果发生I/O错误
      */
-    public void walkFiles(final Set<FileVisitOption> options, final int maxDepth,
+    public void walkFiles(
+            final Set<FileVisitOption> options,
+            final int maxDepth,
             final FileVisitor<? super Path> visitor) {
         try {
             Files.walkFileTree(this.raw, options, maxDepth, visitor);

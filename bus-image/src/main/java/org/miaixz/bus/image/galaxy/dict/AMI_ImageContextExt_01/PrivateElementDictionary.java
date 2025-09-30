@@ -52,10 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.WindowFunction:
-            return VR.CS;
-        case PrivateTag.WindowSlope:
-            return VR.DS;
+            case PrivateTag.WindowFunction:
+                return VR.CS;
+
+            case PrivateTag.WindowSlope:
+                return VR.DS;
         }
         return VR.UN;
     }

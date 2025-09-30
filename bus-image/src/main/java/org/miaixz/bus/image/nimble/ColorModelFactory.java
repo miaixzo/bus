@@ -60,7 +60,10 @@ public class ColorModelFactory {
                 dataType);
     }
 
-    public static ColorModel createYBRColorModel(int bits, int dataType, ColorSpace cspace,
+    public static ColorModel createYBRColorModel(
+            int bits,
+            int dataType,
+            ColorSpace cspace,
             ColorSubsampling subsampling) {
         return new SampledColorModel(cspace, subsampling);
     }

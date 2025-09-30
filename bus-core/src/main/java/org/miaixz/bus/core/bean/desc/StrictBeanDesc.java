@@ -101,7 +101,9 @@ public class StrictBeanDesc extends AbstractBeanDesc {
      * @param ignoreCase       是否忽略大小写
      * @return 查找到的方法，{@code null}表示未找到
      */
-    private static Method getGetterForBoolean(final Method[] gettersOrSetters, final String fieldName,
+    private static Method getGetterForBoolean(
+            final Method[] gettersOrSetters,
+            final String fieldName,
             final boolean ignoreCase) {
         // 查找isXXX
         return MethodKit.getMethod(gettersOrSetters, m -> {
@@ -135,7 +137,9 @@ public class StrictBeanDesc extends AbstractBeanDesc {
      * @param ignoreCase       是否忽略大小写
      * @return 查找到的方法，{@code null}表示未找到
      */
-    private static Method getSetterForBoolean(final Method[] gettersOrSetters, final String fieldName,
+    private static Method getSetterForBoolean(
+            final Method[] gettersOrSetters,
+            final String fieldName,
             final boolean ignoreCase) {
         // 查找isXXX
         return MethodKit.getMethod(gettersOrSetters, m -> {
@@ -146,8 +150,10 @@ public class StrictBeanDesc extends AbstractBeanDesc {
 
             if (StringKit.startWith(fieldName, Normal.IS, ignoreCase)) {
                 // isName - setName
-                return StringKit.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS, ignoreCase),
-                        m.getName(), ignoreCase);
+                return StringKit.equals(
+                        Normal.SET + StringKit.removePrefix(fieldName, Normal.IS, ignoreCase),
+                        m.getName(),
+                        ignoreCase);
             }
 
             // 其它不匹配
@@ -164,8 +170,8 @@ public class StrictBeanDesc extends AbstractBeanDesc {
 
         final Method[] gettersAndSetters = MethodKit.getPublicMethods(beanClass, MethodKit::isGetterOrSetterIgnoreCase);
         // 排除静态属性和对象子类
-        final Field[] fields = FieldKit.getFields(beanClass,
-                field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
+        final Field[] fields = FieldKit
+                .getFields(beanClass, field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
         PropDesc prop;
         for (final Field field : fields) {
             prop = createProp(field, gettersAndSetters);
@@ -250,8 +256,11 @@ public class StrictBeanDesc extends AbstractBeanDesc {
      * @param gettersOrSetters 类中所有的Getter或Setter方法
      * @return PropDesc
      */
-    private Method[] findGetterAndSetter(final String fieldName, final Class<?> fieldType,
-            final Method[] gettersOrSetters, final boolean ignoreCase) {
+    private Method[] findGetterAndSetter(
+            final String fieldName,
+            final Class<?> fieldType,
+            final Method[] gettersOrSetters,
+            final boolean ignoreCase) {
         Method getter = null;
         Method setter = null;
         String methodName;

@@ -91,6 +91,7 @@ public class RabbitMQConsumer implements Consumer {
         final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             // 创建消息对象并交给处理器处理
             messageHandler.handle(new Message() {
+
                 /**
                  * 获取消息主题（消费者标签）
                  *
@@ -139,7 +140,10 @@ public class RabbitMQConsumer implements Consumer {
      * @param autoDelete 是否自动删除队列，true表示当没有消费者连接时自动删除队列
      * @param arguments  队列的其他参数配置
      */
-    private void queueDeclare(final boolean durable, final boolean exclusive, final boolean autoDelete,
+    private void queueDeclare(
+            final boolean durable,
+            final boolean exclusive,
+            final boolean autoDelete,
             final Map<String, Object> arguments) {
         try {
             this.channel.queueDeclare(this.topic, durable, exclusive, autoDelete, arguments);

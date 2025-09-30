@@ -38,28 +38,38 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.TranslucentMode:
-            return "TranslucentMode";
-        case PrivateTag.TranslucentWindowSize:
-            return "TranslucentWindowSize";
-        case PrivateTag.PanoramicMode:
-            return "PanoramicMode";
-        case PrivateTag.PanoramicInnerWidth:
-            return "PanoramicInnerWidth";
-        case PrivateTag.DisplayUnseenAreas:
-            return "DisplayUnseenAreas";
-        case PrivateTag.UnseenAreasColor:
-            return "UnseenAreasColor";
-        case PrivateTag.DisplayTaggedData:
-            return "DisplayTaggedData";
-        case PrivateTag.TaggedColor:
-            return "TaggedColor";
-        case PrivateTag.TaggedSampleThickness:
-            return "TaggedSampleThickness";
-        case PrivateTag.TaggedThreshold:
-            return "TaggedThreshold";
-        case PrivateTag.KernelFilter:
-            return "KernelFilter";
+            case PrivateTag.TranslucentMode:
+                return "TranslucentMode";
+
+            case PrivateTag.TranslucentWindowSize:
+                return "TranslucentWindowSize";
+
+            case PrivateTag.PanoramicMode:
+                return "PanoramicMode";
+
+            case PrivateTag.PanoramicInnerWidth:
+                return "PanoramicInnerWidth";
+
+            case PrivateTag.DisplayUnseenAreas:
+                return "DisplayUnseenAreas";
+
+            case PrivateTag.UnseenAreasColor:
+                return "UnseenAreasColor";
+
+            case PrivateTag.DisplayTaggedData:
+                return "DisplayTaggedData";
+
+            case PrivateTag.TaggedColor:
+                return "TaggedColor";
+
+            case PrivateTag.TaggedSampleThickness:
+                return "TaggedSampleThickness";
+
+            case PrivateTag.TaggedThreshold:
+                return "TaggedThreshold";
+
+            case PrivateTag.KernelFilter:
+                return "KernelFilter";
         }
         return "";
     }

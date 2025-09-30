@@ -277,6 +277,7 @@ public interface NetworkIF {
      * The current operational state of a network interface. As described in RFC 2863.
      */
     enum IfOperStatus {
+
         /**
          * Up and operational. Ready to pass packets.
          */

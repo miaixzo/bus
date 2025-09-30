@@ -479,7 +479,10 @@ public class ImageioReader extends ImageReader implements Closeable {
         return bi;
     }
 
-    private BufferedImage applyColorTransformations(int frameIndex, ImageReadParam param, WritableRaster raster,
+    private BufferedImage applyColorTransformations(
+            int frameIndex,
+            ImageReadParam param,
+            WritableRaster raster,
             BufferedImage bi) {
         int[] overlayGroupOffsets = getActiveOverlayGroupOffsets(param);
         Optional<ColorSpace> iccColorSpace = colorSpaceOfFrame(frameIndex);
@@ -509,7 +512,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
         for (int i = 0; i < overlayGroupOffsets.length; i++) {
             try {
-                applyOverlayColor(overlayGroupOffsets[i], bi.getRaster(), frameIndex, param,
+                applyOverlayColor(
+                        overlayGroupOffsets[i],
+                        bi.getRaster(),
+                        frameIndex,
+                        param,
                         bi.getColorModel().getColorSpace());
             } catch (IllegalArgumentException e) {
                 Logger.info(ignoreInvalidOverlay(overlayGroupOffsets[i], e));
@@ -533,7 +540,10 @@ public class ImageioReader extends ImageReader implements Closeable {
 
         byte[] ovlyData = new byte[(((length + 7) >>> 3) + 1) & (~1)];
         if (bitPosition < bitsStored)
-            Logger.info("Ignore embedded overlay #{} from bit #{} < bits stored: {}", (gg0000 >>> 17) + 1, bitPosition,
+            Logger.info(
+                    "Ignore embedded overlay #{} from bit #{} < bits stored: {}",
+                    (gg0000 >>> 17) + 1,
+                    bitPosition,
                     bitsStored);
         else
             Overlays.extractFromPixeldata(raster, mask, ovlyData, 0, length);
@@ -583,7 +593,11 @@ public class ImageioReader extends ImageReader implements Closeable {
             }
     }
 
-    private void applyOverlayMonochrome(int gg0000, WritableRaster raster, int frameIndex, ImageReadParam param,
+    private void applyOverlayMonochrome(
+            int gg0000,
+            WritableRaster raster,
+            int frameIndex,
+            ImageReadParam param,
             byte[] ovlyData) {
         Attributes ovlyAttrs = metadata.getAttributes();
         int[] pixelValue = new int[] { 0xff };
@@ -599,7 +613,11 @@ public class ImageioReader extends ImageReader implements Closeable {
         Overlays.applyOverlay(ovlyData != null ? 0 : frameIndex, raster, ovlyAttrs, gg0000, pixelValue, ovlyData);
     }
 
-    private void applyOverlayColor(int gg0000, WritableRaster raster, int frameIndex, ImageReadParam param,
+    private void applyOverlayColor(
+            int gg0000,
+            WritableRaster raster,
+            int frameIndex,
+            ImageReadParam param,
             ColorSpace cspace) {
         Attributes ovlyAttrs = metadata.getAttributes();
         int[] pixelValue = new int[] { 0xff, 0xff, 0xff };
@@ -621,13 +639,17 @@ public class ImageioReader extends ImageReader implements Closeable {
             if (psAttrs != null)
                 return Overlays.getActiveOverlayGroupOffsets(psAttrs);
             else
-                return Overlays.getActiveOverlayGroupOffsets(metadata.getAttributes(),
-                        dParam.getOverlayActivationMask());
+                return Overlays
+                        .getActiveOverlayGroupOffsets(metadata.getAttributes(), dParam.getOverlayActivationMask());
         }
         return Overlays.getActiveOverlayGroupOffsets(metadata.getAttributes(), 0xffff);
     }
 
-    private WritableRaster applyLUTs(WritableRaster raster, int frameIndex, ImageReadParam param, SampleModel sm,
+    private WritableRaster applyLUTs(
+            WritableRaster raster,
+            int frameIndex,
+            ImageReadParam param,
+            SampleModel sm,
             int outBits) {
         WritableRaster destRaster = sm.getDataType() == raster.getSampleModel().getDataType() ? raster
                 : Raster.createWritableRaster(sm, null);
@@ -644,15 +666,22 @@ public class ImageioReader extends ImageReader implements Closeable {
             Attributes sharedFctGroups = imgAttrs.getNestedDataset(Tag.SharedFunctionalGroupsSequence);
             Attributes frameFctGroups = imgAttrs.getNestedDataset(Tag.PerFrameFunctionalGroupsSequence, frameIndex);
             if (LookupTableFactory.applyModalityLUT(imgAttrs)) {
-                lutParam.setModalityLUT(selectFctGroup(imgAttrs, sharedFctGroups, frameFctGroups,
-                        Tag.PixelValueTransformationSequence));
+                lutParam.setModalityLUT(
+                        selectFctGroup(
+                                imgAttrs,
+                                sharedFctGroups,
+                                frameFctGroups,
+                                Tag.PixelValueTransformationSequence));
             }
             if (dParam.getWindowWidth() != 0) {
                 lutParam.setWindowCenter(dParam.getWindowCenter());
                 lutParam.setWindowWidth(dParam.getWindowWidth());
             } else
-                lutParam.setVOI(selectFctGroup(imgAttrs, sharedFctGroups, frameFctGroups, Tag.FrameVOILUTSequence),
-                        dParam.getWindowIndex(), dParam.getVOILUTIndex(), dParam.isPreferWindow());
+                lutParam.setVOI(
+                        selectFctGroup(imgAttrs, sharedFctGroups, frameFctGroups, Tag.FrameVOILUTSequence),
+                        dParam.getWindowIndex(),
+                        dParam.getVOILUTIndex(),
+                        dParam.isPreferWindow());
             if (dParam.isAutoWindowing())
                 lutParam.autoWindowing(imgAttrs, raster, dParam.isAddAutoWindow());
             lutParam.setPresentationLUT(imgAttrs, dParam.isIgnorePresentationLUTShape());
@@ -662,7 +691,10 @@ public class ImageioReader extends ImageReader implements Closeable {
         return destRaster;
     }
 
-    private Attributes selectFctGroup(Attributes imgAttrs, Attributes sharedFctGroups, Attributes frameFctGroups,
+    private Attributes selectFctGroup(
+            Attributes imgAttrs,
+            Attributes sharedFctGroups,
+            Attributes frameFctGroups,
             int tag) {
         if (frameFctGroups == null) {
             return imgAttrs;

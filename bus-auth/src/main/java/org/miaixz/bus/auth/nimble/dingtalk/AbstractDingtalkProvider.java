@@ -72,7 +72,9 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * @return Signature
      */
     public static String sign(String secretKey, String timestamp) {
-        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8),
+        byte[] signData = Builder.sign(
+                secretKey.getBytes(Charset.UTF_8),
+                timestamp.getBytes(Charset.UTF_8),
                 Algorithm.HMACSHA256.getValue());
         return UrlEncoder.encodeAll(new String(Base64.encode(signData, false)));
     }

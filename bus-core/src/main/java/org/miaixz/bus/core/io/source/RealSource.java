@@ -530,6 +530,7 @@ public class RealSource implements BufferSource {
     @Override
     public InputStream inputStream() {
         return new InputStream() {
+
             @Override
             public int read() throws IOException {
                 if (closed)

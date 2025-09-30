@@ -208,8 +208,8 @@ public class Provider implements org.miaixz.bus.core.Provider {
      * @param map         结果映射
      */
     public void appendProcessList(Integer limitNumber, String type, Map<String, Object> map) {
-        List<OSProcess> processList = getOperatingSystem().getProcesses(null, OperatingSystem.ProcessSorting.CPU_DESC,
-                limitNumber);
+        List<OSProcess> processList = getOperatingSystem()
+                .getProcesses(null, OperatingSystem.ProcessSorting.CPU_DESC, limitNumber);
         List<Map<String, Object>> processMapList = new ArrayList<>();
         for (OSProcess process : processList) {
             Map<String, Object> processMap = new HashMap<>(5);
@@ -249,44 +249,56 @@ public class Provider implements org.miaixz.bus.core.Provider {
      */
     public void append(String type, Map<String, Object> map) {
         switch (type.toLowerCase()) {
-        case TID.HOST:
-            map.put(type, getHost());
-            break;
-        case TID.CPU:
-            map.put(type, getCpu());
-            break;
-        case TID.DISK:
-            map.put(type, getDisk());
-            break;
-        case TID.JVM:
-            map.put(type, getJvm());
-            break;
-        case TID.MEMORY:
-            map.put(type, getMemory());
-            break;
-        case TID.ALL_DISK:
-            appendAllDisk(type, map);
-            break;
-        case TID.PROCESS:
-            appendProcessList(10, type, map);
-            break;
-        case TID.SYSTEM:
-            map.put(type, getComputerSystem());
-            break;
-        case TID.PROCESSOR:
-            map.put(type, getProcessor());
-            break;
-        case TID.HARDWARE:
-            appendHardware(type, map);
-            break;
-        case TID.POWERSOURCES:
-            map.put(type, getPowerSourceInfo());
-            break;
-        case TID.NETWORKIFS:
-            map.put(type, getNetworkInfo());
-            break;
-        default:
-            break;
+            case TID.HOST:
+                map.put(type, getHost());
+                break;
+
+            case TID.CPU:
+                map.put(type, getCpu());
+                break;
+
+            case TID.DISK:
+                map.put(type, getDisk());
+                break;
+
+            case TID.JVM:
+                map.put(type, getJvm());
+                break;
+
+            case TID.MEMORY:
+                map.put(type, getMemory());
+                break;
+
+            case TID.ALL_DISK:
+                appendAllDisk(type, map);
+                break;
+
+            case TID.PROCESS:
+                appendProcessList(10, type, map);
+                break;
+
+            case TID.SYSTEM:
+                map.put(type, getComputerSystem());
+                break;
+
+            case TID.PROCESSOR:
+                map.put(type, getProcessor());
+                break;
+
+            case TID.HARDWARE:
+                appendHardware(type, map);
+                break;
+
+            case TID.POWERSOURCES:
+                map.put(type, getPowerSourceInfo());
+                break;
+
+            case TID.NETWORKIFS:
+                map.put(type, getNetworkInfo());
+                break;
+
+            default:
+                break;
         }
         map.put("timestamp", DateKit.current());
     }
@@ -424,11 +436,12 @@ public class Provider implements org.miaixz.bus.core.Provider {
         for (OSFileStore fs : fsArray) {
             long total = fs.getTotalSpace();
             long usable = fs.getUsableSpace();
-            disks.add(Disk.builder().deviceName(fs.getName()).volumeName(fs.getVolume()).label(fs.getLabel())
-                    .logicalVolumeName(fs.getLogicalVolume()).mountPoint(fs.getMount()).description(fs.getDescription())
-                    .mountOptions(fs.getOptions()).filesystemType(fs.getType()).uuid(fs.getUUID()).totalSpace(total)
-                    .usedSpace(total - usable).freeSpace(usable)
-                    .usagePercent(total > 0 ? formatDouble((total - usable) * 100.0 / total) : 0.0).build());
+            disks.add(
+                    Disk.builder().deviceName(fs.getName()).volumeName(fs.getVolume()).label(fs.getLabel())
+                            .logicalVolumeName(fs.getLogicalVolume()).mountPoint(fs.getMount())
+                            .description(fs.getDescription()).mountOptions(fs.getOptions()).filesystemType(fs.getType())
+                            .uuid(fs.getUUID()).totalSpace(total).usedSpace(total - usable).freeSpace(usable)
+                            .usagePercent(total > 0 ? formatDouble((total - usable) * 100.0 / total) : 0.0).build());
         }
         return disks;
     }

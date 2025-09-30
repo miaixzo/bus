@@ -238,8 +238,8 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             if (resultType == providerContext.getMapperMethod().getReturnType()) {
                 return true;
             }
-            Class<?> returnType = GenericTypeResolver.getReturnType(providerContext.getMapperMethod(),
-                    providerContext.getMapperType());
+            Class<?> returnType = GenericTypeResolver
+                    .getReturnType(providerContext.getMapperMethod(), providerContext.getMapperType());
             return resultType == returnType;
         }
         return false;
@@ -533,8 +533,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      */
     public Optional<String> groupByColumnList() {
         Optional<List<ColumnMeta>> groupByColumns = groupByColumns();
-        return groupByColumns.map(entityColumns -> entityColumns.stream().map(ColumnMeta::column)
-                .collect(Collectors.joining(Symbol.COMMA)));
+        return groupByColumns.map(
+                entityColumns -> entityColumns.stream().map(ColumnMeta::column)
+                        .collect(Collectors.joining(Symbol.COMMA)));
     }
 
     /**
@@ -554,8 +555,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      */
     public Optional<String> havingColumnList() {
         Optional<List<ColumnMeta>> havingColumns = havingColumns();
-        return havingColumns.map(entityColumns -> entityColumns.stream().map(ColumnMeta::column)
-                .collect(Collectors.joining(Symbol.COMMA)));
+        return havingColumns.map(
+                entityColumns -> entityColumns.stream().map(ColumnMeta::column)
+                        .collect(Collectors.joining(Symbol.COMMA)));
     }
 
     /**

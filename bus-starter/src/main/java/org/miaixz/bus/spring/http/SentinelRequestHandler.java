@@ -100,8 +100,8 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
             // 对于有请求体的方法，如果是CacheRequestWrapper则输出请求体
             if (request instanceof MutableRequestWrapper) {
-                String requestBody = new String(((MutableRequestWrapper) request).getBody()).replaceAll("\\s+",
-                        Normal.EMPTY);
+                String requestBody = new String(((MutableRequestWrapper) request).getBody())
+                        .replaceAll("\\s+", Normal.EMPTY);
                 Logger.info("==>       Body: {}", requestBody);
             } else {
                 // 如果没有被包装，则输出请求参数
@@ -125,7 +125,10 @@ public class SentinelRequestHandler implements HandlerInterceptor {
      * @param exception 处理程序执行时抛出异常
      */
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+    public void afterCompletion(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
             Exception exception) {
         if (response instanceof MutableResponseWrapper) {
             MutableResponseWrapper mutableResponseWrapper = ((MutableResponseWrapper) response);
@@ -152,7 +155,10 @@ public class SentinelRequestHandler implements HandlerInterceptor {
      * @param modelAndView 处理程序返回的{code ModelAndView} 也可以是{@code null})
      */
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+    public void postHandle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
             ModelAndView modelAndView) {
         Logger.info("==>        URI: {}", request.getRequestURI());
     }
@@ -256,7 +262,10 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         // 格式化 HTTP 方法，添加 ANSI 颜色
         String requestMethod = AnsiEncoder.encode(color, method);
         // 记录日志
-        Logger.info("==>    Request: {ip={}, method={}, url={}}", getClientIP(request), requestMethod,
+        Logger.info(
+                "==>    Request: {ip={}, method={}, url={}}",
+                getClientIP(request),
+                requestMethod,
                 request.getRequestURL().toString());
     }
 

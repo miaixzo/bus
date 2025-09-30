@@ -88,14 +88,19 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
             String serial = ms.getRight() == null ? Normal.UNKNOWN : ms.getRight();
             storeList.add(createStore(storeName, model, serial, disk.size << 20, diskStats, majMinMap));
         }
-        return storeList.stream()
-                .sorted(Comparator.comparingInt(
+        return storeList.stream().sorted(
+                Comparator.comparingInt(
                         s -> s.getPartitions().isEmpty() ? Integer.MAX_VALUE : s.getPartitions().get(0).getMajor()))
                 .collect(Collectors.toList());
     }
 
-    private static AixHWDiskStore createStore(String diskName, String model, String serial, long size,
-            Supplier<perfstat_disk_t[]> diskStats, Map<String, Pair<Integer, Integer>> majMinMap) {
+    private static AixHWDiskStore createStore(
+            String diskName,
+            String model,
+            String serial,
+            long size,
+            Supplier<perfstat_disk_t[]> diskStats,
+            Map<String, Pair<Integer, Integer>> majMinMap) {
         AixHWDiskStore store = new AixHWDiskStore(diskName, model.isEmpty() ? Normal.UNKNOWN : model, serial, size,
                 diskStats);
         store.partitionList = Lspv.queryLogicalVolumes(diskName, majMinMap);

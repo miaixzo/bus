@@ -206,6 +206,7 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     private static final class Field {
+
         byte[] buffer = new byte[256];
         int length;
 

@@ -34,6 +34,7 @@ package org.miaixz.bus.core.center.date.culture.cn;
  * @since Java 17+
  */
 public enum HiddenStems {
+
     RESIDUAL(0, "余气"), MIDDLE(1, "中气"), PRINCIPAL(2, "本气");
 
     /**

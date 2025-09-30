@@ -122,7 +122,10 @@ public class XPath {
      * @param nsContext  {@link NamespaceContext}
      * @return 匹配返回类型的值
      */
-    public static Object getByXPath(final String expression, final Object source, final QName returnType,
+    public static Object getByXPath(
+            final String expression,
+            final Object source,
+            final QName returnType,
             final NamespaceContext nsContext) {
         final javax.xml.xpath.XPath xPath = createXPath();
         if (null != nsContext) {

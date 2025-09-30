@@ -383,8 +383,9 @@ public class Headers {
             boolean commaSuffixed = skipWhitespaceAndCommas(header);
 
             if (!commaPrefixed && (commaSuffixed || header.exhausted())) {
-                result.add(new Challenge(schemeName,
-                        Collections.singletonMap(null, peek + repeat(Symbol.C_EQUAL, eqCount))));
+                result.add(
+                        new Challenge(schemeName,
+                                Collections.singletonMap(null, peek + repeat(Symbol.C_EQUAL, eqCount))));
                 peek = null;
                 continue;
             }
@@ -793,6 +794,7 @@ public class Headers {
      * Headers 构建器
      */
     public static class Builder {
+
         /** 头部名称和值列表 */
         final List<String> namesAndValues = new ArrayList<>(20);
 

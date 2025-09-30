@@ -66,6 +66,7 @@ public class Slf4jLoggingFactory extends AbstractFactory {
         final PrintStream err = System.err;
         try {
             System.setErr(new PrintStream(new OutputStream() {
+
                 @Override
                 public void write(final int b) {
                     buf.append((char) b);

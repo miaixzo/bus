@@ -239,7 +239,8 @@ public class MacOSProcess extends AbstractOSProcess {
                 if (pid > 0 && LOG_MAC_SYSCTL_WARNING) {
                     Logger.warn(
                             "Failed sysctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
-                            pid, Native.getLastError());
+                            pid,
+                            Native.getLastError());
                 }
             }
         }
@@ -400,8 +401,9 @@ public class MacOSProcess extends AbstractOSProcess {
     public boolean updateAttributes() {
         long now = System.currentTimeMillis();
         try (Struct.CloseableProcTaskAllInfo taskAllInfo = new Struct.CloseableProcTaskAllInfo()) {
-            if (0 > SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo,
-                    taskAllInfo.size()) || taskAllInfo.ptinfo.pti_threadnum < 1) {
+            if (0 > SystemB.INSTANCE
+                    .proc_pidinfo(getProcessID(), SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo, taskAllInfo.size())
+                    || taskAllInfo.ptinfo.pti_threadnum < 1) {
                 this.state = State.INVALID;
                 return false;
             }
@@ -421,27 +423,33 @@ public class MacOSProcess extends AbstractOSProcess {
             }
 
             switch (taskAllInfo.pbsd.pbi_status) {
-            case SSLEEP:
-                this.state = State.SLEEPING;
-                break;
-            case SWAIT:
-                this.state = State.WAITING;
-                break;
-            case SRUN:
-                this.state = State.RUNNING;
-                break;
-            case SIDL:
-                this.state = State.NEW;
-                break;
-            case SZOMB:
-                this.state = State.ZOMBIE;
-                break;
-            case SSTOP:
-                this.state = State.STOPPED;
-                break;
-            default:
-                this.state = State.OTHER;
-                break;
+                case SSLEEP:
+                    this.state = State.SLEEPING;
+                    break;
+
+                case SWAIT:
+                    this.state = State.WAITING;
+                    break;
+
+                case SRUN:
+                    this.state = State.RUNNING;
+                    break;
+
+                case SIDL:
+                    this.state = State.NEW;
+                    break;
+
+                case SZOMB:
+                    this.state = State.ZOMBIE;
+                    break;
+
+                case SSTOP:
+                    this.state = State.STOPPED;
+                    break;
+
+                default:
+                    this.state = State.OTHER;
+                    break;
             }
             this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
             this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);

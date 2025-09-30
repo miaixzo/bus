@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MatOfByte extends Mat {
+
     // 8UC(x)
     private static final int _depth = CvType.CV_8U;
     private static final int _channels = 1;

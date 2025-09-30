@@ -52,8 +52,8 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
     // Memoized hardware listing
     private final Supplier<List<String>> lscfg = Memoizer.memoize(Lscfg::queryAllDevices, Memoizer.defaultExpiration());
     // Memoized disk stats to pass to disk object(s)
-    private final Supplier<perfstat_disk_t[]> diskStats = Memoizer.memoize(PerfstatDisk::queryDiskStats,
-            Memoizer.defaultExpiration());
+    private final Supplier<perfstat_disk_t[]> diskStats = Memoizer
+            .memoize(PerfstatDisk::queryDiskStats, Memoizer.defaultExpiration());
 
     @Override
     public ComputerSystem createComputerSystem() {

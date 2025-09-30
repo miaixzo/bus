@@ -77,8 +77,8 @@ public final class AixNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        Supplier<perfstat_netinterface_t[]> netstats = Memoizer.memoize(PerfstatNetInterface::queryNetInterfaces,
-                Memoizer.defaultExpiration());
+        Supplier<perfstat_netinterface_t[]> netstats = Memoizer
+                .memoize(PerfstatNetInterface::queryNetInterfaces, Memoizer.defaultExpiration());
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             try {

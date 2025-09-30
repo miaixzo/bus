@@ -98,7 +98,9 @@ public class UrlQuery {
      * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
      * @return UrlQuery
      */
-    public static UrlQuery of(final String query, final java.nio.charset.Charset charset,
+    public static UrlQuery of(
+            final String query,
+            final java.nio.charset.Charset charset,
             final boolean autoRemovePath) {
         return of(query, charset, autoRemovePath, null);
     }
@@ -112,7 +114,10 @@ public class UrlQuery {
      * @param encodeMode     编码模式。
      * @return UrlQuery
      */
-    public static UrlQuery of(final String query, final java.nio.charset.Charset charset, final boolean autoRemovePath,
+    public static UrlQuery of(
+            final String query,
+            final java.nio.charset.Charset charset,
+            final boolean autoRemovePath,
             final EncodeMode encodeMode) {
         return of(encodeMode).parse(query, charset, autoRemovePath);
     }
@@ -297,12 +302,14 @@ public class UrlQuery {
      */
     public String build(final java.nio.charset.Charset charset) {
         switch (this.encodeMode) {
-        case FORM_URL_ENCODED:
-            return build(ALL, ALL, charset);
-        case STRICT:
-            return build(RFC3986.QUERY_PARAM_NAME_STRICT, RFC3986.QUERY_PARAM_VALUE_STRICT, charset);
-        default:
-            return build(RFC3986.QUERY_PARAM_NAME, RFC3986.QUERY_PARAM_VALUE, charset);
+            case FORM_URL_ENCODED:
+                return build(ALL, ALL, charset);
+
+            case STRICT:
+                return build(RFC3986.QUERY_PARAM_NAME_STRICT, RFC3986.QUERY_PARAM_VALUE_STRICT, charset);
+
+            default:
+                return build(RFC3986.QUERY_PARAM_NAME, RFC3986.QUERY_PARAM_VALUE, charset);
         }
     }
 
@@ -318,7 +325,9 @@ public class UrlQuery {
      * @param charset    encode编码，null表示不做encode编码
      * @return URL查询字符串
      */
-    public String build(final PercentCodec keyCoder, final PercentCodec valueCoder,
+    public String build(
+            final PercentCodec keyCoder,
+            final PercentCodec valueCoder,
             final java.nio.charset.Charset charset) {
         if (MapKit.isEmpty(this.query)) {
             return Normal.EMPTY;
@@ -359,25 +368,26 @@ public class UrlQuery {
         for (i = 0; i < len; i++) {
             c = query.charAt(i);
             switch (c) {
-            case Symbol.C_EQUAL:// 键和值的分界符
-                if (null == name) {
-                    // name可以是""
-                    name = query.substring(pos, i);
+                case Symbol.C_EQUAL:// 键和值的分界符
+                    if (null == name) {
+                        // name可以是""
+                        name = query.substring(pos, i);
+                        // 开始位置从分节符后开始
+                        pos = i + 1;
+                    }
+                    // 当=不作为分界符时，按照普通字符对待
+                    break;
+
+                case Symbol.C_AND: // 键值对之间的分界符
+                    addParam(name, query.substring(pos, i), charset);
+                    name = null;
+                    if (i + 4 < len && "amp;".equals(query.substring(i + 1, i + 5))) {
+                        // "&amp;"转义为"&"
+                        i += 4;
+                    }
                     // 开始位置从分节符后开始
                     pos = i + 1;
-                }
-                // 当=不作为分界符时，按照普通字符对待
-                break;
-            case Symbol.C_AND: // 键值对之间的分界符
-                addParam(name, query.substring(pos, i), charset);
-                name = null;
-                if (i + 4 < len && "amp;".equals(query.substring(i + 1, i + 5))) {
-                    // "&amp;"转义为"&"
-                    i += 4;
-                }
-                // 开始位置从分节符后开始
-                pos = i + 1;
-                break;
+                    break;
             }
         }
 

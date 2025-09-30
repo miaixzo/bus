@@ -126,8 +126,8 @@ public final class TableNameParser {
     /**
      * 需要关注的 SQL 关键字列表
      */
-    private static final List<String> concerned = Arrays.asList(KEYWORD_TABLE, KEYWORD_INTO, KEYWORD_JOIN,
-            KEYWORD_USING, KEYWORD_UPDATE, KEYWORD_STRAIGHT_JOIN);
+    private static final List<String> concerned = Arrays
+            .asList(KEYWORD_TABLE, KEYWORD_INTO, KEYWORD_JOIN, KEYWORD_USING, KEYWORD_UPDATE, KEYWORD_STRAIGHT_JOIN);
 
     /**
      * 需要忽略的 SQL 关键字列表
@@ -216,6 +216,7 @@ public final class TableNameParser {
      * 表名访问器
      */
     public interface TableNameVisitor {
+
         /**
          * @param name 表示表名称的 token
          */
@@ -328,7 +329,10 @@ public final class TableNameParser {
         }
     }
 
-    private static void processNonAliasedMultiTables(List<SqlToken> tokens, int index, String nextToken,
+    private static void processNonAliasedMultiTables(
+            List<SqlToken> tokens,
+            int index,
+            String nextToken,
             TableNameVisitor visitor) {
         while (nextToken.equals(Symbol.COMMA)) {
             visitNameToken(tokens.get(index++), visitor);
@@ -340,7 +344,10 @@ public final class TableNameParser {
         }
     }
 
-    private static void processAliasedMultiTables(List<SqlToken> tokens, int index, SqlToken current,
+    private static void processAliasedMultiTables(
+            List<SqlToken> tokens,
+            int index,
+            SqlToken current,
             TableNameVisitor visitor) {
         String nextNextToken = null;
         if (hasMoreTokens(tokens, index)) {

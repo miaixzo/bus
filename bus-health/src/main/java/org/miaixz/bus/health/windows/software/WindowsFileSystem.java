@@ -180,10 +180,11 @@ public class WindowsFileSystem extends AbstractFileSystem {
                     // Parse uuid from volume name
                     String uuid = Parsing.parseUuidOrDefault(volume, Normal.EMPTY);
 
-                    fs.add(new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", strName, strMount), volume,
-                            strName, strMount, options.toString(), uuid, Normal.EMPTY, getDriveType(strMount),
-                            strFsType, systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue(), 0,
-                            0));
+                    fs.add(
+                            new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", strName, strMount), volume,
+                                    strName, strMount, options.toString(), uuid, Normal.EMPTY, getDriveType(strMount),
+                                    strFsType, systemFreeBytes.getValue(), userFreeBytes.getValue(),
+                                    totalBytes.getValue(), 0, 0));
                 }
             } while (Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE));
             return fs;
@@ -224,9 +225,10 @@ public class WindowsFileSystem extends AbstractFileSystem {
                     description = split[split.length - 1];
                 }
             }
-            fs.add(new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", description, name), volume, label,
-                    name + "\\", options, Normal.EMPTY, Normal.EMPTY, getDriveType(name),
-                    WmiKit.getString(drives, LogicalDiskProperty.FILESYSTEM, i), free, free, total, 0, 0));
+            fs.add(
+                    new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", description, name), volume, label,
+                            name + "\\", options, Normal.EMPTY, Normal.EMPTY, getDriveType(name),
+                            WmiKit.getString(drives, LogicalDiskProperty.FILESYSTEM, i), free, free, total, 0, 0));
         }
         return fs;
     }
@@ -239,18 +241,23 @@ public class WindowsFileSystem extends AbstractFileSystem {
      */
     private static String getDriveType(String drive) {
         switch (Kernel32.INSTANCE.GetDriveType(drive)) {
-        case 2:
-            return "Removable drive";
-        case 3:
-            return "Fixed drive";
-        case 4:
-            return "Network drive";
-        case 5:
-            return "CD-ROM";
-        case 6:
-            return "RAM drive";
-        default:
-            return "Unknown drive type";
+            case 2:
+                return "Removable drive";
+
+            case 3:
+                return "Fixed drive";
+
+            case 4:
+                return "Network drive";
+
+            case 5:
+                return "CD-ROM";
+
+            case 6:
+                return "RAM drive";
+
+            default:
+                return "Unknown drive type";
         }
     }
 
@@ -276,10 +283,12 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 // using WMI's more verbose name and update label if needed
                 OSFileStore volume = volumeMap.get(wmiVolume.getMount());
                 result.remove(volume);
-                result.add(new WindowsOSFileStore(wmiVolume.getName(), volume.getVolume(),
-                        volume.getLabel().isEmpty() ? wmiVolume.getLabel() : volume.getLabel(), volume.getMount(),
-                        volume.getOptions(), volume.getUUID(), Normal.EMPTY, volume.getDescription(), volume.getType(),
-                        volume.getFreeSpace(), volume.getUsableSpace(), volume.getTotalSpace(), 0, 0));
+                result.add(
+                        new WindowsOSFileStore(wmiVolume.getName(), volume.getVolume(),
+                                volume.getLabel().isEmpty() ? wmiVolume.getLabel() : volume.getLabel(),
+                                volume.getMount(), volume.getOptions(), volume.getUUID(), Normal.EMPTY,
+                                volume.getDescription(), volume.getType(), volume.getFreeSpace(),
+                                volume.getUsableSpace(), volume.getTotalSpace(), 0, 0));
             } else if (!localOnly) {
                 // Otherwise add the new volume in its entirety
                 result.add(wmiVolume);

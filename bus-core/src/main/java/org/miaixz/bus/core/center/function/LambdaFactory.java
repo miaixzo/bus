@@ -56,15 +56,17 @@ public class LambdaFactory {
      * 构建Lambda
      * 
      * <pre>{@code
+     * 
      * class Something {
+     * 
      *     private Long id;
      *     private String name;
      *     // ... 省略GetterSetter方法
      * }
      * 
      * Function<Something, Long> getIdFunction = LambdaFactory.buildLambda(Function.class, Something.class, "getId");
-     * BiConsumer<Something, String> setNameConsumer = LambdaFactory.buildLambda(BiConsumer.class, Something.class,
-     *         "setName", String.class);
+     * BiConsumer<Something, String> setNameConsumer = LambdaFactory
+     *         .buildLambda(BiConsumer.class, Something.class, "setName", String.class);
      * }
      * </pre>
      *
@@ -75,9 +77,14 @@ public class LambdaFactory {
      * @param <F>                   Function类型
      * @return 接受Lambda的函数式接口对象
      */
-    public static <F> F build(final Class<F> functionInterfaceType, final Class<?> declaringClass,
-            final String methodName, final Class<?>... paramTypes) {
-        return build(functionInterfaceType, MethodKit.getMethod(declaringClass, methodName, paramTypes),
+    public static <F> F build(
+            final Class<F> functionInterfaceType,
+            final Class<?> declaringClass,
+            final String methodName,
+            final Class<?>... paramTypes) {
+        return build(
+                functionInterfaceType,
+                MethodKit.getMethod(declaringClass, methodName, paramTypes),
                 declaringClass);
     }
 
@@ -102,13 +109,16 @@ public class LambdaFactory {
      * @param declaringClass        {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
      * @return 接受Lambda的函数式接口对象
      */
-    public static <F> F build(final Class<F> functionInterfaceType, final Executable executable,
+    public static <F> F build(
+            final Class<F> functionInterfaceType,
+            final Executable executable,
             final Class<?> declaringClass) {
         Assert.notNull(functionInterfaceType);
         Assert.notNull(executable);
 
         final MutableEntry<Class<?>, Executable> cacheKey = new MutableEntry<>(functionInterfaceType, executable);
-        return (F) CACHE.computeIfAbsent(cacheKey,
+        return (F) CACHE.computeIfAbsent(
+                cacheKey,
                 key -> doBuildWithoutCache(functionInterfaceType, executable, declaringClass));
     }
 
@@ -121,7 +131,9 @@ public class LambdaFactory {
      * @param declaringClass {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
      * @return 接受Lambda的函数式接口对象
      */
-    private static <F> F doBuildWithoutCache(final Class<F> funcType, final Executable executable,
+    private static <F> F doBuildWithoutCache(
+            final Class<F> funcType,
+            final Executable executable,
             final Class<?> declaringClass) {
         ReflectKit.setAccessible(executable);
 
@@ -144,7 +156,10 @@ public class LambdaFactory {
      * @return {@link CallSite}
      * @throws LambdaConversionException 权限等异常
      */
-    private static CallSite metaFactory(final Class<?> funcType, final Method funcMethod, final Executable executable,
+    private static CallSite metaFactory(
+            final Class<?> funcType,
+            final Method funcMethod,
+            final Executable executable,
             final Class<?> declaringClass) throws LambdaConversionException {
         // 查找上下文与调用者的访问权限
         final MethodHandles.Lookup caller = LookupKit.lookup(executable.getDeclaringClass());
@@ -160,11 +175,22 @@ public class LambdaFactory {
         final MethodHandle implMethodHandle = LookupKit.unreflect(executable);
 
         if (ClassKit.isSerializable(funcType)) {
-            return LambdaMetafactory.altMetafactory(caller, invokeName, invokedType, samMethodType, implMethodHandle,
-                    MethodKit.methodType(executable, declaringClass), LambdaMetafactory.FLAG_SERIALIZABLE);
+            return LambdaMetafactory.altMetafactory(
+                    caller,
+                    invokeName,
+                    invokedType,
+                    samMethodType,
+                    implMethodHandle,
+                    MethodKit.methodType(executable, declaringClass),
+                    LambdaMetafactory.FLAG_SERIALIZABLE);
         }
 
-        return LambdaMetafactory.metafactory(caller, invokeName, invokedType, samMethodType, implMethodHandle,
+        return LambdaMetafactory.metafactory(
+                caller,
+                invokeName,
+                invokedType,
+                samMethodType,
+                implMethodHandle,
                 MethodKit.methodType(executable, declaringClass));
     }
 

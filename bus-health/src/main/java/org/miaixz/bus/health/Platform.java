@@ -338,9 +338,9 @@ public class Platform {
             return true;
         }
         return switch (value) {
-        case "true", "yes", Symbol.ONE -> true;
-        case "false", "no", Symbol.ZERO -> false;
-        default -> defaultValue;
+            case "true", "yes", Symbol.ONE -> true;
+            case "false", "no", Symbol.ZERO -> false;
+            default -> defaultValue;
         };
     }
 
@@ -480,7 +480,9 @@ public class Platform {
      * @return 路径前缀
      */
     public static String getNativeLibraryResourcePrefix() {
-        return getNativeLibraryResourcePrefix(getOSType(), System.getProperty("os.arch"),
+        return getNativeLibraryResourcePrefix(
+                getOSType(),
+                System.getProperty("os.arch"),
                 System.getProperty("os.name"));
     }
 
@@ -496,40 +498,51 @@ public class Platform {
         // 规范化架构名称
         arch = arch.toLowerCase().trim();
         arch = switch (arch) {
-        case "powerpc" -> "ppc";
-        case "powerpc64" -> "ppc64";
-        case "i386" -> "x86";
-        case "x86_64", "amd64" -> "x86_64";
-        default -> arch;
+            case "powerpc" -> "ppc";
+            case "powerpc64" -> "ppc64";
+            case "i386" -> "x86";
+            case "x86_64", "amd64" -> "x86_64";
+            default -> arch;
         };
 
         // 根据操作系统类型生成前缀
         switch (osType) {
-        case com.sun.jna.Platform.ANDROID:
-            return "android-" + (arch.startsWith("arm") ? "arm" : arch);
-        case com.sun.jna.Platform.WINDOWS:
-            return "win32-" + arch;
-        case com.sun.jna.Platform.WINDOWSCE:
-            return "w32ce-" + arch;
-        case com.sun.jna.Platform.MAC:
-            return "macos-" + arch;
-        case com.sun.jna.Platform.LINUX:
-            return "linux-" + arch;
-        case com.sun.jna.Platform.SOLARIS:
-            return "sunos-" + arch;
-        case com.sun.jna.Platform.FREEBSD:
-            return "freebsd-" + arch;
-        case com.sun.jna.Platform.OPENBSD:
-            return "openbsd-" + arch;
-        case com.sun.jna.Platform.NETBSD:
-            return "netbsd-" + arch;
-        case com.sun.jna.Platform.KFREEBSD:
-            return "kfreebsd-" + arch;
-        case com.sun.jna.Platform.AIX:
-            return "aix-" + arch;
-        default:
-            String osPrefix = name.toLowerCase().split(Symbol.SPACE)[0];
-            return osPrefix + Symbol.MINUS + arch;
+            case com.sun.jna.Platform.ANDROID:
+                return "android-" + (arch.startsWith("arm") ? "arm" : arch);
+
+            case com.sun.jna.Platform.WINDOWS:
+                return "win32-" + arch;
+
+            case com.sun.jna.Platform.WINDOWSCE:
+                return "w32ce-" + arch;
+
+            case com.sun.jna.Platform.MAC:
+                return "macos-" + arch;
+
+            case com.sun.jna.Platform.LINUX:
+                return "linux-" + arch;
+
+            case com.sun.jna.Platform.SOLARIS:
+                return "sunos-" + arch;
+
+            case com.sun.jna.Platform.FREEBSD:
+                return "freebsd-" + arch;
+
+            case com.sun.jna.Platform.OPENBSD:
+                return "openbsd-" + arch;
+
+            case com.sun.jna.Platform.NETBSD:
+                return "netbsd-" + arch;
+
+            case com.sun.jna.Platform.KFREEBSD:
+                return "kfreebsd-" + arch;
+
+            case com.sun.jna.Platform.AIX:
+                return "aix-" + arch;
+
+            default:
+                String osPrefix = name.toLowerCase().split(Symbol.SPACE)[0];
+                return osPrefix + Symbol.MINUS + arch;
         }
     }
 
@@ -541,23 +554,30 @@ public class Platform {
      */
     private OperatingSystem createOperatingSystem() {
         switch (CURRENT_PLATFORM) {
-        case WINDOWS:
-            return new WindowsOperatingSystem();
-        case LINUX:
-        case ANDROID:
-            return new LinuxOperatingSystem();
-        case MACOS:
-            return new MacOperatingSystem();
-        case SOLARIS:
-            return new SolarisOperatingSystem();
-        case FREEBSD:
-            return new FreeBsdOperatingSystem();
-        case AIX:
-            return new AixOperatingSystem();
-        case OPENBSD:
-            return new OpenBsdOperatingSystem();
-        default:
-            throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
+            case WINDOWS:
+                return new WindowsOperatingSystem();
+
+            case LINUX:
+            case ANDROID:
+                return new LinuxOperatingSystem();
+
+            case MACOS:
+                return new MacOperatingSystem();
+
+            case SOLARIS:
+                return new SolarisOperatingSystem();
+
+            case FREEBSD:
+                return new FreeBsdOperatingSystem();
+
+            case AIX:
+                return new AixOperatingSystem();
+
+            case OPENBSD:
+                return new OpenBsdOperatingSystem();
+
+            default:
+                throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
     }
 
@@ -569,23 +589,30 @@ public class Platform {
      */
     private HardwareAbstractionLayer createHardware() {
         switch (CURRENT_PLATFORM) {
-        case WINDOWS:
-            return new WindowsHardwareAbstractionLayer();
-        case LINUX:
-        case ANDROID:
-            return new LinuxHardwareAbstractionLayer();
-        case MACOS:
-            return new MacHardwareAbstractionLayer();
-        case SOLARIS:
-            return new SolarisHardwareAbstractionLayer();
-        case FREEBSD:
-            return new FreeBsdHardwareAbstractionLayer();
-        case AIX:
-            return new AixHardwareAbstractionLayer();
-        case OPENBSD:
-            return new OpenBsdHardwareAbstractionLayer();
-        default:
-            throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
+            case WINDOWS:
+                return new WindowsHardwareAbstractionLayer();
+
+            case LINUX:
+            case ANDROID:
+                return new LinuxHardwareAbstractionLayer();
+
+            case MACOS:
+                return new MacHardwareAbstractionLayer();
+
+            case SOLARIS:
+                return new SolarisHardwareAbstractionLayer();
+
+            case FREEBSD:
+                return new FreeBsdHardwareAbstractionLayer();
+
+            case AIX:
+                return new AixHardwareAbstractionLayer();
+
+            case OPENBSD:
+                return new OpenBsdHardwareAbstractionLayer();
+
+            default:
+                throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
     }
 

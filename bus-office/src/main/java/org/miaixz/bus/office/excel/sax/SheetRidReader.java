@@ -180,7 +180,10 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     @Override
-    public void startElement(final String uri, final String localName, final String qName,
+    public void startElement(
+            final String uri,
+            final String localName,
+            final String qName,
             final Attributes attributes) {
         if (TAG_NAME.equalsIgnoreCase(localName)) {
             final String ridStr = attributes.getValue(RID_ATTR);

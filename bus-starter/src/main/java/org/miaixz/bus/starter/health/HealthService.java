@@ -187,20 +187,22 @@ public class HealthService {
      */
     public void append(String type, Map<String, Object> map) {
         switch (type.toLowerCase()) {
-        case TID.LIVENESS:
-            map.put(type, availability.getLivenessState());
-            break;
-        case TID.READINESS:
-            map.put(type, availability.getReadinessState());
-            break;
-        default:
-            try {
-                provider.append(type, map);
-            } catch (Exception e) {
-                Logger.error("Failed to append health data for type {}: {}", type, e.getMessage(), e);
-                map.put(type, "Error: " + e.getMessage());
-            }
-            break;
+            case TID.LIVENESS:
+                map.put(type, availability.getLivenessState());
+                break;
+
+            case TID.READINESS:
+                map.put(type, availability.getReadinessState());
+                break;
+
+            default:
+                try {
+                    provider.append(type, map);
+                } catch (Exception e) {
+                    Logger.error("Failed to append health data for type {}: {}", type, e.getMessage(), e);
+                    map.put(type, "Error: " + e.getMessage());
+                }
+                break;
         }
     }
 

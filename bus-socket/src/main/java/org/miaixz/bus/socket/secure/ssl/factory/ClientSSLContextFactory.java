@@ -65,6 +65,7 @@ public class ClientSSLContextFactory implements SSLContextFactory {
             trustManagers = tmf.getTrustManagers();
         } else {
             trustManagers = new TrustManager[] { new X509TrustManager() {
+
                 @Override
                 public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
                 }

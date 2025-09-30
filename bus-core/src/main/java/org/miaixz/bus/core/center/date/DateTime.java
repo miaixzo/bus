@@ -383,7 +383,9 @@ public class DateTime extends Date {
      * @param lenient 是否宽容模式
      * @return {@link java.util.Calendar}
      */
-    private static java.util.Calendar parse(final CharSequence date, final PositionDateParser parser,
+    private static java.util.Calendar parse(
+            final CharSequence date,
+            final PositionDateParser parser,
             final boolean lenient) {
         final java.util.Calendar calendar = Calendar.parse(date, lenient, parser);
         calendar.setFirstDayOfWeek(Week.MONDAY.getCode());
@@ -818,7 +820,11 @@ public class DateTime extends Date {
      * @param includeEnd   时间范围是否包含结束日期
      * @return 是否在范围内
      */
-    public boolean isIn(final Date date, final Date beginDate, final Date endDate, final boolean includeBegin,
+    public boolean isIn(
+            final Date date,
+            final Date beginDate,
+            final Date endDate,
+            final boolean includeBegin,
             final boolean includeEnd) {
         if (date == null || beginDate == null || endDate == null) {
             throw new IllegalArgumentException("参数不可为null");

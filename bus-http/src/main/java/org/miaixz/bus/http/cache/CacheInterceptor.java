@@ -228,6 +228,7 @@ public class CacheInterceptor implements Interceptor {
         final BufferSink cacheBody = IoKit.buffer(cacheBodyUnbuffered);
 
         Source cacheWritingSource = new Source() {
+
             boolean cacheRequestClosed;
 
             @Override
@@ -274,8 +275,11 @@ public class CacheInterceptor implements Interceptor {
             }
         };
 
-        return response.newBuilder().body(new RealResponseBody(response.header(HTTP.CONTENT_TYPE),
-                response.body().length(), IoKit.buffer(cacheWritingSource))).build();
+        return response.newBuilder()
+                .body(
+                        new RealResponseBody(response.header(HTTP.CONTENT_TYPE), response.body().length(),
+                                IoKit.buffer(cacheWritingSource)))
+                .build();
     }
 
 }

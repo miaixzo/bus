@@ -56,28 +56,42 @@ public enum QueryRetrieveLevel2 {
         this.vrOfUniqueKey = vrOfUniqueKey;
     }
 
-    public static QueryRetrieveLevel2 validateQueryIdentifier(Attributes keys, EnumSet<QueryRetrieveLevel2> levels,
+    public static QueryRetrieveLevel2 validateQueryIdentifier(
+            Attributes keys,
+            EnumSet<QueryRetrieveLevel2> levels,
             boolean relational) throws ImageServiceException {
         return validateIdentifier(keys, levels, relational, false, true);
     }
 
-    public static QueryRetrieveLevel2 validateQueryIdentifier(Attributes keys, EnumSet<QueryRetrieveLevel2> levels,
-            boolean relational, boolean lenient) throws ImageServiceException {
+    public static QueryRetrieveLevel2 validateQueryIdentifier(
+            Attributes keys,
+            EnumSet<QueryRetrieveLevel2> levels,
+            boolean relational,
+            boolean lenient) throws ImageServiceException {
         return validateIdentifier(keys, levels, relational, lenient, true);
     }
 
-    public static QueryRetrieveLevel2 validateRetrieveIdentifier(Attributes keys, EnumSet<QueryRetrieveLevel2> levels,
+    public static QueryRetrieveLevel2 validateRetrieveIdentifier(
+            Attributes keys,
+            EnumSet<QueryRetrieveLevel2> levels,
             boolean relational) throws ImageServiceException {
         return validateIdentifier(keys, levels, relational, false, false);
     }
 
-    public static QueryRetrieveLevel2 validateRetrieveIdentifier(Attributes keys, EnumSet<QueryRetrieveLevel2> levels,
-            boolean relational, boolean lenient) throws ImageServiceException {
+    public static QueryRetrieveLevel2 validateRetrieveIdentifier(
+            Attributes keys,
+            EnumSet<QueryRetrieveLevel2> levels,
+            boolean relational,
+            boolean lenient) throws ImageServiceException {
         return validateIdentifier(keys, levels, relational, lenient, false);
     }
 
-    private static QueryRetrieveLevel2 validateIdentifier(Attributes keys, EnumSet<QueryRetrieveLevel2> levels,
-            boolean relational, boolean lenient, boolean query) throws ImageServiceException {
+    private static QueryRetrieveLevel2 validateIdentifier(
+            Attributes keys,
+            EnumSet<QueryRetrieveLevel2> levels,
+            boolean relational,
+            boolean lenient,
+            boolean query) throws ImageServiceException {
         String value = keys.getString(Tag.QueryRetrieveLevel);
         if (value == null)
             throw missingAttribute(Tag.QueryRetrieveLevel);
@@ -108,7 +122,8 @@ public enum QueryRetrieveLevel2 {
 
     private static ImageServiceException invalidAttributeValue(int tag, String value) {
         return identifierDoesNotMatchSOPClass(
-                "Invalid " + DICT.keywordOf(tag) + Symbol.SPACE + Tag.toString(tag) + " - " + value, tag);
+                "Invalid " + DICT.keywordOf(tag) + Symbol.SPACE + Tag.toString(tag) + " - " + value,
+                tag);
     }
 
     private static ImageServiceException identifierDoesNotMatchSOPClass(String comment, int tag) {
@@ -131,8 +146,9 @@ public enum QueryRetrieveLevel2 {
         if (ids == null || ids.length == 0 || ids[0].indexOf('*') >= 0 || ids[0].indexOf('?') >= 0) {
             if (!optional)
                 if (lenient)
-                    Logger.info("Missing or wildcard " + DICT.keywordOf(uniqueKey) + Symbol.SPACE
-                            + Tag.toString(uniqueKey) + " in Query/Retrieve Identifier");
+                    Logger.info(
+                            "Missing or wildcard " + DICT.keywordOf(uniqueKey) + Symbol.SPACE + Tag.toString(uniqueKey)
+                                    + " in Query/Retrieve Identifier");
                 else
                     throw ids == null || ids.length == 0 ? missingAttribute(uniqueKey)
                             : invalidAttributeValue(uniqueKey, ids[0]);

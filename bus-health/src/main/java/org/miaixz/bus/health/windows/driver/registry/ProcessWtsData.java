@@ -80,8 +80,12 @@ public final class ProcessWtsData {
                 ByRef.CloseablePointerByReference ppProcessInfo = new ByRef.CloseablePointerByReference();
                 ByRef.CloseableIntByReference infoLevel1 = new ByRef.CloseableIntByReference(
                         Wtsapi32.WTS_PROCESS_INFO_LEVEL_1)) {
-            if (!Wtsapi32.INSTANCE.WTSEnumerateProcessesEx(Wtsapi32.WTS_CURRENT_SERVER_HANDLE, infoLevel1,
-                    Wtsapi32.WTS_ANY_SESSION, ppProcessInfo, pCount)) {
+            if (!Wtsapi32.INSTANCE.WTSEnumerateProcessesEx(
+                    Wtsapi32.WTS_CURRENT_SERVER_HANDLE,
+                    infoLevel1,
+                    Wtsapi32.WTS_ANY_SESSION,
+                    ppProcessInfo,
+                    pCount)) {
                 Logger.error("Failed to enumerate Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
                 return wtsMap;
             }
@@ -91,15 +95,16 @@ public final class ProcessWtsData {
             WTS_PROCESS_INFO_EX[] processInfo = (WTS_PROCESS_INFO_EX[]) processInfoRef.toArray(pCount.getValue());
             for (WTS_PROCESS_INFO_EX info : processInfo) {
                 if (pids == null || pids.contains(info.ProcessId)) {
-                    wtsMap.put(info.ProcessId,
+                    wtsMap.put(
+                            info.ProcessId,
                             new WtsInfo(info.pProcessName, Normal.EMPTY, info.NumberOfThreads,
                                     info.PagefileUsage & 0xffff_ffffL, info.KernelTime.getValue() / 10_000L,
                                     info.UserTime.getValue() / 10_000, info.HandleCount));
                 }
             }
             // Clean up memory
-            if (!Wtsapi32.INSTANCE.WTSFreeMemoryEx(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1, pProcessInfo,
-                    pCount.getValue())) {
+            if (!Wtsapi32.INSTANCE
+                    .WTSFreeMemoryEx(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1, pProcessInfo, pCount.getValue())) {
                 Logger.warn("Failed to Free Memory for Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
             }
         }
@@ -110,15 +115,17 @@ public final class ProcessWtsData {
         Map<Integer, WtsInfo> wtsMap = new HashMap<>();
         WmiResult<ProcessXPProperty> processWmiResult = Win32Process.queryProcesses(pids);
         for (int i = 0; i < processWmiResult.getResultCount(); i++) {
-            wtsMap.put(WmiKit.getUint32(processWmiResult, ProcessXPProperty.PROCESSID, i), new WtsInfo(
-                    WmiKit.getString(processWmiResult, ProcessXPProperty.NAME, i),
-                    WmiKit.getString(processWmiResult, ProcessXPProperty.EXECUTABLEPATH, i),
-                    WmiKit.getUint32(processWmiResult, ProcessXPProperty.THREADCOUNT, i),
-                    // WMI Pagefile usage is in KB
-                    1024 * (WmiKit.getUint32(processWmiResult, ProcessXPProperty.PAGEFILEUSAGE, i) & 0xffff_ffffL),
-                    WmiKit.getUint64(processWmiResult, ProcessXPProperty.KERNELMODETIME, i) / 10_000L,
-                    WmiKit.getUint64(processWmiResult, ProcessXPProperty.USERMODETIME, i) / 10_000L,
-                    WmiKit.getUint32(processWmiResult, ProcessXPProperty.HANDLECOUNT, i)));
+            wtsMap.put(
+                    WmiKit.getUint32(processWmiResult, ProcessXPProperty.PROCESSID, i),
+                    new WtsInfo(WmiKit.getString(processWmiResult, ProcessXPProperty.NAME, i),
+                            WmiKit.getString(processWmiResult, ProcessXPProperty.EXECUTABLEPATH, i),
+                            WmiKit.getUint32(processWmiResult, ProcessXPProperty.THREADCOUNT, i),
+                            // WMI Pagefile usage is in KB
+                            1024 * (WmiKit.getUint32(processWmiResult, ProcessXPProperty.PAGEFILEUSAGE, i)
+                                    & 0xffff_ffffL),
+                            WmiKit.getUint64(processWmiResult, ProcessXPProperty.KERNELMODETIME, i) / 10_000L,
+                            WmiKit.getUint64(processWmiResult, ProcessXPProperty.USERMODETIME, i) / 10_000L,
+                            WmiKit.getUint32(processWmiResult, ProcessXPProperty.HANDLECOUNT, i)));
         }
         return wtsMap;
     }
@@ -128,6 +135,7 @@ public final class ProcessWtsData {
      */
     @Immutable
     public static class WtsInfo {
+
         private final String name;
         private final String path;
         private final int threadCount;

@@ -101,7 +101,8 @@ public class MapJoiner {
      * @param predicate Map过滤器
      * @return this
      */
-    public <K, V> MapJoiner append(final Iterator<? extends Map.Entry<K, V>> parts,
+    public <K, V> MapJoiner append(
+            final Iterator<? extends Map.Entry<K, V>> parts,
             final Predicate<Map.Entry<K, V>> predicate) {
         if (null == parts) {
             return this;

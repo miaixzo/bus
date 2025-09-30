@@ -51,7 +51,9 @@ public final class ThreadInformation {
      * @return Thread counters for each thread.
      */
     public static Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> queryThreadCounters() {
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class, PerfmonConsts.THREAD,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                ThreadPerformanceProperty.class,
+                PerfmonConsts.THREAD,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 
@@ -62,12 +64,15 @@ public final class ThreadInformation {
      * @param threadNum The thread number to match. -1 matches all threads.
      * @return Thread counters for each thread.
      */
-    public static Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> queryThreadCounters(String name,
+    public static Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> queryThreadCounters(
+            String name,
             int threadNum) {
         String procName = name.toLowerCase(Locale.ROOT);
         if (threadNum >= 0) {
             Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> threads = PerfCounterWildcardQuery
-                    .queryInstancesAndValues(ThreadPerformanceProperty.class, PerfmonConsts.THREAD,
+                    .queryInstancesAndValues(
+                            ThreadPerformanceProperty.class,
+                            PerfmonConsts.THREAD,
                             PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \"" + procName
                                     + "/_%\" AND IDThread=" + threadNum,
                             procName + "/*");
@@ -75,7 +80,9 @@ public final class ThreadInformation {
                 return threads;
             }
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class, PerfmonConsts.THREAD,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                ThreadPerformanceProperty.class,
+                PerfmonConsts.THREAD,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \"" + procName + "/_%\"",
                 procName + "/*");
     }
@@ -84,6 +91,7 @@ public final class ThreadInformation {
      * Thread performance counters
      */
     public enum ThreadPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters

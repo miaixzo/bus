@@ -91,6 +91,7 @@ public class JmsConsumer implements Consumer {
             this.consumer.setMessageListener(message -> {
                 // 创建消息对象并交给处理器处理
                 messageHandler.handle(new Message() {
+
                     /**
                      * 获取消息主题（消费者组名称）
                      *

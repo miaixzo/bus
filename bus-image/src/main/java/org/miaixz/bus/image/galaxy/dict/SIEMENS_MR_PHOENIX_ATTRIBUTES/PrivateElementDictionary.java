@@ -52,13 +52,15 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.SequenceFileName:
-            return VR.LT;
-        case PrivateTag.MdsModeMask:
-        case PrivateTag.CountOfPseudoAttributes:
-            return VR.UL;
-        case PrivateTag.Dixon:
-            return VR.US;
+            case PrivateTag.SequenceFileName:
+                return VR.LT;
+
+            case PrivateTag.MdsModeMask:
+            case PrivateTag.CountOfPseudoAttributes:
+                return VR.UL;
+
+            case PrivateTag.Dixon:
+                return VR.US;
         }
         return VR.UN;
     }

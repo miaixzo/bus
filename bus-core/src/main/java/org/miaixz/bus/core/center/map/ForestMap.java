@@ -96,8 +96,11 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      * @param parentKeyGenerator 从值中获取父节点key的方法
      * @param ignoreNullNode     是否获取到的key为null的子节点/父节点
      */
-    default <C extends Collection<V>> void putAllNode(final C values, final Function<V, K> keyGenerator,
-            final Function<V, K> parentKeyGenerator, final boolean ignoreNullNode) {
+    default <C extends Collection<V>> void putAllNode(
+            final C values,
+            final Function<V, K> keyGenerator,
+            final Function<V, K> parentKeyGenerator,
+            final boolean ignoreNullNode) {
         if (CollKit.isEmpty(values)) {
             return;
         }

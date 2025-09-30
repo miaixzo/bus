@@ -148,8 +148,11 @@ public class AliPayBuilder {
      * @param signType                指定采用的签名方式，RSA或RSA2
      * @return true：验签通过；false：验签不通过
      */
-    public static boolean rsaCertCheckV1ByContent(Map<String, String> params, String alipayPublicCertContent,
-            String charset, String signType) {
+    public static boolean rsaCertCheckV1ByContent(
+            Map<String, String> params,
+            String alipayPublicCertContent,
+            String charset,
+            String signType) {
         try {
             // Extract public key from certificate content
             CertificateFactory cf = CertificateFactory.getInstance("X.509");

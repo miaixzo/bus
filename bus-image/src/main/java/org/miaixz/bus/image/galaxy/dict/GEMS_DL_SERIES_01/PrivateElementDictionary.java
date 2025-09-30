@@ -52,16 +52,19 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.SentFlag:
-        case PrivateTag.InternalLabel:
-        case PrivateTag.BrowserHide:
-            return VR.CS;
-        case PrivateTag.NumberOfImages:
-            return VR.IS;
-        case PrivateTag.SeriesFileName:
-            return VR.LO;
-        case PrivateTag.ItemLocked:
-            return VR.US;
+            case PrivateTag.SentFlag:
+            case PrivateTag.InternalLabel:
+            case PrivateTag.BrowserHide:
+                return VR.CS;
+
+            case PrivateTag.NumberOfImages:
+                return VR.IS;
+
+            case PrivateTag.SeriesFileName:
+                return VR.LO;
+
+            case PrivateTag.ItemLocked:
+                return VR.US;
         }
         return VR.UN;
     }

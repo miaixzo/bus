@@ -223,7 +223,9 @@ public class TemplateContext {
                 }
 
                 // 替换转义的变量
-                final String text = PatternKit.replaceAll(cellValue, ESCAPE_VAR_PATTERN,
+                final String text = PatternKit.replaceAll(
+                        cellValue,
+                        ESCAPE_VAR_PATTERN,
                         (matcher) -> Symbol.BRACE_LEFT + matcher.group(1) + Symbol.BRACE_RIGHT);
                 if (!StringKit.equals(cellValue, text)) {
                     cell.setCellValue(text);

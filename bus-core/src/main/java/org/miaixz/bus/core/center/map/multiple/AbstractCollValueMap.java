@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.core.center.map.multiple;
 
 import java.io.Serial;
 import java.util.Collection;
@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * {@link MultiValueMap}的基本实现
+ * {@link MultipleValueMap}的基本实现
  *
  * @param <K> 键类型
  * @param <V> 值类型
@@ -52,7 +52,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @see ListValueMap
  * @since Java 17+
  */
-public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collection<V>> implements MultiValueMap<K, V> {
+public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collection<V>>
+        implements MultipleValueMap<K, V> {
 
     @Serial
     private static final long serialVersionUID = 2852276903237L;
@@ -157,7 +158,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      * @return 当前实例
      */
     @Override
-    public MultiValueMap<K, V> filterAllValues(final BiPredicate<K, V> filter) {
+    public MultipleValueMap<K, V> filterAllValues(final BiPredicate<K, V> filter) {
         entrySet().forEach(e -> {
             final K k = e.getKey();
             final Collection<V> coll = e.getValue().stream().filter(v -> filter.test(k, v))
@@ -174,7 +175,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      * @return 当前实例
      */
     @Override
-    public MultiValueMap<K, V> replaceAllValues(final BiFunction<K, V, V> operate) {
+    public MultipleValueMap<K, V> replaceAllValues(final BiFunction<K, V, V> operate) {
         entrySet().forEach(e -> {
             final K k = e.getKey();
             final Collection<V> coll = e.getValue().stream().map(v -> operate.apply(k, v))

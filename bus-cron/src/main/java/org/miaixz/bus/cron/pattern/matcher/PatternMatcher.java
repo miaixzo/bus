@@ -28,7 +28,6 @@
 package org.miaixz.bus.cron.pattern.matcher;
 
 import java.time.Year;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -79,7 +78,10 @@ public class PatternMatcher {
      * @param isLeapYear 是否闰年
      * @return 是否匹配
      */
-    private static boolean matchDayOfMonth(final PartMatcher matcher, final int dayOfMonth, final int month,
+    private static boolean matchDayOfMonth(
+            final PartMatcher matcher,
+            final int dayOfMonth,
+            final int month,
             final boolean isLeapYear) {
         return ((matcher instanceof DayOfMonthMatcher) //
                 ? ((DayOfMonthMatcher) matcher).match(dayOfMonth, month, isLeapYear) //
@@ -128,8 +130,14 @@ public class PatternMatcher {
      * @param year       年
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
-    private boolean match(final int second, final int minute, final int hour, final int dayOfMonth, final int month,
-            final int dayOfWeek, final int year) {
+    private boolean match(
+            final int second,
+            final int minute,
+            final int hour,
+            final int dayOfMonth,
+            final int month,
+            final int dayOfWeek,
+            final int year) {
         return ((second < 0) || matchers[0].test(second)) // 匹配秒（非秒匹配模式下始终返回true）
                 && matchers[1].test(minute)// 匹配分
                 && matchers[2].test(hour)// 匹配时
@@ -257,8 +265,8 @@ public class PatternMatcher {
         if (partOrdinal == Part.DAY_OF_MONTH.ordinal() && matchers[partOrdinal] instanceof DayOfMonthMatcher) {
             final boolean isLeapYear = DateKit.isLeapYear(newValues[Part.YEAR.ordinal()]);
             final int month = newValues[Part.MONTH.ordinal()];
-            return ((DayOfMonthMatcher) matchers[partOrdinal]).nextAfter(newValues[partOrdinal] + plusValue, month,
-                    isLeapYear);
+            return ((DayOfMonthMatcher) matchers[partOrdinal])
+                    .nextAfter(newValues[partOrdinal] + plusValue, month, isLeapYear);
         }
 
         return matchers[partOrdinal].nextAfter(newValues[partOrdinal] + plusValue);
@@ -324,12 +332,13 @@ public class PatternMatcher {
      */
     private Calendar setValue(final Calendar calendar, final Part part, int value) {
         switch (part) {
-        case MONTH:
-            value -= 1;
-            break;
-        case DAY_OF_WEEK:
-            value += 1;
-            break;
+            case MONTH:
+                value -= 1;
+                break;
+
+            case DAY_OF_WEEK:
+                value += 1;
+                break;
         }
         calendar.set(part.getCalendarField(), value);
         return calendar;

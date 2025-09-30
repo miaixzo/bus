@@ -44,7 +44,11 @@ import org.miaixz.bus.pager.dialect.AbstractPaging;
 public class AS400 extends AbstractPaging {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql,
+    public Object processPageParameter(
+            MappedStatement ms,
+            Map<String, Object> paramMap,
+            Page page,
+            BoundSql boundSql,
             CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());

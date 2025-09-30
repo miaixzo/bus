@@ -57,6 +57,7 @@ public class UpsSCU {
     private static int status;
     private static final ImageService upsscuNEventRqHandler = new AbstractImageService(
             UID.UnifiedProcedureStepPush.uid) {
+
         @Override
         public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
                 throws IOException {
@@ -85,9 +86,11 @@ public class UpsSCU {
     private Association as;
     // default response handler
     private final RSPHandlerFactory rspHandlerFactory = new RSPHandlerFactory() {
+
         @Override
         public DimseRSPHandler createDimseRSPHandlerForCFind() {
             return new DimseRSPHandler(as.nextMessageID()) {
+
                 @Override
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     // TODO
@@ -98,6 +101,7 @@ public class UpsSCU {
         @Override
         public DimseRSPHandler createDimseRSPHandlerForNCreate() {
             return new DimseRSPHandler(as.nextMessageID()) {
+
                 @Override
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
@@ -108,6 +112,7 @@ public class UpsSCU {
         @Override
         public DimseRSPHandler createDimseRSPHandlerForNSet() {
             return new DimseRSPHandler(as.nextMessageID()) {
+
                 @Override
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
@@ -118,6 +123,7 @@ public class UpsSCU {
         @Override
         public DimseRSPHandler createDimseRSPHandlerForNGet() {
             return new DimseRSPHandler(as.nextMessageID()) {
+
                 @Override
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
@@ -128,6 +134,7 @@ public class UpsSCU {
         @Override
         public DimseRSPHandler createDimseRSPHandlerForNAction() {
             return new DimseRSPHandler(as.nextMessageID()) {
+
                 @Override
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
@@ -213,7 +220,11 @@ public class UpsSCU {
     }
 
     private void getUps() throws IOException, InterruptedException {
-        as.nget(operation.getNegotiatingSOPClassUID(), UID.UnifiedProcedureStepPush.uid, upsiuid, tags,
+        as.nget(
+                operation.getNegotiatingSOPClassUID(),
+                UID.UnifiedProcedureStepPush.uid,
+                upsiuid,
+                tags,
                 rspHandlerFactory.createDimseRSPHandlerForNGet());
     }
 
@@ -224,11 +235,18 @@ public class UpsSCU {
     }
 
     private void actionOnUps(Attributes data, int actionTypeId) throws IOException, InterruptedException {
-        as.naction(operation.negotiatingSOPClassUID, UID.UnifiedProcedureStepPush.uid, upsiuid, actionTypeId, data,
-                null, rspHandlerFactory.createDimseRSPHandlerForNAction());
+        as.naction(
+                operation.negotiatingSOPClassUID,
+                UID.UnifiedProcedureStepPush.uid,
+                upsiuid,
+                actionTypeId,
+                data,
+                null,
+                rspHandlerFactory.createDimseRSPHandlerForNAction());
     }
 
     enum Operation {
+
         create(UID.UnifiedProcedureStepPush.uid, false), update(UID.UnifiedProcedureStepPull.uid, true),
         get(UID.UnifiedProcedureStepPush.uid, true), changeState(UID.UnifiedProcedureStepPull.uid, true),
         requestCancel(UID.UnifiedProcedureStepPush.uid, true),
@@ -263,6 +281,7 @@ public class UpsSCU {
     }
 
     public interface RSPHandlerFactory {
+
         DimseRSPHandler createDimseRSPHandlerForCFind();
 
         DimseRSPHandler createDimseRSPHandlerForNCreate();

@@ -37,6 +37,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -162,9 +163,9 @@ public class UnoUrl {
      */
     public static int defaultPort(String scheme) {
         if (Protocol.HTTP.name.equals(scheme)) {
-            return 80;
+            return PORT._80;
         } else if (Protocol.HTTPS.name.equals(scheme)) {
-            return 443;
+            return PORT._443;
         } else {
             return -1;
         }
@@ -379,8 +380,16 @@ public class UnoUrl {
      * @param charset        字符集（null 为 UTF-8）
      * @return 规范化字符串
      */
-    public static String canonicalize(String input, int pos, int limit, String encodeSet, boolean alreadyEncoded,
-            boolean strict, boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
+    public static String canonicalize(
+            String input,
+            int pos,
+            int limit,
+            String encodeSet,
+            boolean alreadyEncoded,
+            boolean strict,
+            boolean plusIsSpace,
+            boolean asciiOnly,
+            java.nio.charset.Charset charset) {
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
             codePoint = input.codePointAt(i);
@@ -411,8 +420,16 @@ public class UnoUrl {
      * @param asciiOnly      是否仅限 ASCII
      * @param charset        字符集（null 为 UTF-8）
      */
-    public static void canonicalize(Buffer out, String input, int pos, int limit, String encodeSet,
-            boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
+    public static void canonicalize(
+            Buffer out,
+            String input,
+            int pos,
+            int limit,
+            String encodeSet,
+            boolean alreadyEncoded,
+            boolean strict,
+            boolean plusIsSpace,
+            boolean asciiOnly,
             java.nio.charset.Charset charset) {
         Buffer encodedCharBuffer = null;
         int codePoint;
@@ -457,9 +474,23 @@ public class UnoUrl {
      * @param charset        字符集（null 为 UTF-8）
      * @return 规范化字符串
      */
-    public static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
-            boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
-        return canonicalize(input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly,
+    public static String canonicalize(
+            String input,
+            String encodeSet,
+            boolean alreadyEncoded,
+            boolean strict,
+            boolean plusIsSpace,
+            boolean asciiOnly,
+            java.nio.charset.Charset charset) {
+        return canonicalize(
+                input,
+                0,
+                input.length(),
+                encodeSet,
+                alreadyEncoded,
+                strict,
+                plusIsSpace,
+                asciiOnly,
                 charset);
     }
 
@@ -474,8 +505,13 @@ public class UnoUrl {
      * @param asciiOnly      是否仅限 ASCII
      * @return 规范化字符串
      */
-    public static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
-            boolean plusIsSpace, boolean asciiOnly) {
+    public static String canonicalize(
+            String input,
+            String encodeSet,
+            boolean alreadyEncoded,
+            boolean strict,
+            boolean plusIsSpace,
+            boolean asciiOnly) {
         return canonicalize(input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly, null);
     }
 
@@ -1142,14 +1178,15 @@ public class UnoUrl {
         private static int portColonOffset(String input, int pos, int limit) {
             for (int i = pos; i < limit; i++) {
                 switch (input.charAt(i)) {
-                case Symbol.C_BRACKET_LEFT:
-                    while (++i < limit) {
-                        if (input.charAt(i) == Symbol.C_BRACKET_RIGHT)
-                            break;
-                    }
-                    break;
-                case Symbol.C_COLON:
-                    return i;
+                    case Symbol.C_BRACKET_LEFT:
+                        while (++i < limit) {
+                            if (input.charAt(i) == Symbol.C_BRACKET_RIGHT)
+                                break;
+                        }
+                        break;
+
+                    case Symbol.C_COLON:
+                        return i;
                 }
             }
             return limit;
@@ -1371,8 +1408,8 @@ public class UnoUrl {
         private Builder addPathSegments(String pathSegments, boolean alreadyEncoded) {
             int offset = 0;
             do {
-                int segmentEnd = org.miaixz.bus.http.Builder.delimiterOffset(pathSegments, offset,
-                        pathSegments.length(), "/\\");
+                int segmentEnd = org.miaixz.bus.http.Builder
+                        .delimiterOffset(pathSegments, offset, pathSegments.length(), "/\\");
                 boolean addTrailingSlash = segmentEnd < pathSegments.length();
                 push(pathSegments, offset, segmentEnd, addTrailingSlash, alreadyEncoded);
                 offset = segmentEnd + 1;
@@ -1392,8 +1429,16 @@ public class UnoUrl {
         public Builder setPathSegment(int index, String pathSegment) {
             if (null == pathSegment)
                 throw new NullPointerException("pathSegment == null");
-            String canonicalPathSegment = canonicalize(pathSegment, 0, pathSegment.length(), PATH_SEGMENT_ENCODE_SET,
-                    false, false, false, true, null);
+            String canonicalPathSegment = canonicalize(
+                    pathSegment,
+                    0,
+                    pathSegment.length(),
+                    PATH_SEGMENT_ENCODE_SET,
+                    false,
+                    false,
+                    false,
+                    true,
+                    null);
             if (isDot(canonicalPathSegment) || isDotDot(canonicalPathSegment)) {
                 throw new IllegalArgumentException("unexpected path segment: " + pathSegment);
             }
@@ -1414,8 +1459,16 @@ public class UnoUrl {
             if (null == encodedPathSegment) {
                 throw new NullPointerException("encodedPathSegment == null");
             }
-            String canonicalPathSegment = canonicalize(encodedPathSegment, 0, encodedPathSegment.length(),
-                    PATH_SEGMENT_ENCODE_SET, true, false, false, true, null);
+            String canonicalPathSegment = canonicalize(
+                    encodedPathSegment,
+                    0,
+                    encodedPathSegment.length(),
+                    PATH_SEGMENT_ENCODE_SET,
+                    true,
+                    false,
+                    false,
+                    true,
+                    null);
             encodedPathSegments.set(index, canonicalPathSegment);
             if (isDot(canonicalPathSegment) || isDotDot(canonicalPathSegment)) {
                 throw new IllegalArgumentException("unexpected path segment: " + encodedPathSegment);
@@ -1515,9 +1568,10 @@ public class UnoUrl {
                 encodedQueryNamesAndValues = new ArrayList<>();
             encodedQueryNamesAndValues
                     .add(canonicalize(encodedName, QUERY_COMPONENT_REENCODE_SET, true, false, true, true));
-            encodedQueryNamesAndValues.add(null != encodedValue
-                    ? canonicalize(encodedValue, QUERY_COMPONENT_REENCODE_SET, true, false, true, true)
-                    : null);
+            encodedQueryNamesAndValues.add(
+                    null != encodedValue
+                            ? canonicalize(encodedValue, QUERY_COMPONENT_REENCODE_SET, true, false, true, true)
+                            : null);
             return this;
         }
 
@@ -1635,14 +1689,15 @@ public class UnoUrl {
         Builder reencodeForUri() {
             for (int i = 0, size = encodedPathSegments.size(); i < size; i++) {
                 String pathSegment = encodedPathSegments.get(i);
-                encodedPathSegments.set(i,
-                        canonicalize(pathSegment, PATH_SEGMENT_ENCODE_SET_URI, true, true, false, true));
+                encodedPathSegments
+                        .set(i, canonicalize(pathSegment, PATH_SEGMENT_ENCODE_SET_URI, true, true, false, true));
             }
             if (null != encodedQueryNamesAndValues) {
                 for (int i = 0, size = encodedQueryNamesAndValues.size(); i < size; i++) {
                     String component = encodedQueryNamesAndValues.get(i);
                     if (null != component) {
-                        encodedQueryNamesAndValues.set(i,
+                        encodedQueryNamesAndValues.set(
+                                i,
                                 canonicalize(component, QUERY_COMPONENT_ENCODE_SET_URI, true, true, true, true));
                     }
                 }
@@ -1760,54 +1815,79 @@ public class UnoUrl {
             if (slashCount >= 2 || base == null || !base.scheme.equals(this.scheme)) {
                 pos += slashCount;
                 authority: while (true) {
-                    int componentDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos, limit,
-                            "@/\\?#");
+                    int componentDelimiterOffset = org.miaixz.bus.http.Builder
+                            .delimiterOffset(input, pos, limit, "@/\\?#");
                     int c = componentDelimiterOffset != limit ? input.charAt(componentDelimiterOffset) : -1;
                     switch (c) {
-                    case Symbol.C_AT:
-                        if (!hasPassword) {
-                            int passwordColonOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos,
-                                    componentDelimiterOffset, Symbol.C_COLON);
-                            String canonicalUsername = canonicalize(input, pos, passwordColonOffset,
-                                    USERNAME_ENCODE_SET, true, false, false, true, null);
-                            this.encodedUsername = hasUsername ? this.encodedUsername + "%40" + canonicalUsername
-                                    : canonicalUsername;
-                            if (passwordColonOffset != componentDelimiterOffset) {
-                                hasPassword = true;
-                                this.encodedPassword = canonicalize(input, passwordColonOffset + 1,
-                                        componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true, null);
+                        case Symbol.C_AT:
+                            if (!hasPassword) {
+                                int passwordColonOffset = org.miaixz.bus.http.Builder
+                                        .delimiterOffset(input, pos, componentDelimiterOffset, Symbol.C_COLON);
+                                String canonicalUsername = canonicalize(
+                                        input,
+                                        pos,
+                                        passwordColonOffset,
+                                        USERNAME_ENCODE_SET,
+                                        true,
+                                        false,
+                                        false,
+                                        true,
+                                        null);
+                                this.encodedUsername = hasUsername ? this.encodedUsername + "%40" + canonicalUsername
+                                        : canonicalUsername;
+                                if (passwordColonOffset != componentDelimiterOffset) {
+                                    hasPassword = true;
+                                    this.encodedPassword = canonicalize(
+                                            input,
+                                            passwordColonOffset + 1,
+                                            componentDelimiterOffset,
+                                            PASSWORD_ENCODE_SET,
+                                            true,
+                                            false,
+                                            false,
+                                            true,
+                                            null);
+                                }
+                                hasUsername = true;
+                            } else {
+                                this.encodedPassword = this.encodedPassword + "%40"
+                                        + canonicalize(
+                                                input,
+                                                pos,
+                                                componentDelimiterOffset,
+                                                PASSWORD_ENCODE_SET,
+                                                true,
+                                                false,
+                                                false,
+                                                true,
+                                                null);
                             }
-                            hasUsername = true;
-                        } else {
-                            this.encodedPassword = this.encodedPassword + "%40" + canonicalize(input, pos,
-                                    componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true, null);
-                        }
-                        pos = componentDelimiterOffset + 1;
-                        break;
+                            pos = componentDelimiterOffset + 1;
+                            break;
 
-                    case -1:
-                    case Symbol.C_SLASH:
-                    case Symbol.C_BACKSLASH:
-                    case Symbol.C_QUESTION_MARK:
-                    case Symbol.C_HASH:
-                        int portColonOffset = portColonOffset(input, pos, componentDelimiterOffset);
-                        if (portColonOffset + 1 < componentDelimiterOffset) {
-                            host = canonicalizeHost(input, pos, portColonOffset);
-                            port = parsePort(input, portColonOffset + 1, componentDelimiterOffset);
-                            if (port == -1) {
-                                throw new IllegalArgumentException("Invalid URL port: "
-                                        + input.substring(portColonOffset + 1, componentDelimiterOffset));
+                        case -1:
+                        case Symbol.C_SLASH:
+                        case Symbol.C_BACKSLASH:
+                        case Symbol.C_QUESTION_MARK:
+                        case Symbol.C_HASH:
+                            int portColonOffset = portColonOffset(input, pos, componentDelimiterOffset);
+                            if (portColonOffset + 1 < componentDelimiterOffset) {
+                                host = canonicalizeHost(input, pos, portColonOffset);
+                                port = parsePort(input, portColonOffset + 1, componentDelimiterOffset);
+                                if (port == -1) {
+                                    throw new IllegalArgumentException("Invalid URL port: "
+                                            + input.substring(portColonOffset + 1, componentDelimiterOffset));
+                                }
+                            } else {
+                                host = canonicalizeHost(input, pos, portColonOffset);
+                                port = defaultPort(scheme);
                             }
-                        } else {
-                            host = canonicalizeHost(input, pos, portColonOffset);
-                            port = defaultPort(scheme);
-                        }
-                        if (null == host) {
-                            throw new IllegalArgumentException(INVALID_HOST + ": "
-                                    + input.substring(pos, portColonOffset) + Symbol.C_DOUBLE_QUOTES);
-                        }
-                        pos = componentDelimiterOffset;
-                        break authority;
+                            if (null == host) {
+                                throw new IllegalArgumentException(INVALID_HOST + ": "
+                                        + input.substring(pos, portColonOffset) + Symbol.C_DOUBLE_QUOTES);
+                            }
+                            pos = componentDelimiterOffset;
+                            break authority;
                     }
                 }
             } else {
@@ -1827,16 +1907,33 @@ public class UnoUrl {
             pos = pathDelimiterOffset;
 
             if (pos < limit && input.charAt(pos) == Symbol.C_QUESTION_MARK) {
-                int queryDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos, limit,
-                        Symbol.C_HASH);
-                this.encodedQueryNamesAndValues = queryStringToNamesAndValues(canonicalize(input, pos + 1,
-                        queryDelimiterOffset, QUERY_ENCODE_SET, true, false, true, true, null));
+                int queryDelimiterOffset = org.miaixz.bus.http.Builder
+                        .delimiterOffset(input, pos, limit, Symbol.C_HASH);
+                this.encodedQueryNamesAndValues = queryStringToNamesAndValues(
+                        canonicalize(
+                                input,
+                                pos + 1,
+                                queryDelimiterOffset,
+                                QUERY_ENCODE_SET,
+                                true,
+                                false,
+                                true,
+                                true,
+                                null));
                 pos = queryDelimiterOffset;
             }
 
             if (pos < limit && input.charAt(pos) == Symbol.C_HASH) {
-                this.encodedFragment = canonicalize(input, pos + 1, limit, FRAGMENT_ENCODE_SET, true, false, false,
-                        false, null);
+                this.encodedFragment = canonicalize(
+                        input,
+                        pos + 1,
+                        limit,
+                        FRAGMENT_ENCODE_SET,
+                        true,
+                        false,
+                        false,
+                        false,
+                        null);
             }
 
             return this;
@@ -1882,8 +1979,16 @@ public class UnoUrl {
          * @param alreadyEncoded   是否已编码
          */
         private void push(String input, int pos, int limit, boolean addTrailingSlash, boolean alreadyEncoded) {
-            String segment = canonicalize(input, pos, limit, PATH_SEGMENT_ENCODE_SET, alreadyEncoded, false, false,
-                    true, null);
+            String segment = canonicalize(
+                    input,
+                    pos,
+                    limit,
+                    PATH_SEGMENT_ENCODE_SET,
+                    alreadyEncoded,
+                    false,
+                    false,
+                    true,
+                    null);
             if (isDot(segment)) {
                 return;
             }

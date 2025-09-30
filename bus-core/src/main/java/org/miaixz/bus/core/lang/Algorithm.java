@@ -362,6 +362,7 @@ public enum Algorithm {
      * Cipher模式的枚举封装
      */
     public enum Type {
+
         /**
          * 加密模式
          */

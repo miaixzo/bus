@@ -38,20 +38,26 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.HeightMapPlaneDistance:
-            return "HeightMapPlaneDistance";
-        case PrivateTag.HeightMapPlaneOffset:
-            return "HeightMapPlaneOffset";
-        case PrivateTag.HeightMapPlaneIndices:
-            return "HeightMapPlaneIndices";
-        case PrivateTag.XMapPlaneIndices:
-            return "XMapPlaneIndices";
-        case PrivateTag.YMapPlaneIndices:
-            return "YMapPlaneIndices";
-        case PrivateTag.CentralProjectionDetectorSecondaryAngle:
-            return "CentralProjectionDetectorSecondaryAngle";
-        case PrivateTag.DetectorActiveDimensions:
-            return "DetectorActiveDimensions";
+            case PrivateTag.HeightMapPlaneDistance:
+                return "HeightMapPlaneDistance";
+
+            case PrivateTag.HeightMapPlaneOffset:
+                return "HeightMapPlaneOffset";
+
+            case PrivateTag.HeightMapPlaneIndices:
+                return "HeightMapPlaneIndices";
+
+            case PrivateTag.XMapPlaneIndices:
+                return "XMapPlaneIndices";
+
+            case PrivateTag.YMapPlaneIndices:
+                return "YMapPlaneIndices";
+
+            case PrivateTag.CentralProjectionDetectorSecondaryAngle:
+                return "CentralProjectionDetectorSecondaryAngle";
+
+            case PrivateTag.DetectorActiveDimensions:
+                return "DetectorActiveDimensions";
         }
         return "";
     }

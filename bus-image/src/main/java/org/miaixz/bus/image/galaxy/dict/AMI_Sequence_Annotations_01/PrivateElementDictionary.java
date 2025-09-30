@@ -52,27 +52,34 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.AnnotationSequence:
-        case PrivateTag.AnnotationLineStyle:
-            return VR.CS;
-        case PrivateTag.AnnotationCreationDate:
-        case PrivateTag.AnnotationModificationDates:
-            return VR.DA;
-        case PrivateTag.AnnotationCreator:
-        case PrivateTag.AnnotationModifiers:
-            return VR.PN;
-        case PrivateTag.AnnotationLabel:
-            return VR.SH;
-        case PrivateTag.AnnotationElements:
-            return VR.SQ;
-        case PrivateTag.AnnotationCreationTime:
-        case PrivateTag.AnnotationMofificationTimes:
-            return VR.TM;
-        case PrivateTag.AnnotationUID:
-            return VR.UI;
-        case PrivateTag.AnnotationColor:
-        case PrivateTag.AnnotationFrameNumber:
-            return VR.US;
+            case PrivateTag.AnnotationSequence:
+            case PrivateTag.AnnotationLineStyle:
+                return VR.CS;
+
+            case PrivateTag.AnnotationCreationDate:
+            case PrivateTag.AnnotationModificationDates:
+                return VR.DA;
+
+            case PrivateTag.AnnotationCreator:
+            case PrivateTag.AnnotationModifiers:
+                return VR.PN;
+
+            case PrivateTag.AnnotationLabel:
+                return VR.SH;
+
+            case PrivateTag.AnnotationElements:
+                return VR.SQ;
+
+            case PrivateTag.AnnotationCreationTime:
+            case PrivateTag.AnnotationMofificationTimes:
+                return VR.TM;
+
+            case PrivateTag.AnnotationUID:
+                return VR.UI;
+
+            case PrivateTag.AnnotationColor:
+            case PrivateTag.AnnotationFrameNumber:
+                return VR.US;
         }
         return VR.UN;
     }

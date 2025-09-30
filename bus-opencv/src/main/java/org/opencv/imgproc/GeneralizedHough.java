@@ -51,7 +51,10 @@ public class GeneralizedHough extends Algorithm {
     //
 
     // C++: void cv::GeneralizedHough::setTemplate(Mat templ, Point templCenter = Point(-1, -1))
-    private static native void setTemplate_0(long nativeObj, long templ_nativeObj, double templCenter_x,
+    private static native void setTemplate_0(
+            long nativeObj,
+            long templ_nativeObj,
+            double templCenter_x,
             double templCenter_y);
 
     private static native void setTemplate_1(long nativeObj, long templ_nativeObj);
@@ -61,10 +64,18 @@ public class GeneralizedHough extends Algorithm {
     //
 
     // C++: void cv::GeneralizedHough::setTemplate(Mat edges, Mat dx, Mat dy, Point templCenter = Point(-1, -1))
-    private static native void setTemplate_2(long nativeObj, long edges_nativeObj, long dx_nativeObj, long dy_nativeObj,
-            double templCenter_x, double templCenter_y);
+    private static native void setTemplate_2(
+            long nativeObj,
+            long edges_nativeObj,
+            long dx_nativeObj,
+            long dy_nativeObj,
+            double templCenter_x,
+            double templCenter_y);
 
-    private static native void setTemplate_3(long nativeObj, long edges_nativeObj, long dx_nativeObj,
+    private static native void setTemplate_3(
+            long nativeObj,
+            long edges_nativeObj,
+            long dx_nativeObj,
             long dy_nativeObj);
 
     //
@@ -72,7 +83,10 @@ public class GeneralizedHough extends Algorithm {
     //
 
     // C++: void cv::GeneralizedHough::detect(Mat image, Mat& positions, Mat& votes = Mat())
-    private static native void detect_0(long nativeObj, long image_nativeObj, long positions_nativeObj,
+    private static native void detect_0(
+            long nativeObj,
+            long image_nativeObj,
+            long positions_nativeObj,
             long votes_nativeObj);
 
     private static native void detect_1(long nativeObj, long image_nativeObj, long positions_nativeObj);
@@ -82,10 +96,19 @@ public class GeneralizedHough extends Algorithm {
     //
 
     // C++: void cv::GeneralizedHough::detect(Mat edges, Mat dx, Mat dy, Mat& positions, Mat& votes = Mat())
-    private static native void detect_2(long nativeObj, long edges_nativeObj, long dx_nativeObj, long dy_nativeObj,
-            long positions_nativeObj, long votes_nativeObj);
+    private static native void detect_2(
+            long nativeObj,
+            long edges_nativeObj,
+            long dx_nativeObj,
+            long dy_nativeObj,
+            long positions_nativeObj,
+            long votes_nativeObj);
 
-    private static native void detect_3(long nativeObj, long edges_nativeObj, long dx_nativeObj, long dy_nativeObj,
+    private static native void detect_3(
+            long nativeObj,
+            long edges_nativeObj,
+            long dx_nativeObj,
+            long dy_nativeObj,
             long positions_nativeObj);
 
     //

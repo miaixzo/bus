@@ -38,62 +38,89 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.MedComHeaderType:
-            return "MedComHeaderType";
-        case PrivateTag.MedComHeaderVersion:
-            return "MedComHeaderVersion";
-        case PrivateTag.MedComHeaderInfo:
-            return "MedComHeaderInfo";
-        case PrivateTag.MedComHistoryInformation:
-            return "MedComHistoryInformation";
-        case PrivateTag.PMTFInformation1:
-            return "PMTFInformation1";
-        case PrivateTag.PMTFInformation2:
-            return "PMTFInformation2";
-        case PrivateTag.PMTFInformation3:
-            return "PMTFInformation3";
-        case PrivateTag.PMTFInformation4:
-            return "PMTFInformation4";
-        case PrivateTag.PMTFInformation5:
-            return "PMTFInformation5";
-        case PrivateTag.ApplicationHeaderSequence:
-            return "ApplicationHeaderSequence";
-        case PrivateTag.ApplicationHeaderType:
-            return "ApplicationHeaderType";
-        case PrivateTag.ApplicationHeaderID:
-            return "ApplicationHeaderID";
-        case PrivateTag.ApplicationHeaderVersion:
-            return "ApplicationHeaderVersion";
-        case PrivateTag.ApplicationHeaderInfo:
-            return "ApplicationHeaderInfo";
-        case PrivateTag.WorkflowControlFlags:
-            return "WorkflowControlFlags";
-        case PrivateTag.ArchiveManagementFlagKeepOnline:
-            return "ArchiveManagementFlagKeepOnline";
-        case PrivateTag.ArchiveManagementFlagDoNotArchive:
-            return "ArchiveManagementFlagDoNotArchive";
-        case PrivateTag.ImageLocationStatus:
-            return "ImageLocationStatus";
-        case PrivateTag.EstimatedRetrieveTime:
-            return "EstimatedRetrieveTime";
-        case PrivateTag.DataSizeOfRetrievedImages:
-            return "DataSizeOfRetrievedImages";
-        case PrivateTag.SiemensLinkSequence:
-            return "SiemensLinkSequence";
-        case PrivateTag.ReferencedTag:
-            return "ReferencedTag";
-        case PrivateTag.ReferencedTagType:
-            return "ReferencedTagType";
-        case PrivateTag.ReferencedValueLength:
-            return "ReferencedValueLength";
-        case PrivateTag.ReferencedObjectDeviceType:
-            return "ReferencedObjectDeviceType";
-        case PrivateTag.ReferencedObjectDeviceLocation:
-            return "ReferencedObjectDeviceLocation";
-        case PrivateTag.ReferencedObjectID:
-            return "ReferencedObjectID";
-        case PrivateTag.ReferencedObjectOffset:
-            return "ReferencedObjectOffset";
+            case PrivateTag.MedComHeaderType:
+                return "MedComHeaderType";
+
+            case PrivateTag.MedComHeaderVersion:
+                return "MedComHeaderVersion";
+
+            case PrivateTag.MedComHeaderInfo:
+                return "MedComHeaderInfo";
+
+            case PrivateTag.MedComHistoryInformation:
+                return "MedComHistoryInformation";
+
+            case PrivateTag.PMTFInformation1:
+                return "PMTFInformation1";
+
+            case PrivateTag.PMTFInformation2:
+                return "PMTFInformation2";
+
+            case PrivateTag.PMTFInformation3:
+                return "PMTFInformation3";
+
+            case PrivateTag.PMTFInformation4:
+                return "PMTFInformation4";
+
+            case PrivateTag.PMTFInformation5:
+                return "PMTFInformation5";
+
+            case PrivateTag.ApplicationHeaderSequence:
+                return "ApplicationHeaderSequence";
+
+            case PrivateTag.ApplicationHeaderType:
+                return "ApplicationHeaderType";
+
+            case PrivateTag.ApplicationHeaderID:
+                return "ApplicationHeaderID";
+
+            case PrivateTag.ApplicationHeaderVersion:
+                return "ApplicationHeaderVersion";
+
+            case PrivateTag.ApplicationHeaderInfo:
+                return "ApplicationHeaderInfo";
+
+            case PrivateTag.WorkflowControlFlags:
+                return "WorkflowControlFlags";
+
+            case PrivateTag.ArchiveManagementFlagKeepOnline:
+                return "ArchiveManagementFlagKeepOnline";
+
+            case PrivateTag.ArchiveManagementFlagDoNotArchive:
+                return "ArchiveManagementFlagDoNotArchive";
+
+            case PrivateTag.ImageLocationStatus:
+                return "ImageLocationStatus";
+
+            case PrivateTag.EstimatedRetrieveTime:
+                return "EstimatedRetrieveTime";
+
+            case PrivateTag.DataSizeOfRetrievedImages:
+                return "DataSizeOfRetrievedImages";
+
+            case PrivateTag.SiemensLinkSequence:
+                return "SiemensLinkSequence";
+
+            case PrivateTag.ReferencedTag:
+                return "ReferencedTag";
+
+            case PrivateTag.ReferencedTagType:
+                return "ReferencedTagType";
+
+            case PrivateTag.ReferencedValueLength:
+                return "ReferencedValueLength";
+
+            case PrivateTag.ReferencedObjectDeviceType:
+                return "ReferencedObjectDeviceType";
+
+            case PrivateTag.ReferencedObjectDeviceLocation:
+                return "ReferencedObjectDeviceLocation";
+
+            case PrivateTag.ReferencedObjectID:
+                return "ReferencedObjectID";
+
+            case PrivateTag.ReferencedObjectOffset:
+                return "ReferencedObjectOffset";
         }
         return "";
     }

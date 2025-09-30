@@ -52,20 +52,24 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.FontRelativeSize:
-            return VR.FD;
-        case PrivateTag.Font:
-            return VR.LO;
-        case PrivateTag.Annotations:
-            return VR.SQ;
-        case PrivateTag.MaskState:
-        case PrivateTag.FontSize:
-            return VR.UL;
-        case PrivateTag.Overlay:
-        case PrivateTag.PixelRep:
-        case PrivateTag.AnnotationLevel:
-        case PrivateTag.ShowCaliper:
-            return VR.US;
+            case PrivateTag.FontRelativeSize:
+                return VR.FD;
+
+            case PrivateTag.Font:
+                return VR.LO;
+
+            case PrivateTag.Annotations:
+                return VR.SQ;
+
+            case PrivateTag.MaskState:
+            case PrivateTag.FontSize:
+                return VR.UL;
+
+            case PrivateTag.Overlay:
+            case PrivateTag.PixelRep:
+            case PrivateTag.AnnotationLevel:
+            case PrivateTag.ShowCaliper:
+                return VR.US;
         }
         return VR.UN;
     }

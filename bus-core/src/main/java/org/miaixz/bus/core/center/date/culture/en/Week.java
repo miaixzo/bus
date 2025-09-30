@@ -131,47 +131,59 @@ public enum Week {
             if (StringKit.startWithAny(name, "星期", "周")) {
                 final char chineseNumber = name.charAt(name.length() - 1);
                 switch (chineseNumber) {
-                case '一':
-                    return MONDAY;
-                case '二':
-                    return TUESDAY;
-                case '三':
-                    return WEDNESDAY;
-                case '四':
-                    return THURSDAY;
-                case '五':
-                    return FRIDAY;
-                case '六':
-                    return SATURDAY;
-                case '日':
-                    return SUNDAY;
+                    case '一':
+                        return MONDAY;
+
+                    case '二':
+                        return TUESDAY;
+
+                    case '三':
+                        return WEDNESDAY;
+
+                    case '四':
+                        return THURSDAY;
+
+                    case '五':
+                        return FRIDAY;
+
+                    case '六':
+                        return SATURDAY;
+
+                    case '日':
+                        return SUNDAY;
                 }
                 throw new IllegalArgumentException("Invalid week name: " + name);
             }
 
             switch (Character.toLowerCase(name.charAt(0))) {
-            case 'm':
-                return MONDAY; // monday
-            case 'w':
-                return WEDNESDAY; // wednesday
-            case 'f':
-                return FRIDAY; // friday
-            case 't':
-                switch (Character.toLowerCase(name.charAt(1))) {
-                case 'u':
-                    return TUESDAY; // tuesday
-                case 'h':
-                    return THURSDAY; // thursday
-                }
-                break;
-            case 's':
-                switch (Character.toLowerCase(name.charAt(1))) {
-                case 'a':
-                    return SATURDAY; // saturday
-                case 'u':
-                    return SUNDAY; // sunday
-                }
-                break;
+                case 'm':
+                    return MONDAY; // monday
+
+                case 'w':
+                    return WEDNESDAY; // wednesday
+
+                case 'f':
+                    return FRIDAY; // friday
+
+                case 't':
+                    switch (Character.toLowerCase(name.charAt(1))) {
+                        case 'u':
+                            return TUESDAY; // tuesday
+
+                        case 'h':
+                            return THURSDAY; // thursday
+                    }
+                    break;
+
+                case 's':
+                    switch (Character.toLowerCase(name.charAt(1))) {
+                        case 'a':
+                            return SATURDAY; // saturday
+
+                        case 'u':
+                            return SUNDAY; // sunday
+                    }
+                    break;
             }
         }
 
@@ -261,22 +273,29 @@ public enum Week {
      */
     public String getName(final String prefix) {
         switch (this) {
-        case SUNDAY:
-            return prefix + "日";
-        case MONDAY:
-            return prefix + "一";
-        case TUESDAY:
-            return prefix + "二";
-        case WEDNESDAY:
-            return prefix + "三";
-        case THURSDAY:
-            return prefix + "四";
-        case FRIDAY:
-            return prefix + "五";
-        case SATURDAY:
-            return prefix + "六";
-        default:
-            return null;
+            case SUNDAY:
+                return prefix + "日";
+
+            case MONDAY:
+                return prefix + "一";
+
+            case TUESDAY:
+                return prefix + "二";
+
+            case WEDNESDAY:
+                return prefix + "三";
+
+            case THURSDAY:
+                return prefix + "四";
+
+            case FRIDAY:
+                return prefix + "五";
+
+            case SATURDAY:
+                return prefix + "六";
+
+            default:
+                return null;
         }
     }
 

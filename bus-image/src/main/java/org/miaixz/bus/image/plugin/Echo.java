@@ -102,7 +102,9 @@ public class Echo {
                 long t3 = System.currentTimeMillis();
                 String message = MessageFormat.format(
                         "Successful DICOM Echo. Connected in {2}ms from {0} to {1}. Service execution in {3}ms.",
-                        storeSCU.getAAssociateRQ().getCallingAET(), storeSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        storeSCU.getAAssociateRQ().getCallingAET(),
+                        storeSCU.getAAssociateRQ().getCalledAET(),
+                        t2 - t1,
                         t3 - t2);
                 Status dcmState = new Status(rsp.getInt(Tag.Status, Status.Success), message, null);
                 dcmState.addProcessTime(t1, t2, t3);

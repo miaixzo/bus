@@ -250,7 +250,10 @@ public class SearchApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
      */
-    public <T> Stream<T> projectSearchStream(Object projectIdOrPath, ProjectSearchScope<T> scope, String search,
+    public <T> Stream<T> projectSearchStream(
+            Object projectIdOrPath,
+            ProjectSearchScope<T> scope,
+            String search,
             String ref) throws GitLabApiException {
         return (projectSearch(projectIdOrPath, scope, search, ref, getDefaultPerPage()).stream());
     }
@@ -272,7 +275,10 @@ public class SearchApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
      */
-    public <T> Pager<T> projectSearch(Object projectIdOrPath, ProjectSearchScope<T> scope, String search,
+    public <T> Pager<T> projectSearch(
+            Object projectIdOrPath,
+            ProjectSearchScope<T> scope,
+            String search,
             int itemsPerPage) throws GitLabApiException {
         return projectSearch(projectIdOrPath, scope, search, null, itemsPerPage);
     }
@@ -296,7 +302,11 @@ public class SearchApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
      */
-    public <T> Pager<T> projectSearch(Object projectIdOrPath, ProjectSearchScope<T> scope, String search, String ref,
+    public <T> Pager<T> projectSearch(
+            Object projectIdOrPath,
+            ProjectSearchScope<T> scope,
+            String search,
+            String ref,
             int itemsPerPage) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("scope", scope, true).withParam("search", search, true)

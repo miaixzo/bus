@@ -52,11 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ChemicalShiftNumber:
-        case PrivateTag.PhaseNumber:
-        case PrivateTag.ReconstructionNumber:
-        case PrivateTag.SliceNumber:
-            return VR.IS;
+            case PrivateTag.ChemicalShiftNumber:
+            case PrivateTag.PhaseNumber:
+            case PrivateTag.ReconstructionNumber:
+            case PrivateTag.SliceNumber:
+                return VR.IS;
         }
         return VR.UN;
     }

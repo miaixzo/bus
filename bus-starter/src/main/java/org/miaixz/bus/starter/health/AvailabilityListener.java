@@ -64,13 +64,13 @@ public class AvailabilityListener {
 
         // 记录状态变更日志，包含状态类型和时间戳
         switch (state) {
-        case ReadinessState.ACCEPTING_TRAFFIC -> Logger.debug("System is ready to accept traffic at {}: {}", timestamp,
-                stateName);
-        case ReadinessState.REFUSING_TRAFFIC -> Logger.debug("System is refusing traffic at {}: {}", timestamp,
-                stateName);
-        case LivenessState.BROKEN -> Logger.debug("System is in broken state at {}: {}", timestamp, stateName);
-        case LivenessState.CORRECT -> Logger.debug("System is in correct state at {}: {}", timestamp, stateName);
-        default -> Logger.warn("Unknown availability state detected at {}: {}", timestamp, stateName);
+            case ReadinessState.ACCEPTING_TRAFFIC -> Logger
+                    .debug("System is ready to accept traffic at {}: {}", timestamp, stateName);
+            case ReadinessState.REFUSING_TRAFFIC -> Logger
+                    .debug("System is refusing traffic at {}: {}", timestamp, stateName);
+            case LivenessState.BROKEN -> Logger.debug("System is in broken state at {}: {}", timestamp, stateName);
+            case LivenessState.CORRECT -> Logger.debug("System is in correct state at {}: {}", timestamp, stateName);
+            default -> Logger.warn("Unknown availability state detected at {}: {}", timestamp, stateName);
         }
     }
 

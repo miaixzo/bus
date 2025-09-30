@@ -42,6 +42,7 @@ public class Position implements Serializable {
     private static final long serialVersionUID = 2852270036770L;
 
     public static enum PositionType {
+
         TEXT, IMAGE, FILE;
 
         private static JacksonJsonEnumHelper<PositionType> enumHelper = new JacksonJsonEnumHelper<>(PositionType.class,

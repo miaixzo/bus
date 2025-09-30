@@ -91,6 +91,7 @@ public interface ClassMetaResolver extends ORDER {
      * Mapper 接口和方法，用作缓存 Key
      */
     class MapperTypeMethod {
+
         /**
          * Mapper 接口类
          */
@@ -154,6 +155,7 @@ public interface ClassMetaResolver extends ORDER {
      * 实体类查找器实例管理类
      */
     class ClassFinderInstance {
+
         /**
          * 缓存的 ClassFinder 实例列表
          */

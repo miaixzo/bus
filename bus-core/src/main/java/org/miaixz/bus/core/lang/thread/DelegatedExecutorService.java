@@ -104,7 +104,9 @@ public class DelegatedExecutorService extends AbstractExecutorService implements
     }
 
     @Override
-    public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks, final long timeout,
+    public <T> List<Future<T>> invokeAll(
+            final Collection<? extends Callable<T>> tasks,
+            final long timeout,
             final TimeUnit unit) throws InterruptedException {
         return this.raw.invokeAll(tasks, timeout, unit);
     }

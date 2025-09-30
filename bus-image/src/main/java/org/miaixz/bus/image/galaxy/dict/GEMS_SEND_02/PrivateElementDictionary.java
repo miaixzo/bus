@@ -52,16 +52,17 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ACoefficients:
-        case PrivateTag.VOILUTAssymmetryParameterBeta:
-            return VR.DS;
-        case PrivateTag.UserWindowCenter:
-        case PrivateTag.UserWindowWidth:
-        case PrivateTag.RequestedDetectorEntranceDose:
-        case PrivateTag.CollimatorRotation:
-        case PrivateTag.CollimatorWidth:
-        case PrivateTag.CollimatorHeight:
-            return VR.IS;
+            case PrivateTag.ACoefficients:
+            case PrivateTag.VOILUTAssymmetryParameterBeta:
+                return VR.DS;
+
+            case PrivateTag.UserWindowCenter:
+            case PrivateTag.UserWindowWidth:
+            case PrivateTag.RequestedDetectorEntranceDose:
+            case PrivateTag.CollimatorRotation:
+            case PrivateTag.CollimatorWidth:
+            case PrivateTag.CollimatorHeight:
+                return VR.IS;
         }
         return VR.UN;
     }

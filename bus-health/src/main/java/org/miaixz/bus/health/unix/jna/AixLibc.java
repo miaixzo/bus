@@ -53,6 +53,7 @@ public interface AixLibc extends CLibrary {
     int thread_self();
 
     class AixPsInfo {
+
         public int pr_flag; // process flags from proc struct p_flag
         public int pr_flag2; // process flags from proc struct p_flag2
         public int pr_nlwp; // number of threads in process
@@ -116,6 +117,7 @@ public interface AixLibc extends CLibrary {
     }
 
     class AixLwpsInfo {
+
         public long pr_lwpid; // thread id
         public long pr_addr; // internal address of thread
         public long pr_wchan; // wait addr for sleeping thread
@@ -151,6 +153,7 @@ public interface AixLibc extends CLibrary {
      * 64-bit timestruc required for psinfo structure
      */
     class Timestruc {
+
         public long tv_sec; // seconds
         public int tv_nsec; // nanoseconds
         public int pad; // nanoseconds

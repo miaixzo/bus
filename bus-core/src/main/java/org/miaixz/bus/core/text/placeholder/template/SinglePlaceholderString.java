@@ -116,14 +116,18 @@ public class SinglePlaceholderString extends StringTemplate {
                 // 存在 双转义符
                 if (delimIndex > 1 && template.charAt(delimIndex - 2) == escape) {
                     // 转义符之前还有一个转义符，形如："//{"，占位符依旧有效
-                    addLiteralSegment(lastIsLiteralSegment, segments,
+                    addLiteralSegment(
+                            lastIsLiteralSegment,
+                            segments,
                             template.substring(handledPosition, delimIndex - 1));
                     segments.add(singlePlaceholderSegment);
                     lastIsLiteralSegment = false;
                     handledPosition = delimIndex + placeholderLength;
                 } else {
                     // 占位符被转义，形如："/{"，当前字符并不是一个真正的占位符，而是普通字符串的一部分
-                    addLiteralSegment(lastIsLiteralSegment, segments,
+                    addLiteralSegment(
+                            lastIsLiteralSegment,
+                            segments,
                             template.substring(handledPosition, delimIndex - 1) + placeholder.charAt(0));
                     lastIsLiteralSegment = true;
                     handledPosition = delimIndex + 1;
@@ -205,6 +209,7 @@ public class SinglePlaceholderString extends StringTemplate {
      * 构造器
      */
     public static class Builder extends AbstractBuilder<Builder, SinglePlaceholderString> {
+
         /**
          * 单占位符
          * <p>

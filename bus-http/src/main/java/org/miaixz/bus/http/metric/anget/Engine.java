@@ -50,10 +50,16 @@ public class Engine extends UserAgent {
     /**
      * 支持的引擎类型
      */
-    public static final List<Engine> ENGINES = ListKit.view(new Engine("Trident", "trident"),
-            new Engine("Webkit", "webkit"), new Engine("Chrome", "chrome"), new Engine("Opera", "opera"),
-            new Engine("Presto", "presto"), new Engine("Gecko", "gecko"), new Engine("KHTML", "khtml"),
-            new Engine("Konqueror", "konqueror"), new Engine("MIDP", "MIDP"));
+    public static final List<Engine> ENGINES = ListKit.view(
+            new Engine("Trident", "trident"),
+            new Engine("Webkit", "webkit"),
+            new Engine("Chrome", "chrome"),
+            new Engine("Opera", "opera"),
+            new Engine("Presto", "presto"),
+            new Engine("Gecko", "gecko"),
+            new Engine("KHTML", "khtml"),
+            new Engine("Konqueror", "konqueror"),
+            new Engine("MIDP", "MIDP"));
 
     /**
      * 匹配正则

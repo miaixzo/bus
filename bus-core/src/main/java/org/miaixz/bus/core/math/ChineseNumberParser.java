@@ -98,8 +98,11 @@ public class ChineseNumberParser {
             for (int i = dotIndex + 1; i < length; i++) {
                 // 保留位数取决于实际数字的位数
                 // result + (numberChar / 10^(i-dotIndex))
-                result = result.add(MathKit.div(chineseToNumber(chinese.charAt(i)), BigDecimal.TEN.pow(i - dotIndex),
-                        (length - dotIndex + 1)));
+                result = result.add(
+                        MathKit.div(
+                                chineseToNumber(chinese.charAt(i)),
+                                BigDecimal.TEN.pow(i - dotIndex),
+                                (length - dotIndex + 1)));
             }
         }
 
@@ -292,6 +295,7 @@ public class ChineseNumberParser {
      * 权位
      */
     private static class ChineseUnit {
+
         /**
          * 中文权名称
          */

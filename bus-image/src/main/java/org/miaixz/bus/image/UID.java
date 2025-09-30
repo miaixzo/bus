@@ -29,14 +29,13 @@ package org.miaixz.bus.image;
 
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -2236,7 +2235,7 @@ public enum UID {
     /**
      * ASCII字符集
      */
-    public static final Charset ASCII = StandardCharsets.US_ASCII;
+    public static final java.nio.charset.Charset ASCII = Charset.US_ASCII;
 
     /**
      * 

@@ -85,8 +85,8 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
         ResultSet resultSet = null;
         try {
             // 查询
-            resultSet = getMetaData().getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN,
-                    new String[] { "TABLE" });
+            resultSet = getMetaData()
+                    .getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN, new String[] { "TABLE" });
             // 映射
             return Mapping.convertList(resultSet, PostgreSqlTable.class);
         } catch (SQLException e) {
@@ -137,8 +137,11 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
                 }
                 List<PostgreSqlColumn> inquires = Mapping.convertList(resultSet, PostgreSqlColumn.class);
                 // 处理列，表名为key，列名为值
-                tableNames.forEach(name -> columnsCaching.put(name,
-                        inquires.stream().filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
+                tableNames.forEach(
+                        name -> columnsCaching.put(
+                                name,
+                                inquires.stream().filter(i -> i.getTableName().equals(name))
+                                        .collect(Collectors.toList())));
             }
             // 处理备注信息
             list.forEach(i -> {

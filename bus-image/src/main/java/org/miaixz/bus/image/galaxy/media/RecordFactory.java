@@ -191,7 +191,11 @@ public class RecordFactory {
         return createRecord(type, type == RecordType.PRIVATE ? getPrivateRecordUID(cuid) : null, dataset, fmi, fileIDs);
     }
 
-    public Attributes createRecord(RecordType type, String privRecUID, Attributes dataset, Attributes fmi,
+    public Attributes createRecord(
+            RecordType type,
+            String privRecUID,
+            Attributes dataset,
+            Attributes fmi,
             String[] fileIDs) {
         if (type == null)
             throw new NullPointerException("type");
@@ -220,7 +224,9 @@ public class RecordFactory {
         if (fileIDs != null) {
             rec.setString(Tag.ReferencedFileID, VR.CS, fileIDs);
             rec.setString(Tag.ReferencedSOPClassUIDInFile, VR.UI, fmi.getString(Tag.MediaStorageSOPClassUID, null));
-            rec.setString(Tag.ReferencedSOPInstanceUIDInFile, VR.UI,
+            rec.setString(
+                    Tag.ReferencedSOPInstanceUIDInFile,
+                    VR.UI,
                     fmi.getString(Tag.MediaStorageSOPInstanceUID, null));
             rec.setString(Tag.ReferencedTransferSyntaxUIDInFile, VR.UI, fmi.getString(Tag.TransferSyntaxUID, null));
         }

@@ -47,9 +47,13 @@ public class CardProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String agreementNo = object.toString();
-        return StringKit.left(agreementNo, 6).concat(StringKit.removePrefix(
-                StringKit.padPre(StringKit.right(agreementNo, 6), StringKit.length(agreementNo), shield.shadow()),
-                StringKit.fill(3, shield.shadow())));
+        return StringKit.left(agreementNo, 6).concat(
+                StringKit.removePrefix(
+                        StringKit.padPre(
+                                StringKit.right(agreementNo, 6),
+                                StringKit.length(agreementNo),
+                                shield.shadow()),
+                        StringKit.fill(3, shield.shadow())));
     }
 
 }

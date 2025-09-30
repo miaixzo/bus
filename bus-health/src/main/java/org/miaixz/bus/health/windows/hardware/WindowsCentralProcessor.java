@@ -94,7 +94,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     // This tick query is memoized to enforce a minimum elapsed time for determining
     // the capacity base multiplier
     private final Supplier<Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
-            ? Memoizer.memoize(WindowsCentralProcessor::queryProcessorUtilityCounters,
+            ? Memoizer.memoize(
+                    WindowsCentralProcessor::queryProcessorUtilityCounters,
                     TimeUnit.MILLISECONDS.toNanos(300L))
             : null;
     // populated by initProcessorCounts called by the parent constructor
@@ -150,12 +151,12 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         String[] processorIds = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryRoot);
         if (processorIds.length > 0) {
             String cpuRegistryPath = cpuRegistryRoot + processorIds[0];
-            cpuVendor = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath,
-                    "VendorIdentifier");
-            cpuName = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath,
-                    "ProcessorNameString");
-            cpuIdentifier = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath,
-                    "Identifier");
+            cpuVendor = Advapi32Util
+                    .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath, "VendorIdentifier");
+            cpuName = Advapi32Util
+                    .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath, "ProcessorNameString");
+            cpuIdentifier = Advapi32Util
+                    .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath, "Identifier");
             try {
                 cpuVendorFreq = Advapi32Util.registryGetIntValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath, "~MHz")
                         * 1_000_000L;
@@ -181,7 +182,10 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         if (processorId.getResultCount() > 0) {
             processorID = WmiKit.getString(processorId, ProcessorIdProperty.PROCESSORID, 0);
         } else {
-            processorID = createProcessorID(cpuStepping, cpuModel, cpuFamily,
+            processorID = createProcessorID(
+                    cpuStepping,
+                    cpuModel,
+                    cpuFamily,
                     cpu64bit ? new String[] { "ia64" } : new String[0]);
         }
         return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
@@ -208,8 +212,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                     curNode = node;
                     procNum = 0;
                 }
-                numaNodeProcToLogicalProcMap.put(String.format(Locale.ROOT, "%d,%d", logProc.getNumaNode(), procNum++),
-                        lp++);
+                numaNodeProcToLogicalProcMap
+                        .put(String.format(Locale.ROOT, "%d,%d", logProc.getNumaNode(), procNum++), lp++);
             }
         } else {
             lpi = LogicalProcessorInformation.getLogicalProcessorInformation();
@@ -311,8 +315,12 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         PowrProf.ProcessorPowerInformation[] ppiArray = (PowrProf.ProcessorPowerInformation[]) ppi
                 .toArray(getLogicalProcessorCount());
         long[] freqs = new long[getLogicalProcessorCount()];
-        if (0 != PowrProf.INSTANCE.CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, null, 0,
-                ppiArray[0].getPointer(), ppi.size() * ppiArray.length)) {
+        if (0 != PowrProf.INSTANCE.CallNtPowerInformation(
+                POWER_INFORMATION_LEVEL.ProcessorInformation,
+                null,
+                0,
+                ppiArray[0].getPointer(),
+                ppi.size() * ppiArray.length)) {
             Logger.error("Unable to get Processor Information");
             Arrays.fill(freqs, -1L);
             return freqs;
@@ -518,8 +526,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryContextSwitches() {
-        return SystemInformation.queryContextSwitchCounters().getOrDefault(ContextSwitchProperty.CONTEXTSWITCHESPERSEC,
-                0L);
+        return SystemInformation.queryContextSwitchCounters()
+                .getOrDefault(ContextSwitchProperty.CONTEXTSWITCHESPERSEC, 0L);
     }
 
     @Override

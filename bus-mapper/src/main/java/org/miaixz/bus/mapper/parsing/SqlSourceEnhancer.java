@@ -46,6 +46,7 @@ public interface SqlSourceEnhancer {
      * 默认 SPI 实现，加载并依次调用所有 KeySqlSource 实现类
      */
     SqlSourceEnhancer SPI = new SqlSourceEnhancer() {
+
         /**
          * 通过 SPI 加载的定制化 KeySqlSource 实现列表
          */

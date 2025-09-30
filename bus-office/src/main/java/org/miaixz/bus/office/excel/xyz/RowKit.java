@@ -85,7 +85,10 @@ public class RowKit {
      * @param cellEditor          单元格编辑器
      * @return 单元格值列表
      */
-    public static List<Object> readRow(final Row row, final int startCellNumInclude, final int endCellNumInclude,
+    public static List<Object> readRow(
+            final Row row,
+            final int startCellNumInclude,
+            final int endCellNumInclude,
             final CellEditor cellEditor) {
         if (null == row) {
             return ListKit.empty();
@@ -132,8 +135,12 @@ public class RowKit {
      * @param isHeader   是否为标题行
      * @param cellEditor 单元格值编辑器，可修改单元格值或修改单元格，{@code null}表示不编辑
      */
-    public static void writeRow(final Row row, final Iterable<?> rowData, final StyleSet styleSet,
-            final boolean isHeader, final CellEditor cellEditor) {
+    public static void writeRow(
+            final Row row,
+            final Iterable<?> rowData,
+            final StyleSet styleSet,
+            final boolean isHeader,
+            final CellEditor cellEditor) {
         int i = 0;
         Cell cell;
         for (final Object value : rowData) {
@@ -204,8 +211,9 @@ public class RowKit {
 
             // 找出删除行所在的合并单元格
             final List<Integer> removeMergedRegions = IntStream.range(0, sheet.getNumMergedRegions())
-                    .filter(i -> updateMergedRegions.stream()
-                            .anyMatch(umr -> CellRangeUtil.contains(umr, sheet.getMergedRegion(i))))
+                    .filter(
+                            i -> updateMergedRegions.stream()
+                                    .anyMatch(umr -> CellRangeUtil.contains(umr, sheet.getMergedRegion(i))))
                     .boxed().collect(Collectors.toList());
 
             sheet.removeMergedRegions(removeMergedRegions);

@@ -52,9 +52,9 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.NipplePosition:
-        case PrivateTag.ABVSClipDerivedFromVolume:
-            return VR.US;
+            case PrivateTag.NipplePosition:
+            case PrivateTag.ABVSClipDerivedFromVolume:
+                return VR.US;
         }
         return VR.UN;
     }

@@ -40,6 +40,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  */
 @Immutable
 public interface UsbDevice extends Comparable<UsbDevice> {
+
     /**
      * Name of the USB device
      *

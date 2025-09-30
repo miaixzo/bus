@@ -1878,8 +1878,10 @@ public class Device implements Serializable {
         if (ret != null || keyStoreURL == null)
             return ret;
         String keyStorePin = keyStorePin();
-        km = ret = AnyTrustManager.createKeyManager(Builder.replaceSystemProperties(keyStoreType()),
-                Builder.replaceSystemProperties(keyStoreURL), Builder.replaceSystemProperties(keyStorePin()),
+        km = ret = AnyTrustManager.createKeyManager(
+                Builder.replaceSystemProperties(keyStoreType()),
+                Builder.replaceSystemProperties(keyStoreURL),
+                Builder.replaceSystemProperties(keyStorePin()),
                 Builder.replaceSystemProperties(keyPin(keyStorePin)));
         return ret;
     }
@@ -1962,7 +1964,8 @@ public class Device implements Serializable {
         if (ret != null || trustStoreURL == null && authorizedNodeCertificates.isEmpty())
             return ret;
         tm = ret = trustStoreURL != null
-                ? AnyTrustManager.createTrustManager(Builder.replaceSystemProperties(trustStoreType()),
+                ? AnyTrustManager.createTrustManager(
+                        Builder.replaceSystemProperties(trustStoreType()),
                         Builder.replaceSystemProperties(trustStoreURL),
                         Builder.replaceSystemProperties(trustStorePin()))
                 : AnyTrustManager.createTrustManager(getAllAuthorizedNodeCertificates());

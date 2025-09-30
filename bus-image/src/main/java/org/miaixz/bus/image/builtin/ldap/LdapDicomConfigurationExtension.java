@@ -70,7 +70,10 @@ public class LdapDicomConfigurationExtension {
     protected void loadChilds(Device device, String deviceDN) throws NamingException, InternalException {
     }
 
-    protected void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, Device prev, Device device,
+    protected void storeDiffs(
+            ConfigurationChanges.ModifiedObject ldapObj,
+            Device prev,
+            Device device,
             List<ModificationItem> mods) {
     }
 
@@ -90,7 +93,10 @@ public class LdapDicomConfigurationExtension {
     protected void loadChilds(ApplicationEntity ae, String aeDN) throws NamingException, InternalException {
     }
 
-    protected void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, ApplicationEntity a, ApplicationEntity b,
+    protected void storeDiffs(
+            ConfigurationChanges.ModifiedObject ldapObj,
+            ApplicationEntity a,
+            ApplicationEntity b,
             List<ModificationItem> mods) {
     }
 

@@ -802,8 +802,8 @@ public class ApplicationEntity implements Serializable {
      */
     public TransferCapability addTransferCapability(TransferCapability tc) {
         tc.setApplicationEntity(this);
-        TransferCapability prev = (tc.getRole() == TransferCapability.Role.SCU ? scuTCs : scpTCs).put(tc.getSopClass(),
-                tc);
+        TransferCapability prev = (tc.getRole() == TransferCapability.Role.SCU ? scuTCs : scpTCs)
+                .put(tc.getSopClass(), tc);
         if (prev != null && prev != tc)
             prev.setApplicationEntity(null);
         return prev;

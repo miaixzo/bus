@@ -73,7 +73,8 @@ public interface BasicMapper<T, I extends Serializable>
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
-    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(@Param("entity") S entity,
+    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(
+            @Param("entity") S entity,
             @Param("fns") Fn.FnArray<T> fields);
 
     /**

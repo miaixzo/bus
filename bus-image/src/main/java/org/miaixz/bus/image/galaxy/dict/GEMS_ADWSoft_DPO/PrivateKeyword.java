@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.PrivateEntityNumber:
-            return "PrivateEntityNumber";
-        case PrivateTag.PrivateEntityDate:
-            return "PrivateEntityDate";
-        case PrivateTag.PrivateEntityTime:
-            return "PrivateEntityTime";
-        case PrivateTag.PrivateEntityLaunchCommand:
-            return "PrivateEntityLaunchCommand";
-        case PrivateTag.PrivateEntityType:
-            return "PrivateEntityType";
+            case PrivateTag.PrivateEntityNumber:
+                return "PrivateEntityNumber";
+
+            case PrivateTag.PrivateEntityDate:
+                return "PrivateEntityDate";
+
+            case PrivateTag.PrivateEntityTime:
+                return "PrivateEntityTime";
+
+            case PrivateTag.PrivateEntityLaunchCommand:
+                return "PrivateEntityLaunchCommand";
+
+            case PrivateTag.PrivateEntityType:
+                return "PrivateEntityType";
         }
         return "";
     }

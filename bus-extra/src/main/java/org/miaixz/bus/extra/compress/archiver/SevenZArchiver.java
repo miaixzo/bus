@@ -106,7 +106,10 @@ public class SevenZArchiver implements Archiver {
     }
 
     @Override
-    public SevenZArchiver add(final File file, final String path, final Function<String, String> fileNameEditor,
+    public SevenZArchiver add(
+            final File file,
+            final String path,
+            final Function<String, String> fileNameEditor,
             final Predicate<File> filter) {
         try {
             addInternal(file, path, fileNameEditor, filter);
@@ -151,7 +154,10 @@ public class SevenZArchiver implements Archiver {
      * @param fileNameEditor 文件名编辑器
      * @param filter         文件过滤器，指定哪些文件或目录可以加入，当{@link Predicate#test(Object)}为{@code true}保留，null表示保留全部
      */
-    private void addInternal(final File file, final String path, final Function<String, String> fileNameEditor,
+    private void addInternal(
+            final File file,
+            final String path,
+            final Function<String, String> fileNameEditor,
             final Predicate<File> filter) throws IOException {
         if (null != filter && !filter.test(file)) {
             return;

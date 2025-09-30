@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SeriesFileName:
-            return "SeriesFileName";
-        case PrivateTag.NumberOfImages:
-            return "NumberOfImages";
-        case PrivateTag.SentFlag:
-            return "SentFlag";
-        case PrivateTag.ItemLocked:
-            return "ItemLocked";
-        case PrivateTag.InternalLabel:
-            return "InternalLabel";
-        case PrivateTag.BrowserHide:
-            return "BrowserHide";
+            case PrivateTag.SeriesFileName:
+                return "SeriesFileName";
+
+            case PrivateTag.NumberOfImages:
+                return "NumberOfImages";
+
+            case PrivateTag.SentFlag:
+                return "SentFlag";
+
+            case PrivateTag.ItemLocked:
+                return "ItemLocked";
+
+            case PrivateTag.InternalLabel:
+                return "InternalLabel";
+
+            case PrivateTag.BrowserHide:
+                return "BrowserHide";
         }
         return "";
     }

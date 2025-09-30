@@ -146,7 +146,12 @@ public class TodosApi extends AbstractApi {
      * @return Stream of Todo instances
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Todo> getTodos(TodoAction action, Long authorId, Long projectId, Long groupId, TodoState state,
+    public List<Todo> getTodos(
+            TodoAction action,
+            Long authorId,
+            Long projectId,
+            Long groupId,
+            TodoState state,
             TodoType type) throws GitLabApiException {
         return (getTodos(action, authorId, projectId, groupId, state, type, getDefaultPerPage()).all());
     }
@@ -168,7 +173,12 @@ public class TodosApi extends AbstractApi {
      * @return Stream of Todo instances
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Todo> getTodosStream(TodoAction action, Long authorId, Long projectId, Long groupId, TodoState state,
+    public Stream<Todo> getTodosStream(
+            TodoAction action,
+            Long authorId,
+            Long projectId,
+            Long groupId,
+            TodoState state,
             TodoType type) throws GitLabApiException {
         return (getTodos(action, authorId, projectId, groupId, state, type, getDefaultPerPage()).stream());
     }
@@ -192,8 +202,14 @@ public class TodosApi extends AbstractApi {
      * @return a list of pages in todo for the specified range
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Todo> getTodos(TodoAction action, Long authorId, Long projectId, Long groupId, TodoState state,
-            TodoType type, int itemsPerPage) throws GitLabApiException {
+    public Pager<Todo> getTodos(
+            TodoAction action,
+            Long authorId,
+            Long projectId,
+            Long groupId,
+            TodoState state,
+            TodoType type,
+            int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action, false)
                 .withParam("author_id", authorId, false).withParam("project_id", projectId, false)
                 .withParam("group_id", groupId, false).withParam("state", state, false).withParam("type", type, false);

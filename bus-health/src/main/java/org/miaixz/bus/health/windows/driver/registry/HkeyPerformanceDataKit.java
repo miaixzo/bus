@@ -74,7 +74,8 @@ public final class HkeyPerformanceDataKit {
      *         (Windows 1601 Epoch) while the third element is a timestamp in milliseconds since the 1970 Epoch.
      */
     public static <T extends Enum<T> & PerfCounterWildcardQuery.PdhCounterWildcardProperty> Triplet<List<Map<T, Object>>, Long, Long> readPerfDataFromRegistry(
-            String objectName, Class<T> counterEnum) {
+            String objectName,
+            Class<T> counterEnum) {
         // Load indices
         // e.g., call with "Process" and ProcessPerformanceProperty.class
         Pair<Integer, EnumMap<T, Integer>> indices = getCounterIndices(objectName, counterEnum);
@@ -147,7 +148,8 @@ public final class HkeyPerformanceDataKit {
                         T[] counterKeys = counterEnum.getEnumConstants();
                         // First enum index is the name, ignore the counter text which is used for other
                         // purposes
-                        counterMap.put(counterKeys[0],
+                        counterMap.put(
+                                counterKeys[0],
                                 pPerfData.getWideString(perfInstanceOffset + perfInstance.NameOffset));
                         for (int i = 1; i < counterKeys.length; i++) {
                             T key = counterKeys[i];
@@ -157,10 +159,12 @@ public final class HkeyPerformanceDataKit {
                             // Currently, only DWORDs (4 bytes) and ULONGLONGs (8 bytes) are used to provide
                             // counter values.
                             if (size == 4) {
-                                counterMap.put(key,
+                                counterMap.put(
+                                        key,
                                         pPerfData.getInt(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
                             } else if (size == 8) {
-                                counterMap.put(key,
+                                counterMap.put(
+                                        key,
                                         pPerfData.getLong(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
                             } else {
                                 // If counter defined in enum isn't in registry, fail
@@ -202,7 +206,8 @@ public final class HkeyPerformanceDataKit {
      *         otherwise.
      */
     private static <T extends Enum<T> & PerfCounterWildcardQuery.PdhCounterWildcardProperty> Pair<Integer, EnumMap<T, Integer>> getCounterIndices(
-            String objectName, Class<T> counterEnum) {
+            String objectName,
+            Class<T> counterEnum) {
         if (!COUNTER_INDEX_MAP.containsKey(objectName)) {
             Logger.debug("Couldn't find counter index of {}.", objectName);
             return null;
@@ -240,8 +245,8 @@ public final class HkeyPerformanceDataKit {
 
         try (ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference(maxPerfBufferSize)) {
             Memory pPerfData = new Memory(maxPerfBufferSize);
-            int ret = Advapi32.INSTANCE.RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null,
-                    pPerfData, lpcbData);
+            int ret = Advapi32.INSTANCE
+                    .RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null, pPerfData, lpcbData);
             if (ret != WinError.ERROR_SUCCESS && ret != WinError.ERROR_MORE_DATA) {
                 Logger.error("Error reading performance data from registry for {}.", objectName);
                 pPerfData.close();
@@ -253,8 +258,8 @@ public final class HkeyPerformanceDataKit {
                 lpcbData.setValue(maxPerfBufferSize);
                 pPerfData.close();
                 pPerfData = new Memory(maxPerfBufferSize);
-                ret = Advapi32.INSTANCE.RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null,
-                        pPerfData, lpcbData);
+                ret = Advapi32.INSTANCE
+                        .RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null, pPerfData, lpcbData);
             }
             return pPerfData;
         }
@@ -272,8 +277,8 @@ public final class HkeyPerformanceDataKit {
     private static Map<String, Integer> mapCounterIndicesFromRegistry() {
         HashMap<String, Integer> indexMap = new HashMap<>();
         try {
-            String[] counterText = Advapi32Util.registryGetStringArray(WinReg.HKEY_LOCAL_MACHINE, HKEY_PERFORMANCE_TEXT,
-                    COUNTER);
+            String[] counterText = Advapi32Util
+                    .registryGetStringArray(WinReg.HKEY_LOCAL_MACHINE, HKEY_PERFORMANCE_TEXT, COUNTER);
             for (int i = 1; i < counterText.length; i += 2) {
                 indexMap.putIfAbsent(counterText[i], Integer.parseInt(counterText[i - 1]));
             }

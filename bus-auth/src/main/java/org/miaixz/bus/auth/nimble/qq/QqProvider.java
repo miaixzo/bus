@@ -102,9 +102,10 @@ public class QqProvider extends AbstractProvider {
      * @return openId
      */
     private String getOpenId(AuthToken authToken) {
-        String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
-                .queryParam("access_token", authToken.getAccessToken()).queryParam("unionid", context.isFlag() ? 1 : 0)
-                .build());
+        String response = Httpx.get(
+                Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
+                        .queryParam("access_token", authToken.getAccessToken())
+                        .queryParam("unionid", context.isFlag() ? 1 : 0).build());
         String removePrefix = response.replace("callback(", "");
         String removeSuffix = removePrefix.replace(");", "");
         String openId = removeSuffix.trim();

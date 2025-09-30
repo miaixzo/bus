@@ -95,6 +95,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * </p>
  * 
  * <pre>
+ * 
  * // 创建配置
  * AuthProperties properties = new AuthProperties();
  * // 创建服务

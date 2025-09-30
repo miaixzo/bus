@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.MammographyLaterality:
-            return "MammographyLaterality";
-        case PrivateTag.MammographyViewName:
-            return "MammographyViewName";
-        case PrivateTag.MammographyViewModifier:
-            return "MammographyViewModifier";
+            case PrivateTag.MammographyLaterality:
+                return "MammographyLaterality";
+
+            case PrivateTag.MammographyViewName:
+                return "MammographyViewName";
+
+            case PrivateTag.MammographyViewModifier:
+                return "MammographyViewModifier";
         }
         return "";
     }

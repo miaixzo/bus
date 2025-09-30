@@ -36,6 +36,7 @@ import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
  * @since Java 17+
  */
 public enum QueryOption {
+
     RELATIONAL, DATETIME, FUZZY, TIMEZONE;
 
     public static byte[] toExtendedNegotiationInformation(EnumSet<QueryOption> opts) {

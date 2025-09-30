@@ -35,6 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.*;
@@ -73,7 +75,7 @@ public class McpRequestRouter implements Router {
      * </p>
      */
     private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Config.MAX_INMEMORY_SIZE)).build();
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
 
     /**
      * 线程安全的WebClient缓存，按baseUrl存储已初始化的WebClient实例。
@@ -185,20 +187,24 @@ public class McpRequestRouter implements Router {
      * @param instance 选中的服务实例
      * @return Mono<ResponseEntity<DataBuffer>> 目标服务的响应实体，包含响应头和响应体
      */
-    private Mono<ServerResponse> buildAndSendMcpRequest(ServerRequest request, Context context, Assets assets,
+    private Mono<ServerResponse> buildAndSendMcpRequest(
+            ServerRequest request,
+            Context context,
+            Assets assets,
             ServiceInstance instance) {
         // 1. 构建MCP服务的基础URL
         String baseUrl = buildMcpBaseUrl(instance);
 
         // 2. 获取或创建MCP客户端
-        WebClient webClient = clients.computeIfAbsent(baseUrl,
+        WebClient webClient = clients.computeIfAbsent(
+                baseUrl,
                 client -> WebClient.builder().exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build());
 
         // 3. 构建目标URI
         String targetUri = buildMcpTargetUri(assets, context);
 
         // 4. 配置MCP请求
-        WebClient.RequestBodySpec bodySpec = webClient.method(assets.getHttpMethod()).uri(targetUri);
+        WebClient.RequestBodySpec bodySpec = webClient.method(context.getHttpMethod()).uri(targetUri);
 
         // 5. 配置MCP协议特有的请求头
         bodySpec.headers(headers -> {
@@ -274,7 +280,7 @@ public class McpRequestRouter implements Router {
             builder.queryParams(multiValueMap);
         }
 
-        return builder.build().encode().toUriString();
+        return builder.build().toUriString();
     }
 
     /**
@@ -290,8 +296,9 @@ public class McpRequestRouter implements Router {
         return ServerResponse.ok().headers(headers -> {
             headers.addAll(responseEntity.getHeaders());
             headers.remove(HttpHeaders.CONTENT_LENGTH);
-        }).body(responseEntity.getBody() == null ? BodyInserters.empty()
-                : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody())));
+        }).body(
+                responseEntity.getBody() == null ? BodyInserters.empty()
+                        : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody())));
     }
 
     /**
@@ -326,17 +333,22 @@ public class McpRequestRouter implements Router {
      * @param serviceName 服务名称
      * @return 选中的服务实例
      */
-    private ServiceInstance selectInstance(List<ServiceInstance> instances, LoadBalanceStrategy strategy,
+    private ServiceInstance selectInstance(
+            List<ServiceInstance> instances,
+            LoadBalanceStrategy strategy,
             String serviceName) {
         switch (strategy) {
-        case ROUND_ROBIN:
-            return roundRobinSelect(instances, serviceName);
-        case RANDOM:
-            return randomSelect(instances);
-        case WEIGHT:
-            return weightSelect(instances);
-        default:
-            return roundRobinSelect(instances, serviceName);
+            case ROUND_ROBIN:
+                return roundRobinSelect(instances, serviceName);
+
+            case RANDOM:
+                return randomSelect(instances);
+
+            case WEIGHT:
+                return weightSelect(instances);
+
+            default:
+                return roundRobinSelect(instances, serviceName);
         }
     }
 
@@ -473,6 +485,7 @@ public class McpRequestRouter implements Router {
      * </p>
      */
     public static class ServiceInstance {
+
         private final String instanceId;
         private final String serviceName;
         private final String host;

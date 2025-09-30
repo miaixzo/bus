@@ -440,7 +440,10 @@ public class PDUEncoder extends PDVOutputStream {
                 pdvcmd = PDVType.DATA;
                 if (Logger.isDebugEnabled()) {
                     if (dataWriter instanceof DataWriterAdapter)
-                        Logger.debug("{} << {} Dataset:\n{}", as, dimse.toString(cmd),
+                        Logger.debug(
+                                "{} << {} Dataset:\n{}",
+                                as,
+                                dimse.toString(cmd),
                                 ((DataWriterAdapter) dataWriter).getDataset());
                     else
                         Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));

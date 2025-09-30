@@ -63,6 +63,7 @@ public class SensitiveProperties {
     @Getter
     @Setter
     public class Encrypt {
+
         private String key;
         private String type;
     }
@@ -73,6 +74,7 @@ public class SensitiveProperties {
     @Getter
     @Setter
     public class Decrypt {
+
         private String key;
         private String type;
     }

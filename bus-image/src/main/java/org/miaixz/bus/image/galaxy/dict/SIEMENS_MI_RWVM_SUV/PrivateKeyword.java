@@ -38,8 +38,8 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SUVDecayCorrectionMethod:
-            return "SUVDecayCorrectionMethod";
+            case PrivateTag.SUVDecayCorrectionMethod:
+                return "SUVDecayCorrectionMethod";
         }
         return "";
     }

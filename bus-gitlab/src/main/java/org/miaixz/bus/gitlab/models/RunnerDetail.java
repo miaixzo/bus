@@ -56,6 +56,7 @@ public class RunnerDetail extends Runner {
      * Enum to use for RunnerDetail accessLevel property.
      */
     public enum RunnerAccessLevel {
+
         NOT_PROTECTED, REF_PROTECTED;
 
         private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(

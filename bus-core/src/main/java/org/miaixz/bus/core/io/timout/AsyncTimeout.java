@@ -206,6 +206,7 @@ public class AsyncTimeout extends Timeout {
      */
     public final Sink sink(final Sink sink) {
         return new Sink() {
+
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 IoKit.checkOffsetAndCount(source.size, 0, byteCount);
@@ -281,6 +282,7 @@ public class AsyncTimeout extends Timeout {
      */
     public final Source source(final Source source) {
         return new Source() {
+
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 boolean throwOnTimeout = false;
@@ -354,6 +356,7 @@ public class AsyncTimeout extends Timeout {
     }
 
     private static final class Watchdog extends Thread {
+
         Watchdog() {
             super("Watchdog");
             setDaemon(true);

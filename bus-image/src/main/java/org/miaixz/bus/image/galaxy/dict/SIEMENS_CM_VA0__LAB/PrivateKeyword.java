@@ -38,22 +38,29 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.GeneratorIdentificationLabel:
-            return "GeneratorIdentificationLabel";
-        case PrivateTag.GantryIdentificationLabel:
-            return "GantryIdentificationLabel";
-        case PrivateTag.XRayTubeIdentificationLabel:
-            return "XRayTubeIdentificationLabel";
-        case PrivateTag.DetectorIdentificationLabel:
-            return "DetectorIdentificationLabel";
-        case PrivateTag.DASIdentificationLabel:
-            return "DASIdentificationLabel";
-        case PrivateTag.SMIIdentificationLabel:
-            return "SMIIdentificationLabel";
-        case PrivateTag.CPUIdentificationLabel:
-            return "CPUIdentificationLabel";
-        case PrivateTag.HeaderVersion:
-            return "HeaderVersion";
+            case PrivateTag.GeneratorIdentificationLabel:
+                return "GeneratorIdentificationLabel";
+
+            case PrivateTag.GantryIdentificationLabel:
+                return "GantryIdentificationLabel";
+
+            case PrivateTag.XRayTubeIdentificationLabel:
+                return "XRayTubeIdentificationLabel";
+
+            case PrivateTag.DetectorIdentificationLabel:
+                return "DetectorIdentificationLabel";
+
+            case PrivateTag.DASIdentificationLabel:
+                return "DASIdentificationLabel";
+
+            case PrivateTag.SMIIdentificationLabel:
+                return "SMIIdentificationLabel";
+
+            case PrivateTag.CPUIdentificationLabel:
+                return "CPUIdentificationLabel";
+
+            case PrivateTag.HeaderVersion:
+                return "HeaderVersion";
         }
         return "";
     }

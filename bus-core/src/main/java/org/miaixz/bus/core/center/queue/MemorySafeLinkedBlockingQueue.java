@@ -115,10 +115,12 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
      * 获取内存剩余大小的定时任务
      */
     private static class FreeMemoryCalculator extends SimpleScheduler<Long> {
+
         private static final FreeMemoryCalculator INSTANCE = new FreeMemoryCalculator();
 
         FreeMemoryCalculator() {
             super(new SimpleScheduler.Job<>() {
+
                 private volatile long maxAvailable = RuntimeKit.getFreeMemory();
 
                 @Override

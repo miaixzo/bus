@@ -38,24 +38,32 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.LowerRangeOfPixels:
-            return "LowerRangeOfPixels";
-        case PrivateTag.LowerRangeOfPixels1:
-            return "LowerRangeOfPixels1";
-        case PrivateTag.UpperRangeOfPixels1:
-            return "UpperRangeOfPixels1";
-        case PrivateTag.LowerRangeOfPixels2:
-            return "LowerRangeOfPixels2";
-        case PrivateTag.UpperRangeOfPixels2:
-            return "UpperRangeOfPixels2";
-        case PrivateTag.LengthOfTotalHeaderInBytes:
-            return "LengthOfTotalHeaderInBytes";
-        case PrivateTag.VersionOfHeaderStructure:
-            return "VersionOfHeaderStructure";
-        case PrivateTag.AdvantageCompOverflow:
-            return "AdvantageCompOverflow";
-        case PrivateTag.AdvantageCompUnderflow:
-            return "AdvantageCompUnderflow";
+            case PrivateTag.LowerRangeOfPixels:
+                return "LowerRangeOfPixels";
+
+            case PrivateTag.LowerRangeOfPixels1:
+                return "LowerRangeOfPixels1";
+
+            case PrivateTag.UpperRangeOfPixels1:
+                return "UpperRangeOfPixels1";
+
+            case PrivateTag.LowerRangeOfPixels2:
+                return "LowerRangeOfPixels2";
+
+            case PrivateTag.UpperRangeOfPixels2:
+                return "UpperRangeOfPixels2";
+
+            case PrivateTag.LengthOfTotalHeaderInBytes:
+                return "LengthOfTotalHeaderInBytes";
+
+            case PrivateTag.VersionOfHeaderStructure:
+                return "VersionOfHeaderStructure";
+
+            case PrivateTag.AdvantageCompOverflow:
+                return "AdvantageCompOverflow";
+
+            case PrivateTag.AdvantageCompUnderflow:
+                return "AdvantageCompUnderflow";
         }
         return "";
     }

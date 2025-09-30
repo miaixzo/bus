@@ -95,8 +95,8 @@ public class SchemaSqlScriptBuilder implements SqlScriptWrapper {
      */
     public <T> T newInstance(Class<T> instanceClass, Object target, ElementType type, Annotation[] annotations) {
         try {
-            return instanceClass.getConstructor(Object.class, ElementType.class, Annotation[].class).newInstance(target,
-                    type, annotations);
+            return instanceClass.getConstructor(Object.class, ElementType.class, Annotation[].class)
+                    .newInstance(target, type, annotations);
         } catch (Exception e) {
             throw new RuntimeException("instance [ " + instanceClass + " ] error", e);
         }

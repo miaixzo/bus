@@ -70,7 +70,8 @@ public final class ImageDescriptor {
         this.bodyPartExamined = attrs.getString(Tag.BodyPartExamined);
         this.frames = attrs.getInt(Tag.NumberOfFrames, 1);
         this.embeddedOverlays = Overlays.getEmbeddedOverlayGroupOffsets(attrs);
-        this.bitsCompressed = Math.min(bitsAllocated,
+        this.bitsCompressed = Math.min(
+                bitsAllocated,
                 Math.max(bitsStored, (bitsCompressed < 0 && isSigned()) ? -bitsCompressed : bitsCompressed));
     }
 

@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ChemicalShiftNumber:
-            return "ChemicalShiftNumber";
-        case PrivateTag.PhaseNumber:
-            return "PhaseNumber";
-        case PrivateTag.ReconstructionNumber:
-            return "ReconstructionNumber";
-        case PrivateTag.SliceNumber:
-            return "SliceNumber";
+            case PrivateTag.ChemicalShiftNumber:
+                return "ChemicalShiftNumber";
+
+            case PrivateTag.PhaseNumber:
+                return "PhaseNumber";
+
+            case PrivateTag.ReconstructionNumber:
+                return "ReconstructionNumber";
+
+            case PrivateTag.SliceNumber:
+                return "SliceNumber";
         }
         return "";
     }

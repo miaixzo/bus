@@ -135,8 +135,10 @@ public class Compressor extends Decompressor implements Closeable {
 
         TransferSyntaxType tstype = TransferSyntaxType.forUID(tsuid);
         if (decompressor == null || super.tstype == TransferSyntaxType.RLE)
-            bi = createBufferedImage(Math.min(bitsStored, tstype.getMaxBitsStored()),
-                    super.tstype == TransferSyntaxType.RLE || banded, signed && tstype.canEncodeSigned());
+            bi = createBufferedImage(
+                    Math.min(bitsStored, tstype.getMaxBitsStored()),
+                    super.tstype == TransferSyntaxType.RLE || banded,
+                    signed && tstype.canEncodeSigned());
         Fragments compressedPixeldata = dataset.newFragments(Tag.PixelData, VR.OB, frames + 1);
         compressedPixeldata.add(Value.NULL);
         for (int i = 0; i < frames; i++) {
@@ -201,21 +203,24 @@ public class Compressor extends Decompressor implements Closeable {
         iis.seek(pixeldata.offset() + (long) frameLength * frameIndex);
         DataBuffer db = bi.getRaster().getDataBuffer();
         switch (db.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            byte[][] data = ((DataBufferByte) db).getBankData();
-            for (byte[] bs : data)
-                iis.readFully(bs);
-            if (pixeldata.bigEndian() && pixeldataVR.vr == VR.OW)
-                ByteKit.swapShorts(data);
-            break;
-        case DataBuffer.TYPE_USHORT:
-            readFully(((DataBufferUShort) db).getData());
-            break;
-        case DataBuffer.TYPE_SHORT:
-            readFully(((DataBufferShort) db).getData());
-            break;
-        default:
-            throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
+            case DataBuffer.TYPE_BYTE:
+                byte[][] data = ((DataBufferByte) db).getBankData();
+                for (byte[] bs : data)
+                    iis.readFully(bs);
+                if (pixeldata.bigEndian() && pixeldataVR.vr == VR.OW)
+                    ByteKit.swapShorts(data);
+                break;
+
+            case DataBuffer.TYPE_USHORT:
+                readFully(((DataBufferUShort) db).getData());
+                break;
+
+            case DataBuffer.TYPE_SHORT:
+                readFully(((DataBufferShort) db).getData());
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
         }
         return bi;
     }
@@ -232,7 +237,10 @@ public class Compressor extends Decompressor implements Closeable {
         int maxDiff = maxDiff(bi.getRaster(), bi2.getRaster());
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}", index + 1, end - start,
+            Logger.debug(
+                    "Verified compressed frame #{} in {} ms - max pixel value error: {}",
+                    index + 1,
+                    end - start,
                     maxDiff);
         if (maxDiff > maxPixelValueError)
             throw new InternalException(
@@ -256,22 +264,26 @@ public class Compressor extends Decompressor implements Closeable {
             for (int b = 0; b < csm.getNumBands(); b++)
                 for (int y = 0; y < maxY; y += blockSize) {
                     for (int x = 0; x < maxX; x += blockSize) {
-                        if (maxDiff < (diff = Math.abs(sum(csm.getSamples(x, y, blockSize, blockSize, b, samples, db))
-                                - sum(csm2.getSamples(x, y, blockSize, blockSize, b, samples, db2)))))
+                        if (maxDiff < (diff = Math.abs(
+                                sum(csm.getSamples(x, y, blockSize, blockSize, b, samples, db))
+                                        - sum(csm2.getSamples(x, y, blockSize, blockSize, b, samples, db2)))))
                             maxDiff = diff;
                     }
                 }
             return maxDiff / samples.length;
         }
         switch (db.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            return maxDiff(csm, ((DataBufferByte) db).getBankData(), csm2, ((DataBufferByte) db2).getBankData());
-        case DataBuffer.TYPE_USHORT:
-            return maxDiff(csm, ((DataBufferUShort) db).getData(), csm2, ((DataBufferUShort) db2).getData());
-        case DataBuffer.TYPE_SHORT:
-            return maxDiff(csm, ((DataBufferShort) db).getData(), csm2, ((DataBufferShort) db2).getData());
-        default:
-            throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
+            case DataBuffer.TYPE_BYTE:
+                return maxDiff(csm, ((DataBufferByte) db).getBankData(), csm2, ((DataBufferByte) db2).getBankData());
+
+            case DataBuffer.TYPE_USHORT:
+                return maxDiff(csm, ((DataBufferUShort) db).getData(), csm2, ((DataBufferUShort) db2).getData());
+
+            case DataBuffer.TYPE_SHORT:
+                return maxDiff(csm, ((DataBufferShort) db).getData(), csm2, ((DataBufferShort) db2).getData());
+
+            default:
+                throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
         }
     }
 
@@ -329,12 +341,13 @@ public class Compressor extends Decompressor implements Closeable {
     private void nullifyUnusedBits(int bitsStored, BufferedImage bi) {
         DataBuffer db = bi.getRaster().getDataBuffer();
         switch (db.getDataType()) {
-        case DataBuffer.TYPE_USHORT:
-            nullifyUnusedBits(bitsStored, ((DataBufferUShort) db).getData());
-            break;
-        case DataBuffer.TYPE_SHORT:
-            nullifyUnusedBits(bitsStored, ((DataBufferShort) db).getData());
-            break;
+            case DataBuffer.TYPE_USHORT:
+                nullifyUnusedBits(bitsStored, ((DataBufferUShort) db).getData());
+                break;
+
+            case DataBuffer.TYPE_SHORT:
+                nullifyUnusedBits(bitsStored, ((DataBufferShort) db).getData());
+                break;
         }
     }
 
@@ -357,8 +370,11 @@ public class Compressor extends Decompressor implements Closeable {
                 dataset.setBytes(Tag.OverlayData | gg0000, VR.OB, ovlyData);
             }
             Overlays.extractFromPixeldata(bi.getRaster(), mask, ovlyData, ovlyLength * frameIndex, ovlyLength);
-            Logger.debug("Extracted embedded overlay #{} from bit #{} of frame #{}", (gg0000 >>> 17) + 1,
-                    ovlyBitPosition, frameIndex + 1);
+            Logger.debug(
+                    "Extracted embedded overlay #{} from bit #{} of frame #{}",
+                    (gg0000 >>> 17) + 1,
+                    ovlyBitPosition,
+                    frameIndex + 1);
         }
     }
 
@@ -496,8 +512,11 @@ public class Compressor extends Decompressor implements Closeable {
                 long end = System.currentTimeMillis();
                 streamLength = (int) cache.getStreamPosition();
                 if (Logger.isDebugEnabled())
-                    Logger.debug("Compressed frame #{} {}:1 in {} ms", frameIndex + 1,
-                            (float) sizeOf(bi) / streamLength, end - start);
+                    Logger.debug(
+                            "Compressed frame #{} {}:1 in {} ms",
+                            frameIndex + 1,
+                            (float) sizeOf(bi) / streamLength,
+                            end - start);
                 Compressor.this.verify(cache, frameIndex);
             } catch (IOException ex) {
                 cache = null;

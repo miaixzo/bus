@@ -95,7 +95,10 @@ public class JschSession implements Session {
     public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress)
             throws InternalException {
         try {
-            this.raw.setPortForwardingL(localAddress.getHostName(), localAddress.getPort(), remoteAddress.getHostName(),
+            this.raw.setPortForwardingL(
+                    localAddress.getHostName(),
+                    localAddress.getPort(),
+                    remoteAddress.getHostName(),
                     remoteAddress.getPort());
         } catch (final JSchException e) {
             throw new InternalException(e, "From [{}] mapping to [{}] error！", localAddress, remoteAddress);
@@ -115,8 +118,11 @@ public class JschSession implements Session {
     public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress)
             throws InternalException {
         try {
-            this.raw.setPortForwardingR(remoteAddress.getHostName(), remoteAddress.getPort(),
-                    localAddress.getHostName(), localAddress.getPort());
+            this.raw.setPortForwardingR(
+                    remoteAddress.getHostName(),
+                    remoteAddress.getPort(),
+                    localAddress.getHostName(),
+                    localAddress.getPort());
         } catch (final JSchException e) {
             throw new InternalException(e, "From [{}] mapping to [{}] error！", remoteAddress, localAddress);
         }

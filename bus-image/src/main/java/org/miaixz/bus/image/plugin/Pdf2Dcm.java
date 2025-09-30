@@ -65,37 +65,45 @@ public class Pdf2Dcm {
 
     private static FileContentType fileContentType(String s) {
         switch (s.toLowerCase(Locale.ENGLISH)) {
-        case "stl":
-        case "model/stl":
-        case "model/x.stl-binary":
-        case "application/sla":
-            return FileContentType.STL;
-        case "pdf":
-        case "application/pdf":
-            return FileContentType.PDF;
-        case "xml":
-        case "application/xml":
-            return FileContentType.CDA;
-        case "mtl":
-        case "model/mtl":
-            return FileContentType.MTL;
-        case "obj":
-        case "model/obj":
-            return FileContentType.OBJ;
-        case "genozip":
-        case "application/vnd.genozip":
-            return FileContentType.GENOZIP;
-        case "vcf.bz2":
-        case "vcfbzip2":
-        case "vcfbz2":
-        case "application/prs.vcfbzip2":
-            return FileContentType.VCF_BZIP2;
-        case "boz":
-        case "bz2":
-        case "application/x-bzip2":
-            return FileContentType.DOC_BZIP2;
-        default:
-            throw new IllegalArgumentException(s);
+            case "stl":
+            case "model/stl":
+            case "model/x.stl-binary":
+            case "application/sla":
+                return FileContentType.STL;
+
+            case "pdf":
+            case "application/pdf":
+                return FileContentType.PDF;
+
+            case "xml":
+            case "application/xml":
+                return FileContentType.CDA;
+
+            case "mtl":
+            case "model/mtl":
+                return FileContentType.MTL;
+
+            case "obj":
+            case "model/obj":
+                return FileContentType.OBJ;
+
+            case "genozip":
+            case "application/vnd.genozip":
+                return FileContentType.GENOZIP;
+
+            case "vcf.bz2":
+            case "vcfbzip2":
+            case "vcfbz2":
+            case "application/prs.vcfbzip2":
+                return FileContentType.VCF_BZIP2;
+
+            case "boz":
+            case "bz2":
+            case "application/x-bzip2":
+                return FileContentType.DOC_BZIP2;
+
+            default:
+                throw new IllegalArgumentException(s);
         }
     }
 
@@ -153,6 +161,7 @@ public class Pdf2Dcm {
     }
 
     enum FileContentType {
+
         PDF("resource:encapsulatedPDFMetadata.xml"), CDA("resource:encapsulatedCDAMetadata.xml"),
         STL("resource:encapsulatedSTLMetadata.xml"), MTL("resource:encapsulatedMTLMetadata.xml"),
         OBJ("resource:encapsulatedOBJMetadata.xml"), GENOZIP("resource:encapsulatedGenozipMetadata.xml"),
@@ -178,6 +187,7 @@ public class Pdf2Dcm {
     }
 
     class Pdf2DcmFileVisitor extends SimpleFileVisitor<Path> {
+
         private final Path srcPath;
         private final Path destPath;
 

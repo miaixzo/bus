@@ -98,6 +98,7 @@ public final class BufferPagePool {
      * 内存回收任务
      */
     private final ScheduledFuture<?> future = BUFFER_POOL_CLEAN.scheduleWithFixedDelay(new Runnable() {
+
         @Override
         public void run() {
             if (enabled) {

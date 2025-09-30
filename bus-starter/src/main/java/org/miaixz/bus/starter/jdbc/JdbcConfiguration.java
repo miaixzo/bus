@@ -162,16 +162,25 @@ public class JdbcConfiguration {
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");
                     if ("url".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(),
-                                value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(
+                                Algorithm.AES.getValue(),
+                                this.properties.getPrivateKey(),
+                                value.toString(),
+                                Charset.UTF_8);
                         beanMap.put("url", value);
                     } else if ("username".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(),
-                                value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(
+                                Algorithm.AES.getValue(),
+                                this.properties.getPrivateKey(),
+                                value.toString(),
+                                Charset.UTF_8);
                         beanMap.put("username", value);
                     } else if ("password".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(),
-                                value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(
+                                Algorithm.AES.getValue(),
+                                this.properties.getPrivateKey(),
+                                value.toString(),
+                                Charset.UTF_8);
                         beanMap.put("password", value);
                     }
                 }

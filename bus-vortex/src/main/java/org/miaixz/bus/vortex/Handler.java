@@ -82,7 +82,11 @@ public interface Handler {
      * @param exception 异常对象（若有），可为 null
      * @return {@code Mono<Void>} 表示异步处理完成
      */
-    default Mono<Void> afterCompletion(ServerWebExchange exchange, Object service, Object args, Object result,
+    default Mono<Void> afterCompletion(
+            ServerWebExchange exchange,
+            Object service,
+            Object args,
+            Object result,
             Throwable exception) {
         return Mono.empty();
     }

@@ -163,7 +163,8 @@ public class AnnotatedElements {
      * @param annotationType 注解类型
      * @return 是否
      */
-    public static boolean isAnnotated(final AnnotatedElement element,
+    public static boolean isAnnotated(
+            final AnnotatedElement element,
             final Class<? extends Annotation> annotationType) {
         return toHierarchyMetaElement(element, false).isAnnotationPresent(annotationType);
     }
@@ -176,7 +177,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T findAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T findAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyMetaElement(element, false).getAnnotation(annotationType);
     }
@@ -189,7 +191,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] findAllAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] findAllAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyRepeatableMetaElement(element, false).getAnnotationsByType(annotationType);
     }
@@ -213,7 +216,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T findResolvedAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T findResolvedAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyMetaElement(element, true).getAnnotation(annotationType);
     }
@@ -238,7 +242,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] findAllResolvedAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] findAllResolvedAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyRepeatableMetaElement(element, true).getAnnotationsByType(annotationType);
     }
@@ -251,7 +256,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T findDirectlyAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T findDirectlyAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyMetaElement(element, false).getDeclaredAnnotation(annotationType);
     }
@@ -264,7 +270,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] findAllDirectlyAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] findAllDirectlyAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyRepeatableMetaElement(element, false).getDeclaredAnnotationsByType(annotationType);
     }
@@ -287,7 +294,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T findDirectlyResolvedAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T findDirectlyResolvedAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyMetaElement(element, true).getDeclaredAnnotation(annotationType);
     }
@@ -311,7 +319,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] findAllDirectlyResolvedAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] findAllDirectlyResolvedAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toHierarchyRepeatableMetaElement(element, true).getDeclaredAnnotationsByType(annotationType);
     }
@@ -323,7 +332,8 @@ public class AnnotatedElements {
      * @param annotationType 注解类型
      * @return 是否
      */
-    public static boolean isAnnotationPresent(final AnnotatedElement element,
+    public static boolean isAnnotationPresent(
+            final AnnotatedElement element,
             final Class<? extends Annotation> annotationType) {
         return toMetaElement(element, false).isAnnotationPresent(annotationType);
     }
@@ -336,7 +346,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T getAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T getAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toMetaElement(element, false).getAnnotation(annotationType);
     }
@@ -359,7 +370,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] getAllAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] getAllAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toRepeatableMetaElement(element, false).getAnnotationsByType(annotationType);
     }
@@ -372,7 +384,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T getResolvedAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T getResolvedAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toMetaElement(element, true).getAnnotation(annotationType);
     }
@@ -395,7 +408,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] getAllResolvedAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] getAllResolvedAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toRepeatableMetaElement(element, true).getAnnotationsByType(annotationType);
     }
@@ -408,7 +422,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T getDirectlyAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T getDirectlyAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toMetaElement(element, false).getDeclaredAnnotation(annotationType);
     }
@@ -421,7 +436,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] getAllDirectlyAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] getAllDirectlyAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toRepeatableMetaElement(element, false).getDeclaredAnnotationsByType(annotationType);
     }
@@ -444,7 +460,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T getDirectlyResolvedAnnotation(final AnnotatedElement element,
+    public static <T extends Annotation> T getDirectlyResolvedAnnotation(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toMetaElement(element, true).getDeclaredAnnotation(annotationType);
     }
@@ -467,7 +484,8 @@ public class AnnotatedElements {
      * @param <T>            注解类型
      * @return 注解对象
      */
-    public static <T extends Annotation> T[] getAllDirectlyResolvedAnnotations(final AnnotatedElement element,
+    public static <T extends Annotation> T[] getAllDirectlyResolvedAnnotations(
+            final AnnotatedElement element,
             final Class<T> annotationType) {
         return toRepeatableMetaElement(element, true).getDeclaredAnnotationsByType(annotationType);
     }
@@ -503,7 +521,8 @@ public class AnnotatedElements {
      * @see #getRepeatableMetaElementCache(AnnotatedElement)
      * @see #getResolvedRepeatableMetaElementCache(AnnotatedElement)
      */
-    public static AnnotatedElement toHierarchyRepeatableMetaElement(final AnnotatedElement element,
+    public static AnnotatedElement toHierarchyRepeatableMetaElement(
+            final AnnotatedElement element,
             final boolean resolved) {
         if (Objects.isNull(element)) {
             return emptyElement();
@@ -522,8 +541,8 @@ public class AnnotatedElements {
      * @return {@link AnnotatedElement}实例
      */
     public static AnnotatedElement toHierarchyElement(final AnnotatedElement element) {
-        return ObjectKit.defaultIfNull(element, ele -> HierarchicalAnnotatedElements.of(ele, (es, e) -> e),
-                emptyElement());
+        return ObjectKit
+                .defaultIfNull(element, ele -> HierarchicalAnnotatedElements.of(ele, (es, e) -> e), emptyElement());
     }
 
     /**
@@ -536,7 +555,9 @@ public class AnnotatedElements {
      * @see #getResolvedMetaElementCache(AnnotatedElement)
      */
     public static AnnotatedElement toMetaElement(final AnnotatedElement element, final boolean resolved) {
-        return ObjectKit.defaultIfNull(element, e -> resolved ? getResolvedMetaElementCache(e) : getMetaElementCache(e),
+        return ObjectKit.defaultIfNull(
+                element,
+                e -> resolved ? getResolvedMetaElementCache(e) : getMetaElementCache(e),
                 emptyElement());
     }
 
@@ -551,7 +572,8 @@ public class AnnotatedElements {
      * @see #getResolvedMetaElementCache(AnnotatedElement)
      */
     public static AnnotatedElement toRepeatableMetaElement(final AnnotatedElement element, final boolean resolved) {
-        return ObjectKit.defaultIfNull(element,
+        return ObjectKit.defaultIfNull(
+                element,
                 e -> resolved ? getResolvedRepeatableMetaElementCache(e) : getRepeatableMetaElementCache(e),
                 emptyElement());
     }
@@ -565,18 +587,24 @@ public class AnnotatedElements {
      * @param resolved  是否解析注解属性，若为{@code true}则获得的注解将支持属性别名以及属性覆盖机制
      * @return {@link AnnotatedElement}实例
      */
-    public static AnnotatedElement toRepeatableMetaElement(final AnnotatedElement element,
-            RepeatableAnnotationCollector collector, final boolean resolved) {
+    public static AnnotatedElement toRepeatableMetaElement(
+            final AnnotatedElement element,
+            RepeatableAnnotationCollector collector,
+            final boolean resolved) {
         if (Objects.isNull(element)) {
             return emptyElement();
         }
         collector = ObjectKit.defaultIfNull(collector, RepeatableAnnotationCollector.none());
         if (resolved) {
-            return RepeatableMetaAnnotatedElement.create(collector, element,
-                    (source, annotation) -> ResolvedAnnotationMapping.create((ResolvedAnnotationMapping) source,
-                            annotation, true));
+            return RepeatableMetaAnnotatedElement.create(
+                    collector,
+                    element,
+                    (source, annotation) -> ResolvedAnnotationMapping
+                            .create((ResolvedAnnotationMapping) source, annotation, true));
         }
-        return RepeatableMetaAnnotatedElement.create(collector, element,
+        return RepeatableMetaAnnotatedElement.create(
+                collector,
+                element,
                 (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source)));
     }
 
@@ -610,8 +638,11 @@ public class AnnotatedElements {
      */
     public static MetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedMetaElementCache(
             final AnnotatedElement element) {
-        return RESOLVED_ELEMENT_CACHE.computeIfAbsent(element, ele -> MetaAnnotatedElement.create(element,
-                (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)));
+        return RESOLVED_ELEMENT_CACHE.computeIfAbsent(
+                element,
+                ele -> MetaAnnotatedElement.create(
+                        element,
+                        (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)));
     }
 
     /**
@@ -621,8 +652,11 @@ public class AnnotatedElements {
      * @return {@link MetaAnnotatedElement}实例
      */
     public static MetaAnnotatedElement<GenericAnnotationMapping> getMetaElementCache(final AnnotatedElement element) {
-        return ELEMENT_CACHE.computeIfAbsent(element, ele -> MetaAnnotatedElement.create(element,
-                (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))));
+        return ELEMENT_CACHE.computeIfAbsent(
+                element,
+                ele -> MetaAnnotatedElement.create(
+                        element,
+                        (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))));
     }
 
     /**
@@ -633,8 +667,11 @@ public class AnnotatedElements {
      */
     public static RepeatableMetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedRepeatableMetaElementCache(
             final AnnotatedElement element) {
-        return RESOLVED_REPEATABLE_ELEMENT_CACHE.computeIfAbsent(element, ele -> RepeatableMetaAnnotatedElement
-                .create(element, (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)));
+        return RESOLVED_REPEATABLE_ELEMENT_CACHE.computeIfAbsent(
+                element,
+                ele -> RepeatableMetaAnnotatedElement.create(
+                        element,
+                        (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)));
     }
 
     /**
@@ -645,8 +682,11 @@ public class AnnotatedElements {
      */
     public static RepeatableMetaAnnotatedElement<GenericAnnotationMapping> getRepeatableMetaElementCache(
             final AnnotatedElement element) {
-        return REPEATABLE_ELEMENT_CACHE.computeIfAbsent(element, ele -> RepeatableMetaAnnotatedElement.create(element,
-                (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))));
+        return REPEATABLE_ELEMENT_CACHE.computeIfAbsent(
+                element,
+                ele -> RepeatableMetaAnnotatedElement.create(
+                        element,
+                        (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))));
     }
 
     /**

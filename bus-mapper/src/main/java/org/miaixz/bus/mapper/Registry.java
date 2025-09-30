@@ -47,6 +47,7 @@ public interface Registry {
      * 默认 SPI 扩展实现，加载并执行所有注册的 Registry 实现。
      */
     Registry SPI = new Registry() {
+
         private final List<Registry> registries = ListKit.of(NormalSpiLoader.loadList(Registry.class));
 
         @Override

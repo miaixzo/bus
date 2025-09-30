@@ -56,13 +56,17 @@ public class CacheConfiguration {
                 Object provider = ClassKit.loadClass(this.properties.getType());
                 Context config = Context.newConfig(this.properties.getMap());
                 if (provider instanceof H2Metrics) {
-                    config.setHitting(new H2Metrics(this.properties.getProvider().getUrl(),
-                            this.properties.getProvider().getUsername(), this.properties.getProvider().getPassword()));
+                    config.setHitting(
+                            new H2Metrics(this.properties.getProvider().getUrl(),
+                                    this.properties.getProvider().getUsername(),
+                                    this.properties.getProvider().getPassword()));
                 } else if (provider instanceof MySQLMetrics) {
                     config.setHitting(new MySQLMetrics(BeanKit.beanToMap(this.properties)));
                 } else if (provider instanceof SqliteMetrics) {
-                    config.setHitting(new SqliteMetrics(this.properties.getProvider().getUrl(),
-                            this.properties.getProvider().getUsername(), this.properties.getProvider().getPassword()));
+                    config.setHitting(
+                            new SqliteMetrics(this.properties.getProvider().getUrl(),
+                                    this.properties.getProvider().getUsername(),
+                                    this.properties.getProvider().getPassword()));
                 } else if (provider instanceof ZookeeperMetrics) {
                     config.setHitting(new ZookeeperMetrics(this.properties.getProvider().getUrl()));
                 } else if (provider instanceof MemoryMetrics) {

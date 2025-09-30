@@ -51,14 +51,14 @@ public final class IdGroup {
     /**
      * 用户 ID 到用户名的映射供应商，缓存 5 分钟后完全刷新
      */
-    private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoizer.memoize(IdGroup::getUserMap,
-            TimeUnit.MINUTES.toNanos(5));
+    private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoizer
+            .memoize(IdGroup::getUserMap, TimeUnit.MINUTES.toNanos(5));
 
     /**
      * 组 ID 到组名的映射供应商，缓存 5 分钟后完全刷新
      */
-    private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoizer.memoize(IdGroup::getGroupMap,
-            TimeUnit.MINUTES.toNanos(5));
+    private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoizer
+            .memoize(IdGroup::getGroupMap, TimeUnit.MINUTES.toNanos(5));
 
     /**
      * 标志当前进程是否具有提升的权限（如 sudo / Administrator），通过检查 "id -u" 输出是否为 0

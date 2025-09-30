@@ -282,8 +282,11 @@ public class Status {
             int remaining = p.getNumberOfRemainingSuboperations();
             if (failed > 0) {
                 hasFailed = true;
-                msg.append(String.format("%d/%d operations has failed.", failed,
-                        failed + p.getNumberOfCompletedSuboperations()));
+                msg.append(
+                        String.format(
+                                "%d/%d operations has failed.",
+                                failed,
+                                failed + p.getNumberOfCompletedSuboperations()));
             } else if (remaining > 0) {
                 msg.append(String.format("%d operations remains. ", remaining));
             } else if (warning > 0) {

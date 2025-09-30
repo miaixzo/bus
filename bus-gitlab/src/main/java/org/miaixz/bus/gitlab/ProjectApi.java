@@ -75,7 +75,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public ProjectFetches getProjectStatistics(Object projectIdOrPath) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "statistics");
         return (response.readEntity(ProjectFetches.class));
     }
@@ -118,8 +122,9 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning("Fetching all projects from " + url
-                    + " may take many hours to complete, use Pager<Project> getProjects(int) instead.");
+            GitLabApi.getLogger().warning(
+                    "Fetching all projects from " + url
+                            + " may take many hours to complete, use Pager<Project> getProjects(int) instead.");
         }
 
         return (getProjects(getDefaultPerPage()).all());
@@ -194,11 +199,29 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a list of projects accessible by the authenticated user and matching the supplied parameters
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Project> getProjects(Boolean archived, Visibility visibility, ProjectOrderBy orderBy, SortOrder sort,
-            String search, Boolean simple, Boolean owned, Boolean membership, Boolean starred, Boolean statistics)
-            throws GitLabApiException {
+    public List<Project> getProjects(
+            Boolean archived,
+            Visibility visibility,
+            ProjectOrderBy orderBy,
+            SortOrder sort,
+            String search,
+            Boolean simple,
+            Boolean owned,
+            Boolean membership,
+            Boolean starred,
+            Boolean statistics) throws GitLabApiException {
 
-        return (getProjects(archived, visibility, orderBy, sort, search, simple, owned, membership, starred, statistics,
+        return (getProjects(
+                archived,
+                visibility,
+                orderBy,
+                sort,
+                search,
+                simple,
+                owned,
+                membership,
+                starred,
+                statistics,
                 getDefaultPerPage()).all());
     }
 
@@ -226,9 +249,19 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a list of projects accessible by the authenticated user and matching the supplied parameters
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Project> getProjects(Boolean archived, Visibility visibility, ProjectOrderBy orderBy, SortOrder sort,
-            String search, Boolean simple, Boolean owned, Boolean membership, Boolean starred, Boolean statistics,
-            int page, int perPage) throws GitLabApiException {
+    public List<Project> getProjects(
+            Boolean archived,
+            Visibility visibility,
+            ProjectOrderBy orderBy,
+            SortOrder sort,
+            String search,
+            Boolean simple,
+            Boolean owned,
+            Boolean membership,
+            Boolean starred,
+            Boolean statistics,
+            int page,
+            int perPage) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("archived", archived).withParam("visibility", visibility)
                 .withParam("order_by", orderBy).withParam("sort", sort).withParam("search", search)
@@ -264,8 +297,17 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Pager of projects accessible by the authenticated user and matching the supplied parameters
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Project> getProjects(Boolean archived, Visibility visibility, ProjectOrderBy orderBy, SortOrder sort,
-            String search, Boolean simple, Boolean owned, Boolean membership, Boolean starred, Boolean statistics,
+    public Pager<Project> getProjects(
+            Boolean archived,
+            Visibility visibility,
+            ProjectOrderBy orderBy,
+            SortOrder sort,
+            String search,
+            Boolean simple,
+            Boolean owned,
+            Boolean membership,
+            Boolean starred,
+            Boolean statistics,
             int itemsPerPage) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("archived", archived).withParam("visibility", visibility)
@@ -637,7 +679,11 @@ public class ProjectApi extends AbstractApi implements Constants {
     public List<Project> getUserProjects(Object userIdOrUsername, ProjectFilter filter, int page, int perPage)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(filter.getQueryParams(page, perPage));
-        Response response = get(Response.Status.OK, formData.asMap(), "users", getUserIdOrUsername(userIdOrUsername),
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "users",
+                getUserIdOrUsername(userIdOrUsername),
                 "projects");
         return (response.readEntity(new GenericType<>() {
         }));
@@ -762,7 +808,10 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the specified project
      * @throws GitLabApiException if any exception occurs
      */
-    public Project getProject(Object projectIdOrPath, Boolean includeStatistics, Boolean includeLicense,
+    public Project getProject(
+            Object projectIdOrPath,
+            Boolean includeStatistics,
+            Boolean includeLicense,
             Boolean withCustomAttributes) throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("statistics", includeStatistics)
                 .withParam("license", includeLicense).withParam("with_custom_attributes", withCustomAttributes);
@@ -783,8 +832,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @param withCustomAttributes include custom attributes in response (admins only)
      * @return an Optional instance with the specified project as a value
      */
-    public Optional<Project> getOptionalProject(Object projectIdOrPath, Boolean includeStatistics,
-            Boolean includeLicense, Boolean withCustomAttributes) {
+    public Optional<Project> getOptionalProject(
+            Object projectIdOrPath,
+            Boolean includeStatistics,
+            Boolean includeLicense,
+            Boolean withCustomAttributes) {
         try {
             return (Optional
                     .ofNullable(getProject(projectIdOrPath, includeStatistics, includeLicense, withCustomAttributes)));
@@ -909,8 +961,8 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Project createProject(Long namespaceId, String projectName) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm().withParam("namespace_id", namespaceId).withParam("name",
-                projectName, true);
+        GitLabApiForm formData = new GitLabApiForm().withParam("namespace_id", namespaceId)
+                .withParam("name", projectName, true);
         Response response = post(Response.Status.CREATED, formData, "projects");
         return (response.readEntity(Project.class));
     }
@@ -1035,7 +1087,8 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("public_jobs", project.getPublicJobs())
                 .withParam("visibility_level", project.getVisibilityLevel())
                 .withParam("only_allow_merge_if_pipeline_succeeds", project.getOnlyAllowMergeIfPipelineSucceeds())
-                .withParam("only_allow_merge_if_all_discussions_are_resolved",
+                .withParam(
+                        "only_allow_merge_if_all_discussions_are_resolved",
                         project.getOnlyAllowMergeIfAllDiscussionsAreResolved())
                 .withParam("lfs_enabled", project.getLfsEnabled())
                 .withParam("request_access_enabled", project.getRequestAccessEnabled())
@@ -1054,16 +1107,19 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("auto_devops_enabled", project.getAutoDevopsEnabled())
                 .withParam("squash_option", project.getSquashOption())
                 .withParam("use_custom_template", project.getUseCustomTemplate())
-                .withParam("external_authorization_classification_label",
+                .withParam(
+                        "external_authorization_classification_label",
                         project.getExternalAuthorizationClassificationLabel())
                 .withParam("group_runners_enabled", project.getGroupRunnersEnabled())
                 .withParam("show_default_award_emojis", project.getShowDefaultAwardEmojis())
-                .withParam("warn_about_potentially_unwanted_characters",
+                .withParam(
+                        "warn_about_potentially_unwanted_characters",
                         project.getWarnAboutPotentiallyUnwantedCharacters())
                 .withParam("mirror_trigger_builds", project.getMirrorTriggerBuilds())
                 .withParam("auto_cancel_pending_pipelines", project.getAutoCancelPendingPipelines())
                 .withParam("repository_object_format", project.getRepositoryObjectFormat())
-                .withParam("only_allow_merge_if_all_status_checks_passed",
+                .withParam(
+                        "only_allow_merge_if_all_status_checks_passed",
                         project.getOnlyAllowMergeIfAllStatusChecksPassed())
                 .withParam("group_with_project_templates_id", project.getGroupWithProjectTemplatesId())
                 .withParam("public_builds", project.getPublicBuilds())
@@ -1132,8 +1188,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public InputStream getAvatar(Object projectIdOrPath) throws GitLabApiException {
 
-        Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD, "projects",
-                getProjectIdOrPath(projectIdOrPath), "avatar");
+        Response response = getWithAccepts(
+                Response.Status.OK,
+                null,
+                MediaType.MEDIA_TYPE_WILDCARD,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "avatar");
         return (response.readEntity(InputStream.class));
     }
 
@@ -1155,9 +1216,17 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the GitLab Project
      * @throws GitLabApiException if any exception occurs
      */
-    public Project createProject(String name, Long namespaceId, String description, Boolean issuesEnabled,
-            Boolean mergeRequestsEnabled, Boolean wikiEnabled, Boolean snippetsEnabled, Visibility visibility,
-            Integer visibilityLevel, String importUrl) throws GitLabApiException {
+    public Project createProject(
+            String name,
+            Long namespaceId,
+            String description,
+            Boolean issuesEnabled,
+            Boolean mergeRequestsEnabled,
+            Boolean wikiEnabled,
+            Boolean snippetsEnabled,
+            Visibility visibility,
+            Integer visibilityLevel,
+            String importUrl) throws GitLabApiException {
 
         if (name == null || name.trim().length() == 0) {
             return (null);
@@ -1198,10 +1267,18 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the GitLab Project
      * @throws GitLabApiException if any exception occurs
      */
-    public Project createProject(String name, Long namespaceId, String description, Boolean issuesEnabled,
-            Boolean mergeRequestsEnabled, Boolean wikiEnabled, Boolean snippetsEnabled, Visibility visibility,
-            Integer visibilityLevel, Boolean printingMergeRequestLinkEnabled, String importUrl)
-            throws GitLabApiException {
+    public Project createProject(
+            String name,
+            Long namespaceId,
+            String description,
+            Boolean issuesEnabled,
+            Boolean mergeRequestsEnabled,
+            Boolean wikiEnabled,
+            Boolean snippetsEnabled,
+            Visibility visibility,
+            Integer visibilityLevel,
+            Boolean printingMergeRequestLinkEnabled,
+            String importUrl) throws GitLabApiException {
 
         if (name == null || name.trim().length() == 0) {
             return (null);
@@ -1230,8 +1307,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the created project
      * @throws GitLabApiException if any exception occurs
      */
-    public Project createProjectFromTemplate(Integer namespaceId, String projectName,
-            Integer groupWithProjectTemplatesId, String templateName, Visibility visibility) throws GitLabApiException {
+    public Project createProjectFromTemplate(
+            Integer namespaceId,
+            String projectName,
+            Integer groupWithProjectTemplatesId,
+            String templateName,
+            Visibility visibility) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("namespace_id", namespaceId)
                 .withParam("name", projectName, true).withParam("use_custom_template", true)
                 .withParam("group_with_project_templates_id", groupWithProjectTemplatesId, true)
@@ -1293,7 +1374,8 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("shared_runners_enabled", project.getSharedRunnersEnabled())
                 .withParam("public_jobs", project.getPublicJobs())
                 .withParam("only_allow_merge_if_pipeline_succeeds", project.getOnlyAllowMergeIfPipelineSucceeds())
-                .withParam("only_allow_merge_if_all_discussions_are_resolved",
+                .withParam(
+                        "only_allow_merge_if_all_discussions_are_resolved",
                         project.getOnlyAllowMergeIfAllDiscussionsAreResolved())
                 .withParam("lfs_enabled", project.getLfsEnabled())
                 .withParam("request_access_enabled", project.getRequestAccessEnabled())
@@ -1311,17 +1393,20 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("remove_source_branch_after_merge", project.getRemoveSourceBranchAfterMerge())
                 .withParam("squash_option", project.getSquashOption())
                 .withParam("use_custom_template", project.getUseCustomTemplate())
-                .withParam("external_authorization_classification_label",
+                .withParam(
+                        "external_authorization_classification_label",
                         project.getExternalAuthorizationClassificationLabel())
                 .withParam("group_runners_enabled", project.getGroupRunnersEnabled())
                 .withParam("show_default_award_emojis", project.getShowDefaultAwardEmojis())
-                .withParam("warn_about_potentially_unwanted_characters",
+                .withParam(
+                        "warn_about_potentially_unwanted_characters",
                         project.getWarnAboutPotentiallyUnwantedCharacters())
                 .withParam("mirror_trigger_builds", project.getMirrorTriggerBuilds())
                 .withParam("auto_cancel_pending_pipelines", project.getAutoCancelPendingPipelines())
                 .withParam("autoclose_referenced_issues", project.getAutocloseReferencedIssues())
                 .withParam("repository_object_format", project.getRepositoryObjectFormat())
-                .withParam("only_allow_merge_if_all_status_checks_passed",
+                .withParam(
+                        "only_allow_merge_if_all_status_checks_passed",
                         project.getOnlyAllowMergeIfAllStatusChecksPassed())
                 .withParam("group_with_project_templates_id", project.getGroupWithProjectTemplatesId())
                 .withParam("public_builds", project.getPublicBuilds())
@@ -1444,7 +1529,11 @@ public class ProjectApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("namespace", namespace, true).withParam("path", path)
                 .withParam("name", name);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "fork");
         return (response.readEntity(Project.class));
     }
@@ -1463,8 +1552,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Project createForkedFromRelationship(Object projectIdOrPath, Long forkedFromId) throws GitLabApiException {
-        Response response = post(Response.Status.CREATED, (Form) null, "projects",
-                this.getProjectIdOrPath(projectIdOrPath), "fork", forkedFromId);
+        Response response = post(
+                Response.Status.CREATED,
+                (Form) null,
+                "projects",
+                this.getProjectIdOrPath(projectIdOrPath),
+                "fork",
+                forkedFromId);
         return (response.readEntity(Project.class));
     }
 
@@ -1511,8 +1605,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Member> getMembers(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "members");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "members");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -1721,10 +1819,21 @@ public class ProjectApi extends AbstractApi implements Constants {
     public Member getMember(Object projectIdOrPath, Long userId, Boolean includeInherited) throws GitLabApiException {
         Response response;
         if (includeInherited) {
-            response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "members", "all",
+            response = get(
+                    Response.Status.OK,
+                    null,
+                    "projects",
+                    getProjectIdOrPath(projectIdOrPath),
+                    "members",
+                    "all",
                     userId);
         } else {
-            response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "members",
+            response = get(
+                    Response.Status.OK,
+                    null,
+                    "projects",
+                    getProjectIdOrPath(projectIdOrPath),
+                    "members",
                     userId);
         }
         return (response.readEntity(Member.class));
@@ -1825,7 +1934,11 @@ public class ProjectApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("user_id", userId, true)
                 .withParam("access_level", accessLevel, true).withParam("expires_at", expiresAt, false);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "members");
         return (response.readEntity(Member.class));
     }
@@ -1901,8 +2014,13 @@ public class ProjectApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("access_level", accessLevel, true)
                 .withParam("expires_at", expiresAt, false);
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "members", userId);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "members",
+                userId);
         return (response.readEntity(Member.class));
     }
 
@@ -2159,8 +2277,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Event> getProjectEvents(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "events");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "events");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -2226,8 +2348,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<ProjectHook> getHooks(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "hooks");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "hooks");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -2277,7 +2403,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public ProjectHook getHook(Object projectIdOrPath, Long hookId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "hooks",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "hooks",
                 hookId);
         return (response.readEntity(ProjectHook.class));
     }
@@ -2316,8 +2447,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the added ProjectHook instance
      * @throws GitLabApiException if any exception occurs
      */
-    public ProjectHook addHook(Object projectIdOrPath, String url, ProjectHook enabledHooks,
-            Boolean enableSslVerification, String secretToken) throws GitLabApiException {
+    public ProjectHook addHook(
+            Object projectIdOrPath,
+            String url,
+            ProjectHook enabledHooks,
+            Boolean enableSslVerification,
+            String secretToken) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("url", url, true)
                 .withParam("push_events", enabledHooks.getPushEvents(), false)
@@ -2337,7 +2472,11 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("releases_events", enabledHooks.getReleasesEvents(), false)
                 .withParam("deployment_events", enabledHooks.getDeploymentEvents(), false)
                 .withParam("description", enabledHooks.getDescription(), false).withParam("token", secretToken, false);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "hooks");
         return (response.readEntity(ProjectHook.class));
     }
@@ -2357,7 +2496,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the added ProjectHook instance
      * @throws GitLabApiException if any exception occurs
      */
-    public ProjectHook addHook(Object projectIdOrPath, String url, Boolean doPushEvents, Boolean doIssuesEvents,
+    public ProjectHook addHook(
+            Object projectIdOrPath,
+            String url,
+            Boolean doPushEvents,
+            Boolean doIssuesEvents,
             Boolean doMergeRequestsEvents) throws GitLabApiException {
         return addHook(projectIdOrPath, url, doPushEvents, doIssuesEvents, doMergeRequestsEvents, null);
     }
@@ -2378,8 +2521,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the added ProjectHook instance
      * @throws GitLabApiException if any exception occurs
      */
-    public ProjectHook addHook(Object projectIdOrPath, String url, Boolean doPushEvents, Boolean doIssuesEvents,
-            Boolean doMergeRequestsEvents, Boolean doNoteEvents) throws GitLabApiException {
+    public ProjectHook addHook(
+            Object projectIdOrPath,
+            String url,
+            Boolean doPushEvents,
+            Boolean doIssuesEvents,
+            Boolean doMergeRequestsEvents,
+            Boolean doNoteEvents) throws GitLabApiException {
         ProjectHook enabledHooks = new ProjectHook().withPushEvents(doPushEvents).withIssuesEvents(doIssuesEvents)
                 .withMergeRequestsEvents(doMergeRequestsEvents).withNoteEvents(doNoteEvents);
         return addHook(projectIdOrPath, url, enabledHooks, null, null);
@@ -2445,7 +2593,12 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("deployment_events", hook.getDeploymentEvents(), false)
                 .withParam("description", hook.getDescription(), false).withParam("token", hook.getToken(), false);
 
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", hook.getProjectId(), "hooks",
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                hook.getProjectId(),
+                "hooks",
                 hook.getId());
         return (response.readEntity(ProjectHook.class));
     }
@@ -2479,8 +2632,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Snippet> getSnippets(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "snippets");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "snippets");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -2530,7 +2687,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Snippet getSnippet(Object projectIdOrPath, Long snippetId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "snippets",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "snippets",
                 snippetId);
         return (response.readEntity(Snippet.class));
     }
@@ -2570,8 +2732,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Snippet instance with info on the created snippet
      * @throws GitLabApiException if any exception occurs
      */
-    public Snippet createSnippet(Object projectIdOrPath, String title, String filename, String description,
-            String content, Visibility visibility) throws GitLabApiException {
+    public Snippet createSnippet(
+            Object projectIdOrPath,
+            String title,
+            String filename,
+            String description,
+            String content,
+            Visibility visibility) throws GitLabApiException {
 
         try {
 
@@ -2579,7 +2746,11 @@ public class ProjectApi extends AbstractApi implements Constants {
                     .withParam("file_name", filename, true).withParam("description", description)
                     .withParam("content", content, true).withParam("visibility", visibility, true);
 
-            Response response = post(Response.Status.CREATED, form, "projects", getProjectIdOrPath(projectIdOrPath),
+            Response response = post(
+                    Response.Status.CREATED,
+                    form,
+                    "projects",
+                    getProjectIdOrPath(projectIdOrPath),
                     "snippets");
             return (response.readEntity(Snippet.class));
 
@@ -2594,7 +2765,11 @@ public class ProjectApi extends AbstractApi implements Constants {
                     .withParam("file_name", filename, true).withParam("description", description)
                     .withParam("code", content, true).withParam("visibility", visibility, true);
 
-            Response response = post(Response.Status.CREATED, form, "projects", getProjectIdOrPath(projectIdOrPath),
+            Response response = post(
+                    Response.Status.CREATED,
+                    form,
+                    "projects",
+                    getProjectIdOrPath(projectIdOrPath),
                     "snippets");
             return (response.readEntity(Snippet.class));
         }
@@ -2617,14 +2792,25 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Snippet instance with info on the updated snippet
      * @throws GitLabApiException if any exception occurs
      */
-    public Snippet updateSnippet(Object projectIdOrPath, Long snippetId, String title, String filename,
-            String description, String code, Visibility visibility) throws GitLabApiException {
+    public Snippet updateSnippet(
+            Object projectIdOrPath,
+            Long snippetId,
+            String title,
+            String filename,
+            String description,
+            String code,
+            Visibility visibility) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title).withParam("file_name", filename)
                 .withParam("description", description).withParam("code", code).withParam("visibility", visibility);
 
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "snippets", snippetId);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "snippets",
+                snippetId);
         return (response.readEntity(Snippet.class));
     }
 
@@ -2641,7 +2827,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSnippet(Object projectIdOrPath, Long snippetId) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "snippets",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "snippets",
                 snippetId);
     }
 
@@ -2658,8 +2849,14 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public String getRawSnippetContent(Object projectIdOrPath, Long snippetId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "snippets",
-                snippetId, "raw");
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "snippets",
+                snippetId,
+                "raw");
         return (response.readEntity(String.class));
     }
 
@@ -2729,8 +2926,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Project archiveProject(Object projectIdOrPath) throws GitLabApiException {
-        Response response = post(Response.Status.CREATED, (new GitLabApiForm()), "projects",
-                getProjectIdOrPath(projectIdOrPath), "archive");
+        Response response = post(
+                Response.Status.CREATED,
+                (new GitLabApiForm()),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "archive");
         return (response.readEntity(Project.class));
     }
 
@@ -2746,8 +2947,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Project unarchiveProject(Object projectIdOrPath) throws GitLabApiException {
-        Response response = post(Response.Status.CREATED, (new GitLabApiForm()), "projects",
-                getProjectIdOrPath(projectIdOrPath), "unarchive");
+        Response response = post(
+                Response.Status.CREATED,
+                (new GitLabApiForm()),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "unarchive");
         return (response.readEntity(Project.class));
     }
 
@@ -2801,8 +3006,14 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public FileUpload uploadFile(Object projectIdOrPath, File fileToUpload, String mediaType)
             throws GitLabApiException {
-        Response response = upload(Response.Status.CREATED, "file", fileToUpload, mediaType, "projects",
-                getProjectIdOrPath(projectIdOrPath), "uploads");
+        Response response = upload(
+                Response.Status.CREATED,
+                "file",
+                fileToUpload,
+                mediaType,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "uploads");
         return (response.readEntity(FileUpload.class));
     }
 
@@ -2823,8 +3034,15 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public FileUpload uploadFile(Object projectIdOrPath, InputStream inputStream, String filename, String mediaType)
             throws GitLabApiException {
-        Response response = upload(Response.Status.CREATED, "file", inputStream, filename, mediaType, "projects",
-                getProjectIdOrPath(projectIdOrPath), "uploads");
+        Response response = upload(
+                Response.Status.CREATED,
+                "file",
+                inputStream,
+                filename,
+                mediaType,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "uploads");
         return (response.readEntity(FileUpload.class));
     }
 
@@ -2885,7 +3103,11 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("commit_committer_check", pushRule.getCommitCommitterCheck())
                 .withParam("reject_unsigned_commits", pushRule.getRejectUnsignedCommits());
 
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "push_rule");
         return (response.readEntity(PushRules.class));
     }
@@ -2931,8 +3153,12 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("commit_committer_check", pushRule.getCommitCommitterCheck())
                 .withParam("reject_unsigned_commits", pushRule.getRejectUnsignedCommits());
 
-        final Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "push_rule");
+        final Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "push_rule");
         return (response.readEntity(PushRules.class));
     }
 
@@ -2980,8 +3206,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Project> getForks(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "forks");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "forks");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -3030,7 +3260,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Project starProject(Object projectIdOrPath) throws GitLabApiException {
-        Response response = post(Response.Status.CREATED, (Form) null, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                (Form) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "star");
         return (response.readEntity(Project.class));
     }
@@ -3048,7 +3282,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project unstarProject(Object projectIdOrPath) throws GitLabApiException {
         Response.Status expectedStatus = Response.Status.CREATED;
-        Response response = post(expectedStatus, (Form) null, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                expectedStatus,
+                (Form) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "unstar");
         return (response.readEntity(Project.class));
     }
@@ -3085,7 +3323,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project transferProject(Object projectIdOrPath, String namespace) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("namespace", namespace, true);
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "transfer");
         return (response.readEntity(Project.class));
     }
@@ -3103,7 +3345,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Project setProjectAvatar(Object projectIdOrPath, File avatarFile) throws GitLabApiException {
-        Response response = putUpload(Response.Status.OK, "avatar", avatarFile, "projects",
+        Response response = putUpload(
+                Response.Status.OK,
+                "avatar",
+                avatarFile,
+                "projects",
                 getProjectIdOrPath(projectIdOrPath));
         return (response.readEntity(Project.class));
     }
@@ -3140,7 +3386,10 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Pager of project Audit events
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<AuditEvent> getAuditEvents(Object projectIdOrPath, Date created_after, Date created_before,
+    public Pager<AuditEvent> getAuditEvents(
+            Object projectIdOrPath,
+            Date created_after,
+            Date created_before,
             int itemsPerPage) throws GitLabApiException {
         Form form = new GitLabApiForm().withParam("created_before", ISO8601.toString(created_before, false))
                 .withParam("created_after", ISO8601.toString(created_after, false));
@@ -3179,8 +3428,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public AuditEvent getAuditEvent(Object projectIdOrPath, Long auditEventId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "audit_events", auditEventId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "audit_events",
+                auditEventId);
         return (response.readEntity(AuditEvent.class));
     }
 
@@ -3213,8 +3467,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Variable> getVariables(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "variables");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "variables");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -3264,7 +3522,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Variable getVariable(Object projectIdOrPath, String key) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "variables",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "variables",
                 key);
         return (response.readEntity(Variable.class));
     }
@@ -3328,7 +3591,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Variable instance with the newly created variable
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Variable createVariable(Object projectIdOrPath, String key, String value, Boolean isProtected,
+    public Variable createVariable(
+            Object projectIdOrPath,
+            String key,
+            String value,
+            Boolean isProtected,
             String environmentScope) throws GitLabApiException {
         return createVariable(projectIdOrPath, key, value, null, isProtected, null, environmentScope);
     }
@@ -3354,8 +3621,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Variable instance with the newly created variable
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Variable createVariable(Object projectIdOrPath, String key, String value, Variable.Type variableType,
-            Boolean isProtected, Boolean isMasked) throws GitLabApiException {
+    public Variable createVariable(
+            Object projectIdOrPath,
+            String key,
+            String value,
+            Variable.Type variableType,
+            Boolean isProtected,
+            Boolean isMasked) throws GitLabApiException {
         return createVariable(projectIdOrPath, key, value, variableType, isProtected, isMasked, null);
     }
 
@@ -3381,13 +3653,23 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Variable instance with the newly created variable
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Variable createVariable(Object projectIdOrPath, String key, String value, Variable.Type variableType,
-            Boolean isProtected, Boolean isMasked, String environmentScope) throws GitLabApiException {
+    public Variable createVariable(
+            Object projectIdOrPath,
+            String key,
+            String value,
+            Variable.Type variableType,
+            Boolean isProtected,
+            Boolean isMasked,
+            String environmentScope) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("key", key, true).withParam("value", value, true)
                 .withParam("variable_type", variableType).withParam("protected", isProtected)
                 .withParam("masked", isMasked).withParam("environment_scope", environmentScope);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "variables");
         return (response.readEntity(Variable.class));
     }
@@ -3430,7 +3712,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Variable instance with the updated variable
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Variable updateVariable(Object projectIdOrPath, String key, String value, Boolean isProtected,
+    public Variable updateVariable(
+            Object projectIdOrPath,
+            String key,
+            String value,
+            Boolean isProtected,
             String environmentScope) throws GitLabApiException {
         return updateVariable(projectIdOrPath, key, value, null, isProtected, null, environmentScope);
     }
@@ -3455,8 +3741,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Variable instance with the updated variable
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Variable updateVariable(Object projectIdOrPath, String key, String value, Variable.Type variableType,
-            Boolean isProtected, Boolean masked) throws GitLabApiException {
+    public Variable updateVariable(
+            Object projectIdOrPath,
+            String key,
+            String value,
+            Variable.Type variableType,
+            Boolean isProtected,
+            Boolean masked) throws GitLabApiException {
         return updateVariable(projectIdOrPath, key, value, variableType, isProtected, masked, null);
     }
 
@@ -3481,14 +3772,25 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a Variable instance with the updated variable
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Variable updateVariable(Object projectIdOrPath, String key, String value, Variable.Type variableType,
-            Boolean isProtected, Boolean masked, String environmentScope) throws GitLabApiException {
+    public Variable updateVariable(
+            Object projectIdOrPath,
+            String key,
+            String value,
+            Variable.Type variableType,
+            Boolean isProtected,
+            Boolean masked,
+            String environmentScope) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("value", value, true)
                 .withParam("variable_type", variableType).withParam("protected", isProtected)
                 .withParam("masked", masked).withParam("environment_scope", environmentScope);
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "variables", key);
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "variables",
+                key);
         return (response.readEntity(Variable.class));
     }
 
@@ -3566,7 +3868,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public AccessRequest requestAccess(Object projectIdOrPath) throws GitLabApiException {
-        Response response = post(Response.Status.CREATED, (Form) null, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                (Form) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "access_requests");
         return (response.readEntity(AccessRequest.class));
     }
@@ -3587,8 +3893,14 @@ public class ProjectApi extends AbstractApi implements Constants {
     public AccessRequest approveAccessRequest(Object projectIdOrPath, Long userId, AccessLevel accessLevel)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("access_level", accessLevel);
-        Response response = this.putWithFormData(Response.Status.CREATED, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "access_requests", userId, "approve");
+        Response response = this.putWithFormData(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "access_requests",
+                userId,
+                "approve");
         return (response.readEntity(AccessRequest.class));
     }
 
@@ -3604,7 +3916,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public void denyAccessRequest(Object projectIdOrPath, Long userId) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "access_requests",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "access_requests",
                 userId);
     }
 
@@ -3651,7 +3968,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public List<Badge> getBadges(Object projectIdOrPath, String bagdeName) throws GitLabApiException {
         Form queryParam = new GitLabApiForm().withParam("name", bagdeName);
-        Response response = get(Response.Status.OK, queryParam.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = get(
+                Response.Status.OK,
+                queryParam.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "badges");
         return (response.readEntity(new GenericType<List<Badge>>() {
         }));
@@ -3670,7 +3991,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Badge getBadge(Object projectIdOrPath, Long badgeId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "badges",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "badges",
                 badgeId);
         return (response.readEntity(Badge.class));
     }
@@ -3729,7 +4055,11 @@ public class ProjectApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, false).withParam("link_url", linkUrl, true)
                 .withParam("image_url", imageUrl, true);
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "badges");
         return (response.readEntity(Badge.class));
     }
@@ -3772,8 +4102,13 @@ public class ProjectApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, false)
                 .withParam("link_url", linkUrl, false).withParam("image_url", imageUrl, false);
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "badges", badgeId);
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "badges",
+                badgeId);
         return (response.readEntity(Badge.class));
     }
 
@@ -3806,10 +4141,15 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Badge previewBadge(Object projectIdOrPath, String linkUrl, String imageUrl) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm().withParam("link_url", linkUrl, true).withParam("image_url",
-                imageUrl, true);
-        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "badges", "render");
+        GitLabApiForm formData = new GitLabApiForm().withParam("link_url", linkUrl, true)
+                .withParam("image_url", imageUrl, true);
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "badges",
+                "render");
         return (response.readEntity(Badge.class));
     }
 
@@ -3844,7 +4184,11 @@ public class ProjectApi extends AbstractApi implements Constants {
     public ProjectApprovalsConfig setApprovalsConfiguration(Object projectIdOrPath, ProjectApprovalsConfig config)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(config.getForm());
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "approvals");
         return (response.readEntity(ProjectApprovalsConfig.class));
     }
@@ -3915,7 +4259,11 @@ public class ProjectApi extends AbstractApi implements Constants {
     public ApprovalRule createApprovalRule(Object projectIdOrPath, ApprovalRuleParams params)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(params.getForm());
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "approval_rules");
         return (response.readEntity(ApprovalRule.class));
     }
@@ -3942,8 +4290,13 @@ public class ProjectApi extends AbstractApi implements Constants {
         }
 
         GitLabApiForm formData = new GitLabApiForm(params.getForm());
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "approval_rules", approvalRuleId);
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "approval_rules",
+                approvalRuleId);
         return (response.readEntity(ApprovalRule.class));
     }
 
@@ -3965,7 +4318,12 @@ public class ProjectApi extends AbstractApi implements Constants {
             throw new RuntimeException("approvalRuleId cannot be null");
         }
 
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "approval_rules",
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "approval_rules",
                 approvalRuleId);
     }
 
@@ -4031,8 +4389,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public CustomAttribute getCustomAttribute(final Object projectIdOrPath, final String key)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "custom_attributes", key);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "custom_attributes",
+                key);
         return (response.readEntity(CustomAttribute.class));
     }
 
@@ -4080,8 +4443,13 @@ public class ProjectApi extends AbstractApi implements Constants {
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("value", value);
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "custom_attributes", key);
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "custom_attributes",
+                key);
         return (response.readEntity(CustomAttribute.class));
     }
 
@@ -4167,12 +4535,20 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a RemoteMirror instance with remote mirror configuration
      * @throws GitLabApiException if any exception occurs
      */
-    public RemoteMirror createRemoteMirror(Object projectIdOrPath, String url, Boolean enabled,
-            Boolean onlyProtectedBranches, Boolean keepDivergentRefs) throws GitLabApiException {
+    public RemoteMirror createRemoteMirror(
+            Object projectIdOrPath,
+            String url,
+            Boolean enabled,
+            Boolean onlyProtectedBranches,
+            Boolean keepDivergentRefs) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("url", url, true).withParam("enabled", enabled)
                 .withParam("only_protected_branches", onlyProtectedBranches)
                 .withParam("keep_divergent_refs", keepDivergentRefs);
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "remote_mirrors");
         return (response.readEntity(RemoteMirror.class));
     }
@@ -4192,14 +4568,23 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return a RemoteMirror instance with the updated remote mirror configuration
      * @throws GitLabApiException if any exception occurs
      */
-    public RemoteMirror updateRemoteMirror(Object projectIdOrPath, Long mirrorId, Boolean enabled,
-            Boolean onlyProtectedBranches, Boolean keepDivergentRefs) throws GitLabApiException {
+    public RemoteMirror updateRemoteMirror(
+            Object projectIdOrPath,
+            Long mirrorId,
+            Boolean enabled,
+            Boolean onlyProtectedBranches,
+            Boolean keepDivergentRefs) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("enabled", enabled)
                 .withParam("only_protected_branches", onlyProtectedBranches)
                 .withParam("keep_divergent_refs", keepDivergentRefs);
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "remote_mirrors", mirrorId);
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "remote_mirrors",
+                mirrorId);
         return (response.readEntity(RemoteMirror.class));
     }
 
@@ -4211,7 +4596,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<ProjectAccessToken> listProjectAccessTokens(Object projectIdOrPath) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "access_tokens");
         return (response.readEntity(new GenericType<>() {
         }));
@@ -4226,8 +4615,13 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public ProjectAccessToken getProjectAccessToken(Object projectIdOrPath, Long tokenId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "access_tokens", tokenId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "access_tokens",
+                tokenId);
         return (response.readEntity(ProjectAccessToken.class));
     }
 
@@ -4242,13 +4636,20 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the newly created ProjectAccessToken. The lastUsedAt attribute of each object is unset.
      * @throws GitLabApiException if any exception occurs
      */
-    public ProjectAccessToken createProjectAccessToken(Object projectIdOrPath, String name,
-            List<Constants.ProjectAccessTokenScope> scopes, Date expiresAt, Long accessLevel)
-            throws GitLabApiException {
+    public ProjectAccessToken createProjectAccessToken(
+            Object projectIdOrPath,
+            String name,
+            List<Constants.ProjectAccessTokenScope> scopes,
+            Date expiresAt,
+            Long accessLevel) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", expiresAt, true).withParam("scopes", scopes, true)
                 .withParam("access_level", accessLevel, false);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "access_tokens");
         return (response.readEntity(ProjectAccessToken.class));
     }
@@ -4263,12 +4664,19 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @return the newly created ProjectAccessToken. The lastUsedAt attribute of each object is unset.
      * @throws GitLabApiException if any exception occurs
      */
-    public ProjectAccessToken createProjectAccessToken(Object projectIdOrPath, String name,
-            List<Constants.ProjectAccessTokenScope> scopes, Date expiresAt) throws GitLabApiException {
+    public ProjectAccessToken createProjectAccessToken(
+            Object projectIdOrPath,
+            String name,
+            List<Constants.ProjectAccessTokenScope> scopes,
+            Date expiresAt) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", ISO8601.dateOnly(expiresAt), true).withParam("scopes", scopes, true)
                 .withParam("access_level", (Object) null, false);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "access_tokens");
         return (response.readEntity(ProjectAccessToken.class));
     }
@@ -4300,8 +4708,14 @@ public class ProjectApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("expires_at", ISO8601.dateOnly(expiresAt));
 
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
-                "access_tokens", tokenId, "rotate");
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "access_tokens",
+                tokenId,
+                "rotate");
         return (response.readEntity(ProjectAccessToken.class));
     }
 
@@ -4313,7 +4727,12 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public void revokeProjectAccessToken(Object projectIdOrPath, Long tokenId) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "access_tokens",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "access_tokens",
                 tokenId);
     }
 
@@ -4333,7 +4752,11 @@ public class ProjectApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         MultivaluedMap<String, String> queryParams = (filter == null) ? null
                 : new GitLabApiForm(filter.getQueryParams()).asMap();
-        Response response = get(Response.Status.OK, queryParams, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = get(
+                Response.Status.OK,
+                queryParams,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "iterations");
         return (response.readEntity(new GenericType<>() {
         }));

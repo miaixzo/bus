@@ -52,6 +52,7 @@ public interface GenId<T> {
      * 默认空实现，抛出不支持操作异常。
      */
     class NULL implements GenId<Object> {
+
         /**
          * 默认实现，抛出不支持操作异常。
          *

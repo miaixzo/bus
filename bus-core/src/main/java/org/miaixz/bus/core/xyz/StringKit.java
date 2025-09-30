@@ -216,6 +216,9 @@ public class StringKit extends CharsBacker {
      * @return 反转后的字符串
      */
     public static String reverse(final String text) {
+        if (isBlank(text)) {
+            return text;
+        }
         return new String(ArrayKit.reverse(text.toCharArray()));
     }
 

@@ -85,7 +85,9 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
      * @param toStrFunc  转换为字符串的函数
      * @return 转换后的数字
      */
-    protected static Number convert(final Object value, final Class<? extends Number> targetType,
+    protected static Number convert(
+            final Object value,
+            final Class<? extends Number> targetType,
             final Function<Object, String> toStrFunc) {
         // 枚举转换为数字默认为其顺序
         if (value instanceof Enum) {

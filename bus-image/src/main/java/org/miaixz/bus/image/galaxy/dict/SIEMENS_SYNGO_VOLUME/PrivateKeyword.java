@@ -38,28 +38,38 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.Slices:
-            return "Slices";
-        case PrivateTag.VolumeHistogram:
-            return "VolumeHistogram";
-        case PrivateTag.VolumeLevel:
-            return "VolumeLevel";
-        case PrivateTag.VoxelSpacing:
-            return "VoxelSpacing";
-        case PrivateTag.VolumePositionPatient:
-            return "VolumePositionPatient";
-        case PrivateTag.VolumeOrientationPatient:
-            return "VolumeOrientationPatient";
-        case PrivateTag.ResamplingFlag:
-            return "ResamplingFlag";
-        case PrivateTag.NormalizationFlag:
-            return "NormalizationFlag";
-        case PrivateTag.SubVolumeSequence:
-            return "SubVolumeSequence";
-        case PrivateTag.HistogramNumberOfBins:
-            return "HistogramNumberOfBins";
-        case PrivateTag.VolumeHistogramData:
-            return "VolumeHistogramData";
+            case PrivateTag.Slices:
+                return "Slices";
+
+            case PrivateTag.VolumeHistogram:
+                return "VolumeHistogram";
+
+            case PrivateTag.VolumeLevel:
+                return "VolumeLevel";
+
+            case PrivateTag.VoxelSpacing:
+                return "VoxelSpacing";
+
+            case PrivateTag.VolumePositionPatient:
+                return "VolumePositionPatient";
+
+            case PrivateTag.VolumeOrientationPatient:
+                return "VolumeOrientationPatient";
+
+            case PrivateTag.ResamplingFlag:
+                return "ResamplingFlag";
+
+            case PrivateTag.NormalizationFlag:
+                return "NormalizationFlag";
+
+            case PrivateTag.SubVolumeSequence:
+                return "SubVolumeSequence";
+
+            case PrivateTag.HistogramNumberOfBins:
+                return "HistogramNumberOfBins";
+
+            case PrivateTag.VolumeHistogramData:
+                return "VolumeHistogramData";
         }
         return "";
     }

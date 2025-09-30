@@ -326,6 +326,7 @@ public abstract class NotificationService implements Serializable {
     }
 
     public enum BranchesToBeNotified {
+
         ALL, DEFAULT, PROTECTED, DEFAULT_AND_PROTECTED;
 
         @Override

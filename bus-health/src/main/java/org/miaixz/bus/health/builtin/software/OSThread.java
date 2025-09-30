@@ -180,6 +180,7 @@ public interface OSThread {
      * Constants which may be used to filter Thread lists
      */
     final class ThreadFiltering {
+
         /**
          * Exclude processes with {@link OSProcess.State#INVALID} process state.
          */

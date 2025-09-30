@@ -138,7 +138,11 @@ public class NormalLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final Level level, final Throwable t, final String format,
+    public void log(
+            final String fqcn,
+            final Level level,
+            final Throwable t,
+            final String format,
             final Object... args) {
         if (!isEnabled(level)) {
             return;

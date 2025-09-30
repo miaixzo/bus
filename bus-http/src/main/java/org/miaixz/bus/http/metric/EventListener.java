@@ -137,7 +137,11 @@ public abstract class EventListener {
      * @param protocol          协议
      * @param ioe               异常
      */
-    public void connectFailed(NewCall call, InetSocketAddress inetSocketAddress, Proxy proxy, Protocol protocol,
+    public void connectFailed(
+            NewCall call,
+            InetSocketAddress inetSocketAddress,
+            Proxy proxy,
+            Protocol protocol,
             IOException ioe) {
 
     }

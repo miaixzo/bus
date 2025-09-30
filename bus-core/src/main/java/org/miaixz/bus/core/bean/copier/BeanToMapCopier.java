@@ -69,8 +69,10 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
         Class<?> actualEditable = source.getClass();
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
-            Assert.isTrue(copyOptions.editable.isInstance(source),
-                    "Source class [{}] not assignable to Editable class [{}]", actualEditable.getName(),
+            Assert.isTrue(
+                    copyOptions.editable.isInstance(source),
+                    "Source class [{}] not assignable to Editable class [{}]",
+                    actualEditable.getName(),
                     copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }

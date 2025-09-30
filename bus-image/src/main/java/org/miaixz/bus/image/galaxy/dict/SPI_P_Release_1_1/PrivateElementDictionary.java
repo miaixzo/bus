@@ -52,32 +52,35 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ZoomEnableStatus:
-        case PrivateTag.ZoomSelectStatus:
-        case PrivateTag.MagnifyingGlassEnableStatus:
-        case PrivateTag.MagnifyingGlassSelectStatus:
-            return VR.CS;
-        case PrivateTag.ZoomRectangle:
-        case PrivateTag.ZoomFactor:
-        case PrivateTag.MagnifyingGlassRectangle:
-        case PrivateTag.MagnifyingGlassFactor:
-            return VR.DS;
-        case PrivateTag._0009_xxC0_:
-        case PrivateTag._0009_xxC1_:
-        case PrivateTag.ZoomID:
-        case PrivateTag.MagnifyingGlassID:
-            return VR.LT;
-        case PrivateTag.SampleBitsAllocated:
-        case PrivateTag.SampleBitsStored:
-        case PrivateTag.SampleHighBit:
-        case PrivateTag.SampleRepresentation:
-        case PrivateTag.SampleBitsAllocated2:
-        case PrivateTag.SampleBitsStored2:
-        case PrivateTag.SampleHighBit2:
-        case PrivateTag.SampleRepresentation2:
-        case PrivateTag.ZoomFunction:
-        case PrivateTag.MagnifyingGlassFunction:
-            return VR.US;
+            case PrivateTag.ZoomEnableStatus:
+            case PrivateTag.ZoomSelectStatus:
+            case PrivateTag.MagnifyingGlassEnableStatus:
+            case PrivateTag.MagnifyingGlassSelectStatus:
+                return VR.CS;
+
+            case PrivateTag.ZoomRectangle:
+            case PrivateTag.ZoomFactor:
+            case PrivateTag.MagnifyingGlassRectangle:
+            case PrivateTag.MagnifyingGlassFactor:
+                return VR.DS;
+
+            case PrivateTag._0009_xxC0_:
+            case PrivateTag._0009_xxC1_:
+            case PrivateTag.ZoomID:
+            case PrivateTag.MagnifyingGlassID:
+                return VR.LT;
+
+            case PrivateTag.SampleBitsAllocated:
+            case PrivateTag.SampleBitsStored:
+            case PrivateTag.SampleHighBit:
+            case PrivateTag.SampleRepresentation:
+            case PrivateTag.SampleBitsAllocated2:
+            case PrivateTag.SampleBitsStored2:
+            case PrivateTag.SampleHighBit2:
+            case PrivateTag.SampleRepresentation2:
+            case PrivateTag.ZoomFunction:
+            case PrivateTag.MagnifyingGlassFunction:
+                return VR.US;
         }
         return VR.UN;
     }

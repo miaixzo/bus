@@ -64,10 +64,11 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
                     }
                     return Normal.EMPTY;
                 }
-                CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue()); // NOSONAR
-                String canonname = info.ai_canonname.trim();
-                LIBC.freeaddrinfo(ptr.getValue());
-                return canonname;
+                try (CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue())) {
+                    String canonname = info.ai_canonname.trim();
+                    LIBC.freeaddrinfo(ptr.getValue());
+                    return canonname;
+                }
             }
         }
     }

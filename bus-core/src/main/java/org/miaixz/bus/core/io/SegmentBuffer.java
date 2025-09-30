@@ -123,8 +123,14 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
      * @param toIndex          查找索引
      * @param indexes          索引信息
      */
-    private static void buildTrieRecursive(long nodeOffset, Buffer node, int byteStringOffset,
-            List<ByteString> byteStrings, int fromIndex, int toIndex, List<Integer> indexes) {
+    private static void buildTrieRecursive(
+            long nodeOffset,
+            Buffer node,
+            int byteStringOffset,
+            List<ByteString> byteStrings,
+            int fromIndex,
+            int toIndex,
+            List<Integer> indexes) {
         if (fromIndex >= toIndex)
             throw new AssertionError();
         for (int i = fromIndex; i < toIndex; i++) {
@@ -182,8 +188,14 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
                 } else {
                     // 结果是另一个节点
                     node.writeInt((int) (-1 * (childNodesOffset + intCount(childNodes))));
-                    buildTrieRecursive(childNodesOffset, childNodes, byteStringOffset + 1, byteStrings, rangeStart,
-                            rangeEnd, indexes);
+                    buildTrieRecursive(
+                            childNodesOffset,
+                            childNodes,
+                            byteStringOffset + 1,
+                            byteStrings,
+                            rangeStart,
+                            rangeEnd,
+                            indexes);
                 }
 
                 rangeStart = rangeEnd;
@@ -221,8 +233,14 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
                 // 结果是另一个节点
                 Buffer childNodes = new Buffer();
                 node.writeInt((int) (-1 * (childNodesOffset + intCount(childNodes))));
-                buildTrieRecursive(childNodesOffset, childNodes, byteStringOffset + scanByteCount, byteStrings,
-                        fromIndex, toIndex, indexes);
+                buildTrieRecursive(
+                        childNodesOffset,
+                        childNodes,
+                        byteStringOffset + scanByteCount,
+                        byteStrings,
+                        fromIndex,
+                        toIndex,
+                        indexes);
                 node.write(childNodes, childNodes.size());
             }
         }

@@ -50,8 +50,12 @@ public interface SqlScript {
      */
     static String caching(ProviderContext providerContext, SqlScript sqlScript) {
         TableMeta entity = MapperFactory.create(providerContext.getMapperType(), providerContext.getMapperMethod());
-        return Caching.cache(providerContext, entity, () -> String.format("<script>\n%s\n</script>",
-                SqlScriptWrapper.wrapSqlScript(providerContext, entity, sqlScript).getSql(entity)));
+        return Caching.cache(
+                providerContext,
+                entity,
+                () -> String.format(
+                        "<script>\n%s\n</script>",
+                        SqlScriptWrapper.wrapSqlScript(providerContext, entity, sqlScript).getSql(entity)));
     }
 
     /**
@@ -63,8 +67,12 @@ public interface SqlScript {
      */
     static String caching(ProviderContext providerContext, EasySqlScript sqlScript) {
         TableMeta entity = MapperFactory.create(providerContext.getMapperType(), providerContext.getMapperMethod());
-        return Caching.cache(providerContext, entity, () -> String.format("<script>\n%s\n</script>",
-                SqlScriptWrapper.wrapSqlScript(providerContext, entity, sqlScript).getSql(entity)));
+        return Caching.cache(
+                providerContext,
+                entity,
+                () -> String.format(
+                        "<script>\n%s\n</script>",
+                        SqlScriptWrapper.wrapSqlScript(providerContext, entity, sqlScript).getSql(entity)));
     }
 
     /**
@@ -211,11 +219,19 @@ public interface SqlScript {
      * @param content         标签中的内容
      * @return trim 标签包装的 XML 结构
      */
-    default String trim(String prefix, String suffix, String prefixOverrides, String suffixOverrides,
+    default String trim(
+            String prefix,
+            String suffix,
+            String prefixOverrides,
+            String suffixOverrides,
             LRSupplier content) {
         return String.format(
                 "\n<trim prefix=\"%s\" prefixOverrides=\"%s\" suffixOverrides=\"%s\" suffix=\"%s\">%s\n</trim> ",
-                prefix, prefixOverrides, suffixOverrides, suffix, content.getWithLR());
+                prefix,
+                prefixOverrides,
+                suffixOverrides,
+                suffix,
+                content.getWithLR());
     }
 
     /**
@@ -228,8 +244,12 @@ public interface SqlScript {
      * @return trim 标签包装的 XML 结构
      */
     default String trimPrefixOverrides(String prefix, String suffix, String prefixOverrides, LRSupplier content) {
-        return String.format("\n<trim prefix=\"%s\" prefixOverrides=\"%s\" suffix=\"%s\">%s\n</trim> ", prefix,
-                prefixOverrides, suffix, content.getWithLR());
+        return String.format(
+                "\n<trim prefix=\"%s\" prefixOverrides=\"%s\" suffix=\"%s\">%s\n</trim> ",
+                prefix,
+                prefixOverrides,
+                suffix,
+                content.getWithLR());
     }
 
     /**
@@ -242,8 +262,12 @@ public interface SqlScript {
      * @return trim 标签包装的 XML 结构
      */
     default String trimSuffixOverrides(String prefix, String suffix, String suffixOverrides, LRSupplier content) {
-        return String.format("\n<trim prefix=\"%s\" suffixOverrides=\"%s\" suffix=\"%s\">%s\n</trim> ", prefix,
-                suffixOverrides, suffix, content.getWithLR());
+        return String.format(
+                "\n<trim prefix=\"%s\" suffixOverrides=\"%s\" suffix=\"%s\">%s\n</trim> ",
+                prefix,
+                suffixOverrides,
+                suffix,
+                content.getWithLR());
     }
 
     /**
@@ -255,7 +279,10 @@ public interface SqlScript {
      * @return foreach 标签包装的 XML 结构
      */
     default String foreach(String collection, String item, LRSupplier content) {
-        return String.format("\n<foreach collection=\"%s\" item=\"%s\">%s\n</foreach> ", collection, item,
+        return String.format(
+                "\n<foreach collection=\"%s\" item=\"%s\">%s\n</foreach> ",
+                collection,
+                item,
                 content.getWithLR());
     }
 
@@ -269,8 +296,12 @@ public interface SqlScript {
      * @return foreach 标签包装的 XML 结构
      */
     default String foreach(String collection, String item, String separator, LRSupplier content) {
-        return String.format("\n<foreach collection=\"%s\" item=\"%s\" separator=\"%s\">%s\n</foreach> ", collection,
-                item, separator, content.getWithLR());
+        return String.format(
+                "\n<foreach collection=\"%s\" item=\"%s\" separator=\"%s\">%s\n</foreach> ",
+                collection,
+                item,
+                separator,
+                content.getWithLR());
     }
 
     /**
@@ -284,11 +315,21 @@ public interface SqlScript {
      * @param content    标签中的内容
      * @return foreach 标签包装的 XML 结构
      */
-    default String foreach(String collection, String item, String separator, String open, String close,
+    default String foreach(
+            String collection,
+            String item,
+            String separator,
+            String open,
+            String close,
             LRSupplier content) {
         return String.format(
                 "\n<foreach collection=\"%s\" item=\"%s\" open=\"%s\" close=\"%s\" separator=\"%s\">%s\n</foreach> ",
-                collection, item, open, close, separator, content.getWithLR());
+                collection,
+                item,
+                open,
+                close,
+                separator,
+                content.getWithLR());
     }
 
     /**
@@ -303,11 +344,23 @@ public interface SqlScript {
      * @param content    标签中的内容
      * @return foreach 标签包装的 XML 结构
      */
-    default String foreach(String collection, String item, String separator, String open, String close, String index,
+    default String foreach(
+            String collection,
+            String item,
+            String separator,
+            String open,
+            String close,
+            String index,
             LRSupplier content) {
         return String.format(
                 "\n<foreach collection=\"%s\" item=\"%s\" index=\"%s\" open=\"%s\" close=\"%s\" separator=\"%s\">%s\n</foreach> ",
-                collection, item, index, open, close, separator, content.getWithLR());
+                collection,
+                item,
+                index,
+                open,
+                close,
+                separator,
+                content.getWithLR());
     }
 
     /**

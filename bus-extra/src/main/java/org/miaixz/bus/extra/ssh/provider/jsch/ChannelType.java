@@ -34,6 +34,7 @@ package org.miaixz.bus.extra.ssh.provider.jsch;
  * @since Java 17+
  */
 public enum ChannelType {
+
     /**
      * Session
      */

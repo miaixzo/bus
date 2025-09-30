@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.BeamThickess:
-            return "BeamThickess";
-        case PrivateTag.RTime:
-            return "RTime";
-        case PrivateTag.HBCNumber:
-            return "HBCNumber";
+            case PrivateTag.BeamThickess:
+                return "BeamThickess";
+
+            case PrivateTag.RTime:
+                return "RTime";
+
+            case PrivateTag.HBCNumber:
+                return "HBCNumber";
         }
         return "";
     }

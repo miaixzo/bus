@@ -57,9 +57,12 @@ public final class WindowInfo {
      * @return A list of {@link OSDesktopWindow} objects representing the desktop windows.
      */
     public static List<OSDesktopWindow> queryDesktopWindows(boolean visibleOnly) {
-        CFArrayRef windowInfo = CoreGraphics.INSTANCE.CGWindowListCopyWindowInfo(visibleOnly
-                ? CoreGraphics.kCGWindowListOptionOnScreenOnly | CoreGraphics.kCGWindowListExcludeDesktopElements
-                : CoreGraphics.kCGWindowListOptionAll, CoreGraphics.kCGNullWindowID);
+        CFArrayRef windowInfo = CoreGraphics.INSTANCE.CGWindowListCopyWindowInfo(
+                visibleOnly
+                        ? CoreGraphics.kCGWindowListOptionOnScreenOnly
+                                | CoreGraphics.kCGWindowListExcludeDesktopElements
+                        : CoreGraphics.kCGWindowListOptionAll,
+                CoreGraphics.kCGNullWindowID);
         int numWindows = windowInfo.getCount();
         // Prepare a list to return
         List<OSDesktopWindow> windowList = new ArrayList<>();
@@ -110,8 +113,9 @@ public final class WindowInfo {
                                     + Symbol.PARENTHESE_RIGHT;
                         }
 
-                        windowList.add(new OSDesktopWindow(windowNumber, windowName, windowOwnerName, windowBounds,
-                                windowOwnerPID, windowLayer, visible));
+                        windowList.add(
+                                new OSDesktopWindow(windowNumber, windowName, windowOwnerName, windowBounds,
+                                        windowOwnerPID, windowLayer, visible));
                     }
                 }
             }

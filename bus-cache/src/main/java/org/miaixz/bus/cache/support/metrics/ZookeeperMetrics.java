@@ -279,8 +279,10 @@ public class ZookeeperMetrics implements Metrics {
      * @param counterMap 计数器映射
      * @param zkPrefix   ZooKeeper路径前缀
      */
-    private void dumpToZK(BlockingQueue<CachePair<String, Integer>> queue,
-            Map<String, DistributedAtomicLong> counterMap, String zkPrefix) {
+    private void dumpToZK(
+            BlockingQueue<CachePair<String, Integer>> queue,
+            Map<String, DistributedAtomicLong> counterMap,
+            String zkPrefix) {
         long count = 0;
         CachePair<String, Integer> head;
         // 将队列中所有的或前100条数据聚合到一个暂存Map中
@@ -291,7 +293,8 @@ public class ZookeeperMetrics implements Metrics {
         }
         holdMap.forEach((pattern, atomicCount) -> {
             String zkPath = String.format("%s/%s", zkPrefix, pattern);
-            DistributedAtomicLong counter = counterMap.computeIfAbsent(pattern,
+            DistributedAtomicLong counter = counterMap.computeIfAbsent(
+                    pattern,
                     (key) -> new DistributedAtomicLong(client, zkPath, new RetryNTimes(10, 10)));
             try {
                 counter.add(atomicCount.get()).postValue();

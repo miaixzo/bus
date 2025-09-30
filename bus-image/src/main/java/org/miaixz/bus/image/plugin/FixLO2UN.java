@@ -63,16 +63,23 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
         if (dstDir != null)
             Files.createDirectories(dstDir);
         try (FileChannel ifc = (FileChannel) Files.newByteChannel(srcFile, EnumSet.of(StandardOpenOption.READ));
-                FileChannel ofc = (FileChannel) Files.newByteChannel(dstFile,
-                        EnumSet.of(StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW))) {
+                FileChannel ofc = (FileChannel) Files
+                        .newByteChannel(dstFile, EnumSet.of(StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW))) {
             MappedByteBuffer mbb = ifc.map(FileChannel.MapMode.READ_ONLY, 0, ifc.size());
             mbb.order(ByteOrder.LITTLE_ENDIAN);
             mbb.mark();
             int length;
             while ((length = correctLength(mbb)) > 0) {
                 int position = mbb.position();
-                Logger.info("  %d: (%02X%02X,%02X%02X) LO #%d -> UN #%d%n", position - 6, mbb.get(position - 5),
-                        mbb.get(position - 6), mbb.get(position - 3), mbb.get(position - 4), length & 0xfff, length);
+                Logger.info(
+                        "  %d: (%02X%02X,%02X%02X) LO #%d -> UN #%d%n",
+                        position - 6,
+                        mbb.get(position - 5),
+                        mbb.get(position - 6),
+                        mbb.get(position - 3),
+                        mbb.get(position - 4),
+                        length & 0xfff,
+                        length);
                 mbb.reset().limit(position - 2);
                 ofc.write(mbb);
                 buffer.putInt(4, length).rewind();
@@ -99,38 +106,38 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
 
     private boolean isVRCode(int code) {
         switch (code) {
-        case 0x4541:
-        case 0x5341:
-        case 0x5441:
-        case 0x5343:
-        case 0x4144:
-        case 0x5344:
-        case 0x5444:
-        case 0x4446:
-        case 0x4c46:
-        case 0x5349:
-        case 0x4f4c:
-        case 0x544c:
-        case 0x424f:
-        case 0x444f:
-        case 0x464f:
-        case 0x4c4f:
-        case 0x574f:
-        case 0x4e50:
-        case 0x4853:
-        case 0x4c53:
-        case 0x5153:
-        case 0x5353:
-        case 0x5453:
-        case 0x4d54:
-        case 0x4355:
-        case 0x4955:
-        case 0x4c55:
-        case 0x4e55:
-        case 0x5255:
-        case 0x5355:
-        case 0x5455:
-            return true;
+            case 0x4541:
+            case 0x5341:
+            case 0x5441:
+            case 0x5343:
+            case 0x4144:
+            case 0x5344:
+            case 0x5444:
+            case 0x4446:
+            case 0x4c46:
+            case 0x5349:
+            case 0x4f4c:
+            case 0x544c:
+            case 0x424f:
+            case 0x444f:
+            case 0x464f:
+            case 0x4c4f:
+            case 0x574f:
+            case 0x4e50:
+            case 0x4853:
+            case 0x4c53:
+            case 0x5153:
+            case 0x5353:
+            case 0x5453:
+            case 0x4d54:
+            case 0x4355:
+            case 0x4955:
+            case 0x4c55:
+            case 0x4e55:
+            case 0x5255:
+            case 0x5355:
+            case 0x5455:
+                return true;
         }
         return false;
     }
@@ -143,7 +150,9 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
     }
 
     private enum Dest {
+
         FILE, DIRECTORY {
+
             @Override
             Path dstFile(Path srcFile, Path srcPath, Path destPath) {
                 return destPath.resolve(srcFile == srcPath ? srcFile.getFileName() : srcPath.relativize(srcFile));

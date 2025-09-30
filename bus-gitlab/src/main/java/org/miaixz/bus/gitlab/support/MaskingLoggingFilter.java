@@ -191,7 +191,11 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         return (sb);
     }
 
-    protected void printRequestLine(final StringBuilder sb, final String note, final long id, final String method,
+    protected void printRequestLine(
+            final StringBuilder sb,
+            final String note,
+            final long id,
+            final String method,
             final URI uri) {
         appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
                 .append(Thread.currentThread().getName()).append('\n');
@@ -221,7 +225,10 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * @param prefix  the logging line prefix character
      * @param headers a MultiValue map holding the header keys and values
      */
-    protected void printHeaders(final StringBuilder sb, final long id, final String prefix,
+    protected void printHeaders(
+            final StringBuilder sb,
+            final long id,
+            final String prefix,
             final MultivaluedMap<String, String> headers) {
 
         getSortedHeaders(headers.entrySet()).forEach(h -> {
@@ -315,8 +322,11 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         printHeaders(sb, id, RESPONSE_PREFIX, responseContext.getHeaders());
 
         if (responseContext.hasEntity() && maxEntitySize > 0) {
-            responseContext.setEntityStream(logResponseEntity(sb, responseContext.getEntityStream(),
-                    MessageUtils.getCharset(responseContext.getMediaType())));
+            responseContext.setEntityStream(
+                    logResponseEntity(
+                            sb,
+                            responseContext.getEntityStream(),
+                            MessageUtils.getCharset(responseContext.getMediaType())));
         }
 
         log(sb);

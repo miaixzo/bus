@@ -93,6 +93,7 @@ import org.miaixz.bus.core.net.Protocol;
 public enum Registry implements Complex {
 
     AFDIAN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -113,6 +114,7 @@ public enum Registry implements Complex {
         }
     },
     ALIPAY {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -133,6 +135,7 @@ public enum Registry implements Complex {
         }
     },
     ALIYUN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -154,6 +157,7 @@ public enum Registry implements Complex {
         }
     },
     AMAZON {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -175,6 +179,7 @@ public enum Registry implements Complex {
         }
     },
     APPLE {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -195,6 +200,7 @@ public enum Registry implements Complex {
         }
     },
     BAIDU {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -217,6 +223,7 @@ public enum Registry implements Complex {
         }
     },
     CODING {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -237,6 +244,7 @@ public enum Registry implements Complex {
         }
     },
     DINGTALK {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -257,6 +265,7 @@ public enum Registry implements Complex {
         }
     },
     DINGTALK_ACCOUNT {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -277,6 +286,7 @@ public enum Registry implements Complex {
         }
     },
     DOUYIN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -298,6 +308,7 @@ public enum Registry implements Complex {
         }
     },
     DOUYIN_MINI {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -323,6 +334,7 @@ public enum Registry implements Complex {
         }
     },
     ELEME {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -344,6 +356,7 @@ public enum Registry implements Complex {
         }
     },
     FACEBOOK {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -364,6 +377,7 @@ public enum Registry implements Complex {
         }
     },
     FEISHU {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -385,6 +399,7 @@ public enum Registry implements Complex {
         }
     },
     FIGMA {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -406,6 +421,7 @@ public enum Registry implements Complex {
         }
     },
     GITEE {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -426,6 +442,7 @@ public enum Registry implements Complex {
         }
     },
     GITHUB {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -446,6 +463,7 @@ public enum Registry implements Complex {
         }
     },
     GITLAB {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -466,6 +484,7 @@ public enum Registry implements Complex {
         }
     },
     GOOGLE {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -486,6 +505,7 @@ public enum Registry implements Complex {
         }
     },
     HUAWEI {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -507,6 +527,7 @@ public enum Registry implements Complex {
         }
     },
     JD {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -528,6 +549,7 @@ public enum Registry implements Complex {
         }
     },
     KUJIALE {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -549,6 +571,7 @@ public enum Registry implements Complex {
         }
     },
     LINE {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -571,6 +594,7 @@ public enum Registry implements Complex {
         }
     },
     LINKEDIN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -592,6 +616,7 @@ public enum Registry implements Complex {
         }
     },
     MEITUAN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -613,6 +638,7 @@ public enum Registry implements Complex {
         }
     },
     MI {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -634,6 +660,7 @@ public enum Registry implements Complex {
         }
     },
     MICROSOFT {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -655,6 +682,7 @@ public enum Registry implements Complex {
         }
     },
     MICROSOFT_CN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -676,6 +704,7 @@ public enum Registry implements Complex {
         }
     },
     OKTA {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -698,6 +727,7 @@ public enum Registry implements Complex {
         }
     },
     OSCHINA {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -718,6 +748,7 @@ public enum Registry implements Complex {
         }
     },
     PINTEREST {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -738,6 +769,7 @@ public enum Registry implements Complex {
         }
     },
     PROGINN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -758,6 +790,7 @@ public enum Registry implements Complex {
         }
     },
     QQ {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -779,6 +812,7 @@ public enum Registry implements Complex {
         }
     },
     QQ_MINI {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -797,6 +831,7 @@ public enum Registry implements Complex {
         }
     },
     RENREN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -818,6 +853,7 @@ public enum Registry implements Complex {
         }
     },
     REDNOTE_MARKET {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -839,6 +875,7 @@ public enum Registry implements Complex {
         }
     },
     SLACK {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -860,6 +897,7 @@ public enum Registry implements Complex {
         }
     },
     STACK_OVERFLOW {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -880,6 +918,7 @@ public enum Registry implements Complex {
         }
     },
     TAOBAO {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -899,6 +938,7 @@ public enum Registry implements Complex {
         }
     },
     TEAMBITION {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -920,6 +960,7 @@ public enum Registry implements Complex {
         }
     },
     TOUTIAO {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -940,6 +981,7 @@ public enum Registry implements Complex {
         }
     },
     TWITTER {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -960,6 +1002,7 @@ public enum Registry implements Complex {
         }
     },
     VK {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -982,6 +1025,7 @@ public enum Registry implements Complex {
         }
     },
     WECHAT_EE {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1002,6 +1046,7 @@ public enum Registry implements Complex {
         }
     },
     WECHAT_EE_QRCODE {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1022,6 +1067,7 @@ public enum Registry implements Complex {
         }
     },
     WECHAT_EE_WEB {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1042,6 +1088,7 @@ public enum Registry implements Complex {
         }
     },
     WECHAT_MP {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1063,6 +1110,7 @@ public enum Registry implements Complex {
         }
     },
     WECHAT_MINI {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1081,6 +1129,7 @@ public enum Registry implements Complex {
         }
     },
     WECHAT_OPEN {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1102,6 +1151,7 @@ public enum Registry implements Complex {
         }
     },
     WEIBO {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();
@@ -1123,6 +1173,7 @@ public enum Registry implements Complex {
         }
     },
     XIMALAYA {
+
         @Override
         public Map<Endpoint, String> endpoint() {
             Map<Endpoint, String> map = new HashMap<>();

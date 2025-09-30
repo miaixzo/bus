@@ -163,7 +163,11 @@ public class DateKit extends Calendar {
      * @param includeEnd   时间范围是否包含结束日期
      * @return 是否在范围内
      */
-    public static boolean isIn(final Date date, final Date beginDate, final Date endDate, final boolean includeBegin,
+    public static boolean isIn(
+            final Date date,
+            final Date beginDate,
+            final Date endDate,
+            final boolean includeBegin,
             final boolean includeEnd) {
         return new DateTime().isIn(date, beginDate, endDate, includeBegin, includeEnd);
     }
@@ -1470,7 +1474,10 @@ public class DateKit extends Calendar {
      * @param <T>   Date经过函数处理结果类型
      * @return 结果列表
      */
-    public static <T> List<T> rangeFunc(final Date start, final Date end, final Various unit,
+    public static <T> List<T> rangeFunc(
+            final Date start,
+            final Date end,
+            final Various unit,
             final Function<Date, T> func) {
         if (start == null || end == null || start.after(end)) {
             return Collections.emptyList();
@@ -1490,7 +1497,10 @@ public class DateKit extends Calendar {
      * @param unit     步进单位
      * @param consumer 每次遍历要执行的 consumer
      */
-    public static void rangeConsume(final Date start, final Date end, final Various unit,
+    public static void rangeConsume(
+            final Date start,
+            final Date end,
+            final Various unit,
             final Consumer<Date> consumer) {
         if (start == null || end == null || start.after(end)) {
             return;
@@ -1692,20 +1702,26 @@ public class DateKit extends Calendar {
      */
     public static String getShortName(final TimeUnit unit) {
         switch (unit) {
-        case NANOSECONDS:
-            return "ns";
-        case MICROSECONDS:
-            return "μs";
-        case MILLISECONDS:
-            return "ms";
-        case SECONDS:
-            return "s";
-        case MINUTES:
-            return "min";
-        case HOURS:
-            return "h";
-        default:
-            return unit.name().toLowerCase();
+            case NANOSECONDS:
+                return "ns";
+
+            case MICROSECONDS:
+                return "μs";
+
+            case MILLISECONDS:
+                return "ms";
+
+            case SECONDS:
+                return "s";
+
+            case MINUTES:
+                return "min";
+
+            case HOURS:
+                return "h";
+
+            default:
+                return unit.name().toLowerCase();
         }
     }
 
@@ -1724,7 +1740,10 @@ public class DateKit extends Calendar {
      * @param endTime       第二个时间段的结束时间
      * @return true 表示时间有重合或包含或相等
      */
-    public static boolean isOverlap(final Date realStartTime, final Date realEndTime, final Date startTime,
+    public static boolean isOverlap(
+            final Date realStartTime,
+            final Date realEndTime,
+            final Date startTime,
             final Date endTime) {
         // x>b||a>y 无交集
         // 则有交集的逻辑为 !(x>b||a>y)

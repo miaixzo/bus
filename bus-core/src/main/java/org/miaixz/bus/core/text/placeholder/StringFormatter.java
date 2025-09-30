@@ -75,7 +75,8 @@ public class StringFormatter {
         if (StringKit.isBlank(strPattern) || StringKit.isBlank(placeHolder) || ArrayKit.isEmpty(argArray)) {
             return strPattern;
         }
-        return ((SinglePlaceholderString) CACHE.computeIfAbsent(MutableEntry.of(strPattern, placeHolder),
+        return ((SinglePlaceholderString) CACHE.computeIfAbsent(
+                MutableEntry.of(strPattern, placeHolder),
                 k -> StringTemplate.of(strPattern).placeholder(placeHolder).build())).format(argArray);
     }
 

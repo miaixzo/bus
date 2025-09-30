@@ -105,7 +105,10 @@ public class ImageReaderFactory implements Serializable {
                 if (iter.hasNext())
                     reader = iter.next();
                 else {
-                    Logger.warn("No preferred Reader {} for format: {} - use {}", param.className, param.formatName,
+                    Logger.warn(
+                            "No preferred Reader {} for format: {} - use {}",
+                            param.className,
+                            param.formatName,
                             reader.getClass().getName());
                     break;
                 }
@@ -134,7 +137,10 @@ public class ImageReaderFactory implements Serializable {
                 if (iter.hasNext())
                     spi = iter.next();
                 else {
-                    Logger.warn("No preferred Reader {} for format: {} - use {}", param.className, param.formatName,
+                    Logger.warn(
+                            "No preferred Reader {} for format: {} - use {}",
+                            param.className,
+                            param.formatName,
                             spi.getPluginClassName());
                     break;
                 }
@@ -151,8 +157,10 @@ public class ImageReaderFactory implements Serializable {
             props.load(url.openStream());
             for (Entry<Object, Object> entry : props.entrySet()) {
                 String[] ss = Builder.split((String) entry.getValue(), ':');
-                factory.map.put((String) entry.getKey(), new ImageReaderParam(ss[0], ss[1], ss[2],
-                        ss.length > 3 ? Builder.split(ss[3], ';') : Normal.EMPTY_STRING_ARRAY));
+                factory.map.put(
+                        (String) entry.getKey(),
+                        new ImageReaderParam(ss[0], ss[1], ss[2],
+                                ss.length > 3 ? Builder.split(ss[3], ';') : Normal.EMPTY_STRING_ARRAY));
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to load Image Reader Factory configuration from: " + url.toString(), e);

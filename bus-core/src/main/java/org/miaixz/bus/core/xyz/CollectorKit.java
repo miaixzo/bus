@@ -76,7 +76,8 @@ public class CollectorKit {
      * @param <T>          对象类型
      * @return {@link Collector}
      */
-    public static <T> Collector<T, ?, String> joining(final CharSequence delimiter,
+    public static <T> Collector<T, ?, String> joining(
+            final CharSequence delimiter,
             final Function<T, ? extends CharSequence> toStringFunc) {
         return joining(delimiter, Normal.EMPTY, Normal.EMPTY, toStringFunc);
     }
@@ -91,8 +92,11 @@ public class CollectorKit {
      * @param <T>          对象类型
      * @return {@link Collector}
      */
-    public static <T> Collector<T, ?, String> joining(final CharSequence delimiter, final CharSequence prefix,
-            final CharSequence suffix, final Function<T, ? extends CharSequence> toStringFunc) {
+    public static <T> Collector<T, ?, String> joining(
+            final CharSequence delimiter,
+            final CharSequence prefix,
+            final CharSequence suffix,
+            final Function<T, ? extends CharSequence> toStringFunc) {
         return new SimpleCollector<>(() -> new StringJoiner(delimiter, prefix, suffix),
                 (joiner, ele) -> joiner.add(toStringFunc.apply(ele)), StringJoiner::merge, StringJoiner::toString,
                 Collections.emptySet());
@@ -112,7 +116,8 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(
-            final Function<? super T, ? extends K> classifier, final Supplier<M> mapFactory,
+            final Function<? super T, ? extends K> classifier,
+            final Supplier<M> mapFactory,
             final Collector<? super T, A, D> downstream) {
         final Supplier<A> downstreamSupplier = downstream.supplier();
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
@@ -151,7 +156,8 @@ public class CollectorKit {
      * @param <A>        下游操作在进行中间操作时对应类型
      * @return {@link Collector}
      */
-    public static <T, K, A, D> Collector<T, ?, Map<K, D>> groupingBy(final Function<? super T, ? extends K> classifier,
+    public static <T, K, A, D> Collector<T, ?, Map<K, D>> groupingBy(
+            final Function<? super T, ? extends K> classifier,
             final Collector<? super T, A, D> downstream) {
         return groupingBy(classifier, HashMap::new, downstream);
     }
@@ -184,9 +190,13 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, R, C extends Collection<R>, M extends Map<K, C>> Collector<T, ?, M> groupingBy(
-            final Function<? super T, ? extends K> classifier, final Function<? super T, ? extends R> valueMapper,
-            final Supplier<C> valueCollFactory, final Supplier<M> mapFactory) {
-        return groupingBy(classifier, mapFactory,
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper,
+            final Supplier<C> valueCollFactory,
+            final Supplier<M> mapFactory) {
+        return groupingBy(
+                classifier,
+                mapFactory,
                 Collectors.mapping(valueMapper, Collectors.toCollection(valueCollFactory)));
     }
 
@@ -203,7 +213,8 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, R, C extends Collection<R>> Collector<T, ?, Map<K, C>> groupingBy(
-            final Function<? super T, ? extends K> classifier, final Function<? super T, ? extends R> valueMapper,
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper,
             final Supplier<C> valueCollFactory) {
         return groupingBy(classifier, valueMapper, valueCollFactory, HashMap::new);
     }
@@ -219,7 +230,8 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, R> Collector<T, ?, Map<K, List<R>>> groupingBy(
-            final Function<? super T, ? extends K> classifier, final Function<? super T, ? extends R> valueMapper) {
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper) {
         return groupingBy(classifier, valueMapper, ArrayList::new, HashMap::new);
     }
 
@@ -233,7 +245,8 @@ public class CollectorKit {
      * @param <U>         map中value的类型
      * @return 对null友好的 toMap 操作的 {@link Collector}实现
      */
-    public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(final Function<? super T, ? extends K> keyMapper,
+    public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(
+            final Function<? super T, ? extends K> keyMapper,
             final Function<? super T, ? extends U> valueMapper) {
         return toMap(keyMapper, valueMapper, (l, r) -> r);
     }
@@ -261,8 +274,10 @@ public class CollectorKit {
      * @param <U>           map中value的类型
      * @return 对null友好的 toMap 操作的 {@link Collector}实现
      */
-    public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(final Function<? super T, ? extends K> keyMapper,
-            final Function<? super T, ? extends U> valueMapper, final BinaryOperator<U> mergeFunction) {
+    public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(
+            final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends U> valueMapper,
+            final BinaryOperator<U> mergeFunction) {
         return toMap(keyMapper, valueMapper, mergeFunction, HashMap::new);
     }
 
@@ -280,8 +295,10 @@ public class CollectorKit {
      * @return 对null友好的 toMap 操作的 {@link Collector}实现
      */
     public static <T, K, U, M extends Map<K, U>> Collector<T, ?, M> toMap(
-            final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends U> valueMapper,
-            final BinaryOperator<U> mergeFunction, final Supplier<M> mapSupplier) {
+            final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends U> valueMapper,
+            final BinaryOperator<U> mergeFunction,
+            final Supplier<M> mapSupplier) {
         final BiConsumer<M, T> accumulator = (map, element) -> map.put(
                 Optional.ofNullable(element).map(keyMapper).orElse(null),
                 Optional.ofNullable(element).map(valueMapper).orElse(null));
@@ -364,7 +381,8 @@ public class CollectorKit {
      * @return 收集器
      */
     public static <T, K, V> Collector<T, List<T>, EntryStream<K, V>> toEntryStream(
-            final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends V> valueMapper) {
+            final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends V> valueMapper) {
         Objects.requireNonNull(keyMapper);
         Objects.requireNonNull(valueMapper);
         return transform(ArrayList::new, list -> EntryStream.of(list, keyMapper, valueMapper));
@@ -384,6 +402,7 @@ public class CollectorKit {
      * 收集元素，将其转为指定{@link Collection}集合后，再对该集合进行转换，并最终返回转换后的结果。 返回的收集器的效果等同于：
      * 
      * <pre>{@code
+     * 
      * Collection<T> coll = Stream.of(a, b, c, d).collect(Collectors.toColl(collFactory));
      * R result = mapper.apply(coll);
      * }</pre>
@@ -395,7 +414,8 @@ public class CollectorKit {
      * @param <C>         中间收集输入元素的集合类型
      * @return 收集器
      */
-    public static <T, R, C extends Collection<T>> Collector<T, C, R> transform(final Supplier<C> collFactory,
+    public static <T, R, C extends Collection<T>> Collector<T, C, R> transform(
+            final Supplier<C> collFactory,
             final Function<C, R> mapper) {
         Objects.requireNonNull(collFactory);
         Objects.requireNonNull(mapper);
@@ -409,6 +429,7 @@ public class CollectorKit {
      * 收集元素，将其转为{@link ArrayList}集合后，再对该集合进行转换，并最终返回转换后的结果。 返回的收集器的效果等同于：
      * 
      * <pre>{@code
+     * 
      * List<T> coll = Stream.of(a, b, c, d).collect(Collectors.toList());
      * R result = mapper.apply(coll);
      * }</pre>
@@ -443,7 +464,8 @@ public class CollectorKit {
      * @param <R>        结束类型
      * @return 一个用于过滤元素的 {@link java.util.stream.Collector}
      */
-    public static <T, A, R> Collector<T, ?, R> filtering(final Predicate<? super T> predicate,
+    public static <T, A, R> Collector<T, ?, R> filtering(
+            final Predicate<? super T> predicate,
             final Collector<? super T, A, R> downstream) {
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
         return new SimpleCollector<>(downstream.supplier(),
@@ -462,7 +484,8 @@ public class CollectorKit {
      * @return {@code Pair<List<L>,List<R>>} Pair收集的两个List
      */
     public static <T, L, R> Collector<T, ?, Pair<List<L>, List<R>>> toPairList(
-            final Function<? super T, ? extends L> lMapper, final Function<? super T, ? extends R> rMapper) {
+            final Function<? super T, ? extends L> lMapper,
+            final Function<? super T, ? extends R> rMapper) {
         return toPair(lMapper, rMapper, Collectors.toList(), Collectors.toList());
     }
 
@@ -483,8 +506,10 @@ public class CollectorKit {
      * @return {@code Pair<LR,RR>} Pair收集的结果
      */
     public static <T, LU, LA, LR, RU, RA, RR> Collector<T, ?, Pair<LR, RR>> toPair(
-            final Function<? super T, ? extends LU> lMapper, final Function<? super T, ? extends RU> rMapper,
-            final Collector<? super LU, LA, LR> lDownstream, final Collector<? super RU, RA, RR> rDownstream) {
+            final Function<? super T, ? extends LU> lMapper,
+            final Function<? super T, ? extends RU> rMapper,
+            final Collector<? super LU, LA, LR> lDownstream,
+            final Collector<? super RU, RA, RR> rDownstream) {
         return new SimpleCollector<>(() -> Pair.of(lDownstream.supplier().get(), rDownstream.supplier().get()),
 
                 (listPair, element) -> {
@@ -528,7 +553,8 @@ public class CollectorKit {
      * @return {@code Triplet<List<L>,List<M>,List<R>>} Triple收集的三个List
      */
     public static <T, L, M, R> Collector<T, ?, Triplet<List<L>, List<M>, List<R>>> toTripletList(
-            final Function<? super T, ? extends L> lMapper, final Function<? super T, ? extends M> mMapper,
+            final Function<? super T, ? extends L> lMapper,
+            final Function<? super T, ? extends M> mMapper,
             final Function<? super T, ? extends R> rMapper) {
         return toTriplet(lMapper, mMapper, rMapper, Collectors.toList(), Collectors.toList(), Collectors.toList());
     }
@@ -555,12 +581,15 @@ public class CollectorKit {
      * @return {@code Triplet<LR,MR,RR>} Triple收集的结果
      */
     public static <T, LU, LA, LR, MU, MA, MR, RU, RA, RR> Collector<T, ?, Triplet<LR, MR, RR>> toTriplet(
-            final Function<? super T, ? extends LU> lMapper, final Function<? super T, ? extends MU> mMapper,
-            final Function<? super T, ? extends RU> rMapper, final Collector<? super LU, LA, LR> lDownstream,
-            final Collector<? super MU, MA, MR> mDownstream, final Collector<? super RU, RA, RR> rDownstream) {
+            final Function<? super T, ? extends LU> lMapper,
+            final Function<? super T, ? extends MU> mMapper,
+            final Function<? super T, ? extends RU> rMapper,
+            final Collector<? super LU, LA, LR> lDownstream,
+            final Collector<? super MU, MA, MR> mDownstream,
+            final Collector<? super RU, RA, RR> rDownstream) {
         return new SimpleCollector<>(
-                () -> Triplet.of(lDownstream.supplier().get(), mDownstream.supplier().get(),
-                        rDownstream.supplier().get()),
+                () -> Triplet
+                        .of(lDownstream.supplier().get(), mDownstream.supplier().get(), rDownstream.supplier().get()),
 
                 (listTriple, element) -> {
                     lDownstream.accumulator().accept(listTriple.getLeft(), lMapper.apply(element));

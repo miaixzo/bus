@@ -52,8 +52,8 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.SRApplicationName:
-            return VR.LO;
+            case PrivateTag.SRApplicationName:
+                return VR.LO;
         }
         return VR.UN;
     }

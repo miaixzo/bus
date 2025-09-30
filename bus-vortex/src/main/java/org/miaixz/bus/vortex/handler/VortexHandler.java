@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.lang.exception.BusinessException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -114,7 +114,6 @@ public class VortexHandler {
      *
      * @param request 客户端的ServerRequest对象，包含请求的所有信息
      * @return {@link Mono<ServerResponse>} 包含目标服务的响应，以响应式方式返回
-     * @throws RuntimeException 如果请求上下文或配置资产为null
      */
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
@@ -123,7 +122,7 @@ public class VortexHandler {
             Context context = Context.get(request);
             if (context == null) {
                 Format.error(null, "CONTEXT_NULL", "Request context is null for path: " + request.path());
-                throw new BusinessException(ErrorCode._80010002);
+                throw new ValidateException(ErrorCode._116000);
             }
             ServerWebExchange exchange = request.exchange();
             Format.requestStart(exchange);
@@ -132,35 +131,41 @@ public class VortexHandler {
             Assets assets = context.getAssets();
             if (assets == null) {
                 Format.error(exchange, "ASSETS_NULL", "Assets is null in request context");
-                throw new BusinessException(ErrorCode._100800);
+                throw new ValidateException(ErrorCode._100800);
             }
 
             // 3. 选择路由策略
-            String strategyName = assets.getStrategy();
-            if (strategyName == null || strategyName.trim().isEmpty()) {
-                Format.warn(exchange, "STRATEGY_NULL", "Strategy is null or empty, using default strategy");
-                strategyName = Protocol.HTTP.name;
-            }
-            Router router = strategies.getOrDefault(strategyName, defaultRouter);
+            String mode = switch (assets.getMode()) {
+                case 1 -> Protocol.HTTP.name();
+                case 2 -> Protocol.MQ.name();
+                case 3 -> Protocol.MCP.name();
+                default -> Protocol.HTTP.name();
+            };
+
+            Router router = strategies.getOrDefault(mode, defaultRouter);
             Format.info(exchange, "STRATEGY_SELECTED", "Using route strategy: " + router.getClass().getSimpleName());
 
             // 4. 执行前置处理
             return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
-                    throw new BusinessException(ErrorCode._100800);
+                    throw new ValidateException(ErrorCode._100800);
                 }
 
                 // 5. 委托给策略实现者处理请求
                 return router.route(request, context, assets)
                         .flatMap(response -> executePostHandlers(exchange, router, response)).doOnSuccess(response -> {
-                            long duration = System.currentTimeMillis() - context.getStartTime();
-                            Format.info(exchange, "REQUEST_DURATION",
+                            long duration = System.currentTimeMillis() - context.getTimestamp();
+                            Format.info(
+                                    exchange,
+                                    "REQUEST_DURATION",
                                     "Method: " + assets.getMethod() + ", Duration: " + duration + "ms");
                         }).onErrorResume(error -> {
                             Format.error(exchange, "REQUEST_ERROR", "Error processing request: " + error.getMessage());
-                            return Mono.whenDelayError(handlers.stream()
-                                    .map(handler -> handler.afterCompletion(exchange, router, null, null, error))
-                                    .collect(Collectors.toList())).then(Mono.error(error));
+                            return Mono.whenDelayError(
+                                    handlers.stream().map(
+                                            handler -> handler.afterCompletion(exchange, router, null, null, error))
+                                            .collect(Collectors.toList()))
+                                    .then(Mono.error(error));
                         });
             });
         }).doOnSuccess(response -> Format.requestEnd(request.exchange(), response.statusCode().value()));
@@ -194,16 +199,20 @@ public class VortexHandler {
      * @param response 服务器响应，包含响应状态、头和体
      * @return Mono<ServerResponse> 处理后的响应，可能被拦截器修改
      */
-    private Mono<ServerResponse> executePostHandlers(ServerWebExchange exchange, Router router,
+    private Mono<ServerResponse> executePostHandlers(
+            ServerWebExchange exchange,
+            Router router,
             ServerResponse response) {
         return Mono
-                .whenDelayError(handlers.stream().map(handler -> handler.postHandle(exchange, router, null, response))
-                        .collect(Collectors.toList()))
-                .thenReturn(response)
-                .flatMap(res -> Mono.whenDelayError(
-                        handlers.stream().map(handler -> handler.afterCompletion(exchange, router, null, res, null))
+                .whenDelayError(
+                        handlers.stream().map(handler -> handler.postHandle(exchange, router, null, response))
                                 .collect(Collectors.toList()))
-                        .thenReturn(res));
+                .thenReturn(response).flatMap(
+                        res -> Mono.whenDelayError(
+                                handlers.stream()
+                                        .map(handler -> handler.afterCompletion(exchange, router, null, res, null))
+                                        .collect(Collectors.toList()))
+                                .thenReturn(res));
     }
 
 }

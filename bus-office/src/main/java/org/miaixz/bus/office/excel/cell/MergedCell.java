@@ -65,7 +65,8 @@ public class MergedCell {
     public static MergedCell of(final Cell cell, final int rowCount, final int columnCount) {
         final int rowIndex = cell.getRowIndex();
         final int columnIndex = cell.getColumnIndex();
-        return of(cell,
+        return of(
+                cell,
                 new CellRangeAddress(rowIndex, rowIndex + rowCount - 1, columnIndex, columnIndex + columnCount - 1));
     }
 

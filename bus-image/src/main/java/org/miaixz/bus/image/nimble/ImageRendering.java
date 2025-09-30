@@ -62,8 +62,11 @@ public class ImageRendering {
      * @param frameIndex  要处理的帧索引（单帧图像为0）
      * @return 应用了模态LUT的原始渲染图像
      */
-    public static PlanarImage getRawRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
-            ImageReadParam params, int frameIndex) {
+    public static PlanarImage getRawRenderedImage(
+            final PlanarImage imageSource,
+            ImageDescriptor desc,
+            ImageReadParam params,
+            int frameIndex) {
         PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc, frameIndex);
         ImageAdapter adapter = new ImageAdapter(img, desc, frameIndex);
         return getModalityLutImage(imageSource, adapter, params);
@@ -96,8 +99,11 @@ public class ImageRendering {
      * @param frameIndex  要处理的帧索引（单帧图像为0）
      * @return 应用了VOI LUT和覆盖层的默认渲染图像
      */
-    public static PlanarImage getDefaultRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
-            ImageReadParam params, int frameIndex) {
+    public static PlanarImage getDefaultRenderedImage(
+            final PlanarImage imageSource,
+            ImageDescriptor desc,
+            ImageReadParam params,
+            int frameIndex) {
         PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc, frameIndex);
         img = getVoiLutImage(img, desc, params, frameIndex);
         return OverlayData.getOverlayImage(imageSource, img, desc, params, frameIndex);
@@ -112,7 +118,10 @@ public class ImageRendering {
      * @param frameIndex  要处理的帧索引（单帧图像为0）
      * @return 应用了VOI LUT的图像
      */
-    public static PlanarImage getVoiLutImage(final PlanarImage imageSource, ImageDescriptor desc, ImageReadParam params,
+    public static PlanarImage getVoiLutImage(
+            final PlanarImage imageSource,
+            ImageDescriptor desc,
+            ImageReadParam params,
             int frameIndex) {
         ImageAdapter adapter = new ImageAdapter(imageSource, desc, frameIndex);
         return getVoiLutImage(imageSource, adapter, params);
@@ -145,7 +154,9 @@ public class ImageRendering {
      * @param p           窗口/级别参数
      * @return 处理后的图像
      */
-    private static ImageCV getImageForByteOrShortData(PlanarImage imageSource, ImageAdapter adapter,
+    private static ImageCV getImageForByteOrShortData(
+            PlanarImage imageSource,
+            ImageAdapter adapter,
             WindLevelParameters p) {
         ImageDescriptor desc = adapter.getImageDescriptor();
         LookupTableCV modalityLookup = adapter.getModalityLookup(p, p.isInverseLut());

@@ -516,7 +516,9 @@ public class Convert {
      * @param value          被转换的值
      * @return {@link Collection}
      */
-    public static Collection<?> toCollection(final Class<?> collectionType, final Class<?> elementType,
+    public static Collection<?> toCollection(
+            final Class<?> collectionType,
+            final Class<?> elementType,
             final Object value) {
         return new CollectionConverter().convert(collectionType, elementType, value);
     }
@@ -584,7 +586,10 @@ public class Convert {
      * @param value     被转换的值
      * @return {@link Map}
      */
-    public static <K, V> Map<K, V> toMap(final Class<?> mapType, final Class<K> keyType, final Class<V> valueType,
+    public static <K, V> Map<K, V> toMap(
+            final Class<?> mapType,
+            final Class<K> keyType,
+            final Class<V> valueType,
             final Object value) {
         return (Map<K, V>) MapConverter.INSTANCE.convert(mapType, keyType, valueType, value);
     }
@@ -704,7 +709,10 @@ public class Convert {
      * @param quietly      是否静默转换，true不抛异常
      * @return 转换后的值
      */
-    public static <T> T convertWithCheck(final Type type, final Object value, final T defaultValue,
+    public static <T> T convertWithCheck(
+            final Type type,
+            final Object value,
+            final T defaultValue,
             final boolean quietly) {
         final CompositeConverter compositeConverter = CompositeConverter.getInstance();
         try {

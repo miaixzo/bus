@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.VideoBeamBoost:
-            return "VideoBeamBoost";
-        case PrivateTag.ChannelGeneratingVideoSync:
-            return "ChannelGeneratingVideoSync";
-        case PrivateTag.VideoGain:
-            return "VideoGain";
-        case PrivateTag.VideoOffset:
-            return "VideoOffset";
-        case PrivateTag.RTDDataCompressionFactor:
-            return "RTDDataCompressionFactor";
+            case PrivateTag.VideoBeamBoost:
+                return "VideoBeamBoost";
+
+            case PrivateTag.ChannelGeneratingVideoSync:
+                return "ChannelGeneratingVideoSync";
+
+            case PrivateTag.VideoGain:
+                return "VideoGain";
+
+            case PrivateTag.VideoOffset:
+                return "VideoOffset";
+
+            case PrivateTag.RTDDataCompressionFactor:
+                return "RTDDataCompressionFactor";
         }
         return "";
     }

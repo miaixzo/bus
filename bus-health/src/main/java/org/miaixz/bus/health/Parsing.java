@@ -137,8 +137,8 @@ public final class Parsing {
     /**
      * WMI 返回的 DateTime 格式化器
      */
-    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ",
-            Locale.US);
+    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter
+            .ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ", Locale.US);
 
     /**
      * 从字符串解析速度，例如 "2.00 MT/s" 解析为 2000000L。
@@ -164,6 +164,7 @@ public final class Parsing {
         if (matcher.find()) {
             // 正则表达式强制 #(.#) 格式，无需检查 NumberFormatException
             Map<String, Long> map = new HashMap<>() {
+
                 {
                     put("Hz", 1L);
                     put("kHz", 1_000L);
@@ -674,7 +675,9 @@ public final class Parsing {
         }
         if (parsedIndex > 0) {
             if (!noLog(s)) {
-                Logger.error("Not enough fields in string '{}' parsing to long array: {}", s,
+                Logger.error(
+                        "Not enough fields in string '{}' parsing to long array: {}",
+                        s,
                         indices.length - parsedIndex);
             }
             return new long[indices.length];
@@ -758,7 +761,7 @@ public final class Parsing {
 
         String result = Normal.EMPTY;
 
-        if (text.indexOf(before) >= 0 && text.indexOf(after) >= 0) {
+        if (text.contains(before) && text.contains(after)) {
             result = text.substring(text.indexOf(before) + before.length());
             result = result.substring(0, result.indexOf(after));
         }
@@ -785,7 +788,11 @@ public final class Parsing {
     public static String parseMmDdYyyyToYyyyMmDD(String dateString) {
         try {
             // 日期为 MM-DD-YYYY，转换为 YYYY-MM-DD
-            return String.format(Locale.ROOT, "%s-%s-%s", dateString.substring(6, 10), dateString.substring(0, 2),
+            return String.format(
+                    Locale.ROOT,
+                    "%s-%s-%s",
+                    dateString.substring(6, 10),
+                    dateString.substring(0, 2),
                     dateString.substring(3, 5));
         } catch (StringIndexOutOfBoundsException e) {
             return dateString;
@@ -851,22 +858,26 @@ public final class Parsing {
         }
 
         double number = Parsing.parseDoubleOrDefault(mem[0], 0L);
-        if (mem.length == 2 && mem[1] != null && mem[1].length() >= 1) {
+        if (mem.length == 2 && mem[1] != null && !mem[1].isEmpty()) {
             switch (mem[1].charAt(0)) {
-            case 'T':
-                number *= 1_000_000_000_000L;
-                break;
-            case 'G':
-                number *= 1_000_000_000L;
-                break;
-            case 'M':
-                number *= 1_000_000L;
-                break;
-            case 'K':
-            case 'k':
-                number *= 1_000L;
-                break;
-            default:
+                case 'T':
+                    number *= 1_000_000_000_000L;
+                    break;
+
+                case 'G':
+                    number *= 1_000_000_000L;
+                    break;
+
+                case 'M':
+                    number *= 1_000_000L;
+                    break;
+
+                case 'K':
+                case 'k':
+                    number *= 1_000L;
+                    break;
+
+                default:
             }
         }
         return (long) number;
@@ -892,21 +903,25 @@ public final class Parsing {
         long capacity = Parsing.parseLongOrDefault(mem[0], 0L);
         if (mem.length == 2 && mem[1].length() > 1) {
             switch (mem[1].charAt(0)) {
-            case 'T':
-                capacity <<= 40;
-                break;
-            case 'G':
-                capacity <<= 30;
-                break;
-            case 'M':
-                capacity <<= 20;
-                break;
-            case 'K':
-            case 'k':
-                capacity <<= 10;
-                break;
-            default:
-                break;
+                case 'T':
+                    capacity <<= 40;
+                    break;
+
+                case 'G':
+                    capacity <<= 30;
+                    break;
+
+                case 'M':
+                    capacity <<= 20;
+                    break;
+
+                case 'K':
+                case 'k':
+                    capacity <<= 10;
+                    break;
+
+                default:
+                    break;
             }
         }
         return capacity;
@@ -924,7 +939,9 @@ public final class Parsing {
             String vendorId = "0x" + m.group(1).toLowerCase(Locale.ROOT);
             String productId = "0x" + m.group(2).toLowerCase(Locale.ROOT);
             String serial = m.group(4);
-            return Triplet.of(vendorId, productId,
+            return Triplet.of(
+                    vendorId,
+                    productId,
                     !m.group(3).isEmpty() || serial.contains(Symbol.AND) ? Normal.EMPTY : serial);
         }
         return null;

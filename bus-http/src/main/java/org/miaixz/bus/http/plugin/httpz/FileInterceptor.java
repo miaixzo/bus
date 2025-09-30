@@ -87,6 +87,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
 
         private Source source(Source source) {
             return new AssignSource(source) {
+
                 long downloadLenth = 0L;
 
                 @Override

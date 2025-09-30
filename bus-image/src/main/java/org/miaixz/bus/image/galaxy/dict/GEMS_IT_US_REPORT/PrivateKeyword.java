@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.VividExcelFile:
-            return "VividExcelFile";
-        case PrivateTag.VividCHMFile:
-            return "VividCHMFile";
-        case PrivateTag.VividPDFFile:
-            return "VividPDFFile";
+            case PrivateTag.VividExcelFile:
+                return "VividExcelFile";
+
+            case PrivateTag.VividCHMFile:
+                return "VividCHMFile";
+
+            case PrivateTag.VividPDFFile:
+                return "VividPDFFile";
         }
         return "";
     }

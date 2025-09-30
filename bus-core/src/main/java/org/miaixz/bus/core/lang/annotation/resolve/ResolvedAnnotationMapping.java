@@ -34,7 +34,7 @@ import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.core.center.map.multi.Graph;
+import org.miaixz.bus.core.center.map.multiple.Graph;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.annotation.resolve.elements.MetaAnnotatedElement;
@@ -142,8 +142,10 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
         Objects.requireNonNull(annotation);
         Assert.isFalse(AnnotationMappingProxy.isProxied(annotation), "annotation has been proxied");
         Assert.isFalse(annotation instanceof ResolvedAnnotationMapping, "annotation has been wrapped");
-        Assert.isFalse(Objects.nonNull(source) && Objects.equals(source.annotation, annotation),
-                "source annotation can not same with target [{}]", annotation);
+        Assert.isFalse(
+                Objects.nonNull(source) && Objects.equals(source.annotation, annotation),
+                "source annotation can not same with target [{}]",
+                annotation);
         this.annotation = annotation;
         this.attributes = AnnoKit.getAnnotationAttributes(annotation.annotationType());
         this.source = source;
@@ -168,7 +170,8 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      * @param resolveAnnotationAttribute 是否解析注解属性，为{@code true}时获得的注解皆支持属性覆盖与属性别名机制
      * @return 注解映射对象
      */
-    public static ResolvedAnnotationMapping create(final Annotation annotation,
+    public static ResolvedAnnotationMapping create(
+            final Annotation annotation,
             final boolean resolveAnnotationAttribute) {
         return create(null, annotation, resolveAnnotationAttribute);
     }
@@ -181,7 +184,9 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      * @param resolveAnnotationAttribute 是否解析注解属性，为{@code true}时获得的注解皆支持属性覆盖与属性别名机制
      * @return 注解映射对象
      */
-    public static ResolvedAnnotationMapping create(final ResolvedAnnotationMapping source, final Annotation annotation,
+    public static ResolvedAnnotationMapping create(
+            final ResolvedAnnotationMapping source,
+            final Annotation annotation,
             final boolean resolveAnnotationAttribute) {
         return new ResolvedAnnotationMapping(source, annotation, resolveAnnotationAttribute);
     }
@@ -404,8 +409,11 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
         ResolvedAnnotationMapping sourceMapping = this.source;
         while (Objects.nonNull(sourceMapping)) {
             // 检查循环依赖
-            Assert.isFalse(accessed.contains(sourceMapping.annotationType()),
-                    "circular dependency between [{}] and [{}]", annotationType(), sourceMapping.annotationType());
+            Assert.isFalse(
+                    accessed.contains(sourceMapping.annotationType()),
+                    "circular dependency between [{}] and [{}]",
+                    annotationType(),
+                    sourceMapping.annotationType());
             sources.addFirst(sourceMapping);
             accessed.add(source.annotationType());
             sourceMapping = sourceMapping.source;
@@ -440,8 +448,11 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     /**
      * 更新需要覆写的属性的相关映射关系，若该属性存在别名，则将别名的映射关系一并覆写
      */
-    private void overwriteAttribute(final ResolvedAnnotationMapping overwriteMapping, final int overwriteIndex,
-            final int targetIndex, final boolean overwriteAliases) {
+    private void overwriteAttribute(
+            final ResolvedAnnotationMapping overwriteMapping,
+            final int overwriteIndex,
+            final int targetIndex,
+            final boolean overwriteAliases) {
         // 若目标属性已被覆写，则不允许再次覆写
         if (isOverwrittenAttribute(targetIndex)) {
             return;
@@ -527,16 +538,23 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
     private Method getAliasAttribute(final Method attribute, final Alias attributeAnnotation) {
         // 获取别名属性下标，该属性必须在当前注解中存在
         final int aliasAttributeIndex = getAttributeIndex(attributeAnnotation.value(), attribute.getReturnType());
-        Assert.isTrue(hasAttribute(aliasAttributeIndex), "can not find alias attribute [{}] in [{}]",
-                attributeAnnotation.value(), this.annotation.annotationType());
+        Assert.isTrue(
+                hasAttribute(aliasAttributeIndex),
+                "can not find alias attribute [{}] in [{}]",
+                attributeAnnotation.value(),
+                this.annotation.annotationType());
 
         // 获取具体的别名属性，该属性不能是其本身
         final Method aliasAttribute = getAttribute(aliasAttributeIndex);
         Assert.notEquals(aliasAttribute, attribute, "attribute [{}] can not alias for itself", attribute);
 
         // 互为别名的属性类型必须一致
-        Assert.isAssignable(attribute.getReturnType(), aliasAttribute.getReturnType(),
-                "aliased attributes [{}] and [{}] must have same return type", attribute, aliasAttribute);
+        Assert.isAssignable(
+                attribute.getReturnType(),
+                aliasAttribute.getReturnType(),
+                "aliased attributes [{}] and [{}] must have same return type",
+                attribute,
+                aliasAttribute);
         return aliasAttribute;
     }
 
@@ -629,9 +647,13 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
                 if (hasNotDef) {
                     // 如果当前也是非默认值，则要求两值必须相等
                     if (!isDefault) {
-                        Assert.isTrue(Objects.equals(lastValue, undef),
+                        Assert.isTrue(
+                                Objects.equals(lastValue, undef),
                                 "aliased attribute [{}] and [{}] must have same not default value, but is different: [{}] <==> [{}]",
-                                attributes[resolvedIndex], attribute, lastValue, undef);
+                                attributes[resolvedIndex],
+                                attribute,
+                                lastValue,
+                                undef);
                     }
                     // 否则直接跳过，依然以上一非默认值为准
                     continue;
@@ -646,11 +668,17 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
                 }
 
                 // 不是首个属性，还没有非默认值，如果当前也是默认值，则要求两值必须相等
-                Assert.isTrue(Objects.equals(lastValue, def),
+                Assert.isTrue(
+                        Objects.equals(lastValue, def),
                         "aliased attribute [{}] and [{}] must have same default value, but is different: [{}] <==> [{}]",
-                        attributes[resolvedIndex], attribute, lastValue, def);
+                        attributes[resolvedIndex],
+                        attribute,
+                        lastValue,
+                        def);
             }
-            Assert.isFalse(resolvedIndex == NOT_FOUND_INDEX, "can not resolve aliased attributes from [{}]",
+            Assert.isFalse(
+                    resolvedIndex == NOT_FOUND_INDEX,
+                    "can not resolve aliased attributes from [{}]",
                     annotation);
             return resolvedIndex;
         }

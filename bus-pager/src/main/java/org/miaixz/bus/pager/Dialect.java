@@ -96,7 +96,11 @@ public interface Dialect {
      * @param countKey        count 缓存 key
      * @return the object
      */
-    String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+    String getCountSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            RowBounds rowBounds,
             CacheKey countKey);
 
     /**
@@ -140,7 +144,11 @@ public interface Dialect {
      * @param pageKey         分页缓存 key
      * @return the object
      */
-    String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+    String getPageSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            RowBounds rowBounds,
             CacheKey pageKey);
 
     /**

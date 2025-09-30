@@ -217,9 +217,9 @@ public class GeniusBuilder {
     public static final String MONGO = Keys.BUS + Symbol.DOT + "mongo";
 
     /**
-     * Bus mybatis key
+     * Bus mapper key
      */
-    public static final String MYBATIS = Keys.BUS + Symbol.DOT + "mybatis";
+    public static final String MAPPER = Keys.BUS + Symbol.DOT + "mapper";
 
     /**
      * Bus notify key
@@ -255,6 +255,16 @@ public class GeniusBuilder {
      * Bus storage key
      */
     public static final String STORAGE = Keys.BUS + Symbol.DOT + "storage";
+
+    /**
+     * Bus tracer key
+     */
+    public static final String TRACER = Keys.BUS + Symbol.DOT + "tracer";
+
+    /**
+     * Bus validate key
+     */
+    public static final String VALIDATE = Keys.BUS + Symbol.DOT + "validate";
 
     /**
      * Bus wrapper key

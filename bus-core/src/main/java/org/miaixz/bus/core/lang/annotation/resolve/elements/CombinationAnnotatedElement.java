@@ -91,7 +91,8 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
      * @param predicate 过滤器，{@link Predicate#test(Object)}返回{@code true}保留，否则不保留
      * @return CombinationAnnotationElement
      */
-    public static CombinationAnnotatedElement of(final AnnotatedElement element,
+    public static CombinationAnnotatedElement of(
+            final AnnotatedElement element,
             final Predicate<Annotation> predicate) {
         return new CombinationAnnotatedElement(element, predicate);
     }
@@ -153,9 +154,8 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
         // 直接注解
         for (final Annotation annotation : annotations) {
             annotationType = annotation.annotationType();
-            if (!Normal.META_ANNOTATIONS.contains(annotationType)
-                    // 跳过元注解和已经处理过的注解，防止递归调用
-                    && !declaredAnnotationMap.containsKey(annotationType)) {
+            // 跳过元注解和已经处理过的注解，防止递归调用
+            if (!AnnoKit.isMetaAnnotation(annotationType) && !declaredAnnotationMap.containsKey(annotationType)) {
                 if (test(annotation)) {
                     declaredAnnotationMap.put(annotationType, annotation);
                 }

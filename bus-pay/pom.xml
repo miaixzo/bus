@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-pay</artifactId>
-    <version>8.3.0</version>
+    <version>8.3.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.0</bus.version>
-        <lombok.version>1.18.38</lombok.version>
-        <bcpkix.version>1.81</bcpkix.version>
+        <bus.version>8.3.1</bus.version>
+        <lombok.version>1.18.42</lombok.version>
+        <bcpkix.version>1.82</bcpkix.version>
     </properties>
 
     <dependencies>
@@ -185,7 +185,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.9.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -195,7 +195,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.46.1</version>
+                <version>3.0.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

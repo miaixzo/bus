@@ -269,7 +269,9 @@ public class ExceptionKit {
      * @param replaceCharToStrMap 替换字符为指定字符串
      * @return 堆栈转为的字符串
      */
-    public static String stacktraceToString(final Throwable throwable, int limit,
+    public static String stacktraceToString(
+            final Throwable throwable,
+            int limit,
             final Map<Character, String> replaceCharToStrMap) {
         final FastByteArrayOutputStream baos = new FastByteArrayOutputStream();
         throwable.printStackTrace(new PrintStream(baos));
@@ -340,7 +342,8 @@ public class ExceptionKit {
      * @param exceptionClass 定义的引起异常的类
      * @return true 来自或者包含
      */
-    public static boolean isFromOrSuppressedThrowable(final Throwable throwable,
+    public static boolean isFromOrSuppressedThrowable(
+            final Throwable throwable,
             final Class<? extends Throwable> exceptionClass) {
         return convertFromOrSuppressedThrowable(throwable, exceptionClass, true) != null;
     }
@@ -353,8 +356,10 @@ public class ExceptionKit {
      * @param checkCause     判断cause
      * @return true 来自或者包含
      */
-    public static boolean isFromOrSuppressedThrowable(final Throwable throwable,
-            final Class<? extends Throwable> exceptionClass, final boolean checkCause) {
+    public static boolean isFromOrSuppressedThrowable(
+            final Throwable throwable,
+            final Class<? extends Throwable> exceptionClass,
+            final boolean checkCause) {
         return convertFromOrSuppressedThrowable(throwable, exceptionClass, checkCause) != null;
     }
 
@@ -366,7 +371,8 @@ public class ExceptionKit {
      * @param exceptionClass 定义的引起异常的类
      * @return 结果为null 不是来自或者包含
      */
-    public static <T extends Throwable> T convertFromOrSuppressedThrowable(final Throwable throwable,
+    public static <T extends Throwable> T convertFromOrSuppressedThrowable(
+            final Throwable throwable,
             final Class<T> exceptionClass) {
         return convertFromOrSuppressedThrowable(throwable, exceptionClass, true);
     }
@@ -380,8 +386,10 @@ public class ExceptionKit {
      * @param checkCause     判断cause
      * @return 结果为null 不是来自或者包含
      */
-    public static <T extends Throwable> T convertFromOrSuppressedThrowable(final Throwable throwable,
-            final Class<T> exceptionClass, final boolean checkCause) {
+    public static <T extends Throwable> T convertFromOrSuppressedThrowable(
+            final Throwable throwable,
+            final Class<T> exceptionClass,
+            final boolean checkCause) {
         if (throwable == null || exceptionClass == null) {
             return null;
         }

@@ -38,44 +38,62 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.NonExistentTags:
-            return "NonExistentTags";
-        case PrivateTag.NonExistentObjects:
-            return "NonExistentObjects";
-        case PrivateTag.AnnotationType:
-            return "AnnotationType";
-        case PrivateTag.AnnotationValue:
-            return "AnnotationValue";
-        case PrivateTag.CutlineImageUID:
-            return "CutlineImageUID";
-        case PrivateTag.CutlineSetUID:
-            return "CutlineSetUID";
-        case PrivateTag.AnnotationColor:
-            return "AnnotationColor";
-        case PrivateTag.AnnotationLineStyle:
-            return "AnnotationLineStyle";
-        case PrivateTag.AnnotationLabel:
-            return "AnnotationLabel";
-        case PrivateTag.AnnotationCreator:
-            return "AnnotationCreator";
-        case PrivateTag.AnnotationCreationDate:
-            return "AnnotationCreationDate";
-        case PrivateTag.AnnotationCreationTime:
-            return "AnnotationCreationTime";
-        case PrivateTag.AnnotationModificationSequence:
-            return "AnnotationModificationSequence";
-        case PrivateTag.AnnotationModifier:
-            return "AnnotationModifier";
-        case PrivateTag.AnnotationModificationDate:
-            return "AnnotationModificationDate";
-        case PrivateTag.AnnotationModificationTime:
-            return "AnnotationModificationTime";
-        case PrivateTag._4105_xx10_:
-            return "_4105_xx10_";
-        case PrivateTag._4105_xx11_:
-            return "_4105_xx11_";
-        case PrivateTag.RequestedPaletteColorLUT:
-            return "RequestedPaletteColorLUT";
+            case PrivateTag.NonExistentTags:
+                return "NonExistentTags";
+
+            case PrivateTag.NonExistentObjects:
+                return "NonExistentObjects";
+
+            case PrivateTag.AnnotationType:
+                return "AnnotationType";
+
+            case PrivateTag.AnnotationValue:
+                return "AnnotationValue";
+
+            case PrivateTag.CutlineImageUID:
+                return "CutlineImageUID";
+
+            case PrivateTag.CutlineSetUID:
+                return "CutlineSetUID";
+
+            case PrivateTag.AnnotationColor:
+                return "AnnotationColor";
+
+            case PrivateTag.AnnotationLineStyle:
+                return "AnnotationLineStyle";
+
+            case PrivateTag.AnnotationLabel:
+                return "AnnotationLabel";
+
+            case PrivateTag.AnnotationCreator:
+                return "AnnotationCreator";
+
+            case PrivateTag.AnnotationCreationDate:
+                return "AnnotationCreationDate";
+
+            case PrivateTag.AnnotationCreationTime:
+                return "AnnotationCreationTime";
+
+            case PrivateTag.AnnotationModificationSequence:
+                return "AnnotationModificationSequence";
+
+            case PrivateTag.AnnotationModifier:
+                return "AnnotationModifier";
+
+            case PrivateTag.AnnotationModificationDate:
+                return "AnnotationModificationDate";
+
+            case PrivateTag.AnnotationModificationTime:
+                return "AnnotationModificationTime";
+
+            case PrivateTag._4105_xx10_:
+                return "_4105_xx10_";
+
+            case PrivateTag._4105_xx11_:
+                return "_4105_xx11_";
+
+            case PrivateTag.RequestedPaletteColorLUT:
+                return "RequestedPaletteColorLUT";
         }
         return "";
     }

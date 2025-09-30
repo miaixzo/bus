@@ -148,8 +148,12 @@ public final class AccessToken {
      * @return the created personal access token
      * @throws GitLabApiException if any exception occurs
      */
-    public static final String createPersonalAccessToken(final String baseUrl, final String username,
-            final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
+    public static final String createPersonalAccessToken(
+            final String baseUrl,
+            final String username,
+            final String password,
+            final String tokenName,
+            final Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -169,8 +173,12 @@ public final class AccessToken {
      * @return the created personal access token
      * @throws GitLabApiException if any exception occurs
      */
-    public static final String createPersonalAccessToken(final String baseUrl, final String username,
-            final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
+    public static final String createPersonalAccessToken(
+            final String baseUrl,
+            final String username,
+            final String password,
+            final String tokenName,
+            final List<Scope> scopes) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -303,8 +311,12 @@ public final class AccessToken {
      * @param scopes    an array of scopes of the personal access token to revoke
      * @throws GitLabApiException if any exception occurs
      */
-    public static final void revokePersonalAccessToken(final String baseUrl, final String username,
-            final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
+    public static final void revokePersonalAccessToken(
+            final String baseUrl,
+            final String username,
+            final String password,
+            final String tokenName,
+            final Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -323,8 +335,12 @@ public final class AccessToken {
      * @param scopes    a List of scopes of the personal access token to revoke
      * @throws GitLabApiException if any exception occurs
      */
-    public static final void revokePersonalAccessToken(final String baseUrl, final String username,
-            final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
+    public static final void revokePersonalAccessToken(
+            final String baseUrl,
+            final String username,
+            final String password,
+            final String tokenName,
+            final List<Scope> scopes) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -540,7 +556,9 @@ public final class AccessToken {
      * @return the fetched health check access token
      * @throws GitLabApiException if any exception occurs
      */
-    public static final String getHealthCheckAccessToken(final String baseUrl, final String username,
+    public static final String getHealthCheckAccessToken(
+            final String baseUrl,
+            final String username,
             final String password) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later

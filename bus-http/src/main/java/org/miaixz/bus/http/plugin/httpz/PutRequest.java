@@ -106,9 +106,10 @@ public class PutRequest extends HttpRequest {
 
     private void addParam(MultipartBody.Builder builder) {
         if (null != params && !params.isEmpty()) {
-            params.forEach((k, v) -> builder.addPart(
-                    Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=" + k + Symbol.DOUBLE_QUOTES),
-                    RequestBody.create(null, v)));
+            params.forEach(
+                    (k, v) -> builder.addPart(
+                            Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=" + k + Symbol.DOUBLE_QUOTES),
+                            RequestBody.create(null, v)));
         }
     }
 

@@ -44,8 +44,8 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 @ThreadSafe
 public abstract class AbstractOSProcess implements OSProcess {
 
-    private final Supplier<Double> cumulativeCpuLoad = Memoizer.memoize(this::queryCumulativeCpuLoad,
-            Memoizer.defaultExpiration());
+    private final Supplier<Double> cumulativeCpuLoad = Memoizer
+            .memoize(this::queryCumulativeCpuLoad, Memoizer.defaultExpiration());
 
     private final int processID;
 

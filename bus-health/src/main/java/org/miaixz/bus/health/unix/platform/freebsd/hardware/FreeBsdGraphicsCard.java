@@ -86,10 +86,11 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
             if (line.contains("class=0x")) {
                 // Identifies start of a new device. Save previous if it's a graphics card
                 if (PCI_CLASS_DISPLAY.equals(classCode)) {
-                    cardList.add(new FreeBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                            productId.isEmpty() ? Normal.UNKNOWN : productId,
-                            vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
-                            versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
+                    cardList.add(
+                            new FreeBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
+                                    productId.isEmpty() ? Normal.UNKNOWN : productId,
+                                    vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                                    versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
                 }
                 // Parse this line
                 String[] split = Pattern.SPACES_PATTERN.split(line);
@@ -127,9 +128,11 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
         }
         // In case we reached end before saving
         if (PCI_CLASS_DISPLAY.equals(classCode)) {
-            cardList.add(new FreeBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                    productId.isEmpty() ? Normal.UNKNOWN : productId, vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
-                    versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
+            cardList.add(
+                    new FreeBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
+                            productId.isEmpty() ? Normal.UNKNOWN : productId,
+                            vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                            versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
         }
         return cardList;
     }

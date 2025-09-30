@@ -96,6 +96,7 @@ public final class Worker implements Runnable {
         // 启动worker线程组
         executorService = new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(), new ThreadFactory() {
+
                     int i = 0;
 
                     @Override
@@ -199,7 +200,9 @@ public final class Worker implements Runnable {
                         Object request = context.getProtocol().decode(buffer, session);
                         // 理论上每个UDP包都是一个完整的消息
                         if (request == null) {
-                            context.getProcessor().stateEvent(session, Status.DECODE_EXCEPTION,
+                            context.getProcessor().stateEvent(
+                                    session,
+                                    Status.DECODE_EXCEPTION,
                                     new InternalException("decode result is null, buffer size: " + buffer.remaining()));
                             break;
                         } else {

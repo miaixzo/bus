@@ -138,8 +138,13 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
      * @return 是否需要分页查询
      */
     @Override
-    public boolean isQuery(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
-            ResultHandler resultHandler, BoundSql boundSql) {
+    public boolean isQuery(
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
         Page<Object> page = PageMethod.getLocalPage();
         if (page == null || page.getPageSize() < 0 || resultHandler != Executor.NO_RESULT_HANDLER) {
             return true;
@@ -174,15 +179,21 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
      * @param boundSql        绑定的 SQL
      */
     @Override
-    public void query(Object result, Executor executor, MappedStatement mappedStatement, Object parameter,
-            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    public void query(
+            Object result,
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
         try {
             CacheKey cacheKey = executor.createCacheKey(mappedStatement, parameter, rowBounds, boundSql);
             checkDialectExists();
             // 处理 BoundSql 的拦截逻辑
             if (dialect instanceof BoundSqlBuilder.Chain) {
-                boundSql = ((BoundSqlBuilder.Chain) dialect).doBoundSql(BoundSqlBuilder.Type.ORIGINAL, boundSql,
-                        cacheKey);
+                boundSql = ((BoundSqlBuilder.Chain) dialect)
+                        .doBoundSql(BoundSqlBuilder.Type.ORIGINAL, boundSql, cacheKey);
             }
             List resultList;
             // 判断是否需要分页
@@ -201,8 +212,15 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
                         }
                     }
                 }
-                resultList = CountExecutor.pageQuery(dialect, executor, mappedStatement, parameter, rowBounds,
-                        resultHandler, boundSql, cacheKey);
+                resultList = CountExecutor.pageQuery(
+                        dialect,
+                        executor,
+                        mappedStatement,
+                        parameter,
+                        rowBounds,
+                        resultHandler,
+                        boundSql,
+                        cacheKey);
                 if (countFuture != null) {
                     Long count = countFuture.get();
                     dialect.afterCount(count, parameter, rowBounds);
@@ -231,7 +249,10 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
      * @param rowBounds       分页参数
      * @return COUNT 查询的 Future 结果
      */
-    private Future<Long> asyncCount(MappedStatement mappedStatement, BoundSql boundSql, Object parameter,
+    private Future<Long> asyncCount(
+            MappedStatement mappedStatement,
+            BoundSql boundSql,
+            Object parameter,
             RowBounds rowBounds) {
         Configuration configuration = mappedStatement.getConfiguration();
         BoundSql countBoundSql = new BoundSql(configuration, boundSql.getSql(),
@@ -270,12 +291,17 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
      * @return 记录总数
      * @throws SQLException 如果执行 COUNT 查询失败
      */
-    private Long count(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
-            ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+    private Long count(
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) throws SQLException {
         String countMsId = this.countMsId.genCountMsId(mappedStatement, parameter, boundSql, countSuffix);
         Long count;
-        MappedStatement countMs = CountExecutor.getExistedMappedStatement(mappedStatement.getConfiguration(),
-                countMsId);
+        MappedStatement countMs = CountExecutor
+                .getExistedMappedStatement(mappedStatement.getConfiguration(), countMsId);
         if (countMs != null) {
             count = CountExecutor.executeManualCount(executor, countMs, parameter, boundSql, resultHandler);
         } else {
@@ -288,8 +314,8 @@ public class PaginationHandler extends SqlParserHandler implements MapperHandler
                     msCountMap.write(countMsId, countMs, 60);
                 }
             }
-            count = CountExecutor.executeAutoCount(dialect, executor, countMs, parameter, boundSql, rowBounds,
-                    resultHandler);
+            count = CountExecutor
+                    .executeAutoCount(dialect, executor, countMs, parameter, boundSql, rowBounds, resultHandler);
         }
         return count;
     }

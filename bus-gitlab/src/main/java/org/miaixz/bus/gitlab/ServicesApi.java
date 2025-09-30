@@ -54,7 +54,12 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public HipChatService getHipChatService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
                 "hipchat");
         return (response.readEntity(HipChatService.class));
     }
@@ -86,8 +91,13 @@ public class ServicesApi extends AbstractApi {
     public HipChatService updateHipChatService(Object projectIdOrPath, HipChatService hipChat)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(hipChat.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "hipchat");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "hipchat");
         return (response.readEntity(HipChatService.class));
     }
 
@@ -102,7 +112,12 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteHipChatService(Object projectIdOrPath) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "services",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
                 "hipchat");
     }
 
@@ -118,7 +133,12 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public SlackService getSlackService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
                 "slack");
         return (response.readEntity(SlackService.class));
     }
@@ -158,8 +178,13 @@ public class ServicesApi extends AbstractApi {
     public SlackService updateSlackService(Object projectIdOrPath, SlackService slackNotifications)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(slackNotifications.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "slack");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "slack");
         return (response.readEntity(SlackService.class));
     }
 
@@ -189,7 +214,12 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public JiraService getJiraService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
                 "jira");
         return (response.readEntity(JiraService.class));
     }
@@ -218,8 +248,13 @@ public class ServicesApi extends AbstractApi {
      */
     public JiraService updateJiraService(Object projectIdOrPath, JiraService jira) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(jira.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "jira");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "jira");
         return (response.readEntity(JiraService.class));
     }
 
@@ -249,8 +284,13 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public ExternalWikiService getExternalWikiService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = this.get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "external-wiki");
+        Response response = this.get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "external-wiki");
         return (response.readEntity(ExternalWikiService.class));
     }
 
@@ -274,8 +314,13 @@ public class ServicesApi extends AbstractApi {
     public ExternalWikiService updateExternalWikiService(Object projectIdOrPath, ExternalWikiService externalWiki)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(externalWiki.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "external-wiki");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "external-wiki");
         return (response.readEntity(ExternalWikiService.class));
     }
 
@@ -290,7 +335,12 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteExternalWikiService(Object projectIdOrPath) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "services",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
                 "external-wiki");
     }
 
@@ -306,8 +356,13 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public MattermostService getMattermostService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = this.get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "mattermost");
+        Response response = this.get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "mattermost");
         return (response.readEntity(MattermostService.class));
     }
 
@@ -346,8 +401,13 @@ public class ServicesApi extends AbstractApi {
     public MattermostService updateMattermostService(Object projectIdOrPath, MattermostService mattermostNotifications)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(mattermostNotifications.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "mattermost");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "mattermost");
         return (response.readEntity(MattermostService.class));
     }
 
@@ -362,7 +422,12 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteMattermostService(Object projectIdOrPath) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "services",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
                 "mattermost");
     }
 
@@ -378,8 +443,8 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public BugzillaService getBugzillaService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = this.get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "bugzilla");
+        Response response = this
+                .get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "bugzilla");
         return (response.readEntity(BugzillaService.class));
     }
 
@@ -405,8 +470,13 @@ public class ServicesApi extends AbstractApi {
     public BugzillaService updateBugzillaService(Object projectIdOrPath, BugzillaService bugzillaService)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(bugzillaService.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "bugzilla");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "bugzilla");
         return (response.readEntity(BugzillaService.class));
     }
 
@@ -436,8 +506,13 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public CustomIssueTrackerService getCustomIssueTrackerService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = this.get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "custom-issue-tracker");
+        Response response = this.get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "custom-issue-tracker");
         return (response.readEntity(CustomIssueTrackerService.class));
     }
 
@@ -460,11 +535,17 @@ public class ServicesApi extends AbstractApi {
      * @return a CustomIssueTrackerService instance holding the newly updated settings
      * @throws GitLabApiException if any exception occurs
      */
-    public CustomIssueTrackerService updateCustomIssueTrackerService(Object projectIdOrPath,
+    public CustomIssueTrackerService updateCustomIssueTrackerService(
+            Object projectIdOrPath,
             CustomIssueTrackerService customIssueTracker) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(customIssueTracker.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "custom-issue-tracker");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "custom-issue-tracker");
         return (response.readEntity(CustomIssueTrackerService.class));
     }
 
@@ -479,7 +560,12 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteCustomIssueTrackerService(Object projectIdOrPath) throws GitLabApiException {
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services",
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
                 "custom-issue-tracker");
     }
 
@@ -495,8 +581,13 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public EmailOnPushService getEmailOnPushService(Object projectIdOrPath) throws GitLabApiException {
-        Response response = this.get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "emails-on-push");
+        Response response = this.get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "emails-on-push");
         return (response.readEntity(EmailOnPushService.class));
     }
 
@@ -524,8 +615,13 @@ public class ServicesApi extends AbstractApi {
     public EmailOnPushService updateEmailOnPushService(Object projectIdOrPath, EmailOnPushService emailsOnPush)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(emailsOnPush.servicePropertiesForm());
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "services", "emails-on-push");
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "services",
+                "emails-on-push");
         return (response.readEntity(EmailOnPushService.class));
     }
 

@@ -638,7 +638,10 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier2    区间结束值提供者
      * @return 当前包装器对象
      */
-    public ConditionWrapper<T, I> between(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier1,
+    public ConditionWrapper<T, I> between(
+            boolean useCondition,
+            Fn<T, Object> fn,
+            Supplier<Object> supplier1,
             Supplier<Object> supplier2) {
         return useCondition ? between(fn, supplier1.get(), supplier2.get()) : this;
     }
@@ -678,7 +681,10 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier2    区间结束值提供者
      * @return 当前包装器对象
      */
-    public ConditionWrapper<T, I> notBetween(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier1,
+    public ConditionWrapper<T, I> notBetween(
+            boolean useCondition,
+            Fn<T, Object> fn,
+            Supplier<Object> supplier1,
             Supplier<Object> supplier2) {
         return useCondition ? notBetween(fn, supplier1.get(), supplier2.get()) : this;
     }
@@ -943,8 +949,9 @@ public class ConditionWrapper<T, I extends Serializable> {
     @SafeVarargs
     public final ConditionWrapper<T, I> or(Function<OrCriteria<T>, OrCriteria<T>>... orParts) {
         if (orParts != null && orParts.length > 0) {
-            this.current.andOr(Arrays.stream(orParts).map(orPart -> orPart.apply(condition.orPart()))
-                    .collect(Collectors.toList()));
+            this.current.andOr(
+                    Arrays.stream(orParts).map(orPart -> orPart.apply(condition.orPart()))
+                            .collect(Collectors.toList()));
         }
         return this;
     }

@@ -253,7 +253,8 @@ public class Http2Writer implements Closeable {
         if (closed)
             throw new IOException("closed");
         if (windowSizeIncrement == 0 || windowSizeIncrement > 0x7fffffffL) {
-            throw Http2.illegalArgument("windowSizeIncrement == 0 || windowSizeIncrement > 0x7fffffffL: %s",
+            throw Http2.illegalArgument(
+                    "windowSizeIncrement == 0 || windowSizeIncrement > 0x7fffffffL: %s",
                     windowSizeIncrement);
         }
         int length = 4;

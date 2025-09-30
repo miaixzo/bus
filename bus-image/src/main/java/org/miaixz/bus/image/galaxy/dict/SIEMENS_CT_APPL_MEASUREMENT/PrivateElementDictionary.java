@@ -52,12 +52,14 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.DualEnergyROIAnnotationMode:
-            return VR.CS;
-        case PrivateTag.OncologyMeasurementRecistStandard:
-            return VR.ST;
-        case PrivateTag.OncologySegmentationMeasurementValues:
-            return VR.UT;
+            case PrivateTag.DualEnergyROIAnnotationMode:
+                return VR.CS;
+
+            case PrivateTag.OncologyMeasurementRecistStandard:
+                return VR.ST;
+
+            case PrivateTag.OncologySegmentationMeasurementValues:
+                return VR.UT;
         }
         return VR.UN;
     }

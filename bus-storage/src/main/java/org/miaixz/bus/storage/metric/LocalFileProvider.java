@@ -134,8 +134,13 @@ public class LocalFileProvider extends AbstractProvider {
             Files.copy(sourcePath, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (IOException e) {
-            Logger.error("Failed to download file: {} from bucket: {} to local file: {}. Error: {}", fileName, bucket,
-                    file.getAbsolutePath(), e.getMessage(), e);
+            Logger.error(
+                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    file.getAbsolutePath(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -165,7 +170,10 @@ public class LocalFileProvider extends AbstractProvider {
                                 .extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (IOException e) {
-            Logger.error("Failed to list objects in bucket: {}. Error: {}", this.context.getBucket(), e.getMessage(),
+            Logger.error(
+                    "Failed to list objects in bucket: {}. Error: {}",
+                    this.context.getBucket(),
+                    e.getMessage(),
                     e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
@@ -220,8 +228,14 @@ public class LocalFileProvider extends AbstractProvider {
             Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (IOException e) {
-            Logger.error("Failed to rename file from: {} to: {} in bucket: {} with path: {}, error: {}", oldName,
-                    newName, bucket, path, e.getMessage(), e);
+            Logger.error(
+                    "Failed to rename file from: {} to: {} in bucket: {} with path: {}, error: {}",
+                    oldName,
+                    newName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -306,15 +320,20 @@ public class LocalFileProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             Path destPath = Paths.get(context.getRegion(), bucket, objectKey);
             Files.createDirectories(destPath.getParent());
-            try (OutputStream out = Files.newOutputStream(destPath, StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING)) {
+            try (OutputStream out = Files
+                    .newOutputStream(destPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 IoKit.copy(content, out);
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).path(objectKey).build()).build();
         } catch (IOException e) {
-            Logger.error("Failed to upload file: {} to bucket: {} with path: {}, error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to upload file: {} to bucket: {} with path: {}, error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -359,8 +378,13 @@ public class LocalFileProvider extends AbstractProvider {
             Files.deleteIfExists(filePath);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (IOException e) {
-            Logger.error("Failed to remove file: {} from bucket: {} with path: {}, error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to remove file: {} from bucket: {} with path: {}, error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }

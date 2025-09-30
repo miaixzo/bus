@@ -47,6 +47,7 @@ public enum Registry implements Complex {
      * 支付宝
      */
     ALIPAY {
+
         @Override
         public String sandbox() {
             return "https://openapi.alipaydev.com/gateway.do?";
@@ -69,6 +70,7 @@ public enum Registry implements Complex {
      * 京东支付
      */
     JDPAY {
+
         @Override
         public String sandbox() {
             return null;
@@ -88,6 +90,7 @@ public enum Registry implements Complex {
      * Paypal
      */
     PAYPAL {
+
         @Override
         public String sandbox() {
             return "https://api.sandbox.paypal.com";
@@ -107,6 +110,7 @@ public enum Registry implements Complex {
      * QQ钱包
      */
     TENPAY {
+
         @Override
         public String sandbox() {
             return null;
@@ -127,6 +131,7 @@ public enum Registry implements Complex {
      * 银联云闪付
      */
     UNIONPAY {
+
         @Override
         public String sandbox() {
             return null;
@@ -146,6 +151,7 @@ public enum Registry implements Complex {
      * 微信
      */
     WECHAT {
+
         @Override
         public String sandbox() {
             return null;
@@ -165,6 +171,7 @@ public enum Registry implements Complex {
          * 按照区域分地址
          */
         enum R {
+
             /**
              * 中国国内
              */

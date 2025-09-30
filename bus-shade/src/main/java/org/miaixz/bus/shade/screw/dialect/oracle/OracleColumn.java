@@ -42,6 +42,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OracleColumn implements Column {
+
     /**
      * 表名称，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）
      */

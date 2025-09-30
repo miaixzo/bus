@@ -38,30 +38,41 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.DataStreamFromCassette:
-            return "DataStreamFromCassette";
-        case PrivateTag.SetOfDestinationIds:
-            return "SetOfDestinationIds";
-        case PrivateTag.SetOfProcessingCodes:
-            return "SetOfProcessingCodes";
-        case PrivateTag.NumberOfSeriesInStudy:
-            return "NumberOfSeriesInStudy";
-        case PrivateTag.SessionNumber:
-            return "SessionNumber";
-        case PrivateTag.IDStationName:
-            return "IDStationName";
-        case PrivateTag.NumberOfImagesInSeries:
-            return "NumberOfImagesInSeries";
-        case PrivateTag.BreakCondition:
-            return "BreakCondition";
-        case PrivateTag.WaitOrHoldFlag:
-            return "WaitOrHoldFlag";
-        case PrivateTag.ScanResFlag:
-            return "ScanResFlag";
-        case PrivateTag.OperationCode:
-            return "OperationCode";
-        case PrivateTag.ImageQuality:
-            return "ImageQuality";
+            case PrivateTag.DataStreamFromCassette:
+                return "DataStreamFromCassette";
+
+            case PrivateTag.SetOfDestinationIds:
+                return "SetOfDestinationIds";
+
+            case PrivateTag.SetOfProcessingCodes:
+                return "SetOfProcessingCodes";
+
+            case PrivateTag.NumberOfSeriesInStudy:
+                return "NumberOfSeriesInStudy";
+
+            case PrivateTag.SessionNumber:
+                return "SessionNumber";
+
+            case PrivateTag.IDStationName:
+                return "IDStationName";
+
+            case PrivateTag.NumberOfImagesInSeries:
+                return "NumberOfImagesInSeries";
+
+            case PrivateTag.BreakCondition:
+                return "BreakCondition";
+
+            case PrivateTag.WaitOrHoldFlag:
+                return "WaitOrHoldFlag";
+
+            case PrivateTag.ScanResFlag:
+                return "ScanResFlag";
+
+            case PrivateTag.OperationCode:
+                return "OperationCode";
+
+            case PrivateTag.ImageQuality:
+                return "ImageQuality";
         }
         return "";
     }

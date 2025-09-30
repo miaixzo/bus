@@ -69,7 +69,8 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
             manufacturer = WmiKit.getString(win32ComputerSystem, ComputerSystemProperty.MANUFACTURER, 0);
             model = WmiKit.getString(win32ComputerSystem, ComputerSystemProperty.MODEL, 0);
         }
-        return Pair.of(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+        return Pair.of(
+                StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model);
     }
 
@@ -79,8 +80,8 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
         WmiResult<ComputerSystemProductProperty> win32ComputerSystemProduct = Win32ComputerSystemProduct
                 .queryIdentifyingNumberUUID();
         if (win32ComputerSystemProduct.getResultCount() > 0) {
-            serialNumber = WmiKit.getString(win32ComputerSystemProduct, ComputerSystemProductProperty.IDENTIFYINGNUMBER,
-                    0);
+            serialNumber = WmiKit
+                    .getString(win32ComputerSystemProduct, ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
             uuid = WmiKit.getString(win32ComputerSystemProduct, ComputerSystemProductProperty.UUID, 0);
         }
         if (StringKit.isBlank(serialNumber)) {

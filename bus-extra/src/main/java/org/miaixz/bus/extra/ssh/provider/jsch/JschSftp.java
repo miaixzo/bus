@@ -140,7 +140,11 @@ public class JschSftp extends AbstractFtp {
      * @param charset 编码
      * @return JschSftp
      */
-    public static JschSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass,
+    public static JschSftp of(
+            final String sshHost,
+            final int sshPort,
+            final String sshUser,
+            final String sshPass,
             final Charset charset) {
         return new JschSftp(new FtpConfig(Connector.of(sshHost, sshPort, sshUser, sshPass), charset));
     }
@@ -153,8 +157,12 @@ public class JschSftp extends AbstractFtp {
             if (null == this.session) {
                 final FtpConfig config = this.ftpConfig;
                 final Connector connector = config.getConnector();
-                this.session = new JschSession(Connector.of(connector.getHost(), connector.getPort(),
-                        connector.getUser(), connector.getPassword(), connector.getTimeout())).getRaw();
+                this.session = new JschSession(Connector.of(
+                        connector.getHost(),
+                        connector.getPort(),
+                        connector.getUser(),
+                        connector.getPassword(),
+                        connector.getTimeout())).getRaw();
             }
 
             if (!session.isConnected()) {
@@ -322,7 +330,7 @@ public class JschSftp extends AbstractFtp {
     }
 
     @Override
-    public boolean rename(String oldPath, String newPath) {
+    public boolean rename(final String oldPath, final String newPath) {
         try {
             getClient().rename(oldPath, newPath);
         } catch (final SftpException e) {
@@ -531,7 +539,10 @@ public class JschSftp extends AbstractFtp {
      * @param mode        {@link Mode} 模式
      * @return this
      */
-    public JschSftp put(final String srcFilePath, final String destPath, final SftpProgressMonitor monitor,
+    public JschSftp put(
+            final String srcFilePath,
+            final String destPath,
+            final SftpProgressMonitor monitor,
             final Mode mode) {
         try {
             getClient().put(srcFilePath, destPath, monitor, mode.ordinal());
@@ -550,7 +561,10 @@ public class JschSftp extends AbstractFtp {
      * @param mode      {@link Mode} 模式
      * @return this
      */
-    public JschSftp put(final InputStream srcStream, final String destPath, final SftpProgressMonitor monitor,
+    public JschSftp put(
+            final InputStream srcStream,
+            final String destPath,
+            final SftpProgressMonitor monitor,
             final Mode mode) {
         try {
             getClient().put(srcStream, destPath, monitor, mode.ordinal());

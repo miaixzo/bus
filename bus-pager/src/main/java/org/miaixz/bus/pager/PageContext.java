@@ -113,7 +113,11 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlBuilder.
     }
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+    public String getCountSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            RowBounds rowBounds,
             CacheKey countKey) {
         return autoDialect.getDelegate().getCountSql(ms, boundSql, parameterObject, rowBounds, countKey);
     }
@@ -124,7 +128,10 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlBuilder.
     }
 
     @Override
-    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql,
+    public Object processParameterObject(
+            MappedStatement ms,
+            Object parameterObject,
+            BoundSql boundSql,
             CacheKey pageKey) {
         return autoDialect.getDelegate().processParameterObject(ms, parameterObject, boundSql, pageKey);
     }
@@ -135,7 +142,11 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlBuilder.
     }
 
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+    public String getPageSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            RowBounds rowBounds,
             CacheKey pageKey) {
         return autoDialect.getDelegate().getPageSql(ms, boundSql, parameterObject, rowBounds, pageKey);
     }
@@ -199,8 +210,10 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlBuilder.
         // 20180902新增 aggregateFunctions, 允许手动添加聚合函数（影响行数）
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
         // 异步 asyncCountService 并发度设置，这里默认为应用可用的处理器核心数 * 2，更合理的值应该综合考虑数据库服务器的处理能力
-        int asyncCountParallelism = Integer.parseInt(properties.getProperty("asyncCountParallelism",
-                Normal.EMPTY + (Runtime.getRuntime().availableProcessors() * 2)));
+        int asyncCountParallelism = Integer.parseInt(
+                properties.getProperty(
+                        "asyncCountParallelism",
+                        Normal.EMPTY + (Runtime.getRuntime().availableProcessors() * 2)));
         asyncCountService = new ForkJoinPool(asyncCountParallelism, pool -> {
             final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
             worker.setName("pager-async-count-" + worker.getPoolIndex());

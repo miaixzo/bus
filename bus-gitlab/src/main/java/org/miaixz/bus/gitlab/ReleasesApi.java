@@ -107,7 +107,12 @@ public class ReleasesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Release getRelease(Object projectIdOrPath, String tagName) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "releases",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "releases",
                 urlEncode(tagName));
         return (response.readEntity(Release.class));
     }
@@ -145,7 +150,11 @@ public class ReleasesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Release createRelease(Object projectIdOrPath, ReleaseParams params) throws GitLabApiException {
-        Response response = post(Response.Status.CREATED, params, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                params,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "releases");
         return (response.readEntity(Release.class));
     }
@@ -169,7 +178,12 @@ public class ReleasesApi extends AbstractApi {
             throw new RuntimeException("params.tagName cannot be null or empty");
         }
 
-        Response response = put(Response.Status.OK, params, "projects", getProjectIdOrPath(projectIdOrPath), "releases",
+        Response response = put(
+                Response.Status.OK,
+                params,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "releases",
                 urlEncode(tagName));
         return (response.readEntity(Release.class));
     }
@@ -186,7 +200,12 @@ public class ReleasesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteRelease(Object projectIdOrPath, String tagName) throws GitLabApiException {
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "releases",
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "releases",
                 urlEncode(tagName));
     }
 

@@ -99,6 +99,7 @@ public class NonClock {
      * 单例
      */
     private static class InstanceHolder {
+
         public static final NonClock INSTANCE = new NonClock(1);
     }
 

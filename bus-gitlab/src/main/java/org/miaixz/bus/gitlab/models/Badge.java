@@ -113,6 +113,7 @@ public class Badge implements Serializable {
     }
 
     public enum BadgeKind {
+
         PROJECT, GROUP;
 
         private static JacksonJsonEnumHelper<BadgeKind> enumHelper = new JacksonJsonEnumHelper<>(BadgeKind.class);

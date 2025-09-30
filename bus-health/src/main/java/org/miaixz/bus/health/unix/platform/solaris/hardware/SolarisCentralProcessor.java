@@ -65,8 +65,14 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
     private static final String CPU_INFO = "cpu_info";
 
     private static CentralProcessor.ProcessorIdentifier queryProcessorId2(boolean cpu64bit) {
-        Object[] results = KstatKit.queryKstat2(KSTAT_SYSTEM_CPU + "0" + INFO, "vendor_id", "brand", "family", "model",
-                "stepping", "clock_MHz");
+        Object[] results = KstatKit.queryKstat2(
+                KSTAT_SYSTEM_CPU + "0" + INFO,
+                "vendor_id",
+                "brand",
+                "family",
+                "model",
+                "stepping",
+                "clock_MHz");
 
         String cpuVendor = results[0] == null ? Normal.EMPTY : (String) results[0];
         String cpuName = results[1] == null ? Normal.EMPTY : (String) results[1];
@@ -151,8 +157,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     private static long[][] queryProcessorCpuLoadTicks2(int processorCount) {
         long[][] ticks = new long[processorCount][CentralProcessor.TickType.values().length];
-        List<Object[]> results = KstatKit.queryKstat2List(KSTAT_SYSTEM_CPU, SYS, "cpu_ticks_idle", "cpu_ticks_kernel",
-                "cpu_ticks_user");
+        List<Object[]> results = KstatKit
+                .queryKstat2List(KSTAT_SYSTEM_CPU, SYS, "cpu_ticks_idle", "cpu_ticks_kernel", "cpu_ticks_user");
         int cpu = -1;
         for (Object[] result : results) {
             if (++cpu >= ticks.length) {
@@ -183,7 +189,10 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 flags.append(Symbol.C_SPACE).append(line.trim());
             }
         }
-        return createProcessorID(stepping, model, family,
+        return createProcessorID(
+                stepping,
+                model,
+                family,
                 Pattern.SPACES_PATTERN.split(flags.toString().toLowerCase(Locale.ROOT)));
     }
 
@@ -377,12 +386,12 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                     break;
                 }
                 if (kc.read(ksp)) {
-                    ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = KstatKit.dataLookupLong(ksp,
-                            "cpu_ticks_idle");
-                    ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = KstatKit.dataLookupLong(ksp,
-                            "cpu_ticks_kernel");
-                    ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = KstatKit.dataLookupLong(ksp,
-                            "cpu_ticks_user");
+                    ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = KstatKit
+                            .dataLookupLong(ksp, "cpu_ticks_idle");
+                    ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = KstatKit
+                            .dataLookupLong(ksp, "cpu_ticks_kernel");
+                    ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = KstatKit
+                            .dataLookupLong(ksp, "cpu_ticks_user");
                 }
             }
         }

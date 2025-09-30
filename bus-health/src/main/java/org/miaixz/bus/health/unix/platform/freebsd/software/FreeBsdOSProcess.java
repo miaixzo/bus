@@ -119,7 +119,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                 } else {
                     Logger.warn(
                             "Failed sysctl call for process arguments (kern.proc.args), process {} may not exist. Error code: {}",
-                            getProcessID(), Native.getLastError());
+                            getProcessID(),
+                            Native.getLastError());
                 }
             }
         }
@@ -169,7 +170,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                 } else {
                     Logger.warn(
                             "Failed sysctl call for process environment variables (kern.proc.env), process {} may not exist. Error code: {}",
-                            getProcessID(), Native.getLastError());
+                            getProcessID(),
+                            Native.getLastError());
                 }
             }
         }
@@ -391,27 +393,32 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private boolean updateAttributes(Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(FreeBsdOperatingSystem.PsKeywords.STATE).charAt(0)) {
-        case 'R':
-            this.state = State.RUNNING;
-            break;
-        case 'I':
-        case 'S':
-            this.state = State.SLEEPING;
-            break;
-        case 'D':
-        case 'L':
-        case 'U':
-            this.state = State.WAITING;
-            break;
-        case 'Z':
-            this.state = State.ZOMBIE;
-            break;
-        case 'T':
-            this.state = State.STOPPED;
-            break;
-        default:
-            this.state = State.OTHER;
-            break;
+            case 'R':
+                this.state = State.RUNNING;
+                break;
+
+            case 'I':
+            case 'S':
+                this.state = State.SLEEPING;
+                break;
+
+            case 'D':
+            case 'L':
+            case 'U':
+                this.state = State.WAITING;
+                break;
+
+            case 'Z':
+                this.state = State.ZOMBIE;
+                break;
+
+            case 'T':
+                this.state = State.STOPPED;
+                break;
+
+            default:
+                this.state = State.OTHER;
+                break;
         }
         this.parentProcessID = Parsing.parseIntOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.PPID), 0);
         this.user = psMap.get(FreeBsdOperatingSystem.PsKeywords.USER);
@@ -436,8 +443,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
         long nonVoluntaryContextSwitches = Parsing
                 .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NVCSW), 0L);
-        long voluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NIVCSW),
-                0L);
+        long voluntaryContextSwitches = Parsing
+                .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NIVCSW), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
         this.commandLineBackup = psMap.get(FreeBsdOperatingSystem.PsKeywords.ARGS);
         return true;

@@ -53,18 +53,18 @@ final class SolarisVirtualMemory extends AbstractVirtualMemory {
     private final SolarisGlobalMemory global;
 
     // Physical
-    private final Supplier<Pair<Long, Long>> availTotal = Memoizer.memoize(SystemPages::queryAvailableTotal,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> availTotal = Memoizer
+            .memoize(SystemPages::queryAvailableTotal, Memoizer.defaultExpiration());
 
     // Swap
-    private final Supplier<Pair<Long, Long>> usedTotal = Memoizer.memoize(SolarisVirtualMemory::querySwapInfo,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> usedTotal = Memoizer
+            .memoize(SolarisVirtualMemory::querySwapInfo, Memoizer.defaultExpiration());
 
-    private final Supplier<Long> pagesIn = Memoizer.memoize(SolarisVirtualMemory::queryPagesIn,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> pagesIn = Memoizer
+            .memoize(SolarisVirtualMemory::queryPagesIn, Memoizer.defaultExpiration());
 
-    private final Supplier<Long> pagesOut = Memoizer.memoize(SolarisVirtualMemory::queryPagesOut,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> pagesOut = Memoizer
+            .memoize(SolarisVirtualMemory::queryPagesOut, Memoizer.defaultExpiration());
 
     /**
      * Constructor for SolarisVirtualMemory.

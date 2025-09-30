@@ -75,7 +75,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, size_t.ZERO) == 0) {
                 ARGMAX = m.getInt(0);
             } else {
-                Logger.warn("Failed sysctl call for process arguments max size (kern.argmax). Error code: {}",
+                Logger.warn(
+                        "Failed sysctl call for process arguments max size (kern.argmax). Error code: {}",
                         Native.getLastError());
                 ARGMAX = 0;
             }
@@ -382,8 +383,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, procList.get(1).trim(),
-                    Symbol.C_SPACE);
+            Map<PsKeywords, String> psMap = Parsing
+                    .stringToEnumMap(PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
                 updateThreadCount();
@@ -412,27 +413,32 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private boolean updateAttributes(Map<PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(PsKeywords.STATE).charAt(0)) {
-        case 'R':
-            this.state = OSProcess.State.RUNNING;
-            break;
-        case 'I':
-        case 'S':
-            this.state = OSProcess.State.SLEEPING;
-            break;
-        case 'D':
-        case 'L':
-        case 'U':
-            this.state = OSProcess.State.WAITING;
-            break;
-        case 'Z':
-            this.state = OSProcess.State.ZOMBIE;
-            break;
-        case 'T':
-            this.state = OSProcess.State.STOPPED;
-            break;
-        default:
-            this.state = OSProcess.State.OTHER;
-            break;
+            case 'R':
+                this.state = OSProcess.State.RUNNING;
+                break;
+
+            case 'I':
+            case 'S':
+                this.state = OSProcess.State.SLEEPING;
+                break;
+
+            case 'D':
+            case 'L':
+            case 'U':
+                this.state = OSProcess.State.WAITING;
+                break;
+
+            case 'Z':
+                this.state = OSProcess.State.ZOMBIE;
+                break;
+
+            case 'T':
+                this.state = OSProcess.State.STOPPED;
+                break;
+
+            default:
+                this.state = OSProcess.State.OTHER;
+                break;
         }
         this.parentProcessID = Parsing.parseIntOrDefault(psMap.get(PsKeywords.PPID), 0);
         this.user = psMap.get(PsKeywords.USER);

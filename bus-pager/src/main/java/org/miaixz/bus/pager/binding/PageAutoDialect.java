@@ -296,7 +296,8 @@ public class PageAutoDialect {
             lock.lock();
             try {
                 if (!urlDialectMap.containsKey(dialectKey)) {
-                    urlDialectMap.put(dialectKey,
+                    urlDialectMap.put(
+                            dialectKey,
                             autoDialectDelegate.extractDialect(dialectKey, ms, dataSource, properties));
                 }
             } finally {

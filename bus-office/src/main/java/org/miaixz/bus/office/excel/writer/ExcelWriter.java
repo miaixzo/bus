@@ -503,17 +503,20 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     public ExcelWriter setHeaderOrFooter(final String text, final EnumValue.Align align, final boolean isFooter) {
         final HeaderFooter headerFooter = isFooter ? this.sheet.getFooter() : this.sheet.getHeader();
         switch (align) {
-        case LEFT:
-            headerFooter.setLeft(text);
-            break;
-        case RIGHT:
-            headerFooter.setRight(text);
-            break;
-        case CENTER:
-            headerFooter.setCenter(text);
-            break;
-        default:
-            break;
+            case LEFT:
+                headerFooter.setLeft(text);
+                break;
+
+            case RIGHT:
+                headerFooter.setRight(text);
+                break;
+
+            case CENTER:
+                headerFooter.setCenter(text);
+                break;
+
+            default:
+                break;
         }
         return this;
     }
@@ -527,7 +530,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @return this
      * @throws UnsupportedOperationException 如果sheet不是XSSFSheet
      */
-    public ExcelWriter addIgnoredErrors(final CellRangeAddress cellRangeAddress,
+    public ExcelWriter addIgnoredErrors(
+            final CellRangeAddress cellRangeAddress,
             final IgnoredErrorType... ignoredErrorTypes) throws UnsupportedOperationException {
         SheetKit.addIgnoredErrors(this.sheet, cellRangeAddress, ignoredErrorTypes);
         return this;
@@ -618,14 +622,17 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param isSetHeaderStyle 是否为合并后的单元格设置默认标题样式，只提取边框样式
      * @return this
      */
-    public ExcelWriter merge(final CellRangeAddress cellRangeAddress, final Object content,
+    public ExcelWriter merge(
+            final CellRangeAddress cellRangeAddress,
+            final Object content,
             final boolean isSetHeaderStyle) {
         checkClosed();
 
         CellStyle style = null;
         if (null != this.styleSet) {
             style = styleSet.getStyleFor(
-                    new CellReference(cellRangeAddress.getFirstRow(), cellRangeAddress.getFirstColumn()), content,
+                    new CellReference(cellRangeAddress.getFirstRow(), cellRangeAddress.getFirstColumn()),
+                    content,
                     isSetHeaderStyle);
         }
 
@@ -814,7 +821,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param clientAnchor 图片的位置和大小信息
      * @return this
      */
-    public ExcelWriter writeImg(final byte[] pictureData, final ExcelPictureType imgType,
+    public ExcelWriter writeImg(
+            final byte[] pictureData,
+            final ExcelPictureType imgType,
             final SimpleAnchor clientAnchor) {
         ExcelDrawing.drawingPicture(this.sheet, pictureData, imgType, clientAnchor);
         return this;
@@ -839,9 +848,13 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param lineColor    线条颜色
      * @return this
      */
-    public ExcelWriter writeLineShape(final SimpleAnchor clientAnchor, final LineStyle lineStyle, final int lineWidth,
+    public ExcelWriter writeLineShape(
+            final SimpleAnchor clientAnchor,
+            final LineStyle lineStyle,
+            final int lineWidth,
             final Color lineColor) {
-        return writeSimpleShape(clientAnchor,
+        return writeSimpleShape(
+                clientAnchor,
                 ShapeConfig.of().setLineStyle(lineStyle).setLineWidth(lineWidth).setLineColor(lineColor));
     }
 
@@ -941,7 +954,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param isWriteKeyAsHead 是否将Map的Key作为表头输出，如果为True第一行为表头，紧接着为values
      * @return this
      */
-    public ExcelWriter writeCol(final Map<?, ? extends Iterable<?>> colMap, int startColIndex,
+    public ExcelWriter writeCol(
+            final Map<?, ? extends Iterable<?>> colMap,
+            int startColIndex,
             final boolean isWriteKeyAsHead) {
         for (final Object k : colMap.keySet()) {
             final Iterable<?> v = colMap.get(k);
@@ -974,7 +989,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param isResetRowIndex 如果为true，写入完毕后Row index 将会重置为写入之前的未知，如果为false，写入完毕后Row index将会在写完的数据下方
      * @return this
      */
-    public ExcelWriter writeCol(final Object headerVal, final int colIndex, final Iterable<?> colData,
+    public ExcelWriter writeCol(
+            final Object headerVal,
+            final int colIndex,
+            final Iterable<?> colData,
             final boolean isResetRowIndex) {
         checkClosed();
         int currentRowIndex = getCurrentRow();

@@ -38,44 +38,62 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SOPClassPackingSequence:
-            return "SOPClassPackingSequence";
-        case PrivateTag.PackingVersion:
-            return "PackingVersion";
-        case PrivateTag.PackingOriginator:
-            return "PackingOriginator";
-        case PrivateTag.OriginalSOPClassUID:
-            return "OriginalSOPClassUID";
-        case PrivateTag.OriginalStudyInstanceUID:
-            return "OriginalStudyInstanceUID";
-        case PrivateTag.OriginalSeriesInstanceUID:
-            return "OriginalSeriesInstanceUID";
-        case PrivateTag.OriginalSOPInstanceUID:
-            return "OriginalSOPInstanceUID";
-        case PrivateTag.OriginalTransferSyntaxUID:
-            return "OriginalTransferSyntaxUID";
-        case PrivateTag.AttributesToSetToZeroLength:
-            return "AttributesToSetToZeroLength";
-        case PrivateTag.AttributesToRemove:
-            return "AttributesToRemove";
-        case PrivateTag.OriginalRows:
-            return "OriginalRows";
-        case PrivateTag.OriginalColumns:
-            return "OriginalColumns";
-        case PrivateTag.OriginalImageType:
-            return "OriginalImageType";
-        case PrivateTag.OriginalModality:
-            return "OriginalModality";
-        case PrivateTag.SequenceOfOriginalStreamChunks:
-            return "SequenceOfOriginalStreamChunks";
-        case PrivateTag.StartTagOfAStreamChunk:
-            return "StartTagOfAStreamChunk";
-        case PrivateTag.EndTagOfAStreamChunk:
-            return "EndTagOfAStreamChunk";
-        case PrivateTag.StreamChunkIsAPayload:
-            return "StreamChunkIsAPayload";
-        case PrivateTag.StreamChunk:
-            return "StreamChunk";
+            case PrivateTag.SOPClassPackingSequence:
+                return "SOPClassPackingSequence";
+
+            case PrivateTag.PackingVersion:
+                return "PackingVersion";
+
+            case PrivateTag.PackingOriginator:
+                return "PackingOriginator";
+
+            case PrivateTag.OriginalSOPClassUID:
+                return "OriginalSOPClassUID";
+
+            case PrivateTag.OriginalStudyInstanceUID:
+                return "OriginalStudyInstanceUID";
+
+            case PrivateTag.OriginalSeriesInstanceUID:
+                return "OriginalSeriesInstanceUID";
+
+            case PrivateTag.OriginalSOPInstanceUID:
+                return "OriginalSOPInstanceUID";
+
+            case PrivateTag.OriginalTransferSyntaxUID:
+                return "OriginalTransferSyntaxUID";
+
+            case PrivateTag.AttributesToSetToZeroLength:
+                return "AttributesToSetToZeroLength";
+
+            case PrivateTag.AttributesToRemove:
+                return "AttributesToRemove";
+
+            case PrivateTag.OriginalRows:
+                return "OriginalRows";
+
+            case PrivateTag.OriginalColumns:
+                return "OriginalColumns";
+
+            case PrivateTag.OriginalImageType:
+                return "OriginalImageType";
+
+            case PrivateTag.OriginalModality:
+                return "OriginalModality";
+
+            case PrivateTag.SequenceOfOriginalStreamChunks:
+                return "SequenceOfOriginalStreamChunks";
+
+            case PrivateTag.StartTagOfAStreamChunk:
+                return "StartTagOfAStreamChunk";
+
+            case PrivateTag.EndTagOfAStreamChunk:
+                return "EndTagOfAStreamChunk";
+
+            case PrivateTag.StreamChunkIsAPayload:
+                return "StreamChunkIsAPayload";
+
+            case PrivateTag.StreamChunk:
+                return "StreamChunk";
         }
         return "";
     }

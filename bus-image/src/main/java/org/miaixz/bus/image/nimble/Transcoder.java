@@ -94,8 +94,8 @@ public class Transcoder {
                 if (rawImg) {
                     ImageRendering.getRawRenderedImage(img, reader.getImageDescriptor(), params.getReadParam(), i);
                 } else {
-                    img = ImageRendering.getDefaultRenderedImage(img, reader.getImageDescriptor(),
-                            params.getReadParam(), i);
+                    img = ImageRendering
+                            .getDefaultRenderedImage(img, reader.getImageDescriptor(), params.getReadParam(), i);
                 }
                 Path outPath = writeImage(img, getOutputPath(srcPath, dstPath), format, map, i + 1, indexSize);
                 outFiles.add(outPath);
@@ -169,8 +169,8 @@ public class Transcoder {
             if (ImageOutputData.isNativeSyntax(dstTsuid)) {
                 imgData.writRawImageData(dos, dataSet);
             } else {
-                int[] jpegWriteParams = imgData.adaptTagsToCompressedImage(dataSet, imgData.getFirstImage().get(), desc,
-                        writeParams);
+                int[] jpegWriteParams = imgData
+                        .adaptTagsToCompressedImage(dataSet, imgData.getFirstImage().get(), desc, writeParams);
                 imgData.writeCompressedImageData(dos, dataSet, jpegWriteParams);
             }
         } catch (Exception e) {
@@ -234,8 +234,8 @@ public class Transcoder {
             return path;
         }
         if (suffix.endsWith(inExt)) {
-            return FileSystems.getDefault().getPath(path.getParent().toString(),
-                    fname.substring(0, fname.length() - inExt.length()) + outExt);
+            return FileSystems.getDefault()
+                    .getPath(path.getParent().toString(), fname.substring(0, fname.length() - inExt.length()) + outExt);
         }
         return path.resolveSibling(fname + outExt);
     }
@@ -291,6 +291,7 @@ public class Transcoder {
     }
 
     public enum Format {
+
         JPEG(".jpg", false, false, false, false), PNG(".png", true, false, false, false),
         TIF(".tif", true, false, true, true), JP2(".jp2", true, false, false, false),
         PNM(".pnm", true, false, false, false), BMP(".bmp", false, false, false, false),

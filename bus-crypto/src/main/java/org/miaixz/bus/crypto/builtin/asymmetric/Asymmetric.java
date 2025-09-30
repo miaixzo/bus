@@ -215,16 +215,17 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
      */
     protected Key getKeyByType(final KeyType type) {
         switch (type) {
-        case PrivateKey:
-            if (null == this.privateKey) {
-                throw new NullPointerException("Private data must not null when use it !");
-            }
-            return this.privateKey;
-        case PublicKey:
-            if (null == this.publicKey) {
-                throw new NullPointerException("Public data must not null when use it !");
-            }
-            return this.publicKey;
+            case PrivateKey:
+                if (null == this.privateKey) {
+                    throw new NullPointerException("Private data must not null when use it !");
+                }
+                return this.privateKey;
+
+            case PublicKey:
+                if (null == this.publicKey) {
+                    throw new NullPointerException("Public data must not null when use it !");
+                }
+                return this.publicKey;
         }
         throw new CryptoException("Unsupported data type: " + type);
     }

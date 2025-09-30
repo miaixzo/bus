@@ -53,6 +53,7 @@ public interface EventSource {
      * 事件源工厂接口，用于创建新的 {@link EventSource} 实例。
      */
     interface Factory {
+
         /**
          * 创建并立即返回一个新的事件源。创建事件源会启动一个异步过程来连接服务器。 连接成功或失败时，将通知监听器。调用者必须在不再使用返回的事件源时取消它。
          *

@@ -196,42 +196,53 @@ public class SpecificCharacterSet {
     public static boolean trimISO2022(String[] codes) {
         if (codes != null && codes.length == 1 && codes[0].startsWith("ISO 2022")) {
             switch (codes[0]) {
-            case "ISO 2022 IR 6":
-                codes[0] = Normal.EMPTY;
-                return true;
-            case "ISO 2022 IR 100":
-                codes[0] = "ISO_IR 100";
-                return true;
-            case "ISO 2022 IR 101":
-                codes[0] = "ISO_IR 101";
-                return true;
-            case "ISO 2022 IR 109":
-                codes[0] = "ISO_IR 109";
-                return true;
-            case "ISO 2022 IR 110":
-                codes[0] = "ISO_IR 110";
-                return true;
-            case "ISO 2022 IR 144":
-                codes[0] = "ISO_IR 144";
-                return true;
-            case "ISO 2022 IR 127":
-                codes[0] = "ISO_IR 127";
-                return true;
-            case "ISO 2022 IR 126":
-                codes[0] = "ISO_IR 126";
-                return true;
-            case "ISO 2022 IR 138":
-                codes[0] = "ISO_IR 138";
-                return true;
-            case "ISO 2022 IR 148":
-                codes[0] = "ISO_IR 148";
-                return true;
-            case "ISO 2022 IR 13":
-                codes[0] = "ISO_IR 13";
-                return true;
-            case "ISO 2022 IR 166":
-                codes[0] = "ISO_IR 166";
-                return true;
+                case "ISO 2022 IR 6":
+                    codes[0] = Normal.EMPTY;
+                    return true;
+
+                case "ISO 2022 IR 100":
+                    codes[0] = "ISO_IR 100";
+                    return true;
+
+                case "ISO 2022 IR 101":
+                    codes[0] = "ISO_IR 101";
+                    return true;
+
+                case "ISO 2022 IR 109":
+                    codes[0] = "ISO_IR 109";
+                    return true;
+
+                case "ISO 2022 IR 110":
+                    codes[0] = "ISO_IR 110";
+                    return true;
+
+                case "ISO 2022 IR 144":
+                    codes[0] = "ISO_IR 144";
+                    return true;
+
+                case "ISO 2022 IR 127":
+                    codes[0] = "ISO_IR 127";
+                    return true;
+
+                case "ISO 2022 IR 126":
+                    codes[0] = "ISO_IR 126";
+                    return true;
+
+                case "ISO 2022 IR 138":
+                    codes[0] = "ISO_IR 138";
+                    return true;
+
+                case "ISO 2022 IR 148":
+                    codes[0] = "ISO_IR 148";
+                    return true;
+
+                case "ISO 2022 IR 13":
+                    codes[0] = "ISO_IR 13";
+                    return true;
+
+                case "ISO 2022 IR 166":
+                    codes[0] = "ISO_IR 166";
+                    return true;
             }
         }
         return false;
@@ -249,29 +260,33 @@ public class SpecificCharacterSet {
             String code = codes[i];
             if (code != null && !code.isEmpty() && !code.startsWith("ISO 2022")) {
                 switch (code) {
-                case "ISO_IR 100":
-                case "ISO_IR 101":
-                case "ISO_IR 109":
-                case "ISO_IR 110":
-                case "ISO_IR 144":
-                case "ISO_IR 127":
-                case "ISO_IR 126":
-                case "ISO_IR 138":
-                case "ISO_IR 148":
-                case "ISO_IR 13":
-                case "ISO_IR 166":
-                    if (results == codes)
-                        results = codes.clone();
-                    results[i] = "ISO 2022 " + code.substring(4);
-                    continue;
+                    case "ISO_IR 100":
+                    case "ISO_IR 101":
+                    case "ISO_IR 109":
+                    case "ISO_IR 110":
+                    case "ISO_IR 144":
+                    case "ISO_IR 127":
+                    case "ISO_IR 126":
+                    case "ISO_IR 138":
+                    case "ISO_IR 148":
+                    case "ISO_IR 13":
+                    case "ISO_IR 166":
+                        if (results == codes)
+                            results = codes.clone();
+                        results[i] = "ISO 2022 " + code.substring(4);
+                        continue;
                 }
-                Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+                Logger.info(
+                        "Invalid Specific Character Set: [{}] - treat as [{}]",
+                        Builder.concat(codes, '\\'),
                         Builder.maskNull(codes[0], ""));
                 return new String[] { codes[0] };
             }
         }
         if (codes != results) {
-            Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+            Logger.info(
+                    "Invalid Specific Character Set: [{}] - treat as [{}]",
+                    Builder.concat(codes, '\\'),
                     Builder.concat(results, '\\'));
         }
         return ensureFirstContainsASCII(results);
@@ -291,7 +306,9 @@ public class SpecificCharacterSet {
                 String[] clone = codes.clone();
                 clone[0] = codes[i];
                 clone[i] = codes[0];
-                Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+                Logger.info(
+                        "Invalid Specific Character Set: [{}] - treat as [{}]",
+                        Builder.concat(codes, '\\'),
                         Builder.concat(clone, '\\'));
                 return clone;
             }
@@ -299,7 +316,9 @@ public class SpecificCharacterSet {
         String[] withASCII = new String[1 + codes.length];
         withASCII[0] = "";
         System.arraycopy(codes, 0, withASCII, 1, codes.length);
-        Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+        Logger.info(
+                "Invalid Specific Character Set: [{}] - treat as [{}]",
+                Builder.concat(codes, '\\'),
                 Builder.concat(withASCII, '\\'));
         return withASCII;
     }
@@ -418,6 +437,7 @@ public class SpecificCharacterSet {
      * 编解码器枚举，定义了DICOM中支持的各种字符集
      */
     private enum Codec {
+
         /** ISO 646 (ASCII)字符集 */
         ISO_646(true, 0x2842, 0, 1),
 
@@ -450,6 +470,7 @@ public class SpecificCharacterSet {
 
         /** JIS X 0201字符集 */
         JIS_X_201(true, 0x284a, 0x2949, 1) {
+
             @Override
             public String toText(String s) {
                 return s.replace(Symbol.C_BACKSLASH, Symbol.C_CNY);
@@ -573,55 +594,72 @@ public class SpecificCharacterSet {
          */
         private static Codec forCode(String code, boolean lenient, Codec defCodec) {
             switch (code != null ? code : Normal.EMPTY) {
-            case Normal.EMPTY:
-            case "ISO 2022 IR 6":
-                return defCodec;
-            case "ISO_IR 100":
-            case "ISO 2022 IR 100":
-                return Codec.ISO_8859_1;
-            case "ISO_IR 101":
-            case "ISO 2022 IR 101":
-                return Codec.ISO_8859_2;
-            case "ISO_IR 109":
-            case "ISO 2022 IR 109":
-                return Codec.ISO_8859_3;
-            case "ISO_IR 110":
-            case "ISO 2022 IR 110":
-                return Codec.ISO_8859_4;
-            case "ISO_IR 144":
-            case "ISO 2022 IR 144":
-                return Codec.ISO_8859_5;
-            case "ISO_IR 127":
-            case "ISO 2022 IR 127":
-                return Codec.ISO_8859_6;
-            case "ISO_IR 126":
-            case "ISO 2022 IR 126":
-                return Codec.ISO_8859_7;
-            case "ISO_IR 138":
-            case "ISO 2022 IR 138":
-                return Codec.ISO_8859_8;
-            case "ISO_IR 148":
-            case "ISO 2022 IR 148":
-                return Codec.ISO_8859_9;
-            case "ISO_IR 13":
-            case "ISO 2022 IR 13":
-                return Codec.JIS_X_201;
-            case "ISO_IR 166":
-            case "ISO 2022 IR 166":
-                return Codec.TIS_620;
-            case "ISO 2022 IR 87":
-                return Codec.JIS_X_208;
-            case "ISO 2022 IR 159":
-                return Codec.JIS_X_212;
-            case "ISO 2022 IR 149":
-                return Codec.KS_X_1001;
-            case "ISO 2022 IR 58":
-                return Codec.GB2312;
-            case "ISO_IR 192":
-                return Codec.UTF_8;
-            case "GB18030":
-            case "GBK":
-                return Codec.GB18030;
+                case Normal.EMPTY:
+                case "ISO 2022 IR 6":
+                    return defCodec;
+
+                case "ISO_IR 100":
+                case "ISO 2022 IR 100":
+                    return Codec.ISO_8859_1;
+
+                case "ISO_IR 101":
+                case "ISO 2022 IR 101":
+                    return Codec.ISO_8859_2;
+
+                case "ISO_IR 109":
+                case "ISO 2022 IR 109":
+                    return Codec.ISO_8859_3;
+
+                case "ISO_IR 110":
+                case "ISO 2022 IR 110":
+                    return Codec.ISO_8859_4;
+
+                case "ISO_IR 144":
+                case "ISO 2022 IR 144":
+                    return Codec.ISO_8859_5;
+
+                case "ISO_IR 127":
+                case "ISO 2022 IR 127":
+                    return Codec.ISO_8859_6;
+
+                case "ISO_IR 126":
+                case "ISO 2022 IR 126":
+                    return Codec.ISO_8859_7;
+
+                case "ISO_IR 138":
+                case "ISO 2022 IR 138":
+                    return Codec.ISO_8859_8;
+
+                case "ISO_IR 148":
+                case "ISO 2022 IR 148":
+                    return Codec.ISO_8859_9;
+
+                case "ISO_IR 13":
+                case "ISO 2022 IR 13":
+                    return Codec.JIS_X_201;
+
+                case "ISO_IR 166":
+                case "ISO 2022 IR 166":
+                    return Codec.TIS_620;
+
+                case "ISO 2022 IR 87":
+                    return Codec.JIS_X_208;
+
+                case "ISO 2022 IR 159":
+                    return Codec.JIS_X_212;
+
+                case "ISO 2022 IR 149":
+                    return Codec.KS_X_1001;
+
+                case "ISO 2022 IR 58":
+                    return Codec.GB2312;
+
+                case "ISO_IR 192":
+                    return Codec.UTF_8;
+
+                case "GB18030":
+                case "GBK":
+                    return Codec.GB18030;
             }
             if (!lenient)
                 throw new IllegalArgumentException("No such Specific Character Set Code: " + code);
@@ -739,6 +777,7 @@ public class SpecificCharacterSet {
      * 编码器类，用于将字符编码为字节
      */
     private static final class Encoder {
+
         /** 编解码器 */
         final Codec codec;
 
@@ -831,6 +870,7 @@ public class SpecificCharacterSet {
      * ISO 2022字符集类，支持在同一文本中使用多种字符集
      */
     private static final class ISO2022 extends SpecificCharacterSet {
+
         /**
          * 构造一个ISO 2022字符集
          *
@@ -954,71 +994,89 @@ public class SpecificCharacterSet {
                     int esc1 = cur++;
                     int esc2 = cur++;
                     switch (((b[esc1] & 255) << 8) + (b[esc2] & 255)) {
-                    case 0x2428:
-                        if (cur < b.length && b[cur++] == 0x44) {
-                            codec[0] = Codec.JIS_X_212;
-                        } else { // 将无效的ESC序列解码为字符
-                            sb.append(codec[0].decode(b, esc0, cur - esc0));
-                        }
-                        break;
-                    case 0x2429:
-                        switch (cur < b.length ? b[cur++] : -1) {
-                        case 0x41:
-                            switchCodec(codec, 1, Codec.GB2312);
+                        case 0x2428:
+                            if (cur < b.length && b[cur++] == 0x44) {
+                                codec[0] = Codec.JIS_X_212;
+                            } else { // 将无效的ESC序列解码为字符
+                                sb.append(codec[0].decode(b, esc0, cur - esc0));
+                            }
                             break;
-                        case 0x43:
-                            switchCodec(codec, 1, Codec.KS_X_1001);
+
+                        case 0x2429:
+                            switch (cur < b.length ? b[cur++] : -1) {
+                                case 0x41:
+                                    switchCodec(codec, 1, Codec.GB2312);
+                                    break;
+
+                                case 0x43:
+                                    switchCodec(codec, 1, Codec.KS_X_1001);
+                                    break;
+
+                                default: // 将无效的ESC序列解码为字符
+                                    sb.append(codec[0].decode(b, esc0, cur - esc0));
+                            }
                             break;
+
+                        case 0x2442:
+                            codec[0] = Codec.JIS_X_208;
+                            break;
+
+                        case 0x2842:
+                            switchCodec(codec, 0, Codec.ISO_646);
+                            break;
+
+                        case 0x284a:
+                            codec[0] = Codec.JIS_X_201;
+                            if (codec[1].getEscSeq1() == 0)
+                                codec[1] = codec[0];
+                            break;
+
+                        case 0x2949:
+                            codec[1] = Codec.JIS_X_201;
+                            break;
+
+                        case 0x2d41:
+                            switchCodec(codec, 1, Codec.ISO_8859_1);
+                            break;
+
+                        case 0x2d42:
+                            switchCodec(codec, 1, Codec.ISO_8859_2);
+                            break;
+
+                        case 0x2d43:
+                            switchCodec(codec, 1, Codec.ISO_8859_3);
+                            break;
+
+                        case 0x2d44:
+                            switchCodec(codec, 1, Codec.ISO_8859_4);
+                            break;
+
+                        case 0x2d46:
+                            switchCodec(codec, 1, Codec.ISO_8859_7);
+                            break;
+
+                        case 0x2d47:
+                            switchCodec(codec, 1, Codec.ISO_8859_6);
+                            break;
+
+                        case 0x2d48:
+                            switchCodec(codec, 1, Codec.ISO_8859_8);
+                            break;
+
+                        case 0x2d4c:
+                            switchCodec(codec, 1, Codec.ISO_8859_5);
+                            break;
+
+                        case 0x2d4d:
+                            switchCodec(codec, 1, Codec.ISO_8859_9);
+                            break;
+
+                        case 0x2d54:
+                            switchCodec(codec, 1, Codec.TIS_620);
+                            break;
+
                         default: // 将无效的ESC序列解码为字符
                             sb.append(codec[0].decode(b, esc0, cur - esc0));
-                        }
-                        break;
-                    case 0x2442:
-                        codec[0] = Codec.JIS_X_208;
-                        break;
-                    case 0x2842:
-                        switchCodec(codec, 0, Codec.ISO_646);
-                        break;
-                    case 0x284a:
-                        codec[0] = Codec.JIS_X_201;
-                        if (codec[1].getEscSeq1() == 0)
-                            codec[1] = codec[0];
-                        break;
-                    case 0x2949:
-                        codec[1] = Codec.JIS_X_201;
-                        break;
-                    case 0x2d41:
-                        switchCodec(codec, 1, Codec.ISO_8859_1);
-                        break;
-                    case 0x2d42:
-                        switchCodec(codec, 1, Codec.ISO_8859_2);
-                        break;
-                    case 0x2d43:
-                        switchCodec(codec, 1, Codec.ISO_8859_3);
-                        break;
-                    case 0x2d44:
-                        switchCodec(codec, 1, Codec.ISO_8859_4);
-                        break;
-                    case 0x2d46:
-                        switchCodec(codec, 1, Codec.ISO_8859_7);
-                        break;
-                    case 0x2d47:
-                        switchCodec(codec, 1, Codec.ISO_8859_6);
-                        break;
-                    case 0x2d48:
-                        switchCodec(codec, 1, Codec.ISO_8859_8);
-                        break;
-                    case 0x2d4c:
-                        switchCodec(codec, 1, Codec.ISO_8859_5);
-                        break;
-                    case 0x2d4d:
-                        switchCodec(codec, 1, Codec.ISO_8859_9);
-                        break;
-                    case 0x2d54:
-                        switchCodec(codec, 1, Codec.TIS_620);
-                        break;
-                    default: // 将无效的ESC序列解码为字符
-                        sb.append(codec[0].decode(b, esc0, cur - esc0));
                     }
                     off = cur;
                 } else {

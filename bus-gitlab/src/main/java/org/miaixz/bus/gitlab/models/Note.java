@@ -44,6 +44,7 @@ public class Note implements Serializable {
 
     /** Enum to use for ordering the results. */
     public static enum OrderBy {
+
         CREATED_AT, UPDATED_AT;
 
         private static JacksonJsonEnumHelper<OrderBy> enumHelper = new JacksonJsonEnumHelper<>(OrderBy.class);
@@ -68,6 +69,7 @@ public class Note implements Serializable {
     // ("Merge request").
     // Once they fix the bug, the notableType field can be changed from String to NotableType.
     public static enum NoteableType {
+
         COMMIT, EPIC, ISSUE, MERGE_REQUEST, SNIPPET;
 
         private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
@@ -90,6 +92,7 @@ public class Note implements Serializable {
     }
 
     public static enum Type {
+
         DISCUSSION_NOTE, DIFF_NOTE;
 
         private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class, true, true);

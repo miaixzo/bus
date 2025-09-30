@@ -25,30 +25,52 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.core.center.map.multiple;
+
+import java.io.Serial;
+import java.util.*;
+import java.util.function.Supplier;
+
 /**
- * 多参数类型的Map实现，包括集合类型值的MultiValueMap和Table
- * <ul>
- * <li>MultiValueMap：一个键对应多个值的集合的实现，类似于树的结构。</li>
- * <li>Table：使用两个键映射到一个值，类似于表格结构。</li>
- * </ul>
+ * 值作为集合List的Map实现，通过调用putValue可以在相同key时加入多个值，多个值用集合表示
  *
- * <pre>
- *                   MultiValueMap
- *                         |
- *                   AbstractCollValueMap
- *                         ||
- *   [CollectionValueMap, SetValueMap, ListValueMap]
- * </pre>
- * 
- * <pre>
- *                       Table
- *                         |
- *                      AbstractTable
- *                         ||
- *                    [RowKeyTable]
- * </pre>
- *
+ * @param <K> 键类型
+ * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.core.center.map.multi;
+public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
+
+    @Serial
+    private static final long serialVersionUID = 2852277598332L;
+
+    /**
+     * 基于{@code mapFactory}创建一个值为{@link List}的多值映射集合
+     *
+     * @param mapFactory 创建集合的工厂反方
+     */
+    public ListValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
+        super(mapFactory);
+    }
+
+    /**
+     * 基于指定Map创建一个值为{@link List}的多值映射集合
+     *
+     * @param map 提供数据的原始集合
+     */
+    public ListValueMap(final Map<K, Collection<V>> map) {
+        super(map);
+    }
+
+    /**
+     * 基于{@link HashMap}创建一个值为{@link List}的多值映射集合
+     */
+    public ListValueMap() {
+    }
+
+    @Override
+    protected List<V> createCollection() {
+        return new ArrayList<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
+    }
+
+}

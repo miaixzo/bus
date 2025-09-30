@@ -54,11 +54,12 @@ public class PrivateElementDictionary extends ElementDictionary {
         tag &= tmp == 0x60000000 || tmp == 0x70000000 ? 0xFFE0FFFF : 0xFFFF00FF;
         switch (tag) {
 
-        case PrivateTag.Box:
-        case PrivateTag.ArrowEnd:
-            return VR.IS;
-        case PrivateTag.TextAnnotation:
-            return VR.ST;
+            case PrivateTag.Box:
+            case PrivateTag.ArrowEnd:
+                return VR.IS;
+
+            case PrivateTag.TextAnnotation:
+                return VR.ST;
         }
         return VR.UN;
     }

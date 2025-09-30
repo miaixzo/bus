@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>8.3.0</version>
+    <version>8.3.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.0</bus.version>
-        <lombok.version>1.18.38</lombok.version>
-        <spring.boot.version>3.5.5</spring.boot.version>
+        <bus.version>8.3.1</bus.version>
+        <lombok.version>1.18.42</lombok.version>
+        <spring.boot.version>3.5.6</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <aspectj.version>1.9.24</aspectj.version>
@@ -95,8 +95,8 @@
         <guice.version>7.0.0</guice.version>
         <mybatis.version>3.5.19</mybatis.version>
         <mybatis.spring.version>3.0.5</mybatis.spring.version>
-        <fastjson.version>2.0.58</fastjson.version>
-        <gson.version>2.13.1</gson.version>
+        <fastjson.version>2.0.59</fastjson.version>
+        <gson.version>2.13.2</gson.version>
         <dubbo.version>3.3.5</dubbo.version>
         <elastic.version>8.19.0</elastic.version>
         <mongo.version>5.5.1</mongo.version>
@@ -495,7 +495,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.9.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -505,7 +505,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.46.1</version>
+                <version>3.0.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

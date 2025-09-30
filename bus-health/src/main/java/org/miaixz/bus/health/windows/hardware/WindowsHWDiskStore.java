@@ -104,7 +104,10 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             WmiResult<DiskDriveProperty> vals = Win32DiskDrive.queryDiskDrive(h);
             for (int i = 0; i < vals.getResultCount(); i++) {
                 WindowsHWDiskStore ds = new WindowsHWDiskStore(WmiKit.getString(vals, DiskDriveProperty.NAME, i),
-                        String.format(Locale.ROOT, "%s %s", WmiKit.getString(vals, DiskDriveProperty.MODEL, i),
+                        String.format(
+                                Locale.ROOT,
+                                "%s %s",
+                                WmiKit.getString(vals, DiskDriveProperty.MODEL, i),
                                 WmiKit.getString(vals, DiskDriveProperty.MANUFACTURER, i)).trim(),
                         // Most vendors store serial # as a hex string; convert
                         Parsing.hexStringToString(WmiKit.getString(vals, DiskDriveProperty.SERIALNUMBER, i)),
@@ -134,8 +137,9 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                         }
                     }
                 }
-                ds.partitionList = Collections.unmodifiableList(partitions.stream()
-                        .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
+                ds.partitionList = Collections.unmodifiableList(
+                        partitions.stream().sorted(Comparator.comparing(HWPartition::getName))
+                                .collect(Collectors.toList()));
                 // Add to list
                 result.add(ds);
             }
@@ -357,6 +361,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * Maps to store read/write bytes per drive index
      */
     private static final class DiskStats {
+
         private final Map<String, Long> readMap = new HashMap<>();
         private final Map<String, Long> readByteMap = new HashMap<>();
         private final Map<String, Long> writeMap = new HashMap<>();
@@ -370,6 +375,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * Maps for the partition structure
      */
     private static final class PartitionMaps {
+
         private final Map<String, List<String>> driveToPartitionMap = new HashMap<>();
         private final Map<String, List<Pair<String, Long>>> partitionToLogicalDriveMap = new HashMap<>();
         private final Map<String, List<HWPartition>> partitionMap = new HashMap<>();

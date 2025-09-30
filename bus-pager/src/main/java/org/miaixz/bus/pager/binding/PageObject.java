@@ -165,7 +165,9 @@ public abstract class PageObject {
      * @param required     是否必须
      * @return 结果
      */
-    protected static Object getParamValue(org.apache.ibatis.reflection.MetaObject paramsObject, String paramName,
+    protected static Object getParamValue(
+            org.apache.ibatis.reflection.MetaObject paramsObject,
+            String paramName,
             boolean required) {
         Object value = null;
         if (paramsObject.hasGetter(PARAMS.get(paramName))) {

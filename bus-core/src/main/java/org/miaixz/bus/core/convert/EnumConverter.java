@@ -130,7 +130,8 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
      * @return 转换方法map，key为方法参数类型，value为方法
      */
     private static Map<Class<?>, Method> getMethodMap(final Class<?> enumClass) {
-        return VALUE_OF_METHOD_CACHE.computeIfAbsent(enumClass,
+        return VALUE_OF_METHOD_CACHE.computeIfAbsent(
+                enumClass,
                 (key) -> Arrays.stream(enumClass.getMethods()).filter(ModifierKit::isStatic)
                         .filter(m -> m.getReturnType() == enumClass).filter(m -> m.getParameterCount() == 1)
                         .filter(m -> !"valueOf".equals(m.getName()))

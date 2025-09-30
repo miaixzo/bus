@@ -38,24 +38,32 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.MaskState:
-            return "MaskState";
-        case PrivateTag.Annotations:
-            return "Annotations";
-        case PrivateTag.Font:
-            return "Font";
-        case PrivateTag.FontSize:
-            return "FontSize";
-        case PrivateTag.FontRelativeSize:
-            return "FontRelativeSize";
-        case PrivateTag.Overlay:
-            return "Overlay";
-        case PrivateTag.PixelRep:
-            return "PixelRep";
-        case PrivateTag.AnnotationLevel:
-            return "AnnotationLevel";
-        case PrivateTag.ShowCaliper:
-            return "ShowCaliper";
+            case PrivateTag.MaskState:
+                return "MaskState";
+
+            case PrivateTag.Annotations:
+                return "Annotations";
+
+            case PrivateTag.Font:
+                return "Font";
+
+            case PrivateTag.FontSize:
+                return "FontSize";
+
+            case PrivateTag.FontRelativeSize:
+                return "FontRelativeSize";
+
+            case PrivateTag.Overlay:
+                return "Overlay";
+
+            case PrivateTag.PixelRep:
+                return "PixelRep";
+
+            case PrivateTag.AnnotationLevel:
+                return "AnnotationLevel";
+
+            case PrivateTag.ShowCaliper:
+                return "ShowCaliper";
         }
         return "";
     }

@@ -38,26 +38,35 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.Rotation:
-            return "Rotation";
-        case PrivateTag.WindowWidth:
-            return "WindowWidth";
-        case PrivateTag.WindowCentre:
-            return "WindowCentre";
-        case PrivateTag.Invert:
-            return "Invert";
-        case PrivateTag.HasTabstop:
-            return "HasTabstop";
-        case PrivateTag.SmoothRotation:
-            return "SmoothRotation";
-        case PrivateTag._0029_xx10_:
-            return "_0029_xx10_";
-        case PrivateTag._0029_xx11_:
-            return "_0029_xx11_";
-        case PrivateTag._0029_xx12_:
-            return "_0029_xx12_";
-        case PrivateTag._0029_xx13_:
-            return "_0029_xx13_";
+            case PrivateTag.Rotation:
+                return "Rotation";
+
+            case PrivateTag.WindowWidth:
+                return "WindowWidth";
+
+            case PrivateTag.WindowCentre:
+                return "WindowCentre";
+
+            case PrivateTag.Invert:
+                return "Invert";
+
+            case PrivateTag.HasTabstop:
+                return "HasTabstop";
+
+            case PrivateTag.SmoothRotation:
+                return "SmoothRotation";
+
+            case PrivateTag._0029_xx10_:
+                return "_0029_xx10_";
+
+            case PrivateTag._0029_xx11_:
+                return "_0029_xx11_";
+
+            case PrivateTag._0029_xx12_:
+                return "_0029_xx12_";
+
+            case PrivateTag._0029_xx13_:
+                return "_0029_xx13_";
         }
         return "";
     }

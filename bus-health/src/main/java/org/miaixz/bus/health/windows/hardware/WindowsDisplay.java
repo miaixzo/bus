@@ -71,7 +71,10 @@ final class WindowsDisplay extends AbstractDisplay {
     public static List<Display> getDisplays() {
         List<Display> displays = new ArrayList<>();
 
-        WinNT.HANDLE hDevInfo = SU.SetupDiGetClassDevs(GUID_DEVINTERFACE_MONITOR, null, null,
+        WinNT.HANDLE hDevInfo = SU.SetupDiGetClassDevs(
+                GUID_DEVINTERFACE_MONITOR,
+                null,
+                null,
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (!hDevInfo.equals(WinBase.INVALID_HANDLE_VALUE)) {
             try (Struct.CloseableSpDeviceInterfaceData deviceInterfaceData = new Struct.CloseableSpDeviceInterfaceData();
@@ -79,8 +82,13 @@ final class WindowsDisplay extends AbstractDisplay {
                 deviceInterfaceData.cbSize = deviceInterfaceData.size();
 
                 for (int memberIndex = 0; SU.SetupDiEnumDeviceInfo(hDevInfo, memberIndex, info); memberIndex++) {
-                    WinReg.HKEY key = SU.SetupDiOpenDevRegKey(hDevInfo, info, SetupApi.DICS_FLAG_GLOBAL, 0,
-                            SetupApi.DIREG_DEV, WinNT.KEY_QUERY_VALUE);
+                    WinReg.HKEY key = SU.SetupDiOpenDevRegKey(
+                            hDevInfo,
+                            info,
+                            SetupApi.DICS_FLAG_GLOBAL,
+                            0,
+                            SetupApi.DIREG_DEV,
+                            WinNT.KEY_QUERY_VALUE);
 
                     byte[] edid = new byte[1];
 

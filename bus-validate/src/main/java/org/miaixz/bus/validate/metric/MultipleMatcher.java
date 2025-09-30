@@ -25,52 +25,46 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.validate.metric;
 
-import java.io.Serial;
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.miaixz.bus.core.lang.exception.NoSuchException;
+import org.miaixz.bus.validate.Context;
+import org.miaixz.bus.validate.Registry;
+import org.miaixz.bus.validate.magic.Matcher;
+import org.miaixz.bus.validate.magic.annotation.Multiple;
 
 /**
- * 值作为集合List的Map实现，通过调用putValue可以在相同key时加入多个值，多个值用集合表示
+ * 多规则匹配校验
  *
- * @param <K> 键类型
- * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
-
-    @Serial
-    private static final long serialVersionUID = 2852277598332L;
-
-    /**
-     * 基于{@code mapFactory}创建一个值为{@link List}的多值映射集合
-     *
-     * @param mapFactory 创建集合的工厂反方
-     */
-    public ListValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
-        super(mapFactory);
-    }
-
-    /**
-     * 基于指定Map创建一个值为{@link List}的多值映射集合
-     *
-     * @param map 提供数据的原始集合
-     */
-    public ListValueMap(final Map<K, Collection<V>> map) {
-        super(map);
-    }
-
-    /**
-     * 基于{@link HashMap}创建一个值为{@link List}的多值映射集合
-     */
-    public ListValueMap() {
-    }
+public class MultipleMatcher implements Matcher<Object, Multiple> {
 
     @Override
-    protected List<V> createCollection() {
-        return new ArrayList<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
+    public boolean on(Object object, Multiple multiple, Context context) {
+        List<Matcher> validators = new ArrayList<>();
+        for (String validatorName : multiple.value()) {
+            if (!Registry.getInstance().contains(validatorName)) {
+                throw new NoSuchException("尝试使用一个不存在的校验器：" + validatorName);
+            }
+            validators.add((Matcher) Registry.getInstance().require(validatorName));
+        }
+        for (Class<? extends Matcher> clazz : multiple.classes()) {
+            if (!Registry.getInstance().contains(clazz.getSimpleName())) {
+                throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
+            }
+            validators.add((Matcher) Registry.getInstance().require(clazz.getSimpleName()));
+        }
+        for (Matcher validator : validators) {
+            if (!validator.on(object, null, context)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

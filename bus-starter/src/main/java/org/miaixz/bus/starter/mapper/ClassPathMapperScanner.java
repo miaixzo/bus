@@ -118,6 +118,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         // 添加接口过滤器，忽略标记接口本身
         if (this.markerInterface != null) {
             addIncludeFilter(new AssignableTypeFilter(this.markerInterface) {
+
                 @Override
                 protected boolean matchClassName(String className) {
                     return false;
@@ -132,8 +133,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         }
 
         // 排除 package-info.java
-        addExcludeFilter((metadataReader, metadataReaderFactory) -> metadataReader.getClassMetadata().getClassName()
-                .endsWith("package-info"));
+        addExcludeFilter(
+                (metadataReader, metadataReaderFactory) -> metadataReader.getClassMetadata().getClassName()
+                        .endsWith("package-info"));
     }
 
     /**
@@ -147,7 +149,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
 
         if (beanDefinitions.isEmpty()) {
-            Logger.warn("No MyBatis mapper was found in '{}' package. Please check your configuration.",
+            Logger.warn(
+                    "No MyBatis mapper was found in '{}' package. Please check your configuration.",
                     Arrays.toString(basePackages));
         } else {
             processBeanDefinitions(beanDefinitions);
@@ -170,14 +173,14 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             definition.setBeanClass(this.mapperFactoryBean.getClass());
             // 设置通用 Mapper
             if (StringKit.hasText(this.mapperBuilderBeanName)) {
-                definition.getPropertyValues().add("mapperBuilder",
-                        new RuntimeBeanReference(this.mapperBuilderBeanName));
+                definition.getPropertyValues()
+                        .add("mapperBuilder", new RuntimeBeanReference(this.mapperBuilderBeanName));
             }
 
             boolean explicitFactoryUsed = false;
             if (StringKit.hasText(this.sqlSessionFactoryBeanName)) {
-                definition.getPropertyValues().add("sqlSessionFactory",
-                        new RuntimeBeanReference(this.sqlSessionFactoryBeanName));
+                definition.getPropertyValues()
+                        .add("sqlSessionFactory", new RuntimeBeanReference(this.sqlSessionFactoryBeanName));
                 explicitFactoryUsed = true;
             } else if (this.sqlSessionFactory != null) {
                 definition.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
@@ -188,8 +191,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                     Logger.warn(
                             "Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
                 }
-                definition.getPropertyValues().add("sqlSessionTemplate",
-                        new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
+                definition.getPropertyValues()
+                        .add("sqlSessionTemplate", new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
                 explicitFactoryUsed = true;
             } else if (this.sqlSessionTemplate != null) {
                 if (explicitFactoryUsed) {
@@ -201,8 +204,10 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             }
             if (!explicitFactoryUsed) {
                 if (Logger.isDebugEnabled()) {
-                    Logger.debug("Enabling component by type for MapperFactoryBean with name '{}' and '{}'",
-                            holder.getBeanName(), definition.getBeanClassName());
+                    Logger.debug(
+                            "Enabling component by type for MapperFactoryBean with name '{}' and '{}'",
+                            holder.getBeanName(),
+                            definition.getBeanClassName());
 
                 }
                 definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
@@ -235,7 +240,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         } else {
             Logger.warn(
                     "Skipping MapperFactoryBean with name '{}' and '{}' mapperInterface. Bean already defined with the same name!",
-                    beanName, beanDefinition.getBeanClassName());
+                    beanName,
+                    beanDefinition.getBeanClassName());
             return false;
         }
     }

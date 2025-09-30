@@ -52,32 +52,38 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.HeartRateAtConfirm:
-        case PrivateTag.MinHeartRatePriorToConfirm:
-        case PrivateTag.MaxHeartRatePriorToConfirm:
-        case PrivateTag.AutoHeartRateDetectPredict:
-        case PrivateTag.SystemOptimizedHeartRate:
-        case PrivateTag.NumReconSectors:
-        case PrivateTag.TemporalAlg:
-        case PrivateTag.PhaseLocation:
-        case PrivateTag.CompressionAlg:
-            return VR.CS;
-        case PrivateTag.AvgHeartRatePriorToConfirm:
-        case PrivateTag.StdDevHeartRatePriorToConfirm:
-        case PrivateTag.RpeakTimeStamps:
-        case PrivateTag.EkgWaveTimeOffFirstDataPoint:
-            return VR.FL;
-        case PrivateTag.PreBlendedCycle1:
-        case PrivateTag.PreBlendedCycle2:
-            return VR.OW;
-        case PrivateTag.EkgGatingType:
-            return VR.SH;
-        case PrivateTag.CTCardiacSequence:
-            return VR.SQ;
-        case PrivateTag.EkgMonitorType:
-            return VR.ST;
-        case PrivateTag.NumHeartRateSamplesPriorToConfirm:
-            return VR.US;
+            case PrivateTag.HeartRateAtConfirm:
+            case PrivateTag.MinHeartRatePriorToConfirm:
+            case PrivateTag.MaxHeartRatePriorToConfirm:
+            case PrivateTag.AutoHeartRateDetectPredict:
+            case PrivateTag.SystemOptimizedHeartRate:
+            case PrivateTag.NumReconSectors:
+            case PrivateTag.TemporalAlg:
+            case PrivateTag.PhaseLocation:
+            case PrivateTag.CompressionAlg:
+                return VR.CS;
+
+            case PrivateTag.AvgHeartRatePriorToConfirm:
+            case PrivateTag.StdDevHeartRatePriorToConfirm:
+            case PrivateTag.RpeakTimeStamps:
+            case PrivateTag.EkgWaveTimeOffFirstDataPoint:
+                return VR.FL;
+
+            case PrivateTag.PreBlendedCycle1:
+            case PrivateTag.PreBlendedCycle2:
+                return VR.OW;
+
+            case PrivateTag.EkgGatingType:
+                return VR.SH;
+
+            case PrivateTag.CTCardiacSequence:
+                return VR.SQ;
+
+            case PrivateTag.EkgMonitorType:
+                return VR.ST;
+
+            case PrivateTag.NumHeartRateSamplesPriorToConfirm:
+                return VR.US;
         }
         return VR.UN;
     }

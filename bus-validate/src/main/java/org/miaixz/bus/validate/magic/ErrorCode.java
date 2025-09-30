@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 验证错误码: 116xxx
+ * 验证错误码: 115xxx
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,10 +39,8 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 默认错误码
+     * 参数校验失败
      */
-    public static final String _116000 = "116000";
-
-    public static final Errors __116000 = ErrorRegistry.builder().key(_116000).value("参数校验失败").build();
+    public static final Errors _115000 = ErrorRegistry.builder().key("115000").value("参数校验失败").build();
 
 }

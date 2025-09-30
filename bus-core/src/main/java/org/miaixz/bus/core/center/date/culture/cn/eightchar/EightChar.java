@@ -145,8 +145,9 @@ public class EightChar extends Tradition {
      * @return 胎息
      */
     public SixtyCycle getFetalBreath() {
-        return SixtyCycle.fromName(day.getHeavenStem().next(5).getName()
-                + EarthBranch.fromIndex(13 - day.getEarthBranch().getIndex()).getName());
+        return SixtyCycle.fromName(
+                day.getHeavenStem().next(5).getName()
+                        + EarthBranch.fromIndex(13 - day.getEarthBranch().getIndex()).getName());
     }
 
     /**
@@ -165,8 +166,8 @@ public class EightChar extends Tradition {
         }
         int offset = m + h;
         offset = (offset >= 14 ? 26 : 14) - offset;
-        return SixtyCycle
-                .fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
+        return SixtyCycle.fromName(
+                HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
                         + EarthBranch.fromIndex(offset + 1).getName());
     }
 
@@ -184,8 +185,8 @@ public class EightChar extends Tradition {
         if (offset > 12) {
             offset -= 12;
         }
-        return SixtyCycle
-                .fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
+        return SixtyCycle.fromName(
+                HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset - 1).getName()
                         + EarthBranch.fromIndex(offset + 1).getName());
     }
 
@@ -240,8 +241,8 @@ public class EightChar extends Tradition {
                         mi = solarTime.getMinute();
                         s = solarTime.getSecond();
                     }
-                    SolarTime time = SolarTime.fromYmdHms(solarDay.getYear(), solarDay.getMonth(), solarDay.getDay(),
-                            hour, mi, s);
+                    SolarTime time = SolarTime
+                            .fromYmdHms(solarDay.getYear(), solarDay.getMonth(), solarDay.getDay(), hour, mi, s);
                     if (d == 30) {
                         time = time.next(-3600);
                     }

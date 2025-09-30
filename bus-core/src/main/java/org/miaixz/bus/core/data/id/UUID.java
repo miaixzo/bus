@@ -458,6 +458,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * {@link SecureRandom} 的单例
      */
     private static class Holder {
+
         static final SecureRandom NUMBER_GENERATOR = RandomKit.getSecureRandom();
     }
 

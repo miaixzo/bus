@@ -88,11 +88,14 @@ public class MultiframeExtractor {
         impls.put(UID.XRay3DAngiographicImageStorage.uid, Impl.XRay3DAngiographicImageExtractor);
         impls.put(UID.NuclearMedicineImageStorage.uid, Impl.NuclearMedicineImageExtractor);
         impls.put(UID.UltrasoundMultiFrameImageStorage.uid, Impl.UltrasoundMultiFrameImageExtractor);
-        impls.put(UID.MultiFrameGrayscaleByteSecondaryCaptureImageStorage.uid,
+        impls.put(
+                UID.MultiFrameGrayscaleByteSecondaryCaptureImageStorage.uid,
                 Impl.MultiFrameGrayscaleByteSecondaryCaptureImageExtractor);
-        impls.put(UID.MultiFrameGrayscaleWordSecondaryCaptureImageStorage.uid,
+        impls.put(
+                UID.MultiFrameGrayscaleWordSecondaryCaptureImageStorage.uid,
                 Impl.MultiFrameGrayscaleWordSecondaryCaptureImageExtractor);
-        impls.put(UID.MultiFrameTrueColorSecondaryCaptureImageStorage.uid,
+        impls.put(
+                UID.MultiFrameTrueColorSecondaryCaptureImageStorage.uid,
                 Impl.MultiFrameTrueColorSecondaryCaptureImageExtractor);
         impls.put(UID.XRayAngiographicImageStorage.uid, Impl.XRayAngiographicImageExtractor);
         impls.put(UID.XRayRadiofluoroscopicImageStorage.uid, Impl.XRayRadiofluoroscopicImageExtractor);
@@ -252,9 +255,13 @@ public class MultiframeExtractor {
         }
         addPixelData(dest, emf, frame);
         dest.setString(Tag.SOPClassUID, VR.UI, cuid);
-        dest.setString(Tag.SOPInstanceUID, VR.UI,
+        dest.setString(
+                Tag.SOPInstanceUID,
+                VR.UI,
                 uidMapper.get(dest.getString(Tag.SOPInstanceUID)) + Symbol.C_DOT + (frame + 1));
-        dest.setString(Tag.InstanceNumber, VR.IS,
+        dest.setString(
+                Tag.InstanceNumber,
+                VR.IS,
                 createInstanceNumber(dest.getString(Tag.InstanceNumber, Normal.EMPTY), frame));
         if (!preserveSeriesInstanceUID)
             dest.setString(Tag.SeriesInstanceUID, VR.UI, uidMapper.get(dest.getString(Tag.SeriesInstanceUID)));
@@ -287,7 +294,9 @@ public class MultiframeExtractor {
             ref.setString(Tag.ReferencedSOPClassUID, VR.UI, cuid);
             for (int i = 0; i < n; i++) {
                 Attributes newRef = new Attributes(ref);
-                newRef.setString(Tag.ReferencedSOPInstanceUID, VR.UI,
+                newRef.setString(
+                        Tag.ReferencedSOPInstanceUID,
+                        VR.UI,
                         iuid + '.' + (frames != null ? frames[i] : (i + 1)));
                 newRefs.add(newRef);
             }
@@ -394,6 +403,7 @@ public class MultiframeExtractor {
          * 增强MR图像提取器
          */
         EnhancedMRImageExtractor(UID.MRImageStorage.uid, true) {
+
             @Override
             Attributes extract(MultiframeExtractor mfe, Attributes emf, int frame) {
                 Attributes sf = super.extract(mfe, emf, frame);

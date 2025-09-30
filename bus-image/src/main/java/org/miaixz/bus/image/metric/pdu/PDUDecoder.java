@@ -147,39 +147,46 @@ public class PDUDecoder extends PDVInputStream {
         pdulen = getInt();
         Logger.trace("{} >> PDU[type={}, len={}]", as, pdutype, pdulen & 0xFFFFFFFFL);
         switch (pdutype) {
-        case PDUType.A_ASSOCIATE_RQ:
-            readPDU();
-            as.onAAssociateRQ((AAssociateRQ) decode(new AAssociateRQ()));
-            return;
-        case PDUType.A_ASSOCIATE_AC:
-            readPDU();
-            as.onAAssociateAC((AAssociateAC) decode(new AAssociateAC()));
-            return;
-        case PDUType.P_DATA_TF:
-            readPDU();
-            as.onPDataTF();
-            return;
-        case PDUType.A_ASSOCIATE_RJ:
-            checkPDULength(4);
-            get();
-            as.onAAssociateRJ(new AAssociateRJ(get(), get(), get()));
-            break;
-        case PDUType.A_RELEASE_RQ:
-            checkPDULength(4);
-            as.onAReleaseRQ();
-            break;
-        case PDUType.A_RELEASE_RP:
-            checkPDULength(4);
-            as.onAReleaseRP();
-            break;
-        case PDUType.A_ABORT:
-            checkPDULength(4);
-            get();
-            get();
-            as.onAAbort(new AAbort(get(), get()));
-            break;
-        default:
-            abort(AAbort.UNRECOGNIZED_PDU, UNRECOGNIZED_PDU);
+            case PDUType.A_ASSOCIATE_RQ:
+                readPDU();
+                as.onAAssociateRQ((AAssociateRQ) decode(new AAssociateRQ()));
+                return;
+
+            case PDUType.A_ASSOCIATE_AC:
+                readPDU();
+                as.onAAssociateAC((AAssociateAC) decode(new AAssociateAC()));
+                return;
+
+            case PDUType.P_DATA_TF:
+                readPDU();
+                as.onPDataTF();
+                return;
+
+            case PDUType.A_ASSOCIATE_RJ:
+                checkPDULength(4);
+                get();
+                as.onAAssociateRJ(new AAssociateRJ(get(), get(), get()));
+                break;
+
+            case PDUType.A_RELEASE_RQ:
+                checkPDULength(4);
+                as.onAReleaseRQ();
+                break;
+
+            case PDUType.A_RELEASE_RP:
+                checkPDULength(4);
+                as.onAReleaseRP();
+                break;
+
+            case PDUType.A_ABORT:
+                checkPDULength(4);
+                get();
+                get();
+                as.onAAbort(new AAbort(get(), get()));
+                break;
+
+            default:
+                abort(AAbort.UNRECOGNIZED_PDU, UNRECOGNIZED_PDU);
         }
     }
 
@@ -257,18 +264,21 @@ public class PDUDecoder extends PDVInputStream {
         get(); // skip reserved byte
         int itemLen = getUnsignedShort();
         switch (itemType) {
-        case ItemType.APP_CONTEXT:
-            rqac.setApplicationContext(getString(itemLen));
-            break;
-        case ItemType.RQ_PRES_CONTEXT:
-        case ItemType.AC_PRES_CONTEXT:
-            rqac.addPresentationContext(decodePC(itemLen));
-            break;
-        case ItemType.USER_INFO:
-            decodeUserInfo(itemLen, rqac);
-            break;
-        default:
-            skip(itemLen);
+            case ItemType.APP_CONTEXT:
+                rqac.setApplicationContext(getString(itemLen));
+                break;
+
+            case ItemType.RQ_PRES_CONTEXT:
+            case ItemType.AC_PRES_CONTEXT:
+                rqac.addPresentationContext(decodePC(itemLen));
+                break;
+
+            case ItemType.USER_INFO:
+                decodeUserInfo(itemLen, rqac);
+                break;
+
+            default:
+                skip(itemLen);
         }
     }
 
@@ -285,14 +295,16 @@ public class PDUDecoder extends PDVInputStream {
             get(); // 跳过保留字节
             int subItemLen = getUnsignedShort();
             switch (subItemType) {
-            case ItemType.ABSTRACT_SYNTAX:
-                as = getString(subItemLen);
-                break;
-            case ItemType.TRANSFER_SYNTAX:
-                tss.add(getString(subItemLen));
-                break;
-            default:
-                skip(subItemLen);
+                case ItemType.ABSTRACT_SYNTAX:
+                    as = getString(subItemLen);
+                    break;
+
+                case ItemType.TRANSFER_SYNTAX:
+                    tss.add(getString(subItemLen));
+                    break;
+
+                default:
+                    skip(subItemLen);
             }
         }
         return new PresentationContext(pcid, result, as, tss.toArray(new String[tss.size()]));
@@ -309,36 +321,45 @@ public class PDUDecoder extends PDVInputStream {
         get(); // 跳过保留字节
         int itemLen = getUnsignedShort();
         switch (itemType) {
-        case ItemType.MAX_PDU_LENGTH:
-            rqac.setMaxPDULength(getInt());
-            break;
-        case ItemType.IMPL_CLASS_UID:
-            rqac.setImplClassUID(getString(itemLen));
-            break;
-        case ItemType.ASYNC_OPS_WINDOW:
-            rqac.setMaxOpsInvoked(getUnsignedShort());
-            rqac.setMaxOpsPerformed(getUnsignedShort());
-            break;
-        case ItemType.ROLE_SELECTION:
-            rqac.addRoleSelection(decodeRoleSelection(itemLen));
-            break;
-        case ItemType.IMPL_VERSION_NAME:
-            rqac.setImplVersionName(getString(itemLen));
-            break;
-        case ItemType.EXT_NEG:
-            rqac.addExtendedNegotiation(decodeExtNeg(itemLen));
-            break;
-        case ItemType.COMMON_EXT_NEG:
-            rqac.addCommonExtendedNegotiation(decodeCommonExtNeg(itemLen));
-            break;
-        case ItemType.RQ_USER_IDENTITY:
-            rqac.setIdentityRQ(decodeUserIdentityRQ(itemLen));
-            break;
-        case ItemType.AC_USER_IDENTITY:
-            rqac.setIdentityAC(decodeUserIdentityAC(itemLen));
-            break;
-        default:
-            skip(itemLen);
+            case ItemType.MAX_PDU_LENGTH:
+                rqac.setMaxPDULength(getInt());
+                break;
+
+            case ItemType.IMPL_CLASS_UID:
+                rqac.setImplClassUID(getString(itemLen));
+                break;
+
+            case ItemType.ASYNC_OPS_WINDOW:
+                rqac.setMaxOpsInvoked(getUnsignedShort());
+                rqac.setMaxOpsPerformed(getUnsignedShort());
+                break;
+
+            case ItemType.ROLE_SELECTION:
+                rqac.addRoleSelection(decodeRoleSelection(itemLen));
+                break;
+
+            case ItemType.IMPL_VERSION_NAME:
+                rqac.setImplVersionName(getString(itemLen));
+                break;
+
+            case ItemType.EXT_NEG:
+                rqac.addExtendedNegotiation(decodeExtNeg(itemLen));
+                break;
+
+            case ItemType.COMMON_EXT_NEG:
+                rqac.addCommonExtendedNegotiation(decodeCommonExtNeg(itemLen));
+                break;
+
+            case ItemType.RQ_USER_IDENTITY:
+                rqac.setIdentityRQ(decodeUserIdentityRQ(itemLen));
+                break;
+
+            case ItemType.AC_USER_IDENTITY:
+                rqac.setIdentityAC(decodeUserIdentityAC(itemLen));
+                break;
+
+            default:
+                skip(itemLen);
         }
     }
 

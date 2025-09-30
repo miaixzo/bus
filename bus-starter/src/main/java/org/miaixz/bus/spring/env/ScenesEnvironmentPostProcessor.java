@@ -67,8 +67,10 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
             return;
         }
         Set<String> scenes = SetKit.of(scenesValue);
-        List<SceneConfigDataReference> sceneConfigDataReferences = scenesResources(resourceLoader,
-                propertySourceLoaders, scenes);
+        List<SceneConfigDataReference> sceneConfigDataReferences = scenesResources(
+                resourceLoader,
+                propertySourceLoaders,
+                scenes);
 
         Logger.info("Configs for scenes {} enable", scenes);
         processAndApply(sceneConfigDataReferences, environment);
@@ -80,8 +82,10 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         return Ordered.LOWEST_PRECEDENCE - 100;
     }
 
-    private List<SceneConfigDataReference> scenesResources(ResourceLoader resourceLoader,
-            List<PropertySourceLoader> propertySourceLoaders, Set<String> scenes) {
+    private List<SceneConfigDataReference> scenesResources(
+            ResourceLoader resourceLoader,
+            List<PropertySourceLoader> propertySourceLoaders,
+            Set<String> scenes) {
         List<SceneConfigDataReference> resources = new ArrayList<>();
         if (scenes != null && !scenes.isEmpty()) {
             scenes.forEach(scene -> propertySourceLoaders.forEach(psl -> {
@@ -104,7 +108,8 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
      * @param sceneConfigDataReferences 场景配置数据
      * @param environment               环境资源信息
      */
-    private void processAndApply(List<SceneConfigDataReference> sceneConfigDataReferences,
+    private void processAndApply(
+            List<SceneConfigDataReference> sceneConfigDataReferences,
             ConfigurableEnvironment environment) {
         for (SceneConfigDataReference sceneConfigDataReference : sceneConfigDataReferences) {
             try {

@@ -52,11 +52,12 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._0021_xxB0_:
-        case PrivateTag._0021_xxB1_:
-            return VR.LO;
-        case PrivateTag._0021_xxAE_:
-            return VR.OB;
+            case PrivateTag._0021_xxB0_:
+            case PrivateTag._0021_xxB1_:
+                return VR.LO;
+
+            case PrivateTag._0021_xxAE_:
+                return VR.OB;
         }
         return VR.UN;
     }

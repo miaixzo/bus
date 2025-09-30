@@ -164,7 +164,9 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             // getHardwareAddress also checks for loopback
             return networkInterface.getHardwareAddress() == null;
         } catch (SocketException e) {
-            Logger.error("Socket exception when retrieving interface information for {}: {}", networkInterface,
+            Logger.error(
+                    "Socket exception when retrieving interface information for {}: {}",
+                    networkInterface,
                     e.getMessage());
         }
         return false;

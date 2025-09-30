@@ -140,7 +140,9 @@ public class UrlDecoder implements Serializable {
      * @param charset       编码，{@code null}表示不做解码
      * @return 解码后的字符串
      */
-    public static String decode(final String text, final java.nio.charset.Charset charset,
+    public static String decode(
+            final String text,
+            final java.nio.charset.Charset charset,
             final boolean isPlusToSpace) {
         if (null == charset) {
             return text;
@@ -256,11 +258,16 @@ public class UrlDecoder implements Serializable {
      * @param isPlusToSpace 是否+转换为空格
      * @return 解码后的字符串
      */
-    private static String decodeSub(final String text, final int begin, final int end,
-            final java.nio.charset.Charset charset, final boolean isPlusToSpace) {
+    private static String decodeSub(
+            final String text,
+            final int begin,
+            final int end,
+            final java.nio.charset.Charset charset,
+            final boolean isPlusToSpace) {
         return new String(decode(
                 // 截取需要decode的部分
-                text.substring(begin, end).getBytes(Charset.ISO_8859_1), isPlusToSpace), charset);
+                text.substring(begin, end).getBytes(Charset.ISO_8859_1),
+                isPlusToSpace), charset);
     }
 
     /**

@@ -183,7 +183,8 @@ public class AsyncKit {
      * @param eHandler 异常处理方法
      * @return 任务结果集合
      */
-    public static <T> List<T> parallelAllOfGet(final CompletableFuture<T>[] tasks,
+    public static <T> List<T> parallelAllOfGet(
+            final CompletableFuture<T>[] tasks,
             final Function<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
@@ -198,7 +199,8 @@ public class AsyncKit {
      * @param eHandler 异常处理方法
      * @return 任务结果集合
      */
-    public static <T> List<T> parallelAllOfGet(final List<CompletableFuture<T>> tasks,
+    public static <T> List<T> parallelAllOfGet(
+            final List<CompletableFuture<T>> tasks,
             final Function<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
@@ -214,7 +216,9 @@ public class AsyncKit {
      * @param isParallel 是否是并行 {@link Stream}
      * @return 任务结果集合
      */
-    private static <T> List<T> execute(final List<CompletableFuture<T>> tasks, final Function<Exception, T> eHandler,
+    private static <T> List<T> execute(
+            final List<CompletableFuture<T>> tasks,
+            final Function<Exception, T> eHandler,
             final boolean isParallel) {
         return StreamKit.of(tasks, isParallel).map(e -> {
             try {

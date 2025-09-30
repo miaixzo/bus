@@ -80,8 +80,9 @@ public class TwentyEightStar extends Samsara {
      * @return 九野
      */
     public Land getLand() {
-        return Land.fromIndex(new int[] { 4, 4, 4, 2, 2, 2, 7, 7, 7, 0, 0, 0, 0, 5, 5, 5, 6, 6, 6, 1, 1, 1, 8, 8, 8, 3,
-                3, 3 }[index]);
+        return Land.fromIndex(
+                new int[] { 4, 4, 4, 2, 2, 2, 7, 7, 7, 0, 0, 0, 0, 5, 5, 5, 6, 6, 6, 1, 1, 1, 8, 8, 8, 3, 3,
+                        3 }[index]);
     }
 
     /**
@@ -108,8 +109,9 @@ public class TwentyEightStar extends Samsara {
      * @return 吉凶
      */
     public Luck getLuck() {
-        return Luck.fromIndex(new int[] { 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0,
-                1, 0 }[index]);
+        return Luck.fromIndex(
+                new int[] { 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1,
+                        0 }[index]);
     }
 
 }

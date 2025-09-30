@@ -221,7 +221,8 @@ public class SpringBuilder implements ApplicationContextAware {
      */
     public static void registerBeanDefinition(Class<?> clazz) {
         DefaultListableBeanFactory factory = (DefaultListableBeanFactory) getBeanFactory();
-        factory.registerBeanDefinition(StringKit.lowerFirst(clazz.getSimpleName()),
+        factory.registerBeanDefinition(
+                StringKit.lowerFirst(clazz.getSimpleName()),
                 BeanDefinitionBuilder.rootBeanDefinition(clazz).getBeanDefinition());
     }
 
@@ -353,8 +354,8 @@ public class SpringBuilder implements ApplicationContextAware {
         });
         String result = text;
         for (String key : props.stringPropertyNames()) {
-            result = result.replace(Symbol.DOLLAR + Symbol.BRACE_LEFT + key + Symbol.BRACE_RIGHT,
-                    props.getProperty(key));
+            result = result
+                    .replace(Symbol.DOLLAR + Symbol.BRACE_LEFT + key + Symbol.BRACE_RIGHT, props.getProperty(key));
         }
         return result;
     }

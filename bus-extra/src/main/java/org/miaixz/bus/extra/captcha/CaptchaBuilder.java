@@ -74,7 +74,11 @@ public class CaptchaBuilder {
      * @param sizeBaseHeight 字体的大小 高度的倍数
      * @return {@link LineProvider}
      */
-    public static LineProvider ofLine(final int width, final int height, final int codeCount, final int lineCount,
+    public static LineProvider ofLine(
+            final int width,
+            final int height,
+            final int codeCount,
+            final int lineCount,
             final float sizeBaseHeight) {
         return new LineProvider(width, height, codeCount, lineCount, sizeBaseHeight);
     }
@@ -99,7 +103,10 @@ public class CaptchaBuilder {
      * @param circleCount 干扰圆圈条数
      * @return {@link CircleProvider}
      */
-    public static CircleProvider ofCircle(final int width, final int height, final int codeCount,
+    public static CircleProvider ofCircle(
+            final int width,
+            final int height,
+            final int codeCount,
             final int circleCount) {
         return new CircleProvider(width, height, codeCount, circleCount);
     }
@@ -114,7 +121,11 @@ public class CaptchaBuilder {
      * @param size        字体的大小 高度的倍数
      * @return {@link CircleProvider}
      */
-    public static CircleProvider ofCircle(final int width, final int height, final int codeCount, final int circleCount,
+    public static CircleProvider ofCircle(
+            final int width,
+            final int height,
+            final int codeCount,
+            final int circleCount,
             final float size) {
         return new CircleProvider(width, height, codeCount, circleCount, size);
     }
@@ -153,7 +164,11 @@ public class CaptchaBuilder {
      * @param sizeBaseHeight 字体的大小 高度的倍数
      * @return {@link ShearProvider}
      */
-    public static ShearProvider ofShear(final int width, final int height, final int codeCount, final int thickness,
+    public static ShearProvider ofShear(
+            final int width,
+            final int height,
+            final int codeCount,
+            final int thickness,
             final float sizeBaseHeight) {
         return new ShearProvider(width, height, codeCount, thickness, sizeBaseHeight);
     }
@@ -191,7 +206,11 @@ public class CaptchaBuilder {
      * @param sizeBaseHeight 字体的大小 高度的倍数
      * @return {@link GifProvider}
      */
-    public static GifProvider ofGif(final int width, final int height, final int codeCount, final int thickness,
+    public static GifProvider ofGif(
+            final int width,
+            final int height,
+            final int codeCount,
+            final int thickness,
             final float sizeBaseHeight) {
         return new GifProvider(width, height, codeCount, thickness, sizeBaseHeight);
     }

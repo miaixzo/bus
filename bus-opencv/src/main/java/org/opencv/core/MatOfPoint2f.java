@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MatOfPoint2f extends Mat {
+
     // 32FC2
     private static final int _depth = CvType.CV_32F;
     private static final int _channels = 2;

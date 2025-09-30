@@ -52,10 +52,10 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.MammographyLaterality:
-        case PrivateTag.MammographyViewName:
-        case PrivateTag.MammographyViewModifier:
-            return VR.SH;
+            case PrivateTag.MammographyLaterality:
+            case PrivateTag.MammographyViewName:
+            case PrivateTag.MammographyViewModifier:
+                return VR.SH;
         }
         return VR.UN;
     }

@@ -73,7 +73,11 @@ public abstract class AbstractImageService implements ImageService {
         return dataset;
     }
 
-    protected abstract void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd,
+    protected abstract void onDimseRQ(
+            Association as,
+            PresentationContext pc,
+            Dimse dimse,
+            Attributes cmd,
             Attributes data) throws IOException;
 
 }

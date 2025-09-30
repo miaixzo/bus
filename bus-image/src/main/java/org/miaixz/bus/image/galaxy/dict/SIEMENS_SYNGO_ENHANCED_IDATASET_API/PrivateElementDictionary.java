@@ -52,12 +52,14 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.BusinessUnitCode:
-            return VR.CS;
-        case PrivateTag.ApplicationType:
-            return VR.LO;
-        case PrivateTag.ApplicationAttributesSequence:
-            return VR.SQ;
+            case PrivateTag.BusinessUnitCode:
+                return VR.CS;
+
+            case PrivateTag.ApplicationType:
+                return VR.LO;
+
+            case PrivateTag.ApplicationAttributesSequence:
+                return VR.SQ;
         }
         return VR.UN;
     }

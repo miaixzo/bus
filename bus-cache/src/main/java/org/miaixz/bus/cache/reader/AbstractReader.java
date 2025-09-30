@@ -74,7 +74,10 @@ public abstract class AbstractReader {
      * @return 缓存值或方法执行结果
      * @throws Throwable 可能抛出的异常
      */
-    public abstract Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker,
+    public abstract Object read(
+            AnnoHolder annoHolder,
+            MethodHolder methodHolder,
+            ProxyChain baseInvoker,
             boolean needWrite) throws Throwable;
 
     /**
@@ -133,6 +136,7 @@ public abstract class AbstractReader {
      */
     @FunctionalInterface
     protected interface ThrowableSupplier<T> {
+
         /**
          * 获取结果
          *

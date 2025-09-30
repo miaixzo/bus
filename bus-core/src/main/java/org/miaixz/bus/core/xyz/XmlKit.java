@@ -253,7 +253,10 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML字符串
      */
-    public static String toString(final Node doc, final java.nio.charset.Charset charset, final boolean isPretty,
+    public static String toString(
+            final Node doc,
+            final java.nio.charset.Charset charset,
+            final boolean isPretty,
             final boolean omitXmlDeclaration) {
         final StringWriter writer = StringKit.getWriter();
         write(doc, writer, charset, isPretty ? Normal._2 : 0, omitXmlDeclaration);
@@ -299,7 +302,10 @@ public class XmlKit {
      * @param charset 编码
      * @param indent  格式化输出中缩进量，小于1表示不格式化输出
      */
-    public static void write(final Node node, final Writer writer, final java.nio.charset.Charset charset,
+    public static void write(
+            final Node node,
+            final Writer writer,
+            final java.nio.charset.Charset charset,
             final int indent) {
         write(node, writer, charset, indent, false);
     }
@@ -317,8 +323,12 @@ public class XmlKit {
      * @param indent             格式化输出中缩进量，小于1表示不格式化输出
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      */
-    public static void write(final Node node, final Writer writer, final java.nio.charset.Charset charset,
-            final int indent, final boolean omitXmlDeclaration) {
+    public static void write(
+            final Node node,
+            final Writer writer,
+            final java.nio.charset.Charset charset,
+            final int indent,
+            final boolean omitXmlDeclaration) {
         XmlWriter.of(node).setCharset(charset).setIndent(indent).setOmitXmlDeclaration(omitXmlDeclaration)
                 .write(writer);
     }
@@ -331,7 +341,10 @@ public class XmlKit {
      * @param charset 编码
      * @param indent  格式化输出中缩进量，小于1表示不格式化输出
      */
-    public static void write(final Node node, final OutputStream out, final java.nio.charset.Charset charset,
+    public static void write(
+            final Node node,
+            final OutputStream out,
+            final java.nio.charset.Charset charset,
             final int indent) {
         write(node, out, charset, indent, false);
     }
@@ -349,8 +362,12 @@ public class XmlKit {
      * @param indent             格式化输出中缩进量，小于1表示不格式化输出
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      */
-    public static void write(final Node node, final OutputStream out, final java.nio.charset.Charset charset,
-            final int indent, final boolean omitXmlDeclaration) {
+    public static void write(
+            final Node node,
+            final OutputStream out,
+            final java.nio.charset.Charset charset,
+            final int indent,
+            final boolean omitXmlDeclaration) {
         XmlWriter.of(node).setCharset(charset).setIndent(indent).setOmitXmlDeclaration(omitXmlDeclaration).write(out);
     }
 
@@ -382,8 +399,9 @@ public class XmlKit {
      */
     public static Document createXml(final String rootElementName, final String namespace) {
         final Document doc = createXml();
-        doc.appendChild(null == namespace ? doc.createElement(rootElementName)
-                : doc.createElementNS(namespace, rootElementName));
+        doc.appendChild(
+                null == namespace ? doc.createElement(rootElementName)
+                        : doc.createElementNS(namespace, rootElementName));
         return doc;
     }
 
@@ -680,7 +698,10 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML格式的字符串
      */
-    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace,
+    public static String mapToXmlString(
+            final Map<?, ?> data,
+            final String rootName,
+            final String namespace,
             final boolean omitXmlDeclaration) {
         return toString(mapToXml(data, rootName, namespace), Charset.UTF_8, false, omitXmlDeclaration);
     }
@@ -699,8 +720,12 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML格式的字符串
      */
-    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace,
-            final boolean isPretty, final boolean omitXmlDeclaration) {
+    public static String mapToXmlString(
+            final Map<?, ?> data,
+            final String rootName,
+            final String namespace,
+            final boolean isPretty,
+            final boolean omitXmlDeclaration) {
         return toString(mapToXml(data, rootName, namespace), Charset.UTF_8, isPretty, omitXmlDeclaration);
     }
 
@@ -719,8 +744,13 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML格式的字符串
      */
-    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace,
-            final java.nio.charset.Charset charset, final boolean isPretty, final boolean omitXmlDeclaration) {
+    public static String mapToXmlString(
+            final Map<?, ?> data,
+            final String rootName,
+            final String namespace,
+            final java.nio.charset.Charset charset,
+            final boolean isPretty,
+            final boolean omitXmlDeclaration) {
         return toString(mapToXml(data, rootName, namespace), charset, isPretty, omitXmlDeclaration);
     }
 

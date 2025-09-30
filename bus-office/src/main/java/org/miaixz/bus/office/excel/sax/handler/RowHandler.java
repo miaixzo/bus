@@ -59,7 +59,11 @@ public interface RowHandler {
      * @param value         单元格的值
      * @param xssfCellStyle 单元格样式
      */
-    default void handleCell(final int sheetIndex, final long rowIndex, final int cellIndex, final Object value,
+    default void handleCell(
+            final int sheetIndex,
+            final long rowIndex,
+            final int cellIndex,
+            final Object value,
             final CellStyle xssfCellStyle) {
         // pass
     }

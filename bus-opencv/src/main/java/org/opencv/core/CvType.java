@@ -105,52 +105,64 @@ public final class CvType {
 
     public static final int ELEM_SIZE(int type) {
         switch (depth(type)) {
-        case CV_8U:
-        case CV_8S:
-            return channels(type);
-        case CV_16U:
-        case CV_16S:
-        case CV_16F:
-            return 2 * channels(type);
-        case CV_32S:
-        case CV_32F:
-            return 4 * channels(type);
-        case CV_64F:
-            return 8 * channels(type);
-        default:
-            throw new UnsupportedOperationException("Unsupported CvType value: " + type);
+            case CV_8U:
+            case CV_8S:
+                return channels(type);
+
+            case CV_16U:
+            case CV_16S:
+            case CV_16F:
+                return 2 * channels(type);
+
+            case CV_32S:
+            case CV_32F:
+                return 4 * channels(type);
+
+            case CV_64F:
+                return 8 * channels(type);
+
+            default:
+                throw new UnsupportedOperationException("Unsupported CvType value: " + type);
         }
     }
 
     public static final String typeToString(int type) {
         String s;
         switch (depth(type)) {
-        case CV_8U:
-            s = "CV_8U";
-            break;
-        case CV_8S:
-            s = "CV_8S";
-            break;
-        case CV_16U:
-            s = "CV_16U";
-            break;
-        case CV_16S:
-            s = "CV_16S";
-            break;
-        case CV_32S:
-            s = "CV_32S";
-            break;
-        case CV_32F:
-            s = "CV_32F";
-            break;
-        case CV_64F:
-            s = "CV_64F";
-            break;
-        case CV_16F:
-            s = "CV_16F";
-            break;
-        default:
-            throw new UnsupportedOperationException("Unsupported CvType value: " + type);
+            case CV_8U:
+                s = "CV_8U";
+                break;
+
+            case CV_8S:
+                s = "CV_8S";
+                break;
+
+            case CV_16U:
+                s = "CV_16U";
+                break;
+
+            case CV_16S:
+                s = "CV_16S";
+                break;
+
+            case CV_32S:
+                s = "CV_32S";
+                break;
+
+            case CV_32F:
+                s = "CV_32F";
+                break;
+
+            case CV_64F:
+                s = "CV_64F";
+                break;
+
+            case CV_16F:
+                s = "CV_16F";
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unsupported CvType value: " + type);
         }
 
         int ch = channels(type);

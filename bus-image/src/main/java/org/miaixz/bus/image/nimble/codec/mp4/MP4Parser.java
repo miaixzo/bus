@@ -84,7 +84,11 @@ public class MP4Parser implements XPEGParser {
     }
 
     private static String boxNotFound(int type) {
-        return String.format("%c%c%c%c box not found", (type >> 24) & 0xff, (type >> 16) & 0xff, (type >> 8) & 0xff,
+        return String.format(
+                "%c%c%c%c box not found",
+                (type >> 24) & 0xff,
+                (type >> 16) & 0xff,
+                (type >> 8) & 0xff,
                 type & 0xff);
     }
 
@@ -128,33 +132,36 @@ public class MP4Parser implements XPEGParser {
     @Override
     public String getTransferSyntaxUID(boolean fragmented) throws InternalException {
         switch (visualSampleEntryType) {
-        case VisualSampleEntryTypeAVC1:
-            switch (profile_idc) {
-            case 100: // High Profile
-                if (level_idc <= 41)
-                    return isBDCompatible() ? fragmented ? UID.MPEG4HP41BDF.uid : UID.MPEG4HP41BD.uid
-                            : fragmented ? UID.MPEG4HP41F.uid : UID.MPEG4HP41.uid;
-                else if (level_idc <= 42)
-                    // TODO: distinguish between MPEG4HP422D
-                    // and MPEG4HP423D
-                    return fragmented ? UID.MPEG4HP422DF.uid : UID.MPEG4HP422D.uid;
-                break;
-            case 128: // Stereo High Profile
-                if (level_idc <= 42)
-                    return UID.MPEG4HP42STEREO.uid;
-                break;
-            }
-            throw profileLevelNotSupported("MPEG-4 AVC profile_idc/level_idc: %d/%d not supported");
-        case VisualSampleEntryTypeHVC1:
-            if (level_idc <= 51) {
+            case VisualSampleEntryTypeAVC1:
                 switch (profile_idc) {
-                case 1: // Main Profile
-                    return UID.HEVCMP51.uid;
-                case 2: // Main 10 Profile
-                    return UID.HEVCM10P51.uid;
+                    case 100: // High Profile
+                        if (level_idc <= 41)
+                            return isBDCompatible() ? fragmented ? UID.MPEG4HP41BDF.uid : UID.MPEG4HP41BD.uid
+                                    : fragmented ? UID.MPEG4HP41F.uid : UID.MPEG4HP41.uid;
+                        else if (level_idc <= 42)
+                            // TODO: distinguish between MPEG4HP422D
+                            // and MPEG4HP423D
+                            return fragmented ? UID.MPEG4HP422DF.uid : UID.MPEG4HP422D.uid;
+                        break;
+
+                    case 128: // Stereo High Profile
+                        if (level_idc <= 42)
+                            return UID.MPEG4HP42STEREO.uid;
+                        break;
                 }
-            }
-            throw profileLevelNotSupported("MPEG-4 HEVC profile_idc/level_idc: %d/%d not supported");
+                throw profileLevelNotSupported("MPEG-4 AVC profile_idc/level_idc: %d/%d not supported");
+
+            case VisualSampleEntryTypeHVC1:
+                if (level_idc <= 51) {
+                    switch (profile_idc) {
+                        case 1: // Main Profile
+                            return UID.HEVCMP51.uid;
+
+                        case 2: // Main 10 Profile
+                            return UID.HEVCM10P51.uid;
+                    }
+                }
+                throw profileLevelNotSupported("MPEG-4 HEVC profile_idc/level_idc: %d/%d not supported");
         }
         throw new AssertionError("visualSampleEntryType:" + visualSampleEntryType);
     }
@@ -280,14 +287,15 @@ public class MP4Parser implements XPEGParser {
 
     private void parseVisualSampleEntry(SeekableByteChannel channel, Box box) throws IOException {
         switch (box.type) {
-        case VisualSampleEntryTypeAVC1:
-            parseVisualSampleEntryHeader(channel, box);
-            parseAvcConfigurationBox(channel, findBox(channel, box.end, AvcConfigurationBoxType));
-            break;
-        case VisualSampleEntryTypeHVC1:
-            parseVisualSampleEntryHeader(channel, box);
-            parseHevcConfigurationBox(channel, findBox(channel, box.end, HevcConfigurationBoxType));
-            break;
+            case VisualSampleEntryTypeAVC1:
+                parseVisualSampleEntryHeader(channel, box);
+                parseAvcConfigurationBox(channel, findBox(channel, box.end, AvcConfigurationBoxType));
+                break;
+
+            case VisualSampleEntryTypeHVC1:
+                parseVisualSampleEntryHeader(channel, box);
+                parseHevcConfigurationBox(channel, findBox(channel, box.end, HevcConfigurationBoxType));
+                break;
         }
         channel.position(box.end);
     }
@@ -326,6 +334,7 @@ public class MP4Parser implements XPEGParser {
     }
 
     private static class Box {
+
         final int type;
         final long end;
 

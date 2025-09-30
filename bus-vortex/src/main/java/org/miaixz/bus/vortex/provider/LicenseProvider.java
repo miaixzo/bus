@@ -25,65 +25,34 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.basic.entity;
+package org.miaixz.bus.vortex.provider;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
-import java.io.Serial;
-import java.io.Serializable;
+import org.miaixz.bus.core.lang.exception.LicenseException;
 
 /**
- * 许可协议属性
- *
- * @author Kimi Liu
- * @since Java 17+
+ * 许可证校验提供者接口。
+ * <p>
+ * 定义了校验许可证有效性的核心功能。实现此接口的服务应包含具体的许可证校验逻辑， 例如检查有效期、绑定的硬件信息、域名等。
+ * </p>
  */
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-public class License implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 2852291039638L;
+public interface LicenseProvider {
 
     /**
-     * ID
+     * 执行许可证验证操作。
+     * <p>
+     * <b>实现约定:</b>
+     * <ul>
+     * <li>如果许可证对给定的验证主体有效，此方法应正常返回，不执行任何操作。</li>
+     * <li>如果许可证无效（如过期、主体不匹配、签名错误等），此方法应抛出 {@link LicenseException} 或其他运行时异常来中断操作。</li>
+     * </ul>
+     *
+     * @param principal 用于验证许可证的实体标识，例如域名 (e.g., "example.com:443") * 或公司名称 (e.g., "Acme Corporation")。
+     * @throws LicenseException 如果许可证校验失败。
      */
-    private String id;
-
-    /**
-     * 名称
-     */
-    private String name;
-
-    /**
-     * 证书主题
-     */
-    private String subject;
-
-    /**
-     * 版本
-     */
-    private String version;
-
-    /**
-     * 证书生效时间
-     */
-    private String issuedTime;
-    /**
-     * 证书失效时间
-     */
-    private String expiryTime;
-
-    /**
-     * 描述信息
-     */
-    private String description;
+    default boolean validate(String principal) {
+        // 默认实现为空，允许在某些环境中禁用许可证检查。
+        // 具体的校验逻辑应由实现类提供。
+        return true;
+    }
 
 }

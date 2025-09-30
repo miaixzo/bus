@@ -153,6 +153,7 @@ public class ClientX implements SdkHttpClient {
 
         // 异步执行请求
         httpd.newCall(requestBuilder.build()).enqueue(new Callback() {
+
             @Override
             public void onFailure(NewCall call, IOException e) {
                 // 通知处理器错误
@@ -238,6 +239,7 @@ public class ClientX implements SdkHttpClient {
      * 可执行请求实现
      */
     private class HttpExecutableHttpRequest implements ExecutableHttpRequest {
+
         /** HTTP调用实例 */
         private final NewCall call;
         /** 请求是否已中止的标志 */
@@ -325,6 +327,7 @@ public class ClientX implements SdkHttpClient {
      * </p>
      */
     private static class CustomRequestBody extends RequestBody {
+
         /** 内容流提供者 */
         private final ContentStreamProvider contentStreamProvider;
         /** HTTP请求 */
@@ -427,6 +430,7 @@ public class ClientX implements SdkHttpClient {
      * 异步内容发布者包装器，将AWS SDK的SdkHttpContentPublisher转换为OkHttp的RequestBody
      */
     private static class AsyncContentPublisherWrapper extends RequestBody {
+
         /** 内容发布者 */
         private final SdkHttpContentPublisher contentPublisher;
         /** HTTP请求 */
@@ -471,6 +475,7 @@ public class ClientX implements SdkHttpClient {
 
                 // 创建订阅者来接收数据
                 Subscriber<ByteBuffer> subscriber = new Subscriber<>() {
+
                     /**
                      * 订阅关系
                      */
@@ -573,6 +578,7 @@ public class ClientX implements SdkHttpClient {
      * </p>
      */
     private static class ByteBufferPublisher implements Publisher<ByteBuffer> {
+
         /** 输入流 */
         private final InputStream inputStream;
         /** 缓冲区大小 */
@@ -609,6 +615,7 @@ public class ClientX implements SdkHttpClient {
         @Override
         public void subscribe(Subscriber<? super ByteBuffer> subscriber) {
             subscriber.onSubscribe(new Subscription() {
+
                 /** 是否已取消 */
                 private volatile boolean cancelled = false;
                 /** 已请求数据量 */
@@ -682,6 +689,7 @@ public class ClientX implements SdkHttpClient {
      * 构建器模式
      */
     public static class ClientBuilder implements SdkHttpClient.Builder<ClientBuilder> {
+
         /** HTTP客户端构建器 */
         private Httpd.Builder httpdBuilder;
         /** 回调执行器 */
@@ -828,6 +836,7 @@ public class ClientX implements SdkHttpClient {
      * </p>
      */
     private static class S3CompatibilityInterceptor implements Interceptor {
+
         /**
          * 拦截请求，添加S3协议兼容性头信息
          *
@@ -884,7 +893,8 @@ public class ClientX implements SdkHttpClient {
 
             // 确保Date头存在
             if (request.header("Date") == null) {
-                requestBuilder.addHeader("Date",
+                requestBuilder.addHeader(
+                        "Date",
                         DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC)));
             }
 

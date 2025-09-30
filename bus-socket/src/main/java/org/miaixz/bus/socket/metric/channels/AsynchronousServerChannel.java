@@ -176,7 +176,11 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     @Override
-    public final <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+    public final <A> void read(
+            ByteBuffer dst,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Integer, ? super A> handler) {
         if (timeout > 0) {
             throw new UnsupportedOperationException();
@@ -184,7 +188,9 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         read0(dst, attachment, handler);
     }
 
-    private <V extends Number, A> void read0(ByteBuffer readBuffer, A attachment,
+    private <V extends Number, A> void read0(
+            ByteBuffer readBuffer,
+            A attachment,
             CompletionHandler<V, ? super A> handler) {
         if (this.readCompletionHandler != null) {
             throw new ReadPendingException();
@@ -203,13 +209,23 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     @Override
-    public final <A> void read(ByteBuffer[] dsts, int offset, int length, long timeout, TimeUnit unit, A attachment,
+    public final <A> void read(
+            ByteBuffer[] dsts,
+            int offset,
+            int length,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public final <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+    public final <A> void write(
+            ByteBuffer src,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Integer, ? super A> handler) {
         if (timeout > 0) {
             throw new UnsupportedOperationException();
@@ -217,7 +233,9 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
         write0(src, attachment, handler);
     }
 
-    private <V extends Number, A> void write0(ByteBuffer writeBuffer, A attachment,
+    private <V extends Number, A> void write0(
+            ByteBuffer writeBuffer,
+            A attachment,
             CompletionHandler<V, ? super A> handler) {
         if (this.writeCompletionHandler != null) {
             throw new WritePendingException();
@@ -235,7 +253,13 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
     }
 
     @Override
-    public final <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment,
+    public final <A> void write(
+            ByteBuffer[] srcs,
+            int offset,
+            int length,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
     }
@@ -306,8 +330,8 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
             } else if (readSelectionKey == null) {
                 readWorker.addRegister(selector -> {
                     try {
-                        readSelectionKey = channel.register(selector, SelectionKey.OP_READ,
-                                AsynchronousServerChannel.this);
+                        readSelectionKey = channel
+                                .register(selector, SelectionKey.OP_READ, AsynchronousServerChannel.this);
                     } catch (ClosedChannelException e) {
                         readCompletionHandler.failed(e, readAttachment);
                     }
@@ -370,8 +394,8 @@ class AsynchronousServerChannel extends AsynchronousSocketChannel {
                         }
                     });
                 } else {
-                    AsynchronousChannelGroup.interestOps(channelGroup.writeWorker, commonSelectionKey,
-                            SelectionKey.OP_WRITE);
+                    AsynchronousChannelGroup
+                            .interestOps(channelGroup.writeWorker, commonSelectionKey, SelectionKey.OP_WRITE);
                 }
             }
         } catch (Throwable e) {

@@ -27,10 +27,8 @@
 */
 package org.miaixz.bus.storage;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -82,18 +80,22 @@ public class Context {
     /**
      * 路径样式
      */
+    @Builder.Default
     private boolean pathStyle = true;
     /**
      * 连接超时
      */
-    private long connectTimeout;
+    @Builder.Default
+    private long connectTimeout = 30;
     /**
      * 写入超时
      */
-    private long writeTimeout;
+    @Builder.Default
+    private long writeTimeout = 60;
     /**
      * 读取超时
      */
-    private long readTimeout;
+    @Builder.Default
+    private long readTimeout = 30;
 
 }

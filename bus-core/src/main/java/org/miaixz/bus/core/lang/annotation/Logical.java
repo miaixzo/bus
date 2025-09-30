@@ -46,4 +46,14 @@ public @interface Logical {
      */
     String value() default Normal.EMPTY + Normal.__1;
 
+    /**
+     * 有效状态值，默认为"1"
+     */
+    String valid() default Normal.EMPTY + Normal._1;
+
+    /**
+     * 是否使用等于条件（true: 使用等于条件, false: 使用不等于条件） 使用等于条件（如 status = 1）通常比不等于条件（如 status != -1）有更好的索引效率
+     */
+    boolean useEqualsCondition() default false;
+
 }

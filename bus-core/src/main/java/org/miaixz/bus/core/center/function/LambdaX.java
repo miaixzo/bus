@@ -115,8 +115,8 @@ public class LambdaX {
                 }
                 if (instantiatedTypeNames[i].endsWith(Symbol.SEMICOLON)) {
                     // 如果以 ";" 结尾，删除 ";"
-                    instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(0,
-                            instantiatedTypeNames[i].length() - 1);
+                    instantiatedTypeNames[i] = instantiatedTypeNames[i]
+                            .substring(0, instantiatedTypeNames[i].length() - 1);
                 }
             }
             types[i] = ClassKit.loadClass(instantiatedTypeNames[i]);

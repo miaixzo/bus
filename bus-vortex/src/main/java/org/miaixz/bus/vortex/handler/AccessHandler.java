@@ -60,8 +60,10 @@ public class AccessHandler extends AbstractHandler {
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
             // 使用 Logger 直接记录，而不是 VortexLogger
-            Logger.info("[N/A] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
-                    method, path);
+            Logger.info(
+                    "[N/A] [{}] [{}] [ACCESS_PREHANDLE] - Performing async preHandle validation for request",
+                    method,
+                    path);
 
             return true; // 假设验证通过
         });
@@ -100,7 +102,11 @@ public class AccessHandler extends AbstractHandler {
      * @return 表示异步处理完成
      */
     @Override
-    public Mono<Void> afterCompletion(ServerWebExchange exchange, Object service, Object args, Object result,
+    public Mono<Void> afterCompletion(
+            ServerWebExchange exchange,
+            Object service,
+            Object args,
+            Object result,
             Throwable exception) {
         return Mono.fromRunnable(() -> {
             // 我们需要记录基本信息，而不是尝试获取 exchange
@@ -110,7 +116,10 @@ public class AccessHandler extends AbstractHandler {
             String exceptionMsg = exception != null ? exception.getMessage() : "none";
 
             // 使用 Logger 直接记录
-            Logger.info("[N/A] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}", method, path,
+            Logger.info(
+                    "[N/A] [{}] [{}] [ACCESS_COMPLETION] - Request completed, exception: {}",
+                    method,
+                    path,
                     exceptionMsg);
         });
     }

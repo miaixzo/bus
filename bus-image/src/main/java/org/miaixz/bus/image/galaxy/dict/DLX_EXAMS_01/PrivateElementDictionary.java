@@ -52,10 +52,10 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.StenosisCalibrationRatio:
-        case PrivateTag.StenosisMagnification:
-        case PrivateTag.CardiacCalibrationRatio:
-            return VR.DS;
+            case PrivateTag.StenosisCalibrationRatio:
+            case PrivateTag.StenosisMagnification:
+            case PrivateTag.CardiacCalibrationRatio:
+                return VR.DS;
         }
         return VR.UN;
     }

@@ -145,18 +145,21 @@ public class WmiQueryHandler {
             if (!WmiKit.OHM_NAMESPACE.equals(query.getNameSpace())) {
                 final int hresult = e.getHresult() == null ? -1 : e.getHresult().intValue();
                 switch (hresult) {
-                case Wbemcli.WBEM_E_INVALID_NAMESPACE:
-                    Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());
-                    break;
-                case Wbemcli.WBEM_E_INVALID_CLASS:
-                    Logger.warn("COM exception: Invalid Class {}", query.getWmiClassName());
-                    break;
-                case Wbemcli.WBEM_E_INVALID_QUERY:
-                    Logger.warn("COM exception: Invalid Query: {}", WmiKit.queryToString(query));
-                    break;
-                default:
-                    handleComException(query, e);
-                    break;
+                    case Wbemcli.WBEM_E_INVALID_NAMESPACE:
+                        Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());
+                        break;
+
+                    case Wbemcli.WBEM_E_INVALID_CLASS:
+                        Logger.warn("COM exception: Invalid Class {}", query.getWmiClassName());
+                        break;
+
+                    case Wbemcli.WBEM_E_INVALID_QUERY:
+                        Logger.warn("COM exception: Invalid Query: {}", WmiKit.queryToString(query));
+                        break;
+
+                    default:
+                        handleComException(query, e);
+                        break;
                 }
                 failedWmiClassNames.add(query.getWmiClassName());
             }
@@ -179,7 +182,9 @@ public class WmiQueryHandler {
     protected void handleComException(WbemcliUtil.WmiQuery<?> query, COMException ex) {
         Logger.warn(
                 "COM exception querying {}, which might not be on your system. Will not attempt to query it again. Error was {}: {}",
-                query.getWmiClassName(), ex.getHresult() == null ? null : ex.getHresult().intValue(), ex.getMessage());
+                query.getWmiClassName(),
+                ex.getHresult() == null ? null : ex.getHresult().intValue(),
+                ex.getMessage());
     }
 
     /**
@@ -197,8 +202,16 @@ public class WmiQueryHandler {
         // Step 2: --------------------------------------------------
         // Set general COM security levels --------------------------
         if (comInit && !isSecurityInitialized()) {
-            WinNT.HRESULT hres = Ole32.INSTANCE.CoInitializeSecurity(null, -1, null, null,
-                    Ole32.RPC_C_AUTHN_LEVEL_DEFAULT, Ole32.RPC_C_IMP_LEVEL_IMPERSONATE, null, Ole32.EOAC_NONE, null);
+            WinNT.HRESULT hres = Ole32.INSTANCE.CoInitializeSecurity(
+                    null,
+                    -1,
+                    null,
+                    null,
+                    Ole32.RPC_C_AUTHN_LEVEL_DEFAULT,
+                    Ole32.RPC_C_IMP_LEVEL_IMPERSONATE,
+                    null,
+                    Ole32.EOAC_NONE,
+                    null);
             // If security already initialized we get RPC_E_TOO_LATE
             // This can be safely ignored
             if (COMUtils.FAILED(hres) && hres.intValue() != WinError.RPC_E_TOO_LATE) {
@@ -219,17 +232,19 @@ public class WmiQueryHandler {
     protected boolean initCOM(int coInitThreading) {
         WinNT.HRESULT hres = Ole32.INSTANCE.CoInitializeEx(null, coInitThreading);
         switch (hres.intValue()) {
-        // Successful local initialization (S_OK) or was already initialized
-        // (S_FALSE) but still needs uninit
-        case COMUtils.S_OK:
-        case COMUtils.S_FALSE:
-            return true;
-        // COM was already initialized with a different threading model
-        case WinError.RPC_E_CHANGED_MODE:
-            return false;
-        // Any other results is impossible
-        default:
-            throw new COMException("Failed to initialize COM library.", hres);
+            // Successful local initialization (S_OK) or was already initialized
+            // (S_FALSE) but still needs uninit
+            case COMUtils.S_OK:
+            case COMUtils.S_FALSE:
+                return true;
+
+            // COM was already initialized with a different threading model
+            case WinError.RPC_E_CHANGED_MODE:
+                return false;
+
+            // Any other results is impossible
+            default:
+                throw new COMException("Failed to initialize COM library.", hres);
         }
     }
 

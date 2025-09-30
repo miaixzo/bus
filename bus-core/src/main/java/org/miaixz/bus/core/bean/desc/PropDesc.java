@@ -298,7 +298,10 @@ public class PropDesc {
      * @param ignoreError 是否忽略错误，包括转换错误和注入错误
      * @return this
      */
-    public PropDesc setValue(final Object bean, final Object value, final boolean ignoreNull,
+    public PropDesc setValue(
+            final Object bean,
+            final Object value,
+            final boolean ignoreNull,
             final boolean ignoreError) {
         return setValue(bean, value, ignoreNull, ignoreError, true);
     }
@@ -394,7 +397,11 @@ public class PropDesc {
      * @param override    是否覆盖目标值，如果不覆盖，会先读取bean的值，{@code null}则写，否则忽略。如果覆盖，则不判断直接写
      * @return this
      */
-    public PropDesc setValue(final Object bean, Object value, final boolean ignoreNull, final boolean ignoreError,
+    public PropDesc setValue(
+            final Object bean,
+            Object value,
+            final boolean ignoreNull,
+            final boolean ignoreError,
             final boolean override) {
         if (null == value && ignoreNull) {
             return this;

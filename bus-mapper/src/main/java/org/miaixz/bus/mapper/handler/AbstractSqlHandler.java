@@ -138,8 +138,11 @@ public abstract class AbstractSqlHandler {
      * @return 元数据对象
      */
     public static MetaObject getMetaObject(Object object) {
-        return MetaObject.forObject(object, SystemMetaObject.DEFAULT_OBJECT_FACTORY,
-                SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
+        return MetaObject.forObject(
+                object,
+                SystemMetaObject.DEFAULT_OBJECT_FACTORY,
+                SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY,
+                DEFAULT_REFLECTOR_FACTORY);
     }
 
     /**

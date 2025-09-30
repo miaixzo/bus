@@ -115,6 +115,7 @@ public class Range<T> implements Iterable<T>, Serializable {
     @Override
     public Iterator<T> iterator() {
         return new Iterator<>() {
+
             /**
              * 索引
              */
@@ -207,6 +208,7 @@ public class Range<T> implements Iterable<T>, Serializable {
      * @param <T> 需要增加步进的对象
      */
     public interface Stepper<T> {
+
         /**
          * 增加步进<br>
          * 增加步进后的返回值如果为{@code null}则表示步进结束<br>

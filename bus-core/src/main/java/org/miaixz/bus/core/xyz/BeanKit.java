@@ -136,10 +136,11 @@ public class BeanKit {
      * @return 字段名和字段描述Map
      * @throws BeanException 获取属性异常
      */
-    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(final Class<?> clazz,
+    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(
+            final Class<?> clazz,
             final boolean ignoreCase) throws BeanException {
-        return BeanCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase,
-                () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
+        return BeanCache.INSTANCE
+                .getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
     }
 
     /**
@@ -150,7 +151,8 @@ public class BeanKit {
      * @return 字段名和字段描述Map
      * @throws BeanException 获取属性异常
      */
-    private static Map<String, PropertyDescriptor> internalGetPropertyDescriptorMap(final Class<?> clazz,
+    private static Map<String, PropertyDescriptor> internalGetPropertyDescriptorMap(
+            final Class<?> clazz,
             final boolean ignoreCase) throws BeanException {
         final PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(clazz);
         final Map<String, PropertyDescriptor> map = ignoreCase
@@ -185,7 +187,9 @@ public class BeanKit {
      * @return PropertyDescriptor
      * @throws BeanException 获取属性异常
      */
-    public static PropertyDescriptor getPropertyDescriptor(final Class<?> clazz, final String fieldName,
+    public static PropertyDescriptor getPropertyDescriptor(
+            final Class<?> clazz,
+            final String fieldName,
             final boolean ignoreCase) throws BeanException {
         final Map<String, PropertyDescriptor> map = getPropertyDescriptorMap(clazz, ignoreCase);
         return (null == map) ? null : map.get(fieldName);
@@ -318,7 +322,9 @@ public class BeanKit {
      * @param copyOptions   拷贝选项，见 {@link CopyOptions}
      * @return Bean
      */
-    public static <T> T fillBean(final T bean, final ValueProvider<String> valueProvider,
+    public static <T> T fillBean(
+            final T bean,
+            final ValueProvider<String> valueProvider,
             final CopyOptions copyOptions) {
         if (null == valueProvider) {
             return bean;
@@ -385,7 +391,9 @@ public class BeanKit {
      * @param ignoreNullValue   是否忽略值为空的字段
      * @return Map
      */
-    public static Map<String, Object> beanToMap(final Object bean, final boolean isToUnderlineCase,
+    public static Map<String, Object> beanToMap(
+            final Object bean,
+            final boolean isToUnderlineCase,
             final boolean ignoreNullValue) {
         if (null == bean) {
             return null;
@@ -402,8 +410,11 @@ public class BeanKit {
      * @param ignoreNullValue   是否忽略值为空的字段
      * @return Map
      */
-    public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap,
-            final boolean isToUnderlineCase, final boolean ignoreNullValue) {
+    public static Map<String, Object> beanToMap(
+            final Object bean,
+            final Map<String, Object> targetMap,
+            final boolean isToUnderlineCase,
+            final boolean ignoreNullValue) {
         if (null == bean) {
             return null;
         }
@@ -431,8 +442,11 @@ public class BeanKit {
      * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key，如果这个Editor返回null则忽略这个字段
      * @return Map
      */
-    public static <V> Map<String, V> beanToMap(final Object bean, final Map<String, V> targetMap,
-            final boolean ignoreNullValue, final UnaryOperator<MutableEntry<Object, Object>> keyEditor) {
+    public static <V> Map<String, V> beanToMap(
+            final Object bean,
+            final Map<String, V> targetMap,
+            final boolean ignoreNullValue,
+            final UnaryOperator<MutableEntry<Object, Object>> keyEditor) {
         if (null == bean) {
             return null;
         }
@@ -459,7 +473,9 @@ public class BeanKit {
      * @param copyOptions 拷贝选项
      * @return Map
      */
-    public static <V> Map<String, V> beanToMap(final Object bean, final Map<String, V> targetMap,
+    public static <V> Map<String, V> beanToMap(
+            final Object bean,
+            final Map<String, V> targetMap,
             final CopyOptions copyOptions) {
         if (null == bean) {
             return null;
@@ -552,7 +568,9 @@ public class BeanKit {
      * @param <T>         Bean类型
      * @return 复制后的List
      */
-    public static <T> List<T> copyToList(final Collection<?> collection, final Class<T> targetType,
+    public static <T> List<T> copyToList(
+            final Collection<?> collection,
+            final Class<T> targetType,
             final CopyOptions copyOptions) {
         if (null == collection) {
             return null;
@@ -667,8 +685,10 @@ public class BeanKit {
         }
 
         // 相当于 hasNoneNullField
-        return checkBean(bean, field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
-                && null != FieldKit.getFieldValue(bean, field));
+        return checkBean(
+                bean,
+                field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
+                        && null != FieldKit.getFieldValue(bean, field));
     }
 
     /**
@@ -804,8 +824,10 @@ public class BeanKit {
      * @return 是否包含值为{@code null}的属性，{@code true} - 包含 / {@code false} - 不包含
      */
     public static boolean hasNullField(final Object bean, final String... ignoreFieldNames) {
-        return checkBean(bean, field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
-                && null == FieldKit.getFieldValue(bean, field));
+        return checkBean(
+                bean,
+                field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
+                        && null == FieldKit.getFieldValue(bean, field));
     }
 
     /**
@@ -816,8 +838,10 @@ public class BeanKit {
      * @return 是否包含值为{@code null}的属性，{@code true} - 包含 / {@code false} - 不包含
      */
     public static boolean hasEmptyField(final Object bean, final String... ignoreFieldNames) {
-        return checkBean(bean, field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
-                && ObjectKit.isEmptyIfString(FieldKit.getFieldValue(bean, field)));
+        return checkBean(
+                bean,
+                field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
+                        && ObjectKit.isEmptyIfString(FieldKit.getFieldValue(bean, field)));
     }
 
     /**

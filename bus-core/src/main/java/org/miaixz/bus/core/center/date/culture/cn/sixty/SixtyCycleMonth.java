@@ -42,6 +42,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
  * @since Java 17+
  */
 public class SixtyCycleMonth extends Loops {
+
     /**
      * 干支年
      */

@@ -63,10 +63,10 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
      */
     private static final long USER_HZ = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
     private static final int SBITS = querySbits();
-    private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoizer.memoize(PerfstatCpu::queryCpuTotal,
-            Memoizer.defaultExpiration());
-    private final Supplier<perfstat_cpu_t[]> cpuProc = Memoizer.memoize(PerfstatCpu::queryCpu,
-            Memoizer.defaultExpiration());
+    private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoizer
+            .memoize(PerfstatCpu::queryCpuTotal, Memoizer.defaultExpiration());
+    private final Supplier<perfstat_cpu_t[]> cpuProc = Memoizer
+            .memoize(PerfstatCpu::queryCpu, Memoizer.defaultExpiration());
     private perfstat_partition_config_t config;
 
     private static int querySbits() {
@@ -146,8 +146,9 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         for (int proc = 0; proc < lcpus; proc++) {
             Pair<Integer, Integer> nodePkg = nodePkgMap.get(proc);
             int physProc = proc / lpPerPp;
-            logProcs.add(new CentralProcessor.LogicalProcessor(proc, physProc, nodePkg == null ? 0 : nodePkg.getRight(),
-                    nodePkg == null ? 0 : nodePkg.getLeft()));
+            logProcs.add(
+                    new CentralProcessor.LogicalProcessor(proc, physProc, nodePkg == null ? 0 : nodePkg.getRight(),
+                            nodePkg == null ? 0 : nodePkg.getLeft()));
         }
         return new Tuple(logProcs, null, getCachesForModel(physProcs), Collections.emptyList());
     }
@@ -158,40 +159,56 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         List<CentralProcessor.ProcessorCache> caches = new ArrayList<>();
         int powerVersion = Parsing.getFirstIntValue(Executor.getFirstAnswer("uname -n"));
         switch (powerVersion) {
-        case 7:
-            caches.add(new CentralProcessor.ProcessorCache(3, 8, 128, (2 * 32) << 20,
-                    CentralProcessor.ProcessorCache.Type.UNIFIED));
-            caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 256 << 10,
-                    CentralProcessor.ProcessorCache.Type.UNIFIED));
-            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
-                    CentralProcessor.ProcessorCache.Type.DATA));
-            caches.add(new CentralProcessor.ProcessorCache(1, 4, 128, 32 << 10,
-                    CentralProcessor.ProcessorCache.Type.INSTRUCTION));
-            break;
-        case 8:
-            caches.add(new CentralProcessor.ProcessorCache(4, 8, 128, (16 * 16) << 20,
-                    CentralProcessor.ProcessorCache.Type.UNIFIED));
-            caches.add(new CentralProcessor.ProcessorCache(3, 8, 128, 40 << 20,
-                    CentralProcessor.ProcessorCache.Type.UNIFIED));
-            caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10,
-                    CentralProcessor.ProcessorCache.Type.UNIFIED));
-            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 64 << 10,
-                    CentralProcessor.ProcessorCache.Type.DATA));
-            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
-                    CentralProcessor.ProcessorCache.Type.INSTRUCTION));
-            break;
-        case 9:
-            caches.add(new CentralProcessor.ProcessorCache(3, 20, 128, (cores * 10L) << 20,
-                    CentralProcessor.ProcessorCache.Type.UNIFIED));
-            caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10,
-                    CentralProcessor.ProcessorCache.Type.UNIFIED));
-            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
-                    CentralProcessor.ProcessorCache.Type.DATA));
-            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
-                    CentralProcessor.ProcessorCache.Type.INSTRUCTION));
-            break;
-        default:
-            // Don't guess
+            case 7:
+                caches.add(
+                        new CentralProcessor.ProcessorCache(3, 8, 128, (2 * 32) << 20,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(2, 8, 128, 256 << 10,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                                CentralProcessor.ProcessorCache.Type.DATA));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 4, 128, 32 << 10,
+                                CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                break;
+
+            case 8:
+                caches.add(
+                        new CentralProcessor.ProcessorCache(4, 8, 128, (16 * 16) << 20,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(3, 8, 128, 40 << 20,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 8, 128, 64 << 10,
+                                CentralProcessor.ProcessorCache.Type.DATA));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                                CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                break;
+
+            case 9:
+                caches.add(
+                        new CentralProcessor.ProcessorCache(3, 20, 128, (cores * 10L) << 20,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                                CentralProcessor.ProcessorCache.Type.DATA));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                                CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                break;
+
+            default:
+                // Don't guess
         }
         return caches;
     }

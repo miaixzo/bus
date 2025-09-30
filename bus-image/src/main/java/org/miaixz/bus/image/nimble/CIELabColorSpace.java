@@ -109,6 +109,7 @@ public class CIELabColorSpace extends ColorSpace {
     }
 
     private static class LazyHolder {
+
         static final CIELabColorSpace INSTANCE = new CIELabColorSpace(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ));
     }
 

@@ -41,13 +41,6 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
     CoreFoundation INSTANCE = Native.load("CoreFoundation", CoreFoundation.class);
 
     /**
-     * The CFLocale opaque type provides support for obtaining available locales, obtaining localized locale names, and
-     * converting among locale data formats.
-     */
-    class CFLocale extends CFTypeRef {
-    }
-
-    /**
      * Returns a copy of the logical locale for the current user.
      *
      * @return The logical locale for the current user that is formed from the settings for the current user’s chosen
@@ -59,17 +52,11 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
     CFLocale CFLocaleCopyCurrent();
 
     /**
-     * CFDateFormatter objects format the textual representations of CFDate and CFAbsoluteTime objects, and convert
-     * textual representations of dates and times into CFDate and CFAbsoluteTime objects.
-     */
-    class CFDateFormatter extends CFTypeRef {
-    }
-
-    /**
      * Enum of values used for {@link CFDateFormatterStyle} in {@link #CFDateFormatterCreate}. Use
      * {@link CFDateFormatterStyle#index} for the expected integer value corresponding to the C-style enum.
      */
     enum CFDateFormatterStyle {
+
         kCFDateFormatterNoStyle, kCFDateFormatterShortStyle, kCFDateFormatterMediumStyle, kCFDateFormatterLongStyle,
         kCFDateFormatterFullStyle;
 
@@ -98,7 +85,10 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
      *         <p>
      *         This reference must be released with {@link #CFRelease} to avoid leaking references.
      */
-    CFDateFormatter CFDateFormatterCreate(CFAllocatorRef allocator, CFLocale locale, CFIndex dateStyle,
+    CFDateFormatter CFDateFormatterCreate(
+            CFAllocatorRef allocator,
+            CFLocale locale,
+            CFIndex dateStyle,
             CFIndex timeStyle);
 
     /**

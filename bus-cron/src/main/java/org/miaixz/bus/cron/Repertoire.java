@@ -290,8 +290,12 @@ public class Repertoire implements Serializable {
         final int size = this.size();
         final StringBuilder builder = StringKit.builder();
         for (int i = 0; i < size; i++) {
-            builder.append(StringKit.format("[{}] [{}] [{}]\n", this.table.getLeft(i), this.table.getMiddle(i),
-                    this.table.getRight(i)));
+            builder.append(
+                    StringKit.format(
+                            "[{}] [{}] [{}]\n",
+                            this.table.getLeft(i),
+                            this.table.getMiddle(i),
+                            this.table.getRight(i)));
         }
         return builder.toString();
     }

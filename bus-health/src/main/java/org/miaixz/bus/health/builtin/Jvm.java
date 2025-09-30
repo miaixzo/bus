@@ -41,6 +41,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class Jvm {
+
     /**
      * JDK 版本
      */

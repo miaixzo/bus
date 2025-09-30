@@ -79,13 +79,14 @@ public class Soundex implements FuzzyString {
         for (; i < in.length && j < codeLength; i++) {
             curout = map(in[i]);
             switch (curout) {
-            case '\0':
-                prevout = curout;
-            case '\1':
-                break;
-            default:
-                if (curout != prevout)
-                    out[j++] = prevout = curout;
+                case '\0':
+                    prevout = curout;
+                case '\1':
+                    break;
+
+                default:
+                    if (curout != prevout)
+                        out[j++] = prevout = curout;
             }
         }
         while (j < padLength)

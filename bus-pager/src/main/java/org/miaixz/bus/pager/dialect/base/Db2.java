@@ -44,7 +44,11 @@ import org.miaixz.bus.pager.dialect.AbstractPaging;
 public class Db2 extends AbstractPaging {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql,
+    public Object processPageParameter(
+            MappedStatement ms,
+            Map<String, Object> paramMap,
+            Page page,
+            BoundSql boundSql,
             CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
         paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());

@@ -634,9 +634,10 @@ public class IPv4 {
         final StringBuilder sb = StringKit.builder(15);
         for (long ip = ipFrom, end = ipTo + 1; ip < end; ip++) {
             sb.setLength(0);
-            ips.add(sb.append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT).append((int) (ip >> 16) & 0xFF)
-                    .append(Symbol.C_DOT).append((int) (ip >> 8) & 0xFF).append(Symbol.C_DOT).append((int) ip & 0xFF)
-                    .toString());
+            ips.add(
+                    sb.append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT).append((int) (ip >> 16) & 0xFF)
+                            .append(Symbol.C_DOT).append((int) (ip >> 8) & 0xFF).append(Symbol.C_DOT)
+                            .append((int) ip & 0xFF).toString());
         }
         return ips;
     }
@@ -737,7 +738,9 @@ public class IPv4 {
      * @return 子网内地址总数
      */
     public static int countByMaskBit(final int maskBit, final boolean isAll) {
-        Assert.isTrue(maskBit > IPV4_MASK_BIT_VALID_MIN && maskBit <= IPV4_MASK_BIT_MAX, "Not support mask bit: {}",
+        Assert.isTrue(
+                maskBit > IPV4_MASK_BIT_VALID_MIN && maskBit <= IPV4_MASK_BIT_MAX,
+                "Not support mask bit: {}",
                 maskBit);
         // 如果掩码位等于32，则可用地址为0
         if (maskBit == IPV4_MASK_BIT_MAX && !isAll) {
@@ -906,16 +909,20 @@ public class IPv4 {
      */
     public static int getPartOfIp(final long ip, final int position) {
         switch (position) {
-        case 1:
-            return (int) (ip >> 24) & 0xFF;
-        case 2:
-            return (int) (ip >> 16) & 0xFF;
-        case 3:
-            return (int) (ip >> 8) & 0xFF;
-        case 4:
-            return (int) ip & 0xFF;
-        default:
-            throw new IllegalArgumentException("Illegal position of ip Long: " + position);
+            case 1:
+                return (int) (ip >> 24) & 0xFF;
+
+            case 2:
+                return (int) (ip >> 16) & 0xFF;
+
+            case 3:
+                return (int) (ip >> 8) & 0xFF;
+
+            case 4:
+                return (int) ip & 0xFF;
+
+            default:
+                throw new IllegalArgumentException("Illegal position of ip Long: " + position);
         }
     }
 

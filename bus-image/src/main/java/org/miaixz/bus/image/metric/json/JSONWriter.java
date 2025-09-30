@@ -129,6 +129,7 @@ public class JSONWriter implements ImageInputHandler {
         final SpecificCharacterSet cs = attrs.getSpecificCharacterSet();
         try {
             attrs.accept(new Visitor() {
+
                 @Override
                 public boolean visit(Attributes attrs, int tag, VR vr, Object value) throws Exception {
                     writeAttribute(tag, vr, value, cs, attrs);
@@ -218,55 +219,62 @@ public class JSONWriter implements ImageInputHandler {
 
     private void writeValue(VR vr, Object val, boolean bigEndian, SpecificCharacterSet cs, boolean preserve) {
         switch (vr) {
-        case AE:
-        case AS:
-        case AT:
-        case CS:
-        case DA:
-        case DS:
-        case DT:
-        case IS:
-        case LO:
-        case LT:
-        case PN:
-        case SH:
-        case ST:
-        case TM:
-        case UC:
-        case UI:
-        case UR:
-        case UT:
-            writeStringValues(vr, val, bigEndian, cs);
-            break;
-        case FL:
-        case FD:
-            writeDoubleValues(vr, val, bigEndian);
-            break;
-        case SL:
-        case SS:
-        case US:
-            writeIntValues(vr, val, bigEndian);
-            break;
-        case SV:
-            writeLongValues(Long::toString, vr, val, bigEndian);
-            break;
-        case UV:
-            writeLongValues(Long::toUnsignedString, vr, val, bigEndian);
-            break;
-        case UL:
-            writeUIntValues(vr, val, bigEndian);
-            break;
-        case OB:
-        case OD:
-        case OF:
-        case OL:
-        case OV:
-        case OW:
-        case UN:
-            writeInlineBinary(vr, (byte[]) val, bigEndian, preserve);
-            break;
-        case SQ:
-            assert true;
+            case AE:
+            case AS:
+            case AT:
+            case CS:
+            case DA:
+            case DS:
+            case DT:
+            case IS:
+            case LO:
+            case LT:
+            case PN:
+            case SH:
+            case ST:
+            case TM:
+            case UC:
+            case UI:
+            case UR:
+            case UT:
+                writeStringValues(vr, val, bigEndian, cs);
+                break;
+
+            case FL:
+            case FD:
+                writeDoubleValues(vr, val, bigEndian);
+                break;
+
+            case SL:
+            case SS:
+            case US:
+                writeIntValues(vr, val, bigEndian);
+                break;
+
+            case SV:
+                writeLongValues(Long::toString, vr, val, bigEndian);
+                break;
+
+            case UV:
+                writeLongValues(Long::toUnsignedString, vr, val, bigEndian);
+                break;
+
+            case UL:
+                writeUIntValues(vr, val, bigEndian);
+                break;
+
+            case OB:
+            case OD:
+            case OF:
+            case OL:
+            case OV:
+            case OW:
+            case UN:
+                writeInlineBinary(vr, (byte[]) val, bigEndian, preserve);
+                break;
+
+            case SQ:
+                assert true;
         }
     }
 
@@ -279,30 +287,33 @@ public class JSONWriter implements ImageInputHandler {
                 gen.writeNull();
             else
                 switch (vr) {
-                case DS:
-                    if (jsonTypeByVR.get(VR.DS) == JsonValue.ValueType.NUMBER) {
-                        try {
-                            gen.write(Builder.parseDS(s));
-                        } catch (NumberFormatException e) {
-                            Logger.info("illegal DS value: {} - encoded as string", s);
+                    case DS:
+                        if (jsonTypeByVR.get(VR.DS) == JsonValue.ValueType.NUMBER) {
+                            try {
+                                gen.write(Builder.parseDS(s));
+                            } catch (NumberFormatException e) {
+                                Logger.info("illegal DS value: {} - encoded as string", s);
+                                gen.write(s);
+                            }
+                        } else {
                             gen.write(s);
                         }
-                    } else {
+                        break;
+
+                    case IS:
+                        if (jsonTypeByVR.get(VR.IS) == JsonValue.ValueType.NUMBER) {
+                            writeNumber(s);
+                        } else {
+                            gen.write(s);
+                        }
+                        break;
+
+                    case PN:
+                        writePersonName(s);
+                        break;
+
+                    default:
                         gen.write(s);
-                    }
-                    break;
-                case IS:
-                    if (jsonTypeByVR.get(VR.IS) == JsonValue.ValueType.NUMBER) {
-                        writeNumber(s);
-                    } else {
-                        gen.write(s);
-                    }
-                    break;
-                case PN:
-                    writePersonName(s);
-                    break;
-                default:
-                    gen.write(s);
                 }
         }
         gen.writeEnd();

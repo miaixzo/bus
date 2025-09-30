@@ -291,60 +291,68 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         Object value = null;
 
         switch (record.getSid()) {
-        case BlankRecord.sid:
-            // 空白记录
-            addToRowCellList(((BlankRecord) record), Normal.EMPTY);
-            break;
-        case BoolErrRecord.sid:
-            // 布尔类型
-            final BoolErrRecord berec = (BoolErrRecord) record;
-            addToRowCellList(berec, berec.getBooleanValue());
-            break;
-        case FormulaRecord.sid:
-            // 公式类型
-            final FormulaRecord formulaRec = (FormulaRecord) record;
-            if (isOutputFormulaValues) {
-                if (Double.isNaN(formulaRec.getValue())) {
-                    // Formula result is a string
-                    // This is stored in the next record
-                    isOutputNextStringRecord = true;
+            case BlankRecord.sid:
+                // 空白记录
+                addToRowCellList(((BlankRecord) record), Normal.EMPTY);
+                break;
+
+            case BoolErrRecord.sid:
+                // 布尔类型
+                final BoolErrRecord berec = (BoolErrRecord) record;
+                addToRowCellList(berec, berec.getBooleanValue());
+                break;
+
+            case FormulaRecord.sid:
+                // 公式类型
+                final FormulaRecord formulaRec = (FormulaRecord) record;
+                if (isOutputFormulaValues) {
+                    if (Double.isNaN(formulaRec.getValue())) {
+                        // Formula result is a string
+                        // This is stored in the next record
+                        isOutputNextStringRecord = true;
+                    } else {
+                        value = ExcelSaxKit
+                                .getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
+                    }
                 } else {
-                    value = ExcelSaxKit.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
+                    value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
                 }
-            } else {
-                value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
-            }
-            addToRowCellList(formulaRec, value);
-            break;
-        case StringRecord.sid:
-            // 单元格中公式的字符串
-            if (isOutputNextStringRecord) {
-                // String for formula
-                // value = ((StringRecord) record).getString();
-                isOutputNextStringRecord = false;
-            }
-            break;
-        case LabelRecord.sid:
-            final LabelRecord lrec = (LabelRecord) record;
-            value = lrec.getValue();
-            addToRowCellList(lrec, value);
-            break;
-        case LabelSSTRecord.sid:
-            // 字符串类型
-            final LabelSSTRecord lsrec = (LabelSSTRecord) record;
-            if (null != sstRecord) {
-                value = sstRecord.getString(lsrec.getSSTIndex()).toString();
-            }
-            addToRowCellList(lsrec, ObjectKit.defaultIfNull(value, Normal.EMPTY));
-            break;
-        case NumberRecord.sid: // 数字类型
-            final NumberRecord numrec = (NumberRecord) record;
-            value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
-            // 向容器加入列值
-            addToRowCellList(numrec, value);
-            break;
-        default:
-            break;
+                addToRowCellList(formulaRec, value);
+                break;
+
+            case StringRecord.sid:
+                // 单元格中公式的字符串
+                if (isOutputNextStringRecord) {
+                    // String for formula
+                    // value = ((StringRecord) record).getString();
+                    isOutputNextStringRecord = false;
+                }
+                break;
+
+            case LabelRecord.sid:
+                final LabelRecord lrec = (LabelRecord) record;
+                value = lrec.getValue();
+                addToRowCellList(lrec, value);
+                break;
+
+            case LabelSSTRecord.sid:
+                // 字符串类型
+                final LabelSSTRecord lsrec = (LabelSSTRecord) record;
+                if (null != sstRecord) {
+                    value = sstRecord.getString(lsrec.getSSTIndex()).toString();
+                }
+                addToRowCellList(lsrec, ObjectKit.defaultIfNull(value, Normal.EMPTY));
+                break;
+
+            case NumberRecord.sid: // 数字类型
+                final NumberRecord numrec = (NumberRecord) record;
+                value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
+                // 向容器加入列值
+                addToRowCellList(numrec, value);
+                break;
+
+            default:
+                break;
         }
     }
 

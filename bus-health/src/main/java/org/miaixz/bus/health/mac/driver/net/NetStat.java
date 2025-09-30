@@ -98,7 +98,8 @@ public final class NetStat {
                         IFmsgHdr2 if2m = new IFmsgHdr2(p);
                         if2m.read();
                         if (index < 0 || index == if2m.ifm_index) {
-                            data.put((int) if2m.ifm_index,
+                            data.put(
+                                    (int) if2m.ifm_index,
                                     new IFdata(0xff & if2m.ifm_data.ifi_type, if2m.ifm_data.ifi_opackets,
                                             if2m.ifm_data.ifi_ipackets, if2m.ifm_data.ifi_obytes,
                                             if2m.ifm_data.ifi_ibytes, if2m.ifm_data.ifi_oerrors,
@@ -120,6 +121,7 @@ public final class NetStat {
      */
     @Immutable
     public static class IFdata {
+
         private final int ifType;
         private final long oPackets;
         private final long iPackets;

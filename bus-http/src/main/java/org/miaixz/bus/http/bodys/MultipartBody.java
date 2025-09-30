@@ -112,18 +112,21 @@ public class MultipartBody extends RequestBody {
         for (int i = 0, len = key.length(); i < len; i++) {
             char ch = key.charAt(i);
             switch (ch) {
-            case Symbol.C_LF:
-                target.append("%0A");
-                break;
-            case Symbol.C_CR:
-                target.append("%0D");
-                break;
-            case Symbol.C_DOUBLE_QUOTES:
-                target.append("%22");
-                break;
-            default:
-                target.append(ch);
-                break;
+                case Symbol.C_LF:
+                    target.append("%0A");
+                    break;
+
+                case Symbol.C_CR:
+                    target.append("%0D");
+                    break;
+
+                case Symbol.C_DOUBLE_QUOTES:
+                    target.append("%22");
+                    break;
+
+                default:
+                    target.append(ch);
+                    break;
             }
         }
         target.append(Symbol.C_DOUBLE_QUOTES);

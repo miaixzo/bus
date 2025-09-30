@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.MedComOOGType:
-            return "MedComOOGType";
-        case PrivateTag.MedComOOGVersion:
-            return "MedComOOGVersion";
-        case PrivateTag.MedComOOGInfo:
-            return "MedComOOGInfo";
+            case PrivateTag.MedComOOGType:
+                return "MedComOOGType";
+
+            case PrivateTag.MedComOOGVersion:
+                return "MedComOOGVersion";
+
+            case PrivateTag.MedComOOGInfo:
+                return "MedComOOGInfo";
         }
         return "";
     }

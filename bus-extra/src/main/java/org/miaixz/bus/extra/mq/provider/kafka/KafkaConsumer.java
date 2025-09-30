@@ -117,6 +117,7 @@ public class KafkaConsumer implements Consumer {
      * 消费者记录包装为消息 将Kafka的ConsumerRecord包装为统一的Message接口实现
      */
     private static class ConsumerRecordMessage implements Message {
+
         /**
          * Kafka消费者记录
          */

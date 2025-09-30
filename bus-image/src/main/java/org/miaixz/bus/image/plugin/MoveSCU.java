@@ -212,6 +212,7 @@ public class MoveSCU extends Device implements AutoCloseable {
     }
 
     public enum InformationModel {
+
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelMove.uid, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelMove.uid, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelMove.uid, "STUDY"),

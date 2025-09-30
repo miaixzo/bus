@@ -111,41 +111,50 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                             UdevDevice device = udev.deviceNewFromSyspath(syspath);
                             if (device != null) {
                                 try {
-                                    if (Parsing.parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_PRESENT"),
-                                            1) > 0
-                                            && Parsing.parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_ONLINE"),
+                                    if (Parsing
+                                            .parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_PRESENT"), 1) > 0
+                                            && Parsing.parseIntOrDefault(
+                                                    device.getPropertyValue("POWER_SUPPLY_ONLINE"),
                                                     1) > 0) {
                                         psName = getOrDefault(device, "POWER_SUPPLY_NAME", name);
                                         String status = device.getPropertyValue("POWER_SUPPLY_STATUS");
                                         psCharging = "Charging".equals(status);
                                         psDischarging = "Discharging".equals(status);
                                         psRemainingCapacityPercent = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_CAPACITY"), -100) / 100d;
+                                                device.getPropertyValue("POWER_SUPPLY_CAPACITY"),
+                                                -100) / 100d;
 
                                         // Debian/Ubuntu provides Energy. Fedora/RHEL provides Charge.
                                         psCurrentCapacity = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_NOW"), -1);
+                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_NOW"),
+                                                -1);
                                         if (psCurrentCapacity < 0) {
                                             psCurrentCapacity = Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_NOW"), -1);
+                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_NOW"),
+                                                    -1);
                                         }
                                         psMaxCapacity = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_FULL"), 1);
+                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_FULL"),
+                                                1);
                                         if (psMaxCapacity < 0) {
                                             psMaxCapacity = Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_FULL"), 1);
+                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_FULL"),
+                                                    1);
                                         }
                                         psDesignCapacity = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_FULL_DESIGN"), 1);
+                                                device.getPropertyValue("POWER_SUPPLY_ENERGY_FULL_DESIGN"),
+                                                1);
                                         if (psDesignCapacity < 0) {
                                             psDesignCapacity = Parsing.parseIntOrDefault(
-                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_FULL_DESIGN"), 1);
+                                                    device.getPropertyValue("POWER_SUPPLY_CHARGE_FULL_DESIGN"),
+                                                    1);
                                         }
 
                                         // Debian/Ubuntu provides Voltage and Power.
                                         // Fedora/RHEL provides Voltage and Current.
                                         psVoltage = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_VOLTAGE_NOW"), -1);
+                                                device.getPropertyValue("POWER_SUPPLY_VOLTAGE_NOW"),
+                                                -1);
                                         // From Physics we know P = IV so I = P/V
                                         if (psVoltage > 0) {
                                             String power = device.getPropertyValue("POWER_SUPPLY_POWER_NOW");
@@ -163,21 +172,27 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                                         }
 
                                         psCycleCount = Parsing.parseIntOrDefault(
-                                                device.getPropertyValue("POWER_SUPPLY_CYCLE_COUNT"), -1);
+                                                device.getPropertyValue("POWER_SUPPLY_CYCLE_COUNT"),
+                                                -1);
                                         psChemistry = getOrDefault(device, "POWER_SUPPLY_TECHNOLOGY", Normal.UNKNOWN);
                                         psDeviceName = getOrDefault(device, "POWER_SUPPLY_MODEL_NAME", Normal.UNKNOWN);
-                                        psManufacturer = getOrDefault(device, "POWER_SUPPLY_MANUFACTURER",
+                                        psManufacturer = getOrDefault(
+                                                device,
+                                                "POWER_SUPPLY_MANUFACTURER",
                                                 Normal.UNKNOWN);
-                                        psSerialNumber = getOrDefault(device, "POWER_SUPPLY_SERIAL_NUMBER",
+                                        psSerialNumber = getOrDefault(
+                                                device,
+                                                "POWER_SUPPLY_SERIAL_NUMBER",
                                                 Normal.UNKNOWN);
 
-                                        psList.add(new LinuxPowerSource(psName, psDeviceName,
-                                                psRemainingCapacityPercent, psTimeRemainingEstimated,
-                                                psTimeRemainingInstant, psPowerUsageRate, psVoltage, psAmperage,
-                                                psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
-                                                psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount,
-                                                psChemistry, psManufactureDate, psManufacturer, psSerialNumber,
-                                                psTemperature));
+                                        psList.add(
+                                                new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
+                                                        psTimeRemainingEstimated, psTimeRemainingInstant,
+                                                        psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine,
+                                                        psCharging, psDischarging, psCapacityUnits, psCurrentCapacity,
+                                                        psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
+                                                        psManufactureDate, psManufacturer, psSerialNumber,
+                                                        psTemperature));
                                     }
                                 } finally {
                                     device.unref();
@@ -265,11 +280,12 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                     psManufacturer = psMap.getOrDefault("POWER_SUPPLY_MANUFACTURER", Normal.UNKNOWN);
                     psSerialNumber = psMap.getOrDefault("POWER_SUPPLY_SERIAL_NUMBER", Normal.UNKNOWN);
                     if (Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_PRESENT"), 1) > 0) {
-                        psList.add(new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
-                                psTimeRemainingEstimated, psTimeRemainingInstant, psPowerUsageRate, psVoltage,
-                                psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
-                                psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
-                                psManufactureDate, psManufacturer, psSerialNumber, psTemperature));
+                        psList.add(
+                                new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
+                                        psTimeRemainingEstimated, psTimeRemainingInstant, psPowerUsageRate, psVoltage,
+                                        psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
+                                        psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
+                                        psManufactureDate, psManufacturer, psSerialNumber, psTemperature));
                     }
                 }
             }

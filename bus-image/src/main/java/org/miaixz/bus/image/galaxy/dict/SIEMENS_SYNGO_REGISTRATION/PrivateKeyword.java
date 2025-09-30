@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.RegisteredImageSequence:
-            return "RegisteredImageSequence";
-        case PrivateTag.RegistrationIsValidatedFlag:
-            return "RegistrationIsValidatedFlag";
+            case PrivateTag.RegisteredImageSequence:
+                return "RegisteredImageSequence";
+
+            case PrivateTag.RegistrationIsValidatedFlag:
+                return "RegistrationIsValidatedFlag";
         }
         return "";
     }

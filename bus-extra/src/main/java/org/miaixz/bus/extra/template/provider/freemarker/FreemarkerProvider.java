@@ -93,28 +93,32 @@ public class FreemarkerProvider implements TemplateProvider {
         cfg.setDefaultEncoding(config.getCharset().toString());
 
         switch (config.getResourceMode()) {
-        case CLASSPATH:
-            cfg.setTemplateLoader(new ClassTemplateLoader(ClassKit.getClassLoader(), config.getPath()));
-            break;
-        case FILE:
-            try {
-                cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(config.getPath())));
-            } catch (final IOException e) {
-                throw new InternalException(e);
-            }
-            break;
-        case WEB_ROOT:
-            try {
-                cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(FileKit.getWebRoot(), config.getPath())));
-            } catch (final IOException e) {
-                throw new InternalException(e);
-            }
-            break;
-        case STRING:
-            cfg.setTemplateLoader(new SimpleStringTemplateLoader());
-            break;
-        default:
-            break;
+            case CLASSPATH:
+                cfg.setTemplateLoader(new ClassTemplateLoader(ClassKit.getClassLoader(), config.getPath()));
+                break;
+
+            case FILE:
+                try {
+                    cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(config.getPath())));
+                } catch (final IOException e) {
+                    throw new InternalException(e);
+                }
+                break;
+
+            case WEB_ROOT:
+                try {
+                    cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(FileKit.getWebRoot(), config.getPath())));
+                } catch (final IOException e) {
+                    throw new InternalException(e);
+                }
+                break;
+
+            case STRING:
+                cfg.setTemplateLoader(new SimpleStringTemplateLoader());
+                break;
+
+            default:
+                break;
         }
 
         return cfg;

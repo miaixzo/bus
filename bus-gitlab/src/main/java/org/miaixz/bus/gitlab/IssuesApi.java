@@ -144,8 +144,12 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Issue> getIssues(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -215,7 +219,11 @@ public class IssuesApi extends AbstractApi implements Constants {
     public List<Issue> getIssues(Object projectIdOrPath, IssueFilter filter, int page, int perPage)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(filter.getQueryParams(page, perPage));
-        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "issues");
         return (response.readEntity(new GenericType<>() {
         }));
@@ -439,8 +447,13 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Issue getIssue(Object projectIdOrPath, Long issueIid) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getDefaultPerPageParam(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid);
+        Response response = get(
+                Response.Status.OK,
+                getDefaultPerPageParam(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid);
         return (response.readEntity(Issue.class));
     }
 
@@ -506,12 +519,32 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @return an instance of Issue
      * @throws GitLabApiException if any exception occurs
      */
-    public Issue createIssue(Object projectIdOrPath, String title, String description, Boolean confidential,
-            List<Long> assigneeIds, Long milestoneId, String labels, Date createdAt, Date dueDate,
-            Long mergeRequestToResolveId, Long discussionToResolveId) throws GitLabApiException {
+    public Issue createIssue(
+            Object projectIdOrPath,
+            String title,
+            String description,
+            Boolean confidential,
+            List<Long> assigneeIds,
+            Long milestoneId,
+            String labels,
+            Date createdAt,
+            Date dueDate,
+            Long mergeRequestToResolveId,
+            Long discussionToResolveId) throws GitLabApiException {
 
-        return (createIssue(projectIdOrPath, title, description, confidential, assigneeIds, milestoneId, labels,
-                createdAt, dueDate, mergeRequestToResolveId, discussionToResolveId, null));
+        return (createIssue(
+                projectIdOrPath,
+                title,
+                description,
+                confidential,
+                assigneeIds,
+                milestoneId,
+                labels,
+                createdAt,
+                dueDate,
+                mergeRequestToResolveId,
+                discussionToResolveId,
+                null));
     }
 
     /**
@@ -541,9 +574,19 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @return an instance of Issue
      * @throws GitLabApiException if any exception occurs
      */
-    public Issue createIssue(Object projectIdOrPath, String title, String description, Boolean confidential,
-            List<Long> assigneeIds, Long milestoneId, String labels, Date createdAt, Date dueDate,
-            Long mergeRequestToResolveId, Long discussionToResolveId, String iterationTitle) throws GitLabApiException {
+    public Issue createIssue(
+            Object projectIdOrPath,
+            String title,
+            String description,
+            Boolean confidential,
+            List<Long> assigneeIds,
+            Long milestoneId,
+            String labels,
+            Date createdAt,
+            Date dueDate,
+            Long mergeRequestToResolveId,
+            Long discussionToResolveId,
+            String iterationTitle) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title, true)
                 .withParam("description", description).withParam("confidential", confidential)
@@ -551,7 +594,11 @@ public class IssuesApi extends AbstractApi implements Constants {
                 .withParam("labels", labels).withParam("created_at", createdAt).withParam("due_date", dueDate)
                 .withParam("merge_request_to_resolve_discussions_of", mergeRequestToResolveId)
                 .withParam("discussion_to_resolve", discussionToResolveId).withParam("iteration_title", iterationTitle);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "issues");
         return (response.readEntity(Issue.class));
     }
@@ -575,8 +622,13 @@ public class IssuesApi extends AbstractApi implements Constants {
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("state_event", StateEvent.CLOSE);
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid);
         return (response.readEntity(Issue.class));
     }
 
@@ -599,8 +651,13 @@ public class IssuesApi extends AbstractApi implements Constants {
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("state_event", StateEvent.REOPEN);
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid);
         return (response.readEntity(Issue.class));
     }
 
@@ -626,9 +683,18 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @return an instance of the updated Issue
      * @throws GitLabApiException if any exception occurs
      */
-    public Issue updateIssue(Object projectIdOrPath, Long issueIid, String title, String description,
-            Boolean confidential, List<Long> assigneeIds, Long milestoneId, String labels, StateEvent stateEvent,
-            Date updatedAt, Date dueDate) throws GitLabApiException {
+    public Issue updateIssue(
+            Object projectIdOrPath,
+            Long issueIid,
+            String title,
+            String description,
+            Boolean confidential,
+            List<Long> assigneeIds,
+            Long milestoneId,
+            String labels,
+            StateEvent stateEvent,
+            Date updatedAt,
+            Date dueDate) throws GitLabApiException {
 
         if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
@@ -638,8 +704,13 @@ public class IssuesApi extends AbstractApi implements Constants {
                 .withParam("confidential", confidential).withParam("assignee_ids", assigneeIds)
                 .withParam("milestone_id", milestoneId).withParam("labels", labels).withParam("state_event", stateEvent)
                 .withParam("updated_at", updatedAt).withParam("due_date", dueDate);
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid);
         return (response.readEntity(Issue.class));
     }
 
@@ -685,8 +756,13 @@ public class IssuesApi extends AbstractApi implements Constants {
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("assignee_ids", assigneeIds);
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid);
         return (response.readEntity(Issue.class));
     }
 
@@ -707,8 +783,13 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        delete(Response.Status.NO_CONTENT, getDefaultPerPageParam(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid);
+        delete(
+                Response.Status.NO_CONTENT,
+                getDefaultPerPageParam(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid);
     }
 
     /**
@@ -767,8 +848,14 @@ public class IssuesApi extends AbstractApi implements Constants {
         String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
-        Response response = post(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid, "time_estimate");
+        Response response = post(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "time_estimate");
         return (response.readEntity(TimeStats.class));
     }
 
@@ -790,8 +877,14 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        Response response = post(Response.Status.OK, new GitLabApiForm().asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "reset_time_estimate");
+        Response response = post(
+                Response.Status.OK,
+                new GitLabApiForm().asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "reset_time_estimate");
         return (response.readEntity(TimeStats.class));
     }
 
@@ -851,8 +944,14 @@ public class IssuesApi extends AbstractApi implements Constants {
         String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
-        Response response = post(Response.Status.CREATED, formData.asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "add_spent_time");
+        Response response = post(
+                Response.Status.CREATED,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "add_spent_time");
         return (response.readEntity(TimeStats.class));
     }
 
@@ -874,8 +973,14 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        Response response = post(Response.Status.OK, new GitLabApiForm().asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "reset_spent_time");
+        Response response = post(
+                Response.Status.OK,
+                new GitLabApiForm().asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "reset_spent_time");
         return (response.readEntity(TimeStats.class));
     }
 
@@ -897,8 +1002,14 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        Response response = get(Response.Status.OK, new GitLabApiForm().asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "time_stats");
+        Response response = get(
+                Response.Status.OK,
+                new GitLabApiForm().asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "time_stats");
         return (response.readEntity(TimeStats.class));
     }
 
@@ -954,8 +1065,14 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public List<MergeRequest> getClosedByMergeRequests(Object projectIdOrPath, Long issueIid, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "closed_by");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "closed_by");
         return (response.readEntity(new GenericType<List<MergeRequest>>() {
         }));
     }
@@ -1081,7 +1198,10 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @return an instance of IssueLink holding the link relationship
      * @throws GitLabApiException if any exception occurs
      */
-    public IssueLink createIssueLink(Object projectIdOrPath, Long issueIid, Object targetProjectIdOrPath,
+    public IssueLink createIssueLink(
+            Object projectIdOrPath,
+            Long issueIid,
+            Object targetProjectIdOrPath,
             Long targetIssueIid) throws GitLabApiException {
         return createIssueLink(projectIdOrPath, issueIid, targetProjectIdOrPath, targetIssueIid, null);
     }
@@ -1106,15 +1226,25 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @return an instance of IssueLink holding the link relationship
      * @throws GitLabApiException if any exception occurs
      */
-    public IssueLink createIssueLink(Object projectIdOrPath, Long issueIid, Object targetProjectIdOrPath,
-            Long targetIssueIid, LinkType linkType) throws GitLabApiException {
+    public IssueLink createIssueLink(
+            Object projectIdOrPath,
+            Long issueIid,
+            Object targetProjectIdOrPath,
+            Long targetIssueIid,
+            LinkType linkType) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("target_project_id", getProjectIdOrPath(targetProjectIdOrPath), true)
                 .withParam("target_issue_iid", targetIssueIid, true).withParam("link_type", linkType, false);
 
-        Response response = post(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid, "links");
+        Response response = post(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "links");
         return (response.readEntity(IssueLink.class));
     }
 
@@ -1137,8 +1267,15 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public IssueLink deleteIssueLink(Object projectIdOrPath, Long issueIid, Long issueLinkId)
             throws GitLabApiException {
-        Response response = delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues",
-                issueIid, "links", issueLinkId);
+        Response response = delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "links",
+                issueLinkId);
         return (response.readEntity(IssueLink.class));
     }
 
@@ -1174,8 +1311,14 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public List<Participant> getParticipants(Object projectIdOrPath, Long issueIid, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "participants");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "participants");
         return (response.readEntity(new GenericType<List<Participant>>() {
         }));
     }
@@ -1248,7 +1391,11 @@ public class IssuesApi extends AbstractApi implements Constants {
     public IssuesStatistics getGroupIssuesStatistics(Object groupIdOrPath, IssuesStatisticsFilter filter)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(filter.getQueryParams());
-        Response response = get(Response.Status.OK, formData.asMap(), "groups", this.getGroupIdOrPath(groupIdOrPath),
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "groups",
+                this.getGroupIdOrPath(groupIdOrPath),
                 "issues_statistics");
         return (response.readEntity(IssuesStatistics.class));
     }
@@ -1268,8 +1415,12 @@ public class IssuesApi extends AbstractApi implements Constants {
     public IssuesStatistics geProjectIssuesStatistics(Object projectIdOrPath, IssuesStatisticsFilter filter)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(filter.getQueryParams());
-        Response response = get(Response.Status.OK, formData.asMap(), "projects",
-                this.getProjectIdOrPath(projectIdOrPath), "issues_statistics");
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                this.getProjectIdOrPath(projectIdOrPath),
+                "issues_statistics");
         return (response.readEntity(IssuesStatistics.class));
     }
 
@@ -1296,8 +1447,14 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public Issue moveIssue(Object projectIdOrPath, Long issueIid, Object toProjectId) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("to_project_id", toProjectId, true);
-        Response response = post(Response.Status.OK, formData, "projects", this.getProjectIdOrPath(projectIdOrPath),
-                "issues", issueIid, "move");
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                this.getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "move");
         return (response.readEntity(Issue.class));
     }
 

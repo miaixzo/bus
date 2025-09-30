@@ -52,24 +52,30 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ResamplingFlag:
-        case PrivateTag.NormalizationFlag:
-            return VR.CS;
-        case PrivateTag.VoxelSpacing:
-        case PrivateTag.VolumePositionPatient:
-        case PrivateTag.VolumeOrientationPatient:
-            return VR.DS;
-        case PrivateTag.VolumeLevel:
-            return VR.IS;
-        case PrivateTag.VolumeHistogram:
-        case PrivateTag.VolumeHistogramData:
-            return VR.OB;
-        case PrivateTag.SubVolumeSequence:
-            return VR.SQ;
-        case PrivateTag.HistogramNumberOfBins:
-            return VR.UL;
-        case PrivateTag.Slices:
-            return VR.US;
+            case PrivateTag.ResamplingFlag:
+            case PrivateTag.NormalizationFlag:
+                return VR.CS;
+
+            case PrivateTag.VoxelSpacing:
+            case PrivateTag.VolumePositionPatient:
+            case PrivateTag.VolumeOrientationPatient:
+                return VR.DS;
+
+            case PrivateTag.VolumeLevel:
+                return VR.IS;
+
+            case PrivateTag.VolumeHistogram:
+            case PrivateTag.VolumeHistogramData:
+                return VR.OB;
+
+            case PrivateTag.SubVolumeSequence:
+                return VR.SQ;
+
+            case PrivateTag.HistogramNumberOfBins:
+                return VR.UL;
+
+            case PrivateTag.Slices:
+                return VR.US;
         }
         return VR.UN;
     }

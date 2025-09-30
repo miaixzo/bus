@@ -219,7 +219,8 @@ public class FieldKit {
         if (null == object || StringKit.isBlank(fieldName)) {
             return null;
         }
-        return getFieldValue(object,
+        return getFieldValue(
+                object,
                 getField(object instanceof Class ? (Class<?>) object : object.getClass(), fieldName));
     }
 
@@ -385,7 +386,10 @@ public class FieldKit {
      * @param converter 转换器，用于转换给定value为字段类型，{@code null}表示不转换
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(final Object object, final Field field, final Object value,
+    public static void setFieldValue(
+            final Object object,
+            final Field field,
+            final Object value,
             final Converter converter) throws InternalException {
         Assert.notNull(field, "Field in [{}] not exist !", object);
 

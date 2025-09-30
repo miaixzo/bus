@@ -343,7 +343,10 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @param beanType       每行对应Bean的类型
      * @return Map的列表
      */
-    public <T> List<T> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex,
+    public <T> List<T> read(
+            final int headerRowIndex,
+            final int startRowIndex,
+            final int endRowIndex,
             final Class<T> beanType) {
         final BeanSheetReader<T> reader = new BeanSheetReader<>(headerRowIndex, startRowIndex, endRowIndex, beanType);
         reader.setExcelConfig(this.config);

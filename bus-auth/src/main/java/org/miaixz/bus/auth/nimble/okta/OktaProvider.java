@@ -76,7 +76,8 @@ public class OktaProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put("accept", MediaType.APPLICATION_JSON);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        header.put("Authorization",
+        header.put(
+                "Authorization",
                 "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
 
         String response = Httpx.post(tokenUrl, null, header);
@@ -156,7 +157,8 @@ public class OktaProvider extends AbstractProvider {
         params.put("token_type_hint", "access_token");
 
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization",
+        header.put(
+                "Authorization",
                 "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
 
         Httpx.post(revokeUrl(authToken), params, header);
@@ -173,8 +175,11 @@ public class OktaProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder
-                .fromUrl(String.format(complex.authorize(), context.getPrefix(),
-                        ObjectKit.defaultIfNull(context.getUnionId(), "default")))
+                .fromUrl(
+                        String.format(
+                                complex.authorize(),
+                                context.getPrefix(),
+                                ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("response_type", "code").queryParam("prompt", "consent")
                 .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(OktaScope.values())))
@@ -184,8 +189,11 @@ public class OktaProvider extends AbstractProvider {
     @Override
     public String accessTokenUrl(String code) {
         return Builder
-                .fromUrl(String.format(this.complex.accessToken(), context.getPrefix(),
-                        ObjectKit.defaultIfNull(context.getUnionId(), "default")))
+                .fromUrl(
+                        String.format(
+                                this.complex.accessToken(),
+                                context.getPrefix(),
+                                ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("code", code).queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
@@ -193,20 +201,27 @@ public class OktaProvider extends AbstractProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder
-                .fromUrl(String.format(this.complex.refresh(), context.getPrefix(),
-                        ObjectKit.defaultIfNull(context.getUnionId(), "default")))
+                .fromUrl(
+                        String.format(
+                                this.complex.refresh(),
+                                context.getPrefix(),
+                                ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
     }
 
     @Override
     protected String revokeUrl(AuthToken authToken) {
-        return String.format(this.complex.revoke(), context.getPrefix(),
+        return String.format(
+                this.complex.revoke(),
+                context.getPrefix(),
                 ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
     @Override
     public String userInfoUrl(AuthToken authToken) {
-        return String.format(this.complex.userinfo(), context.getPrefix(),
+        return String.format(
+                this.complex.userinfo(),
+                context.getPrefix(),
                 ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 

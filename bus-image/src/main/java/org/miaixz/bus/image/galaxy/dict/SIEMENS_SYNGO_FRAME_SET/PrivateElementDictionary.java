@@ -52,15 +52,17 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.TypeOfProgression:
-            return VR.CS;
-        case PrivateTag.RepresentationLevel:
-        case PrivateTag.NumberOfRepresentations:
-        case PrivateTag.RepresentationPixelOffset:
-            return VR.IS;
-        case PrivateTag.ImageFrameSequence:
-        case PrivateTag.RepresentationInformationSequence:
-            return VR.SQ;
+            case PrivateTag.TypeOfProgression:
+                return VR.CS;
+
+            case PrivateTag.RepresentationLevel:
+            case PrivateTag.NumberOfRepresentations:
+            case PrivateTag.RepresentationPixelOffset:
+                return VR.IS;
+
+            case PrivateTag.ImageFrameSequence:
+            case PrivateTag.RepresentationInformationSequence:
+                return VR.SQ;
         }
         return VR.UN;
     }

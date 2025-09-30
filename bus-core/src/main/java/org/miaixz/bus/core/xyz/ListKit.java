@@ -388,7 +388,10 @@ public class ListKit {
      * @param paddingElement 填充的值
      * @return the list
      */
-    public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element,
+    public static <T> List<T> setOrPadding(
+            final List<T> list,
+            final int index,
+            final T element,
             final T paddingElement) {
         return setOrPadding(list, index, element, paddingElement, (list.size() + 1) * 10);
     }
@@ -404,7 +407,11 @@ public class ListKit {
      * @param indexLimit     最大索引限制
      * @return the list
      */
-    public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element, final T paddingElement,
+    public static <T> List<T> setOrPadding(
+            final List<T> list,
+            final int index,
+            final T element,
+            final T paddingElement,
             final int indexLimit) {
         Assert.notNull(list, "List must be not null !");
         final int size = list.size();

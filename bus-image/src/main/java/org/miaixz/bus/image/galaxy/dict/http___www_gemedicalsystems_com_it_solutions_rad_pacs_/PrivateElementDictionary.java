@@ -52,11 +52,12 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.PacsExamnotesFlag:
-            return VR.CS;
-        case PrivateTag.ReferenceToPacsStudy:
-        case PrivateTag.ReferenceToPacsImage:
-            return VR.UT;
+            case PrivateTag.PacsExamnotesFlag:
+                return VR.CS;
+
+            case PrivateTag.ReferenceToPacsStudy:
+            case PrivateTag.ReferenceToPacsImage:
+                return VR.UT;
         }
         return VR.UN;
     }

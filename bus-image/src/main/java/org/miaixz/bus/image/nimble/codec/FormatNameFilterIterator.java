@@ -38,6 +38,7 @@ import javax.imageio.spi.ImageReaderWriterSpi;
  * @since Jul 2015
  */
 final class FormatNameFilterIterator<T extends ImageReaderWriterSpi> implements Iterator<T> {
+
     private final Iterator<T> iter;
     private final String formatName;
     private T next = null;

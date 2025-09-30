@@ -78,7 +78,10 @@ public class IntelligentScissorsMB {
 
     // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setWeights(float weight_non_edge, float
     // weight_gradient_direction, float weight_gradient_magnitude)
-    private static native long setWeights_0(long nativeObj, float weight_non_edge, float weight_gradient_direction,
+    private static native long setWeights_0(
+            long nativeObj,
+            float weight_non_edge,
+            float weight_gradient_direction,
             float weight_gradient_magnitude);
 
     //
@@ -99,7 +102,8 @@ public class IntelligentScissorsMB {
 
     // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureZeroCrossingParameters(float
     // gradient_magnitude_min_value = 0.0f)
-    private static native long setEdgeFeatureZeroCrossingParameters_0(long nativeObj,
+    private static native long setEdgeFeatureZeroCrossingParameters_0(
+            long nativeObj,
             float gradient_magnitude_min_value);
 
     private static native long setEdgeFeatureZeroCrossingParameters_1(long nativeObj);
@@ -111,10 +115,17 @@ public class IntelligentScissorsMB {
 
     // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::setEdgeFeatureCannyParameters(double
     // threshold1, double threshold2, int apertureSize = 3, bool L2gradient = false)
-    private static native long setEdgeFeatureCannyParameters_0(long nativeObj, double threshold1, double threshold2,
-            int apertureSize, boolean L2gradient);
+    private static native long setEdgeFeatureCannyParameters_0(
+            long nativeObj,
+            double threshold1,
+            double threshold2,
+            int apertureSize,
+            boolean L2gradient);
 
-    private static native long setEdgeFeatureCannyParameters_1(long nativeObj, double threshold1, double threshold2,
+    private static native long setEdgeFeatureCannyParameters_1(
+            long nativeObj,
+            double threshold1,
+            double threshold2,
             int apertureSize);
 
     private static native long setEdgeFeatureCannyParameters_2(long nativeObj, double threshold1, double threshold2);
@@ -133,11 +144,18 @@ public class IntelligentScissorsMB {
 
     // C++: IntelligentScissorsMB cv::segmentation::IntelligentScissorsMB::applyImageFeatures(Mat non_edge, Mat
     // gradient_direction, Mat gradient_magnitude, Mat image = Mat())
-    private static native long applyImageFeatures_0(long nativeObj, long non_edge_nativeObj,
-            long gradient_direction_nativeObj, long gradient_magnitude_nativeObj, long image_nativeObj);
+    private static native long applyImageFeatures_0(
+            long nativeObj,
+            long non_edge_nativeObj,
+            long gradient_direction_nativeObj,
+            long gradient_magnitude_nativeObj,
+            long image_nativeObj);
 
-    private static native long applyImageFeatures_1(long nativeObj, long non_edge_nativeObj,
-            long gradient_direction_nativeObj, long gradient_magnitude_nativeObj);
+    private static native long applyImageFeatures_1(
+            long nativeObj,
+            long non_edge_nativeObj,
+            long gradient_direction_nativeObj,
+            long gradient_magnitude_nativeObj);
 
     //
     // C++: void cv::segmentation::IntelligentScissorsMB::buildMap(Point sourcePt)
@@ -153,10 +171,17 @@ public class IntelligentScissorsMB {
 
     // C++: void cv::segmentation::IntelligentScissorsMB::getContour(Point targetPt, Mat& contour, bool backward =
     // false)
-    private static native void getContour_0(long nativeObj, double targetPt_x, double targetPt_y,
-            long contour_nativeObj, boolean backward);
+    private static native void getContour_0(
+            long nativeObj,
+            double targetPt_x,
+            double targetPt_y,
+            long contour_nativeObj,
+            boolean backward);
 
-    private static native void getContour_1(long nativeObj, double targetPt_x, double targetPt_y,
+    private static native void getContour_1(
+            long nativeObj,
+            double targetPt_x,
+            double targetPt_y,
             long contour_nativeObj);
 
     // native support for deleting native object
@@ -177,7 +202,9 @@ public class IntelligentScissorsMB {
      * @param weight_gradient_magnitude Specify cost of gradient magnitude function (default: 0.14f)
      * @return automatically generated
      */
-    public IntelligentScissorsMB setWeights(float weight_non_edge, float weight_gradient_direction,
+    public IntelligentScissorsMB setWeights(
+            float weight_non_edge,
+            float weight_gradient_direction,
             float weight_gradient_magnitude) {
         return new IntelligentScissorsMB(
                 setWeights_0(nativeObj, weight_non_edge, weight_gradient_direction, weight_gradient_magnitude));
@@ -270,7 +297,10 @@ public class IntelligentScissorsMB {
      * @param L2gradient   automatically generated
      * @return automatically generated
      */
-    public IntelligentScissorsMB setEdgeFeatureCannyParameters(double threshold1, double threshold2, int apertureSize,
+    public IntelligentScissorsMB setEdgeFeatureCannyParameters(
+            double threshold1,
+            double threshold2,
+            int apertureSize,
             boolean L2gradient) {
         return new IntelligentScissorsMB(
                 setEdgeFeatureCannyParameters_0(nativeObj, threshold1, threshold2, apertureSize, L2gradient));
@@ -332,10 +362,17 @@ public class IntelligentScissorsMB {
      *                           (non-specified features are calculated internally)
      * @return automatically generated
      */
-    public IntelligentScissorsMB applyImageFeatures(Mat non_edge, Mat gradient_direction, Mat gradient_magnitude,
+    public IntelligentScissorsMB applyImageFeatures(
+            Mat non_edge,
+            Mat gradient_direction,
+            Mat gradient_magnitude,
             Mat image) {
-        return new IntelligentScissorsMB(applyImageFeatures_0(nativeObj, non_edge.nativeObj,
-                gradient_direction.nativeObj, gradient_magnitude.nativeObj, image.nativeObj));
+        return new IntelligentScissorsMB(applyImageFeatures_0(
+                nativeObj,
+                non_edge.nativeObj,
+                gradient_direction.nativeObj,
+                gradient_magnitude.nativeObj,
+                image.nativeObj));
     }
 
     /**
@@ -351,8 +388,11 @@ public class IntelligentScissorsMB {
      * @return automatically generated
      */
     public IntelligentScissorsMB applyImageFeatures(Mat non_edge, Mat gradient_direction, Mat gradient_magnitude) {
-        return new IntelligentScissorsMB(applyImageFeatures_1(nativeObj, non_edge.nativeObj,
-                gradient_direction.nativeObj, gradient_magnitude.nativeObj));
+        return new IntelligentScissorsMB(applyImageFeatures_1(
+                nativeObj,
+                non_edge.nativeObj,
+                gradient_direction.nativeObj,
+                gradient_magnitude.nativeObj));
     }
 
     /**

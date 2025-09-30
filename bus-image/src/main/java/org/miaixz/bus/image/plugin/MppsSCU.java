@@ -128,11 +128,11 @@ public class MppsSCU {
                 @Override
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     switch (cmd.getInt(Tag.Status, -1)) {
-                    case Status.Success:
-                    case Status.AttributeListError:
-                    case Status.AttributeValueOutOfRange:
-                        mppsWithUID.iuid = cmd.getString(Tag.AffectedSOPInstanceUID, mppsWithUID.iuid);
-                        addCreatedMpps(mppsWithUID);
+                        case Status.Success:
+                        case Status.AttributeListError:
+                        case Status.AttributeValueOutOfRange:
+                            mppsWithUID.iuid = cmd.getString(Tag.AffectedSOPInstanceUID, mppsWithUID.iuid);
+                            addCreatedMpps(mppsWithUID);
                     }
                     super.onDimseRSP(as, cmd, data);
                 }
@@ -220,7 +220,9 @@ public class MppsSCU {
         int endDesignator = codeValue.indexOf(Symbol.C_MINUS);
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH, endDesignator >= 0 ? codeValue.substring(endDesignator + 1) : codeValue);
-        attrs.setString(Tag.CodingSchemeDesignator, VR.SH,
+        attrs.setString(
+                Tag.CodingSchemeDesignator,
+                VR.SH,
                 endDesignator >= 0 ? codeValue.substring(0, endDesignator) : "DCM");
         attrs.setString(Tag.CodeMeaning, VR.LO, codeMeaning);
         this.discontinuationReason = attrs;
@@ -270,7 +272,11 @@ public class MppsSCU {
         for (int tag : CREATE_MPPS_TOP_LEVEL_EMPTY_ATTRS)
             mpps.setNull(tag, dict.vrOf(tag));
 
-        as.ncreate(UID.ModalityPerformedProcedureStep.uid, iuid, mpps, null,
+        as.ncreate(
+                UID.ModalityPerformedProcedureStep.uid,
+                iuid,
+                mpps,
+                null,
                 rspHandlerFactory.createDimseRSPHandlerForNCreate(mppsWithUID));
     }
 
@@ -280,7 +286,11 @@ public class MppsSCU {
     }
 
     private void setMpps(MppsWithIUID mppsWithIUID) throws IOException, InterruptedException {
-        as.nset(UID.ModalityPerformedProcedureStep.uid, mppsWithIUID.iuid, mppsWithIUID.mpps, null,
+        as.nset(
+                UID.ModalityPerformedProcedureStep.uid,
+                mppsWithIUID.iuid,
+                mppsWithIUID.mpps,
+                null,
                 rspHandlerFactory.createDimseRSPHandlerForNSet());
     }
 
@@ -306,10 +316,11 @@ public class MppsSCU {
 
         int size = map.size();
         switch (size) {
-        case 0:
-            return ppsuid;
-        case 1:
-            map.values().iterator().next().iuid += ".1";
+            case 0:
+                return ppsuid;
+
+            case 1:
+                map.values().iterator().next().iuid += ".1";
         }
         return ppsuid + '.' + (size + 1);
     }

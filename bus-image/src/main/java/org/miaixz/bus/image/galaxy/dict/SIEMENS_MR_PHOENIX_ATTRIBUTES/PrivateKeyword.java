@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.MdsModeMask:
-            return "MdsModeMask";
-        case PrivateTag.Dixon:
-            return "Dixon";
-        case PrivateTag.SequenceFileName:
-            return "SequenceFileName";
-        case PrivateTag.CountOfPseudoAttributes:
-            return "CountOfPseudoAttributes";
+            case PrivateTag.MdsModeMask:
+                return "MdsModeMask";
+
+            case PrivateTag.Dixon:
+                return "Dixon";
+
+            case PrivateTag.SequenceFileName:
+                return "SequenceFileName";
+
+            case PrivateTag.CountOfPseudoAttributes:
+                return "CountOfPseudoAttributes";
         }
         return "";
     }

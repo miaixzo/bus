@@ -38,72 +38,104 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.AngleValueLArm:
-            return "AngleValueLArm";
-        case PrivateTag.AngleValuePArm:
-            return "AngleValuePArm";
-        case PrivateTag.AngleValueCArm:
-            return "AngleValueCArm";
-        case PrivateTag.AngleLabelLArm:
-            return "AngleLabelLArm";
-        case PrivateTag.AngleLabelPArm:
-            return "AngleLabelPArm";
-        case PrivateTag.AngleLabelCArm:
-            return "AngleLabelCArm";
-        case PrivateTag.ProcedureName:
-            return "ProcedureName";
-        case PrivateTag.ExamName:
-            return "ExamName";
-        case PrivateTag.PatientSize:
-            return "PatientSize";
-        case PrivateTag.RecordView:
-            return "RecordView";
-        case PrivateTag.InjectorDelay:
-            return "InjectorDelay";
-        case PrivateTag.AutoInject:
-            return "AutoInject";
-        case PrivateTag.AcquisitionMode:
-            return "AcquisitionMode";
-        case PrivateTag.CameraRotationEnabled:
-            return "CameraRotationEnabled";
-        case PrivateTag.ReverseSweep:
-            return "ReverseSweep";
-        case PrivateTag.UserSpatialFilterStrength:
-            return "UserSpatialFilterStrength";
-        case PrivateTag.UserZoomFactor:
-            return "UserZoomFactor";
-        case PrivateTag.XZoomCenter:
-            return "XZoomCenter";
-        case PrivateTag.YZoomCenter:
-            return "YZoomCenter";
-        case PrivateTag.Focus:
-            return "Focus";
-        case PrivateTag.Dose:
-            return "Dose";
-        case PrivateTag.SideMark:
-            return "SideMark";
-        case PrivateTag.PercentageLandscape:
-            return "PercentageLandscape";
-        case PrivateTag.ExposureDuration:
-            return "ExposureDuration";
-        case PrivateTag.IpAddress:
-            return "IpAddress";
-        case PrivateTag.TablePositionZ:
-            return "TablePositionZ";
-        case PrivateTag.TablePositionX:
-            return "TablePositionX";
-        case PrivateTag.TablePositionY:
-            return "TablePositionY";
-        case PrivateTag.Lambda:
-            return "Lambda";
-        case PrivateTag.RegressionSlope:
-            return "RegressionSlope";
-        case PrivateTag.RegressionIntercept:
-            return "RegressionIntercept";
-        case PrivateTag.ImageChainFWHMPsfMmMin:
-            return "ImageChainFWHMPsfMmMin";
-        case PrivateTag.ImageChainFWHMPsfMmMax:
-            return "ImageChainFWHMPsfMmMax";
+            case PrivateTag.AngleValueLArm:
+                return "AngleValueLArm";
+
+            case PrivateTag.AngleValuePArm:
+                return "AngleValuePArm";
+
+            case PrivateTag.AngleValueCArm:
+                return "AngleValueCArm";
+
+            case PrivateTag.AngleLabelLArm:
+                return "AngleLabelLArm";
+
+            case PrivateTag.AngleLabelPArm:
+                return "AngleLabelPArm";
+
+            case PrivateTag.AngleLabelCArm:
+                return "AngleLabelCArm";
+
+            case PrivateTag.ProcedureName:
+                return "ProcedureName";
+
+            case PrivateTag.ExamName:
+                return "ExamName";
+
+            case PrivateTag.PatientSize:
+                return "PatientSize";
+
+            case PrivateTag.RecordView:
+                return "RecordView";
+
+            case PrivateTag.InjectorDelay:
+                return "InjectorDelay";
+
+            case PrivateTag.AutoInject:
+                return "AutoInject";
+
+            case PrivateTag.AcquisitionMode:
+                return "AcquisitionMode";
+
+            case PrivateTag.CameraRotationEnabled:
+                return "CameraRotationEnabled";
+
+            case PrivateTag.ReverseSweep:
+                return "ReverseSweep";
+
+            case PrivateTag.UserSpatialFilterStrength:
+                return "UserSpatialFilterStrength";
+
+            case PrivateTag.UserZoomFactor:
+                return "UserZoomFactor";
+
+            case PrivateTag.XZoomCenter:
+                return "XZoomCenter";
+
+            case PrivateTag.YZoomCenter:
+                return "YZoomCenter";
+
+            case PrivateTag.Focus:
+                return "Focus";
+
+            case PrivateTag.Dose:
+                return "Dose";
+
+            case PrivateTag.SideMark:
+                return "SideMark";
+
+            case PrivateTag.PercentageLandscape:
+                return "PercentageLandscape";
+
+            case PrivateTag.ExposureDuration:
+                return "ExposureDuration";
+
+            case PrivateTag.IpAddress:
+                return "IpAddress";
+
+            case PrivateTag.TablePositionZ:
+                return "TablePositionZ";
+
+            case PrivateTag.TablePositionX:
+                return "TablePositionX";
+
+            case PrivateTag.TablePositionY:
+                return "TablePositionY";
+
+            case PrivateTag.Lambda:
+                return "Lambda";
+
+            case PrivateTag.RegressionSlope:
+                return "RegressionSlope";
+
+            case PrivateTag.RegressionIntercept:
+                return "RegressionIntercept";
+
+            case PrivateTag.ImageChainFWHMPsfMmMin:
+                return "ImageChainFWHMPsfMmMin";
+
+            case PrivateTag.ImageChainFWHMPsfMmMax:
+                return "ImageChainFWHMPsfMmMax";
         }
         return "";
     }

@@ -72,14 +72,16 @@ public class AixUsbDevice extends AbstractUsbDevice {
             if (s.startsWith("usb")) {
                 String[] split = Pattern.SPACES_PATTERN.split(s, 3);
                 if (split.length == 3) {
-                    deviceList.add(new AixUsbDevice(split[2], Normal.UNKNOWN, Normal.UNKNOWN, Normal.UNKNOWN,
-                            Normal.UNKNOWN, split[0], Collections.emptyList()));
+                    deviceList.add(
+                            new AixUsbDevice(split[2], Normal.UNKNOWN, Normal.UNKNOWN, Normal.UNKNOWN, Normal.UNKNOWN,
+                                    split[0], Collections.emptyList()));
                 }
             }
         }
         if (tree) {
-            return List.of(new AixUsbDevice("USB Controller", Normal.EMPTY, "0000", "0000", Normal.EMPTY, Normal.EMPTY,
-                    deviceList));
+            return List.of(
+                    new AixUsbDevice("USB Controller", Normal.EMPTY, "0000", "0000", Normal.EMPTY, Normal.EMPTY,
+                            deviceList));
         }
         return deviceList;
     }

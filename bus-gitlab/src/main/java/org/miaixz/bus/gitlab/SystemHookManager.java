@@ -187,8 +187,11 @@ public class SystemHookManager implements HookManager {
             event.setRequestSecretToken(secretToken);
 
         } catch (Exception e) {
-            LOGGER.warning(String.format("Error processing JSON data, exception=%s, error=%s",
-                    e.getClass().getSimpleName(), e.getMessage()));
+            LOGGER.warning(
+                    String.format(
+                            "Error processing JSON data, exception=%s, error=%s",
+                            e.getClass().getSimpleName(),
+                            e.getMessage()));
             throw new GitLabApiException(e);
         }
 
@@ -198,8 +201,11 @@ public class SystemHookManager implements HookManager {
             return (event);
 
         } catch (Exception e) {
-            LOGGER.warning(String.format("Error processing event, exception=%s, error=%s", e.getClass().getSimpleName(),
-                    e.getMessage()));
+            LOGGER.warning(
+                    String.format(
+                            "Error processing event, exception=%s, error=%s",
+                            e.getClass().getSimpleName(),
+                            e.getMessage()));
             throw new GitLabApiException(e);
         }
     }

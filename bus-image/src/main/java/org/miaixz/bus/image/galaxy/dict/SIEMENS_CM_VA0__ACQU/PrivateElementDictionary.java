@@ -52,12 +52,12 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ParameterFileName:
-        case PrivateTag.SequenceFileName:
-        case PrivateTag.SequenceFileOwner:
-        case PrivateTag.SequenceDescription:
-        case PrivateTag.EPIFileName:
-            return VR.LO;
+            case PrivateTag.ParameterFileName:
+            case PrivateTag.SequenceFileName:
+            case PrivateTag.SequenceFileOwner:
+            case PrivateTag.SequenceDescription:
+            case PrivateTag.EPIFileName:
+                return VR.LO;
         }
         return VR.UN;
     }

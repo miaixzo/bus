@@ -129,9 +129,9 @@ public class DatePattern {
      */
     protected static NumberRule selectNumberRule(final int field, final int padding) {
         return switch (padding) {
-        case 1 -> new UnpaddedNumberField(field);
-        case 2 -> new TwoDigitNumberField(field);
-        default -> new PaddedNumberField(field, padding);
+            case 1 -> new UnpaddedNumberField(field);
+            case 2 -> new TwoDigitNumberField(field);
+            default -> new PaddedNumberField(field, padding);
         };
     }
 
@@ -171,25 +171,25 @@ public class DatePattern {
                 buffer.append('0');
             }
             switch (nDigits) {
-            case 4:
-                buffer.append((char) (value / 1000 + '0'));
-                value %= 1000;
-            case 3:
-                if (value >= 100) {
-                    buffer.append((char) (value / 100 + '0'));
-                    value %= 100;
-                } else {
-                    buffer.append('0');
-                }
-            case 2:
-                if (value >= 10) {
-                    buffer.append((char) (value / 10 + '0'));
-                    value %= 10;
-                } else {
-                    buffer.append('0');
-                }
-            case 1:
-                buffer.append((char) (value + '0'));
+                case 4:
+                    buffer.append((char) (value / 1000 + '0'));
+                    value %= 1000;
+                case 3:
+                    if (value >= 100) {
+                        buffer.append((char) (value / 100 + '0'));
+                        value %= 100;
+                    } else {
+                        buffer.append('0');
+                    }
+                case 2:
+                    if (value >= 10) {
+                        buffer.append((char) (value / 10 + '0'));
+                        value %= 10;
+                    } else {
+                        buffer.append('0');
+                    }
+                case 1:
+                    buffer.append((char) (value + '0'));
             }
         } else {
             char[] work = new char[Normal._10];
@@ -296,105 +296,127 @@ public class DatePattern {
             final char c = token.charAt(0);
 
             switch (c) {
-            case 'G':
-                rule = new TextField(Calendar.ERA, ERAs);
-                break;
-            case 'y':
-            case 'Y':
-                if (tokenLen == 2) {
-                    rule = TwoDigitYearField.INSTANCE;
-                } else {
-                    rule = selectNumberRule(Calendar.YEAR, Math.max(tokenLen, 4));
-                }
-                if (c == 'Y') {
-                    rule = new WeekYear((NumberRule) rule);
-                }
-                break;
-            case 'M':
-                if (tokenLen >= 4) {
-                    rule = new TextField(Calendar.MONTH, months);
-                } else if (tokenLen == 3) {
-                    rule = new TextField(Calendar.MONTH, shortMonths);
-                } else if (tokenLen == 2) {
-                    rule = TwoDigitMonthField.INSTANCE;
-                } else {
-                    rule = UnpaddedMonthField.INSTANCE;
-                }
-                break;
-            case 'd':
-                rule = selectNumberRule(Calendar.DAY_OF_MONTH, tokenLen);
-                break;
-            case 'h':
-                rule = new TwelveHourField(selectNumberRule(Calendar.HOUR, tokenLen));
-                break;
-            case 'H':
-                rule = selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen);
-                break;
-            case 'm':
-                rule = selectNumberRule(Calendar.MINUTE, tokenLen);
-                break;
-            case 's':
-                rule = selectNumberRule(Calendar.SECOND, tokenLen);
-                break;
-            case 'S':
-                rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
-                break;
-            case 'E':
-                rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
-                break;
-            case 'u':
-                rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
-                break;
-            case 'D':
-                rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
-                break;
-            case 'F':
-                rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
-                break;
-            case 'w':
-                rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
-                break;
-            case 'W':
-                rule = selectNumberRule(Calendar.WEEK_OF_MONTH, tokenLen);
-                break;
-            case 'a':
-                rule = new TextField(Calendar.AM_PM, AmPmStrings);
-                break;
-            case 'k':
-                rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
-                break;
-            case 'K':
-                rule = selectNumberRule(Calendar.HOUR, tokenLen);
-                break;
-            case 'X':
-                rule = Iso8601_Rule.getRule(tokenLen);
-                break;
-            case 'z':
-                if (tokenLen >= 4) {
-                    rule = new TimeZoneNameRule(timeZone, locale, TimeZone.LONG);
-                } else {
-                    rule = new TimeZoneNameRule(timeZone, locale, TimeZone.SHORT);
-                }
-                break;
-            case 'Z':
-                if (tokenLen == 1) {
-                    rule = TimeZoneNumberRule.INSTANCE_NO_COLON;
-                } else if (tokenLen == 2) {
-                    rule = Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
-                } else {
-                    rule = TimeZoneNumberRule.INSTANCE_COLON;
-                }
-                break;
-            case '\'':
-                final String sub = token.substring(1);
-                if (sub.length() == 1) {
-                    rule = new CharacterLiteral(sub.charAt(0));
-                } else {
-                    rule = new StringLiteral(sub);
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal pattern component: " + token);
+                case 'G':
+                    rule = new TextField(Calendar.ERA, ERAs);
+                    break;
+
+                case 'y':
+                case 'Y':
+                    if (tokenLen == 2) {
+                        rule = TwoDigitYearField.INSTANCE;
+                    } else {
+                        rule = selectNumberRule(Calendar.YEAR, Math.max(tokenLen, 4));
+                    }
+                    if (c == 'Y') {
+                        rule = new WeekYear((NumberRule) rule);
+                    }
+                    break;
+
+                case 'M':
+                    if (tokenLen >= 4) {
+                        rule = new TextField(Calendar.MONTH, months);
+                    } else if (tokenLen == 3) {
+                        rule = new TextField(Calendar.MONTH, shortMonths);
+                    } else if (tokenLen == 2) {
+                        rule = TwoDigitMonthField.INSTANCE;
+                    } else {
+                        rule = UnpaddedMonthField.INSTANCE;
+                    }
+                    break;
+
+                case 'd':
+                    rule = selectNumberRule(Calendar.DAY_OF_MONTH, tokenLen);
+                    break;
+
+                case 'h':
+                    rule = new TwelveHourField(selectNumberRule(Calendar.HOUR, tokenLen));
+                    break;
+
+                case 'H':
+                    rule = selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen);
+                    break;
+
+                case 'm':
+                    rule = selectNumberRule(Calendar.MINUTE, tokenLen);
+                    break;
+
+                case 's':
+                    rule = selectNumberRule(Calendar.SECOND, tokenLen);
+                    break;
+
+                case 'S':
+                    rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
+                    break;
+
+                case 'E':
+                    rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
+                    break;
+
+                case 'u':
+                    rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
+                    break;
+
+                case 'D':
+                    rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
+                    break;
+
+                case 'F':
+                    rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
+                    break;
+
+                case 'w':
+                    rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
+                    break;
+
+                case 'W':
+                    rule = selectNumberRule(Calendar.WEEK_OF_MONTH, tokenLen);
+                    break;
+
+                case 'a':
+                    rule = new TextField(Calendar.AM_PM, AmPmStrings);
+                    break;
+
+                case 'k':
+                    rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
+                    break;
+
+                case 'K':
+                    rule = selectNumberRule(Calendar.HOUR, tokenLen);
+                    break;
+
+                case 'X':
+                    rule = Iso8601_Rule.getRule(tokenLen);
+                    break;
+
+                case 'z':
+                    if (tokenLen >= 4) {
+                        rule = new TimeZoneNameRule(timeZone, locale, TimeZone.LONG);
+                    } else {
+                        rule = new TimeZoneNameRule(timeZone, locale, TimeZone.SHORT);
+                    }
+                    break;
+
+                case 'Z':
+                    if (tokenLen == 1) {
+                        rule = TimeZoneNumberRule.INSTANCE_NO_COLON;
+                    } else if (tokenLen == 2) {
+                        rule = Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
+                    } else {
+                        rule = TimeZoneNumberRule.INSTANCE_COLON;
+                    }
+                    break;
+
+                case '\'':
+                    final String sub = token.substring(1);
+                    if (sub.length() == 1) {
+                        rule = new CharacterLiteral(sub.charAt(0));
+                    } else {
+                        rule = new StringLiteral(sub);
+                    }
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Illegal pattern component: " + token);
             }
 
             this.estimateLength += rule.estimateLength();
@@ -408,6 +430,7 @@ public class DatePattern {
      * 日期格式化规则接口。
      */
     public interface Rule {
+
         /**
          * 估算格式化结果的长度。
          *
@@ -429,6 +452,7 @@ public class DatePattern {
      * 数字格式化规则接口。
      */
     public interface NumberRule extends Rule {
+
         /**
          * 将指定数字值追加到输出缓冲区。
          *
@@ -443,6 +467,7 @@ public class DatePattern {
      * 输出单个字符的规则。
      */
     private static class CharacterLiteral implements Rule {
+
         /**
          * 字符值
          */
@@ -472,6 +497,7 @@ public class DatePattern {
      * 输出固定字符串的规则。
      */
     private static class StringLiteral implements Rule {
+
         /**
          * 字符串值
          */
@@ -501,6 +527,7 @@ public class DatePattern {
      * 输出一组值之一的规则。
      */
     private static class TextField implements Rule {
+
         /**
          * 日历字段
          */
@@ -543,6 +570,7 @@ public class DatePattern {
      * 输出无填充数字的规则。
      */
     private static class UnpaddedNumberField implements NumberRule {
+
         /**
          * 日历字段
          */
@@ -583,6 +611,7 @@ public class DatePattern {
      * 输出无填充月份的规则。
      */
     private static class UnpaddedMonthField implements NumberRule {
+
         /**
          * 单例实例
          */
@@ -618,6 +647,7 @@ public class DatePattern {
      * 输出填充数字的规则。
      */
     private static class PaddedNumberField implements NumberRule {
+
         /**
          * 日历字段
          */
@@ -661,6 +691,7 @@ public class DatePattern {
      * 输出两位数字的规则。
      */
     private static class TwoDigitNumberField implements NumberRule {
+
         /**
          * 日历字段
          */
@@ -699,6 +730,7 @@ public class DatePattern {
      * 输出两位年份的规则。
      */
     private static class TwoDigitYearField implements NumberRule {
+
         /**
          * 单例实例
          */
@@ -730,6 +762,7 @@ public class DatePattern {
      * 输出两位月份的规则。
      */
     private static class TwoDigitMonthField implements NumberRule {
+
         /**
          * 单例实例
          */
@@ -761,6 +794,7 @@ public class DatePattern {
      * 输出12小时制字段的规则。
      */
     private static class TwelveHourField implements NumberRule {
+
         /**
          * 数字规则
          */
@@ -799,6 +833,7 @@ public class DatePattern {
      * 输出24小时制字段的规则。
      */
     private static class TwentyFourHourField implements NumberRule {
+
         /**
          * 数字规则
          */
@@ -837,6 +872,7 @@ public class DatePattern {
      * 输出星期数字的规则。
      */
     private static class DayInWeekField implements NumberRule {
+
         /**
          * 数字规则
          */
@@ -872,6 +908,7 @@ public class DatePattern {
      * 输出周年份的规则。
      */
     private static class WeekYear implements NumberRule {
+
         /**
          * 数字规则
          */
@@ -910,6 +947,7 @@ public class DatePattern {
      * 输出时区名称的规则。
      */
     private static class TimeZoneNameRule implements Rule {
+
         /**
          * 地域
          */
@@ -961,6 +999,7 @@ public class DatePattern {
      * 输出时区数字的规则（如+/-HHMM或+/-HH:MM）。
      */
     private static class TimeZoneNumberRule implements Rule {
+
         /**
          * 带冒号的时区格式实例
          */
@@ -1011,6 +1050,7 @@ public class DatePattern {
      * 输出ISO 8601时区格式的规则。
      */
     private static class Iso8601_Rule implements Rule {
+
         /**
          * 仅小时格式实例
          */
@@ -1046,10 +1086,10 @@ public class DatePattern {
          */
         static Iso8601_Rule getRule(final int tokenLen) {
             return switch (tokenLen) {
-            case 1 -> Iso8601_Rule.ISO8601_HOURS;
-            case 2 -> Iso8601_Rule.ISO8601_HOURS_MINUTES;
-            case 3 -> Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
-            default -> throw new IllegalArgumentException("invalid number of X");
+                case 1 -> Iso8601_Rule.ISO8601_HOURS;
+                case 2 -> Iso8601_Rule.ISO8601_HOURS_MINUTES;
+                case 3 -> Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
+                default -> throw new IllegalArgumentException("invalid number of X");
             };
         }
 
@@ -1088,6 +1128,7 @@ public class DatePattern {
      * 时区显示名称的复合键类。
      */
     private static class TimeZoneDisplayKey {
+
         /**
          * 时区
          */

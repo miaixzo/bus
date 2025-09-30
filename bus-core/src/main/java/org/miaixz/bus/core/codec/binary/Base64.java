@@ -305,8 +305,9 @@ public class Base64 {
         try {
             byte b2, b3;
             while ((len -= 2) >= 0) {
-                out.write((byte) ((Normal.DECODE_64_TABLE[ch[off++]] << 2)
-                        | ((b2 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 4)));
+                out.write(
+                        (byte) ((Normal.DECODE_64_TABLE[ch[off++]] << 2)
+                                | ((b2 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 4)));
                 if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                     break;
                 out.write((byte) ((b2 << 4) | ((b3 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 2)));
@@ -370,13 +371,14 @@ public class Base64 {
 
     private static boolean isWhiteSpace(final byte byteToCheck) {
         switch (byteToCheck) {
-        case Symbol.C_SPACE:
-        case '\n':
-        case '\r':
-        case '\t':
-            return true;
-        default:
-            return false;
+            case Symbol.C_SPACE:
+            case '\n':
+            case '\r':
+            case '\t':
+                return true;
+
+            default:
+                return false;
         }
     }
 

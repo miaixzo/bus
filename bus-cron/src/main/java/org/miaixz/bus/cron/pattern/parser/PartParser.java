@@ -113,12 +113,14 @@ public class PartParser {
         }
 
         switch (this.part) {
-        case DAY_OF_MONTH:
-            return new DayOfMonthMatcher(values);
-        case YEAR:
-            return new YearValueMatcher(values);
-        default:
-            return new BoolArrayMatcher(values);
+            case DAY_OF_MONTH:
+                return new DayOfMonthMatcher(values);
+
+            case YEAR:
+                return new YearValueMatcher(values);
+
+            default:
+                return new BoolArrayMatcher(values);
         }
     }
 
@@ -295,12 +297,13 @@ public class PartParser {
         }
 
         switch (this.part) {
-        case MONTH:
-            // 月份从1开始
-            return Month.of(name).getIsoValue();
-        case DAY_OF_WEEK:
-            // 周从0开始，0表示周日
-            return Week.of(name).ordinal();
+            case MONTH:
+                // 月份从1开始
+                return Month.of(name).getIsoValue();
+
+            case DAY_OF_WEEK:
+                // 周从0开始，0表示周日
+                return Week.of(name).ordinal();
         }
 
         throw new CrontabException("Invalid alias value: [{}]", name);

@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CSAImageHeaderType:
-            return "CSAImageHeaderType";
-        case PrivateTag.CSAImageHeaderVersion:
-            return "CSAImageHeaderVersion";
-        case PrivateTag.CSAImageHeaderInfo:
-            return "CSAImageHeaderInfo";
-        case PrivateTag.CSASeriesHeaderType:
-            return "CSASeriesHeaderType";
-        case PrivateTag.CSASeriesHeaderVersion:
-            return "CSASeriesHeaderVersion";
-        case PrivateTag.CSASeriesHeaderInfo:
-            return "CSASeriesHeaderInfo";
+            case PrivateTag.CSAImageHeaderType:
+                return "CSAImageHeaderType";
+
+            case PrivateTag.CSAImageHeaderVersion:
+                return "CSAImageHeaderVersion";
+
+            case PrivateTag.CSAImageHeaderInfo:
+                return "CSAImageHeaderInfo";
+
+            case PrivateTag.CSASeriesHeaderType:
+                return "CSASeriesHeaderType";
+
+            case PrivateTag.CSASeriesHeaderVersion:
+                return "CSASeriesHeaderVersion";
+
+            case PrivateTag.CSASeriesHeaderInfo:
+                return "CSASeriesHeaderInfo";
         }
         return "";
     }

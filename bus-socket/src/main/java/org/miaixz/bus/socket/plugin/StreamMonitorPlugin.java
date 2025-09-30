@@ -53,18 +53,20 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
 
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_HEX_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                    + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: " + bytes.length
-                    + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
+                            + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: "
+                            + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
     };
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_HEX_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                    + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: " + bytes.length
-                    + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
+                            + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: "
+                            + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,18 +74,20 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
 
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_TEXT_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                    + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: " + bytes.length
-                    + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
+                            + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: "
+                            + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
     };
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_TEXT_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
-                    + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: " + bytes.length
-                    + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
+            Logger.info(
+                    ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ "
+                            + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: "
+                            + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,6 +111,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
     }
 
     static class MonitorCompletionHandler<A> implements CompletionHandler<Integer, A> {
+
         CompletionHandler<Integer, A> handler;
         BiConsumer<AsynchronousSocketChannel, byte[]> consumer;
         ByteBuffer buffer;
@@ -115,6 +120,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
         public MonitorCompletionHandler(AsynchronousSocketChannel channel, CompletionHandler<Integer, A> handler,
                 BiConsumer<AsynchronousSocketChannel, byte[]> consumer, ByteBuffer buffer) {
             this.channel = new UnsupportedAsynchronousSocketChannel(channel) {
+
                 @Override
                 public SocketAddress getRemoteAddress() throws IOException {
                     return channel.getRemoteAddress();
@@ -148,6 +154,7 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
     }
 
     static class ConsoleColors {
+
         /**
          * 重置颜色
          */
@@ -171,16 +178,32 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
         }
 
         @Override
-        public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+        public <A> void read(
+                ByteBuffer dst,
+                long timeout,
+                TimeUnit unit,
+                A attachment,
                 CompletionHandler<Integer, ? super A> handler) {
-            super.read(dst, timeout, unit, attachment,
+            super.read(
+                    dst,
+                    timeout,
+                    unit,
+                    attachment,
                     new MonitorCompletionHandler<>(this, handler, inputStreamConsumer, dst));
         }
 
         @Override
-        public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+        public <A> void write(
+                ByteBuffer src,
+                long timeout,
+                TimeUnit unit,
+                A attachment,
                 CompletionHandler<Integer, ? super A> handler) {
-            super.write(src, timeout, unit, attachment,
+            super.write(
+                    src,
+                    timeout,
+                    unit,
+                    attachment,
                     new MonitorCompletionHandler<>(this, handler, outputStreamConsumer, src));
         }
     }

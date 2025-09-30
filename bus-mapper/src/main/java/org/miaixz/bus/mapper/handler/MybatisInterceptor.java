@@ -176,7 +176,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
      * @return 查询结果，拦截器阻止时返回空列表
      * @throws Throwable 如果处理过程中发生异常
      */
-    private Object processQuery(Executor executor, MappedStatement ms, Object parameter, Object[] args,
+    private Object processQuery(
+            Executor executor,
+            MappedStatement ms,
+            Object parameter,
+            Object[] args,
             Invocation invocation) throws Throwable {
         RowBounds rowBounds = (RowBounds) args[2];
         ResultHandler<?> resultHandler = (ResultHandler<?>) args[3];
@@ -261,11 +265,13 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
         for (ParameterMapping mapping : parameterMappings) {
             String propertyName = mapping.getProperty();
             if (metaObject.hasGetter(propertyName)) {
-                sql = sql.replaceFirst(id,
+                sql = sql.replaceFirst(
+                        id,
                         Matcher.quoteReplacement(getParameterValue(metaObject.getValue(propertyName))));
             } else if (boundSql.hasAdditionalParameter(propertyName)) {
                 // 该分支是动态sql
-                sql = sql.replaceFirst(id,
+                sql = sql.replaceFirst(
+                        id,
                         Matcher.quoteReplacement(getParameterValue(boundSql.getAdditionalParameter(propertyName))));
             } else {
                 // 打印Missing,提醒该参数缺失并防止错位

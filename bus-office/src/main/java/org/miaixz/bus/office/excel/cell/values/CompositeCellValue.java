@@ -96,23 +96,28 @@ public class CompositeCellValue implements CellValue<Object> {
 
         final Object value;
         switch (cellType) {
-        case NUMERIC:
-            value = new NumericCellValue(cell).getValue();
-            break;
-        case BOOLEAN:
-            value = cell.getBooleanCellValue();
-            break;
-        case FORMULA:
-            value = of(cell, cell.getCachedFormulaResultType(), cellEditor).getValue();
-            break;
-        case BLANK:
-            value = Normal.EMPTY;
-            break;
-        case ERROR:
-            value = new ErrorCellValue(cell).getValue();
-            break;
-        default:
-            value = cell.getStringCellValue();
+            case NUMERIC:
+                value = new NumericCellValue(cell).getValue();
+                break;
+
+            case BOOLEAN:
+                value = cell.getBooleanCellValue();
+                break;
+
+            case FORMULA:
+                value = of(cell, cell.getCachedFormulaResultType(), cellEditor).getValue();
+                break;
+
+            case BLANK:
+                value = Normal.EMPTY;
+                break;
+
+            case ERROR:
+                value = new ErrorCellValue(cell).getValue();
+                break;
+
+            default:
+                value = cell.getStringCellValue();
         }
 
         return null == cellEditor ? value : cellEditor.edit(cell, value);

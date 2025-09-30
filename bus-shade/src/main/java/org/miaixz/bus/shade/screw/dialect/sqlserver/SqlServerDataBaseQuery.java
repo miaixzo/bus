@@ -94,8 +94,8 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
         ResultSet resultSet = null;
         try {
             // 查询
-            resultSet = getMetaData().getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN,
-                    new String[] { "TABLE" });
+            resultSet = getMetaData()
+                    .getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN, new String[] { "TABLE" });
             // 映射
             List<SqlServerTable> list = Mapping.convertList(resultSet, SqlServerTable.class);
             // 由于驱动无法查询出 REMARKS 内容，所以通过自定义SQL查询
@@ -157,8 +157,11 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
                 }
                 List<SqlServerColumn> inquires = Mapping.convertList(resultSet, SqlServerColumn.class);
                 // 处理列，表名为key，列名为值
-                tableNames.forEach(name -> columnsCaching.put(name,
-                        inquires.stream().filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
+                tableNames.forEach(
+                        name -> columnsCaching.put(
+                                name,
+                                inquires.stream().filter(i -> i.getTableName().equals(name))
+                                        .collect(Collectors.toList())));
             }
             // 处理备注信息
             list.forEach(i -> {

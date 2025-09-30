@@ -107,13 +107,15 @@ public abstract class Builder {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         while (b != -1) {
             switch (b) {
-            case Symbol.C_CR:
-                break;
-            case Symbol.C_LF:
-                return bos.toByteArray();
-            default:
-                bos.write(b);
-                break;
+                case Symbol.C_CR:
+                    break;
+
+                case Symbol.C_LF:
+                    return bos.toByteArray();
+
+                default:
+                    bos.write(b);
+                    break;
             }
             b = in.read();
         }

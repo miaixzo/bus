@@ -52,15 +52,17 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.EdgeEnhancementGain:
-        case PrivateTag.DisplayedAreaBottomRightHandCornerFractional:
-        case PrivateTag.DisplayedAreaTopLeftHandCornerFractional:
-            return VR.FL;
-        case PrivateTag.EdgeEnhancementSequence:
-            return VR.SQ;
-        case PrivateTag.ConvolutionKernelSize:
-        case PrivateTag.ConvolutionKernelCoefficients:
-            return VR.US;
+            case PrivateTag.EdgeEnhancementGain:
+            case PrivateTag.DisplayedAreaBottomRightHandCornerFractional:
+            case PrivateTag.DisplayedAreaTopLeftHandCornerFractional:
+                return VR.FL;
+
+            case PrivateTag.EdgeEnhancementSequence:
+                return VR.SQ;
+
+            case PrivateTag.ConvolutionKernelSize:
+            case PrivateTag.ConvolutionKernelCoefficients:
+                return VR.US;
         }
         return VR.UN;
     }

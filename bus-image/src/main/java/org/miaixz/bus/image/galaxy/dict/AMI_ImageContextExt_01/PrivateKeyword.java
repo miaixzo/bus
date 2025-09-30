@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.WindowFunction:
-            return "WindowFunction";
-        case PrivateTag.WindowSlope:
-            return "WindowSlope";
+            case PrivateTag.WindowFunction:
+                return "WindowFunction";
+
+            case PrivateTag.WindowSlope:
+                return "WindowSlope";
         }
         return "";
     }

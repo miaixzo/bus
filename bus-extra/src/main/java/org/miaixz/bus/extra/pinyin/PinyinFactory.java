@@ -49,7 +49,8 @@ public class PinyinFactory {
      */
     public static PinyinProvider get() {
         final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::create);
-        Logger.debug("Use [{}] Pinyin Provider As Default.",
+        Logger.debug(
+                "Use [{}] Pinyin Provider As Default.",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }

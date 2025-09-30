@@ -210,11 +210,39 @@ public class Args {
      * 注意：由于基本类型有默认值，建议在实体类中避免使用基本类型作为数据库字段类型。
      * </p>
      */
-    public static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>(Arrays.asList(byte.class, short.class, char.class,
-            int.class, long.class, float.class, double.class, boolean.class, byte[].class, String.class, Byte.class,
-            Short.class, Character.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
-            Date.class, Timestamp.class, Class.class, BigInteger.class, BigDecimal.class, Instant.class,
-            LocalDateTime.class, LocalDate.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class,
-            ZonedDateTime.class, Year.class, Month.class, YearMonth.class));
+    public static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>(Arrays.asList(
+            byte.class,
+            short.class,
+            char.class,
+            int.class,
+            long.class,
+            float.class,
+            double.class,
+            boolean.class,
+            byte[].class,
+            String.class,
+            Byte.class,
+            Short.class,
+            Character.class,
+            Integer.class,
+            Long.class,
+            Float.class,
+            Double.class,
+            Boolean.class,
+            Date.class,
+            Timestamp.class,
+            Class.class,
+            BigInteger.class,
+            BigDecimal.class,
+            Instant.class,
+            LocalDateTime.class,
+            LocalDate.class,
+            LocalTime.class,
+            OffsetDateTime.class,
+            OffsetTime.class,
+            ZonedDateTime.class,
+            Year.class,
+            Month.class,
+            YearMonth.class));
 
 }

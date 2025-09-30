@@ -295,7 +295,8 @@ public class Images implements Flushable, Serializable {
         if (ImageKit.IMAGE_TYPE_PNG.equals(this.targetImageType)) {
             // 修正float转double导致的精度丢失
             final double scaleDouble = MathKit.toDouble(scale);
-            this.targetImage = ImageKit.transform(AffineTransform.getScaleInstance(scaleDouble, scaleDouble),
+            this.targetImage = ImageKit.transform(
+                    AffineTransform.getScaleInstance(scaleDouble, scaleDouble),
                     ImageKit.toBufferedImage(srcImg, this.targetImageType));
         } else {
             // 缩放后的图片宽
@@ -341,7 +342,8 @@ public class Images implements Flushable, Serializable {
             // png特殊处理，借助AffineTransform可以实现透明度保留
             final double sx = MathKit.div(width, srcWidth).doubleValue();// 宽度缩放比
             final double sy = MathKit.div(height, srcHeight).doubleValue(); // 高度缩放比
-            this.targetImage = ImageKit.transform(AffineTransform.getScaleInstance(sx, sy),
+            this.targetImage = ImageKit.transform(
+                    AffineTransform.getScaleInstance(sx, sy),
                     ImageKit.toBufferedImage(srcImg, this.targetImageType));
         } else {
             this.targetImage = srcImg.getScaledInstance(width, height, scaleType);
@@ -512,7 +514,12 @@ public class Images implements Flushable, Serializable {
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
-    public Images pressText(final String pressText, final Color color, final Font font, final int x, final int y,
+    public Images pressText(
+            final String pressText,
+            final Color color,
+            final Font font,
+            final int x,
+            final int y,
             final float alpha) {
         return pressText(ImageText.of(pressText, color, font, new Point(x, y), alpha));
     }
@@ -540,7 +547,11 @@ public class Images implements Flushable, Serializable {
         // 绘制
         if (positionBaseCentre) {
             // 基于中心绘制
-            ImageKit.drawString(g, imageText.getPressText(), font, imageText.getColor(),
+            ImageKit.drawString(
+                    g,
+                    imageText.getPressText(),
+                    font,
+                    imageText.getColor(),
                     new Rectangle(point.x, point.y, targetImage.getWidth(), targetImage.getHeight()));
         } else {
             // 基于左上角绘制
@@ -565,8 +576,13 @@ public class Images implements Flushable, Serializable {
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
-    public Images pressTextFull(final String pressText, final Color color, Font font, final int lineHeight,
-            final int degree, final float alpha) {
+    public Images pressTextFull(
+            final String pressText,
+            final Color color,
+            Font font,
+            final int lineHeight,
+            final int degree,
+            final float alpha) {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
 
         if (null == font) {
@@ -700,11 +716,12 @@ public class Images implements Flushable, Serializable {
         // 创建画笔并填充背景色
         final Graphics2D graphics2d = ImageKit.createGraphics(targetImg, this.backgroundColor);
 
-        graphics2d.setRenderingHints(RenderingHintsBuilder.of()
-                // 抗锯齿
-                .setAntialiasing(RenderingHintsBuilder.Antialias.ON)
-                // 双线性插值
-                .setInterpolation(RenderingHintsBuilder.Interpolation.BILINEAR).build());
+        graphics2d.setRenderingHints(
+                RenderingHintsBuilder.of()
+                        // 抗锯齿
+                        .setAntialiasing(RenderingHintsBuilder.Antialias.ON)
+                        // 双线性插值
+                        .setInterpolation(RenderingHintsBuilder.Interpolation.BILINEAR).build());
 
         // 从中心旋转
         graphics2d.translate((rectangle.width - width) / 2D, (rectangle.height - height) / 2D);
@@ -854,7 +871,10 @@ public class Images implements Flushable, Serializable {
      * @param alpha         透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 绘制后的背景
      */
-    private BufferedImage draw(final BufferedImage backgroundImg, final Image img, final Rectangle rectangle,
+    private BufferedImage draw(
+            final BufferedImage backgroundImg,
+            final Image img,
+            final Rectangle rectangle,
             final float alpha) {
         final Graphics2D g = backgroundImg.createGraphics();
         ImageKit.setAlpha(g, alpha);
@@ -876,10 +896,11 @@ public class Images implements Flushable, Serializable {
     private int getTypeInt() {
         // noinspection SwitchStatementWithTooFewBranches
         switch (this.targetImageType) {
-        case ImageKit.IMAGE_TYPE_PNG:
-            return BufferedImage.TYPE_INT_ARGB;
-        default:
-            return BufferedImage.TYPE_INT_RGB;
+            case ImageKit.IMAGE_TYPE_PNG:
+                return BufferedImage.TYPE_INT_ARGB;
+
+            default:
+                return BufferedImage.TYPE_INT_RGB;
         }
     }
 

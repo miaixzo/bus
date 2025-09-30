@@ -296,7 +296,9 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateMatchRegex(final String regex, final T value,
+    public static <T extends CharSequence> T validateMatchRegex(
+            final String regex,
+            final T value,
             final String errorMsg) throws ValidateException {
         if (!isMatchRegex(regex, value)) {
             throw new ValidateException(errorMsg);
@@ -383,7 +385,10 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateGeneral(final T value, final int min, final int max,
+    public static <T extends CharSequence> T validateGeneral(
+            final T value,
+            final int min,
+            final int max,
             final String errorMsg) throws ValidateException {
         if (!isGeneral(value, min, max)) {
             throw new ValidateException(errorMsg);
@@ -1217,7 +1222,10 @@ public class Validator {
      * @param max      最大长度
      * @param errorMsg 错误消息
      */
-    public static void validateByteLength(final CharSequence text, final int min, final int max,
+    public static void validateByteLength(
+            final CharSequence text,
+            final int min,
+            final int max,
             final String errorMsg) {
         validateByteLength(text, min, max, Charset.UTF_8, errorMsg);
     }
@@ -1231,8 +1239,12 @@ public class Validator {
      * @param charset  字符编码
      * @param errorMsg 错误消息
      */
-    public static void validateByteLength(final CharSequence text, final int min, final int max,
-            final java.nio.charset.Charset charset, final String errorMsg) {
+    public static void validateByteLength(
+            final CharSequence text,
+            final int min,
+            final int max,
+            final java.nio.charset.Charset charset,
+            final String errorMsg) {
         final int len = StringKit.byteLength(text, charset);
         if (len < min || len > max) {
             throw new ValidateException(errorMsg);

@@ -41,6 +41,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * 
  * <pre>
  * {@code
+ * 
  * Set<UniqueTestBean> set = new UniqueKeySet<>(UniqueTestBean::getId);
  * }
  * </pre>

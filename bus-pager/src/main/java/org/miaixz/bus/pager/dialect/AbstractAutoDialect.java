@@ -62,7 +62,10 @@ public abstract class AbstractAutoDialect<Ds extends DataSource> implements Auto
     }
 
     @Override
-    public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource,
+    public AbstractPaging extractDialect(
+            String dialectKey,
+            MappedStatement ms,
+            DataSource dataSource,
             Properties properties) {
         String dialect = PageAutoDialect.fromJdbcUrl(dialectKey);
         return PageAutoDialect.instanceDialect(dialect, properties);

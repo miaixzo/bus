@@ -53,36 +53,41 @@ public abstract class LookupTable {
         DataBuffer src = srcRaster.getDataBuffer();
         DataBuffer dest = destRaster.getDataBuffer();
         switch (src.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            switch (dest.getDataType()) {
             case DataBuffer.TYPE_BYTE:
-                lookup(sm, ((DataBufferByte) src).getData(), destsm, ((DataBufferByte) dest).getData());
-                return;
+                switch (dest.getDataType()) {
+                    case DataBuffer.TYPE_BYTE:
+                        lookup(sm, ((DataBufferByte) src).getData(), destsm, ((DataBufferByte) dest).getData());
+                        return;
+
+                    case DataBuffer.TYPE_USHORT:
+                        lookup(sm, ((DataBufferByte) src).getData(), destsm, ((DataBufferUShort) dest).getData());
+                        return;
+                }
+                break;
+
             case DataBuffer.TYPE_USHORT:
-                lookup(sm, ((DataBufferByte) src).getData(), destsm, ((DataBufferUShort) dest).getData());
-                return;
-            }
-            break;
-        case DataBuffer.TYPE_USHORT:
-            switch (dest.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                lookup(sm, ((DataBufferUShort) src).getData(), destsm, ((DataBufferByte) dest).getData());
-                return;
-            case DataBuffer.TYPE_USHORT:
-                lookup(sm, ((DataBufferUShort) src).getData(), destsm, ((DataBufferUShort) dest).getData());
-                return;
-            }
-            break;
-        case DataBuffer.TYPE_SHORT:
-            switch (dest.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                lookup(sm, ((DataBufferShort) src).getData(), destsm, ((DataBufferByte) dest).getData());
-                return;
-            case DataBuffer.TYPE_USHORT:
-                lookup(sm, ((DataBufferShort) src).getData(), destsm, ((DataBufferUShort) dest).getData());
-                return;
-            }
-            break;
+                switch (dest.getDataType()) {
+                    case DataBuffer.TYPE_BYTE:
+                        lookup(sm, ((DataBufferUShort) src).getData(), destsm, ((DataBufferByte) dest).getData());
+                        return;
+
+                    case DataBuffer.TYPE_USHORT:
+                        lookup(sm, ((DataBufferUShort) src).getData(), destsm, ((DataBufferUShort) dest).getData());
+                        return;
+                }
+                break;
+
+            case DataBuffer.TYPE_SHORT:
+                switch (dest.getDataType()) {
+                    case DataBuffer.TYPE_BYTE:
+                        lookup(sm, ((DataBufferShort) src).getData(), destsm, ((DataBufferByte) dest).getData());
+                        return;
+
+                    case DataBuffer.TYPE_USHORT:
+                        lookup(sm, ((DataBufferShort) src).getData(), destsm, ((DataBufferUShort) dest).getData());
+                        return;
+                }
+                break;
         }
         throw new UnsupportedOperationException(
                 "Lookup " + src.getClass() + " -> " + dest.getClass() + " not supported");

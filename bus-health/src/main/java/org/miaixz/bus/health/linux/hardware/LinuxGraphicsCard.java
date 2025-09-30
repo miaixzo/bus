@@ -98,9 +98,10 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
             if (found) {
                 if (split.length < 2) {
                     // Save previous card
-                    cardList.add(new LinuxGraphicsCard(name, deviceId, vendor,
-                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                            queryLspciMemorySize(lookupDevice)));
+                    cardList.add(
+                            new LinuxGraphicsCard(name, deviceId, vendor,
+                                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                                    queryLspciMemorySize(lookupDevice)));
                     versionInfoList.clear();
                     found = false;
                 } else {
@@ -125,9 +126,10 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         }
         // If we haven't yet written the last card do so now
         if (found) {
-            cardList.add(new LinuxGraphicsCard(name, deviceId, vendor,
-                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                    queryLspciMemorySize(lookupDevice)));
+            cardList.add(
+                    new LinuxGraphicsCard(name, deviceId, vendor,
+                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                            queryLspciMemorySize(lookupDevice)));
         }
         return cardList;
     }
@@ -160,8 +162,10 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
             if (split[0].startsWith("*-display")) {
                 // Save previous card
                 if (cardNum++ > 0) {
-                    cardList.add(new LinuxGraphicsCard(name, deviceId, vendor,
-                            versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
+                    cardList.add(
+                            new LinuxGraphicsCard(name, deviceId, vendor,
+                                    versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                                    vram));
                     versionInfoList.clear();
                 }
             } else if (split.length == 2) {
@@ -177,8 +181,9 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                 }
             }
         }
-        cardList.add(new LinuxGraphicsCard(name, deviceId, vendor,
-                versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
+        cardList.add(
+                new LinuxGraphicsCard(name, deviceId, vendor,
+                        versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
         return cardList;
     }
 

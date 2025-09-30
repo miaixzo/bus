@@ -296,15 +296,16 @@ public class Response implements Closeable {
      */
     public boolean isRedirect() {
         switch (code) {
-        case HTTP.HTTP_PERM_REDIRECT: // 308
-        case HTTP.HTTP_TEMP_REDIRECT: // 307
-        case HTTP.HTTP_MULT_CHOICE: // 300
-        case HTTP.HTTP_MOVED_PERM: // 301
-        case HTTP.HTTP_MOVED_TEMP: // 302
-        case HTTP.HTTP_SEE_OTHER: // 303
-            return true;
-        default:
-            return false;
+            case HTTP.HTTP_PERM_REDIRECT: // 308
+            case HTTP.HTTP_TEMP_REDIRECT: // 307
+            case HTTP.HTTP_MULT_CHOICE: // 300
+            case HTTP.HTTP_MOVED_PERM: // 301
+            case HTTP.HTTP_MOVED_TEMP: // 302
+            case HTTP.HTTP_SEE_OTHER: // 303
+                return true;
+
+            default:
+                return false;
         }
     }
 

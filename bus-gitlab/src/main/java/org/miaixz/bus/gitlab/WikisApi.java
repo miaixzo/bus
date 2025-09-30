@@ -163,7 +163,12 @@ public class WikisApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public WikiPage getPage(Object projectIdOrPath, String slug) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "wikis",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "wikis",
                 slug);
         return (response.readEntity(WikiPage.class));
     }
@@ -204,7 +209,11 @@ public class WikisApi extends AbstractApi {
         // one of title or content is required
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title).withParam("content", content);
 
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "wikis");
         return (response.readEntity(WikiPage.class));
     }
@@ -229,8 +238,13 @@ public class WikisApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title).withParam("slug", slug, true)
                 .withParam("content", content);
 
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "wikis", slug);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "wikis",
+                slug);
         return (response.readEntity(WikiPage.class));
     }
 

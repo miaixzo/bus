@@ -155,7 +155,11 @@ public abstract class PageMethod {
      * @param <E>          分页数据元素类型
      * @return 分页对象
      */
-    public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count, Boolean reasonable,
+    public static <E> Page<E> startPage(
+            int pageNo,
+            int pageSize,
+            boolean count,
+            Boolean reasonable,
             Boolean pageSizeZero) {
         Page<E> page = new Page<>(pageNo, pageSize, count);
         page.setReasonable(reasonable);

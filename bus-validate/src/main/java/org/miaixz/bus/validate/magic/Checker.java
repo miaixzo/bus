@@ -146,22 +146,23 @@ public class Checker {
 
         // 使用动态代理创建NotBlank注解实例
         // 代理对象会返回注解方法的默认值
-        material.setAnnotation((NotBlank) Proxy.newProxyInstance(
-                // 使用注解的类加载器
-                NotBlank.class.getClassLoader(),
-                // 实现的接口
-                new Class<?>[] { NotBlank.class },
-                // 调用处理器
-                (proxy, method, args) -> {
-                    // 返回注解方法的默认值
-                    return method.getDefaultValue();
-                }));
+        material.setAnnotation(
+                (NotBlank) Proxy.newProxyInstance(
+                        // 使用注解的类加载器
+                        NotBlank.class.getClassLoader(),
+                        // 实现的接口
+                        new Class<?>[] { NotBlank.class },
+                        // 调用处理器
+                        (proxy, method, args) -> {
+                            // 返回注解方法的默认值
+                            return method.getDefaultValue();
+                        }));
 
         // 设置错误消息模板，使用${field}占位符
         material.setErrmsg("请检查${field}参数");
 
         // 设置默认错误码
-        material.setErrcode(ErrorCode._116000);
+        material.setErrcode(Builder.DEFAULT_ERRCODE);
 
         // 设置需要校验的字段名称
         material.setField(field.getName());
@@ -188,8 +189,10 @@ public class Checker {
     public Collector doObject(Verified verified, Material material) {
         Matcher matcher = (Matcher) Registry.getInstance().require(material.getName(), material.getClazz());
         if (ObjectKit.isEmpty(matcher)) {
-            throw new NoSuchException(String.format("Cannot find the specified validator, name:%s, class:%s",
-                    material.getName(), null == material.getClazz() ? Normal.NULL : material.getClazz().getName()));
+            throw new NoSuchException(String.format(
+                    "Cannot find the specified validator, name:%s, class:%s",
+                    material.getName(),
+                    null == material.getClazz() ? Normal.NULL : material.getClazz().getName()));
         }
         Object validatedTarget = verified.getObject();
         if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray() && Provider.isArray(validatedTarget)) {

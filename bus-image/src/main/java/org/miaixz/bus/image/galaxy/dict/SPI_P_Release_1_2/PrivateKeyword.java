@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SubtractionMaskID:
-            return "SubtractionMaskID";
-        case PrivateTag.MaskingFunction:
-            return "MaskingFunction";
-        case PrivateTag.ProprietaryMaskingParameters:
-            return "ProprietaryMaskingParameters";
-        case PrivateTag.SubtractionMaskEnableStatus:
-            return "SubtractionMaskEnableStatus";
-        case PrivateTag.SubtractionMaskSelectStatus:
-            return "SubtractionMaskSelectStatus";
+            case PrivateTag.SubtractionMaskID:
+                return "SubtractionMaskID";
+
+            case PrivateTag.MaskingFunction:
+                return "MaskingFunction";
+
+            case PrivateTag.ProprietaryMaskingParameters:
+                return "ProprietaryMaskingParameters";
+
+            case PrivateTag.SubtractionMaskEnableStatus:
+                return "SubtractionMaskEnableStatus";
+
+            case PrivateTag.SubtractionMaskSelectStatus:
+                return "SubtractionMaskSelectStatus";
         }
         return "";
     }

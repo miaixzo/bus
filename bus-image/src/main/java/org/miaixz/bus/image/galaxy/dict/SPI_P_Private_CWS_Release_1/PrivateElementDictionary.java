@@ -52,12 +52,14 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.WindowOfImagesType:
-            return VR.CS;
-        case PrivateTag.WindowOfImagesScope:
-            return VR.IS;
-        case PrivateTag.WindowOfImagesID:
-            return VR.LT;
+            case PrivateTag.WindowOfImagesType:
+                return VR.CS;
+
+            case PrivateTag.WindowOfImagesScope:
+                return VR.IS;
+
+            case PrivateTag.WindowOfImagesID:
+                return VR.LT;
         }
         return VR.UN;
     }

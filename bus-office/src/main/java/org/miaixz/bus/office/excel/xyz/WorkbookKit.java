@@ -296,7 +296,9 @@ public class WorkbookKit {
      * @param useSharedStringsTable 是否使用共享字符串表，一般大量重复字符串时开启可节省内存
      * @return {@link SXSSFWorkbook}
      */
-    public static SXSSFWorkbook createSXSSFBook(final int rowAccessWindowSize, final boolean compressTmpFiles,
+    public static SXSSFWorkbook createSXSSFBook(
+            final int rowAccessWindowSize,
+            final boolean compressTmpFiles,
             final boolean useSharedStringsTable) {
         return new SXSSFWorkbook(null, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
     }

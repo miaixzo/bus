@@ -38,44 +38,62 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag._0019_xx00_:
-            return "_0019_xx00_";
-        case PrivateTag._0019_xx01_:
-            return "_0019_xx01_";
-        case PrivateTag.TotalDoseAreaProduct:
-            return "TotalDoseAreaProduct";
-        case PrivateTag._0019_xx03_:
-            return "_0019_xx03_";
-        case PrivateTag._0019_xx04_:
-            return "_0019_xx04_";
-        case PrivateTag._0019_xx05_:
-            return "_0019_xx05_";
-        case PrivateTag.TableObjectDistance:
-            return "TableObjectDistance";
-        case PrivateTag.TableDetectorDistance:
-            return "TableDetectorDistance";
-        case PrivateTag.OrthoStepDistance:
-            return "OrthoStepDistance";
-        case PrivateTag.AutoWindowFlag:
-            return "AutoWindowFlag";
-        case PrivateTag.AutoWindowCenter:
-            return "AutoWindowCenter";
-        case PrivateTag.AutoWindowWidth:
-            return "AutoWindowWidth";
-        case PrivateTag.FilterID:
-            return "FilterID";
-        case PrivateTag.AnatomicCorrectView:
-            return "AnatomicCorrectView";
-        case PrivateTag.AutoWindowShift:
-            return "AutoWindowShift";
-        case PrivateTag.AutoWindowExpansion:
-            return "AutoWindowExpansion";
-        case PrivateTag.SystemType:
-            return "SystemType";
-        case PrivateTag.AnatomicSortNumber:
-            return "AnatomicSortNumber";
-        case PrivateTag.AcquisitionSortNumber:
-            return "AcquisitionSortNumber";
+            case PrivateTag._0019_xx00_:
+                return "_0019_xx00_";
+
+            case PrivateTag._0019_xx01_:
+                return "_0019_xx01_";
+
+            case PrivateTag.TotalDoseAreaProduct:
+                return "TotalDoseAreaProduct";
+
+            case PrivateTag._0019_xx03_:
+                return "_0019_xx03_";
+
+            case PrivateTag._0019_xx04_:
+                return "_0019_xx04_";
+
+            case PrivateTag._0019_xx05_:
+                return "_0019_xx05_";
+
+            case PrivateTag.TableObjectDistance:
+                return "TableObjectDistance";
+
+            case PrivateTag.TableDetectorDistance:
+                return "TableDetectorDistance";
+
+            case PrivateTag.OrthoStepDistance:
+                return "OrthoStepDistance";
+
+            case PrivateTag.AutoWindowFlag:
+                return "AutoWindowFlag";
+
+            case PrivateTag.AutoWindowCenter:
+                return "AutoWindowCenter";
+
+            case PrivateTag.AutoWindowWidth:
+                return "AutoWindowWidth";
+
+            case PrivateTag.FilterID:
+                return "FilterID";
+
+            case PrivateTag.AnatomicCorrectView:
+                return "AnatomicCorrectView";
+
+            case PrivateTag.AutoWindowShift:
+                return "AutoWindowShift";
+
+            case PrivateTag.AutoWindowExpansion:
+                return "AutoWindowExpansion";
+
+            case PrivateTag.SystemType:
+                return "SystemType";
+
+            case PrivateTag.AnatomicSortNumber:
+                return "AnatomicSortNumber";
+
+            case PrivateTag.AcquisitionSortNumber:
+                return "AcquisitionSortNumber";
         }
         return "";
     }

@@ -114,7 +114,6 @@ public class FetusDay extends Tradition {
 
         s += Symbol.SPACE;
 
-
         if (0 == side) {
             s += "房";
         }

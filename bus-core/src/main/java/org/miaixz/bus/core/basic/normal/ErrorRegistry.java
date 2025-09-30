@@ -44,6 +44,7 @@ import org.miaixz.bus.core.lang.Keys;
  * </p>
  *
  * <pre>{@code
+ * 
  * Errors error = ErrorRegistry.builder().key("AUTH_001").value("认证失败").build();
  * }</pre>
  *

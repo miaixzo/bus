@@ -41,6 +41,7 @@ import org.miaixz.bus.extra.mq.Producer;
  * @since Java 17+
  */
 public class RocketMQProducer implements Producer {
+
     private final MQProducer producer;
 
     /**

@@ -70,8 +70,8 @@ public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
 
         final BitMatrix bitMatrix;
         try {
-            bitMatrix = multiFormatWriter.encode(StringKit.toString(content), config.format, config.width,
-                    config.height, config.toHints());
+            bitMatrix = multiFormatWriter
+                    .encode(StringKit.toString(content), config.format, config.width, config.height, config.toHints());
         } catch (final WriterException e) {
             throw new QrCodeException(e);
         }

@@ -153,27 +153,32 @@ public class FreeBsdOSThread extends AbstractOSThread {
         this.name = threadMap.get(FreeBsdOSProcess.PsThreadColumns.TDNAME);
         this.threadId = Parsing.parseIntOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.LWP), 0);
         switch (threadMap.get(FreeBsdOSProcess.PsThreadColumns.STATE).charAt(0)) {
-        case 'R':
-            this.state = OSProcess.State.RUNNING;
-            break;
-        case 'I':
-        case 'S':
-            this.state = OSProcess.State.SLEEPING;
-            break;
-        case 'D':
-        case 'L':
-        case 'U':
-            this.state = OSProcess.State.WAITING;
-            break;
-        case 'Z':
-            this.state = OSProcess.State.ZOMBIE;
-            break;
-        case 'T':
-            this.state = OSProcess.State.STOPPED;
-            break;
-        default:
-            this.state = OSProcess.State.OTHER;
-            break;
+            case 'R':
+                this.state = OSProcess.State.RUNNING;
+                break;
+
+            case 'I':
+            case 'S':
+                this.state = OSProcess.State.SLEEPING;
+                break;
+
+            case 'D':
+            case 'L':
+            case 'U':
+                this.state = OSProcess.State.WAITING;
+                break;
+
+            case 'Z':
+                this.state = OSProcess.State.ZOMBIE;
+                break;
+
+            case 'T':
+                this.state = OSProcess.State.STOPPED;
+                break;
+
+            default:
+                this.state = OSProcess.State.OTHER;
+                break;
         }
         long elapsedTime = Parsing.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.ETIMES), 0L);
         // Avoid divide by zero for processes up less than a second

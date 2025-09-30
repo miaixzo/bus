@@ -111,7 +111,10 @@ public class IoKit {
      * @return 传输的byte数
      * @throws InternalException IO异常
      */
-    public static long copy(final Reader reader, final Writer writer, final int bufferSize,
+    public static long copy(
+            final Reader reader,
+            final Writer writer,
+            final int bufferSize,
             final StreamProgress streamProgress) throws InternalException {
         return copy(reader, writer, bufferSize, -1, streamProgress);
     }
@@ -127,7 +130,11 @@ public class IoKit {
      * @return 传输的byte数
      * @throws InternalException IO异常
      */
-    public static long copy(final Reader reader, final Writer writer, final int bufferSize, final long count,
+    public static long copy(
+            final Reader reader,
+            final Writer writer,
+            final int bufferSize,
+            final long count,
             final StreamProgress streamProgress) throws InternalException {
         Assert.notNull(reader, "Reader is null !");
         Assert.notNull(writer, "Writer is null !");
@@ -170,7 +177,10 @@ public class IoKit {
      * @return 传输的byte数
      * @throws InternalException IO异常
      */
-    public static long copy(final InputStream in, final OutputStream out, final int bufferSize,
+    public static long copy(
+            final InputStream in,
+            final OutputStream out,
+            final int bufferSize,
             final StreamProgress streamProgress) throws InternalException {
         return copy(in, out, bufferSize, -1, streamProgress);
     }
@@ -186,7 +196,11 @@ public class IoKit {
      * @return 传输的byte数
      * @throws InternalException IO异常
      */
-    public static long copy(final InputStream in, final OutputStream out, final int bufferSize, final long count,
+    public static long copy(
+            final InputStream in,
+            final OutputStream out,
+            final int bufferSize,
+            final long count,
             final StreamProgress streamProgress) throws InternalException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
@@ -342,15 +356,17 @@ public class IoKit {
                 off = count % swapBytes;
                 count -= off;
                 switch (swapBytes) {
-                case 2:
-                    ByteKit.swapShorts(buffer, 0, count);
-                    break;
-                case 4:
-                    ByteKit.swapInts(buffer, 0, count);
-                    break;
-                case 8:
-                    ByteKit.swapLongs(buffer, 0, count);
-                    break;
+                    case 2:
+                        ByteKit.swapShorts(buffer, 0, count);
+                        break;
+
+                    case 4:
+                        ByteKit.swapInts(buffer, 0, count);
+                        break;
+
+                    case 8:
+                        ByteKit.swapLongs(buffer, 0, count);
+                        break;
                 }
                 out.write(buffer, 0, count);
                 if (off > 0)
@@ -605,8 +621,10 @@ public class IoKit {
      * @return 内容
      * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readLines(final InputStream in,
-            final java.nio.charset.Charset charset, final T collection) throws InternalException {
+    public static <T extends Collection<String>> T readLines(
+            final InputStream in,
+            final java.nio.charset.Charset charset,
+            final T collection) throws InternalException {
         return readLines(toReader(in, charset), collection);
     }
 
@@ -644,7 +662,9 @@ public class IoKit {
      * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
      * @throws InternalException IO异常
      */
-    public static void readLines(final InputStream in, final java.nio.charset.Charset charset,
+    public static void readLines(
+            final InputStream in,
+            final java.nio.charset.Charset charset,
             final ConsumerX<String> lineHandler) throws InternalException {
         readLines(toReader(in, charset), lineHandler);
     }
@@ -1005,7 +1025,10 @@ public class IoKit {
      * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
      * @throws InternalException IO异常
      */
-    public static void write(final OutputStream out, final java.nio.charset.Charset charset, final boolean isCloseOut,
+    public static void write(
+            final OutputStream out,
+            final java.nio.charset.Charset charset,
+            final boolean isCloseOut,
             final CharSequence... contents) throws InternalException {
         StreamWriter.of(out, isCloseOut).writeString(charset, contents);
     }
@@ -1131,7 +1154,10 @@ public class IoKit {
      * @return 拷贝的字节数
      * @throws InternalException IO异常
      */
-    public static long copy(final ReadableByteChannel in, final WritableByteChannel out, final int bufferSize,
+    public static long copy(
+            final ReadableByteChannel in,
+            final WritableByteChannel out,
+            final int bufferSize,
             final StreamProgress streamProgress) throws InternalException {
         return copy(in, out, bufferSize, -1, streamProgress);
     }
@@ -1146,8 +1172,12 @@ public class IoKit {
      * @param streamProgress {@link StreamProgress}进度处理器
      * @return 拷贝的字节数
      */
-    public static long copy(final ReadableByteChannel in, final WritableByteChannel out, final int bufferSize,
-            final long totalCount, final StreamProgress streamProgress) {
+    public static long copy(
+            final ReadableByteChannel in,
+            final WritableByteChannel out,
+            final int bufferSize,
+            final long totalCount,
+            final StreamProgress streamProgress) {
         Assert.notNull(in, "In channel is null!");
         Assert.notNull(out, "Out channel is null!");
         return new ChannelCopier(bufferSize, totalCount, streamProgress).copy(in, out);
@@ -1164,7 +1194,10 @@ public class IoKit {
      * @return 传输的byte数
      * @throws InternalException IO异常
      */
-    public static long copyNio(final InputStream in, final OutputStream out, final int bufferSize,
+    public static long copyNio(
+            final InputStream in,
+            final OutputStream out,
+            final int bufferSize,
             final StreamProgress streamProgress) throws InternalException {
         return copyNio(in, out, bufferSize, -1, streamProgress);
     }
@@ -1180,11 +1213,19 @@ public class IoKit {
      * @return 传输的byte数
      * @throws InternalException IO异常
      */
-    public static long copyNio(final InputStream in, final OutputStream out, final int bufferSize, final long count,
+    public static long copyNio(
+            final InputStream in,
+            final OutputStream out,
+            final int bufferSize,
+            final long count,
             final StreamProgress streamProgress) throws InternalException {
         Assert.notNull(in, "InputStream channel is null!");
         Assert.notNull(out, "OutputStream channel is null!");
-        final long copySize = copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count,
+        final long copySize = copy(
+                Channels.newChannel(in),
+                Channels.newChannel(out),
+                bufferSize,
+                count,
                 streamProgress);
         flush(out);
         return copySize;
@@ -1360,6 +1401,7 @@ public class IoKit {
         }
 
         return new Sink() {
+
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 checkOffsetAndCount(source.size, 0, byteCount);
@@ -1447,6 +1489,7 @@ public class IoKit {
         }
 
         return new Source() {
+
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 if (byteCount < 0)
@@ -1572,6 +1615,7 @@ public class IoKit {
      */
     public static Sink blackhole() {
         return new Sink() {
+
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 source.skip(byteCount);
@@ -1613,6 +1657,7 @@ public class IoKit {
 
     private static AsyncTimeout timeout(final Socket socket) {
         return new AsyncTimeout() {
+
             @Override
             protected IOException newTimeoutException(IOException cause) {
                 InterruptedIOException ioe = new SocketTimeoutException("timeout");

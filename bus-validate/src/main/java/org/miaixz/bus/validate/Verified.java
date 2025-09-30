@@ -219,7 +219,8 @@ public class Verified extends Provider {
      * @return 校验器属性对象
      */
     public Material build(Annotation annotation, Object object) {
-        Assert.isTrue(isAnnotation(annotation),
+        Assert.isTrue(
+                isAnnotation(annotation),
                 "Attempt to get information from a non-validation annotation:" + annotation);
         Class<? extends Annotation> annotationType = annotation.annotationType();
         try {

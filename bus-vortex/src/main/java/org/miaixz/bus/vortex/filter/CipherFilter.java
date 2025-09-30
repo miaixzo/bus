@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.vortex.filter;
 
-import java.nio.CharBuffer;
 import java.util.Map;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
@@ -46,7 +46,7 @@ import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
@@ -128,11 +128,13 @@ public class CipherFilter extends AbstractFilter {
      */
     @Override
     protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
-        // 1. 处理请求解密
-        if (decrypt.isEnabled() && context.isNeedDecrypt()) {
-            doDecrypt(exchange, getRequestMap(context));
-            Format.info(exchange, "DECRYPT_PERFORMED", "Path: " + exchange.getRequest().getURI().getPath());
-        } else {
+        if (Consts.TYPE_ONE == context.getSign()) {
+            // 1. 处理请求解密
+            if (decrypt.isEnabled()) {
+                doDecrypt(exchange, getRequestMap(context));
+                Format.info(exchange, "DECRYPT_PERFORMED", "Path: " + exchange.getRequest().getURI().getPath());
+            }
+
             // 2. 处理响应加密
             if (encrypt.isEnabled()
                     && (Format.XML.equals(context.getFormat()) || Format.JSON.equals(context.getFormat()))) {
@@ -183,35 +185,71 @@ public class CipherFilter extends AbstractFilter {
      */
     private ServerHttpResponseDecorator process(ServerWebExchange exchange) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
+
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 // 获取资产配置，检查是否需要签名（加密）
-                boolean isSign = getAssets(getContext(exchange)).isSign();
-                if (isSign) {
+                Integer isSign = getAssets(getContext(exchange)).getSign();
+                if (Consts.TYPE_ONE == isSign) {
                     // 将响应数据流转换为Flux
                     Flux<? extends DataBuffer> flux = Flux.from(body);
-                    // 连接所有数据缓冲区，然后进行加密处理
-                    return super.writeWith(DataBufferUtils.join(flux).map(dataBuffer -> {
-                        // 将数据缓冲区解码为字符缓冲区
-                        CharBuffer charBuffer = Charset.UTF_8.decode(dataBuffer.asByteBuffer());
-                        // 释放原始数据缓冲区
-                        DataBufferUtils.release(dataBuffer);
-                        // 将字符缓冲区转换为消息对象
-                        Message message = JsonKit.toPojo(charBuffer.toString(), Message.class);
+
+                    // 收集所有数据缓冲区，然后进行加密处理
+                    return flux.collectList().flatMap(dataBuffers -> {
+                        // 合并所有数据缓冲区
+                        byte[] allBytes = merge(dataBuffers);
+
+                        // 将字节数组转换为字符串
+                        String responseBody = new String(allBytes, Charset.UTF_8);
+
+                        // 将字符串转换为消息对象
+                        Message message = JsonKit.toPojo(responseBody, Message.class);
+
                         // 加密消息数据
                         doEncrypt(message);
+
                         // 将加密后的消息转换为JSON字符串
                         String result = JsonKit.toJsonString(message);
+
                         // 记录加密操作日志
                         Format.info(exchange, "ENCRYPT_PERFORMED", "Path: " + exchange.getRequest().getURI().getPath());
-                        // 将加密后的数据包装为新的数据缓冲区并返回
-                        return bufferFactory().wrap(result.getBytes());
-                    }));
+
+                        // 将加密后的数据包装为新的数据缓冲区
+                        DataBufferFactory bufferFactory = bufferFactory();
+                        DataBuffer encryptedBuffer = bufferFactory.wrap(result.getBytes(Charset.UTF_8));
+
+                        // 写入加密后的响应
+                        return super.writeWith(Mono.just(encryptedBuffer));
+                    });
                 }
                 // 如果不需要签名（加密），直接写入原始数据
                 return super.writeWith(body);
             }
         };
+    }
+
+    /**
+     * 合并多个数据缓冲区为一个字节数组
+     *
+     * @param dataBuffers 数据缓冲区列表
+     * @return 合并后的字节数组
+     */
+    private byte[] merge(java.util.List<? extends DataBuffer> dataBuffers) {
+        // 计算总字节数
+        int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
+
+        // 创建结果数组
+        byte[] result = new byte[totalBytes];
+
+        // 填充数据
+        int position = 0;
+        for (DataBuffer buffer : dataBuffers) {
+            int length = buffer.readableByteCount();
+            buffer.read(result, position, length);
+            position += length;
+        }
+
+        return result;
     }
 
 }

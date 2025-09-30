@@ -30,6 +30,7 @@ package org.miaixz.bus.auth.nimble.huawei;
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -46,7 +47,6 @@ import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -138,7 +138,7 @@ public class HuaweiProvider extends AbstractProvider {
                 throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
             }
         }
-        String payload = new String(Base64.getUrlDecoder().decode(idToken.split("\\.")[1]), StandardCharsets.UTF_8);
+        String payload = new String(Base64.getUrlDecoder().decode(idToken.split("\\.")[1]), Charset.UTF_8);
         try {
             Map<String, Object> object = JsonKit.toPojo(payload, Map.class);
             if (object == null) {
@@ -223,8 +223,8 @@ public class HuaweiProvider extends AbstractProvider {
             String codeVerifier = Builder.codeVerifier();
             String codeChallengeMethod = "S256";
             String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
-            builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
-                    codeChallengeMethod);
+            builder.queryParam("code_challenge", codeChallenge)
+                    .queryParam("code_challenge_method", codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }

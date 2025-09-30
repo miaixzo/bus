@@ -226,7 +226,9 @@ public class ObjectValidator {
      * @param defaultValue 为空时的默认返回值
      * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回默认值
      */
-    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler,
+    public static <T, R> R defaultIfNull(
+            final T source,
+            final Function<? super T, ? extends R> handler,
             final R defaultValue) {
         return isNull(source) ? defaultValue : handler.apply(source);
     }
@@ -241,7 +243,9 @@ public class ObjectValidator {
      * @param defaultSupplier 为空时的默认值提供者
      * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
      */
-    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler,
+    public static <T, R> R defaultIfNull(
+            final T source,
+            final Function<? super T, ? extends R> handler,
             final Supplier<? extends R> defaultSupplier) {
         if (isNotNull(source)) {
             return handler.apply(source);

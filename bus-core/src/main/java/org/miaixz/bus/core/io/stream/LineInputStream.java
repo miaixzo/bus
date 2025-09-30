@@ -88,6 +88,7 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
     @Override
     public Iterator<byte[]> iterator() {
         return new ComputeIterator<>() {
+
             @Override
             protected byte[] computeNext() {
                 return readLine();

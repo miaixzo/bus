@@ -98,8 +98,9 @@ public class AttributeSelector implements Serializable {
         ArrayList<ItemPointer> list = new ArrayList<>();
         int fromIndex = 0;
         while (fromIndex < endIndex) {
-            list.add(new ItemPointer(selectPrivateCreator(s, fromIndex), selectTag(s, fromIndex),
-                    selectNumber(s, fromIndex) - 1));
+            list.add(
+                    new ItemPointer(selectPrivateCreator(s, fromIndex), selectTag(s, fromIndex),
+                            selectNumber(s, fromIndex) - 1));
             fromIndex = s.indexOf("DicomAttribute", fromIndex + MIN_ITEM_POINTER_STR_LEN);
         }
         list.trimToSize();

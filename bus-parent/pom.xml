@@ -38,7 +38,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.3.0</version>
+    <version>8.3.1</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -91,9 +91,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <bus.version>8.3.0</bus.version>
-        <lombok.version>1.18.38</lombok.version>
-        <spring.boot.version>3.5.5</spring.boot.version>
+        <bus.version>8.3.1</bus.version>
+        <lombok.version>1.18.42</lombok.version>
+        <spring.boot.version>3.5.6</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.mail.version>2.1.3</jakarta.mail.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
@@ -103,16 +103,16 @@
         <commons.logging.version>1.3.5</commons.logging.version>
         <jboss.version>3.6.1.Final</jboss.version>
         <logback.version>1.5.18</logback.version>
-        <log4j.version>2.25.1</log4j.version>
+        <log4j.version>2.25.2</log4j.version>
         <slf4j.version>2.0.17</slf4j.version>
         <tinylog.version>2.7.0</tinylog.version>
-        <yaml.version>2.4</yaml.version>
+        <yaml.version>2.5</yaml.version>
         <aspectj.version>1.9.24</aspectj.version>
-        <bcpkix.version>1.81</bcpkix.version>
+        <bcpkix.version>1.82</bcpkix.version>
         <temporal.version>1.31.0</temporal.version>
-        <fastjson.version>2.0.58</fastjson.version>
-        <gson.version>2.13.1</gson.version>
-        <jackson.version>2.19.2</jackson.version>
+        <fastjson.version>2.0.59</fastjson.version>
+        <gson.version>2.13.2</gson.version>
+        <jackson.version>2.20.0</jackson.version>
         <jpinyin.version>1.1.8</jpinyin.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
@@ -132,21 +132,21 @@
         <jedis.version>6.0.0</jedis.version>
         <xmemcached.version>2.4.8</xmemcached.version>
         <caffeine.version>3.2.2</caffeine.version>
-        <guava.version>33.4.8-jre</guava.version>
+        <guava.version>33.5.0-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
-        <postgresql.version>42.7.7</postgresql.version>
+        <postgresql.version>42.7.8</postgresql.version>
         <mysql.version>9.4.0</mysql.version>
         <h2.version>2.3.232</h2.version>
         <jersey.version>3.1.10</jersey.version>
-        <jna.version>5.17.0</jna.version>
+        <jna.version>5.18.0</jna.version>
         <sentinel.version>1.8.8</sentinel.version>
-        <bytebuddy.version>1.17.6</bytebuddy.version>
+        <bytebuddy.version>1.17.7</bytebuddy.version>
         <mybatis.version>3.5.19</mybatis.version>
         <mybatis.spring.version>3.0.5</mybatis.spring.version>
         <poi.version>5.4.1</poi.version>
         <ofdrw.version>2.3.7</ofdrw.version>
         <jsqlparser.version>5.3</jsqlparser.version>
-        <hikaricp.version>7.0.0</hikaricp.version>
+        <hikaricp.version>7.0.2</hikaricp.version>
         <druid.version>1.2.27</druid.version>
         <vertx.version>5.0.1</vertx.version>
         <dubbo.version>3.3.5</dubbo.version>
@@ -154,7 +154,7 @@
         <mongo.version>5.5.1</mongo.version>
         <curator.version>5.8.0</curator.version>
         <sardine.version>5.13</sardine.version>
-        <amazon.s3.version>2.32.14</amazon.s3.version>
+        <amazon.s3.version>2.32.33</amazon.s3.version>
     </properties>
 
     <dependencyManagement>
@@ -1248,7 +1248,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.9.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -1258,7 +1258,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.46.1</version>
+                <version>3.0.0</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>

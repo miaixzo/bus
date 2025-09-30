@@ -57,7 +57,8 @@ public enum BeanCache {
      * @param ignoreCase 是否忽略大小写
      * @return 属性名和{@link PropertyDescriptor}Map映射
      */
-    public Map<String, PropertyDescriptor> getPropertyDescriptorMap(final Class<?> beanClass,
+    public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
+            final Class<?> beanClass,
             final boolean ignoreCase) {
         return getCache(ignoreCase).get(beanClass);
     }
@@ -70,7 +71,9 @@ public enum BeanCache {
      * @param supplier   缓存对象产生函数
      * @return 属性名和{@link PropertyDescriptor}Map映射
      */
-    public Map<String, PropertyDescriptor> getPropertyDescriptorMap(final Class<?> beanClass, final boolean ignoreCase,
+    public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
+            final Class<?> beanClass,
+            final boolean ignoreCase,
             final SupplierX<Map<String, PropertyDescriptor>> supplier) {
         return getCache(ignoreCase).computeIfAbsent(beanClass, (key) -> supplier.get());
     }
@@ -82,8 +85,10 @@ public enum BeanCache {
      * @param fieldNamePropertyDescriptorMap 属性名和{@link PropertyDescriptor}Map映射
      * @param ignoreCase                     是否忽略大小写
      */
-    public void putPropertyDescriptorMap(final Class<?> beanClass,
-            final Map<String, PropertyDescriptor> fieldNamePropertyDescriptorMap, final boolean ignoreCase) {
+    public void putPropertyDescriptorMap(
+            final Class<?> beanClass,
+            final Map<String, PropertyDescriptor> fieldNamePropertyDescriptorMap,
+            final boolean ignoreCase) {
         getCache(ignoreCase).put(beanClass, fieldNamePropertyDescriptorMap);
     }
 

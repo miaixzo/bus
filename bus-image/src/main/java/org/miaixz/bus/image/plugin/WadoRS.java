@@ -149,6 +149,7 @@ public class WadoRS {
 
     TrustManager[] trustManagers() {
         return new TrustManager[] { new X509TrustManager() {
+
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
@@ -217,11 +218,14 @@ public class WadoRS {
             }
 
             new MultipartParser(boundary).parse(new BufferedInputStream(is), new MultipartParser.Handler() {
+
                 @Override
                 public void bodyPart(int partNumber, MultipartInputStream multipartInputStream) throws IOException {
                     Map<String, List<String>> headerParams = multipartInputStream.readHeaderParams();
                     try {
-                        String fileName = fileName(partNumber, uid,
+                        String fileName = fileName(
+                                partNumber,
+                                uid,
                                 partExtension(headerParams.get("content-type").get(0)));
                         Logger.info("Extract Part #{} {} \n{}", partNumber, fileName, headerParams);
                         write(multipartInputStream, fileName);

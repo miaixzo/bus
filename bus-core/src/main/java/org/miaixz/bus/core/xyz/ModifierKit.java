@@ -301,6 +301,7 @@ public class ModifierKit {
      * {@code
      * // 示例，移除final修饰符
      * class JdbcDialects {
+     * 
      *     private static final List<Number> dialects = new ArrayList<>();
      * }
      * Field field = ReflectKit.getField(JdbcDialects.class, fieldName);

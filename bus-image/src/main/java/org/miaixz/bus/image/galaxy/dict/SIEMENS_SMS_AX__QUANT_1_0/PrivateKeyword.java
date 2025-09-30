@@ -38,24 +38,32 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.HorizontalCalibrationPixelSize:
-            return "HorizontalCalibrationPixelSize";
-        case PrivateTag.VerticalCalibrationPixelSize:
-            return "VerticalCalibrationPixelSize";
-        case PrivateTag.CalibrationObject:
-            return "CalibrationObject";
-        case PrivateTag.CalibrationObjectSize:
-            return "CalibrationObjectSize";
-        case PrivateTag.CalibrationMethod:
-            return "CalibrationMethod";
-        case PrivateTag.Filename:
-            return "Filename";
-        case PrivateTag.FrameNumber:
-            return "FrameNumber";
-        case PrivateTag.CalibrationFactorMultiplicity:
-            return "CalibrationFactorMultiplicity";
-        case PrivateTag.CalibrationTableObjectDistance:
-            return "CalibrationTableObjectDistance";
+            case PrivateTag.HorizontalCalibrationPixelSize:
+                return "HorizontalCalibrationPixelSize";
+
+            case PrivateTag.VerticalCalibrationPixelSize:
+                return "VerticalCalibrationPixelSize";
+
+            case PrivateTag.CalibrationObject:
+                return "CalibrationObject";
+
+            case PrivateTag.CalibrationObjectSize:
+                return "CalibrationObjectSize";
+
+            case PrivateTag.CalibrationMethod:
+                return "CalibrationMethod";
+
+            case PrivateTag.Filename:
+                return "Filename";
+
+            case PrivateTag.FrameNumber:
+                return "FrameNumber";
+
+            case PrivateTag.CalibrationFactorMultiplicity:
+                return "CalibrationFactorMultiplicity";
+
+            case PrivateTag.CalibrationTableObjectDistance:
+                return "CalibrationTableObjectDistance";
         }
         return "";
     }

@@ -93,6 +93,7 @@ public class GsonConverterConfigurer implements JsonConverterConfigurer {
      * 自定义 TypeAdapterFactory，限制反序列化类型到 autoType 包前缀。
      */
     private static class AutoTypeAdapterFactory implements com.google.gson.TypeAdapterFactory {
+
         private final String autoTypePrefix;
 
         public AutoTypeAdapterFactory(String autoTypePrefix) {

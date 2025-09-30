@@ -51,7 +51,9 @@ public final class MemoryInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Collections.emptyMap();
         }
-        return PerfCounterQuery.queryValues(PageSwapProperty.class, PerfmonConsts.MEMORY,
+        return PerfCounterQuery.queryValues(
+                PageSwapProperty.class,
+                PerfmonConsts.MEMORY,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_MEMORY);
     }
 
@@ -59,6 +61,7 @@ public final class MemoryInformation {
      * For pages in/out
      */
     public enum PageSwapProperty implements PerfCounterQuery.PdhCounterProperty {
+
         PAGESINPUTPERSEC(null, "Pages Input/sec"), //
         PAGESOUTPUTPERSEC(null, "Pages Output/sec");
 

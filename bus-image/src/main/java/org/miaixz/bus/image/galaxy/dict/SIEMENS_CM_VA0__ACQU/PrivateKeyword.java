@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ParameterFileName:
-            return "ParameterFileName";
-        case PrivateTag.SequenceFileName:
-            return "SequenceFileName";
-        case PrivateTag.SequenceFileOwner:
-            return "SequenceFileOwner";
-        case PrivateTag.SequenceDescription:
-            return "SequenceDescription";
-        case PrivateTag.EPIFileName:
-            return "EPIFileName";
+            case PrivateTag.ParameterFileName:
+                return "ParameterFileName";
+
+            case PrivateTag.SequenceFileName:
+                return "SequenceFileName";
+
+            case PrivateTag.SequenceFileOwner:
+                return "SequenceFileOwner";
+
+            case PrivateTag.SequenceDescription:
+                return "SequenceDescription";
+
+            case PrivateTag.EPIFileName:
+                return "EPIFileName";
         }
         return "";
     }

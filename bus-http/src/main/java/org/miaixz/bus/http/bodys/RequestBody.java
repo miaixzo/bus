@@ -81,6 +81,7 @@ public abstract class RequestBody {
      */
     public static RequestBody create(final MediaType contentType, final ByteString content) {
         return new RequestBody() {
+
             @Override
             public MediaType contentType() {
                 return contentType;
@@ -121,13 +122,17 @@ public abstract class RequestBody {
      * @throws NullPointerException           如果 content 为 null
      * @throws ArrayIndexOutOfBoundsException 如果 offset 或 byteCount 无效
      */
-    public static RequestBody create(final MediaType contentType, final byte[] content, final int offset,
+    public static RequestBody create(
+            final MediaType contentType,
+            final byte[] content,
+            final int offset,
             final int byteCount) {
         if (null == content) {
             throw new NullPointerException("content == null");
         }
         Builder.checkOffsetAndCount(content.length, offset, byteCount);
         return new RequestBody() {
+
             @Override
             public MediaType contentType() {
                 return contentType;
@@ -159,6 +164,7 @@ public abstract class RequestBody {
         }
 
         return new RequestBody() {
+
             @Override
             public MediaType contentType() {
                 return contentType;

@@ -66,8 +66,12 @@ public class ImageAdapter {
     private ImageAdapter() {
     }
 
-    public static boolean writeDicomFile(Attributes data, AdaptTransferSyntax syntax, Editable<PlanarImage> editable,
-            BytesWithImageDescriptor desc, File file) {
+    public static boolean writeDicomFile(
+            Attributes data,
+            AdaptTransferSyntax syntax,
+            Editable<PlanarImage> editable,
+            BytesWithImageDescriptor desc,
+            File file) {
         if (desc == null) {
             if (UID.ImplicitVRLittleEndian.equals(syntax.suitable) || UID.ExplicitVRBigEndian.equals(syntax.suitable)) {
                 syntax.suitable = UID.ImplicitVRLittleEndian.uid;
@@ -111,8 +115,13 @@ public class ImageAdapter {
         return true;
     }
 
-    private static void writeImage(AdaptTransferSyntax syntax, BytesWithImageDescriptor desc, ImageOutputData imgData,
-            Attributes dataSet, String dstTsuid, ImageOutputStream dos) throws IOException {
+    private static void writeImage(
+            AdaptTransferSyntax syntax,
+            BytesWithImageDescriptor desc,
+            ImageOutputData imgData,
+            Attributes dataSet,
+            String dstTsuid,
+            ImageOutputStream dos) throws IOException {
         if (ImageOutputData.isNativeSyntax(dstTsuid)) {
             imgData.writRawImageData(dos, dataSet);
         } else {
@@ -124,8 +133,11 @@ public class ImageAdapter {
             if (jpegWriteParam.getCompressionRatioFactor() > 0 && syntax.getCompressionRatioFactor() > 0) {
                 jpegWriteParam.setCompressionRatioFactor(syntax.getCompressionRatioFactor());
             }
-            int[] jpegWriteParams = imgData.adaptTagsToCompressedImage(dataSet, imgData.getFirstImage().get(),
-                    desc.getImageDescriptor(), jpegWriteParam);
+            int[] jpegWriteParams = imgData.adaptTagsToCompressedImage(
+                    dataSet,
+                    imgData.getFirstImage().get(),
+                    desc.getImageDescriptor(),
+                    jpegWriteParam);
             imgData.writeCompressedImageData(dos, dataSet, jpegWriteParams);
         }
     }
@@ -137,8 +149,11 @@ public class ImageAdapter {
         }
     }
 
-    public static DataWriter buildDataWriter(Attributes data, AdaptTransferSyntax syntax,
-            Editable<PlanarImage> editable, BytesWithImageDescriptor desc) throws IOException {
+    public static DataWriter buildDataWriter(
+            Attributes data,
+            AdaptTransferSyntax syntax,
+            Editable<PlanarImage> editable,
+            BytesWithImageDescriptor desc) throws IOException {
         if (desc == null) {
             syntax.suitable = syntax.original;
             return (out, tsuid) -> {
@@ -173,7 +188,9 @@ public class ImageAdapter {
         return false;
     }
 
-    public static BytesWithImageDescriptor imageTranscode(Attributes data, AdaptTransferSyntax syntax,
+    public static BytesWithImageDescriptor imageTranscode(
+            Attributes data,
+            AdaptTransferSyntax syntax,
             EditorContext context) {
 
         VR.Holder pixeldataVR = new VR.Holder();
@@ -186,6 +203,7 @@ public class ImageAdapter {
             ByteBuffer[] mfByteBuffer = new ByteBuffer[1];
             ArrayList<Integer> fragmentsPositions = new ArrayList<>();
             return new BytesWithImageDescriptor() {
+
                 @Override
                 public ImageDescriptor getImageDescriptor() {
                     return imdDesc;
@@ -224,8 +242,11 @@ public class ImageAdapter {
 
                         boolean hasFragments = fragments != null;
                         if (!hasFragments && bulkData != null) {
-                            int frameLength = desc.getPhotometricInterpretation().frameLength(desc.getColumns(),
-                                    desc.getRows(), desc.getSamples(), desc.getBitsAllocated());
+                            int frameLength = desc.getPhotometricInterpretation().frameLength(
+                                    desc.getColumns(),
+                                    desc.getRows(),
+                                    desc.getSamples(),
+                                    desc.getBitsAllocated());
                             if (mfByteBuffer[0] == null) {
                                 mfByteBuffer[0] = ByteBuffer.wrap(bulkData.toBytes(pixeldataVR.vr, bigEndian));
                             }
@@ -335,14 +356,18 @@ public class ImageAdapter {
         }
     }
 
-    private static ImageOutputData geDicomOutputData(ImageReader reader, String outputTsuid,
-            BytesWithImageDescriptor desc, Editable<PlanarImage> editable) throws IOException {
+    private static ImageOutputData geDicomOutputData(
+            ImageReader reader,
+            String outputTsuid,
+            BytesWithImageDescriptor desc,
+            Editable<PlanarImage> editable) throws IOException {
         reader.setInput(desc);
         var images = reader.getLazyPlanarImages(IMAGE_READ_PARAM, editable);
         return new ImageOutputData(images, desc.getImageDescriptor(), outputTsuid);
     }
 
     public static class AdaptTransferSyntax {
+
         private final String original;
         private final String requested;
         private String suitable;

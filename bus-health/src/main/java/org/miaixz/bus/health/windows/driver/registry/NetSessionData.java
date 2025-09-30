@@ -54,8 +54,16 @@ public final class NetSessionData {
         try (ByRef.CloseablePointerByReference bufptr = new ByRef.CloseablePointerByReference();
                 ByRef.CloseableIntByReference entriesread = new ByRef.CloseableIntByReference();
                 ByRef.CloseableIntByReference totalentries = new ByRef.CloseableIntByReference()) {
-            if (0 == NET.NetSessionEnum(null, null, null, 10, bufptr, Netapi32.MAX_PREFERRED_LENGTH, entriesread,
-                    totalentries, null)) {
+            if (0 == NET.NetSessionEnum(
+                    null,
+                    null,
+                    null,
+                    10,
+                    bufptr,
+                    Netapi32.MAX_PREFERRED_LENGTH,
+                    entriesread,
+                    totalentries,
+                    null)) {
                 Pointer buf = bufptr.getValue();
                 SESSION_INFO_10 si10 = new SESSION_INFO_10(buf);
                 if (entriesread.getValue() > 0) {

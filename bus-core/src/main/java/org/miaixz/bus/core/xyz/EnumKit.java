@@ -299,8 +299,11 @@ public class EnumKit {
      * @param <E>         枚举类型
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, C> E getBy(final Class<E> enumClass, final FunctionX<E, C> condition,
-            final C value, final E defaultEnum) {
+    public static <E extends Enum<E>, C> E getBy(
+            final Class<E> enumClass,
+            final FunctionX<E, C> condition,
+            final C value,
+            final E defaultEnum) {
         if (null == condition) {
             return null;
         }
@@ -328,7 +331,9 @@ public class EnumKit {
      * @param <E>         枚举类型
      * @return 对应枚举 ，获取不到时为 {@code defaultEnum}
      */
-    public static <E extends Enum<E>> E getBy(final Class<E> enumClass, final Predicate<? super E> predicate,
+    public static <E extends Enum<E>> E getBy(
+            final Class<E> enumClass,
+            final Predicate<? super E> predicate,
             final E defaultEnum) {
         if (null == enumClass || null == predicate) {
             return null;
@@ -347,7 +352,9 @@ public class EnumKit {
      * @param <C>       条件字段类型
      * @return 对应枚举中另一字段值 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, F, C> F getFieldBy(final FunctionX<E, F> field, final Function<E, C> condition,
+    public static <E extends Enum<E>, F, C> F getFieldBy(
+            final FunctionX<E, F> field,
+            final Function<E, C> condition,
             final C value) {
         if (null == field || null == condition) {
             return null;
@@ -388,7 +395,8 @@ public class EnumKit {
      * @param fieldName 字段名，最终调用getXXX方法
      * @return 枚举名对应指定字段值的Map
      */
-    public static <E extends Enum<E>> Map<String, Object> getNameFieldMap(final Class<E> clazz,
+    public static <E extends Enum<E>> Map<String, Object> getNameFieldMap(
+            final Class<E> clazz,
             final String fieldName) {
         if (null == clazz || StringKit.isBlank(fieldName)) {
             return null;

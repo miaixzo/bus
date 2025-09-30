@@ -211,113 +211,114 @@ public class RetryAndFollowUp implements Interceptor {
 
         final String method = userResponse.request().method();
         switch (responseCode) {
-        case HTTP.HTTP_PROXY_AUTH:
-            Proxy selectedProxy = route != null ? route.proxy() : httpd.proxy();
-            if (selectedProxy.type() != Proxy.Type.HTTP) {
-                throw new ProtocolException("Received HTTP_PROXY_AUTH (407) code while not using proxy");
-            }
-            return httpd.proxyAuthenticator().authenticate(route, userResponse);
-
-        case HTTP.HTTP_UNAUTHORIZED:
-            return httpd.authenticator().authenticate(route, userResponse);
-
-        case HTTP.HTTP_PERM_REDIRECT:
-        case HTTP.HTTP_TEMP_REDIRECT:
-            // "If the 307 or 308 status code is received in response to a request other than GET
-            // or HEAD, the user agent MUST NOT automatically redirect the request"
-            if (!method.equals("GET") && !method.equals("HEAD")) {
-                return null;
-            }
-            // fall-through
-        case HTTP.HTTP_MULT_CHOICE:
-        case HTTP.HTTP_MOVED_PERM:
-        case HTTP.HTTP_MOVED_TEMP:
-        case HTTP.HTTP_SEE_OTHER:
-            // Does the client allow redirects?
-            if (!httpd.followRedirects())
-                return null;
-
-            String location = userResponse.header(HTTP.LOCATION);
-            if (null == location)
-                return null;
-            UnoUrl url = userResponse.request().url().resolve(location);
-
-            // Don't follow redirects to unsupported protocols.
-            if (url == null)
-                return null;
-
-            // If configured, don't follow redirects between SSL and non-SSL.
-            boolean sameScheme = url.scheme().equals(userResponse.request().url().scheme());
-            if (!sameScheme && !httpd.followSslRedirects())
-                return null;
-
-            // Most redirects don't include a request body.
-            Request.Builder requestBuilder = userResponse.request().newBuilder();
-            if (HTTP.permitsRequestBody(method)) {
-                final boolean maintainBody = HTTP.redirectsWithBody(method);
-                if (HTTP.redirectsToGet(method)) {
-                    requestBuilder.method("GET", null);
-                } else {
-                    RequestBody requestBody = maintainBody ? userResponse.request().body() : null;
-                    requestBuilder.method(method, requestBody);
+            case HTTP.HTTP_PROXY_AUTH:
+                Proxy selectedProxy = route != null ? route.proxy() : httpd.proxy();
+                if (selectedProxy.type() != Proxy.Type.HTTP) {
+                    throw new ProtocolException("Received HTTP_PROXY_AUTH (407) code while not using proxy");
                 }
-                if (!maintainBody) {
-                    requestBuilder.removeHeader(HTTP.TRANSFER_ENCODING);
-                    requestBuilder.removeHeader(HTTP.CONTENT_LENGTH);
-                    requestBuilder.removeHeader(HTTP.CONTENT_TYPE);
+                return httpd.proxyAuthenticator().authenticate(route, userResponse);
+
+            case HTTP.HTTP_UNAUTHORIZED:
+                return httpd.authenticator().authenticate(route, userResponse);
+
+            case HTTP.HTTP_PERM_REDIRECT:
+            case HTTP.HTTP_TEMP_REDIRECT:
+                // "If the 307 or 308 status code is received in response to a request other than GET
+                // or HEAD, the user agent MUST NOT automatically redirect the request"
+                if (!method.equals("GET") && !method.equals("HEAD")) {
+                    return null;
                 }
-            }
+                // fall-through
+            case HTTP.HTTP_MULT_CHOICE:
+            case HTTP.HTTP_MOVED_PERM:
+            case HTTP.HTTP_MOVED_TEMP:
+            case HTTP.HTTP_SEE_OTHER:
+                // Does the client allow redirects?
+                if (!httpd.followRedirects())
+                    return null;
 
-            // When redirecting across hosts, drop all authentication headers. This
-            // is potentially annoying to the application layer since they have no
-            // way to retain them.
-            if (!Builder.sameConnection(userResponse.request().url(), url)) {
-                requestBuilder.removeHeader("Authorization");
-            }
+                String location = userResponse.header(HTTP.LOCATION);
+                if (null == location)
+                    return null;
+                UnoUrl url = userResponse.request().url().resolve(location);
 
-            return requestBuilder.url(url).build();
+                // Don't follow redirects to unsupported protocols.
+                if (url == null)
+                    return null;
 
-        case HTTP.HTTP_CLIENT_TIMEOUT:
-            // 408's are rare in practice, but some servers like HAProxy use this response code. The
-            // spec says that we may repeat the request without modifications. Modern browsers also
-            // repeat the request (even non-idempotent ones.)
-            if (!httpd.retryOnConnectionFailure()) {
-                // The application layer has directed us not to retry the request.
-                return null;
-            }
+                // If configured, don't follow redirects between SSL and non-SSL.
+                boolean sameScheme = url.scheme().equals(userResponse.request().url().scheme());
+                if (!sameScheme && !httpd.followSslRedirects())
+                    return null;
 
-            RequestBody requestBody = userResponse.request().body();
-            if (requestBody != null && requestBody.isOneShot()) {
-                return null;
-            }
+                // Most redirects don't include a request body.
+                Request.Builder requestBuilder = userResponse.request().newBuilder();
+                if (HTTP.permitsRequestBody(method)) {
+                    final boolean maintainBody = HTTP.redirectsWithBody(method);
+                    if (HTTP.redirectsToGet(method)) {
+                        requestBuilder.method("GET", null);
+                    } else {
+                        RequestBody requestBody = maintainBody ? userResponse.request().body() : null;
+                        requestBuilder.method(method, requestBody);
+                    }
+                    if (!maintainBody) {
+                        requestBuilder.removeHeader(HTTP.TRANSFER_ENCODING);
+                        requestBuilder.removeHeader(HTTP.CONTENT_LENGTH);
+                        requestBuilder.removeHeader(HTTP.CONTENT_TYPE);
+                    }
+                }
 
-            if (userResponse.priorResponse() != null
-                    && userResponse.priorResponse().code() == HTTP.HTTP_CLIENT_TIMEOUT) {
-                // We attempted to retry and got another timeout. Give up.
-                return null;
-            }
+                // When redirecting across hosts, drop all authentication headers. This
+                // is potentially annoying to the application layer since they have no
+                // way to retain them.
+                if (!Builder.sameConnection(userResponse.request().url(), url)) {
+                    requestBuilder.removeHeader("Authorization");
+                }
 
-            if (retryAfter(userResponse, 0) > 0) {
-                return null;
-            }
+                return requestBuilder.url(url).build();
 
-            return userResponse.request();
+            case HTTP.HTTP_CLIENT_TIMEOUT:
+                // 408's are rare in practice, but some servers like HAProxy use this response code. The
+                // spec says that we may repeat the request without modifications. Modern browsers also
+                // repeat the request (even non-idempotent ones.)
+                if (!httpd.retryOnConnectionFailure()) {
+                    // The application layer has directed us not to retry the request.
+                    return null;
+                }
 
-        case HTTP.HTTP_UNAVAILABLE:
-            if (userResponse.priorResponse() != null && userResponse.priorResponse().code() == HTTP.HTTP_UNAVAILABLE) {
-                // We attempted to retry and got another timeout. Give up.
-                return null;
-            }
+                RequestBody requestBody = userResponse.request().body();
+                if (requestBody != null && requestBody.isOneShot()) {
+                    return null;
+                }
 
-            if (retryAfter(userResponse, Integer.MAX_VALUE) == 0) {
-                // specifically received an instruction to retry without delay
+                if (userResponse.priorResponse() != null
+                        && userResponse.priorResponse().code() == HTTP.HTTP_CLIENT_TIMEOUT) {
+                    // We attempted to retry and got another timeout. Give up.
+                    return null;
+                }
+
+                if (retryAfter(userResponse, 0) > 0) {
+                    return null;
+                }
+
                 return userResponse.request();
-            }
 
-            return null;
+            case HTTP.HTTP_UNAVAILABLE:
+                if (userResponse.priorResponse() != null
+                        && userResponse.priorResponse().code() == HTTP.HTTP_UNAVAILABLE) {
+                    // We attempted to retry and got another timeout. Give up.
+                    return null;
+                }
 
-        default:
-            return null;
+                if (retryAfter(userResponse, Integer.MAX_VALUE) == 0) {
+                    // specifically received an instruction to retry without delay
+                    return userResponse.request();
+                }
+
+                return null;
+
+            default:
+                return null;
         }
     }
 

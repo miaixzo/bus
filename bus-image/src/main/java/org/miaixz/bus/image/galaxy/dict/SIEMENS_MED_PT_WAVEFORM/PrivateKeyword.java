@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.StartingRespiratoryAmplitude:
-            return "StartingRespiratoryAmplitude";
-        case PrivateTag.StartingRespiratoryPhase:
-            return "StartingRespiratoryPhase";
-        case PrivateTag.EndingRespiratoryAmplitude:
-            return "EndingRespiratoryAmplitude";
-        case PrivateTag.EndingRespiratoryPhase:
-            return "EndingRespiratoryPhase";
-        case PrivateTag.RespiratoryTriggerType:
-            return "RespiratoryTriggerType";
+            case PrivateTag.StartingRespiratoryAmplitude:
+                return "StartingRespiratoryAmplitude";
+
+            case PrivateTag.StartingRespiratoryPhase:
+                return "StartingRespiratoryPhase";
+
+            case PrivateTag.EndingRespiratoryAmplitude:
+                return "EndingRespiratoryAmplitude";
+
+            case PrivateTag.EndingRespiratoryPhase:
+                return "EndingRespiratoryPhase";
+
+            case PrivateTag.RespiratoryTriggerType:
+                return "RespiratoryTriggerType";
         }
         return "";
     }

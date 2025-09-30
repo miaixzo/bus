@@ -83,8 +83,12 @@ public class PackagesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Package> getPackages(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "packages");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "packages");
         return response.readEntity(new GenericType<List<Package>>() {
         });
     }
@@ -174,7 +178,12 @@ public class PackagesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Package getPackage(Object projectIdOrPath, Long packageId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "packages",
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "packages",
                 packageId);
         return (response.readEntity(Package.class));
     }
@@ -211,8 +220,14 @@ public class PackagesApi extends AbstractApi {
      */
     public List<PackageFile> getPackageFiles(Object projectIdOrPath, Long packageId, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "packages", packageId, "package_files");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "packages",
+                packageId,
+                "package_files");
         return response.readEntity(new GenericType<List<PackageFile>>() {
         });
     }
@@ -269,7 +284,12 @@ public class PackagesApi extends AbstractApi {
             throw new RuntimeException("packageId cannot be null");
         }
 
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "packages",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "packages",
                 packageId);
     }
 

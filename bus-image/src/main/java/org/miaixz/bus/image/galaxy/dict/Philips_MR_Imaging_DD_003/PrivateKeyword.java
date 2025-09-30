@@ -38,48 +38,68 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.NumberOfSOPCommon:
-            return "NumberOfSOPCommon";
-        case PrivateTag.NoOfFilmConsumption:
-            return "NoOfFilmConsumption";
-        case PrivateTag.NumberOfCodes:
-            return "NumberOfCodes";
-        case PrivateTag.NumberOfImagePerSeriesRef:
-            return "NumberOfImagePerSeriesRef";
-        case PrivateTag.NoDateOfLastCalibration:
-            return "NoDateOfLastCalibration";
-        case PrivateTag.NoTimeOfLastCalibration:
-            return "NoTimeOfLastCalibration";
-        case PrivateTag.NrOfSoftwareVersion:
-            return "NrOfSoftwareVersion";
-        case PrivateTag.NrOfPatientOtherNames:
-            return "NrOfPatientOtherNames";
-        case PrivateTag.NrOfReqRecipeOfResults:
-            return "NrOfReqRecipeOfResults";
-        case PrivateTag.NrOfSeriesOperatorsName:
-            return "NrOfSeriesOperatorsName";
-        case PrivateTag.NrOfSeriesPerfPhysiName:
-            return "NrOfSeriesPerfPhysiName";
-        case PrivateTag.NrOfStudyAdmittingDiagnosticDescr:
-            return "NrOfStudyAdmittingDiagnosticDescr";
-        case PrivateTag.NrOfStudyPatientContrastAllergies:
-            return "NrOfStudyPatientContrastAllergies";
-        case PrivateTag.NrOfStudyPatientMedicalAlerts:
-            return "NrOfStudyPatientMedicalAlerts";
-        case PrivateTag.NrOfStudyPhysiciansOfRecord:
-            return "NrOfStudyPhysiciansOfRecord";
-        case PrivateTag.NrOfStudyPhysiReadingStudy:
-            return "NrOfStudyPhysiReadingStudy";
-        case PrivateTag.NrSCSoftwareVersions:
-            return "NrSCSoftwareVersions";
-        case PrivateTag.NrRunningAttributes:
-            return "NrRunningAttributes";
-        case PrivateTag.SpectrumPixelData:
-            return "SpectrumPixelData";
-        case PrivateTag.DefaultImageUID:
-            return "DefaultImageUID";
-        case PrivateTag.RunningAttributes:
-            return "RunningAttributes";
+            case PrivateTag.NumberOfSOPCommon:
+                return "NumberOfSOPCommon";
+
+            case PrivateTag.NoOfFilmConsumption:
+                return "NoOfFilmConsumption";
+
+            case PrivateTag.NumberOfCodes:
+                return "NumberOfCodes";
+
+            case PrivateTag.NumberOfImagePerSeriesRef:
+                return "NumberOfImagePerSeriesRef";
+
+            case PrivateTag.NoDateOfLastCalibration:
+                return "NoDateOfLastCalibration";
+
+            case PrivateTag.NoTimeOfLastCalibration:
+                return "NoTimeOfLastCalibration";
+
+            case PrivateTag.NrOfSoftwareVersion:
+                return "NrOfSoftwareVersion";
+
+            case PrivateTag.NrOfPatientOtherNames:
+                return "NrOfPatientOtherNames";
+
+            case PrivateTag.NrOfReqRecipeOfResults:
+                return "NrOfReqRecipeOfResults";
+
+            case PrivateTag.NrOfSeriesOperatorsName:
+                return "NrOfSeriesOperatorsName";
+
+            case PrivateTag.NrOfSeriesPerfPhysiName:
+                return "NrOfSeriesPerfPhysiName";
+
+            case PrivateTag.NrOfStudyAdmittingDiagnosticDescr:
+                return "NrOfStudyAdmittingDiagnosticDescr";
+
+            case PrivateTag.NrOfStudyPatientContrastAllergies:
+                return "NrOfStudyPatientContrastAllergies";
+
+            case PrivateTag.NrOfStudyPatientMedicalAlerts:
+                return "NrOfStudyPatientMedicalAlerts";
+
+            case PrivateTag.NrOfStudyPhysiciansOfRecord:
+                return "NrOfStudyPhysiciansOfRecord";
+
+            case PrivateTag.NrOfStudyPhysiReadingStudy:
+                return "NrOfStudyPhysiReadingStudy";
+
+            case PrivateTag.NrSCSoftwareVersions:
+                return "NrSCSoftwareVersions";
+
+            case PrivateTag.NrRunningAttributes:
+                return "NrRunningAttributes";
+
+            case PrivateTag.SpectrumPixelData:
+                return "SpectrumPixelData";
+
+            case PrivateTag.DefaultImageUID:
+                return "DefaultImageUID";
+
+            case PrivateTag.RunningAttributes:
+                return "RunningAttributes";
         }
         return "";
     }

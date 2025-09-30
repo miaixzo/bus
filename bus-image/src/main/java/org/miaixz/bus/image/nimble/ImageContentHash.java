@@ -39,43 +39,51 @@ import org.opencv.img_hash.*;
  * @since Java 17+
  */
 public enum ImageContentHash {
+
     AVERAGE() {
+
         @Override
         public ImgHashBase getAlgorithm() {
             return AverageHash.create();
         }
     },
     PHASH() {
+
         @Override
         public ImgHashBase getAlgorithm() {
             return PHash.create();
         }
     },
     MARR_HILDRETH() {
+
         @Override
         public ImgHashBase getAlgorithm() {
             return MarrHildrethHash.create();
         }
     },
     RADIAL_VARIANCE() {
+
         @Override
         public ImgHashBase getAlgorithm() {
             return RadialVarianceHash.create();
         }
     },
     BLOCK_MEAN_ZERO() {
+
         @Override
         public ImgHashBase getAlgorithm() {
             return BlockMeanHash.create(0);
         }
     },
     BLOCK_MEAN_ONE() {
+
         @Override
         public ImgHashBase getAlgorithm() {
             return BlockMeanHash.create(1);
         }
     },
     COLOR_MOMENT() {
+
         @Override
         public ImgHashBase getAlgorithm() {
             return ColorMomentHash.create();

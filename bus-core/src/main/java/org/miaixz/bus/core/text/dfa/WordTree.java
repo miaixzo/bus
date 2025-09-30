@@ -260,7 +260,10 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
      * @return 匹配的词列表
      */
-    public List<String> matchAll(final String text, final int limit, final boolean isDensityMatch,
+    public List<String> matchAll(
+            final String text,
+            final int limit,
+            final boolean isDensityMatch,
             final boolean isGreedMatch) {
         final List<FoundWord> matchAllWords = matchAllWords(text, limit, isDensityMatch, isGreedMatch);
         return CollKit.map(matchAllWords, FoundWord::toString);
@@ -278,7 +281,10 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
      * @return 匹配的词列表
      */
-    public List<FoundWord> matchAllWords(final String text, final int limit, final boolean isDensityMatch,
+    public List<FoundWord> matchAllWords(
+            final String text,
+            final int limit,
+            final boolean isDensityMatch,
             final boolean isGreedMatch) {
         if (null == text) {
             return null;

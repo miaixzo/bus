@@ -145,7 +145,10 @@ public enum Part {
      * @throws CrontabException 检查无效抛出此异常
      */
     public int checkValue(final int value) throws CrontabException {
-        Assert.checkBetween(value, min, max,
+        Assert.checkBetween(
+                value,
+                min,
+                max,
                 () -> new CrontabException("{} value {} out of range: [{} , {}]", this.name(), value, min, max));
         return value;
     }

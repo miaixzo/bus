@@ -173,7 +173,11 @@ class Hpack {
                     headerCount--;
                     entriesToEvict++;
                 }
-                System.arraycopy(dynamicTable, nextHeaderIndex + 1, dynamicTable, nextHeaderIndex + 1 + entriesToEvict,
+                System.arraycopy(
+                        dynamicTable,
+                        nextHeaderIndex + 1,
+                        dynamicTable,
+                        nextHeaderIndex + 1 + entriesToEvict,
                         headerCount);
                 nextHeaderIndex += entriesToEvict;
             }
@@ -357,6 +361,7 @@ class Hpack {
     }
 
     static class Writer {
+
         private static final int SETTINGS_HEADER_TABLE_SIZE = 4096;
 
         /**
@@ -413,7 +418,11 @@ class Hpack {
                     headerCount--;
                     entriesToEvict++;
                 }
-                System.arraycopy(dynamicTable, nextHeaderIndex + 1, dynamicTable, nextHeaderIndex + 1 + entriesToEvict,
+                System.arraycopy(
+                        dynamicTable,
+                        nextHeaderIndex + 1,
+                        dynamicTable,
+                        nextHeaderIndex + 1 + entriesToEvict,
                         headerCount);
                 Arrays.fill(dynamicTable, nextHeaderIndex + 1, nextHeaderIndex + 1 + entriesToEvict, null);
                 nextHeaderIndex += entriesToEvict;

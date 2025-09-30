@@ -96,7 +96,10 @@ public class ImageRemoval {
      * @param override  指定替换成的背景颜色 为null时背景为透明
      * @param tolerance 容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
      */
-    public static void backgroundRemoval(final File input, final File output, final Color override,
+    public static void backgroundRemoval(
+            final File input,
+            final File output,
+            final Color override,
             final int tolerance) {
         fileTypeValidation(input, IMAGES_TYPE);
         BufferedImage bufferedImage = null;
@@ -119,7 +122,9 @@ public class ImageRemoval {
      * @param tolerance     容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
      * @return 返回处理好的图片流
      */
-    public static BufferedImage backgroundRemoval(final BufferedImage bufferedImage, final Color override,
+    public static BufferedImage backgroundRemoval(
+            final BufferedImage bufferedImage,
+            final Color override,
             int tolerance) {
         // 容差值 最大255 最小0
         tolerance = Math.min(255, Math.max(tolerance, 0));
@@ -141,7 +146,9 @@ public class ImageRemoval {
                 int rgb = image.getRGB(x, y);
                 final String hex = ColorKit.toHex((rgb & 0xff0000) >> 16, (rgb & 0xff00) >> 8, (rgb & 0xff));
                 final boolean isTrue = ArrayKit.contains(removeRgb, hex) || areColorsWithinTolerance(
-                        hexToRgb(mainColor), new Color(Integer.parseInt(hex.substring(1), 16)), tolerance);
+                        hexToRgb(mainColor),
+                        new Color(Integer.parseInt(hex.substring(1), 16)),
+                        tolerance);
                 if (isTrue) {
                     rgb = override == null ? ((alpha + 1) << 24) | (rgb & 0x00ffffff) : override.getRGB();
                 }
@@ -161,10 +168,14 @@ public class ImageRemoval {
      * @param tolerance    容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
      * @return 返回处理好的图片流
      */
-    public static BufferedImage backgroundRemoval(final ByteArrayOutputStream outputStream, final Color override,
+    public static BufferedImage backgroundRemoval(
+            final ByteArrayOutputStream outputStream,
+            final Color override,
             final int tolerance) {
         try {
-            return backgroundRemoval(ImageIO.read(new ByteArrayInputStream(outputStream.toByteArray())), override,
+            return backgroundRemoval(
+                    ImageIO.read(new ByteArrayInputStream(outputStream.toByteArray())),
+                    override,
                     tolerance);
         } catch (final IOException e) {
             throw new InternalException(e);
@@ -183,36 +194,40 @@ public class ImageRemoval {
         final int height = image.getHeight() - 1;
         // 左上
         final int leftUpPixel = image.getRGB(1, 1);
-        final String leftUp = ColorKit.toHex((leftUpPixel & 0xff0000) >> 16, (leftUpPixel & 0xff00) >> 8,
-                (leftUpPixel & 0xff));
+        final String leftUp = ColorKit
+                .toHex((leftUpPixel & 0xff0000) >> 16, (leftUpPixel & 0xff00) >> 8, (leftUpPixel & 0xff));
         // 上中
         final int upMiddlePixel = image.getRGB(width / 2, 1);
-        final String upMiddle = ColorKit.toHex((upMiddlePixel & 0xff0000) >> 16, (upMiddlePixel & 0xff00) >> 8,
-                (upMiddlePixel & 0xff));
+        final String upMiddle = ColorKit
+                .toHex((upMiddlePixel & 0xff0000) >> 16, (upMiddlePixel & 0xff00) >> 8, (upMiddlePixel & 0xff));
         // 右上
         final int rightUpPixel = image.getRGB(width, 1);
-        final String rightUp = ColorKit.toHex((rightUpPixel & 0xff0000) >> 16, (rightUpPixel & 0xff00) >> 8,
-                (rightUpPixel & 0xff));
+        final String rightUp = ColorKit
+                .toHex((rightUpPixel & 0xff0000) >> 16, (rightUpPixel & 0xff00) >> 8, (rightUpPixel & 0xff));
         // 右中
         final int rightMiddlePixel = image.getRGB(width, height / 2);
-        final String rightMiddle = ColorKit.toHex((rightMiddlePixel & 0xff0000) >> 16, (rightMiddlePixel & 0xff00) >> 8,
+        final String rightMiddle = ColorKit.toHex(
+                (rightMiddlePixel & 0xff0000) >> 16,
+                (rightMiddlePixel & 0xff00) >> 8,
                 (rightMiddlePixel & 0xff));
         // 右下
         final int lowerRightPixel = image.getRGB(width, height);
-        final String lowerRight = ColorKit.toHex((lowerRightPixel & 0xff0000) >> 16, (lowerRightPixel & 0xff00) >> 8,
-                (lowerRightPixel & 0xff));
+        final String lowerRight = ColorKit
+                .toHex((lowerRightPixel & 0xff0000) >> 16, (lowerRightPixel & 0xff00) >> 8, (lowerRightPixel & 0xff));
         // 下中
         final int lowerMiddlePixel = image.getRGB(width / 2, height);
-        final String lowerMiddle = ColorKit.toHex((lowerMiddlePixel & 0xff0000) >> 16, (lowerMiddlePixel & 0xff00) >> 8,
+        final String lowerMiddle = ColorKit.toHex(
+                (lowerMiddlePixel & 0xff0000) >> 16,
+                (lowerMiddlePixel & 0xff00) >> 8,
                 (lowerMiddlePixel & 0xff));
         // 左下
         final int leftLowerPixel = image.getRGB(1, height);
-        final String leftLower = ColorKit.toHex((leftLowerPixel & 0xff0000) >> 16, (leftLowerPixel & 0xff00) >> 8,
-                (leftLowerPixel & 0xff));
+        final String leftLower = ColorKit
+                .toHex((leftLowerPixel & 0xff0000) >> 16, (leftLowerPixel & 0xff00) >> 8, (leftLowerPixel & 0xff));
         // 左中
         final int leftMiddlePixel = image.getRGB(1, height / 2);
-        final String leftMiddle = ColorKit.toHex((leftMiddlePixel & 0xff0000) >> 16, (leftMiddlePixel & 0xff00) >> 8,
-                (leftMiddlePixel & 0xff));
+        final String leftMiddle = ColorKit
+                .toHex((leftMiddlePixel & 0xff0000) >> 16, (leftMiddlePixel & 0xff00) >> 8, (leftMiddlePixel & 0xff));
         // 需要删除的RGB元素
         return new String[] { leftUp, upMiddle, rightUp, rightMiddle, lowerRight, lowerMiddle, leftLower, leftMiddle };
     }
@@ -296,8 +311,9 @@ public class ImageRemoval {
         for (int y = bufferedImage.getMinY(); y < bufferedImage.getHeight(); y++) {
             for (int x = bufferedImage.getMinX(); x < bufferedImage.getWidth(); x++) {
                 final int pixel = bufferedImage.getRGB(x, y);
-                list.add(((pixel & 0xff0000) >> 16) + Symbol.MINUS + ((pixel & 0xff00) >> 8) + Symbol.MINUS
-                        + (pixel & 0xff));
+                list.add(
+                        ((pixel & 0xff0000) >> 16) + Symbol.MINUS + ((pixel & 0xff00) >> 8) + Symbol.MINUS
+                                + (pixel & 0xff));
             }
         }
 
@@ -325,8 +341,8 @@ public class ImageRemoval {
         // rgb 的数量只有3个
         final int rgbLength = 3;
         if (strings.length == rgbLength) {
-            return ColorKit.toHex(Integer.parseInt(strings[0]), Integer.parseInt(strings[1]),
-                    Integer.parseInt(strings[2]));
+            return ColorKit
+                    .toHex(Integer.parseInt(strings[0]), Integer.parseInt(strings[1]), Integer.parseInt(strings[2]));
         }
         return Normal.EMPTY;
     }

@@ -194,8 +194,10 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
 
         this.map = new ConcurrentHashMap<>(initCapacity);
         if (schedulePrune) {
-            this.schedulePrune(Math.min(this.expireAfterWrite,
-                    this.expireAfterAccess > 0 ? this.expireAfterAccess : Long.MAX_VALUE));
+            this.schedulePrune(
+                    Math.min(
+                            this.expireAfterWrite,
+                            this.expireAfterAccess > 0 ? this.expireAfterAccess : Long.MAX_VALUE));
         }
     }
 
@@ -430,8 +432,12 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         long requests = requestCount.get();
         long hits = hitCount.get();
         double hitRate = requests == 0 ? 0.0 : (double) hits / requests;
-        return String.format("MemoryCacheStats[requests=%d, hits=%d, hitRate=%.2f%%, size=%d]", requests, hits,
-                hitRate * 100, map.size());
+        return String.format(
+                "MemoryCacheStats[requests=%d, hits=%d, hitRate=%.2f%%, size=%d]",
+                requests,
+                hits,
+                hitRate * 100,
+                map.size());
     }
 
     /**
@@ -504,6 +510,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * </p>
      */
     enum CacheScheduler {
+
         /**
          * 当前实例
          */
@@ -580,6 +587,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     @Getter
     @Setter
     private static class CacheState implements Serializable {
+
         /**
          * 缓存值
          */

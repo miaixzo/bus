@@ -38,38 +38,53 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.TransmitterReferenceAmplitude:
-            return "TransmitterReferenceAmplitude";
-        case PrivateTag.HammingFilterWidth:
-            return "HammingFilterWidth";
-        case PrivateTag.CSIGridshiftVector:
-            return "CSIGridshiftVector";
-        case PrivateTag.MixingTime:
-            return "MixingTime";
-        case PrivateTag.SeriesProtocolInstance:
-            return "SeriesProtocolInstance";
-        case PrivateTag.SpectroResultType:
-            return "SpectroResultType";
-        case PrivateTag.SpectroResultExtendType:
-            return "SpectroResultExtendType";
-        case PrivateTag.PostProcProtocol:
-            return "PostProcProtocol";
-        case PrivateTag.RescanLevel:
-            return "RescanLevel";
-        case PrivateTag.SpectroAlgoResult:
-            return "SpectroAlgoResult";
-        case PrivateTag.SpectroDisplayParams:
-            return "SpectroDisplayParams";
-        case PrivateTag.VoxelNumber:
-            return "VoxelNumber";
-        case PrivateTag.APRSequence:
-            return "APRSequence";
-        case PrivateTag.SyncData:
-            return "SyncData";
-        case PrivateTag.PostProcDetailedProtocol:
-            return "PostProcDetailedProtocol";
-        case PrivateTag.SpectroResultExtendTypeDetailed:
-            return "SpectroResultExtendTypeDetailed";
+            case PrivateTag.TransmitterReferenceAmplitude:
+                return "TransmitterReferenceAmplitude";
+
+            case PrivateTag.HammingFilterWidth:
+                return "HammingFilterWidth";
+
+            case PrivateTag.CSIGridshiftVector:
+                return "CSIGridshiftVector";
+
+            case PrivateTag.MixingTime:
+                return "MixingTime";
+
+            case PrivateTag.SeriesProtocolInstance:
+                return "SeriesProtocolInstance";
+
+            case PrivateTag.SpectroResultType:
+                return "SpectroResultType";
+
+            case PrivateTag.SpectroResultExtendType:
+                return "SpectroResultExtendType";
+
+            case PrivateTag.PostProcProtocol:
+                return "PostProcProtocol";
+
+            case PrivateTag.RescanLevel:
+                return "RescanLevel";
+
+            case PrivateTag.SpectroAlgoResult:
+                return "SpectroAlgoResult";
+
+            case PrivateTag.SpectroDisplayParams:
+                return "SpectroDisplayParams";
+
+            case PrivateTag.VoxelNumber:
+                return "VoxelNumber";
+
+            case PrivateTag.APRSequence:
+                return "APRSequence";
+
+            case PrivateTag.SyncData:
+                return "SyncData";
+
+            case PrivateTag.PostProcDetailedProtocol:
+                return "PostProcDetailedProtocol";
+
+            case PrivateTag.SpectroResultExtendTypeDetailed:
+                return "SpectroResultExtendTypeDetailed";
         }
         return "";
     }

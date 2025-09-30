@@ -62,6 +62,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     private static final long serialVersionUID = 2852255307380L;
 
     private static final FormatCache<FormatBuilder> CACHE = new FormatCache<>() {
+
         @Override
         protected FormatBuilder createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
             return new FormatBuilder(pattern, timeZone, locale);
@@ -287,7 +288,10 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
      * @param locale    地域
      * @return FormatBuilder实例
      */
-    public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone,
+    public static FormatBuilder getDateTimeInstance(
+            final int dateStyle,
+            final int timeStyle,
+            final TimeZone timeZone,
             final Locale locale) {
         return CACHE.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale);
     }

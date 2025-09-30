@@ -51,8 +51,12 @@ public class RetryKit {
      * @param recover     达到最大重试次数后执行的备用方法
      * @param exs         指定的异常类型需要重试
      */
-    public static void ofException(final Runnable run, final long maxAttempts, final Duration delay,
-            final Runnable recover, Class<? extends Throwable>... exs) {
+    public static void ofException(
+            final Runnable run,
+            final long maxAttempts,
+            final Duration delay,
+            final Runnable recover,
+            Class<? extends Throwable>... exs) {
         if (ArrayKit.isEmpty(exs)) {
             exs = ArrayKit.append(exs, RuntimeException.class);
         }
@@ -74,8 +78,12 @@ public class RetryKit {
      * @param <T>         结果类型
      * @return 执行结果
      */
-    public static <T> T ofException(final Supplier<T> sup, final long maxAttempts, final Duration delay,
-            final Supplier<T> recover, Class<? extends Throwable>... exs) {
+    public static <T> T ofException(
+            final Supplier<T> sup,
+            final long maxAttempts,
+            final Duration delay,
+            final Supplier<T> recover,
+            Class<? extends Throwable>... exs) {
         if (ArrayKit.isEmpty(exs)) {
             exs = ArrayKit.append(exs, RuntimeException.class);
         }
@@ -92,8 +100,12 @@ public class RetryKit {
      * @param recover     达到最大重试次数后执行的备用方法
      * @param predicate   自定义重试条件, 返回true时表示重试
      */
-    public static void ofPredicate(final Runnable run, final long maxAttempts, final Duration delay,
-            final Supplier<Void> recover, final BiPredicate<Void, Throwable> predicate) {
+    public static void ofPredicate(
+            final Runnable run,
+            final long maxAttempts,
+            final Duration delay,
+            final Supplier<Void> recover,
+            final BiPredicate<Void, Throwable> predicate) {
         RetryableTask.retryForPredicate(run, predicate).delay(delay).maxAttempts(maxAttempts).execute().get()
                 .orElseGet(recover);
     }
@@ -109,8 +121,12 @@ public class RetryKit {
      * @param <T>         结果类型
      * @return 执行结果
      */
-    public static <T> T ofPredicate(final Supplier<T> sup, final long maxAttempts, final Duration delay,
-            final Supplier<T> recover, final BiPredicate<T, Throwable> predicate) {
+    public static <T> T ofPredicate(
+            final Supplier<T> sup,
+            final long maxAttempts,
+            final Duration delay,
+            final Supplier<T> recover,
+            final BiPredicate<T, Throwable> predicate) {
         return RetryableTask.retryForPredicate(sup, predicate).delay(delay).maxAttempts(maxAttempts).execute().get()
                 .orElseGet(recover);
     }

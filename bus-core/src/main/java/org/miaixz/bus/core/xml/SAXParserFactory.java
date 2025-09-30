@@ -64,7 +64,8 @@ public class SAXParserFactory {
      * @param namespaceAware 是否打开命名空间支持
      * @return {@link javax.xml.parsers.SAXParserFactory}
      */
-    public static javax.xml.parsers.SAXParserFactory createFactory(final boolean validating,
+    public static javax.xml.parsers.SAXParserFactory createFactory(
+            final boolean validating,
             final boolean namespaceAware) {
         final javax.xml.parsers.SAXParserFactory factory = javax.xml.parsers.SAXParserFactory.newInstance();
         factory.setValidating(validating);

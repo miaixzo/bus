@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ObjectSeriesInstanceUID:
-            return "ObjectSeriesInstanceUID";
-        case PrivateTag.ModelSeriesInstanceUID:
-            return "ModelSeriesInstanceUID";
-        case PrivateTag.MatrixReferencedSeriesInstanceUID:
-            return "MatrixReferencedSeriesInstanceUID";
+            case PrivateTag.ObjectSeriesInstanceUID:
+                return "ObjectSeriesInstanceUID";
+
+            case PrivateTag.ModelSeriesInstanceUID:
+                return "ModelSeriesInstanceUID";
+
+            case PrivateTag.MatrixReferencedSeriesInstanceUID:
+                return "MatrixReferencedSeriesInstanceUID";
         }
         return "";
     }

@@ -53,7 +53,9 @@ public final class OhmHardware {
      * @param typeName    the name of the type
      * @return The sensor value.
      */
-    public static WmiResult<IdentifierProperty> queryHwIdentifier(WmiQueryHandler h, String typeToQuery,
+    public static WmiResult<IdentifierProperty> queryHwIdentifier(
+            WmiQueryHandler h,
+            String typeToQuery,
             String typeName) {
         WmiQuery<IdentifierProperty> cpuIdentifierQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE,
                 HARDWARE + " WHERE " + typeToQuery + "Type=\"" + typeName + '\"', IdentifierProperty.class);

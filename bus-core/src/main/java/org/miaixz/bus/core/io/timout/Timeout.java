@@ -43,6 +43,7 @@ public class Timeout {
      * 既不跟踪也不检测超时的空超时。在不需要超时 的情况下使用它，例如在操作不会阻塞的实现中
      */
     public static final Timeout NONE = new Timeout() {
+
         @Override
         public Timeout timeout(long timeout, TimeUnit unit) {
             return this;

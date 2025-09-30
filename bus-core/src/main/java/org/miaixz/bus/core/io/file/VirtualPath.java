@@ -473,7 +473,9 @@ public class VirtualPath implements Path {
      * @throws IOException                   如果发生I/O错误
      */
     @Override
-    public WatchKey register(final WatchService watcher, final WatchEvent.Kind<?>[] events,
+    public WatchKey register(
+            final WatchService watcher,
+            final WatchEvent.Kind<?>[] events,
             final WatchEvent.Modifier... modifiers) throws IOException {
         throw new UnsupportedOperationException("VirtualPath does not support watch service");
     }
@@ -506,6 +508,7 @@ public class VirtualPath implements Path {
     @Override
     public Iterator<Path> iterator() {
         return new Iterator<>() {
+
             private int index = 0;
             private final List<String> parts = CharsBacker.splitTrim(path, Symbol.SLASH);
 

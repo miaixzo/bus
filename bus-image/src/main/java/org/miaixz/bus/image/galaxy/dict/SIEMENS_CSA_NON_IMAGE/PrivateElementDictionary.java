@@ -52,13 +52,15 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.CSADataType:
-            return VR.CS;
-        case PrivateTag.CSADataVersion:
-            return VR.LO;
-        case PrivateTag.CSADataInfo:
-        case PrivateTag.CSAData:
-            return VR.OB;
+            case PrivateTag.CSADataType:
+                return VR.CS;
+
+            case PrivateTag.CSADataVersion:
+                return VR.LO;
+
+            case PrivateTag.CSADataInfo:
+            case PrivateTag.CSAData:
+                return VR.OB;
         }
         return VR.UN;
     }

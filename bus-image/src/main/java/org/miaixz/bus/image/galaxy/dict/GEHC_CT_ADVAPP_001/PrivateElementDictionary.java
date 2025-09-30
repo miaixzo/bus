@@ -52,26 +52,28 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ShuttleFlag:
-        case PrivateTag.ShutterMode:
-        case PrivateTag.ShutterModePercent:
-        case PrivateTag.OverlappedReconFlag:
-        case PrivateTag.RowNumberAnotationFlag:
-        case PrivateTag.ODMFlag:
-        case PrivateTag.ODMReductionPercent:
-            return VR.IS;
-        case PrivateTag.IterativeReconConfiguration:
-        case PrivateTag.ImageBrowserAnnotation:
-        case PrivateTag.SubOptimalIQString:
-        case PrivateTag.MARsAnnotation:
-            return VR.LO;
-        case PrivateTag.IterativeReconAnnotation:
-        case PrivateTag.IterativeReconMode:
-        case PrivateTag.IterativeReconLevel:
-        case PrivateTag.ReconFlipRotateAnno:
-        case PrivateTag.HighResolutionFlag:
-        case PrivateTag.RespiratoryFlag:
-            return VR.SH;
+            case PrivateTag.ShuttleFlag:
+            case PrivateTag.ShutterMode:
+            case PrivateTag.ShutterModePercent:
+            case PrivateTag.OverlappedReconFlag:
+            case PrivateTag.RowNumberAnotationFlag:
+            case PrivateTag.ODMFlag:
+            case PrivateTag.ODMReductionPercent:
+                return VR.IS;
+
+            case PrivateTag.IterativeReconConfiguration:
+            case PrivateTag.ImageBrowserAnnotation:
+            case PrivateTag.SubOptimalIQString:
+            case PrivateTag.MARsAnnotation:
+                return VR.LO;
+
+            case PrivateTag.IterativeReconAnnotation:
+            case PrivateTag.IterativeReconMode:
+            case PrivateTag.IterativeReconLevel:
+            case PrivateTag.ReconFlipRotateAnno:
+            case PrivateTag.HighResolutionFlag:
+            case PrivateTag.RespiratoryFlag:
+                return VR.SH;
         }
         return VR.UN;
     }

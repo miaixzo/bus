@@ -187,8 +187,12 @@ public class DcmDir {
 
     private void create(File file) throws IOException {
         this.file = file;
-        ImageDirWriter.createEmptyDirectory(file, UID.createUIDIfNull(fsInfo.getFilesetUID()), fsInfo.getFilesetID(),
-                fsInfo.getDescriptorFile(), fsInfo.getDescriptorFileCharset());
+        ImageDirWriter.createEmptyDirectory(
+                file,
+                UID.createUIDIfNull(fsInfo.getFilesetUID()),
+                fsInfo.getFilesetID(),
+                fsInfo.getDescriptorFile(),
+                fsInfo.getDescriptorFileCharset());
         in = out = ImageDirWriter.open(file);
         out.setEncodingOptions(encOpts);
         setCheckDuplicate(false);
@@ -206,7 +210,8 @@ public class DcmDir {
         checkIn();
         list("File Meta Information:", in.getFileMetaInformation());
         list("File-set Information:", in.getFileSetInformation());
-        list(inUse ? in.findFirstRootDirectoryRecordInUse(false) : in.readFirstRootDirectoryRecord(),
+        list(
+                inUse ? in.findFirstRootDirectoryRecordInUse(false) : in.readFirstRootDirectoryRecord(),
                 new StringBuilder());
     }
 
@@ -438,6 +443,7 @@ public class DcmDir {
     }
 
     static class CSVParser {
+
         private final Pattern pattern;
         private final int[] tags;
         private final VR[] vrs;
@@ -461,8 +467,9 @@ public class DcmDir {
             Attributes dataset = new Attributes();
             String[] fields = parseFields(line);
             if (fields.length > tags.length) {
-                Logger.warn("Number of values in line " + line
-                        + " does not match number of headers. Hence line is ignored.");
+                Logger.warn(
+                        "Number of values in line " + line
+                                + " does not match number of headers. Hence line is ignored.");
                 return null;
             }
             for (int i = 0; i < fields.length; i++)

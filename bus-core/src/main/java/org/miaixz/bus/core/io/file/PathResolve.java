@@ -159,7 +159,10 @@ public class PathResolve {
      * @param fileFilter    文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
      * @return 文件列表
      */
-    public static List<File> loopFiles(final Path path, final int maxDepth, final boolean isFollowLinks,
+    public static List<File> loopFiles(
+            final Path path,
+            final int maxDepth,
+            final boolean isFollowLinks,
             final FileFilter fileFilter) {
         final List<File> fileList = new ArrayList<>();
 
@@ -220,7 +223,10 @@ public class PathResolve {
      * @param isFollowLinks 是否追踪到软链对应的真实地址
      * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
      */
-    public static void walkFiles(final Path start, int maxDepth, final boolean isFollowLinks,
+    public static void walkFiles(
+            final Path start,
+            int maxDepth,
+            final boolean isFollowLinks,
             final FileVisitor<? super Path> visitor) {
         if (maxDepth < 0) {
             // < 0 表示遍历到最底层
@@ -572,7 +578,9 @@ public class PathResolve {
      * @return BufferedReader对象
      * 
      */
-    public static BufferedReader getReader(final Path path, final java.nio.charset.Charset charset,
+    public static BufferedReader getReader(
+            final Path path,
+            final java.nio.charset.Charset charset,
             final OpenOption... options) {
         return IoKit.toReader(getInputStream(path, options), charset);
     }

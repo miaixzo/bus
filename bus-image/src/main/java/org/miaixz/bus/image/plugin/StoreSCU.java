@@ -80,6 +80,7 @@ public class StoreSCU implements AutoCloseable {
     private long totalSize = 0;
     private int filesScanned;
     private RSPHandlerFactory rspHandlerFactory = file -> new DimseRSPHandler(as.nextMessageID()) {
+
         @Override
         public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
             super.onDimseRSP(as, cmd, data);
@@ -246,12 +247,14 @@ public class StoreSCU implements AutoCloseable {
                 rq.addCommonExtendedNegotiation(relSOPClasses.getCommonExtended(cuid));
             }
             if (!ts.equals(UID.ExplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
-                        UID.ExplicitVRLittleEndian.uid));
+                rq.addPresentationContext(
+                        new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                                UID.ExplicitVRLittleEndian.uid));
             }
             if (!ts.equals(UID.ImplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
-                        UID.ImplicitVRLittleEndian.uid));
+                rq.addPresentationContext(
+                        new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                                UID.ImplicitVRLittleEndian.uid));
             }
         }
         rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid, ts));
@@ -304,7 +307,12 @@ public class StoreSCU implements AutoCloseable {
                 BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(data, syntax, context);
                 dataWriter = ImageAdapter.buildDataWriter(data, syntax, context.getEditable(), desc);
             }
-            as.cstore(cuid, iuid, priority, dataWriter, syntax.getSuitable(),
+            as.cstore(
+                    cuid,
+                    iuid,
+                    priority,
+                    dataWriter,
+                    syntax.getSuitable(),
                     rspHandlerFactory.createDimseRSPHandler(f));
         } finally {
             IoKit.close(in);
@@ -331,24 +339,32 @@ public class StoreSCU implements AutoCloseable {
         ProgressStatus ps;
 
         switch (status) {
-        case Status.Success:
-            totalSize += f.length();
-            ps = ProgressStatus.COMPLETED;
-            break;
-        case Status.CoercionOfDataElements:
-        case Status.ElementsDiscarded:
-        case Status.DataSetDoesNotMatchSOPClassWarning:
-            totalSize += f.length();
-            ps = ProgressStatus.WARNING;
-            Logger.error(MessageFormat.format("WARNING: Received C-STORE-RSP with Status {0}H for {1}",
-                    Tag.shortToHexString(status), f));
-            Logger.error(cmd.toString());
-            break;
-        default:
-            ps = ProgressStatus.FAILED;
-            Logger.error(MessageFormat.format("ERROR: Received C-STORE-RSP with Status {0}H for {1}",
-                    Tag.shortToHexString(status), f));
-            Logger.error(cmd.toString());
+            case Status.Success:
+                totalSize += f.length();
+                ps = ProgressStatus.COMPLETED;
+                break;
+
+            case Status.CoercionOfDataElements:
+            case Status.ElementsDiscarded:
+            case Status.DataSetDoesNotMatchSOPClassWarning:
+                totalSize += f.length();
+                ps = ProgressStatus.WARNING;
+                Logger.error(
+                        MessageFormat.format(
+                                "WARNING: Received C-STORE-RSP with Status {0}H for {1}",
+                                Tag.shortToHexString(status),
+                                f));
+                Logger.error(cmd.toString());
+                break;
+
+            default:
+                ps = ProgressStatus.FAILED;
+                Logger.error(
+                        MessageFormat.format(
+                                "ERROR: Received C-STORE-RSP with Status {0}H for {1}",
+                                Tag.shortToHexString(status),
+                                f));
+                Logger.error(cmd.toString());
         }
         Builder.notifyProgession(state.getProgress(), cmd, ps, filesScanned);
     }
@@ -366,6 +382,7 @@ public class StoreSCU implements AutoCloseable {
     }
 
     public interface RSPHandlerFactory {
+
         DimseRSPHandler createDimseRSPHandler(File f);
     }
 

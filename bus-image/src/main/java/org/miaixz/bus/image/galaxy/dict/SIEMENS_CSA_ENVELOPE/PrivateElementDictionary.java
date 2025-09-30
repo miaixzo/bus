@@ -52,9 +52,9 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.syngoReportData:
-        case PrivateTag.syngoReportPresentation:
-            return VR.OB;
+            case PrivateTag.syngoReportData:
+            case PrivateTag.syngoReportPresentation:
+                return VR.OB;
         }
         return VR.UN;
     }

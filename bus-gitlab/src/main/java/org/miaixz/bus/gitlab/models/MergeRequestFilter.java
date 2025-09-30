@@ -523,6 +523,7 @@ public class MergeRequestFilter implements Serializable {
     }
 
     public enum MergeRequestField {
+
         LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
         MY_REACTION_EMOJI;
 

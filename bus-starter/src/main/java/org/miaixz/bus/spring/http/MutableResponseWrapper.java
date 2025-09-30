@@ -161,6 +161,7 @@ public class MutableResponseWrapper extends HttpServletResponseWrapper {
             return super.getOutputStream();
         }
         return new ServletOutputStream() {
+
             @Override
             public boolean isReady() {
                 return false;

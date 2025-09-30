@@ -50,6 +50,7 @@ public interface NamingProvider extends Provider {
      * 存储命名样式与实现类的映射。
      */
     Map<String, NamingProvider> styleMap = new HashMap() {
+
         {
             List<NamingProvider> instances = NormalSpiLoader.loadList(false, NamingProvider.class);
             for (NamingProvider instance : instances) {

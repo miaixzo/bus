@@ -34,6 +34,7 @@ import java.util.Objects;
  * @since Java 17+
  */
 public class NullifyAttributesCoercion implements AttributesCoercion {
+
     private final int[] nullifyTags;
     private final AttributesCoercion next;
 

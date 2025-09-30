@@ -81,17 +81,20 @@ public class ASN1 {
     public static void encodeTo(final String asn1Encoding, final OutputStream out, final ASN1Encodable... elements) {
         final ASN1Sequence sequence;
         switch (asn1Encoding) {
-        case ASN1Encoding.DER:
-            sequence = new DERSequence(elements);
-            break;
-        case ASN1Encoding.BER:
-            sequence = new BERSequence(elements);
-            break;
-        case ASN1Encoding.DL:
-            sequence = new DLSequence(elements);
-            break;
-        default:
-            throw new CryptoException("Unsupported ASN1 encoding: {}", asn1Encoding);
+            case ASN1Encoding.DER:
+                sequence = new DERSequence(elements);
+                break;
+
+            case ASN1Encoding.BER:
+                sequence = new BERSequence(elements);
+                break;
+
+            case ASN1Encoding.DL:
+                sequence = new DLSequence(elements);
+                break;
+
+            default:
+                throw new CryptoException("Unsupported ASN1 encoding: {}", asn1Encoding);
         }
         try {
             sequence.encodeTo(out);
@@ -137,8 +140,13 @@ public class ASN1 {
      * @param CN Common Name (服务器ip或者域名),eg: 192.168.30.71 or www.baidu.com
      * @return X500Name
      */
-    public static X500Name createX500Name(final String C, final String ST, final String L, final String O,
-            final String OU, final String CN) {
+    public static X500Name createX500Name(
+            final String C,
+            final String ST,
+            final String L,
+            final String O,
+            final String OU,
+            final String CN) {
         return new X500NameBuilder().addRDN(BCStyle.C, C).addRDN(BCStyle.ST, ST).addRDN(BCStyle.L, L)
                 .addRDN(BCStyle.O, O).addRDN(BCStyle.OU, OU).addRDN(BCStyle.CN, CN).build();
     }

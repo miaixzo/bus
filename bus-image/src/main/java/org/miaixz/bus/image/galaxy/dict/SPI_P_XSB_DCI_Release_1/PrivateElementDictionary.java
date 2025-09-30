@@ -52,14 +52,16 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.RTDDataCompressionFactor:
-            return VR.DS;
-        case PrivateTag.VideoBeamBoost:
-            return VR.LT;
-        case PrivateTag.ChannelGeneratingVideoSync:
-        case PrivateTag.VideoGain:
-        case PrivateTag.VideoOffset:
-            return VR.US;
+            case PrivateTag.RTDDataCompressionFactor:
+                return VR.DS;
+
+            case PrivateTag.VideoBeamBoost:
+                return VR.LT;
+
+            case PrivateTag.ChannelGeneratingVideoSync:
+            case PrivateTag.VideoGain:
+            case PrivateTag.VideoOffset:
+                return VR.US;
         }
         return VR.UN;
     }

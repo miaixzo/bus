@@ -151,8 +151,8 @@ public class LinuxOSThread extends AbstractOSThread {
             return false;
         }
         long now = System.currentTimeMillis();
-        long[] statArray = Parsing.parseStringToLongArray(stat, PROC_TASK_STAT_ORDERS, ProcessStat.PROC_PID_STAT_LENGTH,
-                Symbol.C_SPACE);
+        long[] statArray = Parsing
+                .parseStringToLongArray(stat, PROC_TASK_STAT_ORDERS, ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to
@@ -184,6 +184,7 @@ public class LinuxOSThread extends AbstractOSThread {
      * /proc/pid/task/tid/stat per the man file.
      */
     private enum ThreadPidStat {
+
         // The parsing implementation in Parsing requires these to be declared
         // in increasing order
         PPID(4), MINOR_FAULTS(10), MAJOR_FAULT(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),

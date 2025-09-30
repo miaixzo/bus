@@ -76,7 +76,12 @@ public class Region {
         if (offset == null) {
             Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         } else {
-            Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE,
+            Imgproc.findContours(
+                    binary.toMat(),
+                    contours,
+                    hierarchy,
+                    Imgproc.RETR_TREE,
+                    Imgproc.CHAIN_APPROX_SIMPLE,
                     offset);
         }
         return buildSegmentList(contours, hierarchy);

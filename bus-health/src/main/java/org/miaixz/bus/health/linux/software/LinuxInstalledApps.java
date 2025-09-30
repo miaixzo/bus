@@ -50,10 +50,12 @@ public final class LinuxInstalledApps {
         Map<String, String> commands = new HashMap<>();
 
         if (isPackageManagerAvailable("dpkg")) {
-            commands.put("dpkg",
+            commands.put(
+                    "dpkg",
                     "dpkg-query -W -f=${Package}|${Version}|${Architecture}|${Installed-Size}|${db-fsys:Last-Modified}|${Maintainer}|${Source}|${Homepage}\\n");
         } else if (isPackageManagerAvailable("rpm")) {
-            commands.put("rpm",
+            commands.put(
+                    "rpm",
                     "rpm -qa --queryformat %{NAME}|%{VERSION}-%{RELEASE}|%{ARCH}|%{SIZE}|%{INSTALLTIME}|%{PACKAGER}|%{SOURCERPM}|%{URL}\\n");
         }
 

@@ -65,6 +65,7 @@ public interface ClassMapper<T> {
      * 缓存实体类类型的工具类
      */
     class CachingEntityClass {
+
         /**
          * 存储接口与实体类类型的映射
          */
@@ -78,8 +79,13 @@ public interface ClassMapper<T> {
          */
         private static Class<?> getEntityClass(Class<?> clazz) {
             if (!entityClassMap.containsKey(clazz)) {
-                entityClassMap.put(clazz, GenericTypeResolver.resolveTypeToClass(GenericTypeResolver
-                        .resolveType(ClassMapper.class.getTypeParameters()[0], clazz, ClassMapper.class)));
+                entityClassMap.put(
+                        clazz,
+                        GenericTypeResolver.resolveTypeToClass(
+                                GenericTypeResolver.resolveType(
+                                        ClassMapper.class.getTypeParameters()[0],
+                                        clazz,
+                                        ClassMapper.class)));
             }
             return entityClassMap.get(clazz);
         }

@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.enCOREFileName:
-            return "enCOREFileName";
-        case PrivateTag.enCOREFileData:
-            return "enCOREFileData";
-        case PrivateTag.enCOREFileLength:
-            return "enCOREFileLength";
-        case PrivateTag.enCOREFileModifiedTime:
-            return "enCOREFileModifiedTime";
+            case PrivateTag.enCOREFileName:
+                return "enCOREFileName";
+
+            case PrivateTag.enCOREFileData:
+                return "enCOREFileData";
+
+            case PrivateTag.enCOREFileLength:
+                return "enCOREFileLength";
+
+            case PrivateTag.enCOREFileModifiedTime:
+                return "enCOREFileModifiedTime";
         }
         return "";
     }

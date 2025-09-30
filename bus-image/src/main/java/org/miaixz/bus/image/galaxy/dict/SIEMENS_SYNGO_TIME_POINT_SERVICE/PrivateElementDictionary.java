@@ -52,11 +52,12 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.TimePointID:
-        case PrivateTag.TimePointInformation:
-            return VR.LO;
-        case PrivateTag.StudiesinTimePointSequence:
-            return VR.SQ;
+            case PrivateTag.TimePointID:
+            case PrivateTag.TimePointInformation:
+                return VR.LO;
+
+            case PrivateTag.StudiesinTimePointSequence:
+                return VR.SQ;
         }
         return VR.UN;
     }

@@ -136,7 +136,11 @@ public class SystemHooksApi extends AbstractApi {
      * @return an SystemHook instance with info on the added system hook
      * @throws GitLabApiException if any exception occurs
      */
-    public SystemHook addSystemHook(String url, String token, Boolean pushEvents, Boolean tagPushEvents,
+    public SystemHook addSystemHook(
+            String url,
+            String token,
+            Boolean pushEvents,
+            Boolean tagPushEvents,
             Boolean enableSslVerification) throws GitLabApiException {
 
         SystemHook systemHook = new SystemHook().withPushEvents(pushEvents).withTagPushEvents(tagPushEvents)

@@ -33,6 +33,7 @@ import java.nio.ByteBuffer;
 // C++: class Mat
 //javadoc: Mat
 public class Mat {
+
     // A native memory cleaner for the OpenCV library
     public static final Cleaner cleaner = Cleaner.create();
 
@@ -281,19 +282,37 @@ public class Mat {
     private static native long n_Mat(double size_width, double size_height, int type);
 
     // C++: Mat::Mat(int rows, int cols, int type, Scalar s)
-    private static native long n_Mat(int rows, int cols, int type, double s_val0, double s_val1, double s_val2,
+    private static native long n_Mat(
+            int rows,
+            int cols,
+            int type,
+            double s_val0,
+            double s_val1,
+            double s_val2,
             double s_val3);
 
     // C++: Mat::Mat(Size size, int type, Scalar s)
-    private static native long n_Mat(double size_width, double size_height, int type, double s_val0, double s_val1,
-            double s_val2, double s_val3);
+    private static native long n_Mat(
+            double size_width,
+            double size_height,
+            int type,
+            double s_val0,
+            double s_val1,
+            double s_val2,
+            double s_val3);
 
     //
     // C++: void Mat::copyTo(Mat& m)
     //
 
     // C++: Mat::Mat(int ndims, const int* sizes, int type, Scalar s)
-    private static native long n_Mat(int ndims, int[] sizes, int type, double s_val0, double s_val1, double s_val2,
+    private static native long n_Mat(
+            int ndims,
+            int[] sizes,
+            int type,
+            double s_val0,
+            double s_val1,
+            double s_val2,
             double s_val3);
 
     //
@@ -301,7 +320,11 @@ public class Mat {
     //
 
     // C++: Mat::Mat(Mat m, Range rowRange, Range colRange = Range::all())
-    private static native long n_Mat(long m_nativeObj, int rowRange_start, int rowRange_end, int colRange_start,
+    private static native long n_Mat(
+            long m_nativeObj,
+            int rowRange_start,
+            int rowRange_end,
+            int colRange_start,
             int colRange_end);
 
     //
@@ -648,7 +671,12 @@ public class Mat {
     private static native long n_setTo(long nativeObj, double s_val0, double s_val1, double s_val2, double s_val3);
 
     // C++: Mat Mat::setTo(Scalar value, Mat mask = Mat())
-    private static native long n_setTo(long nativeObj, double s_val0, double s_val1, double s_val2, double s_val3,
+    private static native long n_setTo(
+            long nativeObj,
+            double s_val0,
+            double s_val1,
+            double s_val2,
+            double s_val3,
             long mask_nativeObj);
 
     // C++: Mat Mat::setTo(Mat value, Mat mask = Mat())
@@ -668,7 +696,11 @@ public class Mat {
     private static native long n_step1(long nativeObj);
 
     // C++: Mat Mat::operator()(Range rowRange, Range colRange)
-    private static native long n_submat_rr(long nativeObj, int rowRange_start, int rowRange_end, int colRange_start,
+    private static native long n_submat_rr(
+            long nativeObj,
+            int rowRange_start,
+            int rowRange_end,
+            int colRange_start,
             int colRange_end);
 
     // C++: Mat Mat::operator()(const std::vector<Range>& ranges)
@@ -1455,6 +1487,7 @@ public class Mat {
     }
 
     public interface Atable<T> {
+
         T getV();
 
         void setV(T v);
@@ -1473,6 +1506,7 @@ public class Mat {
     }
 
     public static class Tuple2<T> {
+
         private final T _0;
         private final T _1;
 
@@ -1491,6 +1525,7 @@ public class Mat {
     }
 
     public static class Tuple3<T> {
+
         private final T _0;
         private final T _1;
         private final T _2;
@@ -1515,6 +1550,7 @@ public class Mat {
     }
 
     public static class Tuple4<T> {
+
         private final T _0;
         private final T _1;
         private final T _2;

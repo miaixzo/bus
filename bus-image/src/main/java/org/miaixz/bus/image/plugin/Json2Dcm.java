@@ -28,9 +28,9 @@
 package org.miaixz.bus.image.plugin;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -67,7 +67,7 @@ public class Json2Dcm {
 
         InputStream in = fname.equals("-") ? System.in : new FileInputStream(fname);
         try {
-            JSONReader reader = new JSONReader(Json.createParser(new InputStreamReader(in, StandardCharsets.UTF_8)));
+            JSONReader reader = new JSONReader(Json.createParser(new InputStreamReader(in, Charset.UTF_8)));
             reader.readDataset(attrs);
             return reader;
         } finally {

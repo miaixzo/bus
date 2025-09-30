@@ -98,8 +98,14 @@ public class RepositoryFileApi extends AbstractApi {
 
         Form form = new Form();
         addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
-        Response response = head(Response.Status.OK, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "files", urlEncode(filePath));
+        Response response = head(
+                Response.Status.OK,
+                form.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "files",
+                urlEncode(filePath));
 
         RepositoryFile file = new RepositoryFile();
         file.setBlobId(response.getHeaderString("X-Gitlab-Blob-Id"));
@@ -184,8 +190,14 @@ public class RepositoryFileApi extends AbstractApi {
 
         Form form = new Form();
         addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
-        Response response = get(Response.Status.OK, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "files", urlEncode(filePath));
+        Response response = get(
+                Response.Status.OK,
+                form.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "files",
+                urlEncode(filePath));
         return (response.readEntity(RepositoryFile.class));
     }
 
@@ -207,12 +219,21 @@ public class RepositoryFileApi extends AbstractApi {
      * @return a RepositoryFile instance with the created file info
      * @throws GitLabApiException if any exception occurs
      */
-    public RepositoryFileResponse createFile(Object projectIdOrPath, RepositoryFile file, String branchName,
+    public RepositoryFileResponse createFile(
+            Object projectIdOrPath,
+            RepositoryFile file,
+            String branchName,
             String commitMessage) throws GitLabApiException {
 
         Form formData = createForm(file, branchName, commitMessage);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "files", urlEncode(file.getFilePath()));
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "files",
+                urlEncode(file.getFilePath()));
         return (response.readEntity(RepositoryFileResponse.class));
     }
 
@@ -234,12 +255,21 @@ public class RepositoryFileApi extends AbstractApi {
      * @return a RepositoryFile instance with the updated file info
      * @throws GitLabApiException if any exception occurs
      */
-    public RepositoryFileResponse updateFile(Object projectIdOrPath, RepositoryFile file, String branchName,
+    public RepositoryFileResponse updateFile(
+            Object projectIdOrPath,
+            RepositoryFile file,
+            String branchName,
             String commitMessage) throws GitLabApiException {
 
         Form formData = createForm(file, branchName, commitMessage);
-        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "files", urlEncode(file.getFilePath()));
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "files",
+                urlEncode(file.getFilePath()));
         return (response.readEntity(RepositoryFileResponse.class));
     }
 
@@ -269,8 +299,14 @@ public class RepositoryFileApi extends AbstractApi {
         Form form = new Form();
         addFormParam(form, "branch", (branchName != null ? urlEncode(branchName) : null), true);
         addFormParam(form, "commit_message", commitMessage, true);
-        delete(Response.Status.NO_CONTENT, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository",
-                "files", urlEncode(filePath));
+        delete(
+                Response.Status.NO_CONTENT,
+                form.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "files",
+                urlEncode(filePath));
     }
 
     /**
@@ -348,8 +384,16 @@ public class RepositoryFileApi extends AbstractApi {
     public InputStream getRawFile(Object projectIdOrPath, String ref, String filepath) throws GitLabApiException {
 
         Form formData = new GitLabApiForm().withParam("ref", (ref != null ? ref : null), true);
-        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filepath), "raw");
+        Response response = getWithAccepts(
+                Response.Status.OK,
+                formData.asMap(),
+                MediaType.MEDIA_TYPE_WILDCARD,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "files",
+                urlEncode(filepath),
+                "raw");
         return response.readEntity(InputStream.class);
     }
 

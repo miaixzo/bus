@@ -55,17 +55,27 @@ public abstract class AbstractDialect implements Dialect {
     protected OrderBySqlParser orderBySqlParser;
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+    public String getCountSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            RowBounds rowBounds,
             CacheKey countKey) {
         return countSqlParser.getSmartCountSql(boundSql.getSql());
     }
 
     @Override
     public void setProperties(Properties properties) {
-        this.countSqlParser = Builder.newInstance(properties.getProperty("countSqlParser"), CountSqlParser.class,
-                properties, DefaultCountSqlParser::new);
-        this.orderBySqlParser = Builder.newInstance(properties.getProperty("orderBySqlParser"), OrderBySqlParser.class,
-                properties, DefaultOrderBySqlParser::new);
+        this.countSqlParser = Builder.newInstance(
+                properties.getProperty("countSqlParser"),
+                CountSqlParser.class,
+                properties,
+                DefaultCountSqlParser::new);
+        this.orderBySqlParser = Builder.newInstance(
+                properties.getProperty("orderBySqlParser"),
+                OrderBySqlParser.class,
+                properties,
+                DefaultOrderBySqlParser::new);
     }
 
 }

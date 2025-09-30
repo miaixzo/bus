@@ -50,12 +50,12 @@ import com.sun.jna.Memory;
 @ThreadSafe
 public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer.memoize(NetStat::queryTcpnetstat,
-            Memoizer.defaultExpiration());
-    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer.memoize(FreeBsdInternetProtocolStats::queryTcpstat,
-            Memoizer.defaultExpiration());
-    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer.memoize(FreeBsdInternetProtocolStats::queryUdpstat,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer
+            .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer
+            .memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer
+            .memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();

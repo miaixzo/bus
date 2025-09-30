@@ -53,8 +53,8 @@ import org.miaixz.bus.health.linux.driver.Sysfs;
 final class LinuxFirmware extends AbstractFirmware {
 
     // Jan 13 2013 16:24:29
-    private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter.ofPattern("MMM d uuuu HH:mm:ss",
-            Locale.ENGLISH);
+    private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter
+            .ofPattern("MMM d uuuu HH:mm:ss", Locale.ENGLISH);
     private final Supplier<VcGenCmdStrings> vcGenCmd = Memoizer.memoize(LinuxFirmware::queryVcGenCmd);
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
     private final Supplier<String> description = Memoizer.memoize(this::queryDescription);
@@ -153,6 +153,7 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private static final class VcGenCmdStrings {
+
         private final String releaseDate;
         private final String manufacturer;
         private final String version;

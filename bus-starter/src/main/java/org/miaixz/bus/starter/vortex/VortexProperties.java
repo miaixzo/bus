@@ -27,9 +27,11 @@
 */
 package org.miaixz.bus.starter.vortex;
 
-import org.miaixz.bus.vortex.Config;
 import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.vortex.Config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,5 +55,18 @@ public class VortexProperties {
      * 自定义Spring MVC配置处理
      */
     private boolean condition;
+
+    /**
+     * 注册 ForwardedHeaderTransformer Bean。
+     * <p>
+     * 这个 Bean 是 Spring WebFlux 用来处理代理转发头的核心组件。 一旦注册，它会自动包装 ServerHttpRequest，使得后续的过滤器和控制器 调用 request.getURI()
+     * 等方法时，能够透明地获取到原始客户端信息。
+     *
+     * @return ForwardedHeaderTransformer 实例
+     */
+    @Bean
+    public ForwardedHeaderTransformer forwardedHeaderTransformer() {
+        return new ForwardedHeaderTransformer();
+    }
 
 }

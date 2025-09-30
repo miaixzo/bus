@@ -63,6 +63,7 @@ public interface ColumnSchemaBuilder extends ORDER {
      * 工厂链接口，用于链式调用列信息创建逻辑
      */
     interface Chain {
+
         /**
          * 创建列信息，一个字段可能不是列，也可能是列，还可能对应多个列（如 ValueObject 对象）
          *

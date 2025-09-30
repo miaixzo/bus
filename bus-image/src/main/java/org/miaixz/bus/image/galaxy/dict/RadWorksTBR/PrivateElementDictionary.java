@@ -52,10 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.CompressionType:
-            return VR.CS;
-        case PrivateTag.QueryResult:
-            return VR.SQ;
+            case PrivateTag.CompressionType:
+                return VR.CS;
+
+            case PrivateTag.QueryResult:
+                return VR.SQ;
         }
         return VR.UN;
     }

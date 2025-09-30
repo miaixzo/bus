@@ -78,6 +78,7 @@ public interface SolarisLibc extends CLibrary {
     @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",
             "ut_syslen", "ut_host" })
     class SolarisUtmpx extends Structure {
+
         public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
         public byte[] ut_id = new byte[UTX_IDSIZE]; // etc/inittab id (usually line #)
         public byte[] ut_line = new byte[UTX_LINESIZE]; // device name
@@ -96,6 +97,7 @@ public interface SolarisLibc extends CLibrary {
      */
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
+
         public short e_termination; // Process termination status
         public short e_exit; // Process exit status
     }
@@ -105,6 +107,7 @@ public interface SolarisLibc extends CLibrary {
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
+
         public NativeLong tv_sec; // seconds
         public NativeLong tv_usec; // microseconds
     }
@@ -113,6 +116,7 @@ public interface SolarisLibc extends CLibrary {
      * Structure for psinfo file
      */
     class SolarisPsInfo {
+
         public int pr_flag; // process flags (DEPRECATED; do not use)
         public int pr_nlwp; // number of active lwps in the process
         public int pr_pid; // unique process id
@@ -201,6 +205,7 @@ public interface SolarisLibc extends CLibrary {
      * Nested Structure for psinfo file
      */
     class SolarisLwpsInfo {
+
         public int pr_flag; // lwp flags (DEPRECATED; do not use)
         public int pr_lwpid; // lwp id
         public Pointer pr_addr; // DEPRECATED was internal address of lwp
@@ -261,6 +266,7 @@ public interface SolarisLibc extends CLibrary {
      * Structure for usage file
      */
     class SolarisPrUsage {
+
         public int pr_lwpid; // lwp id. 0: process or defunct
         public int pr_count; // number of contributing lwps
         public Timestruc pr_tstamp; // current time stamp
@@ -334,6 +340,7 @@ public interface SolarisLibc extends CLibrary {
      * 32/64-bit timestruc required for psinfo and lwpsinfo structures
      */
     class Timestruc {
+
         public NativeLong tv_sec; // seconds
         public NativeLong tv_nsec; // nanoseconds
 

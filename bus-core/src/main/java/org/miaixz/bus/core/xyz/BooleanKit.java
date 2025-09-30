@@ -356,7 +356,10 @@ public class BooleanKit {
      * @param nullString  当值为 {@code null}时返回此字符串, 可能为 {@code null}
      * @return 结果值
      */
-    public static String toString(final Boolean bool, final String trueString, final String falseString,
+    public static String toString(
+            final Boolean bool,
+            final String trueString,
+            final String falseString,
             final String nullString) {
         if (bool == null) {
             return nullString;

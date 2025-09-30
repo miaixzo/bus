@@ -52,15 +52,18 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ReceiveDate:
-            return VR.DA;
-        case PrivateTag.Status:
-            return VR.SH;
-        case PrivateTag.ReceiveOriginSiteName:
-        case PrivateTag.ReceiveOriginDescription:
-            return VR.ST;
-        case PrivateTag.ReceiveTime:
-            return VR.TM;
+            case PrivateTag.ReceiveDate:
+                return VR.DA;
+
+            case PrivateTag.Status:
+                return VR.SH;
+
+            case PrivateTag.ReceiveOriginSiteName:
+            case PrivateTag.ReceiveOriginDescription:
+                return VR.ST;
+
+            case PrivateTag.ReceiveTime:
+                return VR.TM;
         }
         return VR.UN;
     }

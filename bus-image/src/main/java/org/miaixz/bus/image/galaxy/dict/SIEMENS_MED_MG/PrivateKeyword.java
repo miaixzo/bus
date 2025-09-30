@@ -38,22 +38,29 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ListOfGroupNumbers:
-            return "ListOfGroupNumbers";
-        case PrivateTag.ListOfShadowOwnerCodes:
-            return "ListOfShadowOwnerCodes";
-        case PrivateTag.ListOfElementNumbers:
-            return "ListOfElementNumbers";
-        case PrivateTag.ListOfTotalDisplayLength:
-            return "ListOfTotalDisplayLength";
-        case PrivateTag.ListOfDisplayPrefix:
-            return "ListOfDisplayPrefix";
-        case PrivateTag.ListOfDisplayPostfix:
-            return "ListOfDisplayPostfix";
-        case PrivateTag.ListOfTextPosition:
-            return "ListOfTextPosition";
-        case PrivateTag.ListOfTextConcatenation:
-            return "ListOfTextConcatenation";
+            case PrivateTag.ListOfGroupNumbers:
+                return "ListOfGroupNumbers";
+
+            case PrivateTag.ListOfShadowOwnerCodes:
+                return "ListOfShadowOwnerCodes";
+
+            case PrivateTag.ListOfElementNumbers:
+                return "ListOfElementNumbers";
+
+            case PrivateTag.ListOfTotalDisplayLength:
+                return "ListOfTotalDisplayLength";
+
+            case PrivateTag.ListOfDisplayPrefix:
+                return "ListOfDisplayPrefix";
+
+            case PrivateTag.ListOfDisplayPostfix:
+                return "ListOfDisplayPostfix";
+
+            case PrivateTag.ListOfTextPosition:
+                return "ListOfTextPosition";
+
+            case PrivateTag.ListOfTextConcatenation:
+                return "ListOfTextConcatenation";
         }
         return "";
     }

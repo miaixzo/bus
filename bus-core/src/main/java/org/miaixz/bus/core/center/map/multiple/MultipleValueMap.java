@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.core.center.map.multiple;
 
 import java.util.*;
 import java.util.function.*;
@@ -41,14 +41,15 @@ import org.miaixz.bus.core.xyz.CollKit;
  * 值集合类型
  * </p>
  * <p>
- * 值集合的类型由接口的实现类自行维护，当通过{@link MultiValueMap}定义的方法进行增删改操作时， 实现类应保证通过通过实例方法获得的集合类型都一致。但是若用户直接通过{@link Map}定义的方法进行增删改操作时，
- * 实例无法保证通过实例方法获得的集合类型都一致。因此，若无必要则更推荐通过{@link MultiValueMap}定义的方法进行操作。
+ * 值集合的类型由接口的实现类自行维护，当通过{@link MultipleValueMap}定义的方法进行增删改操作时，
+ * 实现类应保证通过通过实例方法获得的集合类型都一致。但是若用户直接通过{@link Map}定义的方法进行增删改操作时，
+ * 实例无法保证通过实例方法获得的集合类型都一致。因此，若无必要则更推荐通过{@link MultipleValueMap}定义的方法进行操作。
  *
  * <p>
  * 对值集合的修改
  * </p>
  * <p>
- * 当通过实例方法获得值集合时，若该集合允许修改，则对值集合的修改将会影响到其所属的{@link MultiValueMap}实例，反之亦然。
+ * 当通过实例方法获得值集合时，若该集合允许修改，则对值集合的修改将会影响到其所属的{@link MultipleValueMap}实例，反之亦然。
  * 因此当同时遍历当前实例或者值集合时，若存在写操作，则需要注意可能引发的{@link ConcurrentModificationException}。
  * </P>
  *
@@ -61,7 +62,7 @@ import org.miaixz.bus.core.xyz.CollKit;
  * @see SetValueMap
  * @since Java 17+
  */
-public interface MultiValueMap<K, V> extends Map<K, Collection<V>> {
+public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
 
     /**
      * 更新键对应的值集合 注意：该操作将移除键对应的旧值集合，若仅需向值集合追加应值，则应使用{@link #putAllValues(Object, Collection)}
@@ -188,7 +189,7 @@ public interface MultiValueMap<K, V> extends Map<K, Collection<V>> {
      * @param filter 判断方法
      * @return 当前实例
      */
-    default MultiValueMap<K, V> filterAllValues(final Predicate<V> filter) {
+    default MultipleValueMap<K, V> filterAllValues(final Predicate<V> filter) {
         return filterAllValues((k, v) -> filter.test(v));
     }
 
@@ -198,7 +199,7 @@ public interface MultiValueMap<K, V> extends Map<K, Collection<V>> {
      * @param filter 判断方法
      * @return 当前实例
      */
-    MultiValueMap<K, V> filterAllValues(BiPredicate<K, V> filter);
+    MultipleValueMap<K, V> filterAllValues(BiPredicate<K, V> filter);
 
     /**
      * 根据条件替换所有值集合中的值，并以新值生成新的值集合，新集合中的值集合类型与当前实例的默认值集合类型保持一致
@@ -206,7 +207,7 @@ public interface MultiValueMap<K, V> extends Map<K, Collection<V>> {
      * @param operate 替换方法
      * @return 当前实例
      */
-    default MultiValueMap<K, V> replaceAllValues(final UnaryOperator<V> operate) {
+    default MultipleValueMap<K, V> replaceAllValues(final UnaryOperator<V> operate) {
         return replaceAllValues((k, v) -> operate.apply(v));
     }
 
@@ -216,7 +217,7 @@ public interface MultiValueMap<K, V> extends Map<K, Collection<V>> {
      * @param operate 替换方法
      * @return 当前实例
      */
-    MultiValueMap<K, V> replaceAllValues(BiFunction<K, V, V> operate);
+    MultipleValueMap<K, V> replaceAllValues(BiFunction<K, V, V> operate);
 
     /**
      * 获取指定序号的值，若值不存在，返回{@code null}

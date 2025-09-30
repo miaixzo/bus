@@ -168,8 +168,8 @@ public class GenericMaterial extends Material {
     public GenericMaterial defaultIfEmpty() {
         if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
-            this.host = StringKit.format("smtp.{}",
-                    StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));
+            this.host = StringKit
+                    .format("smtp.{}", StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));
         }
         if (StringKit.isBlank(user)) {
             // 如果用户名为空,默认为发件人邮箱前缀

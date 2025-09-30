@@ -52,12 +52,14 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ExtractedMRHeaderTag:
-            return VR.AT;
-        case PrivateTag.ExtractedMRHeaderCreatorIdentificationCode:
-            return VR.LO;
-        case PrivateTag.ExtractedMRHeaderInformationSequence:
-            return VR.SQ;
+            case PrivateTag.ExtractedMRHeaderTag:
+                return VR.AT;
+
+            case PrivateTag.ExtractedMRHeaderCreatorIdentificationCode:
+                return VR.LO;
+
+            case PrivateTag.ExtractedMRHeaderInformationSequence:
+                return VR.SQ;
         }
         return VR.UN;
     }

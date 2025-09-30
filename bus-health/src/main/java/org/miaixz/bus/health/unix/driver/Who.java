@@ -62,8 +62,8 @@ public final class Who {
     // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
     private static final Pattern WHO_FORMAT_LINUX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
-    private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm",
-            Locale.ROOT);
+    private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd HH:mm", Locale.ROOT);
     // oshi ttys000 May 4 23:50 (192.168.1.23)
     // middle 12 characters from Thu Nov 24 18:22:48 1986
     private static final Pattern WHO_FORMAT_UNIX = Pattern
@@ -106,10 +106,11 @@ public final class Who {
         Matcher m = WHO_FORMAT_LINUX.matcher(s);
         if (m.matches()) {
             try {
-                whoList.add(new OSSession(m.group(1), m.group(2),
-                        LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4), WHO_DATE_FORMAT_LINUX)
-                                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                        m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
+                whoList.add(
+                        new OSSession(m.group(1), m.group(2),
+                                LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4), WHO_DATE_FORMAT_LINUX)
+                                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                                m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
                 return true;
             } catch (DateTimeParseException | NullPointerException e) {
                 // shouldn't happen if regex matches and OS is producing sensible dates
@@ -131,7 +132,8 @@ public final class Who {
             try {
                 // Missing year, parse date time with current year
                 LocalDateTime login = LocalDateTime.parse(
-                        m.group(3) + Symbol.SPACE + m.group(4) + Symbol.SPACE + m.group(5), WHO_DATE_FORMAT_UNIX);
+                        m.group(3) + Symbol.SPACE + m.group(4) + Symbol.SPACE + m.group(5),
+                        WHO_DATE_FORMAT_UNIX);
                 // If this date is in the future, subtract a year
                 if (login.isAfter(LocalDateTime.now(ZoneId.systemDefault()))) {
                     login = login.minus(1, ChronoUnit.YEARS);

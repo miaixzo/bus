@@ -74,12 +74,12 @@ public final class LutShape {
         if (shape != null) {
             String val = shape.toUpperCase();
             return switch (val) {
-            case "LINEAR" -> LutShape.LINEAR;
-            case "SIGMOID" -> LutShape.SIGMOID;
-            case "SIGMOID_NORM" -> LutShape.SIGMOID_NORM;
-            case "LOG" -> LutShape.LOG;
-            case "LOG_INV" -> LutShape.LOG_INV;
-            default -> null;
+                case "LINEAR" -> LutShape.LINEAR;
+                case "SIGMOID" -> LutShape.SIGMOID;
+                case "SIGMOID_NORM" -> LutShape.SIGMOID_NORM;
+                case "LOG" -> LutShape.LOG;
+                case "LOG_INV" -> LutShape.LOG_INV;
+                default -> null;
             };
         }
         return null;
@@ -120,6 +120,7 @@ public final class LutShape {
      * custom implementation
      */
     public enum eFunction {
+
         LINEAR("Linear"), SIGMOID("Sigmoid"), SIGMOID_NORM("Sigmoid Normalize"), LOG("Logarithmic"),
         LOG_INV("Logarithmic Inverse");
 

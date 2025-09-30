@@ -176,8 +176,12 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
 
         // 正文
         final BodyPart body = new MimeBodyPart();
-        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}",
-                Material.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
+        body.setContent(
+                entity.getContent(),
+                StringKit.format(
+                        "text/{}; charset={}",
+                        Material.Type.HTML.equals(entity.getType()) ? "html" : "plain",
+                        entity.getCharset()));
         mainPart.addBodyPart(body);
 
         // 附件
@@ -200,16 +204,19 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
         msg.setContent(mainPart);
 
         // 收件人
-        msg.setRecipients(MimeMessage.RecipientType.TO,
+        msg.setRecipients(
+                MimeMessage.RecipientType.TO,
                 getAddress(StringKit.splitToArray(entity.getReceive(), Symbol.COMMA), charset));
         // 抄送人
         if (StringKit.isNotEmpty(entity.getCcs())) {
-            msg.setRecipients(MimeMessage.RecipientType.CC,
+            msg.setRecipients(
+                    MimeMessage.RecipientType.CC,
                     getAddress(StringKit.splitToArray(entity.getCcs(), Symbol.COMMA), charset));
         }
         // 密送人
         if (StringKit.isNotEmpty(entity.getBccs())) {
-            msg.setRecipients(MimeMessage.RecipientType.BCC,
+            msg.setRecipients(
+                    MimeMessage.RecipientType.BCC,
                     getAddress(StringKit.splitToArray(entity.getBccs(), Symbol.COMMA), charset));
         }
         return msg;

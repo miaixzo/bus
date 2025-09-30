@@ -25,47 +25,66 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.magic;
+package org.miaixz.bus.validate.magic.annotation;
 
-import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.vortex.Assets;
+import java.lang.annotation.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.magic.Matcher;
+import org.miaixz.bus.validate.metric.MultipleMatcher;
 
 /**
- * Token 参数类，用于封装授权认证相关的参数信息
+ * 多重校验器, 可以配置多个校验器
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@SuperBuilder
-@AllArgsConstructor
-@RequiredArgsConstructor
-public class Token {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
+@Complex(value = Builder._MULTI, clazz = MultipleMatcher.class)
+public @interface Multiple {
 
     /**
-     * 授权令牌，唯一标识认证信息
+     * 校验器名称数组,优先使用校验器名称中的校验器,并忽略校验器类中的校验器
+     *
+     * @return the array
      */
-    public final String token;
+    String[] value() default {};
 
     /**
-     * 渠道标识，表示请求来源的类型（如 微信、钉钉等）
+     * 校验器类数组, 当校验器名称数组为空时,使用校验器类数组中的校验器
+     *
+     * @return the object
      */
-    public final int channel;
+    Class<? extends Matcher>[] classes() default {};
 
     /**
-     * 关联的资源信息，包含资产相关配置
+     * 默认使用的异常码
+     *
+     * @return the string
      */
-    public final Assets assets;
+    String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 租户 ID，标识所属租户，标记为 transient 不参与序列化
+     * 默认使用的异常信息
+     *
+     * @return the string
      */
-    public transient String tenant_id;
+    String errmsg() default "${field}参数校验失败";
+
+    /**
+     * 校验器组
+     *
+     * @return the array
+     */
+    String[] group() default {};
+
+    /**
+     * 被校验字段名称
+     *
+     * @return the string
+     */
+    String field() default Builder.DEFAULT_FIELD;
 
 }

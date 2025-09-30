@@ -83,8 +83,12 @@ public final class SessionWtsData {
                         for (WTS_SESSION_INFO session : sessionInfo) {
                             if (session.State == WTS_ACTIVE) {
                                 // Use session id to fetch additional session information
-                                WTS.WTSQuerySessionInformation(Wtsapi32.WTS_CURRENT_SERVER_HANDLE, session.SessionId,
-                                        WTS_CLIENTPROTOCOLTYPE, ppBuffer, pBytes);
+                                WTS.WTSQuerySessionInformation(
+                                        Wtsapi32.WTS_CURRENT_SERVER_HANDLE,
+                                        session.SessionId,
+                                        WTS_CLIENTPROTOCOLTYPE,
+                                        ppBuffer,
+                                        pBytes);
                                 Pointer pBuffer = ppBuffer.getValue(); // pointer to USHORT
                                 short protocolType = pBuffer.getShort(0); // 0 = console, 2 = RDP
                                 WTS.WTSFreeMemory(pBuffer);
@@ -93,8 +97,12 @@ public final class SessionWtsData {
                                     // DEVICE
                                     String device = session.pWinStationName;
                                     // USER and LOGIN TIME
-                                    WTS.WTSQuerySessionInformation(Wtsapi32.WTS_CURRENT_SERVER_HANDLE,
-                                            session.SessionId, WTS_SESSIONINFO, ppBuffer, pBytes);
+                                    WTS.WTSQuerySessionInformation(
+                                            Wtsapi32.WTS_CURRENT_SERVER_HANDLE,
+                                            session.SessionId,
+                                            WTS_SESSIONINFO,
+                                            ppBuffer,
+                                            pBytes);
                                     pBuffer = ppBuffer.getValue(); // returns WTSINFO
                                     WTSINFO wtsInfo = new WTSINFO(pBuffer);
                                     // Temporary due to broken LARGE_INTEGER, remove in JNA 5.6.0
@@ -103,8 +111,12 @@ public final class SessionWtsData {
                                     String userName = wtsInfo.getUserName();
                                     WTS.WTSFreeMemory(pBuffer);
                                     // HOST
-                                    WTS.WTSQuerySessionInformation(Wtsapi32.WTS_CURRENT_SERVER_HANDLE,
-                                            session.SessionId, WTS_CLIENTADDRESS, ppBuffer, pBytes);
+                                    WTS.WTSQuerySessionInformation(
+                                            Wtsapi32.WTS_CURRENT_SERVER_HANDLE,
+                                            session.SessionId,
+                                            WTS_CLIENTADDRESS,
+                                            ppBuffer,
+                                            pBytes);
                                     pBuffer = ppBuffer.getValue(); // returns WTS_CLIENT_ADDRESS
                                     WTS_CLIENT_ADDRESS addr = new WTS_CLIENT_ADDRESS(pBuffer);
                                     WTS.WTSFreeMemory(pBuffer);

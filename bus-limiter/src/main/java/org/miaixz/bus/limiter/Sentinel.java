@@ -64,46 +64,47 @@ public class Sentinel {
     public static Object process(Object bean, Method method, Object[] args, String name, StrategyMode strategyMode) {
         // 进行各种策略的处理
         switch (strategyMode) {
-        case FALLBACK:
-            // 允许进入则直接调用
-            if (SphO.entry(name)) {
+            case FALLBACK:
+                // 允许进入则直接调用
+                if (SphO.entry(name)) {
+                    try {
+                        return MethodKit.invoke(bean, method, args);
+                    } finally {
+                        SphO.exit();
+                    }
+                } else {
+                    if (Holder.load().isLogger()) {
+                        Logger.info("Trigger fallback strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                    }
+                    // 进行回调fallback方法
+                    return StrategyManager.get(strategyMode).process(bean, method, args);
+                }
+            case HOT_METHOD:
+                // 参数转换
+                String convertParam = Builder.md5Hex(JsonKit.toJsonString(args));
+                Entry entry = null;
                 try {
+                    // 判断是否进行限流
+                    entry = SphU.entry(name, EntryType.IN, 1, convertParam);
                     return MethodKit.invoke(bean, method, args);
+                } catch (BlockException e) {
+                    if (Holder.load().isLogger()) {
+                        Logger.info(" Trigger hotspot strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                    }
+                    return StrategyManager.get(strategyMode).process(bean, method, args);
                 } finally {
-                    SphO.exit();
+                    if (entry != null) {
+                        entry.exit(1, convertParam);
+                    }
                 }
-            } else {
+            case REQUEST_LIMIT:
                 if (Holder.load().isLogger()) {
-                    Logger.info("Trigger fallback strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
-                }
-                // 进行回调fallback方法
-                return StrategyManager.get(strategyMode).process(bean, method, args);
-            }
-        case HOT_METHOD:
-            // 参数转换
-            String convertParam = Builder.md5Hex(JsonKit.toJsonString(args));
-            Entry entry = null;
-            try {
-                // 判断是否进行限流
-                entry = SphU.entry(name, EntryType.IN, 1, convertParam);
-                return MethodKit.invoke(bean, method, args);
-            } catch (BlockException e) {
-                if (Holder.load().isLogger()) {
-                    Logger.info(" Trigger hotspot strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
+                    Logger.info("Trigger requestLimit strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
                 }
                 return StrategyManager.get(strategyMode).process(bean, method, args);
-            } finally {
-                if (entry != null) {
-                    entry.exit(1, convertParam);
-                }
-            }
-        case REQUEST_LIMIT:
-            if (Holder.load().isLogger()) {
-                Logger.info("Trigger requestLimit strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
-            }
-            return StrategyManager.get(strategyMode).process(bean, method, args);
-        default:
-            throw new InternalException("Strategy error!");
+
+            default:
+                throw new InternalException("Strategy error!");
         }
     }
 

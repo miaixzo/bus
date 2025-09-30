@@ -183,7 +183,9 @@ public class Jpg2Dcm {
     }
 
     private enum ContentType {
+
         IMAGE_JPEG {
+
             @Override
             String getSampleMetadataFile(boolean photo) {
                 return photo ? "resource:vlPhotographicImageMetadata.xml"
@@ -201,12 +203,14 @@ public class Jpg2Dcm {
             }
         },
         VIDEO_MPEG {
+
             @Override
             XPEGParser newParser(SeekableByteChannel channel) throws IOException {
                 return new MPEG2Parser(channel);
             }
         },
         VIDEO_MP4 {
+
             @Override
             XPEGParser newParser(SeekableByteChannel channel) throws IOException {
                 return new MP4Parser(channel);
@@ -215,17 +219,19 @@ public class Jpg2Dcm {
 
         static ContentType of(String type) {
             switch (type.toLowerCase()) {
-            case "image/jpeg":
-            case "image/jp2":
-            case "image/j2c":
-            case "image/jph":
-            case "image/jphc":
-                return ContentType.IMAGE_JPEG;
-            case "video/mpeg":
-                return ContentType.VIDEO_MPEG;
-            case "video/mp4":
-            case "video/quicktime":
-                return ContentType.VIDEO_MP4;
+                case "image/jpeg":
+                case "image/jp2":
+                case "image/j2c":
+                case "image/jph":
+                case "image/jphc":
+                    return ContentType.IMAGE_JPEG;
+
+                case "video/mpeg":
+                    return ContentType.VIDEO_MPEG;
+
+                case "video/mp4":
+                case "video/quicktime":
+                    return ContentType.VIDEO_MP4;
             }
             return null;
         }
@@ -242,6 +248,7 @@ public class Jpg2Dcm {
     }
 
     class Jpg2DcmFileVisitor extends SimpleFileVisitor<Path> {
+
         private final Path srcPath;
         private final Path destPath;
 

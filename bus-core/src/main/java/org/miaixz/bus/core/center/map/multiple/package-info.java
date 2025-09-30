@@ -25,67 +25,30 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.validate.magic.annotation;
-
-import java.lang.annotation.*;
-
-import org.miaixz.bus.validate.Builder;
-import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.magic.Matcher;
-import org.miaixz.bus.validate.metric.MultiMatcher;
-
 /**
- * 多重校验器, 可以配置多个校验器
+ * 多参数类型的Map实现，包括集合类型值的MultiValueMap和Table
+ * <ul>
+ * <li>MultiValueMap：一个键对应多个值的集合的实现，类似于树的结构。</li>
+ * <li>Table：使用两个键映射到一个值，类似于表格结构。</li>
+ * </ul>
+ *
+ * <pre>
+ *                   MultiValueMap
+ *                         |
+ *                   AbstractCollValueMap
+ *                         ||
+ *   [CollectionValueMap, SetValueMap, ListValueMap]
+ * </pre>
+ * 
+ * <pre>
+ *                       Table
+ *                         |
+ *                      AbstractTable
+ *                         ||
+ *                    [RowKeyTable]
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
-@Complex(value = Builder._MULTI, clazz = MultiMatcher.class)
-public @interface Multi {
-
-    /**
-     * 校验器名称数组,优先使用校验器名称中的校验器,并忽略校验器类中的校验器
-     *
-     * @return the array
-     */
-    String[] value() default {};
-
-    /**
-     * 校验器类数组, 当校验器名称数组为空时,使用校验器类数组中的校验器
-     *
-     * @return the object
-     */
-    Class<? extends Matcher>[] classes() default {};
-
-    /**
-     * 默认使用的异常码
-     *
-     * @return the string
-     */
-    String errcode() default ErrorCode._116000;
-
-    /**
-     * 默认使用的异常信息
-     *
-     * @return the string
-     */
-    String errmsg() default "${field}参数校验失败";
-
-    /**
-     * 校验器组
-     *
-     * @return the array
-     */
-    String[] group() default {};
-
-    /**
-     * 被校验字段名称
-     *
-     * @return the string
-     */
-    String field() default Builder.DEFAULT_FIELD;
-
-}
+package org.miaixz.bus.core.center.map.multiple;

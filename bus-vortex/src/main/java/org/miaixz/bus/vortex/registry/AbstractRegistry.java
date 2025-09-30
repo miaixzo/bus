@@ -163,6 +163,7 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
      */
     @FunctionalInterface
     public interface RegistryKey<T> {
+
         /**
          * 根据对象生成键
          *

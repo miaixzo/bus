@@ -50,6 +50,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  */
 @ThreadSafe
 public interface Sensors {
+
     /**
      * CPU Temperature
      *

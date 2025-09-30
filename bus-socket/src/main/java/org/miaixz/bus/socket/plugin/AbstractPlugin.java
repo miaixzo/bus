@@ -73,21 +73,23 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
         for (int i = 0; i < bytes.length; i++) {
             column = i % 16;
             switch (column) {
-            case 0:
-                startIndex = i;
-                buffer.append(fixHexString(Integer.toHexString(i), 8)).append(": ");
-                buffer.append(toHex(bytes[i]));
-                buffer.append(' ');
-                break;
-            case 15:
-                buffer.append(toHex(bytes[i]));
-                buffer.append(" ; ");
-                buffer.append(filterString(bytes, startIndex, column + 1));
-                buffer.append("\r\n");
-                break;
-            default:
-                buffer.append(toHex(bytes[i]));
-                buffer.append(' ');
+                case 0:
+                    startIndex = i;
+                    buffer.append(fixHexString(Integer.toHexString(i), 8)).append(": ");
+                    buffer.append(toHex(bytes[i]));
+                    buffer.append(' ');
+                    break;
+
+                case 15:
+                    buffer.append(toHex(bytes[i]));
+                    buffer.append(" ; ");
+                    buffer.append(filterString(bytes, startIndex, column + 1));
+                    buffer.append("\r\n");
+                    break;
+
+                default:
+                    buffer.append(toHex(bytes[i]));
+                    buffer.append(' ');
             }
         }
         if (column != 15) {

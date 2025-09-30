@@ -344,7 +344,8 @@ public class NetKit {
      * @param addressPredicate       过滤器，{@link Predicate#test(Object)}为{@code true}保留，null表示不过滤，获取所有地址
      * @return 过滤后的地址对象列表
      */
-    public static LinkedHashSet<InetAddress> localAddressList(final Predicate<NetworkInterface> networkInterfaceFilter,
+    public static LinkedHashSet<InetAddress> localAddressList(
+            final Predicate<NetworkInterface> networkInterfaceFilter,
             final Predicate<InetAddress> addressPredicate) {
         final Enumeration<NetworkInterface> networkInterfaces;
         try {

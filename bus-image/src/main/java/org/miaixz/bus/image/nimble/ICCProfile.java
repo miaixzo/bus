@@ -87,25 +87,30 @@ public final class ICCProfile {
     }
 
     public enum Option {
+
         none {
+
             @Override
             protected BufferedImage convertColor(BufferedImage bi) {
                 return isCS_sRGB(bi) ? bi : BufferedImages.convertColor(bi, CM_sRGB);
             }
         },
         no {
+
             @Override
             protected BufferedImage convertColor(BufferedImage bi) {
                 return isCS_sRGB(bi) ? bi : BufferedImages.replaceColorModel(bi, CM_sRGB);
             }
         },
         yes {
+
             @Override
             protected BufferedImage convertColor(BufferedImage bi) {
                 return isCS_sRGB(bi) ? BufferedImages.replaceColorModel(bi, srgb.colorModel) : bi;
             }
         },
         srgb("sRGB.icc") {
+
             @Override
             protected BufferedImage convertColor(BufferedImage bi) {
                 return isCS_sRGB(bi) ? BufferedImages.replaceColorModel(bi, srgb.colorModel)
@@ -114,8 +119,8 @@ public final class ICCProfile {
         },
         adobergb("adobeRGB.icc"), rommrgb("rommRGB.icc");
 
-        private static final ColorModel CM_sRGB = ColorModelFactory.createRGBColorModel(8, DataBuffer.TYPE_BYTE,
-                ColorSpace.getInstance(ColorSpace.CS_sRGB));
+        private static final ColorModel CM_sRGB = ColorModelFactory
+                .createRGBColorModel(8, DataBuffer.TYPE_BYTE, ColorSpace.getInstance(ColorSpace.CS_sRGB));
         private final ColorModel colorModel;
 
         Option() {
@@ -124,8 +129,8 @@ public final class ICCProfile {
 
         Option(String fileName) {
             try (InputStream is = ICCProfile.class.getResourceAsStream(fileName)) {
-                colorModel = ColorModelFactory.createRGBColorModel(8, DataBuffer.TYPE_BYTE,
-                        new ICC_ColorSpace(ICC_Profile.getInstance(is)));
+                colorModel = ColorModelFactory
+                        .createRGBColorModel(8, DataBuffer.TYPE_BYTE, new ICC_ColorSpace(ICC_Profile.getInstance(is)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -153,6 +158,7 @@ public final class ICCProfile {
 
     @FunctionalInterface
     public interface ColorSpaceFactory {
+
         Optional<ColorSpace> getColorSpace(int frameIndex);
     }
 

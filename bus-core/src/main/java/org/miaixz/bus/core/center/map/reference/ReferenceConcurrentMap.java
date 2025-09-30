@@ -176,8 +176,8 @@ public abstract class ReferenceConcurrentMap<K, V>
         V result = null;
         while (null == result) {
             this.purgeStale();
-            final Ref<V> vReference = this.raw.computeIfAbsent(wrapKey(key),
-                    kReference -> wrapValue(mappingFunction.apply(unwrap(kReference))));
+            final Ref<V> vReference = this.raw
+                    .computeIfAbsent(wrapKey(key), kReference -> wrapValue(mappingFunction.apply(unwrap(kReference))));
 
             // 如果vReference在此时被GC回收，则unwrap后为null，需要循环计算
             // 但是当用户提供的值本身为null，则直接返回之
@@ -195,8 +195,10 @@ public abstract class ReferenceConcurrentMap<K, V>
         V result = null;
         while (null == result) {
             this.purgeStale();
-            final Ref<V> vReference = this.raw.computeIfPresent(wrapKey(key), (kReference,
-                    vReference1) -> wrapValue(remappingFunction.apply(unwrap(kReference), unwrap(vReference1))));
+            final Ref<V> vReference = this.raw.computeIfPresent(
+                    wrapKey(key),
+                    (kReference, vReference1) -> wrapValue(
+                            remappingFunction.apply(unwrap(kReference), unwrap(vReference1))));
 
             // 如果vReference在此时被GC回收，则unwrap后为null，需要循环计算
             // 但是当用户提供的值本身为null，则直接返回之
@@ -235,10 +237,12 @@ public abstract class ReferenceConcurrentMap<K, V>
         this.purgeStale();
         final Set<Ref<K>> referenceSet = this.raw.keySet();
         return new AbstractSet<K>() {
+
             @Override
             public Iterator<K> iterator() {
                 final Iterator<Ref<K>> referenceIter = referenceSet.iterator();
                 return new Iterator<K>() {
+
                     @Override
                     public boolean hasNext() {
                         return referenceIter.hasNext();
@@ -263,10 +267,12 @@ public abstract class ReferenceConcurrentMap<K, V>
         this.purgeStale();
         final Collection<Ref<V>> referenceValues = this.raw.values();
         return new AbstractCollection<V>() {
+
             @Override
             public Iterator<V> iterator() {
                 final Iterator<Ref<V>> referenceIter = referenceValues.iterator();
                 return new Iterator<V>() {
+
                     @Override
                     public boolean hasNext() {
                         return referenceIter.hasNext();
@@ -291,10 +297,12 @@ public abstract class ReferenceConcurrentMap<K, V>
         this.purgeStale();
         final Set<Entry<Ref<K>, Ref<V>>> referenceEntrySet = this.raw.entrySet();
         return new AbstractSet<>() {
+
             @Override
             public Iterator<Entry<K, V>> iterator() {
                 final Iterator<Entry<Ref<K>, Ref<V>>> referenceIter = referenceEntrySet.iterator();
                 return new Iterator<>() {
+
                     @Override
                     public boolean hasNext() {
                         return referenceIter.hasNext();
@@ -304,6 +312,7 @@ public abstract class ReferenceConcurrentMap<K, V>
                     public Entry<K, V> next() {
                         final Entry<Ref<K>, Ref<V>> next = referenceIter.next();
                         return new Entry<>() {
+
                             @Override
                             public K getKey() {
                                 return unwrap(next.getKey());
@@ -344,15 +353,22 @@ public abstract class ReferenceConcurrentMap<K, V>
     @Override
     public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         this.purgeStale();
-        return unwrap(this.raw.compute(wrapKey(key), (kReference,
-                vReference) -> wrapValue(remappingFunction.apply(unwrap(kReference), unwrap(vReference)))));
+        return unwrap(
+                this.raw.compute(
+                        wrapKey(key),
+                        (kReference, vReference) -> wrapValue(
+                                remappingFunction.apply(unwrap(kReference), unwrap(vReference)))));
     }
 
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         this.purgeStale();
-        return unwrap(this.raw.merge(wrapKey(key), wrapValue(value), (vReference,
-                vReference2) -> wrapValue(remappingFunction.apply(unwrap(vReference), unwrap(vReference2)))));
+        return unwrap(
+                this.raw.merge(
+                        wrapKey(key),
+                        wrapValue(value),
+                        (vReference, vReference2) -> wrapValue(
+                                remappingFunction.apply(unwrap(vReference), unwrap(vReference2)))));
     }
 
     /**

@@ -72,8 +72,11 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
      * @return map or null
      */
     private static Map<CharSequence, CharSequence> strToMap(final CharSequence text) {
-        final int index = StringKit.indexOf(text,
-                c -> c == Symbol.C_COLON || c == Symbol.C_EQUAL || c == Symbol.C_COMMA, 0, text.length());
+        final int index = StringKit.indexOf(
+                text,
+                c -> c == Symbol.C_COLON || c == Symbol.C_EQUAL || c == Symbol.C_COMMA,
+                0,
+                text.length());
 
         if (index > -1) {
             return MapKit.of(text.subSequence(0, index), text.subSequence(index + 1, text.length()));
@@ -158,7 +161,8 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
             value = ((Wrapper) value).getRaw();
         }
 
-        return (Map.Entry<?, ?>) ReflectKit.newInstance(TypeKit.getClass(targetType),
+        return (Map.Entry<?, ?>) ReflectKit.newInstance(
+                TypeKit.getClass(targetType),
                 TypeKit.isUnknown(keyType) ? key : converter.convert(keyType, key),
                 TypeKit.isUnknown(valueType) ? value : converter.convert(valueType, value));
     }

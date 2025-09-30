@@ -222,11 +222,12 @@ public final class MacPowerSource extends AbstractPowerSource {
                     }
                     double psRemainingCapacityPercent = Math.min(1d, currentCapacity / maxCapacity);
                     // Add to list
-                    psList.add(new MacPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
-                            psTimeRemainingEstimated, psTimeRemainingInstant, psPowerUsageRate, psVoltage, psAmperage,
-                            psPowerOnLine, psCharging, psDischarging, psCapacityUnits, psCurrentCapacity, psMaxCapacity,
-                            psDesignCapacity, psCycleCount, psChemistry, psManufactureDate, psManufacturer,
-                            psSerialNumber, psTemperature));
+                    psList.add(
+                            new MacPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
+                                    psTimeRemainingEstimated, psTimeRemainingInstant, psPowerUsageRate, psVoltage,
+                                    psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
+                                    psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
+                                    psManufactureDate, psManufacturer, psSerialNumber, psTemperature));
                 }
             }
         }

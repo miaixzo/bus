@@ -40,6 +40,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  */
 @ThreadSafe
 public interface GlobalMemory {
+
     /**
      * The amount of actual physical memory, in bytes.
      *

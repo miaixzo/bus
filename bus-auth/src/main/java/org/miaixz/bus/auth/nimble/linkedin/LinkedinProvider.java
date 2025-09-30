@@ -170,7 +170,9 @@ public class LinkedinProvider extends AbstractProvider {
         header.put("Authorization", "Bearer " + accessToken);
 
         String emailResponse = Httpx.get(
-                "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))", null, header);
+                "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
+                null,
+                header);
         try {
             Map<String, Object> emailObj = JsonKit.toPojo(emailResponse, Map.class);
             if (emailObj == null) {

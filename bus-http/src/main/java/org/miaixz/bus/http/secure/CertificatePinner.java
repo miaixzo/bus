@@ -183,6 +183,7 @@ public class CertificatePinner {
     }
 
     static class Pin {
+
         private static final String WILDCARD = "*.";
         /**
          * 像{@code example.com}这样的主机名或{@code *.example.com}这样的模式.
@@ -224,8 +225,8 @@ public class CertificatePinner {
         boolean matches(String hostname) {
             if (pattern.startsWith(WILDCARD)) {
                 int firstDot = hostname.indexOf(Symbol.C_DOT);
-                return (hostname.length() - firstDot - 1) == canonicalHostname.length() && hostname.regionMatches(false,
-                        firstDot + 1, canonicalHostname, 0, canonicalHostname.length());
+                return (hostname.length() - firstDot - 1) == canonicalHostname.length() && hostname
+                        .regionMatches(false, firstDot + 1, canonicalHostname, 0, canonicalHostname.length());
             }
 
             return hostname.equals(canonicalHostname);

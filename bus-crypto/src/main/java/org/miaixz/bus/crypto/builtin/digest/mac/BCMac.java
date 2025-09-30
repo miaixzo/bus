@@ -56,7 +56,8 @@ public class BCMac extends SimpleWrapper<org.bouncycastle.crypto.Mac> implements
      * @param params 参数，例如密钥可以用{@link KeyParameter}
      * @return this
      */
-    private static org.bouncycastle.crypto.Mac initMac(final org.bouncycastle.crypto.Mac mac,
+    private static org.bouncycastle.crypto.Mac initMac(
+            final org.bouncycastle.crypto.Mac mac,
             final CipherParameters params) {
         mac.init(params);
         return mac;

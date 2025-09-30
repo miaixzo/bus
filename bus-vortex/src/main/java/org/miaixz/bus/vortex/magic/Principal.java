@@ -25,52 +25,59 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.vortex.magic;
 
-import java.io.Serial;
-import java.util.*;
-import java.util.function.Supplier;
+import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.vortex.Assets;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
- * 值作为集合Set（LinkedHashSet）的Map实现，通过调用putValue可以在相同key时加入多个值，多个值用集合表示
+ * Represents an authentication token and its associated context. This class encapsulates all necessary information for
+ * authorizing and processing a request, including the token string, the source channel, related resource
+ * configurations, and transient runtime data like tenant ID and API key.
  *
- * @param <K> 键类型
- * @param <V> 值类型
- * @author Kimi Liu
+ * @author Justubborn
  * @since Java 17+
  */
-public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
-
-    @Serial
-    private static final long serialVersionUID = 2852277962550L;
-
-    /**
-     * 基于{@code mapFactory}创建一个值为{@link Set}的多值映射集合
-     *
-     * @param mapFactory 创建集合的工厂反方
-     */
-    public SetValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
-        super(mapFactory);
-    }
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class Principal {
 
     /**
-     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
-     *
-     * @param map 提供数据的原始集合
+     * The identifier for the tenant in a multi-tenant architecture. This field is marked as {@code transient} to
+     * prevent it from being included in serialization, as it's typically used for runtime request routing and context,
+     * not for persistent state.
      */
-    public SetValueMap(final Map<K, Collection<V>> map) {
-        super(map);
-    }
+    protected String id;
 
     /**
-     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
+     * 类型 1.token 2. apiKey
      */
-    public SetValueMap() {
-    }
+    protected Integer type;
 
-    @Override
-    protected Set<V> createCollection() {
-        return new LinkedHashSet<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
-    }
+    /**
+     * 根据type确定是token还是apiKey
+     */
+    protected String value;
+
+    /**
+     * An integer identifier for the source channel of the request. This can be used to differentiate between various
+     * clients or platforms, such as a mobile app, web application, or third-party integrations (e.g., WeChat,
+     * DingTalk). It is a required, immutable field.
+     */
+    protected Integer channel;
+
+    /**
+     * Contains configuration and information about the resources or "assets" associated with this token. This could
+     * include permissions, rate limits, or other service-specific settings. It is a required, immutable field.
+     */
+    protected Assets assets;
 
 }

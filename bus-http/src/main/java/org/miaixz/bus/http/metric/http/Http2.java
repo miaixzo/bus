@@ -140,7 +140,12 @@ public class Http2 {
     static String frameLog(boolean inbound, int streamId, int length, byte type, byte flags) {
         String formattedType = type < FRAME_NAMES.length ? FRAME_NAMES[type] : String.format("0x%02x", type);
         String formattedFlags = formatFlags(type, flags);
-        return String.format("%s 0x%08x %5d %-13s %s", inbound ? "<<" : ">>", streamId, length, formattedType,
+        return String.format(
+                "%s 0x%08x %5d %-13s %s",
+                inbound ? "<<" : ">>",
+                streamId,
+                length,
+                formattedType,
                 formattedFlags);
     }
 
@@ -153,14 +158,15 @@ public class Http2 {
             return Normal.EMPTY;
         }
         switch (type) { // Special case types that have 0 or 1 flag.
-        case TYPE_SETTINGS:
-        case TYPE_PING:
-            return flags == FLAG_ACK ? "ACK" : BINARY[flags];
-        case TYPE_PRIORITY:
-        case TYPE_RST_STREAM:
-        case TYPE_GOAWAY:
-        case TYPE_WINDOW_UPDATE:
-            return BINARY[flags];
+            case TYPE_SETTINGS:
+            case TYPE_PING:
+                return flags == FLAG_ACK ? "ACK" : BINARY[flags];
+
+            case TYPE_PRIORITY:
+            case TYPE_RST_STREAM:
+            case TYPE_GOAWAY:
+            case TYPE_WINDOW_UPDATE:
+                return BINARY[flags];
         }
         String result = flags < FLAGS.length ? FLAGS[flags] : BINARY[flags];
         // Special case types that have overlap flag values.

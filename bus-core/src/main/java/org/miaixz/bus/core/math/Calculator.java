@@ -221,23 +221,28 @@ public class Calculator {
     private BigDecimal calculate(final String firstValue, final String secondValue, final char currentOp) {
         final BigDecimal result;
         switch (currentOp) {
-        case Symbol.C_PLUS:
-            result = MathKit.add(firstValue, secondValue);
-            break;
-        case Symbol.C_MINUS:
-            result = MathKit.sub(firstValue, secondValue);
-            break;
-        case Symbol.C_STAR:
-            result = MathKit.mul(firstValue, secondValue);
-            break;
-        case '/':
-            result = MathKit.div(firstValue, secondValue);
-            break;
-        case Symbol.C_PERCENT:
-            result = MathKit.toBigDecimal(firstValue).remainder(MathKit.toBigDecimal(secondValue));
-            break;
-        default:
-            throw new IllegalStateException("Unexpected value: " + currentOp);
+            case Symbol.C_PLUS:
+                result = MathKit.add(firstValue, secondValue);
+                break;
+
+            case Symbol.C_MINUS:
+                result = MathKit.sub(firstValue, secondValue);
+                break;
+
+            case Symbol.C_STAR:
+                result = MathKit.mul(firstValue, secondValue);
+                break;
+
+            case '/':
+                result = MathKit.div(firstValue, secondValue);
+                break;
+
+            case Symbol.C_PERCENT:
+                result = MathKit.toBigDecimal(firstValue).remainder(MathKit.toBigDecimal(secondValue));
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + currentOp);
         }
         return result;
     }
