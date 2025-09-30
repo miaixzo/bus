@@ -312,9 +312,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
         // 5.子节点存在，且已经与其他节点构成父子关系，但是不允许子节点直接修改其父节点
         else {
-            throw new IllegalArgumentException(
-                    StringKit.format("[{}] has been used as child of [{}], can not be overwrite as child of [{}]",
-                            childNode.getKey(), childNode.getDeclaredParent().getKey(), parentKey));
+            throw new IllegalArgumentException(StringKit.format(
+                    "[{}] has been used as child of [{}], can not be overwrite as child of [{}]",
+                    childNode.getKey(),
+                    childNode.getDeclaredParent().getKey(),
+                    parentKey));
         }
         consumer.accept(parentNode, childNode);
     }
@@ -452,8 +454,10 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * @param breakTraverse  是否终止遍历
          * @return 遍历到的最后一个节点
          */
-        TreeEntryNode<K, V> traverseParentNodes(final boolean includeCurrent,
-                final Consumer<TreeEntryNode<K, V>> consumer, Predicate<TreeEntryNode<K, V>> breakTraverse) {
+        TreeEntryNode<K, V> traverseParentNodes(
+                final boolean includeCurrent,
+                final Consumer<TreeEntryNode<K, V>> consumer,
+                Predicate<TreeEntryNode<K, V>> breakTraverse) {
             breakTraverse = ObjectKit.defaultIfNull(breakTraverse, n -> false);
             TreeEntryNode<K, V> curr = includeCurrent ? this : this.parent;
             while (ObjectKit.isNotNull(curr)) {
@@ -542,7 +546,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * @param breakTraverse  是否终止遍历，为null时默认总是返回{@code true}
          * @return 遍历到的最后一个节点
          */
-        TreeEntryNode<K, V> traverseChildNodes(final boolean includeCurrent,
+        TreeEntryNode<K, V> traverseChildNodes(
+                final boolean includeCurrent,
                 final BiConsumer<Integer, TreeEntryNode<K, V>> consumer,
                 BiPredicate<Integer, TreeEntryNode<K, V>> breakTraverse) {
             breakTraverse = ObjectKit.defaultIfNull(breakTraverse, (i, n) -> false);
@@ -585,8 +590,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             }
 
             // 检查循环引用
-            traverseParentNodes(true, s -> Assert.notEquals(s.key, child.key,
-                    "circular reference between [{}] and [{}]!", s.key, this.key), null);
+            traverseParentNodes(
+                    true,
+                    s -> Assert
+                            .notEquals(s.key, child.key, "circular reference between [{}] and [{}]!", s.key, this.key),
+                    null);
 
             // 调整该节点的信息
             child.parent = this;
@@ -719,6 +727,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      */
     public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>>
             implements Map.Entry<K, TreeEntry<K, V>>, Wrapper<N> {
+
         private final N entryNode;
 
         EntryNodeWrapper(final N entryNode) {

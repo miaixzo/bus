@@ -240,8 +240,11 @@ public class TopicsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Topic mergeTopics(Integer sourceTopicId, Integer targetTopicId) throws GitLabApiException {
-        Response response = post(Response.Status.OK, new GitLabApiForm().withParam("source_topic_id", sourceTopicId)
-                .withParam("target_topic_id", targetTopicId), "topics/merge");
+        Response response = post(
+                Response.Status.OK,
+                new GitLabApiForm().withParam("source_topic_id", sourceTopicId)
+                        .withParam("target_topic_id", targetTopicId),
+                "topics/merge");
         return (response.readEntity(Topic.class));
     }
 

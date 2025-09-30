@@ -38,36 +38,50 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.RecognitionCode:
-            return "RecognitionCode";
-        case PrivateTag.ByteOffsetOfOriginalHeader:
-            return "ByteOffsetOfOriginalHeader";
-        case PrivateTag.LengthOfOriginalHeader:
-            return "LengthOfOriginalHeader";
-        case PrivateTag.ByteOffsetOfPixelmatrix:
-            return "ByteOffsetOfPixelmatrix";
-        case PrivateTag.LengthOfPixelmatrixInBytes:
-            return "LengthOfPixelmatrixInBytes";
-        case PrivateTag._0009_xx50_:
-            return "_0009_xx50_";
-        case PrivateTag._0009_xx51_:
-            return "_0009_xx51_";
-        case PrivateTag.PDMEFIDPlaceholder:
-            return "PDMEFIDPlaceholder";
-        case PrivateTag.PDMDataObjectTypeExtension:
-            return "PDMDataObjectTypeExtension";
-        case PrivateTag.Zoom:
-            return "Zoom";
-        case PrivateTag.Target:
-            return "Target";
-        case PrivateTag.TubeAngle:
-            return "TubeAngle";
-        case PrivateTag.ROIMask:
-            return "ROIMask";
-        case PrivateTag.Dummy:
-            return "Dummy";
-        case PrivateTag.Header:
-            return "Header";
+            case PrivateTag.RecognitionCode:
+                return "RecognitionCode";
+
+            case PrivateTag.ByteOffsetOfOriginalHeader:
+                return "ByteOffsetOfOriginalHeader";
+
+            case PrivateTag.LengthOfOriginalHeader:
+                return "LengthOfOriginalHeader";
+
+            case PrivateTag.ByteOffsetOfPixelmatrix:
+                return "ByteOffsetOfPixelmatrix";
+
+            case PrivateTag.LengthOfPixelmatrixInBytes:
+                return "LengthOfPixelmatrixInBytes";
+
+            case PrivateTag._0009_xx50_:
+                return "_0009_xx50_";
+
+            case PrivateTag._0009_xx51_:
+                return "_0009_xx51_";
+
+            case PrivateTag.PDMEFIDPlaceholder:
+                return "PDMEFIDPlaceholder";
+
+            case PrivateTag.PDMDataObjectTypeExtension:
+                return "PDMDataObjectTypeExtension";
+
+            case PrivateTag.Zoom:
+                return "Zoom";
+
+            case PrivateTag.Target:
+                return "Target";
+
+            case PrivateTag.TubeAngle:
+                return "TubeAngle";
+
+            case PrivateTag.ROIMask:
+                return "ROIMask";
+
+            case PrivateTag.Dummy:
+                return "Dummy";
+
+            case PrivateTag.Header:
+                return "Header";
         }
         return "";
     }

@@ -75,7 +75,9 @@ public class LimitFilter extends AbstractFilter {
         for (Limiter cfg : cfgList) {
             cfg.acquire();
         }
-        Format.info(exchange, "RATE_LIMIT_APPLIED",
+        Format.info(
+                exchange,
+                "RATE_LIMIT_APPLIED",
                 "Path: " + exchange.getRequest().getURI().getPath() + ", Method: " + methodVersion);
         return chain.filter(exchange);
     }

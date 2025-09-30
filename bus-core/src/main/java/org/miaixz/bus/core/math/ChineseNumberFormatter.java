@@ -229,7 +229,10 @@ public class ChineseNumberFormatter {
         if (0 == amount) {
             return this.moneyMode ? "零" + unitName + "整" : Symbol.UL_ZERO;
         }
-        Assert.checkBetween(amount, -99_9999_9999_9999.99, 99_9999_9999_9999.99,
+        Assert.checkBetween(
+                amount,
+                -99_9999_9999_9999.99,
+                99_9999_9999_9999.99,
                 "Number support only: (-99999999999999.99 ~ 99999999999999.99)！");
 
         final StringBuilder chineseStr = new StringBuilder();
@@ -413,8 +416,10 @@ public class ChineseNumberFormatter {
                 lastIsZero = true;
             } else { // 取到的数字不是 0
                 final boolean isUseTraditional = this.useTraditional;
-                chineseStr.insert(0, singleNumberToChinese(digit, isUseTraditional)
-                        + ChineseNumberParser.getUnitName(i, isUseTraditional));
+                chineseStr.insert(
+                        0,
+                        singleNumberToChinese(digit, isUseTraditional)
+                                + ChineseNumberParser.getUnitName(i, isUseTraditional));
                 lastIsZero = false;
             }
             temp = temp / 10;

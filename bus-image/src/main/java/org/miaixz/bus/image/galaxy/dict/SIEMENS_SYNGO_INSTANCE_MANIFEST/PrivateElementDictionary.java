@@ -52,10 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.syngoIndexSourceAETitle:
-            return VR.AE;
-        case PrivateTag.TemporaryOriginalHeaderSequence:
-            return VR.SQ;
+            case PrivateTag.syngoIndexSourceAETitle:
+                return VR.AE;
+
+            case PrivateTag.TemporaryOriginalHeaderSequence:
+                return VR.SQ;
         }
         return VR.UN;
     }

@@ -123,7 +123,9 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
      * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
      * @return KVServiceLoader
      */
-    public static <S> ListServiceLoader<S> of(final String pathPrefix, final Class<S> serviceClass,
+    public static <S> ListServiceLoader<S> of(
+            final String pathPrefix,
+            final Class<S> serviceClass,
             final ClassLoader classLoader) {
         return new ListServiceLoader<>(pathPrefix, serviceClass, classLoader, null);
     }
@@ -190,6 +192,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     @Override
     public Iterator<S> iterator() {
         return new Iterator<S>() {
+
             private final Iterator<String> nameIter = serviceNames.iterator();
 
             @Override

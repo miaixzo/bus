@@ -52,8 +52,8 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.LastReleasedAnnotLabel:
-            return VR.UL;
+            case PrivateTag.LastReleasedAnnotLabel:
+                return VR.UL;
         }
         return VR.UN;
     }

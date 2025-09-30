@@ -222,7 +222,10 @@ public class AntPathMatcher {
      * @param uriTemplateVariables 变量映射
      * @return {@code true} 表示提供的 {@code path} 匹配, {@code false} 表示不匹配
      */
-    protected boolean doMatch(final String pattern, final String path, final boolean fullMatch,
+    protected boolean doMatch(
+            final String pattern,
+            final String path,
+            final boolean fullMatch,
             final Map<String, String> uriTemplateVariables) {
         if (path == null || path.startsWith(this.pathSeparator) != pattern.startsWith(this.pathSeparator)) {
             return false;
@@ -450,7 +453,9 @@ public class AntPathMatcher {
      * @param text    the String which must be matched against the pattern (never {@code null})
      * @return {@code true} if the string matches against the pattern, or {@code false} otherwise
      */
-    private boolean notMatchStrings(final String pattern, final String text,
+    private boolean notMatchStrings(
+            final String pattern,
+            final String text,
             final Map<String, String> uriTemplateVariables) {
         return !getStringMatcher(pattern).matchStrings(text, uriTemplateVariables);
     }

@@ -299,6 +299,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
             // 先关闭之前的监听
             IoKit.closeQuietly(this.watchMonitor);
             this.watchMonitor = WatchKit.ofModify(this.resource.getUrl(), new SimpleWatcher() {
+
                 @Serial
                 private static final long serialVersionUID = 2853080953378L;
 

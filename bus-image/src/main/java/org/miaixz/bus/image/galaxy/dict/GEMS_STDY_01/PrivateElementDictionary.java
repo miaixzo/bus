@@ -52,18 +52,21 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.StartTimeSecsInFirstAxial:
-            return VR.FD;
-        case PrivateTag.NumberOfSeriesInStudy:
-        case PrivateTag.NumberOfUnarchivedSeries:
-        case PrivateTag.NumberOfUpdatesToHeader:
-            return VR.SL;
-        case PrivateTag.HasMPPSRelatedTags:
-            return VR.SQ;
-        case PrivateTag.ReferenceImageField:
-        case PrivateTag.SummaryImage:
-        case PrivateTag.IndicatesIfStudyHasCompleteInfo:
-            return VR.SS;
+            case PrivateTag.StartTimeSecsInFirstAxial:
+                return VR.FD;
+
+            case PrivateTag.NumberOfSeriesInStudy:
+            case PrivateTag.NumberOfUnarchivedSeries:
+            case PrivateTag.NumberOfUpdatesToHeader:
+                return VR.SL;
+
+            case PrivateTag.HasMPPSRelatedTags:
+                return VR.SQ;
+
+            case PrivateTag.ReferenceImageField:
+            case PrivateTag.SummaryImage:
+            case PrivateTag.IndicatesIfStudyHasCompleteInfo:
+                return VR.SS;
         }
         return VR.UN;
     }

@@ -66,11 +66,11 @@ public class JpegWriteParam {
     public static JpegWriteParam buildDicomImageWriteParam(String tsuid) {
         TransferSyntaxType type = TransferSyntaxType.forUID(tsuid);
         switch (type) {
-        case NATIVE:
-        case RLE:
-        case JPIP:
-        case MPEG:
-            throw new IllegalStateException(tsuid + " is not supported for compression!");
+            case NATIVE:
+            case RLE:
+            case JPIP:
+            case MPEG:
+                throw new IllegalStateException(tsuid + " is not supported for compression!");
         }
         JpegWriteParam param = new JpegWriteParam(type, tsuid);
         param.losslessCompression = !TransferSyntaxType.isLossyCompression(tsuid);
@@ -159,18 +159,23 @@ public class JpegWriteParam {
 
     public int getJpegMode() {
         switch (type) {
-        case JPEG_BASELINE:
-            return 0;
-        case JPEG_EXTENDED:
-            return 1;
-        case JPEG_SPECTRAL:
-            return 2;
-        case JPEG_PROGRESSIVE:
-            return 3;
-        case JPEG_LOSSLESS:
-            return 4;
-        default:
-            return 0;
+            case JPEG_BASELINE:
+                return 0;
+
+            case JPEG_EXTENDED:
+                return 1;
+
+            case JPEG_SPECTRAL:
+                return 2;
+
+            case JPEG_PROGRESSIVE:
+                return 3;
+
+            case JPEG_LOSSLESS:
+                return 4;
+
+            default:
+                return 0;
         }
     }
 

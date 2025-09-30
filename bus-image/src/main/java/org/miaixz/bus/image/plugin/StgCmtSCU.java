@@ -70,6 +70,7 @@ public class StgCmtSCU {
     private int splitTag;
     private int status;
     private final ImageService stgcmtResultHandler = new AbstractImageService(UID.StorageCommitmentPushModel.uid) {
+
         @Override
         public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data)
                 throws IOException {
@@ -143,8 +144,9 @@ public class StgCmtSCU {
     public void setTransferSyntaxes(String[] tss) {
         rq.addPresentationContext(new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
         rq.addPresentationContext(new PresentationContext(2, UID.StorageCommitmentPushModel.uid, tss));
-        ae.addTransferCapability(new TransferCapability(null, UID.Verification.uid, TransferCapability.Role.SCP,
-                UID.ImplicitVRLittleEndian.uid));
+        ae.addTransferCapability(
+                new TransferCapability(null, UID.Verification.uid, TransferCapability.Role.SCP,
+                        UID.ImplicitVRLittleEndian.uid));
         ae.addTransferCapability(
                 new TransferCapability(null, UID.StorageCommitmentPushModel.uid, TransferCapability.Role.SCU, tss));
     }
@@ -238,7 +240,12 @@ public class StgCmtSCU {
             }
         };
 
-        as.naction(UID.StorageCommitmentPushModel.uid, UID.StorageCommitmentPushModelInstance.uid, 1, actionInfo, null,
+        as.naction(
+                UID.StorageCommitmentPushModel.uid,
+                UID.StorageCommitmentPushModelInstance.uid,
+                1,
+                actionInfo,
+                null,
                 rspHandler);
         addOutstandingResult(tuid);
     }
@@ -255,7 +262,8 @@ public class StgCmtSCU {
         Logger.info("{}: M-WRITE {}", as, file);
         try {
             out = new ImageOutputStream(file);
-            out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid),
+            out.writeDataset(
+                    Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid),
                     eventInfo);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Storage Commitment Result:", e);

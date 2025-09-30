@@ -60,7 +60,10 @@ public class JsonConfigurationExtension {
         return false;
     }
 
-    public boolean loadApplicationEntityExtension(Device device, ApplicationEntity ae, JSONReader reader,
+    public boolean loadApplicationEntityExtension(
+            Device device,
+            ApplicationEntity ae,
+            JSONReader reader,
             ConfigurationDelegate config) throws InternalException {
         return false;
     }

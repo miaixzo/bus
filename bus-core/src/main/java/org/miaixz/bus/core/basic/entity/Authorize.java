@@ -119,10 +119,16 @@ public class Authorize extends Entity {
     protected String x_device_id;
 
     /**
-     * 当前应用
+     * 当前应用ID
      */
     @Transient
     protected String x_app_id;
+
+    /**
+     * 当前API调用ID
+     */
+    @Transient
+    protected String x_api_id;
 
     /**
      * 扩展参数信息

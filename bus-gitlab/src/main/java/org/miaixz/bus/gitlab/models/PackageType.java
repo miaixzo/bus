@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum PackageType {
+
     MAVEN, NPM, CONAN, PYPI, COMPOSER, NUGET, HELM, GOLANG, GENERIC;
 
     private static JacksonJsonEnumHelper<PackageType> enumHelper = new JacksonJsonEnumHelper<>(PackageType.class);

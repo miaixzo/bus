@@ -80,13 +80,15 @@ public class HealthConfiguration {
      * @param publisher    Spring 应用事件发布器
      * @param availability Spring 应用可用性接口
      * @param provider     系统信息提供者
-     * @return {@link HealthProviderService}
+     * @return {@link HealthService}
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
-    public HealthProviderService healthProviderService(ApplicationEventPublisher publisher,
-            ApplicationAvailability availability, Provider provider) {
-        return new HealthProviderService(properties, provider, publisher, availability);
+    public HealthService healthProviderService(
+            ApplicationEventPublisher publisher,
+            ApplicationAvailability availability,
+            Provider provider) {
+        return new HealthService(properties, provider, publisher, availability);
     }
 
     /**
@@ -127,14 +129,15 @@ public class HealthConfiguration {
      */
     @Bean
     @Conditional(EnableHealthCondition.class)
-    public HealthController healthController(HealthProviderService healthService,
-            RequestMappingHandlerMapping handlerMapping) {
+    public HealthController healthController(HealthService healthService, RequestMappingHandlerMapping handlerMapping) {
         HealthController controller = new HealthController(healthService);
         try {
             // 注册/healthz端点（支持GET和POST）
             RequestMappingInfo healthzMapping = RequestMappingInfo.paths("/healthz")
                     .methods(RequestMethod.GET, RequestMethod.POST).build();
-            handlerMapping.registerMapping(healthzMapping, controller,
+            handlerMapping.registerMapping(
+                    healthzMapping,
+                    controller,
                     HealthController.class.getMethod("healthz", String.class));
 
             // 注册/broken端点
@@ -168,6 +171,7 @@ public class HealthConfiguration {
      * 条件类：检查是否应用了 @EnableHealth 注解
      */
     static class EnableHealthCondition implements Condition {
+
         /**
          * 检查 Spring 上下文中是否存在 @EnableHealth 注解的 Bean
          *

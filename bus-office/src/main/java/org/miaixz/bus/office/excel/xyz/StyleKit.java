@@ -133,7 +133,9 @@ public class StyleKit {
      * @param valign    纵向位置
      * @return {@link CellStyle}
      */
-    public static CellStyle setAlign(final CellStyle cellStyle, final HorizontalAlignment halign,
+    public static CellStyle setAlign(
+            final CellStyle cellStyle,
+            final HorizontalAlignment halign,
             final VerticalAlignment valign) {
         cellStyle.setAlignment(halign);
         cellStyle.setVerticalAlignment(valign);
@@ -148,7 +150,9 @@ public class StyleKit {
      * @param colorIndex 预定义颜色的short值，见{@link IndexedColors}枚举
      * @return {@link CellStyle}
      */
-    public static CellStyle setBorder(final CellStyle cellStyle, final BorderStyle borderSize,
+    public static CellStyle setBorder(
+            final CellStyle cellStyle,
+            final BorderStyle borderSize,
             final IndexedColors colorIndex) {
         return setBorder(cellStyle, CellBorderStyle.of(borderSize, colorIndex));
     }
@@ -171,7 +175,9 @@ public class StyleKit {
      * @param cellRangeAddress 边框样式范围
      * @param cellBorderStyle  边框风格，包括边框样式、颜色
      */
-    public static void setBorderStyle(final Sheet sheet, final CellRangeAddress cellRangeAddress,
+    public static void setBorderStyle(
+            final Sheet sheet,
+            final CellRangeAddress cellRangeAddress,
             final CellBorderStyle cellBorderStyle) {
         if (null != cellBorderStyle) {
             RegionUtil.setBorderTop(cellBorderStyle.getTopStyle(), cellRangeAddress, sheet);
@@ -193,7 +199,9 @@ public class StyleKit {
      * @param cellRangeAddress {@link CellRangeAddress}
      * @param cellStyle        {@link CellStyle}
      */
-    public static void setBorderStyle(final Sheet sheet, final CellRangeAddress cellRangeAddress,
+    public static void setBorderStyle(
+            final Sheet sheet,
+            final CellRangeAddress cellRangeAddress,
             final CellStyle cellStyle) {
         if (null != cellStyle) {
             final CellBorderStyle cellBorderStyle = CellBorderStyle.of(cellStyle);
@@ -209,7 +217,9 @@ public class StyleKit {
      * @param fillPattern 填充方式 {@link FillPatternType}枚举
      * @return {@link CellStyle}
      */
-    public static CellStyle setColor(final CellStyle cellStyle, final IndexedColors color,
+    public static CellStyle setColor(
+            final CellStyle cellStyle,
+            final IndexedColors color,
             final FillPatternType fillPattern) {
         return setColor(cellStyle, color.index, fillPattern);
     }
@@ -236,7 +246,9 @@ public class StyleKit {
      * @param fillPattern 填充方式 {@link FillPatternType}枚举
      * @return {@link CellStyle}
      */
-    public static CellStyle setColor(final XSSFCellStyle cellStyle, final XSSFColor color,
+    public static CellStyle setColor(
+            final XSSFCellStyle cellStyle,
+            final XSSFColor color,
             final FillPatternType fillPattern) {
         cellStyle.setFillForegroundColor(color);
         cellStyle.setFillPattern(ObjectKit.defaultIfNull(fillPattern, FillPatternType.SOLID_FOREGROUND));
@@ -252,7 +264,10 @@ public class StyleKit {
      * @param fontName 字体名称，可以为null使用默认字体
      * @return {@link Font}
      */
-    public static Font createFont(final Workbook workbook, final short color, final short fontSize,
+    public static Font createFont(
+            final Workbook workbook,
+            final short color,
+            final short fontSize,
             final String fontName) {
         final Font font = workbook.createFont();
         return setFontStyle(font, color, fontSize, fontName);

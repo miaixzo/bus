@@ -82,7 +82,10 @@ public class PictureCellSetter implements CellSetter {
         final int columnIndex = cell.getColumnIndex();
         final int rowIndex = cell.getRowIndex();
 
-        ExcelDrawing.drawingPicture(sheet, this.pictureData, this.pictureType,
+        ExcelDrawing.drawingPicture(
+                sheet,
+                this.pictureData,
+                this.pictureType,
                 new SimpleAnchor(columnIndex, rowIndex, columnIndex + 1, rowIndex + 1));
     }
 

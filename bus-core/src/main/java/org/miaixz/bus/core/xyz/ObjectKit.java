@@ -86,8 +86,7 @@ public class ObjectKit extends ObjectValidator {
         if (object.getClass().isArray()) {
             return Array.getLength(object);
         }
-        if (object instanceof Enumeration) {
-            final Enumeration<?> enumeration = (Enumeration<?>) object;
+        if (object instanceof final Enumeration<?> enumeration) {
             while (enumeration.hasMoreElements()) {
                 count++;
                 enumeration.nextElement();
@@ -139,8 +138,7 @@ public class ObjectKit extends ObjectValidator {
             }
             return false;
         }
-        if (object instanceof Enumeration) {
-            final Enumeration<?> enumeration = (Enumeration<?>) object;
+        if (object instanceof final Enumeration<?> enumeration) {
             while (enumeration.hasMoreElements()) {
                 final Object o = enumeration.nextElement();
                 if (equals(o, element)) {

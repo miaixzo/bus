@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -73,7 +73,8 @@ public interface BasicMapper<T, I extends Serializable>
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
-    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(@Param("entity") S entity,
+    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(
+            @Param("entity") S entity,
             @Param("fns") Fn.FnArray<T> fields);
 
     /**

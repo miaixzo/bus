@@ -58,7 +58,11 @@ public class HL7SAXTransformer {
     private HL7SAXTransformer() {
     }
 
-    public static Attributes transform(byte[] data, String hl7charset, String dicomCharset, Templates templates,
+    public static Attributes transform(
+            byte[] data,
+            String hl7charset,
+            String dicomCharset,
+            Templates templates,
             SAXTransformer.SetupTransformer setup) throws TransformerConfigurationException, IOException, SAXException {
         Attributes attrs = new Attributes();
         if (dicomCharset != null)
@@ -72,14 +76,20 @@ public class HL7SAXTransformer {
         return attrs;
     }
 
-    public static byte[] transform(Attributes attrs, String hl7charset, Templates templates,
-            boolean includeNameSpaceDeclaration, boolean includeKeword, SAXTransformer.SetupTransformer setup)
+    public static byte[] transform(
+            Attributes attrs,
+            String hl7charset,
+            Templates templates,
+            boolean includeNameSpaceDeclaration,
+            boolean includeKeword,
+            SAXTransformer.SetupTransformer setup)
             throws TransformerConfigurationException, SAXException, UnsupportedEncodingException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         TransformerHandler th = factory.newTransformerHandler(templates);
-        th.setResult(new SAXResult(
-                new HL7ContentHandler(new OutputStreamWriter(out, HL7Charset.toCharsetName(hl7charset)))));
+        th.setResult(
+                new SAXResult(
+                        new HL7ContentHandler(new OutputStreamWriter(out, HL7Charset.toCharsetName(hl7charset)))));
         if (setup != null)
             setup.setup(th.getTransformer());
 

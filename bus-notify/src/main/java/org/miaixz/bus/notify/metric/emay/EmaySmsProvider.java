@@ -73,7 +73,10 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
 
     @Override
     public Message send(EmayMaterial entity) {
-        Map<String, String> bodys = getParamsMap(context.getAppKey(), context.getAppSecret(), entity.getReceive(),
+        Map<String, String> bodys = getParamsMap(
+                context.getAppKey(),
+                context.getAppSecret(),
+                entity.getReceive(),
                 entity.getContent());
         Map<String, String> headers = MapKit.newHashMap(1, true);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);

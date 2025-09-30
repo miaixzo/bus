@@ -267,8 +267,8 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * 如果事先知道预期值集，则可以将其用作 {@link #readByteString} 甚至 {@link #readUtf8} 的替代。
      * 
      * <pre>{@code
-     * Options FIELDS = Options.of(ByteString.encodeUtf8("depth="), ByteString.encodeUtf8("height="),
-     *         ByteString.encodeUtf8("width="));
+     * Options FIELDS = Options
+     *         .of(ByteString.encodeUtf8("depth="), ByteString.encodeUtf8("height="), ByteString.encodeUtf8("width="));
      *
      * Buffer buffer = new Buffer().writeUtf8("width=640\n").writeUtf8("height=480\n");
      *

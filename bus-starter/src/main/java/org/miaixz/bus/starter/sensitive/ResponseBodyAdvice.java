@@ -121,8 +121,12 @@ public class ResponseBodyAdvice extends BaseAdvice
      * @return 传入或修改(可能是新的)实例的主体
      */
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter parameter, MediaType mediaType,
-            Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request,
+    public Object beforeBodyWrite(
+            Object body,
+            MethodParameter parameter,
+            MediaType mediaType,
+            Class<? extends HttpMessageConverter<?>> converterType,
+            ServerHttpRequest request,
             ServerHttpResponse response) {
         if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
@@ -182,8 +186,11 @@ public class ResponseBodyAdvice extends BaseAdvice
                                 throw new InternalException("Please check the request.crypto.encrypt");
                             }
                             Logger.debug("Response data encryption enabled ...");
-                            value = org.miaixz.bus.crypto.Builder.encrypt(this.properties.getEncrypt().getType(),
-                                    this.properties.getEncrypt().getKey(), value, Charset.UTF_8);
+                            value = org.miaixz.bus.crypto.Builder.encrypt(
+                                    this.properties.getEncrypt().getType(),
+                                    this.properties.getEncrypt().getKey(),
+                                    value,
+                                    Charset.UTF_8);
                             setValue(object, new String[] { property }, new String[] { value });
                         }
                     }

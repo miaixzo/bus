@@ -104,6 +104,7 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     private class XJarEnumeration implements Enumeration<URL> {
+
         private final Enumeration<URL> enumeration;
 
         XJarEnumeration(Enumeration<URL> enumeration) {

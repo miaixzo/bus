@@ -34,6 +34,7 @@ package org.miaixz.bus.socket.metric;
  * @since Java 17+
  */
 public interface SocketTask {
+
     /**
      * 定时任务是否已执行
      */

@@ -38,46 +38,65 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.PrivateData:
-            return "PrivateData";
-        case PrivateTag.SUVFactor:
-            return "SUVFactor";
-        case PrivateTag.OriginalFileName:
-            return "OriginalFileName";
-        case PrivateTag._7053_xx04_:
-            return "_7053_xx04_";
-        case PrivateTag.WorklistInfoFileName:
-            return "WorklistInfoFileName";
-        case PrivateTag._7053_xx06_:
-            return "_7053_xx06_";
-        case PrivateTag._7053_xx07_:
-            return "_7053_xx07_";
-        case PrivateTag._7053_xx08_:
-            return "_7053_xx08_";
-        case PrivateTag.ActivityConcentrationScaleFactor:
-            return "ActivityConcentrationScaleFactor";
-        case PrivateTag._7053_xx0F_:
-            return "_7053_xx0F_";
-        case PrivateTag._7053_xx10_:
-            return "_7053_xx10_";
-        case PrivateTag._7053_xx11_:
-            return "_7053_xx11_";
-        case PrivateTag._7053_xx12_:
-            return "_7053_xx12_";
-        case PrivateTag._7053_xx13_:
-            return "_7053_xx13_";
-        case PrivateTag._7053_xx14_:
-            return "_7053_xx14_";
-        case PrivateTag._7053_xx15_:
-            return "_7053_xx15_";
-        case PrivateTag._7053_xx16_:
-            return "_7053_xx16_";
-        case PrivateTag._7053_xx17_:
-            return "_7053_xx17_";
-        case PrivateTag._7053_xx18_:
-            return "_7053_xx18_";
-        case PrivateTag._7053_xxC2_:
-            return "_7053_xxC2_";
+            case PrivateTag.PrivateData:
+                return "PrivateData";
+
+            case PrivateTag.SUVFactor:
+                return "SUVFactor";
+
+            case PrivateTag.OriginalFileName:
+                return "OriginalFileName";
+
+            case PrivateTag._7053_xx04_:
+                return "_7053_xx04_";
+
+            case PrivateTag.WorklistInfoFileName:
+                return "WorklistInfoFileName";
+
+            case PrivateTag._7053_xx06_:
+                return "_7053_xx06_";
+
+            case PrivateTag._7053_xx07_:
+                return "_7053_xx07_";
+
+            case PrivateTag._7053_xx08_:
+                return "_7053_xx08_";
+
+            case PrivateTag.ActivityConcentrationScaleFactor:
+                return "ActivityConcentrationScaleFactor";
+
+            case PrivateTag._7053_xx0F_:
+                return "_7053_xx0F_";
+
+            case PrivateTag._7053_xx10_:
+                return "_7053_xx10_";
+
+            case PrivateTag._7053_xx11_:
+                return "_7053_xx11_";
+
+            case PrivateTag._7053_xx12_:
+                return "_7053_xx12_";
+
+            case PrivateTag._7053_xx13_:
+                return "_7053_xx13_";
+
+            case PrivateTag._7053_xx14_:
+                return "_7053_xx14_";
+
+            case PrivateTag._7053_xx15_:
+                return "_7053_xx15_";
+
+            case PrivateTag._7053_xx16_:
+                return "_7053_xx16_";
+
+            case PrivateTag._7053_xx17_:
+                return "_7053_xx17_";
+
+            case PrivateTag._7053_xx18_:
+                return "_7053_xx18_";
+
+            case PrivateTag._7053_xxC2_:
+                return "_7053_xxC2_";
         }
         return "";
     }

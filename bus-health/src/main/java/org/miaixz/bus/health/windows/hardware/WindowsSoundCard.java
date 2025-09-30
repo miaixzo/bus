@@ -77,16 +77,22 @@ final class WindowsSoundCard extends AbstractSoundCard {
             String fullKey = REGISTRY_SOUNDCARDS + key;
             try {
                 if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")) {
-                    soundCards.add(new WindowsSoundCard(
-                            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")
-                                    + Symbol.SPACE
-                                    + Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
-                                            "DriverVersion"),
-                            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "ProviderName")
-                                    + Symbol.SPACE
-                                    + Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
-                                            "DriverDesc"),
-                            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "DriverDesc")));
+                    soundCards.add(
+                            new WindowsSoundCard(
+                                    Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")
+                                            + Symbol.SPACE + Advapi32Util.registryGetStringValue(
+                                                    WinReg.HKEY_LOCAL_MACHINE,
+                                                    fullKey,
+                                                    "DriverVersion"),
+                                    Advapi32Util
+                                            .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "ProviderName")
+                                            + Symbol.SPACE
+                                            + Advapi32Util.registryGetStringValue(
+                                                    WinReg.HKEY_LOCAL_MACHINE,
+                                                    fullKey,
+                                                    "DriverDesc"),
+                                    Advapi32Util
+                                            .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "DriverDesc")));
                 }
             } catch (Win32Exception e) {
                 if (e.getErrorCode() != WinError.ERROR_ACCESS_DENIED) {

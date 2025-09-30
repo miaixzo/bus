@@ -73,7 +73,10 @@ public final class DeviceTree {
         Map<Integer, String> deviceIdMap = new HashMap<>();
         Map<Integer, String> mfgMap = new HashMap<>();
         // Get device IDs for the top level devices
-        HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null,
+        HANDLE hDevInfo = SA.SetupDiGetClassDevs(
+                guidDevInterface,
+                null,
+                null,
                 SetupApi.DIGCF_DEVICEINTERFACE | SetupApi.DIGCF_PRESENT);
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hDevInfo)) {
             try (Memory buf = new Memory(MAX_PATH);

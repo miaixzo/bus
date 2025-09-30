@@ -189,8 +189,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             return 0;
         }
         // Grab PPID
-        long[] statArray = Parsing.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH,
-                Symbol.C_SPACE);
+        long[] statArray = Parsing
+                .parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
         return (int) statArray[0];
     }
 
@@ -251,9 +251,10 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         // If we've gotten this far with no match, use the distrib-release
         // filename (defaults will eventually give "Unknown")
-        String family = filenameToFamily(etcDistribRelease.replace("/etc/", Normal.EMPTY)
-                .replace("release", Normal.EMPTY).replace("version", Normal.EMPTY).replace(Symbol.MINUS, Normal.EMPTY)
-                .replace(Symbol.UNDERLINE, Normal.EMPTY));
+        String family = filenameToFamily(
+                etcDistribRelease.replace("/etc/", Normal.EMPTY).replace("release", Normal.EMPTY)
+                        .replace("version", Normal.EMPTY).replace(Symbol.MINUS, Normal.EMPTY)
+                        .replace(Symbol.UNDERLINE, Normal.EMPTY));
         return Triplet.of(family, Normal.UNKNOWN, Normal.UNKNOWN);
     }
 
@@ -634,7 +635,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         try {
             return Parsing.parseIntOrDefault(
-                    Files.readSymbolicLink(new File(ProcPath.THREAD_SELF).toPath()).getFileName().toString(), 0);
+                    Files.readSymbolicLink(new File(ProcPath.THREAD_SELF).toPath()).getFileName().toString(),
+                    0);
         } catch (IOException e) {
             return 0;
         }
@@ -660,8 +662,11 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES,
-                OperatingSystem.ProcessSorting.PID_ASC, 0)) {
+        for (OSProcess p : getChildProcesses(
+                1,
+                OperatingSystem.ProcessFiltering.ALL_PROCESSES,
+                OperatingSystem.ProcessSorting.PID_ASC,
+                0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

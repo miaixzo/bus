@@ -74,7 +74,9 @@ public class ApplicationsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Application> getApplications(int page, int perPage) throws GitLabApiException {
-        Response response = get(jakarta.ws.rs.core.Response.Status.OK, getPageQueryParams(page, perPage),
+        Response response = get(
+                jakarta.ws.rs.core.Response.Status.OK,
+                getPageQueryParams(page, perPage),
                 "applications");
         return (response.readEntity(new GenericType<List<Application>>() {
         }));
@@ -124,7 +126,10 @@ public class ApplicationsApi extends AbstractApi {
      * @return the created Application instance
      * @throws GitLabApiException if any exception occurs
      */
-    public Application createApplication(String name, String redirectUri, List<ApplicationScope> scopes,
+    public Application createApplication(
+            String name,
+            String redirectUri,
+            List<ApplicationScope> scopes,
             Boolean confidential) throws GitLabApiException {
 
         if (scopes == null || scopes.isEmpty()) {

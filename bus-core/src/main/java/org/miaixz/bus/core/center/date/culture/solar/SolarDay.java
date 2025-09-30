@@ -149,16 +149,18 @@ public class SolarDay extends Loops {
      */
     public Constellation getConstellation() {
         int y = getMonth() * 100 + day;
-        return Constellation.get(y > 1221 || y < 120 ? 9
-                : y < 219 ? 10
-                        : y < 321 ? 11
-                                : y < 420 ? 0
-                                        : y < 521 ? 1
-                                                : y < 622 ? 2
-                                                        : y < 723 ? 3
-                                                                : y < 823 ? 4
-                                                                        : y < 923 ? 5
-                                                                                : y < 1024 ? 6 : y < 1123 ? 7 : 8);
+        return Constellation.get(
+                y > 1221 || y < 120 ? 9
+                        : y < 219 ? 10
+                                : y < 321 ? 11
+                                        : y < 420 ? 0
+                                                : y < 521 ? 1
+                                                        : y < 622 ? 2
+                                                                : y < 723 ? 3
+                                                                        : y < 823 ? 4
+                                                                                : y < 923 ? 5
+                                                                                        : y < 1024 ? 6
+                                                                                                : y < 1123 ? 7 : 8);
     }
 
     public String getName() {
@@ -247,8 +249,11 @@ public class SolarDay extends Loops {
     public SolarWeek getSolarWeek(int start) {
         int y = getYear();
         int m = getMonth();
-        return SolarWeek.fromYm(y, m,
-                (int) Math.ceil((day + fromYmd(y, m, 1).getWeek().next(-start).getIndex()) / 7D) - 1, start);
+        return SolarWeek.fromYm(
+                y,
+                m,
+                (int) Math.ceil((day + fromYmd(y, m, 1).getWeek().next(-start).getIndex()) / 7D) - 1,
+                start);
     }
 
     /**
@@ -343,22 +348,13 @@ public class SolarDay extends Loops {
         // 芒种
         SolarTerms grainInEar = SolarTerms.fromIndex(getYear(), 11);
         SolarDay start = grainInEar.getJulianDay().getSolarDay();
-        int add = 2 - start.getLunarDay().getSixtyCycle().getHeavenStem().getIndex();
-        if (add < 0) {
-            add += 10;
-        }
         // 芒种后的第1个丙日
-        start = start.next(add);
+        start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(2));
 
         // 小暑
-        SolarTerms slightHeat = grainInEar.next(2);
-        SolarDay end = slightHeat.getJulianDay().getSolarDay();
-        add = 7 - end.getLunarDay().getSixtyCycle().getEarthBranch().getIndex();
-        if (add < 0) {
-            add += 12;
-        }
+        SolarDay end = grainInEar.next(2).getJulianDay().getSolarDay();
         // 小暑后的第1个未日
-        end = end.next(add);
+        end = end.next(end.getLunarDay().getSixtyCycle().getEarthBranch().stepsTo(7));
 
         if (isBefore(start) || isAfter(end)) {
             return null;
@@ -380,8 +376,8 @@ public class SolarDay extends Loops {
         }
         int dayIndex = subtract(term.getJulianDay().getSolarDay());
         int startIndex = (term.getIndex() - 1) * 3;
-        String data = "93705542220504xx1513904541632524533533105544806564xx7573304542018584xx95".substring(startIndex,
-                startIndex + 6);
+        String data = "93705542220504xx1513904541632524533533105544806564xx7573304542018584xx95"
+                .substring(startIndex, startIndex + 6);
         int days = 0;
         int heavenStemIndex = 0;
         int typeIndex = 0;

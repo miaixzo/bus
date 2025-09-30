@@ -52,13 +52,15 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.PPSStatus:
-            return VR.CS;
-        case PrivateTag.PixelDataReferences:
-        case PrivateTag.PixelDataReferencesTemporary:
-            return VR.LT;
-        case PrivateTag.AutoPushTag:
-            return VR.SS;
+            case PrivateTag.PPSStatus:
+                return VR.CS;
+
+            case PrivateTag.PixelDataReferences:
+            case PrivateTag.PixelDataReferencesTemporary:
+                return VR.LT;
+
+            case PrivateTag.AutoPushTag:
+                return VR.SS;
         }
         return VR.UN;
     }

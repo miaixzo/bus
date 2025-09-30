@@ -199,6 +199,7 @@ public class MultiStringFinder {
      * AC 自动机节点
      */
     protected static class Node {
+
         // 是否是字符串 尾节点
         public boolean isEnd = false;
 

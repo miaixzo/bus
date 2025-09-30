@@ -184,7 +184,10 @@ public class FileTailer implements Serializable {
 
         final LineWatcher lineWatcher = new LineWatcher(this.randomAccessFile, this.charset, this.lineHandler);
         final ScheduledFuture<?> scheduledFuture = this.executorService.scheduleAtFixedRate(//
-                lineWatcher, 0, this.period, TimeUnit.MILLISECONDS);
+                lineWatcher,
+                0,
+                this.period,
+                TimeUnit.MILLISECONDS);
 
         // 监听删除
         if (stopOnRemove) {
@@ -292,6 +295,7 @@ public class FileTailer implements Serializable {
      * 命令行打印的行处理器
      */
     public static class ConsoleLineHandler implements ConsumerX<String> {
+
         @Serial
         private static final long serialVersionUID = 2852227591586L;
 

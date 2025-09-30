@@ -129,7 +129,9 @@ public class RedisCache<K, V> implements CacheX<K, V> {
      * @param serializer  序列化器
      * @return 对象映射
      */
-    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues,
+    static Map<String, Object> toObjectMap(
+            Collection<String> keys,
+            List<byte[]> bytesValues,
             BaseSerializer serializer) {
         int index = 0;
         Map<String, Object> result = new HashMap<>(keys.size());

@@ -289,8 +289,11 @@ public class Decompressor {
         bi = decompressor.read(0, readParam);
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug("Decompressed frame #{} 1:{} in {} ms", index + 1,
-                    (float) sizeOf(bi) / siis.getStreamPosition(), end - start);
+            Logger.debug(
+                    "Decompressed frame #{} 1:{} in {} ms",
+                    index + 1,
+                    (float) sizeOf(bi) / siis.getStreamPosition(),
+                    end - start);
         return bi;
     }
 
@@ -298,20 +301,24 @@ public class Decompressor {
         SampleModel sm = raster.getSampleModel();
         DataBuffer db = raster.getDataBuffer();
         switch (db.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            writeTo(sm, ((DataBufferByte) db).getBankData(), out);
-            break;
-        case DataBuffer.TYPE_USHORT:
-            writeTo(sm, ((DataBufferUShort) db).getData(), out);
-            break;
-        case DataBuffer.TYPE_SHORT:
-            writeTo(sm, ((DataBufferShort) db).getData(), out);
-            break;
-        case DataBuffer.TYPE_INT:
-            writeTo(sm, ((DataBufferInt) db).getData(), out);
-            break;
-        default:
-            throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
+            case DataBuffer.TYPE_BYTE:
+                writeTo(sm, ((DataBufferByte) db).getBankData(), out);
+                break;
+
+            case DataBuffer.TYPE_USHORT:
+                writeTo(sm, ((DataBufferUShort) db).getData(), out);
+                break;
+
+            case DataBuffer.TYPE_SHORT:
+                writeTo(sm, ((DataBufferShort) db).getData(), out);
+                break;
+
+            case DataBuffer.TYPE_INT:
+                writeTo(sm, ((DataBufferInt) db).getData(), out);
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
         }
     }
 

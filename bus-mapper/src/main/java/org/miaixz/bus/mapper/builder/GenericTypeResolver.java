@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,7 @@ import java.util.*;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.cursor.Cursor;
+import org.miaixz.bus.core.lang.Optional;
 
 /**
  * 泛型类型解析器，基于 MyBatis 3 的源码，添加了 resolveMapperTypes 方法以支持接口泛型解析 源码来自 https://github.com/mybatis/mybatis-3
@@ -259,7 +260,9 @@ public class GenericTypeResolver {
      * @param declaringClass   声明类
      * @return 解析后的实际类型
      */
-    private static Type resolveGenericArrayType(GenericArrayType genericArrayType, Type srcType,
+    private static Type resolveGenericArrayType(
+            GenericArrayType genericArrayType,
+            Type srcType,
             Class<?> declaringClass) {
         Type componentType = genericArrayType.getGenericComponentType();
         Type resolvedComponentType = null;
@@ -268,7 +271,9 @@ public class GenericTypeResolver {
         } else if (componentType instanceof GenericArrayType) {
             resolvedComponentType = resolveGenericArrayType((GenericArrayType) componentType, srcType, declaringClass);
         } else if (componentType instanceof ParameterizedType) {
-            resolvedComponentType = resolveParameterizedType((ParameterizedType) componentType, srcType,
+            resolvedComponentType = resolveParameterizedType(
+                    (ParameterizedType) componentType,
+                    srcType,
                     declaringClass);
         }
         if (resolvedComponentType instanceof Class) {
@@ -286,7 +291,9 @@ public class GenericTypeResolver {
      * @param declaringClass    声明类
      * @return 解析后的参数化类型
      */
-    private static ParameterizedType resolveParameterizedType(ParameterizedType parameterizedType, Type srcType,
+    private static ParameterizedType resolveParameterizedType(
+            ParameterizedType parameterizedType,
+            Type srcType,
             Class<?> declaringClass) {
         Class<?> rawType = (Class<?>) parameterizedType.getRawType();
         Type[] typeArgs = parameterizedType.getActualTypeArguments();
@@ -397,7 +404,11 @@ public class GenericTypeResolver {
      * @param superclass     超类或接口类型
      * @return 解析后的实际类型
      */
-    private static Type scanSuperTypes(TypeVariable<?> typeVar, Type srcType, Class<?> declaringClass, Class<?> clazz,
+    private static Type scanSuperTypes(
+            TypeVariable<?> typeVar,
+            Type srcType,
+            Class<?> declaringClass,
+            Class<?> clazz,
             Type superclass) {
         if (superclass instanceof ParameterizedType parentAsType) {
             Class<?> parentAsClass = (Class<?>) parentAsType.getRawType();
@@ -429,7 +440,9 @@ public class GenericTypeResolver {
      * @param parentType 父类参数化类型
      * @return 转换后的参数化类型
      */
-    private static ParameterizedType translateParentTypeVars(ParameterizedType srcType, Class<?> srcClass,
+    private static ParameterizedType translateParentTypeVars(
+            ParameterizedType srcType,
+            Class<?> srcClass,
             ParameterizedType parentType) {
         Type[] parentTypeArgs = parentType.getActualTypeArguments();
         Type[] srcTypeArgs = srcType.getActualTypeArguments();
@@ -455,6 +468,7 @@ public class GenericTypeResolver {
      * 参数化类型实现类
      */
     public static class ParameterizedTypes implements ParameterizedType {
+
         /**
          * 原始类型
          */
@@ -530,6 +544,7 @@ public class GenericTypeResolver {
      * 通配符类型实现类
      */
     public static class WildcardTypes implements WildcardType {
+
         /**
          * 下界类型
          */
@@ -577,6 +592,7 @@ public class GenericTypeResolver {
      * 泛型数组类型实现类
      */
     public static class GenericArrayTypes implements GenericArrayType {
+
         /**
          * 泛型组件类型
          */

@@ -51,7 +51,7 @@ import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PayProviderService {
+public class PayService {
 
     /**
      * 通知器配置
@@ -61,16 +61,16 @@ public class PayProviderService {
     public CacheX cache;
     public Complex complex;
 
-    public PayProviderService(PayProperties properties) {
+    public PayService(PayProperties properties) {
         this.properties = properties;
     }
 
-    public PayProviderService(PayProperties properties, Complex complex) {
+    public PayService(PayProperties properties, Complex complex) {
         this.properties = properties;
         this.complex = complex;
     }
 
-    public PayProviderService(PayProperties properties, Complex complex, CacheX cache) {
+    public PayService(PayProperties properties, Complex complex, CacheX cache) {
         this.properties = properties;
         this.complex = complex;
         this.cache = cache;

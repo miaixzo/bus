@@ -82,21 +82,25 @@ public class QrCodeKit {
      * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
      * @return 图片 Base64 编码字符串
      */
-    public static String generateAsBase64DataUri(final String content, final QrConfig qrConfig,
+    public static String generateAsBase64DataUri(
+            final String content,
+            final QrConfig qrConfig,
             final String imageType) {
         switch (imageType) {
-        case QR_TYPE_SVG:
-            return svgToBase64DataUri(generateAsSvg(content, qrConfig));
-        case QR_TYPE_TXT:
-            return txtToBase64DataUri(generateAsAsciiArt(content, qrConfig));
-        default:
-            BufferedImage img = null;
-            try {
-                img = generate(content, qrConfig);
-                return ImageKit.toBase64DataUri(img, imageType);
-            } finally {
-                ImageKit.flush(img);
-            }
+            case QR_TYPE_SVG:
+                return svgToBase64DataUri(generateAsSvg(content, qrConfig));
+
+            case QR_TYPE_TXT:
+                return txtToBase64DataUri(generateAsAsciiArt(content, qrConfig));
+
+            default:
+                BufferedImage img = null;
+                try {
+                    img = generate(content, qrConfig);
+                    return ImageKit.toBase64DataUri(img, imageType);
+                } finally {
+                    ImageKit.flush(img);
+                }
         }
     }
 
@@ -167,7 +171,11 @@ public class QrCodeKit {
      * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
      * @param out       目标流
      */
-    public static void generate(final String content, final int width, final int height, final String imageType,
+    public static void generate(
+            final String content,
+            final int width,
+            final int height,
+            final String imageType,
             final OutputStream out) {
         generate(content, QrConfig.of(width, height), imageType, out);
     }
@@ -180,18 +188,23 @@ public class QrCodeKit {
      * @param imageType 图片类型（图片扩展名），见{@link ImageKit}
      * @param out       目标流
      */
-    public static void generate(final String content, final QrConfig config, final String imageType,
+    public static void generate(
+            final String content,
+            final QrConfig config,
+            final String imageType,
             final OutputStream out) {
         final BitMatrixRender render;
         switch (imageType) {
-        case QR_TYPE_SVG:
-            render = new SVGRender(config);
-            break;
-        case QR_TYPE_TXT:
-            render = new AsciiArtRender(config);
-            break;
-        default:
-            render = new ImageRender(config, imageType);
+            case QR_TYPE_SVG:
+                render = new SVGRender(config);
+                break;
+
+            case QR_TYPE_TXT:
+                render = new AsciiArtRender(config);
+                break;
+
+            default:
+                render = new ImageRender(config, imageType);
         }
         render.render(encode(content, config), out);
     }

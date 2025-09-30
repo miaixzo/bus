@@ -71,6 +71,7 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
     public GuavaCache(long size, long expire) {
         this.cache = CacheBuilder.newBuilder().maximumSize(size).expireAfterWrite(expire, TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<>() {
+
                     @Override
                     public Object load(Object key) {
                         return null;
@@ -101,6 +102,7 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
                 .expireAfterAccess(Long.parseLong(expireAfterAccess), TimeUnit.MILLISECONDS)
                 .expireAfterWrite(Long.parseLong(expireAfterWrite), TimeUnit.MILLISECONDS)
                 .initialCapacity(Integer.parseInt(initialCapacity)).build(new CacheLoader<>() {
+
                     @Override
                     public Object load(Object key) {
                         return null;

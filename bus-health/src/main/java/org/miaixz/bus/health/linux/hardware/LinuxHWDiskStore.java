@@ -154,17 +154,18 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                                 devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
                                         String vgName = device.getPropertyValue(DM_VG_NAME);
                                         String lvName = device.getPropertyValue(DM_LV_NAME);
-                                        store.partitionList.add(new HWPartition(
-                                                getPartitionNameForDmDevice(vgName, lvName), device.getSysname(),
-                                                device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
-                                                        : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
-                                                        : device.getPropertyValue(ID_FS_UUID),
-                                                Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
-                                                        * SECTORSIZE,
-                                                Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
-                                                Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
-                                                getMountPointOfDmDevice(vgName, lvName)));
+                                        store.partitionList.add(
+                                                new HWPartition(getPartitionNameForDmDevice(vgName, lvName),
+                                                        device.getSysname(),
+                                                        device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
+                                                                : device.getPropertyValue(ID_FS_TYPE),
+                                                        device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
+                                                                : device.getPropertyValue(ID_FS_UUID),
+                                                        Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                                                * SECTORSIZE,
+                                                        Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
+                                                        Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
+                                                        getMountPointOfDmDevice(vgName, lvName)));
                                     } else {
                                         store = new LinuxHWDiskStore(devnode,
                                                 devModel == null ? Normal.UNKNOWN : devModel,
@@ -194,17 +195,20 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         // `store` should still point to the parent HWDiskStore this partition is
                                         // attached to. If not, it's an error, so skip.
                                         String name = device.getDevnode();
-                                        store.partitionList.add(new HWPartition(name, device.getSysname(),
-                                                device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
-                                                        : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
-                                                        : device.getPropertyValue(ID_FS_UUID),
-                                                Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
-                                                        * SECTORSIZE,
-                                                Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
-                                                Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
-                                                mountsMap.getOrDefault(name,
-                                                        getDependentNamesFromHoldersDirectory(device.getSysname()))));
+                                        store.partitionList.add(
+                                                new HWPartition(name, device.getSysname(),
+                                                        device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
+                                                                : device.getPropertyValue(ID_FS_TYPE),
+                                                        device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
+                                                                : device.getPropertyValue(ID_FS_UUID),
+                                                        Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                                                * SECTORSIZE,
+                                                        Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
+                                                        Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
+                                                        mountsMap.getOrDefault(
+                                                                name,
+                                                                getDependentNamesFromHoldersDirectory(
+                                                                        device.getSysname()))));
                                     }
                                 }
                             }
@@ -221,8 +225,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         }
         // Iterate the list and make the partitions unmodifiable
         for (HWDiskStore hwds : result) {
-            ((LinuxHWDiskStore) hwds).partitionList = Collections.unmodifiableList(hwds.getPartitions().stream()
-                    .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
+            ((LinuxHWDiskStore) hwds).partitionList = Collections.unmodifiableList(
+                    hwds.getPartitions().stream().sorted(Comparator.comparing(HWPartition::getName))
+                            .collect(Collectors.toList()));
         }
         return result;
     }
@@ -241,8 +246,8 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static void computeDiskStats(LinuxHWDiskStore store, String devstat) {
-        long[] devstatArray = Parsing.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH,
-                Symbol.C_SPACE);
+        long[] devstatArray = Parsing
+                .parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
         store.timeStamp = System.currentTimeMillis();
 
         // Reads and writes are converted in bytes
@@ -329,6 +334,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
     // Order the field is in udev stats
     enum UdevStat {
+
         // The parsing implementation in Parsing requires these to be declared
         // in increasing order. Use 0-ordered index here
         READS(0), READ_BYTES(2), WRITES(4), WRITE_BYTES(6), QUEUE_LENGTH(8), ACTIVE_MS(9);

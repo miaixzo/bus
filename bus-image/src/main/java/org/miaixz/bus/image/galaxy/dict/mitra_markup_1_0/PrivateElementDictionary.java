@@ -52,22 +52,22 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.Markup1:
-        case PrivateTag.Markup2:
-        case PrivateTag.Markup3:
-        case PrivateTag.Markup4:
-        case PrivateTag.Markup5:
-        case PrivateTag.Markup6:
-        case PrivateTag.Markup7:
-        case PrivateTag.Markup8:
-        case PrivateTag.Markup9:
-        case PrivateTag.Markup10:
-        case PrivateTag.Markup11:
-        case PrivateTag.Markup12:
-        case PrivateTag.Markup13:
-        case PrivateTag.Markup14:
-        case PrivateTag.Markup15:
-            return VR.OB;
+            case PrivateTag.Markup1:
+            case PrivateTag.Markup2:
+            case PrivateTag.Markup3:
+            case PrivateTag.Markup4:
+            case PrivateTag.Markup5:
+            case PrivateTag.Markup6:
+            case PrivateTag.Markup7:
+            case PrivateTag.Markup8:
+            case PrivateTag.Markup9:
+            case PrivateTag.Markup10:
+            case PrivateTag.Markup11:
+            case PrivateTag.Markup12:
+            case PrivateTag.Markup13:
+            case PrivateTag.Markup14:
+            case PrivateTag.Markup15:
+                return VR.OB;
         }
         return VR.UN;
     }

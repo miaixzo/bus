@@ -27,20 +27,23 @@
 */
 package org.miaixz.bus.vortex.filter;
 
-import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.BusinessException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
-import org.miaixz.bus.vortex.magic.Token;
+import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.springframework.core.Ordered;
@@ -49,6 +52,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
+
 import reactor.core.publisher.Mono;
 
 /**
@@ -119,19 +123,19 @@ public class AuthorizeFilter extends AbstractFilter {
         // 从注册表中获取对应的资产信息
         Assets assets = registry.get(method, version);
         if (null == assets) {
-            Format.warn(exchange, "AUTH_ASSETS_NOT_FOUND",
+            Format.warn(
+                    exchange,
+                    "AUTH_ASSETS_NOT_FOUND",
                     "Assets not found for method: " + method + ", version: " + version);
-            return Mono.error(new BusinessException(ErrorCode._100800));
+            return Mono.error(new ValidateException(ErrorCode._100800));
         }
 
-        // 执行各种验证
-        checkMethod(exchange, assets);
-        checkToken(exchange, context, assets, params);
-        checkAppId(exchange, assets, params);
-
-        // 填充额外参数并清理不需要的参数
-        fillXParam(exchange, params);
-        cleanParam(params);
+        // 请求基础校验
+        this.method(exchange, assets);
+        if (Consts.TYPE_ONE != assets.getFirewall()) {
+            // 执行认证
+            this.authorize(exchange, context, assets);
+        }
 
         // 将资产信息设置到上下文中
         context.setAssets(assets);
@@ -151,21 +155,29 @@ public class AuthorizeFilter extends AbstractFilter {
      *
      * @param exchange ServerWebExchange 对象，包含请求和响应信息
      * @param assets   资产信息，包含期望的HTTP方法类型
-     * @throws BusinessException 如果方法不匹配，抛出对应错误： - 对于GET方法，错误码为_100200 - 对于POST方法，错误码为_100201 - 对于其他方法，错误码为_100508
+     * @throws ValidateException 如果方法不匹配，抛出对应错误
      */
-    protected void checkMethod(ServerWebExchange exchange, Assets assets) {
+    protected void method(ServerWebExchange exchange, Assets assets) {
         ServerHttpRequest request = exchange.getRequest();
-        if (!Objects.equals(request.getMethod(), assets.getHttpMethod())) {
-            String error = "HTTP method mismatch, expected: " + assets.getHttpMethod() + ", actual: "
-                    + request.getMethod();
-            Format.warn(exchange, "AUTH_METHOD_MISMATCH", error);
-            if (Objects.equals(assets.getHttpMethod(), HttpMethod.GET)) {
-                throw new BusinessException(ErrorCode._100200);
-            } else if (Objects.equals(assets.getHttpMethod(), HttpMethod.POST)) {
-                throw new BusinessException(ErrorCode._100201);
-            } else {
-                throw new BusinessException(ErrorCode._100803);
-            }
+
+        final HttpMethod expectedMethod = this.valueOf(assets.getType());
+
+        if (!Objects.equals(request.getMethod(), expectedMethod)) {
+            String errors = "HTTP method mismatch, expected: " + expectedMethod + ", actual: " + request.getMethod();
+            Format.warn(exchange, "AUTH_METHOD_MISMATCH", errors);
+
+            final Errors error = switch (expectedMethod.name()) {
+                case HTTP.GET -> ErrorCode._100200;
+                case HTTP.POST -> ErrorCode._100201;
+                case HTTP.PUT -> ErrorCode._100202;
+                case HTTP.DELETE -> ErrorCode._100203;
+                case HTTP.OPTIONS -> ErrorCode._100204;
+                case HTTP.HEAD -> ErrorCode._100205;
+                case HTTP.PATCH -> ErrorCode._100206;
+                case HTTP.TRACE -> ErrorCode._100207;
+                default -> ErrorCode._100802;
+            };
+            throw new ValidateException(error);
         }
     }
 
@@ -178,20 +190,20 @@ public class AuthorizeFilter extends AbstractFilter {
      * @param exchange ServerWebExchange 对象，包含请求和响应信息
      * @param context  上下文对象，包含令牌和通道信息
      * @param assets   资产信息，指示是否需要令牌验证
-     * @param params   请求参数，将用于存储认证结果
-     * @throws BusinessException 如果令牌缺失或认证失败，抛出对应错误： - 令牌缺失时，错误码为_100106 - 令牌认证失败时，使用授权提供者返回的错误码和消息
+     * @throws ValidateException 如果令牌缺失或认证失败
      */
-    protected void checkToken(ServerWebExchange exchange, Context context, Assets assets, Map<String, String> params) {
-        if (assets.isToken()) {
+    protected void authorize(ServerWebExchange exchange, Context context, Assets assets) {
+        if (Consts.TYPE_ONE == assets.getToken()) {
             // 检查令牌是否存在
             if (StringKit.isBlank(context.getToken())) {
                 Format.warn(exchange, "AUTH_TOKEN_MISSING", "Access token is missing");
-                throw new BusinessException(ErrorCode._100106);
+                throw new ValidateException(ErrorCode._100106);
             }
 
             // 创建令牌对象并进行授权验证
-            Token access = new Token(context.getToken(), context.getChannel().getType(), assets);
-            Delegate delegate = provider.authorize(access);
+            Delegate delegate = provider.authorize(
+                    Principal.builder().type(Consts.TYPE_ONE).value(context.getToken())
+                            .channel(context.getChannel().getType()).assets(assets).build());
 
             // 处理授权结果
             if (delegate.isOk()) {
@@ -199,86 +211,60 @@ public class AuthorizeFilter extends AbstractFilter {
                 Map<String, Object> map = new HashMap<>();
                 // 将授权信息转换为Map并添加到请求参数中
                 BeanKit.beanToMap(auth, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
-                map.forEach((k, v) -> params.put(k, v.toString()));
-                Format.info(exchange, "AUTH_TOKEN_VALIDATED",
+                map.forEach((k, v) -> context.getRequestMap().put(k, v.toString()));
+                Format.info(
+                        exchange,
+                        "AUTH_TOKEN_VALIDATED",
                         "Token validated successfully for channel: " + context.getChannel().getType());
             } else {
                 // 令牌验证失败
-                Format.error(exchange, "AUTH_TOKEN_FAILED",
+                Format.error(
+                        exchange,
+                        "AUTH_TOKEN_FAILED",
                         "Error code: " + delegate.getMessage().errcode + ", message: " + delegate.getMessage().errmsg);
-                throw new BusinessException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
+                throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
             }
         }
-    }
+        if (Consts.TYPE_ONE == assets.getScope()) {
+            // 优先从请求参数中获取应用ID
+            String[] api_key_params = { "apiKey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID", "X-API-KEY",
+                    "API-KEY", "API-ID" };
+            String apiKey = MapKit.getFirstNonNull(context.getRequestMap(), api_key_params);
+            // 如果请求参数中没有，尝试从请求头中获取
+            if (StringKit.isBlank(apiKey)) {
+                apiKey = MapKit.getFirstNonNull(context.getHeaderMap(), api_key_params);
+            }
 
-    /**
-     * 校验应用 ID 是否匹配
-     * <p>
-     * 该方法验证请求中的应用ID是否与资产配置中的应用ID一致。 资产的应用ID是从方法名中提取的（方法名的第一部分）。 如果请求中未提供应用ID，会自动设置默认值。 如果提供了应用ID但不匹配，将抛出业务异常。
-     * </p>
-     *
-     * @param exchange     ServerWebExchange 对象，包含请求和响应信息
-     * @param assets       资产信息，从中提取期望的应用ID
-     * @param requestParam 请求参数，包含或将要包含应用ID
-     * @throws BusinessException 如果应用ID不匹配，抛出错误码为_100511的业务异常
-     */
-    protected void checkAppId(ServerWebExchange exchange, Assets assets, Map<String, String> requestParam) {
-        // 从方法名中提取应用ID（方法名的第一部分）
-        String appId = assets.getMethod().split("\\.")[0];
+            // 如果仍然没有找到应用ID，抛出异常
+            if (StringKit.isBlank(apiKey)) {
+                Format.warn(exchange, "AUTH_APIKEY_MISSING", "No Api Key provided in the request");
+                throw new ValidateException(ErrorCode._100805);
+            }
 
-        // 如果请求参数中没有应用ID，设置默认值
-        requestParam.putIfAbsent("x_app_id", appId);
+            // 创建apiKey对象并进行授权验证
+            Delegate delegate = provider.authorize(
+                    Principal.builder().type(Consts.TYPE_TWO).value(apiKey).channel(context.getChannel().getType())
+                            .assets(assets).build());
 
-        // 获取请求中的应用ID并验证
-        String xAppId = requestParam.get("x_app_id");
-        if (StringKit.isNotBlank(xAppId) && !appId.equals(xAppId)) {
-            Format.warn(exchange, "AUTH_APPID_MISMATCH", "App ID mismatch, expected: " + appId + ", actual: " + xAppId);
-            throw new BusinessException(ErrorCode._100806);
-        }
-    }
-
-    /**
-     * 清理网关相关参数
-     * <p>
-     * 该方法从请求参数中移除网关内部使用的参数，这些参数不应该传递给后续的业务处理。 清理的参数包括：method、format、version和sign。
-     * </p>
-     *
-     * @param params 请求参数，将从中移除网关内部参数
-     */
-    private void cleanParam(Map<String, String> params) {
-        params.remove(Config.METHOD);
-        params.remove(Config.FORMAT);
-        params.remove(Config.VERSION);
-        params.remove(Config.SIGN);
-    }
-
-    /**
-     * 填充 IP 参数到请求参数中
-     * <p>
-     * 该方法尝试从请求中提取客户端IP地址，并将其添加到请求参数中。 IP地址的提取顺序为： 1. 首先检查"x_remote_ip"请求头 2. 如果不存在，检查"X-Forwarded-For"请求头（处理代理情况） 3.
-     * 如果仍不存在，使用请求的远程地址
-     * </p>
-     *
-     * @param exchange     ServerWebExchange 对象，包含请求和响应信息
-     * @param requestParam 请求参数，将向其中添加IP地址信息
-     */
-    protected void fillXParam(ServerWebExchange exchange, Map<String, String> requestParam) {
-        String ip = exchange.getRequest().getHeaders().getFirst("x_remote_ip");
-        if (StringKit.isBlank(ip)) {
-            // 尝试从X-Forwarded-For头获取IP
-            ip = exchange.getRequest().getHeaders().getFirst("X-Forwarded-For");
-            if (!StringKit.isBlank(ip)) {
-                // 如果有多个IP（经过多层代理），取第一个
-                ip = ip.contains(Symbol.COMMA) ? ip.split(Symbol.COMMA)[0] : ip;
+            // 处理授权结果
+            if (delegate.isOk()) {
+                Authorize auth = delegate.getAuthorize();
+                Map<String, Object> map = new HashMap<>();
+                // 将授权信息转换为Map并添加到请求参数中
+                BeanKit.beanToMap(auth, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
+                map.forEach((k, v) -> context.getRequestMap().put(k, v.toString()));
+                Format.info(
+                        exchange,
+                        "AUTH_TOKEN_VALIDATED",
+                        "Token validated successfully for channel: " + context.getChannel().getType());
             } else {
-                // 使用请求的远程地址
-                InetSocketAddress address = exchange.getRequest().getRemoteAddress();
-                if (null != address) {
-                    ip = address.getAddress().getHostAddress();
-                }
+                // apiKey验证失败
+                Format.error(
+                        exchange,
+                        "AUTH_TOKEN_FAILED",
+                        "Error code: " + delegate.getMessage().errcode + ", message: " + delegate.getMessage().errmsg);
+                throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
             }
-            // 将IP地址添加到请求参数中
-            requestParam.put("x_remote_ip", ip);
         }
     }
 

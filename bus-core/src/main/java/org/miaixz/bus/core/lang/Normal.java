@@ -27,11 +27,14 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.lang.annotation.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.Date;
+import java.util.Set;
 
 import org.miaixz.bus.core.io.file.FileType;
+import org.miaixz.bus.core.xyz.SetKit;
 
 /**
  * 默认常量
@@ -485,6 +488,36 @@ public class Normal {
     public static final Date[] EMPTY_DATE_OBJECT_ARRAY = new Date[0];
 
     /**
+     * 64 MiB in bytes.
+     */
+    public static final long MEBI_64 = MEBI * 64;
+
+    /**
+     * 128 MiB in bytes.
+     */
+    public static final long MEBI_128 = MEBI * 128;
+
+    /**
+     * 256 MiB in bytes.
+     */
+    public static final long MEBI_256 = MEBI * 256;
+
+    /**
+     * 512 MiB in bytes.
+     */
+    public static final long MEBI_512 = MEBI * 512;
+
+    /**
+     * 1024 MiB in bytes (which is also 1 GiB).
+     */
+    public static final long MEBI_1024 = MEBI * 1024;
+
+    /**
+     * 2048 MiB in bytes (which is also 2 GiB).
+     */
+    public static final long MEBI_2048 = MEBI * 2048;
+
+    /**
      * Bytes per Kilobyte(KB).
      */
     public static final long BYTES_PER_KB = _1024;
@@ -809,6 +842,21 @@ public class Normal {
             -1, 62, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -2, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7,
             8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, 63, -1, 26, 27, 28,
             29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
+
+    /**
+     * 元注解
+     */
+    public static final Set<Class<? extends Annotation>> META_ANNOTATIONS = SetKit.of(
+            Target.class,
+            Retention.class,
+            Inherited.class,
+            Documented.class,
+            SuppressWarnings.class,
+            Override.class,
+            Deprecated.class,
+            Repeatable.class,
+            Native.class,
+            FunctionalInterface.class);
 
     /**
      * 提供的URL是否为文件 文件协议包括"file", "vfsfile" 或 "vfs".

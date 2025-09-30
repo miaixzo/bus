@@ -135,27 +135,36 @@ public class Log4jLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final org.miaixz.bus.logger.Level level, final Throwable t, final String format,
+    public void log(
+            final String fqcn,
+            final org.miaixz.bus.logger.Level level,
+            final Throwable t,
+            final String format,
             final Object... args) {
         final Level log4j2Level;
         switch (level) {
-        case TRACE:
-            log4j2Level = Level.TRACE;
-            break;
-        case DEBUG:
-            log4j2Level = Level.DEBUG;
-            break;
-        case INFO:
-            log4j2Level = Level.INFO;
-            break;
-        case WARN:
-            log4j2Level = Level.WARN;
-            break;
-        case ERROR:
-            log4j2Level = Level.ERROR;
-            break;
-        default:
-            throw new Error(StringKit.format("Can not identify level: {}", level));
+            case TRACE:
+                log4j2Level = Level.TRACE;
+                break;
+
+            case DEBUG:
+                log4j2Level = Level.DEBUG;
+                break;
+
+            case INFO:
+                log4j2Level = Level.INFO;
+                break;
+
+            case WARN:
+                log4j2Level = Level.WARN;
+                break;
+
+            case ERROR:
+                log4j2Level = Level.ERROR;
+                break;
+
+            default:
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
         logIfEnabled(fqcn, log4j2Level, t, format, args);
     }
@@ -169,7 +178,11 @@ public class Log4jLoggingProvider extends AbstractProvider {
      * @param format 消息模板
      * @param args   参数
      */
-    private void logIfEnabled(final String fqcn, final Level level, final Throwable t, final String format,
+    private void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Throwable t,
+            final String format,
             final Object... args) {
         if (this.logger.isEnabled(level)) {
             if (this.logger instanceof AbstractLogger) {
@@ -187,13 +200,13 @@ public class Log4jLoggingProvider extends AbstractProvider {
             return org.miaixz.bus.logger.Level.OFF;
         }
         return switch (log4jLevel.getStandardLevel().toString()) {
-        case "TRACE" -> org.miaixz.bus.logger.Level.TRACE;
-        case "DEBUG" -> org.miaixz.bus.logger.Level.DEBUG;
-        case "INFO" -> org.miaixz.bus.logger.Level.INFO;
-        case "WARN" -> org.miaixz.bus.logger.Level.WARN;
-        case "ERROR" -> org.miaixz.bus.logger.Level.ERROR;
-        case "FATAL" -> org.miaixz.bus.logger.Level.ERROR; // 映射 FATAL 到 ERROR
-        default -> org.miaixz.bus.logger.Level.OFF;
+            case "TRACE" -> org.miaixz.bus.logger.Level.TRACE;
+            case "DEBUG" -> org.miaixz.bus.logger.Level.DEBUG;
+            case "INFO" -> org.miaixz.bus.logger.Level.INFO;
+            case "WARN" -> org.miaixz.bus.logger.Level.WARN;
+            case "ERROR" -> org.miaixz.bus.logger.Level.ERROR;
+            case "FATAL" -> org.miaixz.bus.logger.Level.ERROR; // 映射 FATAL 到 ERROR
+            default -> org.miaixz.bus.logger.Level.OFF;
         };
     }
 

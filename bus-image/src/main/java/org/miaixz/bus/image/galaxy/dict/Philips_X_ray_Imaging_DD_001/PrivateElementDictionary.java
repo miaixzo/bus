@@ -52,44 +52,50 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._2003_xx00_:
-        case PrivateTag._2003_xx30_:
-        case PrivateTag._2003_xx31_:
-            return VR.CS;
-        case PrivateTag._2003_xx02_:
-        case PrivateTag._2003_xx14_:
-        case PrivateTag._2003_xx15_:
-        case PrivateTag._2003_xx24_:
-        case PrivateTag._2003_xx29_:
-        case PrivateTag._2003_xx2B_:
-            return VR.FD;
-        case PrivateTag._2003_xx01_:
-        case PrivateTag._2003_xx03_:
-        case PrivateTag._2003_xx10_:
-        case PrivateTag._2003_xx2A_:
-            return VR.LO;
-        case PrivateTag._2003_xx27_:
-        case PrivateTag._2003_xx28_:
-        case PrivateTag._2003_xx2C_:
-            return VR.SH;
-        case PrivateTag._2003_xx06_:
-        case PrivateTag._2003_xx09_:
-        case PrivateTag._2003_xx11_:
-        case PrivateTag._2003_xx12_:
-        case PrivateTag._2003_xx13_:
-        case PrivateTag._2003_xx16_:
-        case PrivateTag._2003_xx17_:
-        case PrivateTag._2003_xx18_:
-        case PrivateTag._2003_xx19_:
-        case PrivateTag._2003_xx22_:
-        case PrivateTag._2003_xx25_:
-        case PrivateTag._2003_xx26_:
-        case PrivateTag._2003_xx2D_:
-            return VR.SL;
-        case PrivateTag._2003_xx2E_:
-            return VR.SQ;
-        case PrivateTag._2003_xx32_:
-            return VR.UI;
+            case PrivateTag._2003_xx00_:
+            case PrivateTag._2003_xx30_:
+            case PrivateTag._2003_xx31_:
+                return VR.CS;
+
+            case PrivateTag._2003_xx02_:
+            case PrivateTag._2003_xx14_:
+            case PrivateTag._2003_xx15_:
+            case PrivateTag._2003_xx24_:
+            case PrivateTag._2003_xx29_:
+            case PrivateTag._2003_xx2B_:
+                return VR.FD;
+
+            case PrivateTag._2003_xx01_:
+            case PrivateTag._2003_xx03_:
+            case PrivateTag._2003_xx10_:
+            case PrivateTag._2003_xx2A_:
+                return VR.LO;
+
+            case PrivateTag._2003_xx27_:
+            case PrivateTag._2003_xx28_:
+            case PrivateTag._2003_xx2C_:
+                return VR.SH;
+
+            case PrivateTag._2003_xx06_:
+            case PrivateTag._2003_xx09_:
+            case PrivateTag._2003_xx11_:
+            case PrivateTag._2003_xx12_:
+            case PrivateTag._2003_xx13_:
+            case PrivateTag._2003_xx16_:
+            case PrivateTag._2003_xx17_:
+            case PrivateTag._2003_xx18_:
+            case PrivateTag._2003_xx19_:
+            case PrivateTag._2003_xx22_:
+            case PrivateTag._2003_xx25_:
+            case PrivateTag._2003_xx26_:
+            case PrivateTag._2003_xx2D_:
+                return VR.SL;
+
+            case PrivateTag._2003_xx2E_:
+                return VR.SQ;
+
+            case PrivateTag._2003_xx32_:
+                return VR.UI;
         }
         return VR.UN;
     }

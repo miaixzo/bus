@@ -119,7 +119,10 @@ public class Combination implements Serializable {
      * @param resultIndex 选择索引，从0开始
      * @param result      结果集
      */
-    private void select(final int dataIndex, final String[] resultList, final int resultIndex,
+    private void select(
+            final int dataIndex,
+            final String[] resultList,
+            final int resultIndex,
             final List<String[]> result) {
         final int resultLen = resultList.length;
         final int resultCount = resultIndex + 1;

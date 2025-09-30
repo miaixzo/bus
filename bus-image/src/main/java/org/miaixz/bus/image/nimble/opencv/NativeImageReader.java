@@ -74,14 +74,25 @@ public class NativeImageReader extends ImageReader implements Closeable {
      * Creates a <code>ImageTypeSpecifier</code> from the <code>ImageParameters</code>. The default sample model is
      * pixel interleaved and the default color model is CS_GRAY or CS_sRGB and IndexColorModel with palettes.
      */
-    protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorSpace colorSpace,
-            byte[] redPalette, byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) throws IOException {
-        return createImageType(params,
+    protected static final ImageTypeSpecifier createImageType(
+            ImageParameters params,
+            ColorSpace colorSpace,
+            byte[] redPalette,
+            byte[] greenPalette,
+            byte[] bluePalette,
+            byte[] alphaPalette) throws IOException {
+        return createImageType(
+                params,
                 createColorModel(params, colorSpace, redPalette, greenPalette, bluePalette, alphaPalette));
     }
 
-    private static ColorModel createColorModel(ImageParameters params, ColorSpace colorSpace, byte[] redPalette,
-            byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) {
+    private static ColorModel createColorModel(
+            ImageParameters params,
+            ColorSpace colorSpace,
+            byte[] redPalette,
+            byte[] greenPalette,
+            byte[] bluePalette,
+            byte[] alphaPalette) {
         int nType = params.getDataType();
         int nBands = params.getSamplesPerPixel();
         int nBitDepth = params.getBitsPerSample();
@@ -345,8 +356,13 @@ public class NativeImageReader extends ImageReader implements Closeable {
             try {
                 positions = new MatOfDouble(SegmentedImageStream.getDoubleArray(seg.getSegPosition()));
                 lengths = new MatOfDouble(SegmentedImageStream.getDoubleArray(seg.getSegLength()));
-                return ImageCV.toImageCV(Imgcodecs.dicomJpgFileRead(((FileStreamSegment) seg).getFilePath(), positions,
-                        lengths, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
+                return ImageCV.toImageCV(
+                        Imgcodecs.dicomJpgFileRead(
+                                ((FileStreamSegment) seg).getFilePath(),
+                                positions,
+                                lengths,
+                                dcmFlags,
+                                Imgcodecs.IMREAD_UNCHANGED));
             } finally {
                 closeMat(positions);
                 closeMat(lengths);
@@ -371,16 +387,18 @@ public class NativeImageReader extends ImageReader implements Closeable {
             return false;
         }
         switch (pmi) {
-        case MONOCHROME1:
-        case MONOCHROME2:
-        case PALETTE_COLOR:
-        case YBR_ICT:
-        case YBR_RCT:
-            return false;
-        case RGB:
-            // Force JPEG Baseline (1.2.840.10008.1.2.4.50) to YBR_FULL_422 color model when RGB with JFIF header
-            // (error made by some constructors). RGB color model doesn't make sense for lossy jpeg with JFIF header.
-            return params.isJFIF() && params.getJpegMarker() == 0xffc0;
+            case MONOCHROME1:
+            case MONOCHROME2:
+            case PALETTE_COLOR:
+            case YBR_ICT:
+            case YBR_RCT:
+                return false;
+
+            case RGB:
+                // Force JPEG Baseline (1.2.840.10008.1.2.4.50) to YBR_FULL_422 color model when RGB with JFIF header
+                // (error made by some constructors). RGB color model doesn't make sense for lossy jpeg with JFIF
+                // header.
+                return params.isJFIF() && params.getJpegMarker() == 0xffc0;
         }
         return true;
     }

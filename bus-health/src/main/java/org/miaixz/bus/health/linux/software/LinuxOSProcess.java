@@ -169,8 +169,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private List<String> queryArguments() {
-        return Collections.unmodifiableList(Parsing.parseByteArrayToStrings(Builder
-                .readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()), LOG_PROCFS_WARNING)));
+        return Collections.unmodifiableList(
+                Parsing.parseByteArrayToStrings(
+                        Builder.readAllBytes(
+                                String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()),
+                                LOG_PROCFS_WARNING)));
     }
 
     @Override
@@ -193,8 +196,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private Map<String, String> queryEnvironmentVariables() {
-        return Collections.unmodifiableMap(Parsing.parseByteArrayToStringMap(Builder
-                .readAllBytes(String.format(Locale.ROOT, ProcPath.PID_ENVIRON, getProcessID()), LOG_PROCFS_WARNING)));
+        return Collections.unmodifiableMap(
+                Parsing.parseByteArrayToStringMap(
+                        Builder.readAllBytes(
+                                String.format(Locale.ROOT, ProcPath.PID_ENVIRON, getProcessID()),
+                                LOG_PROCFS_WARNING)));
     }
 
     @Override
@@ -400,8 +406,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // We can get name and status more easily from /proc/pid/status which we
         // call later, so just get the numeric bits here
         // See man proc for how to parse /proc/[pid]/stat
-        long[] statArray = Parsing.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, ProcessStat.PROC_PID_STAT_LENGTH,
-                Symbol.C_SPACE);
+        long[] statArray = Parsing
+                .parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to
@@ -466,6 +472,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * /proc/pid/stat per the man file.
      */
     private enum ProcPidStat {
+
         // The parsing implementation in Parsing requires these to be declared
         // in increasing order
         PPID(4), MINOR_FAULTS(10), MAJOR_FAULTS(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),

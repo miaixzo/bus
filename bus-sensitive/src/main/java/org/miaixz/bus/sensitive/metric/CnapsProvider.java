@@ -47,8 +47,8 @@ public class CnapsProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String snapCard = object.toString();
-        return StringKit.padPre(StringKit.left(snapCard, 4), StringKit.length(snapCard),
-                StringKit.fill(10, shield.shadow()));
+        return StringKit
+                .padPre(StringKit.left(snapCard, 4), StringKit.length(snapCard), StringKit.fill(10, shield.shadow()));
     }
 
 }

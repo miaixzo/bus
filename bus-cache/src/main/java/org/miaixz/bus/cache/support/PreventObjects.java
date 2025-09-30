@@ -70,6 +70,7 @@ public class PreventObjects {
      * </p>
      */
     private static final class PreventObject implements Serializable {
+
         /**
          * 序列化版本号
          */

@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MatOfRect2d extends Mat {
+
     // 64FC4
     private static final int _depth = CvType.CV_64F;
     private static final int _channels = 4;

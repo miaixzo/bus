@@ -80,18 +80,21 @@ public class ECDSAJWTSigner extends RSAJWTSigner {
     private static int getSignatureByteArrayLength(final String alg) throws JWTException {
         // 检查算法并返回对应的签名长度
         switch (alg) {
-        case "ES256":
-        case "SHA256withECDSA":
-            return 64;
-        case "ES384":
-        case "SHA384withECDSA":
-            return 96;
-        case "ES512":
-        case "SHA512withECDSA":
-            return 132;
-        default:
-            // 抛出异常表示不支持的算法
-            throw new JWTException("Unsupported Algorithm: {}", alg);
+            case "ES256":
+            case "SHA256withECDSA":
+                return 64;
+
+            case "ES384":
+            case "SHA384withECDSA":
+                return 96;
+
+            case "ES512":
+            case "SHA512withECDSA":
+                return 132;
+
+            default:
+                // 抛出异常表示不支持的算法
+                throw new JWTException("Unsupported Algorithm: {}", alg);
         }
     }
 

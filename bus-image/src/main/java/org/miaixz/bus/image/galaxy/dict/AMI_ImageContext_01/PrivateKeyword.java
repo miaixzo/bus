@@ -38,24 +38,32 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.WindowInvert:
-            return "WindowInvert";
-        case PrivateTag.WindowCenter:
-            return "WindowCenter";
-        case PrivateTag.WindowWidth:
-            return "WindowWidth";
-        case PrivateTag.PixelAspectRatioSwap:
-            return "PixelAspectRatioSwap";
-        case PrivateTag.EnableAveraging:
-            return "EnableAveraging";
-        case PrivateTag.Quality:
-            return "Quality";
-        case PrivateTag.ViewportAnnotationLevel:
-            return "ViewportAnnotationLevel";
-        case PrivateTag.ShowImageAnnotation:
-            return "ShowImageAnnotation";
-        case PrivateTag.ShowImageOverlay:
-            return "ShowImageOverlay";
+            case PrivateTag.WindowInvert:
+                return "WindowInvert";
+
+            case PrivateTag.WindowCenter:
+                return "WindowCenter";
+
+            case PrivateTag.WindowWidth:
+                return "WindowWidth";
+
+            case PrivateTag.PixelAspectRatioSwap:
+                return "PixelAspectRatioSwap";
+
+            case PrivateTag.EnableAveraging:
+                return "EnableAveraging";
+
+            case PrivateTag.Quality:
+                return "Quality";
+
+            case PrivateTag.ViewportAnnotationLevel:
+                return "ViewportAnnotationLevel";
+
+            case PrivateTag.ShowImageAnnotation:
+                return "ShowImageAnnotation";
+
+            case PrivateTag.ShowImageOverlay:
+                return "ShowImageOverlay";
         }
         return "";
     }

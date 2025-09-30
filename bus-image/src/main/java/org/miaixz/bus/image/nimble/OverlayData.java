@@ -64,10 +64,11 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
                     int columns = dcm.getInt(Tag.OverlayColumns | gg0000, 0);
                     int imageFrameOrigin = dcm.getInt(Tag.ImageFrameOrigin | gg0000, 1);
                     int framesInOverlay = dcm.getInt(Tag.NumberOfFramesInOverlay | gg0000, 1);
-                    int[] origin = Builder.getIntArrayFromDicomElement(dcm, (Tag.OverlayOrigin | gg0000),
-                            new int[] { 1, 1 });
-                    data.add(new OverlayData(gg0000, rows, columns, imageFrameOrigin, framesInOverlay, origin,
-                            overData.get()));
+                    int[] origin = Builder
+                            .getIntArrayFromDicomElement(dcm, (Tag.OverlayOrigin | gg0000), new int[] { 1, 1 });
+                    data.add(
+                            new OverlayData(gg0000, rows, columns, imageFrameOrigin, framesInOverlay, origin,
+                                    overData.get()));
                 }
             }
         }
@@ -86,8 +87,12 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         return getOverlayData(dcm, activationMask, true);
     }
 
-    public static PlanarImage getOverlayImage(final PlanarImage imageSource, PlanarImage currentImage,
-            ImageDescriptor desc, ImageReadParam params, int frameIndex) {
+    public static PlanarImage getOverlayImage(
+            final PlanarImage imageSource,
+            PlanarImage currentImage,
+            ImageDescriptor desc,
+            ImageReadParam params,
+            int frameIndex) {
         Optional<PresentationLutObject> prDcm = params.getPresentationState();
         List<OverlayData> overlays = new ArrayList<>();
         prDcm.ifPresent(prDicomObject -> overlays.addAll(prDicomObject.getOverlays()));
@@ -98,15 +103,29 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
             int width = currentImage.width();
             int height = currentImage.height();
             if (width == imageSource.width() && height == imageSource.height()) {
-                return getOverlayImage(imageSource, currentImage, params, frameIndex, height, width, embeddedOverlays,
+                return getOverlayImage(
+                        imageSource,
+                        currentImage,
+                        params,
+                        frameIndex,
+                        height,
+                        width,
+                        embeddedOverlays,
                         overlays);
             }
         }
         return currentImage;
     }
 
-    private static ImageCV getOverlayImage(PlanarImage imageSource, PlanarImage currentImage, ImageReadParam params,
-            int frameIndex, int height, int width, List<EmbeddedOverlay> embeddedOverlays, List<OverlayData> overlays) {
+    private static ImageCV getOverlayImage(
+            PlanarImage imageSource,
+            PlanarImage currentImage,
+            ImageReadParam params,
+            int frameIndex,
+            int height,
+            int width,
+            List<EmbeddedOverlay> embeddedOverlays,
+            List<OverlayData> overlays) {
         ImageCV overlay = new ImageCV(height, width, CvType.CV_8UC1);
         byte[] pixelData = new byte[height * width];
         byte pixVal = (byte) 255;
@@ -146,8 +165,16 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
         }
     }
 
-    private static void setOverlayPixelData(int ovOff, int ovWidth, int ovHeight, int x0, int y0, byte[] pix,
-            byte[] pixelData, byte pixVal, int width) {
+    private static void setOverlayPixelData(
+            int ovOff,
+            int ovWidth,
+            int ovHeight,
+            int x0,
+            int y0,
+            byte[] pix,
+            byte[] pixelData,
+            byte pixVal,
+            int width) {
         for (int j = y0; j < ovHeight; j++) {
             for (int i = x0; i < ovWidth; i++) {
                 int index = ovOff + (j - y0) * ovWidth + (i - x0);

@@ -166,8 +166,18 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
     }
 
     private boolean updateAttributes2() {
-        Object[] results = KstatKit.queryKstat2("kstat:/net/link/" + getName() + "/0", "obytes64", "rbytes64",
-                "opackets64", "ipackets64", "oerrors", "ierrors", "collisions", "dl_idrops", "ifspeed", "snaptime");
+        Object[] results = KstatKit.queryKstat2(
+                "kstat:/net/link/" + getName() + "/0",
+                "obytes64",
+                "rbytes64",
+                "opackets64",
+                "ipackets64",
+                "oerrors",
+                "ierrors",
+                "collisions",
+                "dl_idrops",
+                "ifspeed",
+                "snaptime");
         if (results[results.length - 1] == null) {
             return false;
         }

@@ -47,8 +47,8 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_protocol_t;
 @ThreadSafe
 public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private final Supplier<perfstat_protocol_t[]> ipstats = Memoizer.memoize(PerfstatProtocol::queryProtocols,
-            Memoizer.defaultExpiration());
+    private final Supplier<perfstat_protocol_t[]> ipstats = Memoizer
+            .memoize(PerfstatProtocol::queryProtocols, Memoizer.defaultExpiration());
 
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {

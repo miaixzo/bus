@@ -53,11 +53,11 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
 
     private final MacGlobalMemory global;
 
-    private final Supplier<Pair<Long, Long>> usedTotal = Memoizer.memoize(MacVirtualMemory::querySwapUsage,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> usedTotal = Memoizer
+            .memoize(MacVirtualMemory::querySwapUsage, Memoizer.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> inOut = Memoizer.memoize(MacVirtualMemory::queryVmStat,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> inOut = Memoizer
+            .memoize(MacVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
 
     /**
      * Constructor for MacVirtualMemory.
@@ -86,8 +86,8 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
         try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
                 ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(
                         vmStats.size() / SystemB.INT_SIZE)) {
-            if (0 == SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
-                    size)) {
+            if (0 == SystemB.INSTANCE
+                    .host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats, size)) {
                 swapPagesIn = Parsing.unsignedIntToLong(vmStats.pageins);
                 swapPagesOut = Parsing.unsignedIntToLong(vmStats.pageouts);
             } else {

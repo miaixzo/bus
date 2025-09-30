@@ -195,17 +195,20 @@ public class RLEImageioReader extends ImageReader {
 
     private void read(DataBuffer db) throws IOException {
         switch (db.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            read(((DataBufferByte) db).getBankData());
-            break;
-        case DataBuffer.TYPE_USHORT:
-            read(((DataBufferUShort) db).getData());
-            break;
-        case DataBuffer.TYPE_SHORT:
-            read(((DataBufferShort) db).getData());
-            break;
-        default:
-            throw new IllegalArgumentException(UNSUPPORTED_DATA_TYPE + db.getDataType());
+            case DataBuffer.TYPE_BYTE:
+                read(((DataBufferByte) db).getBankData());
+                break;
+
+            case DataBuffer.TYPE_USHORT:
+                read(((DataBufferUShort) db).getData());
+                break;
+
+            case DataBuffer.TYPE_SHORT:
+                read(((DataBufferShort) db).getData());
+                break;
+
+            default:
+                throw new IllegalArgumentException(UNSUPPORTED_DATA_TYPE + db.getDataType());
         }
     }
 

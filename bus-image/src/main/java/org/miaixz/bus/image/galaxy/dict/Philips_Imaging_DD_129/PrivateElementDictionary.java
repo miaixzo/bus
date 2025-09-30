@@ -52,8 +52,8 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.PresentationStateSequence:
-            return VR.SQ;
+            case PrivateTag.PresentationStateSequence:
+                return VR.SQ;
         }
         return VR.UN;
     }

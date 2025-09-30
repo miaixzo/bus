@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.TimePointID:
-            return "TimePointID";
-        case PrivateTag.TimePointInformation:
-            return "TimePointInformation";
-        case PrivateTag.StudiesinTimePointSequence:
-            return "StudiesinTimePointSequence";
+            case PrivateTag.TimePointID:
+                return "TimePointID";
+
+            case PrivateTag.TimePointInformation:
+                return "TimePointInformation";
+
+            case PrivateTag.StudiesinTimePointSequence:
+                return "StudiesinTimePointSequence";
         }
         return "";
     }

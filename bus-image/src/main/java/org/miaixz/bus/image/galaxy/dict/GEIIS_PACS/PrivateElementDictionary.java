@@ -52,18 +52,20 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._0903_xx20_:
-            return VR.CS;
-        case PrivateTag.ExcludeStudyUIDs:
-            return VR.UI;
-        case PrivateTag.RejectImageFlag:
-        case PrivateTag.SignificantFlag:
-        case PrivateTag.ConfidentialFlag:
-        case PrivateTag.PrefetchAlgorithm:
-        case PrivateTag.LimitRecentStudies:
-        case PrivateTag.LimitOldestStudies:
-        case PrivateTag.LimitRecentMonths:
-            return VR.US;
+            case PrivateTag._0903_xx20_:
+                return VR.CS;
+
+            case PrivateTag.ExcludeStudyUIDs:
+                return VR.UI;
+
+            case PrivateTag.RejectImageFlag:
+            case PrivateTag.SignificantFlag:
+            case PrivateTag.ConfidentialFlag:
+            case PrivateTag.PrefetchAlgorithm:
+            case PrivateTag.LimitRecentStudies:
+            case PrivateTag.LimitOldestStudies:
+            case PrivateTag.LimitRecentMonths:
+                return VR.US;
         }
         return VR.UN;
     }

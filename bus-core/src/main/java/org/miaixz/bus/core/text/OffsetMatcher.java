@@ -92,8 +92,8 @@ public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, S
 
         final int strToCheckLength = check.length();
         final int toffset = this.offset >= 0 ? this.offset : text.length() - strToCheckLength + this.offset + 1;
-        final boolean matches = text.toString().regionMatches(ignoreCase, toffset, check.toString(), 0,
-                strToCheckLength);
+        final boolean matches = text.toString()
+                .regionMatches(ignoreCase, toffset, check.toString(), 0, strToCheckLength);
 
         if (matches) {
             return (!ignoreEquals) || (!StringKit.equals(text, check, ignoreCase));

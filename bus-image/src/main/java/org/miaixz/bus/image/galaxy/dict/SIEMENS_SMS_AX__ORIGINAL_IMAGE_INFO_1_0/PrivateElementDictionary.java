@@ -52,34 +52,38 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.OriginalSceneDuration:
-            return VR.DS;
-        case PrivateTag.SeriesNumber:
-        case PrivateTag.ImageNumber:
-        case PrivateTag.ReadyProcessingStatus:
-            return VR.IS;
-        case PrivateTag.IdentifierLOID:
-            return VR.LO;
-        case PrivateTag.OriginalSceneVFRInfo:
-        case PrivateTag.OriginalFrameECGPosition:
-        case PrivateTag.OriginalECG1stFrameOffset:
-        case PrivateTag.ZoomFlag:
-            return VR.SS;
-        case PrivateTag.ViewNative:
-        case PrivateTag.OriginalSeriesNumber:
-        case PrivateTag.OriginalImageNumber:
-        case PrivateTag.WinCenter:
-        case PrivateTag.WinWidth:
-        case PrivateTag.WinBrightness:
-        case PrivateTag.WinContrast:
-        case PrivateTag.OriginalFrameNumber:
-        case PrivateTag.OriginalMaskFrameNumber:
-        case PrivateTag.Opac:
-        case PrivateTag.OriginalNumberofFrames:
-        case PrivateTag.FlexiblePixelShift:
-        case PrivateTag.NumberOfMaskFrames:
-        case PrivateTag.NumberOfFillFrames:
-            return VR.US;
+            case PrivateTag.OriginalSceneDuration:
+                return VR.DS;
+
+            case PrivateTag.SeriesNumber:
+            case PrivateTag.ImageNumber:
+            case PrivateTag.ReadyProcessingStatus:
+                return VR.IS;
+
+            case PrivateTag.IdentifierLOID:
+                return VR.LO;
+
+            case PrivateTag.OriginalSceneVFRInfo:
+            case PrivateTag.OriginalFrameECGPosition:
+            case PrivateTag.OriginalECG1stFrameOffset:
+            case PrivateTag.ZoomFlag:
+                return VR.SS;
+
+            case PrivateTag.ViewNative:
+            case PrivateTag.OriginalSeriesNumber:
+            case PrivateTag.OriginalImageNumber:
+            case PrivateTag.WinCenter:
+            case PrivateTag.WinWidth:
+            case PrivateTag.WinBrightness:
+            case PrivateTag.WinContrast:
+            case PrivateTag.OriginalFrameNumber:
+            case PrivateTag.OriginalMaskFrameNumber:
+            case PrivateTag.Opac:
+            case PrivateTag.OriginalNumberofFrames:
+            case PrivateTag.FlexiblePixelShift:
+            case PrivateTag.NumberOfMaskFrames:
+            case PrivateTag.NumberOfFillFrames:
+                return VR.US;
         }
         return VR.UN;
     }

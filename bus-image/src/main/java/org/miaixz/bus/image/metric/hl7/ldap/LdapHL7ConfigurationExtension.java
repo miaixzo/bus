@@ -60,7 +60,10 @@ public class LdapHL7ConfigurationExtension {
         return config != null ? config.getDicomConfiguration() : null;
     }
 
-    public void storeTo(ConfigurationChanges.ModifiedObject ldapObj, HL7Application hl7App, String deviceDN,
+    public void storeTo(
+            ConfigurationChanges.ModifiedObject ldapObj,
+            HL7Application hl7App,
+            String deviceDN,
             Attributes attrs) {
     }
 
@@ -73,7 +76,10 @@ public class LdapHL7ConfigurationExtension {
     public void loadChilds(HL7Application hl7App, String appDN) throws NamingException, InternalException {
     }
 
-    public void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, HL7Application a, HL7Application b,
+    public void storeDiffs(
+            ConfigurationChanges.ModifiedObject ldapObj,
+            HL7Application a,
+            HL7Application b,
             List<ModificationItem> mods) {
     }
 

@@ -104,8 +104,11 @@ public class AuthMethodResolver implements HandlerMethodArgumentResolver {
      * @return 当前登录用户信息对象
      */
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer modelAndViewContainer,
-            NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) {
+    public Object resolveArgument(
+            MethodParameter parameter,
+            ModelAndViewContainer modelAndViewContainer,
+            NativeWebRequest nativeWebRequest,
+            WebDataBinderFactory webDataBinderFactory) {
         return ContextBuilder.getAuthorize();
     }
 

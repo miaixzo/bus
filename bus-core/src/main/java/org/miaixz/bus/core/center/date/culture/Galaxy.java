@@ -39,7 +39,7 @@ public class Galaxy {
      * 2π
      */
     public static final double PI_2 = 2 * Math.PI;
-    public static final double ONE_THIRD = 1d / 3;
+    public static final double ONE_THIRD = 1D / 3;
     /**
      * 1天对应的秒数
      */
@@ -550,15 +550,13 @@ public class Galaxy {
     public static double eLon(double t, int n) {
         t /= 10;
         double v = 0, tn = 1;
-        int n1, n2;
         int m;
-        double c;
         int pn = 1;
-        double n0, m0 = XL0[pn + 1] - XL0[pn];
+        double m0 = XL0[pn + 1] - XL0[pn];
         for (int i = 0; i < 6; i++, tn *= t) {
-            n1 = (int) XL0[pn + i];
-            n2 = (int) XL0[pn + 1 + i];
-            n0 = n2 - n1;
+            int n1 = (int) XL0[pn + i];
+            int n2 = (int) XL0[pn + 1 + i];
+            double n0 = n2 - n1;
             if (n0 == 0) {
                 continue;
             }
@@ -573,7 +571,7 @@ public class Galaxy {
                     m = n2;
                 }
             }
-            c = 0;
+            double c = 0;
             for (int j = n1; j < m; j += 3) {
                 c += XL0[j] * Math.cos(XL0[j + 1] + t * XL0[j + 2]);
             }
@@ -586,7 +584,8 @@ public class Galaxy {
     }
 
     public static double mLon(double t, int n) {
-        int obl = XL1[0].length;
+        int obl0 = 2652;
+        int[] obl = { obl0, 893, 204, 12 };
         double tn = 1;
         double v = 0;
         int j;
@@ -603,12 +602,12 @@ public class Galaxy {
 
         n *= 6;
         if (n < 0) {
-            n = obl;
+            n = obl0;
         }
-        for (int i = 0, x = XL1.length; i < x; i++, tn *= t) {
+        for (int i = 0; i < 4; i++, tn *= t) {
             double[] f = XL1[i];
-            int l = f.length;
-            int m = (int) (n * l / obl + 0.5);
+            int l = obl[i];
+            int m = (int) (n * l * 1.0 / obl0 + 0.5);
             if (i > 0) {
                 m += 6;
             }
@@ -776,12 +775,13 @@ public class Galaxy {
     public static double calcShuo(double jd) {
         int size = SHUO_KB.length;
         double d = 0;
-        int pc = 14, i;
+        int pc = 14;
         jd += 2451545;
         double f1 = SHUO_KB[0] - pc, f2 = SHUO_KB[size - 1] - pc, f3 = 2436935;
         if (jd < f1 || jd >= f3) {
             d = Math.floor(shuoHigh(Math.floor((jd + pc - 2451551) / 29.5306) * PI_2) + 0.5);
         } else if (jd >= f1 && jd < f2) {
+            int i;
             for (i = 0; i < size; i += 2) {
                 if (jd + pc < SHUO_KB[i + 2]) {
                     break;

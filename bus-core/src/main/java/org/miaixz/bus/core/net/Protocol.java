@@ -29,6 +29,9 @@ package org.miaixz.bus.core.net;
 
 import java.io.IOException;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -39,6 +42,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
+@AllArgsConstructor
 public enum Protocol {
 
     /**
@@ -289,15 +294,6 @@ public enum Protocol {
     public final String name;
 
     /**
-     * 构造函数，初始化协议名称。
-     *
-     * @param name 协议名称
-     */
-    Protocol(String name) {
-        this.name = name;
-    }
-
-    /**
      * 根据协议名称获取对应的协议枚举实例。
      *
      * @param protocol 协议名称
@@ -309,25 +305,131 @@ public enum Protocol {
             throw new IOException("Protocol cannot be null or empty");
         }
         switch (protocol) {
-        case "HTTP/1.0":
-            return HTTP_1_0;
-        case "HTTP/1.1":
-            return HTTP_1_1;
-        case "h2_prior_knowledge":
-            return H2_PRIOR_KNOWLEDGE;
-        case "h2":
-            return HTTP_2;
-        case "spdy/3.1":
-            return SPDY_3;
-        case "quic":
-            return QUIC;
-        case "soap 1.1 protocol":
-            return SOAP_1_1;
-        case "SOAP 1.2 Protocol":
-            return SOAP_1_2;
-        default:
-            throw new IOException("Unexpected protocol: " + protocol);
+            case "HTTP/1.0":
+                return HTTP_1_0;
+
+            case "HTTP/1.1":
+                return HTTP_1_1;
+
+            case "h2_prior_knowledge":
+                return H2_PRIOR_KNOWLEDGE;
+
+            case "h2":
+                return HTTP_2;
+
+            case "spdy/3.1":
+                return SPDY_3;
+
+            case "quic":
+                return QUIC;
+
+            case "soap 1.1 protocol":
+                return SOAP_1_1;
+
+            case "SOAP 1.2 Protocol":
+                return SOAP_1_2;
+
+            default:
+                throw new IOException("Unexpected protocol: " + protocol);
         }
+    }
+
+    /**
+     * 根据URL获取对应的host。
+     *
+     * @param url 待处理的URL
+     * @return 对应的协议枚举实例
+     */
+    public static String getHost(String url) {
+        return getHost(url, true);
+    }
+
+    /**
+     * 根据URL获取对应的host。
+     *
+     * @param url      待处理的URL
+     * @param withPort 是否包含端口
+     * @return 对应的host
+     */
+    public static String getHost(String url, boolean withPort) {
+        if (StringKit.isEmpty(url)) {
+            return url;
+        }
+
+        // 首先移除协议部分
+        String withoutProtocol = url.replaceFirst("^[a-zA-Z]+://", Normal.EMPTY);
+
+        // 如果需要包含端口，直接返回
+        if (withPort) {
+            return withoutProtocol;
+        }
+
+        // 如果不需要包含端口，检查是否存在端口号
+        int portIndex = withoutProtocol.indexOf(':');
+        if (portIndex != -1) {
+            return withoutProtocol.substring(0, portIndex);
+        }
+
+        // 如果没有端口，直接返回
+        return withoutProtocol;
+    }
+
+    /**
+     * 从地址中获取端口号
+     *
+     * @param address 地址，格式为 "主机名:端口号" 或 "协议://主机名:端口号"
+     * @return 端口号
+     * @throws IllegalArgumentException 如果地址格式无效或未包含端口号
+     */
+    public static int getPort(String address) {
+        return getPort(address, -1);
+    }
+
+    /**
+     * 从地址中获取端口号，如果未找到则返回默认值
+     *
+     * @param address     地址，格式为 "主机名:端口号" 或 "协议://主机名:端口号"
+     * @param defaultPort 默认端口号，当地址中未指定端口时返回此值
+     * @return 端口号或默认端口号
+     * @throws IllegalArgumentException 如果地址格式无效且未提供默认端口
+     */
+    public static int getPort(String address, int defaultPort) {
+        if (address == null || address.isEmpty()) {
+            if (defaultPort >= 0) {
+                return defaultPort;
+            }
+            throw new IllegalArgumentException("Address cannot be null or empty");
+        }
+
+        // 移除协议部分（如果有）
+        String hostPort = address;
+        int protocolIndex = address.indexOf("://");
+        if (protocolIndex >= 0) {
+            hostPort = address.substring(protocolIndex + 3);
+        }
+
+        // 查找端口分隔符
+        int portIndex = hostPort.lastIndexOf(Symbol.C_COLON);
+        if (portIndex >= 0) {
+            // 确保不是IPv6地址中的冒号
+            if (hostPort.lastIndexOf(Symbol.C_BRACKET_RIGHT) < portIndex) {
+                String portStr = hostPort.substring(portIndex + 1);
+                try {
+                    return Integer.parseInt(portStr);
+                } catch (NumberFormatException e) {
+                    if (defaultPort >= 0) {
+                        return defaultPort;
+                    }
+                    throw new IllegalArgumentException("Invalid port number: " + portStr);
+                }
+            }
+        }
+
+        // 未找到端口
+        if (defaultPort >= 0) {
+            return defaultPort;
+        }
+        throw new IllegalArgumentException("Port not specified in address: " + address);
     }
 
     /**

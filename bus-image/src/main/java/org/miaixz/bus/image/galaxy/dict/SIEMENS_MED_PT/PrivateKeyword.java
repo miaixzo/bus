@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.RegistrationMatrixUID:
-            return "RegistrationMatrixUID";
-        case PrivateTag.DecayCorrectionDateTime:
-            return "DecayCorrectionDateTime";
-        case PrivateTag.VolumeIndex:
-            return "VolumeIndex";
-        case PrivateTag.TimeSliceDuration:
-            return "TimeSliceDuration";
+            case PrivateTag.RegistrationMatrixUID:
+                return "RegistrationMatrixUID";
+
+            case PrivateTag.DecayCorrectionDateTime:
+                return "DecayCorrectionDateTime";
+
+            case PrivateTag.VolumeIndex:
+                return "VolumeIndex";
+
+            case PrivateTag.TimeSliceDuration:
+                return "TimeSliceDuration";
         }
         return "";
     }

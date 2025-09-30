@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.auth;
 
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,6 +37,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -103,7 +103,8 @@ public class Builder {
             for (String field : fields) {
                 if (field.contains(Symbol.EQUAL)) {
                     String[] keyValue = field.split(Symbol.EQUAL);
-                    res.put(UrlDecoder.decode(keyValue[0]),
+                    res.put(
+                            UrlDecoder.decode(keyValue[0]),
                             keyValue.length == 2 ? UrlDecoder.decode(keyValue[1]) : null);
                 }
             }
@@ -175,7 +176,7 @@ public class Builder {
     public static String codeChallenge(String codeChallengeMethod, String codeVerifier) {
         if (Algorithm.SHA256.getValue().equalsIgnoreCase(codeChallengeMethod)) {
             // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
-            return new String(Base64.encode(digest(codeVerifier), true), StandardCharsets.US_ASCII);
+            return new String(Base64.encode(digest(codeVerifier), true), Charset.US_ASCII);
         } else {
             return codeVerifier;
         }
@@ -191,7 +192,7 @@ public class Builder {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
-            messageDigest.update(str.getBytes(StandardCharsets.UTF_8));
+            messageDigest.update(str.getBytes(Charset.UTF_8));
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

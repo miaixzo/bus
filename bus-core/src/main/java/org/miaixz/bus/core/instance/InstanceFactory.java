@@ -194,6 +194,7 @@ public final class InstanceFactory implements Instance {
      * 静态内部类实现单例
      */
     private static class SingletonHolder {
+
         private static final InstanceFactory INSTANCE_FACTORY = new InstanceFactory();
     }
 

@@ -115,6 +115,7 @@ public abstract class ResponseBody implements Closeable {
         }
 
         return new ResponseBody() {
+
             @Override
             public MediaType contentType() {
                 return contentType;

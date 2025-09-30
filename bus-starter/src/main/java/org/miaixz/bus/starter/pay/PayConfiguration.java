@@ -51,8 +51,8 @@ public class PayConfiguration {
     PayProperties properties;
 
     @Bean
-    public PayProviderService payProviderFactory(Complex complex, CacheX cache) {
-        return new PayProviderService(this.properties, complex, cache);
+    public PayService payProviderFactory(Complex complex, CacheX cache) {
+        return new PayService(this.properties, complex, cache);
     }
 
     @Bean

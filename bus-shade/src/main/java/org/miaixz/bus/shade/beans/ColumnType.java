@@ -34,6 +34,7 @@ package org.miaixz.bus.shade.beans;
  * @since Java 17+
  */
 public interface ColumnType {
+
     /**
      * 获取字段类型
      *

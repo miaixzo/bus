@@ -121,7 +121,8 @@ public class Builder {
             // 通过FreeMarker的Confuguration读取相应的模板文件
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
             // 设置模板路径
-            configuration.setClassForTemplateLoading(org.miaixz.bus.shade.beans.Builder.class,
+            configuration.setClassForTemplateLoading(
+                    org.miaixz.bus.shade.beans.Builder.class,
                     Symbol.C_SLASH + Normal.META_INF + "/shade/beans");
             // 设置默认字体
             configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);

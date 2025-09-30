@@ -280,10 +280,14 @@ public class Httpx {
      * @param charset   自定义编码
      * @return the {@link String}
      */
-    public static String get(final String url, final Map<String, String> formMap, Map<String, String> headerMap,
+    public static String get(
+            final String url,
+            final Map<String, String> formMap,
+            Map<String, String> headerMap,
             final String charset) {
-        return execute(Builder.builder().url(url).headerMap(headerMap).formMap(formMap).requestCharset(charset)
-                .responseCharset(charset).build());
+        return execute(
+                Builder.builder().url(url).headerMap(headerMap).formMap(formMap).requestCharset(charset)
+                        .responseCharset(charset).build());
     }
 
     /**
@@ -365,7 +369,9 @@ public class Httpx {
      * @param headerMap 头部数据
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap,
+    public static String post(
+            final String url,
+            final Map<String, String> formMap,
             final Map<String, String> headerMap) {
         return post(url, formMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
     }
@@ -380,8 +386,9 @@ public class Httpx {
      * @return the {@link String}
      */
     public static String post(final String url, final String data, final String contentType, final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.POST).data(data).contentType(contentType)
-                .requestCharset(charset).responseCharset(charset).build());
+        return execute(
+                Builder.builder().url(url).method(HTTP.POST).data(data).contentType(contentType).requestCharset(charset)
+                        .responseCharset(charset).build());
     }
 
     /**
@@ -393,7 +400,10 @@ public class Httpx {
      * @param contentType 类型
      * @return the {@link String}
      */
-    public static String post(final String url, final String data, final Map<String, String> headerMap,
+    public static String post(
+            final String url,
+            final String data,
+            final Map<String, String> headerMap,
             final String contentType) {
         return execute(
                 Builder.builder().url(url).method(HTTP.POST).data(data).headerMap(headerMap).contentType(contentType)
@@ -409,10 +419,14 @@ public class Httpx {
      * @param charset     自定义编码
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap, final String contentType,
+    public static String post(
+            final String url,
+            final Map<String, String> formMap,
+            final String contentType,
             final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.POST).formMap(formMap).contentType(contentType)
-                .requestCharset(charset).responseCharset(charset).build());
+        return execute(
+                Builder.builder().url(url).method(HTTP.POST).formMap(formMap).contentType(contentType)
+                        .requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
@@ -424,7 +438,10 @@ public class Httpx {
      * @param contentType 类型
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
+    public static String post(
+            final String url,
+            final Map<String, String> formMap,
+            final Map<String, String> headerMap,
             final String contentType) {
         return post(url, formMap, headerMap, contentType, Charset.DEFAULT_UTF_8);
     }
@@ -439,10 +456,15 @@ public class Httpx {
      * @param charset     自定义编码
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
-            final String contentType, final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.POST).headerMap(headerMap).formMap(formMap)
-                .contentType(contentType).requestCharset(charset).responseCharset(charset).build());
+    public static String post(
+            final String url,
+            final Map<String, String> formMap,
+            final Map<String, String> headerMap,
+            final String contentType,
+            final String charset) {
+        return execute(
+                Builder.builder().url(url).method(HTTP.POST).headerMap(headerMap).formMap(formMap)
+                        .contentType(contentType).requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
@@ -512,8 +534,9 @@ public class Httpx {
      * @return the {@link String}
      */
     public static String put(final String url, final String data, final String contentType, final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.PUT).data(data).contentType(contentType)
-                .requestCharset(charset).responseCharset(charset).build());
+        return execute(
+                Builder.builder().url(url).method(HTTP.PUT).data(data).contentType(contentType).requestCharset(charset)
+                        .responseCharset(charset).build());
     }
 
     /**
@@ -525,7 +548,10 @@ public class Httpx {
      * @param contentType 类型
      * @return the {@link String}
      */
-    public static String put(final String url, final String data, final Map<String, String> headerMap,
+    public static String put(
+            final String url,
+            final String data,
+            final Map<String, String> headerMap,
             final String contentType) {
         return execute(
                 Builder.builder().url(url).method(HTTP.PUT).data(data).headerMap(headerMap).contentType(contentType)
@@ -541,10 +567,14 @@ public class Httpx {
      * @param charset     自定义编码
      * @return the {@link String}
      */
-    public static String put(final String url, final Map<String, String> formMap, final String contentType,
+    public static String put(
+            final String url,
+            final Map<String, String> formMap,
+            final String contentType,
             final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.PUT).formMap(formMap).contentType(contentType)
-                .requestCharset(charset).responseCharset(charset).build());
+        return execute(
+                Builder.builder().url(url).method(HTTP.PUT).formMap(formMap).contentType(contentType)
+                        .requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
@@ -556,7 +586,10 @@ public class Httpx {
      * @param contentType 类型
      * @return the {@link String}
      */
-    public static String put(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
+    public static String put(
+            final String url,
+            final Map<String, String> formMap,
+            final Map<String, String> headerMap,
             final String contentType) {
         return put(url, formMap, headerMap, contentType, Charset.DEFAULT_UTF_8);
     }
@@ -571,10 +604,15 @@ public class Httpx {
      * @param charset     自定义编码
      * @return the {@link String}
      */
-    public static String put(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
-            final String contentType, final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.PUT).headerMap(headerMap).formMap(formMap)
-                .contentType(contentType).requestCharset(charset).responseCharset(charset).build());
+    public static String put(
+            final String url,
+            final Map<String, String> formMap,
+            final Map<String, String> headerMap,
+            final String contentType,
+            final String charset) {
+        return execute(
+                Builder.builder().url(url).method(HTTP.PUT).headerMap(headerMap).formMap(formMap)
+                        .contentType(contentType).requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
@@ -607,8 +645,9 @@ public class Httpx {
      * @return the {@link String}
      */
     public static String delete(final String url, final Map<String, String> formMap, final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.DELETE).formMap(formMap).requestCharset(charset)
-                .responseCharset(charset).build());
+        return execute(
+                Builder.builder().url(url).method(HTTP.DELETE).formMap(formMap).requestCharset(charset)
+                        .responseCharset(charset).build());
     }
 
     /**
@@ -619,7 +658,9 @@ public class Httpx {
      * @param headerMap 头部数据
      * @return the {@link String}
      */
-    public static String delete(final String url, final Map<String, String> formMap,
+    public static String delete(
+            final String url,
+            final Map<String, String> formMap,
             final Map<String, String> headerMap) {
         return delete(url, formMap, headerMap, Charset.DEFAULT_UTF_8);
     }
@@ -633,10 +674,14 @@ public class Httpx {
      * @param charset   自定义编码
      * @return the {@link String}
      */
-    public static String delete(final String url, final Map<String, String> formMap,
-            final Map<String, String> headerMap, final String charset) {
-        return execute(Builder.builder().url(url).method(HTTP.DELETE).headerMap(headerMap).formMap(formMap)
-                .requestCharset(charset).responseCharset(charset).build());
+    public static String delete(
+            final String url,
+            final Map<String, String> formMap,
+            final Map<String, String> headerMap,
+            final String charset) {
+        return execute(
+                Builder.builder().url(url).method(HTTP.DELETE).headerMap(headerMap).formMap(formMap)
+                        .requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
@@ -671,12 +716,14 @@ public class Httpx {
     public static String head(final String url, final Map<String, String> headerMap, final String charset) {
         StringBuilder result = new StringBuilder();
         try {
-            Request request = builder(Builder.builder().url(url).method(HTTP.HEAD).headerMap(headerMap)
-                    .requestCharset(charset).responseCharset(charset).build()).url(url).build();
+            Request request = builder(
+                    Builder.builder().url(url).method(HTTP.HEAD).headerMap(headerMap).requestCharset(charset)
+                            .responseCharset(charset).build()).url(url).build();
             Response response = httpd.newCall(request).execute();
             if (response.headers() != null) {
-                response.headers().toMultimap().forEach((key, values) -> result.append(key).append(": ")
-                        .append(String.join(", ", values)).append("\n"));
+                response.headers().toMultimap().forEach(
+                        (key, values) -> result.append(key).append(": ").append(String.join(", ", values))
+                                .append("\n"));
             }
             response.close();
         } catch (Exception e) {
@@ -696,8 +743,8 @@ public class Httpx {
     public static String post(final String url, final Map<String, String> formMap, final List<String> list) {
         MediaType contentType = MediaType
                 .valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
-        RequestBody bodyParams = RequestBody.create(contentType,
-                MapKit.isNotEmpty(formMap) ? formMap.toString() : Normal.EMPTY);
+        RequestBody bodyParams = RequestBody
+                .create(contentType, MapKit.isNotEmpty(formMap) ? formMap.toString() : Normal.EMPTY);
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder()
                 .setType(MediaType.MULTIPART_FORM_DATA_TYPE).addFormDataPart("params", Normal.EMPTY, bodyParams);
 
@@ -760,8 +807,11 @@ public class Httpx {
                 String form = builder.formMap.entrySet().stream()
                         .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
                         .collect(Collectors.joining(Symbol.AND));
-                builder.url = String.format("%s%s%s", builder.url,
-                        builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, form);
+                builder.url = String.format(
+                        "%s%s%s",
+                        builder.url,
+                        builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK,
+                        form);
             }
             request.get();
         } else if (StringKit.equals(method, HTTP.HEAD)) {
@@ -818,6 +868,7 @@ public class Httpx {
         NewCall call = httpd.newCall(request);
         String[] result = { Normal.EMPTY };
         call.enqueue(new Callback() {
+
             @Override
             public void onFailure(NewCall call, IOException e) {
                 Logger.error("Async request failed for URL [{}]: {}", builder.url, e.getMessage());
@@ -844,6 +895,7 @@ public class Httpx {
     @lombok.Builder
     @lombok.ToString
     private static class Builder {
+
         /**
          * 请求 url
          */

@@ -141,7 +141,7 @@ public class PinyinKit {
      * @return 汉字返回拼音，非汉字原样返回
      */
     public static String getFirstLetter(final String text, final String separator) {
-        return getEngine().getFirstLetter(text, separator);
+        return (text == null) ? null : getEngine().getFirstLetter(text, separator);
     }
 
     /**

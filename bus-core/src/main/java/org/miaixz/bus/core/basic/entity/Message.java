@@ -33,6 +33,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 响应结果
  *
@@ -44,7 +47,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class Message implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2852291039238L;
 
     /**
      * 响应码

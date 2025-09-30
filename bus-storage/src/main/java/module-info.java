@@ -44,10 +44,15 @@ module bus.storage {
     requires lombok;
     requires com.github.sardine;
     requires com.jcraft.jsch;
+    requires com.hierynomus.smbj;
+    requires org.reactivestreams;
     requires software.amazon.awssdk.auth;
     requires software.amazon.awssdk.core;
     requires software.amazon.awssdk.regions;
     requires software.amazon.awssdk.services.s3;
+    requires software.amazon.awssdk.http.auth;
+    requires software.amazon.awssdk.http;
+    requires software.amazon.awssdk.utils;
 
     exports org.miaixz.bus.storage;
     exports org.miaixz.bus.storage.cache;

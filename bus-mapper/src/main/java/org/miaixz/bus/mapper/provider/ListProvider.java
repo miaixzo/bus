@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -58,11 +58,18 @@ public class ListProvider {
             throw new NullPointerException("Parameter cannot be empty");
         }
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 return "INSERT INTO " + entity.tableName() + "(" + entity.insertColumnList() + ")" + " VALUES "
-                        + foreach("entityList", "entity", Symbol.COMMA,
-                                () -> trimSuffixOverrides("(", ")", Symbol.COMMA,
+                        + foreach(
+                                "entityList",
+                                "entity",
+                                Symbol.COMMA,
+                                () -> trimSuffixOverrides(
+                                        "(",
+                                        ")",
+                                        Symbol.COMMA,
                                         () -> entity.insertColumns().stream().map(column -> column.variables("entity."))
                                                 .collect(Collectors.joining(Symbol.COMMA))));
             }
@@ -82,29 +89,44 @@ public class ListProvider {
             throw new NullPointerException("Parameter cannot be empty");
         }
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 List<ColumnMeta> idColumns = entity.idColumns();
                 String sql = "UPDATE " + entity.tableName()
-                        + trimSuffixOverrides("SET", Symbol.SPACE, Symbol.COMMA,
-                                () -> entity
-                                        .updateColumns().stream().map(
-                                                column -> trimSuffixOverrides(column.column() + " = CASE ", "end, ", "",
-                                                        () -> foreach("entityList", "entity", Symbol.SPACE,
-                                                                () -> "WHEN ( "
-                                                                        + idColumns.stream()
-                                                                                .map(id -> id.columnEqualsProperty(
-                                                                                        "entity."))
-                                                                                .collect(Collectors.joining(" AND "))
+                        + trimSuffixOverrides(
+                                "SET",
+                                Symbol.SPACE,
+                                Symbol.COMMA,
+                                () -> entity.updateColumns().stream()
+                                        .map(
+                                                column -> trimSuffixOverrides(
+                                                        column.column() + " = CASE ",
+                                                        "end, ",
+                                                        "",
+                                                        () -> foreach(
+                                                                "entityList",
+                                                                "entity",
+                                                                Symbol.SPACE,
+                                                                () -> "WHEN ( " + idColumns.stream()
+                                                                        .map(id -> id.columnEqualsProperty("entity."))
+                                                                        .collect(Collectors.joining(" AND "))
                                                                         + ") THEN " + column.variables("entity.")
 
                                                         ))).collect(Collectors.joining("")))
-                        + where(() -> "("
-                                + idColumns.stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
-                                + ") in " + " ("
-                                + foreach("entityList", "entity", "),(", "(", ")", () -> idColumns.stream()
-                                        .map(id -> id.variables("entity.")).collect(Collectors.joining(Symbol.COMMA)))
-                                + ")");
+                        + where(
+                                () -> "(" + idColumns
+                                        .stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
+                                        + ") in " + " ("
+                                        + foreach(
+                                                "entityList",
+                                                "entity",
+                                                "),(",
+                                                "(",
+                                                ")",
+                                                () -> idColumns.stream().map(id -> id.variables("entity."))
+                                                        .collect(Collectors.joining(Symbol.COMMA)))
+                                        + ")");
                 return sql;
             }
         });
@@ -123,35 +145,54 @@ public class ListProvider {
             throw new NullPointerException("Parameter cannot be empty");
         }
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
                 List<ColumnMeta> idColumns = entity.idColumns();
-                String sql = "UPDATE " + entity.tableName()
-                        + trimSuffixOverrides("SET", Symbol.SPACE, Symbol.COMMA, () -> entity
-                                .updateColumns().stream().map(
-                                        column -> trimSuffixOverrides(column.column() + " = CASE ", "end, ", "",
-                                                () -> foreach("entityList", "entity", Symbol.SPACE,
-                                                        () -> choose(() -> whenTest(column.notNullTest("entity."),
-                                                                () -> "WHEN ( "
-                                                                        + idColumns.stream()
-                                                                                .map(id -> id.columnEqualsProperty(
-                                                                                        "entity."))
-                                                                                .collect(Collectors.joining(" AND "))
+                String sql = "UPDATE " + entity.tableName() + trimSuffixOverrides(
+                        "SET",
+                        Symbol.SPACE,
+                        Symbol.COMMA,
+                        () -> entity.updateColumns().stream().map(
+                                column -> trimSuffixOverrides(
+                                        column.column() + " = CASE ",
+                                        "end, ",
+                                        "",
+                                        () -> foreach(
+                                                "entityList",
+                                                "entity",
+                                                Symbol.SPACE,
+                                                () -> choose(
+                                                        () -> whenTest(
+                                                                column.notNullTest("entity."),
+                                                                () -> "WHEN ( " + idColumns.stream()
+                                                                        .map(id -> id.columnEqualsProperty("entity."))
+                                                                        .collect(Collectors.joining(" AND "))
                                                                         + ") THEN " + column.variables("entity."))
-                                                                + otherwise(() -> "WHEN ( "
-                                                                        + idColumns.stream()
-                                                                                .map(id -> id.columnEqualsProperty(
-                                                                                        "entity."))
-                                                                                .collect(Collectors.joining(" AND "))
-                                                                        + " ) THEN " + column.column())))))
+                                                                + otherwise(
+                                                                        () -> "WHEN ( "
+                                                                                + idColumns.stream().map(
+                                                                                        id -> id.columnEqualsProperty(
+                                                                                                "entity."))
+                                                                                        .collect(
+                                                                                                Collectors.joining(
+                                                                                                        " AND "))
+                                                                                + " ) THEN " + column.column())))))
                                 .collect(Collectors.joining("")))
 
-                        + where(() -> "("
-                                + idColumns.stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
-                                + ") in " + " ("
-                                + foreach("entityList", "entity", "),(", "(", ")", () -> idColumns.stream()
-                                        .map(id -> id.variables("entity.")).collect(Collectors.joining(Symbol.COMMA)))
-                                + ")"
+                        + where(
+                                () -> "(" + idColumns
+                                        .stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA))
+                                        + ") in " + " ("
+                                        + foreach(
+                                                "entityList",
+                                                "entity",
+                                                "),(",
+                                                "(",
+                                                ")",
+                                                () -> idColumns.stream().map(id -> id.variables("entity."))
+                                                        .collect(Collectors.joining(Symbol.COMMA)))
+                                        + ")"
 
                         );
                 return sql;

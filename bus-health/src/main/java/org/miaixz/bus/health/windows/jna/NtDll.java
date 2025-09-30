@@ -54,11 +54,16 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * information, it's been officially non-API for over a decade, and many many programs including windows sysinternal
      * tools rely on this behavior, so the odds of it going away are small.
      */
-    int NtQueryInformationProcess(HANDLE ProcessHandle, int ProcessInformationClass, Pointer ProcessInformation,
-            int ProcessInformationLength, IntByReference ReturnLength);
+    int NtQueryInformationProcess(
+            HANDLE ProcessHandle,
+            int ProcessInformationClass,
+            Pointer ProcessInformation,
+            int ProcessInformationLength,
+            IntByReference ReturnLength);
 
     @FieldOrder({ "Reserved1", "PebBaseAddress", "Reserved2" })
     class PROCESS_BASIC_INFORMATION extends Structure {
+
         public Pointer Reserved1;
         public Pointer PebBaseAddress;
         public Pointer[] Reserved2 = new Pointer[4];
@@ -66,6 +71,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 
     @FieldOrder({ "pad", "pad2", "ProcessParameters" })
     class PEB extends Structure {
+
         public byte[] pad = new byte[4];
         public Pointer[] pad2 = new Pointer[3];
         public Pointer ProcessParameters; // RTL_USER_PROCESS_PARAMETERS
@@ -79,6 +85,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
             "LoaderThreads", "RedirectionDllName", "HeapPartitionName", "DefaultThreadpoolCpuSetMasks",
             "DefaultThreadpoolCpuSetMaskCount" })
     class RTL_USER_PROCESS_PARAMETERS extends Structure {
+
         public int MaximumLength;
         public int Length;
         public int Flags;
@@ -120,6 +127,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class UNICODE_STRING extends Structure {
+
         public short Length;
         public short MaximumLength;
         public Pointer Buffer;
@@ -127,6 +135,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 
     @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class STRING extends Structure {
+
         public short Length;
         public short MaximumLength;
         public Pointer Buffer;
@@ -134,12 +143,14 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 
     @FieldOrder({ "DosPath", "Handle" })
     class CURDIR extends Structure {
+
         public UNICODE_STRING DosPath;
         public Pointer Handle;
     }
 
     @FieldOrder({ "Flags", "Length", "TimeStamp", "DosPath" })
     class RTL_DRIVE_LETTER_CURDIR extends Structure {
+
         public short Flags;
         public short Length;
         public int TimeStamp;

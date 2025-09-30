@@ -116,8 +116,12 @@ public class CellKit {
      * @param isHeader   是否为标题单元格
      * @param cellEditor 单元格值编辑器，可修改单元格值或修改单元格，{@code null}表示不编辑
      */
-    public static void setCellValue(final Cell cell, final Object value, final StyleSet styleSet,
-            final boolean isHeader, final CellEditor cellEditor) {
+    public static void setCellValue(
+            final Cell cell,
+            final Object value,
+            final StyleSet styleSet,
+            final boolean isHeader,
+            final CellEditor cellEditor) {
         if (null == cell) {
             return;
         }
@@ -138,7 +142,10 @@ public class CellKit {
      * @param style      自定义样式，null表示无样式
      * @param cellEditor 单元格值编辑器，可修改单元格值或修改单元格，{@code null}表示不编辑
      */
-    public static void setCellValue(final Cell cell, final Object value, final CellStyle style,
+    public static void setCellValue(
+            final Cell cell,
+            final Object value,
+            final CellStyle style,
             final CellEditor cellEditor) {
         cell.setCellStyle(style);
         setCellValue(cell, value, cellEditor);
@@ -310,7 +317,9 @@ public class CellKit {
      * @param cellStyle        单元格样式，只提取边框样式，null表示无样式
      * @return 合并后的单元格号
      */
-    public static int mergingCells(final Sheet sheet, final CellRangeAddress cellRangeAddress,
+    public static int mergingCells(
+            final Sheet sheet,
+            final CellRangeAddress cellRangeAddress,
             final CellStyle cellStyle) {
         if (cellRangeAddress.getNumberOfCells() <= 1) {
             // 非合并单元格，无需合并
@@ -354,8 +363,8 @@ public class CellKit {
 
         final CellRangeAddress mergedRegion = SheetKit.getMergedRegion(sheet, x, y);
         if (null != mergedRegion) {
-            return MergedCell.of(getCell(sheet, mergedRegion.getFirstColumn(), mergedRegion.getFirstRow(), false),
-                    mergedRegion);
+            return MergedCell
+                    .of(getCell(sheet, mergedRegion.getFirstColumn(), mergedRegion.getFirstRow(), false), mergedRegion);
         }
         return null;
     }
@@ -379,7 +388,10 @@ public class CellKit {
      * @param commentAuthor 作者，{@code null}表示无作者
      * @param anchor        批注的位置、大小等信息，null表示使用默认
      */
-    public static void setComment(final Cell cell, final String commentText, final String commentAuthor,
+    public static void setComment(
+            final Cell cell,
+            final String commentText,
+            final String commentAuthor,
             ClientAnchor anchor) {
         final Sheet sheet = cell.getSheet();
         final CreationHelper factory = sheet.getWorkbook().getCreationHelper();

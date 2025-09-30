@@ -89,6 +89,7 @@ public interface LinuxLibc extends LibC, CLibrary {
     @FieldOrder({ "ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",
             "ut_addr_v6", "reserved" })
     class LinuxUtmpx extends Structure {
+
         public short ut_type; // Type of login.
         public int ut_pid; // Process ID of login process.
         public byte[] ut_line = new byte[UT_LINESIZE]; // Devicename.
@@ -107,6 +108,7 @@ public interface LinuxLibc extends LibC, CLibrary {
      */
     @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
+
         public short e_termination; // Process termination status
         public short e_exit; // Process exit status
     }
@@ -116,6 +118,7 @@ public interface LinuxLibc extends LibC, CLibrary {
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Ut_Tv extends Structure {
+
         public int tv_sec; // seconds
         public int tv_usec; // microseconds
     }

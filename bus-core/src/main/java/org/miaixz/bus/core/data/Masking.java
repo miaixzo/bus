@@ -302,8 +302,11 @@ public class Masking {
      * @param replacement 替换内容
      * @return 自定义脱敏规则
      */
-    public static TextMaskingRule createCustomRule(final String name, final String pattern,
-            final EnumValue.Masking masking, final String replacement) {
+    public static TextMaskingRule createCustomRule(
+            final String name,
+            final String pattern,
+            final EnumValue.Masking masking,
+            final String replacement) {
         return new TextMaskingRule(name, pattern, masking, replacement);
     }
 
@@ -317,8 +320,12 @@ public class Masking {
      * @param maskChar      脱敏字符
      * @return 部分脱敏规则
      */
-    public static TextMaskingRule createPartialMaskRule(final String name, final String pattern, final int preserveLeft,
-            final int preserveRight, final char maskChar) {
+    public static TextMaskingRule createPartialMaskRule(
+            final String name,
+            final String pattern,
+            final int preserveLeft,
+            final int preserveRight,
+            final char maskChar) {
         return new TextMaskingRule(name, pattern, preserveLeft, preserveRight, maskChar);
     }
 
@@ -333,8 +340,9 @@ public class Masking {
         // 添加一些常用的脱敏规则
 
         // 邮箱脱敏规则
-        processor.addRule(new TextMaskingRule("邮箱", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, "[邮箱已隐藏]")
-                .setPreserveLeft(1).setPreserveRight(0).setMaskChar('*'));
+        processor.addRule(
+                new TextMaskingRule("邮箱", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, "[邮箱已隐藏]")
+                        .setPreserveLeft(1).setPreserveRight(0).setMaskChar('*'));
 
         // 网址脱敏规则
         processor.addRule(

@@ -68,12 +68,12 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private final SolarisOperatingSystem os;
 
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
-    private final Supplier<SolarisLibc.SolarisPsInfo> psinfo = Memoizer.memoize(this::queryPsInfo,
-            Memoizer.defaultExpiration());
+    private final Supplier<SolarisLibc.SolarisPsInfo> psinfo = Memoizer
+            .memoize(this::queryPsInfo, Memoizer.defaultExpiration());
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
             .memoize(this::queryCommandlineEnvironment);
-    private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer.memoize(this::queryPrUsage,
-            Memoizer.defaultExpiration());
+    private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer
+            .memoize(this::queryPrUsage, Memoizer.defaultExpiration());
     private String name;
     private String path = Normal.EMPTY;
     private String commandLineBackup;
@@ -113,25 +113,30 @@ public class SolarisOSProcess extends AbstractOSProcess {
     static OSProcess.State getStateFromOutput(char stateValue) {
         OSProcess.State state;
         switch (stateValue) {
-        case 'O':
-            state = OSProcess.State.RUNNING;
-            break;
-        case 'S':
-            state = OSProcess.State.SLEEPING;
-            break;
-        case 'R':
-        case 'W':
-            state = OSProcess.State.WAITING;
-            break;
-        case 'Z':
-            state = OSProcess.State.ZOMBIE;
-            break;
-        case 'T':
-            state = OSProcess.State.STOPPED;
-            break;
-        default:
-            state = OSProcess.State.OTHER;
-            break;
+            case 'O':
+                state = OSProcess.State.RUNNING;
+                break;
+
+            case 'S':
+                state = OSProcess.State.SLEEPING;
+                break;
+
+            case 'R':
+            case 'W':
+                state = OSProcess.State.WAITING;
+                break;
+
+            case 'Z':
+                state = OSProcess.State.ZOMBIE;
+                break;
+
+            case 'T':
+                state = OSProcess.State.STOPPED;
+                break;
+
+            default:
+                state = OSProcess.State.OTHER;
+                break;
         }
         return state;
     }

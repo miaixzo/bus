@@ -62,7 +62,9 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
      * @return 列信息的 Optional 包装对象，若字段被忽略或标记为 Transient 则返回空列表
      */
     @Override
-    public Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta,
+    public Optional<List<ColumnMeta>> createColumn(
+            TableMeta tableMeta,
+            FieldMeta fieldMeta,
             ColumnSchemaBuilder.Chain chain) {
         // 优先调用责任链中的下一个处理器
         Optional<List<ColumnMeta>> columns = chain.createColumn(tableMeta, fieldMeta);

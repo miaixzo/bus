@@ -120,6 +120,7 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
      */
 
     public class Toutiao {
+
         /**
          * 通知接口调用成功。
          */

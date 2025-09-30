@@ -86,8 +86,8 @@ public class NamedPlaceholderString extends StringTemplate {
         if (!placeholderSegments.isEmpty()) {
             for (final AbstractSegment segment : placeholderSegments) {
                 if (segment instanceof IndexedSegment) {
-                    this.indexedSegmentMaxIdx = Math.max(this.indexedSegmentMaxIdx,
-                            ((IndexedSegment) segment).getIndex());
+                    this.indexedSegmentMaxIdx = Math
+                            .max(this.indexedSegmentMaxIdx, ((IndexedSegment) segment).getIndex());
                 }
             }
         }
@@ -134,7 +134,9 @@ public class NamedPlaceholderString extends StringTemplate {
                     hasDoubleEscape = true;
                 } else {
                     // 开始符号被转义，跳过，寻找下一个开始符号
-                    addLiteralSegment(isLastLiteralSegment, segments,
+                    addLiteralSegment(
+                            isLastLiteralSegment,
+                            segments,
                             template.substring(closeCursor, openCursor - 1) + prefix);
                     isLastLiteralSegment = true;
                     closeCursor = openCursor + openLength;
@@ -493,7 +495,9 @@ public class NamedPlaceholderString extends StringTemplate {
      * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE}
      *                            策略时生效
      */
-    public void matchesIndexed(final String text, final BiConsumer<Integer, String> idxValueConsumer,
+    public void matchesIndexed(
+            final String text,
+            final BiConsumer<Integer, String> idxValueConsumer,
             final IntFunction<String> missingIndexHandler) {
         if (text == null || CollKit.isEmpty(placeholderSegments) || !isMatches(text)) {
             return;

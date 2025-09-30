@@ -62,7 +62,9 @@ public class MethodProvider implements Provider {
     @Override
     public Object process(Object bean, Method method, Object[] args) {
         // 获取方法对应的key
-        String hotKey = StringKit.format("{}-{}", Builder.resolveMethodName(method),
+        String hotKey = StringKit.format(
+                "{}-{}",
+                Builder.resolveMethodName(method),
                 org.miaixz.bus.crypto.Builder.md5Hex(JsonKit.toJsonString(args)));
 
         // 缓存操作

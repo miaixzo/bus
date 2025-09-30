@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.PostModeString:
-            return "PostModeString";
-        case PrivateTag.PostData:
-            return "PostData";
-        case PrivateTag.ImageHeader:
-            return "ImageHeader";
+            case PrivateTag.PostModeString:
+                return "PostModeString";
+
+            case PrivateTag.PostData:
+                return "PostData";
+
+            case PrivateTag.ImageHeader:
+                return "ImageHeader";
         }
         return "";
     }

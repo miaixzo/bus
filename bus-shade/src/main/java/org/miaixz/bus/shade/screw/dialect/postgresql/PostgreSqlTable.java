@@ -42,6 +42,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostgreSqlTable implements Table {
+
     /**
      * refGeneration
      */

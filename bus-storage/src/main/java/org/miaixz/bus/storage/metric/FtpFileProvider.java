@@ -155,8 +155,13 @@ public class FtpFileProvider extends AbstractProvider {
             client.download(objectKey, file);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error("Failed to download file: {} from bucket: {} to local file: {}. Error: {}", fileName, bucket,
-                    file.getAbsolutePath(), e.getMessage(), e);
+            Logger.error(
+                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    file.getAbsolutePath(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -227,8 +232,14 @@ public class FtpFileProvider extends AbstractProvider {
             client.rename(oldObjectKey, newObjectKey);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error("Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}", oldName, newName,
-                    bucket, path, e.getMessage(), e);
+            Logger.error(
+                    "Failed to rename file from {} to {} in bucket: {} path: {}. Error: {}",
+                    oldName,
+                    newName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -324,8 +335,13 @@ public class FtpFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException | IOException e) {
-            Logger.error("Failed to upload file: {} to bucket: {} path: {}. Error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -370,8 +386,13 @@ public class FtpFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (InternalException e) {
-            Logger.error("Failed to remove file: {} from bucket: {} path: {}. Error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to remove file: {} from bucket: {} path: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }

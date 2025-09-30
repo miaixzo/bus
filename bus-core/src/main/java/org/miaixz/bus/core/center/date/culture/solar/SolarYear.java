@@ -105,9 +105,9 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 月份列表
+     * 月份列表，1年有12个月。
      *
-     * @return 月份列表，1年有12个月。
+     * @return 月份列表
      */
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(12);
@@ -118,11 +118,11 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 季度列表
+     * 季度列表，1年有4个季度。
      *
-     * @return 季度列表，1年有4个季度。
+     * @return 季度列表
      */
-    public List<SolarQuarter> getSeasons() {
+    public List<SolarQuarter> getQuarter() {
         List<SolarQuarter> l = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
             l.add(SolarQuarter.fromIndex(year, i));
@@ -131,9 +131,9 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 半年列表
+     * 半年列表，1年有2个半年。
      *
-     * @return 半年列表，1年有2个半年。
+     * @return 半年列表
      */
     public List<SolarHalfYear> getHalfYears() {
         List<SolarHalfYear> l = new ArrayList<>(2);

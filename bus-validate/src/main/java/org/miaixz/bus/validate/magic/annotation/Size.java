@@ -30,7 +30,6 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
-import org.miaixz.bus.validate.magic.ErrorCode;
 import org.miaixz.bus.validate.metric.LengthMatcher;
 
 /**
@@ -77,7 +76,7 @@ public @interface Size {
      *
      * @return the string
      */
-    String errcode() default ErrorCode._116000;
+    String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
      * 默认使用的异常信息

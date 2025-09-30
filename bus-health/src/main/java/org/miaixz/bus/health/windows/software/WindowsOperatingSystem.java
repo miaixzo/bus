@@ -78,8 +78,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * Windows event log name
      */
-    private static final Supplier<String> systemLog = Memoizer.memoize(WindowsOperatingSystem::querySystemLog,
-            TimeUnit.HOURS.toNanos(1));
+    private static final Supplier<String> systemLog = Memoizer
+            .memoize(WindowsOperatingSystem::querySystemLog, TimeUnit.HOURS.toNanos(1));
     private static final long BOOTTIME = querySystemBootTime();
     private static final boolean WOW = isCurrentWow();
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
@@ -109,12 +109,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         Map<Integer, Integer> parentPidMap = new HashMap<>();
         // Get processes from ToolHelp API for parent PID
         try (ByRef.CloseablePROCESSENTRY32ByReference processEntry = new ByRef.CloseablePROCESSENTRY32ByReference()) {
-            WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS,
-                    new DWORD(0));
+            WinNT.HANDLE snapshot = Kernel32.INSTANCE
+                    .CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
             try {
                 while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
-                    parentPidMap.put(processEntry.th32ProcessID.intValue(),
-                            processEntry.th32ParentProcessID.intValue());
+                    parentPidMap
+                            .put(processEntry.th32ProcessID.intValue(), processEntry.th32ParentProcessID.intValue());
                 }
             } finally {
                 Kernel32.INSTANCE.CloseHandle(snapshot);
@@ -177,8 +177,10 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      */
     private static boolean enableDebugPrivilege() {
         try (ByRef.CloseableHANDLEByReference hToken = new ByRef.CloseableHANDLEByReference()) {
-            boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
-                    WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES, hToken);
+            boolean success = Advapi32.INSTANCE.OpenProcessToken(
+                    Kernel32.INSTANCE.GetCurrentProcess(),
+                    WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES,
+                    hToken);
             if (!success) {
                 Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
                 return false;
@@ -217,7 +219,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         // Check whether it works
         HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
         if (h == null) {
-            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
+            Logger.warn(
+                    "Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
                     systemLog);
             return null;
         }
@@ -538,21 +541,23 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     public List<OSService> getServices() {
         try (W32ServiceManager sm = new W32ServiceManager()) {
             sm.open(Winsvc.SC_MANAGER_ENUMERATE_SERVICE);
-            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm.enumServicesStatusExProcess(WinNT.SERVICE_WIN32,
-                    Winsvc.SERVICE_STATE_ALL, null);
+            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm
+                    .enumServicesStatusExProcess(WinNT.SERVICE_WIN32, Winsvc.SERVICE_STATE_ALL, null);
             List<OSService> svcArray = new ArrayList<>();
             for (Winsvc.ENUM_SERVICE_STATUS_PROCESS service : services) {
                 OSService.State state;
                 switch (service.ServiceStatusProcess.dwCurrentState) {
-                case 1:
-                    state = OSService.State.STOPPED;
-                    break;
-                case 4:
-                    state = OSService.State.RUNNING;
-                    break;
-                default:
-                    state = OSService.State.OTHER;
-                    break;
+                    case 1:
+                        state = OSService.State.STOPPED;
+                        break;
+
+                    case 4:
+                        state = OSService.State.RUNNING;
+                        break;
+
+                    default:
+                        state = OSService.State.OTHER;
+                        break;
                 }
                 svcArray.add(new OSService(service.lpDisplayName, service.ServiceStatusProcess.dwProcessId, state));
             }

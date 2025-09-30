@@ -58,6 +58,7 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * @since Java 17+
  */
 public class OracleDataBaseQuery extends AbstractDatabaseQuery {
+
     /**
      * 构造函数
      *
@@ -90,8 +91,8 @@ public class OracleDataBaseQuery extends AbstractDatabaseQuery {
         ResultSet resultSet = null;
         try {
             // 查询
-            resultSet = getMetaData().getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN,
-                    new String[] { "TABLE" });
+            resultSet = getMetaData()
+                    .getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN, new String[] { "TABLE" });
             // 映射
             List<OracleTable> list = Mapping.convertList(resultSet, OracleTable.class);
             // 由于ORACLE 查询 REMARKS 非常耗费性能，所以这里使用自定义SQL查询
@@ -164,8 +165,11 @@ public class OracleDataBaseQuery extends AbstractDatabaseQuery {
                 }
                 List<OracleColumn> inquires = Mapping.convertList(resultSet, OracleColumn.class);
                 // 处理列，表名为key，列名为值
-                tableNames.forEach(name -> columnsCaching.put(name,
-                        inquires.stream().filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
+                tableNames.forEach(
+                        name -> columnsCaching.put(
+                                name,
+                                inquires.stream().filter(i -> i.getTableName().equals(name))
+                                        .collect(Collectors.toList())));
             }
             // 处理备注信息
             // 从缓存中根据表名获取列信息

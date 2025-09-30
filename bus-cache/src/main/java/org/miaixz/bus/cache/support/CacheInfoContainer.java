@@ -189,7 +189,10 @@ public class CacheInfoContainer {
      * @param isCollectionReturn 是否返回集合类型
      * @param isMapReturn        是否返回Map类型
      */
-    private static void staticAnalyze(Class<?>[] pTypes, AnnoHolder annoHolder, boolean isCollectionReturn,
+    private static void staticAnalyze(
+            Class<?>[] pTypes,
+            AnnoHolder annoHolder,
+            boolean isCollectionReturn,
             boolean isMapReturn) {
         if (isInvalidParam(pTypes, annoHolder)) {
             throw new RuntimeException("cache need at least one param key");

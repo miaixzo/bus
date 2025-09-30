@@ -32,7 +32,9 @@ package org.miaixz.bus.image.nimble;
  * @since Java 17+
  */
 public enum YBR {
+
     FULL {
+
         @Override
         public float[] toRGB(float[] ybr) {
             return convert(ybr, FROM_YBR_FULL);
@@ -44,6 +46,7 @@ public enum YBR {
         }
     },
     PARTIAL {
+
         @Override
         public float[] toRGB(float[] ybr) {
             return convert(ybr, FROM_YBR_PARTIAL);

@@ -29,10 +29,10 @@ package org.miaixz.bus.crypto.builtin;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -53,7 +53,7 @@ public class SaltMagic {
     /**
      * OpenSSL's magic initial bytes.
      */
-    public static final byte[] SALTED_MAGIC = "Salted__".getBytes(StandardCharsets.US_ASCII);
+    public static final byte[] SALTED_MAGIC = "Salted__".getBytes(Charset.US_ASCII);
 
     /**
      * 获取魔术值和随机盐的长度：16（128位）

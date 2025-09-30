@@ -82,16 +82,19 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
         this(factory, sslEngine -> {
             sslEngine.setUseClientMode(false);
             switch (clientAuth) {
-            case OPTIONAL:
-                sslEngine.setWantClientAuth(true);
-                break;
-            case REQUIRE:
-                sslEngine.setNeedClientAuth(true);
-                break;
-            case NONE:
-                break;
-            default:
-                throw new Error("Unknown auth " + clientAuth);
+                case OPTIONAL:
+                    sslEngine.setWantClientAuth(true);
+                    break;
+
+                case REQUIRE:
+                    sslEngine.setNeedClientAuth(true);
+                    break;
+
+                case NONE:
+                    break;
+
+                default:
+                    throw new Error("Unknown auth " + clientAuth);
             }
         }, bufferPagePool);
     }

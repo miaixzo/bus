@@ -49,6 +49,7 @@ public class ExportStatus implements Serializable {
      * Enum representing the status of the export.
      */
     public enum Status {
+
         NONE, STARTED, FINISHED,
 
         /**

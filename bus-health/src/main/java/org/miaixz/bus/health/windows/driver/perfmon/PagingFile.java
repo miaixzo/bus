@@ -51,7 +51,9 @@ public final class PagingFile {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Collections.emptyMap();
         }
-        return PerfCounterQuery.queryValues(PagingPercentProperty.class, PerfmonConsts.PAGING_FILE,
+        return PerfCounterQuery.queryValues(
+                PagingPercentProperty.class,
+                PerfmonConsts.PAGING_FILE,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PAGING_FILE);
     }
 
@@ -59,6 +61,7 @@ public final class PagingFile {
      * For swap file usage
      */
     public enum PagingPercentProperty implements PerfCounterQuery.PdhCounterProperty {
+
         PERCENTUSAGE(PerfCounterQuery.TOTAL_INSTANCE, "% Usage");
 
         private final String instance;

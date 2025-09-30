@@ -127,16 +127,18 @@ public abstract class AbstractProcess implements Process {
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTablePrefix())) {
                 List<String> list = produceConfig.getDesignatedTablePrefix();
                 for (String prefix : list) {
-                    tableSchemas.addAll(tables.stream().filter(j -> j.getTableName().startsWith(prefix))
-                            .collect(Collectors.toList()));
+                    tableSchemas.addAll(
+                            tables.stream().filter(j -> j.getTableName().startsWith(prefix))
+                                    .collect(Collectors.toList()));
                 }
             }
             // 指定表名后缀
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableSuffix())) {
                 List<String> list = produceConfig.getDesignatedTableSuffix();
                 for (String suffix : list) {
-                    tableSchemas.addAll(tables.stream().filter(j -> j.getTableName().endsWith(suffix))
-                            .collect(Collectors.toList()));
+                    tableSchemas.addAll(
+                            tables.stream().filter(j -> j.getTableName().endsWith(suffix))
+                                    .collect(Collectors.toList()));
                 }
             }
             return tableSchemas;

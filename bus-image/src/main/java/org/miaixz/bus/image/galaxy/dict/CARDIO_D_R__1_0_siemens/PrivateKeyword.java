@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.EdgeEnhancementSequence:
-            return "EdgeEnhancementSequence";
-        case PrivateTag.ConvolutionKernelSize:
-            return "ConvolutionKernelSize";
-        case PrivateTag.ConvolutionKernelCoefficients:
-            return "ConvolutionKernelCoefficients";
-        case PrivateTag.EdgeEnhancementGain:
-            return "EdgeEnhancementGain";
-        case PrivateTag.DisplayedAreaBottomRightHandCornerFractional:
-            return "DisplayedAreaBottomRightHandCornerFractional";
-        case PrivateTag.DisplayedAreaTopLeftHandCornerFractional:
-            return "DisplayedAreaTopLeftHandCornerFractional";
+            case PrivateTag.EdgeEnhancementSequence:
+                return "EdgeEnhancementSequence";
+
+            case PrivateTag.ConvolutionKernelSize:
+                return "ConvolutionKernelSize";
+
+            case PrivateTag.ConvolutionKernelCoefficients:
+                return "ConvolutionKernelCoefficients";
+
+            case PrivateTag.EdgeEnhancementGain:
+                return "EdgeEnhancementGain";
+
+            case PrivateTag.DisplayedAreaBottomRightHandCornerFractional:
+                return "DisplayedAreaBottomRightHandCornerFractional";
+
+            case PrivateTag.DisplayedAreaTopLeftHandCornerFractional:
+                return "DisplayedAreaTopLeftHandCornerFractional";
         }
         return "";
     }

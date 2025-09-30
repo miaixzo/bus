@@ -244,6 +244,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
                 .header(HTTP.SEC_WEBSOCKET_VERSION, "13").build();
         call = Internal.instance.newWebSocketCall(client, request);
         call.enqueue(new Callback() {
+
             @Override
             public void onResponse(NewCall call, Response response) {
                 Exchange exchange = Internal.instance.exchange(response);
@@ -326,7 +327,10 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
             this.writer = new WebSocketWriter(streams.client, streams.sink, random);
             this.executor = new ScheduledThreadPoolExecutor(1, Builder.threadFactory(name, false));
             if (pingIntervalMillis != 0) {
-                executor.scheduleAtFixedRate(new PingRunnable(), pingIntervalMillis, pingIntervalMillis,
+                executor.scheduleAtFixedRate(
+                        new PingRunnable(),
+                        pingIntervalMillis,
+                        pingIntervalMillis,
                         TimeUnit.MILLISECONDS);
             }
             if (!messageAndCloseQueue.isEmpty()) {
@@ -661,8 +665,10 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
                         this.executor.shutdown();
                     } else {
                         // 当我们请求一个优雅的关闭，也计划取消websocket.
-                        cancelFuture = executor.schedule(new CancelRunnable(),
-                                ((Close) messageOrClose).cancelAfterCloseMillis, TimeUnit.MILLISECONDS);
+                        cancelFuture = executor.schedule(
+                                new CancelRunnable(),
+                                ((Close) messageOrClose).cancelAfterCloseMillis,
+                                TimeUnit.MILLISECONDS);
                     }
                 } else if (null == messageOrClose) {
                     // 队列已满
@@ -718,8 +724,10 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
 
         if (failedPing != -1) {
-            failWebSocket(new SocketTimeoutException("sent ping but didn't receive pong within " + pingIntervalMillis
-                    + "ms (after " + (failedPing - 1) + " successful ping/pongs)"), null);
+            failWebSocket(
+                    new SocketTimeoutException("sent ping but didn't receive pong within " + pingIntervalMillis
+                            + "ms (after " + (failedPing - 1) + " successful ping/pongs)"),
+                    null);
             return;
         }
 
@@ -787,6 +795,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
      * 关闭结构
      */
     static class Close {
+
         /** 关闭代码 */
         final int code;
         /** 关闭原因 */
@@ -838,6 +847,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
      * ping 任务
      */
     private class PingRunnable implements Runnable {
+
         PingRunnable() {
         }
 
@@ -851,6 +861,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
      * 取消任务
      */
     class CancelRunnable implements Runnable {
+
         @Override
         public void run() {
             cancel();

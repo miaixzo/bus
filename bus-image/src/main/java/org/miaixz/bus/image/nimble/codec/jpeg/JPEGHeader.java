@@ -130,7 +130,9 @@ public class JPEGHeader {
         int nf = data[offsetSOF + 3 + 5] & 0xff;
         attrs.setInt(Tag.SamplesPerPixel, VR.US, nf);
         if (nf == 3) {
-            attrs.setString(Tag.PhotometricInterpretation, VR.CS,
+            attrs.setString(
+                    Tag.PhotometricInterpretation,
+                    VR.CS,
                     (sof == JPEG.SOF3 || sof == JPEG.SOF55) ? "RGB" : "YBR_FULL_422");
             attrs.setInt(Tag.PlanarConfiguration, VR.US, 0);
         } else {
@@ -153,16 +155,20 @@ public class JPEGHeader {
             return null;
 
         switch (data[sofOffset] & 255) {
-        case JPEG.SOF0:
-            return UID.JPEGBaseline8Bit.uid;
-        case JPEG.SOF1:
-            return UID.JPEGExtended12Bit.uid;
-        case JPEG.SOF2:
-            return UID.JPEGFullProgressionNonHierarchical1012.uid;
-        case JPEG.SOF3:
-            return ss() == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
-        case JPEG.SOF55:
-            return ss() == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
+            case JPEG.SOF0:
+                return UID.JPEGBaseline8Bit.uid;
+
+            case JPEG.SOF1:
+                return UID.JPEGExtended12Bit.uid;
+
+            case JPEG.SOF2:
+                return UID.JPEGFullProgressionNonHierarchical1012.uid;
+
+            case JPEG.SOF3:
+                return ss() == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
+
+            case JPEG.SOF55:
+                return ss() == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
         }
         return null;
     }

@@ -110,7 +110,9 @@ public class ThreadKit {
      * @param maximumQueueSize 最大任务队列大小
      * @return {@link ThreadPoolExecutor}
      */
-    public static ExecutorService newExecutor(final int corePoolSize, final int maximumPoolSize,
+    public static ExecutorService newExecutor(
+            final int corePoolSize,
+            final int maximumPoolSize,
             final int maximumQueueSize) {
         return ExecutorBuilder.of().setCorePoolSize(corePoolSize).setMaxPoolSize(maximumPoolSize)
                 .useLinkedBlockingQueue(maximumQueueSize).build();
@@ -154,7 +156,9 @@ public class ThreadKit {
      * @param isBlocked        是否使用{@link BlockPolicy}策略
      * @return {@link ExecutorService}
      */
-    public static ExecutorService newFixedExecutor(final int nThreads, final String threadNamePrefix,
+    public static ExecutorService newFixedExecutor(
+            final int nThreads,
+            final String threadNamePrefix,
             final boolean isBlocked) {
         return newFixedExecutor(nThreads, 1024, threadNamePrefix, isBlocked);
     }
@@ -176,9 +180,15 @@ public class ThreadKit {
      * @param isBlocked        是否使用{@link BlockPolicy}策略
      * @return {@link ThreadPoolExecutor}
      */
-    public static ThreadPoolExecutor newFixedExecutor(final int nThreads, final int maximumQueueSize,
-            final String threadNamePrefix, final boolean isBlocked) {
-        return newFixedExecutor(nThreads, maximumQueueSize, threadNamePrefix,
+    public static ThreadPoolExecutor newFixedExecutor(
+            final int nThreads,
+            final int maximumQueueSize,
+            final String threadNamePrefix,
+            final boolean isBlocked) {
+        return newFixedExecutor(
+                nThreads,
+                maximumQueueSize,
+                threadNamePrefix,
                 (isBlocked ? RejectPolicy.BLOCK : RejectPolicy.ABORT).getValue());
     }
 
@@ -196,8 +206,11 @@ public class ThreadKit {
      * @param handler          拒绝策略
      * @return {@link ThreadPoolExecutor}
      */
-    public static ThreadPoolExecutor newFixedExecutor(final int nThreads, final int maximumQueueSize,
-            final String threadNamePrefix, final RejectedExecutionHandler handler) {
+    public static ThreadPoolExecutor newFixedExecutor(
+            final int nThreads,
+            final int maximumQueueSize,
+            final String threadNamePrefix,
+            final RejectedExecutionHandler handler) {
         return ExecutorBuilder.of().setCorePoolSize(nThreads).setMaxPoolSize(nThreads)
                 .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
                 .setThreadFactory(createThreadFactory(threadNamePrefix)).setHandler(handler).build();
@@ -310,8 +323,9 @@ public class ThreadKit {
      * CyclicBarrier barrier = new CyclicBarrier(7, () -> {
      *     System.out.println("");
      *     System.out.println("");
-     *     System.out.println("【循环栅栏业务处理】7个子线程 都收集了一颗龙珠，七颗龙珠已经收集齐全，开始召唤神龙。"
-     *             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+     *     System.out.println(
+     *             "【循环栅栏业务处理】7个子线程 都收集了一颗龙珠，七颗龙珠已经收集齐全，开始召唤神龙。"
+     *                     + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
      *     times.getAndIncrement();
      * }); // 现在设置的栅栏的数量为2
      * for (int x = 0; x < 7; x++) { // 创建7个线程, 当然也可以使用线程池替换。
@@ -322,7 +336,9 @@ public class ThreadKit {
      *                 int time = ThreadLocalRandom.current().nextInt(1, 10); // 等待一段时间，模拟线程的执行时间
      *                 TimeUnit.SECONDS.sleep(time); // 模拟业务延迟，收集龙珠的时间
      *                 barrier.await(); // 等待，凑够了7个等待的线程
-     *                 System.err.printf("〖Barrier - 举起龙珠召唤神龙〗当前的线程名称：%s\t%s%n", Thread.currentThread().getName(),
+     *                 System.err.printf(
+     *                         "〖Barrier - 举起龙珠召唤神龙〗当前的线程名称：%s\t%s%n",
+     *                         Thread.currentThread().getName(),
      *                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
      *                 if (barrier.getParties() >= 7) {
      *                     barrier.reset(); // 重置栅栏，等待下一次的召唤。
@@ -680,7 +696,9 @@ public class ThreadKit {
      * @param isDaemon    是否守护线程
      * @return {@link ThreadFactory}
      */
-    public static ThreadFactory newNamedThreadFactory(final String prefix, final ThreadGroup threadGroup,
+    public static ThreadFactory newNamedThreadFactory(
+            final String prefix,
+            final ThreadGroup threadGroup,
             final boolean isDaemon) {
         return new NamedThreadFactory(prefix, threadGroup, isDaemon);
     }
@@ -694,8 +712,11 @@ public class ThreadKit {
      * @param handler     未捕获异常处理
      * @return {@link ThreadFactory}
      */
-    public static ThreadFactory newNamedThreadFactory(final String prefix, final ThreadGroup threadGroup,
-            final boolean isDaemon, final UncaughtExceptionHandler handler) {
+    public static ThreadFactory newNamedThreadFactory(
+            final String prefix,
+            final ThreadGroup threadGroup,
+            final boolean isDaemon,
+            final UncaughtExceptionHandler handler) {
         return new NamedThreadFactory(prefix, threadGroup, isDaemon, handler);
     }
 
@@ -754,8 +775,12 @@ public class ThreadKit {
      * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
      * @return {@link ScheduledExecutorService}
      */
-    public static ScheduledExecutorService schedule(final ScheduledExecutorService executor, final Runnable command,
-            final long initialDelay, final long period, final boolean fixedRateOrFixedDelay) {
+    public static ScheduledExecutorService schedule(
+            final ScheduledExecutorService executor,
+            final Runnable command,
+            final long initialDelay,
+            final long period,
+            final boolean fixedRateOrFixedDelay) {
         return schedule(executor, command, initialDelay, period, TimeUnit.MILLISECONDS, fixedRateOrFixedDelay);
     }
 
@@ -775,8 +800,13 @@ public class ThreadKit {
      * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
      * @return {@link ScheduledExecutorService}
      */
-    public static ScheduledExecutorService schedule(ScheduledExecutorService executor, final Runnable command,
-            final long initialDelay, final long period, final TimeUnit timeUnit, final boolean fixedRateOrFixedDelay) {
+    public static ScheduledExecutorService schedule(
+            ScheduledExecutorService executor,
+            final Runnable command,
+            final long initialDelay,
+            final long period,
+            final TimeUnit timeUnit,
+            final boolean fixedRateOrFixedDelay) {
         if (null == executor) {
             executor = createScheduledExecutor(2);
         }

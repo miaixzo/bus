@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -183,9 +183,10 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
             ClassField classField = toClassField();
             List<ColumnMeta> columns = MapperFactory.create(classField.getClazz()).columns();
             return columns.stream().filter(column -> column.property().equals(classField.getField())).findFirst()
-                    .orElseGet(() -> columns.stream().filter(classField).findFirst()
-                            .orElseThrow(() -> new RuntimeException(classField.getField()
-                                    + " does not mark database column field annotations, unable to obtain column information")));
+                    .orElseGet(
+                            () -> columns.stream().filter(classField).findFirst().orElseThrow(
+                                    () -> new RuntimeException(classField.getField()
+                                            + " does not mark database column field annotations, unable to obtain column information")));
         });
     }
 
@@ -196,6 +197,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      * @param <R> 返回值类型
      */
     class FnType<T, R> implements Fn<T, R> {
+
         public final Fn<T, R> fn;
         public final Class<?> entityClass;
 
@@ -342,6 +344,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
      * @param <E> 实体类型
      */
     class FnArray<E> extends TableMeta {
+
         /**
          * 通过列信息构造虚拟表
          *

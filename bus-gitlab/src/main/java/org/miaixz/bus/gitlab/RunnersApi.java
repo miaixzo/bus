@@ -140,8 +140,8 @@ public class RunnersApi extends AbstractApi {
      */
     public List<Runner> getRunners(RunnerType type, RunnerStatus status, int page, int perPage)
             throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false).withParam("status",
-                status, false);
+        GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false)
+                .withParam("status", status, false);
         Response response = get(Response.Status.OK, formData.asMap(), "runners");
         return (response.readEntity(new GenericType<List<Runner>>() {
         }));
@@ -278,8 +278,8 @@ public class RunnersApi extends AbstractApi {
      */
     public List<Runner> getAllRunners(RunnerType type, RunnerStatus status, int page, int perPage)
             throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false).withParam("status",
-                status, false);
+        GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false)
+                .withParam("status", status, false);
         Response response = get(Response.Status.OK, formData.asMap(), "runners", "all");
         return (response.readEntity(new GenericType<List<Runner>>() {
         }));
@@ -360,8 +360,14 @@ public class RunnersApi extends AbstractApi {
      * @return RunnerDetail instance.
      * @throws GitLabApiException if any exception occurs
      */
-    public RunnerDetail updateRunner(Long runnerId, String description, Boolean active, List<String> tagList,
-            Boolean runUntagged, Boolean locked, RunnerDetail.RunnerAccessLevel accessLevel) throws GitLabApiException {
+    public RunnerDetail updateRunner(
+            Long runnerId,
+            String description,
+            Boolean active,
+            List<String> tagList,
+            Boolean runUntagged,
+            Boolean locked,
+            RunnerDetail.RunnerAccessLevel accessLevel) throws GitLabApiException {
         if (runnerId == null) {
             throw new RuntimeException("runnerId cannot be null");
         }
@@ -558,8 +564,12 @@ public class RunnersApi extends AbstractApi {
      */
     public Runner enableRunner(Object projectIdOrPath, Long runnerId) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("runner_id", runnerId, true);
-        Response response = post(Response.Status.CREATED, formData.asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "runners");
+        Response response = post(
+                Response.Status.CREATED,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "runners");
         return (response.readEntity(Runner.class));
     }
 
@@ -577,7 +587,12 @@ public class RunnersApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Runner disableRunner(Object projectIdOrPath, Long runnerId) throws GitLabApiException {
-        Response response = delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "runners",
+        Response response = delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "runners",
                 runnerId);
         return (response.readEntity(Runner.class));
     }
@@ -600,8 +615,14 @@ public class RunnersApi extends AbstractApi {
      * @return RunnerDetail instance.
      * @throws GitLabApiException if any exception occurs
      */
-    public RunnerDetail registerRunner(String token, String description, Boolean active, List<String> tagList,
-            Boolean runUntagged, Boolean locked, Integer maximumTimeout) throws GitLabApiException {
+    public RunnerDetail registerRunner(
+            String token,
+            String description,
+            Boolean active,
+            List<String> tagList,
+            Boolean runUntagged,
+            Boolean locked,
+            Integer maximumTimeout) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("token", token, true)
                 .withParam("description", description, false).withParam("active", active, false)

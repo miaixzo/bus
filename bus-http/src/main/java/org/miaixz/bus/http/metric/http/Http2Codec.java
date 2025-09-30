@@ -54,11 +54,27 @@ public class Http2Codec implements HttpCodec {
     /**
      * See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
      */
-    private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(HTTP.CONNECTION, HTTP.HOST,
-            HTTP.KEEP_ALIVE, HTTP.PROXY_CONNECTION, HTTP.TE, HTTP.TRANSFER_ENCODING, HTTP.ENCODING, HTTP.UPGRADE,
-            HTTP.TARGET_METHOD_UTF8, HTTP.TARGET_PATH_UTF8, HTTP.TARGET_SCHEME_UTF8, HTTP.TARGET_AUTHORITY_UTF8);
-    private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(HTTP.CONNECTION,
-            HTTP.HOST, HTTP.KEEP_ALIVE, HTTP.PROXY_CONNECTION, HTTP.TE, HTTP.TRANSFER_ENCODING, HTTP.ENCODING,
+    private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(
+            HTTP.CONNECTION,
+            HTTP.HOST,
+            HTTP.KEEP_ALIVE,
+            HTTP.PROXY_CONNECTION,
+            HTTP.TE,
+            HTTP.TRANSFER_ENCODING,
+            HTTP.ENCODING,
+            HTTP.UPGRADE,
+            HTTP.TARGET_METHOD_UTF8,
+            HTTP.TARGET_PATH_UTF8,
+            HTTP.TARGET_SCHEME_UTF8,
+            HTTP.TARGET_AUTHORITY_UTF8);
+    private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(
+            HTTP.CONNECTION,
+            HTTP.HOST,
+            HTTP.KEEP_ALIVE,
+            HTTP.PROXY_CONNECTION,
+            HTTP.TE,
+            HTTP.TRANSFER_ENCODING,
+            HTTP.ENCODING,
             HTTP.UPGRADE);
 
     private final NewChain chain;

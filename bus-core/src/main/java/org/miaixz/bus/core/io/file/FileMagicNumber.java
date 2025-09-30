@@ -47,6 +47,7 @@ public enum FileMagicNumber {
      * 未知类型
      */
     UNKNOWN(null, null) {
+
         @Override
         public boolean match(final byte[] bytes) {
             return false;
@@ -60,6 +61,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     JPEG("image/jpeg", "jpg") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0xff) && Objects.equals(bytes[1], (byte) 0xd8)
@@ -74,6 +76,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     JXR("image/vnd.ms-photo", "jxr") {
+
         @Override
         public boolean match(final byte[] bytes) {
             // file magic number https://www.iana.org/assignments/media-types/image/jxr
@@ -89,10 +92,19 @@ public enum FileMagicNumber {
      * </pre>
      */
     APNG("image/apng", "apng") {
+
         @Override
         public boolean match(final byte[] bytes) {
-            final boolean b = ArrayKit.startWith(bytes, (byte) 0x89, (byte) 0x50, (byte) 0x4e, (byte) 0x47, (byte) 0x0d,
-                    (byte) 0x0a, (byte) 0x1a, (byte) 0x0a);
+            final boolean b = ArrayKit.startWith(
+                    bytes,
+                    (byte) 0x89,
+                    (byte) 0x50,
+                    (byte) 0x4e,
+                    (byte) 0x47,
+                    (byte) 0x0d,
+                    (byte) 0x0a,
+                    (byte) 0x1a,
+                    (byte) 0x0a);
 
             if (b) {
                 int i = 8;
@@ -124,6 +136,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     PNG("image/png", "png") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x89, (byte) 0x50, (byte) 0x4e, (byte) 0x47);
@@ -137,6 +150,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     GIF("image/gif", "gif") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x47, (byte) 0x49, (byte) 0x46);
@@ -150,6 +164,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     BMP("image/bmp", "bmp") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x42, (byte) 0x4d);
@@ -163,6 +178,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     TIFF("image/tiff", "tiff") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x49, (byte) 0x49, (byte) 0x2a, (byte) 0x00)
@@ -177,6 +193,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     DWG("image/vnd.dwg", "dwg") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x41, (byte) 0x43, (byte) 0x31, (byte) 0x30);
@@ -190,6 +207,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     WEBP("image/webp", "webp") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.isSubEquals(bytes, 8, (byte) 0x57, (byte) 0x45, (byte) 0x42, (byte) 0x50);
@@ -203,6 +221,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     PSD("image/vnd.adobe.photoshop", "psd") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x38, (byte) 0x42, (byte) 0x50, (byte) 0x53);
@@ -216,6 +235,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     ICO("image/x-icon", "ico") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00);
@@ -229,10 +249,21 @@ public enum FileMagicNumber {
      * </pre>
      */
     XCF("image/x-xcf", "xcf") {
+
         @Override
         public boolean match(final byte[] bytes) {
-            return ArrayKit.startWith(bytes, (byte) 0x67, (byte) 0x69, (byte) 0x6d, (byte) 0x70, (byte) 0x20,
-                    (byte) 0x78, (byte) 0x63, (byte) 0x66, (byte) 0x20, (byte) 0x76);
+            return ArrayKit.startWith(
+                    bytes,
+                    (byte) 0x67,
+                    (byte) 0x69,
+                    (byte) 0x6d,
+                    (byte) 0x70,
+                    (byte) 0x20,
+                    (byte) 0x78,
+                    (byte) 0x63,
+                    (byte) 0x66,
+                    (byte) 0x20,
+                    (byte) 0x76);
         }
     },
 
@@ -245,6 +276,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     WAV("audio/x-wav", "wav") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x52, (byte) 0x49, (byte) 0x46, (byte) 0x46)
@@ -259,6 +291,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     MIDI("audio/midi", "midi") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x4d, (byte) 0x54, (byte) 0x68, (byte) 0x64);
@@ -272,6 +305,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     MP3("audio/mpeg", "mp3") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x49, (byte) 0x44, (byte) 0x33)
@@ -288,6 +322,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     OGG("audio/ogg", "ogg") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x4F, (byte) 0x67, (byte) 0x67, (byte) 0x53);
@@ -301,6 +336,7 @@ public enum FileMagicNumber {
      * </pre>
      */
     FLAC("audio/x-flac", "flac") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x66, (byte) 0x4c, (byte) 0x61, (byte) 0x43);
@@ -310,6 +346,7 @@ public enum FileMagicNumber {
      * mp4
      */
     M4A("audio/mp4", "m4a") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return (bytes.length > 10 && Objects.equals(bytes[4], (byte) 0x66) && Objects.equals(bytes[5], (byte) 0x74)
@@ -324,6 +361,7 @@ public enum FileMagicNumber {
      * aac
      */
     AAC("audio/aac", "aac") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 1) {
@@ -338,18 +376,32 @@ public enum FileMagicNumber {
      * amr
      */
     AMR("audio/amr", "amr") {
+
         @Override
         public boolean match(final byte[] bytes) {
-            return ArrayKit.startWith(bytes, (byte) 0x23, (byte) 0x21, (byte) 0x41, (byte) 0x4d, (byte) 0x52,
-                    (byte) 0x0A)
-                    || ArrayKit.startWith(bytes, (byte) 0x23, (byte) 0x21, (byte) 0x41, (byte) 0x4d, (byte) 0x52,
-                            (byte) 0x5F, (byte) 0x4d, (byte) 0x43, (byte) 0x31, (byte) 0x2e, (byte) 0x30, (byte) 0x0a);
+            return ArrayKit
+                    .startWith(bytes, (byte) 0x23, (byte) 0x21, (byte) 0x41, (byte) 0x4d, (byte) 0x52, (byte) 0x0A)
+                    || ArrayKit.startWith(
+                            bytes,
+                            (byte) 0x23,
+                            (byte) 0x21,
+                            (byte) 0x41,
+                            (byte) 0x4d,
+                            (byte) 0x52,
+                            (byte) 0x5F,
+                            (byte) 0x4d,
+                            (byte) 0x43,
+                            (byte) 0x31,
+                            (byte) 0x2e,
+                            (byte) 0x30,
+                            (byte) 0x0a);
         }
     },
     /**
      * ac3
      */
     AC3("audio/ac3", "ac3") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x0b, (byte) 0x77);
@@ -359,6 +411,7 @@ public enum FileMagicNumber {
      * aiff
      */
     AIFF("audio/x-aiff", "aiff") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 11 && Objects.equals(bytes[0], (byte) 0x46) && Objects.equals(bytes[1], (byte) 0x4f)
@@ -373,6 +426,7 @@ public enum FileMagicNumber {
      * woff The existing registration "application/font-woff" is deprecated in favor of "font/woff".
      */
     WOFF("font/woff", "woff") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 8) {
@@ -393,6 +447,7 @@ public enum FileMagicNumber {
      * woff2
      */
     WOFF2("font/woff2", "woff2") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 8) {
@@ -413,6 +468,7 @@ public enum FileMagicNumber {
      * ttf
      */
     TTF("font/ttf", "ttf") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x00) && Objects.equals(bytes[1], (byte) 0x01)
@@ -424,6 +480,7 @@ public enum FileMagicNumber {
      * otf
      */
     OTF("font/otf", "otf") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x4f) && Objects.equals(bytes[1], (byte) 0x54)
@@ -436,6 +493,7 @@ public enum FileMagicNumber {
      * epub
      */
     EPUB("application/epub+zip", "epub") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 58 && Objects.equals(bytes[0], (byte) 0x50) && Objects.equals(bytes[1], (byte) 0x4b)
@@ -460,6 +518,7 @@ public enum FileMagicNumber {
      * zip
      */
     ZIP("application/zip", "zip") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 4) {
@@ -477,6 +536,7 @@ public enum FileMagicNumber {
      * tar
      */
     TAR("application/x-tar", "tar") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 261 && Objects.equals(bytes[257], (byte) 0x75)
@@ -488,6 +548,7 @@ public enum FileMagicNumber {
      * rar
      */
     RAR("application/x-rar-compressed", "rar") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 6 && Objects.equals(bytes[0], (byte) 0x52) && Objects.equals(bytes[1], (byte) 0x61)
@@ -500,6 +561,7 @@ public enum FileMagicNumber {
      * gz
      */
     GZ("application/gzip", "gz") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0x1f) && Objects.equals(bytes[1], (byte) 0x8b)
@@ -510,6 +572,7 @@ public enum FileMagicNumber {
      * bz2
      */
     BZ2("application/x-bzip2", "bz2") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0x42) && Objects.equals(bytes[1], (byte) 0x5a)
@@ -520,6 +583,7 @@ public enum FileMagicNumber {
      * 7z
      */
     SevenZ("application/x-7z-compressed", "7z") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 6 && Objects.equals(bytes[0], (byte) 0x37) && Objects.equals(bytes[1], (byte) 0x7a)
@@ -532,6 +596,7 @@ public enum FileMagicNumber {
      * pdf
      */
     PDF("application/pdf", "pdf") {
+
         @Override
         public boolean match(byte[] bytes) {
             // 去除bom头并且跳过三个字节
@@ -548,6 +613,7 @@ public enum FileMagicNumber {
      * exe
      */
     EXE("application/x-msdownload", "exe") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 1 && Objects.equals(bytes[0], (byte) 0x4d) && Objects.equals(bytes[1], (byte) 0x5a);
@@ -557,6 +623,7 @@ public enum FileMagicNumber {
      * swf
      */
     SWF("application/x-shockwave-flash", "swf") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 2 && (Objects.equals(bytes[0], 0x43) || Objects.equals(bytes[0], (byte) 0x46))
@@ -567,6 +634,7 @@ public enum FileMagicNumber {
      * rtf
      */
     RTF("application/rtf", "rtf") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x7b) && Objects.equals(bytes[1], (byte) 0x5c)
@@ -578,6 +646,7 @@ public enum FileMagicNumber {
      * nes
      */
     NES("application/x-nintendo-nes-rom", "nes") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x4e) && Objects.equals(bytes[1], (byte) 0x45)
@@ -588,6 +657,7 @@ public enum FileMagicNumber {
      * crx
      */
     CRX("application/x-google-chrome-extension", "crx") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x43) && Objects.equals(bytes[1], (byte) 0x72)
@@ -598,6 +668,7 @@ public enum FileMagicNumber {
      * cab
      */
     CAB("application/vnd.ms-cab-compressed", "cab") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 4) {
@@ -614,6 +685,7 @@ public enum FileMagicNumber {
      * ps
      */
     PS("application/postscript", "ps") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 1 && Objects.equals(bytes[0], (byte) 0x25) && Objects.equals(bytes[1], (byte) 0x21);
@@ -623,6 +695,7 @@ public enum FileMagicNumber {
      * xz
      */
     XZ("application/x-xz", "xz") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 5 && Objects.equals(bytes[0], (byte) 0xFD) && Objects.equals(bytes[1], (byte) 0x37)
@@ -634,6 +707,7 @@ public enum FileMagicNumber {
      * sqlite
      */
     SQLITE("application/x-sqlite3", "sqlite") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 15 && Objects.equals(bytes[0], (byte) 0x53) && Objects.equals(bytes[1], (byte) 0x51)
@@ -650,6 +724,7 @@ public enum FileMagicNumber {
      * deb
      */
     DEB("application/x-deb", "deb") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 20 && Objects.equals(bytes[0], (byte) 0x21) && Objects.equals(bytes[1], (byte) 0x3c)
@@ -669,6 +744,7 @@ public enum FileMagicNumber {
      * ar
      */
     AR("application/x-unix-archive", "ar") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 6 && Objects.equals(bytes[0], (byte) 0x21) && Objects.equals(bytes[1], (byte) 0x3c)
@@ -681,6 +757,7 @@ public enum FileMagicNumber {
      * lzo
      */
     LZOP("application/x-lzop", "lzo") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 7 && Objects.equals(bytes[0], (byte) 0x89) && Objects.equals(bytes[1], (byte) 0x4c)
@@ -693,6 +770,7 @@ public enum FileMagicNumber {
      * lz
      */
     LZ("application/x-lzip", "lz") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x4c) && Objects.equals(bytes[1], (byte) 0x5a)
@@ -703,6 +781,7 @@ public enum FileMagicNumber {
      * elf
      */
     ELF("application/x-executable", "elf") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 52 && Objects.equals(bytes[0], (byte) 0x7f) && Objects.equals(bytes[1], (byte) 0x45)
@@ -713,6 +792,7 @@ public enum FileMagicNumber {
      * lz4
      */
     LZ4("application/x-lz4", "lz4") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x04) && Objects.equals(bytes[1], (byte) 0x22)
@@ -723,6 +803,7 @@ public enum FileMagicNumber {
      * br https://github.com/madler/brotli/blob/master/br-format-v3.txt,brotli 没有固定的file magic number,所以此处只是参考
      */
     BR("application/x-brotli", "br") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0xce) && Objects.equals(bytes[1], (byte) 0xb2)
@@ -733,6 +814,7 @@ public enum FileMagicNumber {
      * dcm
      */
     DCM("application/x-dicom", "dcm") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 128 && Objects.equals(bytes[128], (byte) 0x44)
@@ -744,6 +826,7 @@ public enum FileMagicNumber {
      * rpm
      */
     RPM("application/x-rpm", "rpm") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0xed) && Objects.equals(bytes[1], (byte) 0xab)
@@ -754,6 +837,7 @@ public enum FileMagicNumber {
      * zst
      */
     ZSTD("application/x-zstd", "zst") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final int length = bytes.length;
@@ -778,6 +862,7 @@ public enum FileMagicNumber {
      * mp4
      */
     MP4("video/mp4", "mp4") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 13) {
@@ -798,6 +883,7 @@ public enum FileMagicNumber {
      * avi
      */
     AVI("video/x-msvideo", "avi") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 11 && Objects.equals(bytes[0], (byte) 0x52) && Objects.equals(bytes[1], (byte) 0x49)
@@ -810,6 +896,7 @@ public enum FileMagicNumber {
      * wmv
      */
     WMV("video/x-ms-wmv", "wmv") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 9 && Objects.equals(bytes[0], (byte) 0x30) && Objects.equals(bytes[1], (byte) 0x26)
@@ -823,6 +910,7 @@ public enum FileMagicNumber {
      * m4v
      */
     M4V("video/x-m4v", "m4v") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 12) {
@@ -843,6 +931,7 @@ public enum FileMagicNumber {
      * flv
      */
     FLV("video/x-flv", "flv") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x46) && Objects.equals(bytes[1], (byte) 0x4c)
@@ -853,6 +942,7 @@ public enum FileMagicNumber {
      * mkv
      */
     MKV("video/x-matroska", "mkv") {
+
         @Override
         public boolean match(final byte[] bytes) {
             // 0x42 0x82 0x88 0x6d 0x61 0x74 0x72 0x6f 0x73 0x6b 0x61
@@ -874,6 +964,7 @@ public enum FileMagicNumber {
      * webm
      */
     WEBM("video/webm", "webm") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final boolean flag1 = bytes.length > 8 && Objects.equals(bytes[0], (byte) 0x1a)
@@ -893,6 +984,7 @@ public enum FileMagicNumber {
      * mov 此文件签名非常复杂，只判断常见的几种
      */
     MOV("video/quicktime", "mov") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 12) {
@@ -921,6 +1013,7 @@ public enum FileMagicNumber {
      * mpg
      */
     MPEG("video/mpeg", "mpg") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x00) && Objects.equals(bytes[1], (byte) 0x00)
@@ -931,6 +1024,7 @@ public enum FileMagicNumber {
      * rmvb
      */
     RMVB("video/vnd.rn-realvideo", "rmvb") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x2E) && Objects.equals(bytes[1], (byte) 0x52)
@@ -941,6 +1035,7 @@ public enum FileMagicNumber {
      * 3gp
      */
     M3GP("video/3gpp", "3gp") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 10 && Objects.equals(bytes[4], (byte) 0x66) && Objects.equals(bytes[5], (byte) 0x74)
@@ -954,6 +1049,7 @@ public enum FileMagicNumber {
      * doc
      */
     DOC("application/msword", "doc") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xd0, (byte) 0xcf, (byte) 0x11, (byte) 0xe0, (byte) 0xa1,
@@ -980,6 +1076,7 @@ public enum FileMagicNumber {
      * xls
      */
     XLS("application/vnd.ms-excel", "xls") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xd0, (byte) 0xcf, (byte) 0x11, (byte) 0xe0, (byte) 0xa1,
@@ -1007,6 +1104,7 @@ public enum FileMagicNumber {
      * ppt
      */
     PPT("application/vnd.ms-powerpoint", "ppt") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xd0, (byte) 0xcf, (byte) 0x11, (byte) 0xe0, (byte) 0xa1,
@@ -1037,6 +1135,7 @@ public enum FileMagicNumber {
      * docx
      */
     DOCX("application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), DOCX);
@@ -1046,6 +1145,7 @@ public enum FileMagicNumber {
      * pptx
      */
     PPTX("application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), PPTX);
@@ -1055,6 +1155,7 @@ public enum FileMagicNumber {
      * xlsx
      */
     XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), XLSX);
@@ -1064,16 +1165,26 @@ public enum FileMagicNumber {
      * wasm
      */
     WASM("application/wasm", "wasm") {
+
         @Override
         public boolean match(final byte[] bytes) {
-            return ArrayKit.startWith(bytes, (byte) 0x00, (byte) 0x61, (byte) 0x73, (byte) 0x6D, (byte) 0x01,
-                    (byte) 0x00, (byte) 0x00, (byte) 0x00);
+            return ArrayKit.startWith(
+                    bytes,
+                    (byte) 0x00,
+                    (byte) 0x61,
+                    (byte) 0x73,
+                    (byte) 0x6D,
+                    (byte) 0x01,
+                    (byte) 0x00,
+                    (byte) 0x00,
+                    (byte) 0x00);
         }
     },
     /**
      * dex https://source.android.com/devices/tech/dalvik/dex-format#dex-file-magic
      */
     DEX("application/vnd.android.dex", "dex") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 36 && Objects.equals(bytes[0], (byte) 0x64) && Objects.equals(bytes[1], (byte) 0x65)
@@ -1085,6 +1196,7 @@ public enum FileMagicNumber {
      * dey
      */
     DEY("application/vnd.android.dey", "dey") {
+
         @Override
         public boolean match(final byte[] bytes) {
             return bytes.length > 100 && Objects.equals(bytes[0], (byte) 0x64) && Objects.equals(bytes[1], (byte) 0x65)
@@ -1096,6 +1208,7 @@ public enum FileMagicNumber {
      * eml
      */
     EML("message/rfc822", "eml") {
+
         @Override
         public boolean match(final byte[] bytes) {
             if (bytes.length < 8) {
@@ -1120,6 +1233,7 @@ public enum FileMagicNumber {
      * mdb
      */
     MDB("application/vnd.ms-access", "mdb") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x53,
@@ -1132,6 +1246,7 @@ public enum FileMagicNumber {
      * CHM 49 54 53 46
      */
     CHM("application/vnd.ms-htmlhelp", "chm") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x49, (byte) 0x54, (byte) 0x53, (byte) 0x46 };
@@ -1143,6 +1258,7 @@ public enum FileMagicNumber {
      * class CA FE BA BE
      */
     CLASS("application/java-vm", "class") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE };
@@ -1153,6 +1269,7 @@ public enum FileMagicNumber {
      * torrent 64 38 3A 61 6E 6E 6F 75 6E 63 65
      */
     TORRENT("application/x-bittorrent", "torrent") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x64, (byte) 0x38, (byte) 0x3A, (byte) 0x61, (byte) 0x6E,
@@ -1164,6 +1281,7 @@ public enum FileMagicNumber {
      * wpd
      */
     WPD("application/vnd.wordperfect", "wpd") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xFF, (byte) 0x57, (byte) 0x50, (byte) 0x43 };
@@ -1174,6 +1292,7 @@ public enum FileMagicNumber {
      * dbx
      */
     DBX("", "dbx") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0xCF, (byte) 0xAD, (byte) 0x12, (byte) 0xFE };
@@ -1184,6 +1303,7 @@ public enum FileMagicNumber {
      * pst
      */
     PST("application/vnd.ms-outlook-pst", "pst") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x21, (byte) 0x42, (byte) 0x44, (byte) 0x4E };
@@ -1194,6 +1314,7 @@ public enum FileMagicNumber {
      * ram
      */
     RAM("audio/x-pn-realaudio", "ram") {
+
         @Override
         public boolean match(final byte[] bytes) {
             final byte[] byte1 = new byte[] { (byte) 0x2E, (byte) 0x72, (byte) 0x61, (byte) 0xFD, (byte) 0x00 };

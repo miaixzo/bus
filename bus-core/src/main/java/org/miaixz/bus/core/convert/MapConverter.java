@@ -127,10 +127,15 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
      * @param srcMap    源Map
      * @param targetMap 目标Map
      */
-    private void convertMapToMap(final Type keyType, final Type valueType, final Map<?, ?> srcMap,
+    private void convertMapToMap(
+            final Type keyType,
+            final Type valueType,
+            final Map<?, ?> srcMap,
             final Map targetMap) {
-        srcMap.forEach((key, value) -> targetMap.put(TypeKit.isUnknown(keyType) ? key : converter.convert(keyType, key),
-                TypeKit.isUnknown(valueType) ? value : converter.convert(valueType, value)));
+        srcMap.forEach(
+                (key, value) -> targetMap.put(
+                        TypeKit.isUnknown(keyType) ? key : converter.convert(keyType, key),
+                        TypeKit.isUnknown(valueType) ? value : converter.convert(valueType, value)));
     }
 
 }

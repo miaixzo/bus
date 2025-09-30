@@ -67,8 +67,8 @@ public class NotificationSettingsApi extends AbstractApi {
     public NotificationSettings updateGlobalNotificationSettings(NotificationSettings settings)
             throws GitLabApiException {
 
-        GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel()).withParam("email",
-                settings.getEmail());
+        GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel())
+                .withParam("email", settings.getEmail());
 
         Events events = settings.getEvents();
         if (events != null) {
@@ -119,8 +119,8 @@ public class NotificationSettingsApi extends AbstractApi {
     public NotificationSettings updateGroupNotificationSettings(long groupId, NotificationSettings settings)
             throws GitLabApiException {
 
-        GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel()).withParam("email",
-                settings.getEmail());
+        GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel())
+                .withParam("email", settings.getEmail());
 
         Events events = settings.getEvents();
         if (events != null) {
@@ -171,8 +171,8 @@ public class NotificationSettingsApi extends AbstractApi {
     public NotificationSettings updateProjectNotificationSettings(long projectId, NotificationSettings settings)
             throws GitLabApiException {
 
-        GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel()).withParam("email",
-                settings.getEmail());
+        GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel())
+                .withParam("email", settings.getEmail());
 
         Events events = settings.getEvents();
         if (events != null) {

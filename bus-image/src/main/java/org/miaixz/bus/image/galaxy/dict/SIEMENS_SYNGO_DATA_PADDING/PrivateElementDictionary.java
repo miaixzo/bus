@@ -52,8 +52,8 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.PixelDataLeadingPadding:
-            return VR.OB;
+            case PrivateTag.PixelDataLeadingPadding:
+                return VR.OB;
         }
         return VR.UN;
     }

@@ -79,7 +79,9 @@ public final class PerfCounterQuery {
      * @return An {@link EnumMap} of the values indexed by {@code propertyEnum} on success, or an empty map if both PDH
      *         and WMI queries failed.
      */
-    public static <T extends Enum<T>> Map<T, Long> queryValues(Class<T> propertyEnum, String perfObject,
+    public static <T extends Enum<T>> Map<T, Long> queryValues(
+            Class<T> propertyEnum,
+            String perfObject,
             String perfWmiClass) {
         if (!FAILED_QUERY_CACHE.contains(perfObject)) {
             Map<T, Long> valueMap = queryValuesFromPDH(propertyEnum, perfObject);
@@ -113,8 +115,10 @@ public final class PerfCounterQuery {
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
             // Set up the query and counter handles
             for (T prop : props) {
-                PerfDataKit.PerfCounter counter = PerfDataKit.createCounter(perfObjectLocalized,
-                        ((PdhCounterProperty) prop).getInstance(), ((PdhCounterProperty) prop).getCounter());
+                PerfDataKit.PerfCounter counter = PerfDataKit.createCounter(
+                        perfObjectLocalized,
+                        ((PdhCounterProperty) prop).getInstance(),
+                        ((PdhCounterProperty) prop).getCounter());
                 counterMap.put(prop, counter);
                 if (!pdhQueryHandler.addCounterToQuery(counter)) {
                     return valueMap;
@@ -147,20 +151,24 @@ public final class PerfCounterQuery {
         if (result.getResultCount() > 0) {
             for (T prop : propertyEnum.getEnumConstants()) {
                 switch (result.getCIMType(prop)) {
-                case Wbemcli.CIM_UINT16:
-                    valueMap.put(prop, (long) WmiKit.getUint16(result, prop, 0));
-                    break;
-                case Wbemcli.CIM_UINT32:
-                    valueMap.put(prop, WmiKit.getUint32asLong(result, prop, 0));
-                    break;
-                case Wbemcli.CIM_UINT64:
-                    valueMap.put(prop, WmiKit.getUint64(result, prop, 0));
-                    break;
-                case Wbemcli.CIM_DATETIME:
-                    valueMap.put(prop, WmiKit.getDateTime(result, prop, 0).toInstant().toEpochMilli());
-                    break;
-                default:
-                    throw new ClassCastException("Unimplemented CIM Type Mapping.");
+                    case Wbemcli.CIM_UINT16:
+                        valueMap.put(prop, (long) WmiKit.getUint16(result, prop, 0));
+                        break;
+
+                    case Wbemcli.CIM_UINT32:
+                        valueMap.put(prop, WmiKit.getUint32asLong(result, prop, 0));
+                        break;
+
+                    case Wbemcli.CIM_UINT64:
+                        valueMap.put(prop, WmiKit.getUint64(result, prop, 0));
+                        break;
+
+                    case Wbemcli.CIM_DATETIME:
+                        valueMap.put(prop, WmiKit.getDateTime(result, prop, 0).toInstant().toEpochMilli());
+                        break;
+
+                    default:
+                        throw new ClassCastException("Unimplemented CIM Type Mapping.");
                 }
             }
         }
@@ -193,7 +201,9 @@ public final class PerfCounterQuery {
                     String.format(Locale.ROOT, "0x%x", e.getHR().intValue()),
                     "See https://support.microsoft.com/en-us/help/300956/how-to-manually-rebuild-performance-counter-library-values");
         } catch (PdhException e) {
-            Logger.debug("Unable to localize {} performance counter.  Error {}.", perfObject,
+            Logger.debug(
+                    "Unable to localize {} performance counter.  Error {}.",
+                    perfObject,
                     String.format(Locale.ROOT, "0x%x", e.getErrorCode()));
         }
         if (localized.isEmpty()) {
@@ -207,6 +217,7 @@ public final class PerfCounterQuery {
      * Contract for Counter Property Enums
      */
     public interface PdhCounterProperty {
+
         /**
          * @return Returns the instance.
          */

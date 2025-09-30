@@ -43,6 +43,7 @@ public class IssueEvent implements Serializable {
 
     /** Enum to use for specifying the state events resource type. */
     public enum ResourceType {
+
         ISSUE;
 
         private static JacksonJsonEnumHelper<ResourceType> enumHelper = new JacksonJsonEnumHelper<>(ResourceType.class,

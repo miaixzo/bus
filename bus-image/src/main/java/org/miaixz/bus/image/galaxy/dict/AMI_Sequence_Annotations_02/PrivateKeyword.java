@@ -38,32 +38,44 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.AnnotationSequence:
-            return "AnnotationSequence";
-        case PrivateTag.AnnotationUID:
-            return "AnnotationUID";
-        case PrivateTag.AnnotationColor:
-            return "AnnotationColor";
-        case PrivateTag.AnnotationLineStyle:
-            return "AnnotationLineStyle";
-        case PrivateTag.AnnotationElements:
-            return "AnnotationElements";
-        case PrivateTag.AnnotationLabel:
-            return "AnnotationLabel";
-        case PrivateTag.AnnotationCreator:
-            return "AnnotationCreator";
-        case PrivateTag.AnnotationModifiers:
-            return "AnnotationModifiers";
-        case PrivateTag.AnnotationCreationDate:
-            return "AnnotationCreationDate";
-        case PrivateTag.AnnotationCreationTime:
-            return "AnnotationCreationTime";
-        case PrivateTag.AnnotationModificationDates:
-            return "AnnotationModificationDates";
-        case PrivateTag.AnnotationModificationTimes:
-            return "AnnotationModificationTimes";
-        case PrivateTag.AnnotationFrameNumber:
-            return "AnnotationFrameNumber";
+            case PrivateTag.AnnotationSequence:
+                return "AnnotationSequence";
+
+            case PrivateTag.AnnotationUID:
+                return "AnnotationUID";
+
+            case PrivateTag.AnnotationColor:
+                return "AnnotationColor";
+
+            case PrivateTag.AnnotationLineStyle:
+                return "AnnotationLineStyle";
+
+            case PrivateTag.AnnotationElements:
+                return "AnnotationElements";
+
+            case PrivateTag.AnnotationLabel:
+                return "AnnotationLabel";
+
+            case PrivateTag.AnnotationCreator:
+                return "AnnotationCreator";
+
+            case PrivateTag.AnnotationModifiers:
+                return "AnnotationModifiers";
+
+            case PrivateTag.AnnotationCreationDate:
+                return "AnnotationCreationDate";
+
+            case PrivateTag.AnnotationCreationTime:
+                return "AnnotationCreationTime";
+
+            case PrivateTag.AnnotationModificationDates:
+                return "AnnotationModificationDates";
+
+            case PrivateTag.AnnotationModificationTimes:
+                return "AnnotationModificationTimes";
+
+            case PrivateTag.AnnotationFrameNumber:
+                return "AnnotationFrameNumber";
         }
         return "";
     }

@@ -530,7 +530,9 @@ public class ByteKit {
      * @return 转换后的数字
      * @throws IllegalArgumentException 不支持的数字类型，如用户自定义数字类型
      */
-    public static <T extends Number> T toNumber(final byte[] bytes, final Class<T> targetClass,
+    public static <T extends Number> T toNumber(
+            final byte[] bytes,
+            final Class<T> targetClass,
             final ByteOrder byteOrder) throws IllegalArgumentException {
         final Number number;
         if (Byte.class == targetClass) {

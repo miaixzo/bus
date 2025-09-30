@@ -162,26 +162,35 @@ public class CommonsLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final Level level, final Throwable t, final String format,
+    public void log(
+            final String fqcn,
+            final Level level,
+            final Throwable t,
+            final String format,
             final Object... args) {
         switch (level) {
-        case TRACE:
-            trace(fqcn, t, format, args);
-            break;
-        case DEBUG:
-            debug(fqcn, t, format, args);
-            break;
-        case INFO:
-            info(fqcn, t, format, args);
-            break;
-        case WARN:
-            warn(fqcn, t, format, args);
-            break;
-        case ERROR:
-            error(fqcn, t, format, args);
-            break;
-        default:
-            throw new Error(StringKit.format("Can not identify level: {}", level));
+            case TRACE:
+                trace(fqcn, t, format, args);
+                break;
+
+            case DEBUG:
+                debug(fqcn, t, format, args);
+                break;
+
+            case INFO:
+                info(fqcn, t, format, args);
+                break;
+
+            case WARN:
+                warn(fqcn, t, format, args);
+                break;
+
+            case ERROR:
+                error(fqcn, t, format, args);
+                break;
+
+            default:
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 
@@ -192,13 +201,13 @@ public class CommonsLoggingProvider extends AbstractProvider {
             org.apache.logging.log4j.Level log4jLevel = ((Logger) logger).getLevel();
             if (log4jLevel != null) {
                 return switch (log4jLevel.getStandardLevel().toString()) {
-                case "TRACE" -> Level.TRACE;
-                case "DEBUG" -> Level.DEBUG;
-                case "INFO" -> Level.INFO;
-                case "WARN" -> Level.WARN;
-                case "ERROR" -> Level.ERROR;
-                case "FATAL" -> Level.ERROR; // 映射 FATAL 到 ERROR
-                default -> Level.OFF;
+                    case "TRACE" -> Level.TRACE;
+                    case "DEBUG" -> Level.DEBUG;
+                    case "INFO" -> Level.INFO;
+                    case "WARN" -> Level.WARN;
+                    case "ERROR" -> Level.ERROR;
+                    case "FATAL" -> Level.ERROR; // 映射 FATAL 到 ERROR
+                    default -> Level.OFF;
                 };
             }
         }

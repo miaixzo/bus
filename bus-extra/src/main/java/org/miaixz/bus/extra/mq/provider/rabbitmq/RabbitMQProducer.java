@@ -43,6 +43,7 @@ import com.rabbitmq.client.Channel;
  * @since Java 17+
  */
 public class RabbitMQProducer implements Producer {
+
     private final Channel channel;
     private String exchange = Normal.EMPTY;
 
@@ -76,8 +77,12 @@ public class RabbitMQProducer implements Producer {
      * @param arguments  队列的其他参数配置
      * @return 当前RabbitMQProducer实例，支持链式调用
      */
-    public RabbitMQProducer queueDeclare(final String queue, final boolean durable, final boolean exclusive,
-            final boolean autoDelete, final Map<String, Object> arguments) {
+    public RabbitMQProducer queueDeclare(
+            final String queue,
+            final boolean durable,
+            final boolean exclusive,
+            final boolean autoDelete,
+            final Map<String, Object> arguments) {
         try {
             this.channel.queueDeclare(queue, durable, exclusive, autoDelete, arguments);
         } catch (final IOException e) {

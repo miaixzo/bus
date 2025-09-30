@@ -173,8 +173,11 @@ public class LookupTableFactory {
             int[] desc = pLUT.getInts(Tag.LUTDescriptor);
             if (desc != null && desc.length == 3) {
                 int len = desc[0] == 0 ? 0x10000 : desc[0];
-                presentationLUT = createLUT(new StoredValue.Unsigned(log2(len)), resetOffset(desc),
-                        pLUT.getSafeBytes(Tag.LUTData), pLUT.bigEndian());
+                presentationLUT = createLUT(
+                        new StoredValue.Unsigned(log2(len)),
+                        resetOffset(desc),
+                        pLUT.getSafeBytes(Tag.LUTData),
+                        pLUT.bigEndian());
             }
         } else {
             String pShape;
@@ -426,14 +429,17 @@ public class LookupTableFactory {
         ComponentSampleModel sm = (ComponentSampleModel) raster.getSampleModel();
         DataBuffer dataBuffer = raster.getDataBuffer();
         switch (dataBuffer.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            return calcMinMax(storedValue, sm, ((DataBufferByte) dataBuffer).getData());
-        case DataBuffer.TYPE_USHORT:
-            return calcMinMax(storedValue, sm, ((DataBufferUShort) dataBuffer).getData());
-        case DataBuffer.TYPE_SHORT:
-            return calcMinMax(storedValue, sm, ((DataBufferShort) dataBuffer).getData());
-        default:
-            throw new UnsupportedOperationException("DataBuffer: " + dataBuffer.getClass() + " not supported");
+            case DataBuffer.TYPE_BYTE:
+                return calcMinMax(storedValue, sm, ((DataBufferByte) dataBuffer).getData());
+
+            case DataBuffer.TYPE_USHORT:
+                return calcMinMax(storedValue, sm, ((DataBufferUShort) dataBuffer).getData());
+
+            case DataBuffer.TYPE_SHORT:
+                return calcMinMax(storedValue, sm, ((DataBufferShort) dataBuffer).getData());
+
+            default:
+                throw new UnsupportedOperationException("DataBuffer: " + dataBuffer.getClass() + " not supported");
         }
     }
 

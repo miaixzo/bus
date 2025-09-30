@@ -38,30 +38,41 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.EvidenceDocumentTemplateName:
-            return "EvidenceDocumentTemplateName";
-        case PrivateTag.EvidenceDocumentTemplateVersion:
-            return "EvidenceDocumentTemplateVersion";
-        case PrivateTag.ClinicalFindingData:
-            return "ClinicalFindingData";
-        case PrivateTag.Metadata:
-            return "Metadata";
-        case PrivateTag.ImplementationVersion:
-            return "ImplementationVersion";
-        case PrivateTag.Predecessor:
-            return "Predecessor";
-        case PrivateTag.LogicalID:
-            return "LogicalID";
-        case PrivateTag.ApplicationData:
-            return "ApplicationData";
-        case PrivateTag.OwnerClinicalTaskName:
-            return "OwnerClinicalTaskName";
-        case PrivateTag.OwnerTaskName:
-            return "OwnerTaskName";
-        case PrivateTag.OwnerSupportedTemplates:
-            return "OwnerSupportedTemplates";
-        case PrivateTag.VolumeCatalog:
-            return "VolumeCatalog";
+            case PrivateTag.EvidenceDocumentTemplateName:
+                return "EvidenceDocumentTemplateName";
+
+            case PrivateTag.EvidenceDocumentTemplateVersion:
+                return "EvidenceDocumentTemplateVersion";
+
+            case PrivateTag.ClinicalFindingData:
+                return "ClinicalFindingData";
+
+            case PrivateTag.Metadata:
+                return "Metadata";
+
+            case PrivateTag.ImplementationVersion:
+                return "ImplementationVersion";
+
+            case PrivateTag.Predecessor:
+                return "Predecessor";
+
+            case PrivateTag.LogicalID:
+                return "LogicalID";
+
+            case PrivateTag.ApplicationData:
+                return "ApplicationData";
+
+            case PrivateTag.OwnerClinicalTaskName:
+                return "OwnerClinicalTaskName";
+
+            case PrivateTag.OwnerTaskName:
+                return "OwnerTaskName";
+
+            case PrivateTag.OwnerSupportedTemplates:
+                return "OwnerSupportedTemplates";
+
+            case PrivateTag.VolumeCatalog:
+                return "VolumeCatalog";
         }
         return "";
     }

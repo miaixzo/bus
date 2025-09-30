@@ -70,7 +70,8 @@ public class CipherSuite {
     // public static final CipherSuite TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5 = init("SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5",
     // 0x0006);
     // public static final CipherSuite TLS_RSA_WITH_IDEA_CBC_SHA = init("TLS_RSA_WITH_IDEA_CBC_SHA", 0x0007);
-    public static final CipherSuite TLS_RSA_EXPORT_WITH_DES40_CBC_SHA = init("SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
+    public static final CipherSuite TLS_RSA_EXPORT_WITH_DES40_CBC_SHA = init(
+            "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
             0x0008);
     public static final CipherSuite TLS_RSA_WITH_DES_CBC_SHA = init("SSL_RSA_WITH_DES_CBC_SHA", 0x0009);
     public static final CipherSuite TLS_RSA_WITH_3DES_EDE_CBC_SHA = init("SSL_RSA_WITH_3DES_EDE_CBC_SHA", 0x000a);
@@ -85,22 +86,29 @@ public class CipherSuite {
     // public static final CipherSuite TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA = init("TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA",
     // 0x0010);
     public static final CipherSuite TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA = init(
-            "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA", 0x0011);
+            "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA",
+            0x0011);
     public static final CipherSuite TLS_DHE_DSS_WITH_DES_CBC_SHA = init("SSL_DHE_DSS_WITH_DES_CBC_SHA", 0x0012);
-    public static final CipherSuite TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA = init("SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
+    public static final CipherSuite TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA = init(
+            "SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
             0x0013);
     public static final CipherSuite TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA = init(
-            "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA", 0x0014);
+            "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
+            0x0014);
     public static final CipherSuite TLS_DHE_RSA_WITH_DES_CBC_SHA = init("SSL_DHE_RSA_WITH_DES_CBC_SHA", 0x0015);
-    public static final CipherSuite TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA = init("SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA",
+    public static final CipherSuite TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA = init(
+            "SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA",
             0x0016);
-    public static final CipherSuite TLS_DH_anon_EXPORT_WITH_RC4_40_MD5 = init("SSL_DH_anon_EXPORT_WITH_RC4_40_MD5",
+    public static final CipherSuite TLS_DH_anon_EXPORT_WITH_RC4_40_MD5 = init(
+            "SSL_DH_anon_EXPORT_WITH_RC4_40_MD5",
             0x0017);
     public static final CipherSuite TLS_DH_anon_WITH_RC4_128_MD5 = init("SSL_DH_anon_WITH_RC4_128_MD5", 0x0018);
     public static final CipherSuite TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA = init(
-            "SSL_DH_anon_EXPORT_WITH_DES40_CBC_SHA", 0x0019);
+            "SSL_DH_anon_EXPORT_WITH_DES40_CBC_SHA",
+            0x0019);
     public static final CipherSuite TLS_DH_anon_WITH_DES_CBC_SHA = init("SSL_DH_anon_WITH_DES_CBC_SHA", 0x001a);
-    public static final CipherSuite TLS_DH_anon_WITH_3DES_EDE_CBC_SHA = init("SSL_DH_anon_WITH_3DES_EDE_CBC_SHA",
+    public static final CipherSuite TLS_DH_anon_WITH_3DES_EDE_CBC_SHA = init(
+            "SSL_DH_anon_WITH_3DES_EDE_CBC_SHA",
             0x001b);
     public static final CipherSuite TLS_KRB5_WITH_DES_CBC_SHA = init("TLS_KRB5_WITH_DES_CBC_SHA", 0x001e);
     public static final CipherSuite TLS_KRB5_WITH_3DES_EDE_CBC_SHA = init("TLS_KRB5_WITH_3DES_EDE_CBC_SHA", 0x001f);
@@ -110,12 +118,14 @@ public class CipherSuite {
     public static final CipherSuite TLS_KRB5_WITH_3DES_EDE_CBC_MD5 = init("TLS_KRB5_WITH_3DES_EDE_CBC_MD5", 0x0023);
     public static final CipherSuite TLS_KRB5_WITH_RC4_128_MD5 = init("TLS_KRB5_WITH_RC4_128_MD5", 0x0024);
     // public static final CipherSuite TLS_KRB5_WITH_IDEA_CBC_MD5 = init("TLS_KRB5_WITH_IDEA_CBC_MD5", 0x0025);
-    public static final CipherSuite TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA = init("TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA",
+    public static final CipherSuite TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA = init(
+            "TLS_KRB5_EXPORT_WITH_DES_CBC_40_SHA",
             0x0026);
     // public static final CipherSuite TLS_KRB5_EXPORT_WITH_RC2_CBC_40_SHA = init("TLS_KRB5_EXPORT_WITH_RC2_CBC_40_SHA",
     // 0x0027);
     public static final CipherSuite TLS_KRB5_EXPORT_WITH_RC4_40_SHA = init("TLS_KRB5_EXPORT_WITH_RC4_40_SHA", 0x0028);
-    public static final CipherSuite TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5 = init("TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5",
+    public static final CipherSuite TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5 = init(
+            "TLS_KRB5_EXPORT_WITH_DES_CBC_40_MD5",
             0x0029);
     // public static final CipherSuite TLS_KRB5_EXPORT_WITH_RC2_CBC_40_MD5 = init("TLS_KRB5_EXPORT_WITH_RC2_CBC_40_MD5",
     // 0x002a);
@@ -146,44 +156,56 @@ public class CipherSuite {
     // 0x003e);
     // public static final CipherSuite TLS_DH_RSA_WITH_AES_128_CBC_SHA256 = init("TLS_DH_RSA_WITH_AES_128_CBC_SHA256",
     // 0x003f);
-    public static final CipherSuite TLS_DHE_DSS_WITH_AES_128_CBC_SHA256 = init("TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
+    public static final CipherSuite TLS_DHE_DSS_WITH_AES_128_CBC_SHA256 = init(
+            "TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
             0x0040);
-    public static final CipherSuite TLS_RSA_WITH_CAMELLIA_128_CBC_SHA = init("TLS_RSA_WITH_CAMELLIA_128_CBC_SHA",
+    public static final CipherSuite TLS_RSA_WITH_CAMELLIA_128_CBC_SHA = init(
+            "TLS_RSA_WITH_CAMELLIA_128_CBC_SHA",
             0x0041);
     // public static final CipherSuite TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA =
     // init("TLS_DH_DSS_WITH_CAMELLIA_128_CBC_SHA", 0x0042);
     // public static final CipherSuite TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA =
     // init("TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA", 0x0043);
     public static final CipherSuite TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA = init(
-            "TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA", 0x0044);
+            "TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA",
+            0x0044);
     public static final CipherSuite TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA = init(
-            "TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA", 0x0045);
+            "TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA",
+            0x0045);
     // public static final CipherSuite TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA =
     // init("TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA", 0x0046);
-    public static final CipherSuite TLS_DHE_RSA_WITH_AES_128_CBC_SHA256 = init("TLS_DHE_RSA_WITH_AES_128_CBC_SHA256",
+    public static final CipherSuite TLS_DHE_RSA_WITH_AES_128_CBC_SHA256 = init(
+            "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256",
             0x0067);
     // public static final CipherSuite TLS_DH_DSS_WITH_AES_256_CBC_SHA256 = init("TLS_DH_DSS_WITH_AES_256_CBC_SHA256",
     // 0x0068);
     // public static final CipherSuite TLS_DH_RSA_WITH_AES_256_CBC_SHA256 = init("TLS_DH_RSA_WITH_AES_256_CBC_SHA256",
     // 0x0069);
-    public static final CipherSuite TLS_DHE_DSS_WITH_AES_256_CBC_SHA256 = init("TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
+    public static final CipherSuite TLS_DHE_DSS_WITH_AES_256_CBC_SHA256 = init(
+            "TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
             0x006a);
-    public static final CipherSuite TLS_DHE_RSA_WITH_AES_256_CBC_SHA256 = init("TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",
+    public static final CipherSuite TLS_DHE_RSA_WITH_AES_256_CBC_SHA256 = init(
+            "TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",
             0x006b);
-    public static final CipherSuite TLS_DH_anon_WITH_AES_128_CBC_SHA256 = init("TLS_DH_anon_WITH_AES_128_CBC_SHA256",
+    public static final CipherSuite TLS_DH_anon_WITH_AES_128_CBC_SHA256 = init(
+            "TLS_DH_anon_WITH_AES_128_CBC_SHA256",
             0x006c);
-    public static final CipherSuite TLS_DH_anon_WITH_AES_256_CBC_SHA256 = init("TLS_DH_anon_WITH_AES_256_CBC_SHA256",
+    public static final CipherSuite TLS_DH_anon_WITH_AES_256_CBC_SHA256 = init(
+            "TLS_DH_anon_WITH_AES_256_CBC_SHA256",
             0x006d);
-    public static final CipherSuite TLS_RSA_WITH_CAMELLIA_256_CBC_SHA = init("TLS_RSA_WITH_CAMELLIA_256_CBC_SHA",
+    public static final CipherSuite TLS_RSA_WITH_CAMELLIA_256_CBC_SHA = init(
+            "TLS_RSA_WITH_CAMELLIA_256_CBC_SHA",
             0x0084);
     // public static final CipherSuite TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA =
     // init("TLS_DH_DSS_WITH_CAMELLIA_256_CBC_SHA", 0x0085);
     // public static final CipherSuite TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA =
     // init("TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA", 0x0086);
     public static final CipherSuite TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA = init(
-            "TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA", 0x0087);
+            "TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA",
+            0x0087);
     public static final CipherSuite TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA = init(
-            "TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA", 0x0088);
+            "TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA",
+            0x0088);
     // public static final CipherSuite TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA =
     // init("TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA", 0x0089);
     public static final CipherSuite TLS_PSK_WITH_RC4_128_SHA = init("TLS_PSK_WITH_RC4_128_SHA", 0x008a);
@@ -212,25 +234,31 @@ public class CipherSuite {
     // public static final CipherSuite TLS_DH_anon_WITH_SEED_CBC_SHA = init("TLS_DH_anon_WITH_SEED_CBC_SHA", 0x009b);
     public static final CipherSuite TLS_RSA_WITH_AES_128_GCM_SHA256 = init("TLS_RSA_WITH_AES_128_GCM_SHA256", 0x009c);
     public static final CipherSuite TLS_RSA_WITH_AES_256_GCM_SHA384 = init("TLS_RSA_WITH_AES_256_GCM_SHA384", 0x009d);
-    public static final CipherSuite TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 = init("TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+    public static final CipherSuite TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 = init(
+            "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
             0x009e);
-    public static final CipherSuite TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 = init("TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
+    public static final CipherSuite TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 = init(
+            "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
             0x009f);
     // public static final CipherSuite TLS_DH_RSA_WITH_AES_128_GCM_SHA256 = init("TLS_DH_RSA_WITH_AES_128_GCM_SHA256",
     // 0x00a0);
     // public static final CipherSuite TLS_DH_RSA_WITH_AES_256_GCM_SHA384 = init("TLS_DH_RSA_WITH_AES_256_GCM_SHA384",
     // 0x00a1);
-    public static final CipherSuite TLS_DHE_DSS_WITH_AES_128_GCM_SHA256 = init("TLS_DHE_DSS_WITH_AES_128_GCM_SHA256",
+    public static final CipherSuite TLS_DHE_DSS_WITH_AES_128_GCM_SHA256 = init(
+            "TLS_DHE_DSS_WITH_AES_128_GCM_SHA256",
             0x00a2);
-    public static final CipherSuite TLS_DHE_DSS_WITH_AES_256_GCM_SHA384 = init("TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",
+    public static final CipherSuite TLS_DHE_DSS_WITH_AES_256_GCM_SHA384 = init(
+            "TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",
             0x00a3);
     // public static final CipherSuite TLS_DH_DSS_WITH_AES_128_GCM_SHA256 = init("TLS_DH_DSS_WITH_AES_128_GCM_SHA256",
     // 0x00a4);
     // public static final CipherSuite TLS_DH_DSS_WITH_AES_256_GCM_SHA384 = init("TLS_DH_DSS_WITH_AES_256_GCM_SHA384",
     // 0x00a5);
-    public static final CipherSuite TLS_DH_anon_WITH_AES_128_GCM_SHA256 = init("TLS_DH_anon_WITH_AES_128_GCM_SHA256",
+    public static final CipherSuite TLS_DH_anon_WITH_AES_128_GCM_SHA256 = init(
+            "TLS_DH_anon_WITH_AES_128_GCM_SHA256",
             0x00a6);
-    public static final CipherSuite TLS_DH_anon_WITH_AES_256_GCM_SHA384 = init("TLS_DH_anon_WITH_AES_256_GCM_SHA384",
+    public static final CipherSuite TLS_DH_anon_WITH_AES_256_GCM_SHA384 = init(
+            "TLS_DH_anon_WITH_AES_256_GCM_SHA384",
             0x00a7);
     // public static final CipherSuite TLS_PSK_WITH_AES_128_GCM_SHA256 = init("TLS_PSK_WITH_AES_128_GCM_SHA256",
     // 0x00a8);
@@ -286,48 +314,64 @@ public class CipherSuite {
     // init("TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256", 0x00c4);
     // public static final CipherSuite TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256 =
     // init("TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256", 0x00c5);
-    public static final CipherSuite TLS_EMPTY_RENEGOTIATION_INFO_SCSV = init("TLS_EMPTY_RENEGOTIATION_INFO_SCSV",
+    public static final CipherSuite TLS_EMPTY_RENEGOTIATION_INFO_SCSV = init(
+            "TLS_EMPTY_RENEGOTIATION_INFO_SCSV",
             0x00ff);
     public static final CipherSuite TLS_FALLBACK_SCSV = init("TLS_FALLBACK_SCSV", 0x5600);
     public static final CipherSuite TLS_ECDH_ECDSA_WITH_NULL_SHA = init("TLS_ECDH_ECDSA_WITH_NULL_SHA", 0xc001);
     public static final CipherSuite TLS_ECDH_ECDSA_WITH_RC4_128_SHA = init("TLS_ECDH_ECDSA_WITH_RC4_128_SHA", 0xc002);
-    public static final CipherSuite TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA = init("TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA = init(
+            "TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA",
             0xc003);
-    public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA = init("TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA = init(
+            "TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA",
             0xc004);
-    public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA = init("TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA = init(
+            "TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA",
             0xc005);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_NULL_SHA = init("TLS_ECDHE_ECDSA_WITH_NULL_SHA", 0xc006);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_RC4_128_SHA = init("TLS_ECDHE_ECDSA_WITH_RC4_128_SHA", 0xc007);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA = init(
-            "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA", 0xc008);
-    public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA = init("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+            "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
+            0xc008);
+    public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA = init(
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
             0xc009);
-    public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA = init("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+    public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA = init(
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
             0xc00a);
     public static final CipherSuite TLS_ECDH_RSA_WITH_NULL_SHA = init("TLS_ECDH_RSA_WITH_NULL_SHA", 0xc00b);
     public static final CipherSuite TLS_ECDH_RSA_WITH_RC4_128_SHA = init("TLS_ECDH_RSA_WITH_RC4_128_SHA", 0xc00c);
-    public static final CipherSuite TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA = init("TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA = init(
+            "TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA",
             0xc00d);
-    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_128_CBC_SHA = init("TLS_ECDH_RSA_WITH_AES_128_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_128_CBC_SHA = init(
+            "TLS_ECDH_RSA_WITH_AES_128_CBC_SHA",
             0xc00e);
-    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_256_CBC_SHA = init("TLS_ECDH_RSA_WITH_AES_256_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_256_CBC_SHA = init(
+            "TLS_ECDH_RSA_WITH_AES_256_CBC_SHA",
             0xc00f);
     public static final CipherSuite TLS_ECDHE_RSA_WITH_NULL_SHA = init("TLS_ECDHE_RSA_WITH_NULL_SHA", 0xc010);
     public static final CipherSuite TLS_ECDHE_RSA_WITH_RC4_128_SHA = init("TLS_ECDHE_RSA_WITH_RC4_128_SHA", 0xc011);
-    public static final CipherSuite TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA = init("TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
+    public static final CipherSuite TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA = init(
+            "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
             0xc012);
-    public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA = init("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+    public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA = init(
+            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
             0xc013);
-    public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA = init("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+    public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA = init(
+            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
             0xc014);
     public static final CipherSuite TLS_ECDH_anon_WITH_NULL_SHA = init("TLS_ECDH_anon_WITH_NULL_SHA", 0xc015);
     public static final CipherSuite TLS_ECDH_anon_WITH_RC4_128_SHA = init("TLS_ECDH_anon_WITH_RC4_128_SHA", 0xc016);
-    public static final CipherSuite TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA = init("TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA = init(
+            "TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA",
             0xc017);
-    public static final CipherSuite TLS_ECDH_anon_WITH_AES_128_CBC_SHA = init("TLS_ECDH_anon_WITH_AES_128_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_anon_WITH_AES_128_CBC_SHA = init(
+            "TLS_ECDH_anon_WITH_AES_128_CBC_SHA",
             0xc018);
-    public static final CipherSuite TLS_ECDH_anon_WITH_AES_256_CBC_SHA = init("TLS_ECDH_anon_WITH_AES_256_CBC_SHA",
+    public static final CipherSuite TLS_ECDH_anon_WITH_AES_256_CBC_SHA = init(
+            "TLS_ECDH_anon_WITH_AES_256_CBC_SHA",
             0xc019);
     // public static final CipherSuite TLS_SRP_SHA_WITH_3DES_EDE_CBC_SHA = init("TLS_SRP_SHA_WITH_3DES_EDE_CBC_SHA",
     // 0xc01a);
@@ -348,43 +392,61 @@ public class CipherSuite {
     // public static final CipherSuite TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA =
     // init("TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA", 0xc022);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256 = init(
-            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256", 0xc023);
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+            0xc023);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384 = init(
-            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384", 0xc024);
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+            0xc024);
     public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256 = init(
-            "TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256", 0xc025);
+            "TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256",
+            0xc025);
     public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384 = init(
-            "TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384", 0xc026);
+            "TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384",
+            0xc026);
     public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 = init(
-            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256", 0xc027);
+            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+            0xc027);
     public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 = init(
-            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384", 0xc028);
-    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256 = init("TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+            0xc028);
+    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256 = init(
+            "TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256",
             0xc029);
-    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384 = init("TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384",
+    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384 = init(
+            "TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384",
             0xc02a);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 = init(
-            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256", 0xc02b);
+            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+            0xc02b);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 = init(
-            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", 0xc02c);
+            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+            0xc02c);
     public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256 = init(
-            "TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256", 0xc02d);
+            "TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256",
+            0xc02d);
     public static final CipherSuite TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384 = init(
-            "TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384", 0xc02e);
+            "TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384",
+            0xc02e);
     public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 = init(
-            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256", 0xc02f);
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            0xc02f);
     public static final CipherSuite TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 = init(
-            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", 0xc030);
-    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256 = init("TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+            0xc030);
+    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256 = init(
+            "TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256",
             0xc031);
-    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384 = init("TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384",
+    public static final CipherSuite TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384 = init(
+            "TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384",
             0xc032);
     // public static final CipherSuite TLS_ECDHE_PSK_WITH_RC4_128_SHA = init("TLS_ECDHE_PSK_WITH_RC4_128_SHA", 0xc033);
     // public static final CipherSuite TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA = init("TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA",
     // 0xc034);
-    public static final CipherSuite TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA = init("TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA",
+    public static final CipherSuite TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA = init(
+            "TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA",
             0xc035);
-    public static final CipherSuite TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA = init("TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA",
+    public static final CipherSuite TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA = init(
+            "TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA",
             0xc036);
     // public static final CipherSuite TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256 =
     // init("TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256", 0xc037);
@@ -610,15 +672,19 @@ public class CipherSuite {
     // public static final CipherSuite TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8 = init("TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8",
     // 0xc0af);
     public static final CipherSuite TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 = init(
-            "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256", 0xcca8);
+            "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+            0xcca8);
     public static final CipherSuite TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 = init(
-            "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256", 0xcca9);
+            "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+            0xcca9);
     public static final CipherSuite TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256 = init(
-            "TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256", 0xccaa);
+            "TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+            0xccaa);
     // public static final CipherSuite TLS_PSK_WITH_CHACHA20_POLY1305_SHA256 =
     // init("TLS_PSK_WITH_CHACHA20_POLY1305_SHA256", 0xccab);
     public static final CipherSuite TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256 = init(
-            "TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256", 0xccac);
+            "TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256",
+            0xccac);
     // public static final CipherSuite TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256 =
     // init("TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256", 0xccad);
     // public static final CipherSuite TLS_RSA_PSK_WITH_CHACHA20_POLY1305_SHA256 =

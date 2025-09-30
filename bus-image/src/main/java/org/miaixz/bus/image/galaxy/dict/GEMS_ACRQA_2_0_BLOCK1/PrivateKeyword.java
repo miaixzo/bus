@@ -38,26 +38,35 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CRExposureMenuCode:
-            return "CRExposureMenuCode";
-        case PrivateTag.CRExposureMenuString:
-            return "CRExposureMenuString";
-        case PrivateTag.CREDRMode:
-            return "CREDRMode";
-        case PrivateTag.CRLatitude:
-            return "CRLatitude";
-        case PrivateTag.CRGroupNumber:
-            return "CRGroupNumber";
-        case PrivateTag.CRImageSerialNumber:
-            return "CRImageSerialNumber";
-        case PrivateTag.CRBarCodeNumber:
-            return "CRBarCodeNumber";
-        case PrivateTag.CRFilmOutputExposure:
-            return "CRFilmOutputExposure";
-        case PrivateTag.CRFilmFormat:
-            return "CRFilmFormat";
-        case PrivateTag.CRSShiftString:
-            return "CRSShiftString";
+            case PrivateTag.CRExposureMenuCode:
+                return "CRExposureMenuCode";
+
+            case PrivateTag.CRExposureMenuString:
+                return "CRExposureMenuString";
+
+            case PrivateTag.CREDRMode:
+                return "CREDRMode";
+
+            case PrivateTag.CRLatitude:
+                return "CRLatitude";
+
+            case PrivateTag.CRGroupNumber:
+                return "CRGroupNumber";
+
+            case PrivateTag.CRImageSerialNumber:
+                return "CRImageSerialNumber";
+
+            case PrivateTag.CRBarCodeNumber:
+                return "CRBarCodeNumber";
+
+            case PrivateTag.CRFilmOutputExposure:
+                return "CRFilmOutputExposure";
+
+            case PrivateTag.CRFilmFormat:
+                return "CRFilmFormat";
+
+            case PrivateTag.CRSShiftString:
+                return "CRSShiftString";
         }
         return "";
     }

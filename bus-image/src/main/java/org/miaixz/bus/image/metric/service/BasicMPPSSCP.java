@@ -56,14 +56,16 @@ public class BasicMPPSSCP extends AbstractImageService {
     public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes rq, Attributes rqAttrs)
             throws IOException {
         switch (dimse) {
-        case N_CREATE_RQ:
-            onNCreateRQ(as, pc, rq, rqAttrs);
-            break;
-        case N_SET_RQ:
-            onNSetRQ(as, pc, rq, rqAttrs);
-            break;
-        default:
-            throw new ImageServiceException(Status.UnrecognizedOperation);
+            case N_CREATE_RQ:
+                onNCreateRQ(as, pc, rq, rqAttrs);
+                break;
+
+            case N_SET_RQ:
+                onNSetRQ(as, pc, rq, rqAttrs);
+                break;
+
+            default:
+                throw new ImageServiceException(Status.UnrecognizedOperation);
         }
     }
 

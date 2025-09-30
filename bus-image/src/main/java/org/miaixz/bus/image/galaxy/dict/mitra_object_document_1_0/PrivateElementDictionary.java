@@ -52,9 +52,9 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.IMPAXObjectDocument:
-        case PrivateTag.IMPAXMarkupXMLStored:
-            return VR.OB;
+            case PrivateTag.IMPAXObjectDocument:
+            case PrivateTag.IMPAXMarkupXMLStored:
+                return VR.OB;
         }
         return VR.UN;
     }

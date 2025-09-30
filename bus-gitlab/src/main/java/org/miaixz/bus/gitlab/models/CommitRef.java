@@ -45,6 +45,7 @@ public class CommitRef implements Serializable {
     private String name;
 
     public enum RefType {
+
         BRANCH, TAG, ALL;
 
         private static JacksonJsonEnumHelper<RefType> enumHelper = new JacksonJsonEnumHelper<>(RefType.class);

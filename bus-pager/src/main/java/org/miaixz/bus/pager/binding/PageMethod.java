@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -155,7 +155,11 @@ public abstract class PageMethod {
      * @param <E>          分页数据元素类型
      * @return 分页对象
      */
-    public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count, Boolean reasonable,
+    public static <E> Page<E> startPage(
+            int pageNo,
+            int pageSize,
+            boolean count,
+            Boolean reasonable,
             Boolean pageSizeZero) {
         Page<E> page = new Page<>(pageNo, pageSize, count);
         page.setReasonable(reasonable);

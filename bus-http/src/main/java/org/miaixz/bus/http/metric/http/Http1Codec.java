@@ -318,6 +318,7 @@ public class Http1Codec implements HttpCodec {
      * An HTTP request body.
      */
     private class KnownLengthSink implements Sink {
+
         private final AssignTimeout timeout = new AssignTimeout(sink.timeout());
         private boolean closed;
 
@@ -356,6 +357,7 @@ public class Http1Codec implements HttpCodec {
      * typically by using a buffered sink with this sink.
      */
     private class ChunkedSink implements Sink {
+
         private final AssignTimeout timeout = new AssignTimeout(sink.timeout());
         private boolean closed;
 
@@ -399,6 +401,7 @@ public class Http1Codec implements HttpCodec {
     }
 
     private abstract class AbstractSource implements Source {
+
         protected final AssignTimeout timeout = new AssignTimeout(source.timeout());
         protected boolean closed;
 
@@ -438,6 +441,7 @@ public class Http1Codec implements HttpCodec {
      * An HTTP body with a fixed length specified in advance.
      */
     private class FixedLengthSource extends AbstractSource {
+
         private long bytesRemaining;
 
         FixedLengthSource(long length) {
@@ -489,6 +493,7 @@ public class Http1Codec implements HttpCodec {
      * An HTTP body with alternating chunk sizes and chunk bodies.
      */
     private class ChunkedSource extends AbstractSource {
+
         private static final long NO_CHUNK_YET = -1L;
         private final UnoUrl url;
         private long bytesRemainingInChunk = NO_CHUNK_YET;
@@ -563,6 +568,7 @@ public class Http1Codec implements HttpCodec {
      * An HTTP message body terminated by the end of the underlying stream.
      */
     private class UnknownLengthSource extends AbstractSource {
+
         private boolean inputExhausted;
 
         @Override

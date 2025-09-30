@@ -61,8 +61,8 @@ final class WindowsSensors extends AbstractSensors {
                 Logger.debug("Found Temperature data in Open Hardware Monitor");
                 String cpuIdentifier = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
                 if (cpuIdentifier.length() > 0) {
-                    WmiResult<OhmSensor.ValueProperty> ohmSensors = OhmSensor.querySensorValue(h, cpuIdentifier,
-                            "Temperature");
+                    WmiResult<OhmSensor.ValueProperty> ohmSensors = OhmSensor
+                            .querySensorValue(h, cpuIdentifier, "Temperature");
                     if (ohmSensors.getResultCount() > 0) {
                         double sum = 0;
                         for (int i = 0; i < ohmSensors.getResultCount(); i++) {
@@ -89,8 +89,8 @@ final class WindowsSensors extends AbstractSensors {
                 .queryCurrentTemperature();
         if (result.getResultCount() > 0) {
             Logger.debug("Found Temperature data in WMI");
-            tempK = WmiKit.getUint32asLong(result, MSAcpiThermalZoneTemperature.TemperatureProperty.CURRENTTEMPERATURE,
-                    0);
+            tempK = WmiKit
+                    .getUint32asLong(result, MSAcpiThermalZoneTemperature.TemperatureProperty.CURRENTTEMPERATURE, 0);
         }
         if (tempK > 2732L) {
             tempC = tempK / 10d - 273.15;
@@ -148,8 +148,8 @@ final class WindowsSensors extends AbstractSensors {
         boolean comInit = false;
         try {
             comInit = h.initCOM();
-            WmiResult<OhmHardware.IdentifierProperty> ohmHardware = OhmHardware.queryHwIdentifier(h, "Sensor",
-                    "Voltage");
+            WmiResult<OhmHardware.IdentifierProperty> ohmHardware = OhmHardware
+                    .queryHwIdentifier(h, "Sensor", "Voltage");
             if (ohmHardware.getResultCount() > 0) {
                 Logger.debug("Found Voltage data in Open Hardware Monitor");
                 // Look for identifier containing "cpu"

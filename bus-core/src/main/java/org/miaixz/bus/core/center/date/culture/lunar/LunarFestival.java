@@ -91,16 +91,23 @@ public class LunarFestival extends Loops {
         String data = matcher.group();
         EnumValue.Festival type = EnumValue.Festival.fromCode(data.charAt(3) - '0');
         switch (type) {
-        case DAY:
-            return new LunarFestival(type, LunarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10),
-                    Integer.parseInt(data.substring(6), 10)), null, data);
-        case TERM:
-            SolarTerms solarTerm = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-            return new LunarFestival(type, solarTerm.getJulianDay().getSolarDay().getLunarDay(), solarTerm, data);
-        case EVE:
-            return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
-        default:
-            return null;
+            case DAY:
+                return new LunarFestival(type,
+                        LunarDay.fromYmd(
+                                year,
+                                Integer.parseInt(data.substring(4, 6), 10),
+                                Integer.parseInt(data.substring(6), 10)),
+                        null, data);
+
+            case TERM:
+                SolarTerms solarTerm = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+                return new LunarFestival(type, solarTerm.getJulianDay().getSolarDay().getLunarDay(), solarTerm, data);
+
+            case EVE:
+                return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
+
+            default:
+                return null;
         }
     }
 

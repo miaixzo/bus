@@ -86,7 +86,8 @@ public class Code implements Serializable {
                 int endVersion = s.lastIndexOf(']', endScheme - 1);
                 endScheme = s.lastIndexOf('[', endVersion - 1);
                 this.codingSchemeDesignator = trimsubstring(s, endVal + 1, endScheme, false);
-                this.codingSchemeVersion = nullifyDCM01(codingSchemeDesignator,
+                this.codingSchemeVersion = nullifyDCM01(
+                        codingSchemeDesignator,
                         trimsubstring(s, endScheme + 1, endVersion, false));
             }
         }
@@ -208,6 +209,7 @@ public class Code implements Serializable {
     }
 
     public final class Key {
+
         private Key() {
         }
 

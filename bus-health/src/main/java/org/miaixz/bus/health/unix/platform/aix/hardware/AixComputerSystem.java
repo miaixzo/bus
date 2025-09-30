@@ -151,6 +151,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
     }
 
     private static final class LsattrStrings {
+
         private final String biosVendor;
         private final String biosPlatformVersion;
         private final String biosVersion;

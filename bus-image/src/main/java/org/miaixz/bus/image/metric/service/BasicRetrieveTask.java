@@ -156,8 +156,13 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     dataWriter = createDataWriter(inst, tsuid);
                 } catch (Exception e) {
                     status = Status.OneOrMoreFailures;
-                    Logger.info("{}: Unable to retrieve {}/{} to {}", rqas, UID.nameOf(inst.cuid),
-                            UID.nameOf(inst.tsuid), storeas.getRemoteAET(), e);
+                    Logger.info(
+                            "{}: Unable to retrieve {}/{} to {}",
+                            rqas,
+                            UID.nameOf(inst.cuid),
+                            UID.nameOf(inst.tsuid),
+                            storeas.getRemoteAET(),
+                            e);
                     failed.add(inst);
                     continue;
                 }
@@ -165,8 +170,11 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     cstore(storeas, inst, tsuid, dataWriter);
                 } catch (Exception e) {
                     status = Status.UnableToPerformSubOperations;
-                    Logger.warn("{}: Unable to perform sub-operation on association to {}", rqas,
-                            storeas.getRemoteAET(), e);
+                    Logger.warn(
+                            "{}: Unable to perform sub-operation on association to {}",
+                            rqas,
+                            storeas.getRemoteAET(),
+                            e);
                     failed.add(inst);
                     while (iter.hasNext())
                         failed.add(iter.next());
@@ -189,7 +197,10 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
 
     private void startWritePendingRSP() {
         writePendingRSP = rqas.getApplicationEntity().getDevice().scheduleAtFixedRate(
-                () -> BasicRetrieveTask.this.writePendingRSP(), 0, pendingRSPInterval, TimeUnit.SECONDS);
+                () -> BasicRetrieveTask.this.writePendingRSP(),
+                0,
+                pendingRSPInterval,
+                TimeUnit.SECONDS);
     }
 
     private void stopWritePendingRSP() {

@@ -147,7 +147,9 @@ public class CopyOptions implements Serializable {
      * @param ignoreProperties 忽略的属性列表，设置一个属性列表，不拷贝这些属性值
      * @return 拷贝选项
      */
-    public static CopyOptions of(final Class<?> editable, final boolean ignoreNullValue,
+    public static CopyOptions of(
+            final Class<?> editable,
+            final boolean ignoreNullValue,
             final String... ignoreProperties) {
         return new CopyOptions(editable, ignoreNullValue, ignoreProperties);
     }

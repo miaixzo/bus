@@ -25,46 +25,66 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.validate.metric;
+package org.miaixz.bus.validate.magic.annotation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.annotation.*;
 
-import org.miaixz.bus.core.lang.exception.NoSuchException;
-import org.miaixz.bus.validate.Context;
-import org.miaixz.bus.validate.Registry;
+import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.Matcher;
-import org.miaixz.bus.validate.magic.annotation.Multi;
+import org.miaixz.bus.validate.metric.MultipleMatcher;
 
 /**
- * 多规则匹配校验
+ * 多重校验器, 可以配置多个校验器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MultiMatcher implements Matcher<Object, Multi> {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
+@Complex(value = Builder._MULTI, clazz = MultipleMatcher.class)
+public @interface Multiple {
 
-    @Override
-    public boolean on(Object object, Multi multi, Context context) {
-        List<Matcher> validators = new ArrayList<>();
-        for (String validatorName : multi.value()) {
-            if (!Registry.getInstance().contains(validatorName)) {
-                throw new NoSuchException("尝试使用一个不存在的校验器：" + validatorName);
-            }
-            validators.add((Matcher) Registry.getInstance().require(validatorName));
-        }
-        for (Class<? extends Matcher> clazz : multi.classes()) {
-            if (!Registry.getInstance().contains(clazz.getSimpleName())) {
-                throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
-            }
-            validators.add((Matcher) Registry.getInstance().require(clazz.getSimpleName()));
-        }
-        for (Matcher validator : validators) {
-            if (!validator.on(object, null, context)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    /**
+     * 校验器名称数组,优先使用校验器名称中的校验器,并忽略校验器类中的校验器
+     *
+     * @return the array
+     */
+    String[] value() default {};
+
+    /**
+     * 校验器类数组, 当校验器名称数组为空时,使用校验器类数组中的校验器
+     *
+     * @return the object
+     */
+    Class<? extends Matcher>[] classes() default {};
+
+    /**
+     * 默认使用的异常码
+     *
+     * @return the string
+     */
+    String errcode() default Builder.DEFAULT_ERRCODE;
+
+    /**
+     * 默认使用的异常信息
+     *
+     * @return the string
+     */
+    String errmsg() default "${field}参数校验失败";
+
+    /**
+     * 校验器组
+     *
+     * @return the array
+     */
+    String[] group() default {};
+
+    /**
+     * 被校验字段名称
+     *
+     * @return the string
+     */
+    String field() default Builder.DEFAULT_FIELD;
 
 }

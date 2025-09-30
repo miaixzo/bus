@@ -64,4 +64,9 @@ public class Context {
     @Builder.Default
     private String supplier = Normal.EMPTY;
 
+    /**
+     * 扩展属性
+     */
+    private String extension;
+
 }

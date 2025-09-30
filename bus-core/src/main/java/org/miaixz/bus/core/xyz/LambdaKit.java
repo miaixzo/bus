@@ -227,7 +227,10 @@ public class LambdaKit {
      * @param <F>         函数式接口类型
      * @return Obj::method
      */
-    public static <F> F build(final Class<F> lambdaType, final Class<?> clazz, final String methodName,
+    public static <F> F build(
+            final Class<F> lambdaType,
+            final Class<?> clazz,
+            final String methodName,
             final Class<?>... paramsTypes) {
         return LambdaFactory.build(lambdaType, clazz, methodName, paramsTypes);
     }

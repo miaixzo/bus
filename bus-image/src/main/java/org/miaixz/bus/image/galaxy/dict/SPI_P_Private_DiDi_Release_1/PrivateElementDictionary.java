@@ -52,10 +52,10 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.PostModeString:
-        case PrivateTag.PostData:
-        case PrivateTag.ImageHeader:
-            return VR.LT;
+            case PrivateTag.PostModeString:
+            case PrivateTag.PostData:
+            case PrivateTag.ImageHeader:
+                return VR.LT;
         }
         return VR.UN;
     }

@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MatOfDouble extends Mat {
+
     // 64FC(x)
     private static final int _depth = CvType.CV_64F;
     private static final int _channels = 1;

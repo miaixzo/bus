@@ -112,6 +112,7 @@ public class Addables {
      * @param <T> 结果类型
      */
     public interface Addable<T> {
+
         /**
          * 初始化可添加对象
          *
@@ -141,6 +142,7 @@ public class Addables {
      * 数组可添加对象实现类
      */
     private static class ArrayAddable implements Addable<Object[]> {
+
         /**
          * 数组实例
          */
@@ -188,6 +190,7 @@ public class Addables {
      * 集合可添加对象实现类
      */
     private static class CollectionAddable implements Addable<Collection> {
+
         /**
          * 集合实例
          */
@@ -239,6 +242,7 @@ public class Addables {
      * Map可添加对象实现类
      */
     private static class MapAddable implements Addable<Map> {
+
         /**
          * Map实例
          */

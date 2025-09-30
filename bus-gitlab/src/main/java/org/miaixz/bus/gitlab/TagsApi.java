@@ -100,8 +100,13 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public List<Tag> getTags(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "tags");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "tags");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -174,12 +179,22 @@ public class TagsApi extends AbstractApi {
      * @return the list of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Tag> getTags(Object projectIdOrPath, TagOrderBy orderBy, SortOrder sortOrder, String search, int page,
+    public List<Tag> getTags(
+            Object projectIdOrPath,
+            TagOrderBy orderBy,
+            SortOrder sortOrder,
+            String search,
+            int page,
             int perPage) throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("order_by", orderBy).withParam("sort", sortOrder)
                 .withParam("search", search).withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
-        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "tags");
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "tags");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -199,7 +214,11 @@ public class TagsApi extends AbstractApi {
      * @return the Pager of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Tag> getTags(Object projectIdOrPath, TagOrderBy orderBy, SortOrder sortOrder, String search,
+    public Pager<Tag> getTags(
+            Object projectIdOrPath,
+            TagOrderBy orderBy,
+            SortOrder sortOrder,
+            String search,
             int itemsPerPage) throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("order_by", orderBy).withParam("sort", sortOrder)
                 .withParam("search", search);
@@ -239,8 +258,14 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Tag getTag(Object projectIdOrPath, String tagName) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository",
-                "tags", urlEncode(tagName));
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "tags",
+                urlEncode(tagName));
         return (response.readEntity(Tag.class));
     }
 
@@ -301,8 +326,13 @@ public class TagsApi extends AbstractApi {
 
         Form formData = new GitLabApiForm().withParam("tag_name", tagName, true).withParam("ref", ref, true)
                 .withParam("message", message).withParam("release_description", releaseNotes);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "tags");
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "tags");
         return (response.readEntity(Tag.class));
     }
 
@@ -352,7 +382,13 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteTag(Object projectIdOrPath, String tagName) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "tags",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "tags",
                 urlEncode(tagName));
     }
 
@@ -372,8 +408,15 @@ public class TagsApi extends AbstractApi {
     public Release createRelease(Object projectIdOrPath, String tagName, String releaseNotes)
             throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("description", releaseNotes);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "tags", urlEncode(tagName), "release");
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "tags",
+                urlEncode(tagName),
+                "release");
         return (response.readEntity(Release.class));
     }
 
@@ -393,8 +436,15 @@ public class TagsApi extends AbstractApi {
     public Release updateRelease(Object projectIdOrPath, String tagName, String releaseNotes)
             throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("description", releaseNotes);
-        Response response = putWithFormData(Response.Status.OK, formData, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "tags", urlEncode(tagName), "release");
+        Response response = putWithFormData(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "repository",
+                "tags",
+                urlEncode(tagName),
+                "release");
         return (response.readEntity(Release.class));
     }
 
@@ -428,8 +478,12 @@ public class TagsApi extends AbstractApi {
      */
     public List<ProtectedTag> getProtectedTags(Object projectIdOrPath, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "protected_tags");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "protected_tags");
         return (response.readEntity(new GenericType<>() {
         }));
     }
@@ -479,8 +533,13 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public ProtectedTag getProtectedTag(Object projectIdOrPath, String name) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "protected_tags", urlEncode(name));
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "protected_tags",
+                urlEncode(name));
         return (response.readEntity(ProtectedTag.class));
     }
 
@@ -520,9 +579,13 @@ public class TagsApi extends AbstractApi {
      */
     public ProtectedTag protectTag(Object projectIdOrPath, String name, AccessLevel createAccessLevel)
             throws GitLabApiException {
-        Form formData = new GitLabApiForm().withParam("name", name, true).withParam("create_access_level",
-                createAccessLevel);
-        Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Form formData = new GitLabApiForm().withParam("name", name, true)
+                .withParam("create_access_level", createAccessLevel);
+        Response response = post(
+                Response.Status.OK,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "protected_tags");
         return (response.readEntity(ProtectedTag.class));
     }
@@ -539,7 +602,12 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void unprotectTag(Object projectIdOrPath, String name) throws GitLabApiException {
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "protected_tags",
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "protected_tags",
                 urlEncode(name));
     }
 

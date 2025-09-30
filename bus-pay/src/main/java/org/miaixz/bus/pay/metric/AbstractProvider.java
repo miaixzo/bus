@@ -335,7 +335,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public static String upload(String url, String data, String certPath, String certPass, String filePath,
+    public static String upload(
+            String url,
+            String data,
+            String certPath,
+            String certPass,
+            String filePath,
             String protocol) {
 
         SSLSocketFactory sslSocketFactory = getSslSocketFactory(certPath, null, certPass, protocol);
@@ -441,7 +446,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     @SneakyThrows
-    private static SSLSocketFactory getSslSocketFactory(String certPath, InputStream certFile, String certPass,
+    private static SSLSocketFactory getSslSocketFactory(
+            String certPath,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         SSLContextBuilder sslContextBuilder = SSLContextBuilder.of();
         sslContextBuilder.setProtocol(protocol);

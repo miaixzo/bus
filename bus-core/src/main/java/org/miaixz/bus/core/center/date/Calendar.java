@@ -313,7 +313,9 @@ public class Calendar extends Calculate {
      * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar ceiling(final java.util.Calendar calendar, final Various various,
+    public static java.util.Calendar ceiling(
+            final java.util.Calendar calendar,
+            final Various various,
             final boolean truncate) {
         return Modifier.modify(calendar, various.getValue(), Modify.CEILING, truncate);
     }
@@ -433,7 +435,9 @@ public class Calendar extends Calculate {
      * @param truncate          是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfWeek(final java.util.Calendar calendar, final boolean isSundayAsLastDay,
+    public static java.util.Calendar endOfWeek(
+            final java.util.Calendar calendar,
+            final boolean isSundayAsLastDay,
             final boolean truncate) {
         calendar.setFirstDayOfWeek(isSundayAsLastDay ? java.util.Calendar.MONDAY : java.util.Calendar.SUNDAY);
         // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
@@ -703,7 +707,9 @@ public class Calendar extends Calculate {
      * @throws IllegalArgumentException 如果日期字符串或模式数组为空
      * @throws DateException            如果没有合适的日期模式
      */
-    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale,
+    public static java.util.Calendar parseByPatterns(
+            final CharSequence text,
+            final Locale locale,
             final String... parsePatterns) throws DateException {
         return parseByPatterns(text, locale, true, parsePatterns);
     }
@@ -721,8 +727,11 @@ public class Calendar extends Calculate {
      * @throws DateException            如果没有合适的日期模式
      * @see java.util.Calendar#isLenient()
      */
-    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale,
-            final boolean lenient, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(
+            final CharSequence text,
+            final Locale locale,
+            final boolean lenient,
+            final String... parsePatterns) throws DateException {
         if (text == null || parsePatterns == null) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
@@ -768,7 +777,9 @@ public class Calendar extends Calculate {
      * @return 解析后的 {@link java.util.Calendar}，解析失败返回{@code null}
      * @throws DateException 解析失败抛出此异常
      */
-    public static java.util.Calendar parse(final CharSequence text, final boolean lenient,
+    public static java.util.Calendar parse(
+            final CharSequence text,
+            final boolean lenient,
             final PositionDateParser parser) {
         Assert.notNull(parser, "Parser must be not null!");
         return parser.parseCalendar(text, null, lenient);

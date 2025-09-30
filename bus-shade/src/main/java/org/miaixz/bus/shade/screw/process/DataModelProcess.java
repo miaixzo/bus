@@ -100,11 +100,15 @@ public class DataModelProcess extends AbstractProcess {
         tablesCaching.put(database.getDatabase(), tables);
         for (Table table : tables) {
             // 处理列，表名为key，列名为值
-            columnsCaching.put(table.getTableName(), columns.stream()
-                    .filter(i -> i.getTableName().equals(table.getTableName())).collect(Collectors.toList()));
+            columnsCaching.put(
+                    table.getTableName(),
+                    columns.stream().filter(i -> i.getTableName().equals(table.getTableName()))
+                            .collect(Collectors.toList()));
             // 处理主键，表名为key，主键为值
-            primaryKeysCaching.put(table.getTableName(), primaryKeys.stream()
-                    .filter(i -> i.getTableName().equals(table.getTableName())).collect(Collectors.toList()));
+            primaryKeysCaching.put(
+                    table.getTableName(),
+                    primaryKeys.stream().filter(i -> i.getTableName().equals(table.getTableName()))
+                            .collect(Collectors.toList()));
         }
         for (Table table : tables) {
             TableSchema tableSchema = new TableSchema();

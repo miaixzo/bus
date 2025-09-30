@@ -167,7 +167,10 @@ public class SoapBuilder {
      * @param prefix 命名空间前缀， {@code null}表示不使用前缀
      * @return {@link SOAPElement}子节点
      */
-    private static SOAPElement setParam(final SOAPElement ele, final String name, final Object value,
+    private static SOAPElement setParam(
+            final SOAPElement ele,
+            final String name,
+            final Object value,
             final String prefix) {
         final SOAPElement childEle;
         try {
@@ -318,8 +321,12 @@ public class SoapBuilder {
      * @param relay          relay属性
      * @return {@link SOAPHeaderElement}
      */
-    public SOAPHeaderElement addSOAPHeader(final QName name, final String actorURI, final String roleUri,
-            final Boolean mustUnderstand, final Boolean relay) {
+    public SOAPHeaderElement addSOAPHeader(
+            final QName name,
+            final String actorURI,
+            final String roleUri,
+            final Boolean mustUnderstand,
+            final Boolean relay) {
         final SOAPHeaderElement ele = addSOAPHeader(name);
         try {
             if (StringKit.isNotBlank(roleUri)) {
@@ -615,12 +622,14 @@ public class SoapBuilder {
      */
     private String getXmlContentType() {
         switch (this.protocol) {
-        case SOAP_1_1:
-            return MediaType.TEXT_XML.concat(";charset=" + this.charset.toString());
-        case SOAP_1_2:
-            return MediaType.APPLICATION_SOAP_XML.concat(";charset=" + this.charset.toString());
-        default:
-            throw new InternalException("Unsupported protocol: {}", this.protocol);
+            case SOAP_1_1:
+                return MediaType.TEXT_XML.concat(";charset=" + this.charset.toString());
+
+            case SOAP_1_2:
+                return MediaType.APPLICATION_SOAP_XML.concat(";charset=" + this.charset.toString());
+
+            default:
+                throw new InternalException("Unsupported protocol: {}", this.protocol);
         }
     }
 

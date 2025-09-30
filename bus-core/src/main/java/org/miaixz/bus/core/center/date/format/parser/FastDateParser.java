@@ -76,6 +76,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析两位年份的策略，自动调整为四位年份
      */
     private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
+
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue < 100 ? parser.adjustYear(iValue) : iValue;
@@ -86,6 +87,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析月份数字的策略，月份值减1以符合Calendar标准
      */
     private static final Strategy NUMBER_MONTH_STRATEGY = new NumberStrategy(Calendar.MONTH) {
+
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue - 1;
@@ -121,6 +123,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析一周中第几天的策略，调整值为Calendar标准
      */
     private static final Strategy DAY_OF_WEEK_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK) {
+
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue != 7 ? iValue + 1 : Calendar.SUNDAY;
@@ -141,6 +144,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析24小时制（1-24）的策略，24转换为0
      */
     private static final Strategy HOUR24_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY) {
+
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue == 24 ? 0 : iValue;
@@ -151,6 +155,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析12小时制（1-12）的策略，12转换为0
      */
     private static final Strategy HOUR12_STRATEGY = new NumberStrategy(Calendar.HOUR) {
+
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue == 12 ? 0 : iValue;
@@ -252,21 +257,21 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         for (int i = 0; i < value.length(); ++i) {
             final char c = value.charAt(i);
             switch (c) {
-            case '\\':
-            case '^':
-            case Symbol.C_DOLLAR:
-            case '.':
-            case '|':
-            case '?':
-            case Symbol.C_STAR:
-            case Symbol.C_PLUS:
-            case Symbol.C_PARENTHESE_LEFT:
-            case ')':
-            case '[':
-            case '{':
-                sb.append('\\');
-            default:
-                sb.append(c);
+                case '\\':
+                case '^':
+                case Symbol.C_DOLLAR:
+                case '.':
+                case '|':
+                case '?':
+                case Symbol.C_STAR:
+                case Symbol.C_PLUS:
+                case Symbol.C_PARENTHESE_LEFT:
+                case ')':
+                case '[':
+                case '{':
+                    sb.append('\\');
+                default:
+                    sb.append(c);
             }
         }
         return sb;
@@ -281,7 +286,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * @param regex  正则表达式构建器
      * @return 名称到字段值的映射
      */
-    private static Map<String, Integer> appendDisplayNames(final Calendar cal, final Locale locale, final int field,
+    private static Map<String, Integer> appendDisplayNames(
+            final Calendar cal,
+            final Locale locale,
+            final int field,
             final StringBuilder regex) {
         final Map<String, Integer> values = new HashMap<>();
         final Map<String, Integer> displayNames = cal.getDisplayNames(field, Calendar.ALL_STYLES, locale);
@@ -409,53 +417,73 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      */
     private Strategy getStrategy(final char f, final int width, final Calendar definingCalendar) {
         switch (f) {
-        case 'D':
-            return DAY_OF_YEAR_STRATEGY;
-        case 'E':
-            return getLocaleSpecificStrategy(Calendar.DAY_OF_WEEK, definingCalendar);
-        case 'F':
-            return DAY_OF_WEEK_IN_MONTH_STRATEGY;
-        case 'G':
-            return getLocaleSpecificStrategy(Calendar.ERA, definingCalendar);
-        case 'H':
-            return HOUR_OF_DAY_STRATEGY;
-        case 'K':
-            return HOUR_STRATEGY;
-        case 'M':
-            return width >= 3 ? getLocaleSpecificStrategy(Calendar.MONTH, definingCalendar) : NUMBER_MONTH_STRATEGY;
-        case 'S':
-            return MILLISECOND_STRATEGY;
-        case 'W':
-            return WEEK_OF_MONTH_STRATEGY;
-        case 'a':
-            return getLocaleSpecificStrategy(Calendar.AM_PM, definingCalendar);
-        case 'd':
-            return DAY_OF_MONTH_STRATEGY;
-        case 'h':
-            return HOUR12_STRATEGY;
-        case 'k':
-            return HOUR24_OF_DAY_STRATEGY;
-        case 'm':
-            return MINUTE_STRATEGY;
-        case 's':
-            return SECOND_STRATEGY;
-        case 'u':
-            return DAY_OF_WEEK_STRATEGY;
-        case 'w':
-            return WEEK_OF_YEAR_STRATEGY;
-        case 'y':
-        case 'Y':
-            return width > 2 ? LITERAL_YEAR_STRATEGY : ABBREVIATED_YEAR_STRATEGY;
-        case 'X':
-            return ISO8601TimeZoneStrategy.getStrategy(width);
-        case 'Z':
-            if (width == 2) {
-                return ISO8601TimeZoneStrategy.ISO_8601_3_STRATEGY;
-            }
-        case 'z':
-            return getLocaleSpecificStrategy(Calendar.ZONE_OFFSET, definingCalendar);
-        default:
-            throw new IllegalArgumentException("Format '" + f + "' not supported");
+            case 'D':
+                return DAY_OF_YEAR_STRATEGY;
+
+            case 'E':
+                return getLocaleSpecificStrategy(Calendar.DAY_OF_WEEK, definingCalendar);
+
+            case 'F':
+                return DAY_OF_WEEK_IN_MONTH_STRATEGY;
+
+            case 'G':
+                return getLocaleSpecificStrategy(Calendar.ERA, definingCalendar);
+
+            case 'H':
+                return HOUR_OF_DAY_STRATEGY;
+
+            case 'K':
+                return HOUR_STRATEGY;
+
+            case 'M':
+                return width >= 3 ? getLocaleSpecificStrategy(Calendar.MONTH, definingCalendar) : NUMBER_MONTH_STRATEGY;
+
+            case 'S':
+                return MILLISECOND_STRATEGY;
+
+            case 'W':
+                return WEEK_OF_MONTH_STRATEGY;
+
+            case 'a':
+                return getLocaleSpecificStrategy(Calendar.AM_PM, definingCalendar);
+
+            case 'd':
+                return DAY_OF_MONTH_STRATEGY;
+
+            case 'h':
+                return HOUR12_STRATEGY;
+
+            case 'k':
+                return HOUR24_OF_DAY_STRATEGY;
+
+            case 'm':
+                return MINUTE_STRATEGY;
+
+            case 's':
+                return SECOND_STRATEGY;
+
+            case 'u':
+                return DAY_OF_WEEK_STRATEGY;
+
+            case 'w':
+                return WEEK_OF_YEAR_STRATEGY;
+
+            case 'y':
+            case 'Y':
+                return width > 2 ? LITERAL_YEAR_STRATEGY : ABBREVIATED_YEAR_STRATEGY;
+
+            case 'X':
+                return ISO8601TimeZoneStrategy.getStrategy(width);
+
+            case 'Z':
+                if (width == 2) {
+                    return ISO8601TimeZoneStrategy.ISO_8601_3_STRATEGY;
+                }
+            case 'z':
+                return getLocaleSpecificStrategy(Calendar.ZONE_OFFSET, definingCalendar);
+
+            default:
+                throw new IllegalArgumentException("Format '" + f + "' not supported");
         }
     }
 
@@ -484,6 +512,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 日期字段解析策略接口。
      */
     interface Strategy {
+
         /**
          * 解析日期字段。
          *
@@ -510,6 +539,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 存储解析策略和字段宽度的类。
      */
     private static class StrategyAndWidth {
+
         /**
          * 解析策略
          */
@@ -550,6 +580,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析单一字段的策略。
      */
     private static abstract class PatternStrategy implements Strategy {
+
         /**
          * 正则表达式模式
          */
@@ -584,8 +615,12 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * @return 是否解析成功
          */
         @Override
-        public boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source,
-                final ParsePosition pos, final int maxWidth) {
+        public boolean parse(
+                final FastDateParser parser,
+                final Calendar calendar,
+                final CharSequence source,
+                final ParsePosition pos,
+                final int maxWidth) {
             final Matcher matcher = pattern.matcher(source.subSequence(pos.getIndex(), source.length()));
             if (!matcher.lookingAt()) {
                 pos.setErrorIndex(pos.getIndex());
@@ -610,6 +645,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 复制格式化模式中的静态或引用字段的策略。
      */
     private static class CopyQuotedStrategy implements Strategy {
+
         /**
          * 格式化字段的字面文本
          */
@@ -635,8 +671,12 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * @return 是否解析成功
          */
         @Override
-        public boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source,
-                final ParsePosition pos, final int maxWidth) {
+        public boolean parse(
+                final FastDateParser parser,
+                final Calendar calendar,
+                final CharSequence source,
+                final ParsePosition pos,
+                final int maxWidth) {
             for (int idx = 0; idx < formatField.length(); ++idx) {
                 final int sIdx = idx + pos.getIndex();
                 if (sIdx == source.length()) {
@@ -657,6 +697,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析文本字段的策略（不区分大小写）。
      */
     private static class CaseInsensitiveTextStrategy extends PatternStrategy {
+
         /**
          * 日历字段
          */
@@ -706,6 +747,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析数字字段的策略。
      */
     private static class NumberStrategy implements Strategy {
+
         /**
          * 日历字段
          */
@@ -741,8 +783,12 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * @return 是否解析成功
          */
         @Override
-        public boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source,
-                final ParsePosition pos, final int maxWidth) {
+        public boolean parse(
+                final FastDateParser parser,
+                final Calendar calendar,
+                final CharSequence source,
+                final ParsePosition pos,
+                final int maxWidth) {
             int idx = pos.getIndex();
             int last = source.length();
             if (maxWidth == 0) {
@@ -791,6 +837,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析时区字段的策略。
      */
     static class TimeZoneStrategy extends PatternStrategy {
+
         /**
          * RFC 822时区格式正则
          */
@@ -837,9 +884,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 TzInfo tzInfo = standard;
                 for (int i = 1; i < zoneNames.length; ++i) {
                     tzInfo = switch (i) {
-                    case 3 -> new TzInfo(tz, true);
-                    case 5 -> standard;
-                    default -> tzInfo;
+                        case 3 -> new TzInfo(tz, true);
+                        case 5 -> standard;
+                        default -> tzInfo;
                     };
                     if (zoneNames[i] != null) {
                         final String key = zoneNames[i].toLowerCase(locale);
@@ -882,6 +929,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * 时区信息类。
          */
         private static class TzInfo {
+
             /**
              * 时区对象
              */
@@ -908,6 +956,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析ISO 8601时区格式的策略。
      */
     private static class ISO8601TimeZoneStrategy extends PatternStrategy {
+
         /**
          * ISO 8601单小时策略
          */
@@ -940,10 +989,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          */
         static Strategy getStrategy(final int tokenLen) {
             return switch (tokenLen) {
-            case 1 -> ISO_8601_1_STRATEGY;
-            case 2 -> ISO_8601_2_STRATEGY;
-            case 3 -> ISO_8601_3_STRATEGY;
-            default -> throw new IllegalArgumentException("invalid number of X");
+                case 1 -> ISO_8601_1_STRATEGY;
+                case 2 -> ISO_8601_2_STRATEGY;
+                case 3 -> ISO_8601_3_STRATEGY;
+                default -> throw new IllegalArgumentException("invalid number of X");
             };
         }
 
@@ -968,6 +1017,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * 解析格式字符串的策略解析器。
      */
     private class StrategyParser {
+
         /**
          * 定义日历
          */

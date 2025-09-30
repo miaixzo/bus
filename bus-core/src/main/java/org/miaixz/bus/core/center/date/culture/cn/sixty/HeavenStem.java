@@ -172,8 +172,9 @@ public class HeavenStem extends Samsara {
      */
     public Terrain getTerrain(EarthBranch earthBranch) {
         int earthBranchIndex = earthBranch.getIndex();
-        return Terrain.fromIndex(new int[] { 1, 6, 10, 9, 10, 9, 7, 0, 4, 3 }[index]
-                + (Opposite.YANG == getOpposite() ? earthBranchIndex : -earthBranchIndex));
+        return Terrain.fromIndex(
+                new int[] { 1, 6, 10, 9, 10, 9, 7, 0, 4, 3 }[index]
+                        + (Opposite.YANG == getOpposite() ? earthBranchIndex : -earthBranchIndex));
     }
 
     /**

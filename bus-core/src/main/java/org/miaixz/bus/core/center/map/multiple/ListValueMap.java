@@ -25,27 +25,52 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.office;
+package org.miaixz.bus.core.center.map.multiple;
 
-import org.miaixz.bus.office.Provider;
-import org.miaixz.bus.office.Registry;
-import org.springframework.stereotype.Component;
-
-import lombok.RequiredArgsConstructor;
+import java.io.Serial;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
- * 文档在线预览服务提供
+ * 值作为集合List的Map实现，通过调用putValue可以在相同key时加入多个值，多个值用集合表示
  *
+ * @param <K> 键类型
+ * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-@Component
-@RequiredArgsConstructor
-public class OfficeProviderService {
+public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
-    public OfficeProviderService(Provider localProvider, Provider onlineProvider) {
-        Registry.getInstance().register(Registry.LOCAL, localProvider);
-        Registry.getInstance().register(Registry.ONLINE, onlineProvider);
+    @Serial
+    private static final long serialVersionUID = 2852277598332L;
+
+    /**
+     * 基于{@code mapFactory}创建一个值为{@link List}的多值映射集合
+     *
+     * @param mapFactory 创建集合的工厂反方
+     */
+    public ListValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
+        super(mapFactory);
+    }
+
+    /**
+     * 基于指定Map创建一个值为{@link List}的多值映射集合
+     *
+     * @param map 提供数据的原始集合
+     */
+    public ListValueMap(final Map<K, Collection<V>> map) {
+        super(map);
+    }
+
+    /**
+     * 基于{@link HashMap}创建一个值为{@link List}的多值映射集合
+     */
+    public ListValueMap() {
+    }
+
+    @Override
+    protected List<V> createCollection() {
+        return new ArrayList<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
     }
 
 }

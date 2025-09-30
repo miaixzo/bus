@@ -103,7 +103,9 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param <T>            元素类型
      * @return 迭代器
      */
-    public static <T> HierarchyIterator<T> breadthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer,
+    public static <T> HierarchyIterator<T> breadthFirst(
+            final T root,
+            final Function<T, Collection<T>> nextDiscoverer,
             final Predicate<T> filter) {
         return new BreadthFirst<>(root, nextDiscoverer, filter);
     }
@@ -129,7 +131,9 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param <T>            元素类型
      * @return 迭代器
      */
-    public static <T> HierarchyIterator<T> depthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer,
+    public static <T> HierarchyIterator<T> depthFirst(
+            final T root,
+            final Function<T, Collection<T>> nextDiscoverer,
             final Predicate<T> filter) {
         return new DepthFirst<>(root, nextDiscoverer, filter);
     }

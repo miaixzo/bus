@@ -124,7 +124,9 @@ public class CollectionValidator {
      * @param defaultSupplier 默认值懒加载函数
      * @return 非空（empty）的原集合或默认集合
      */
-    public static <T extends Collection<E>, E> T defaultIfEmpty(final T collection, final Function<T, T> handler,
+    public static <T extends Collection<E>, E> T defaultIfEmpty(
+            final T collection,
+            final Function<T, T> handler,
             final Supplier<? extends T> defaultSupplier) {
         return isEmpty(collection) ? defaultSupplier.get() : handler.apply(collection);
     }

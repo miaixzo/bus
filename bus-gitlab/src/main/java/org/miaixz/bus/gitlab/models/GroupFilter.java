@@ -192,7 +192,8 @@ public class GroupFilter implements Serializable {
                 .withParam("owned", owned).withParam("min_access_level", accessLevel)
                 .withParam("top_level_only", topLevelOnly);
         for (CustomAttribute customAttribute : customAttributesFilter) {
-            form.withParam(String.format("custom_attributes[%s]", customAttribute.getKey()),
+            form.withParam(
+                    String.format("custom_attributes[%s]", customAttribute.getKey()),
                     customAttribute.getValue());
         }
         return form;

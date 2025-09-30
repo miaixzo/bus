@@ -40,7 +40,9 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
  * @since Java 17+
  */
 public enum State {
+
     Sta1("Sta1 - Idle") {
+
         @Override
         public void write(Association as, AAbort aa) {
             // NO OP
@@ -57,6 +59,7 @@ public enum State {
         }
     },
     Sta2("Sta2 - Transport connection open") {
+
         @Override
         public void onAAssociateRQ(Association as, AAssociateRQ rq) throws IOException {
             as.handle(rq);
@@ -70,6 +73,7 @@ public enum State {
     Sta3("Sta3 - Awaiting local A-ASSOCIATE response primitive"),
     Sta4("Sta4 - Awaiting transport connection opening to complete"),
     Sta5("Sta5 - Awaiting A-ASSOCIATE-AC or A-ASSOCIATE-RJ PDU") {
+
         @Override
         public void onAAssociateAC(Association as, AAssociateAC ac) {
             as.handle(ac);
@@ -81,6 +85,7 @@ public enum State {
         }
     },
     Sta6("Sta6 - Association established and ready for data transfer") {
+
         @Override
         public void onAReleaseRQ(Association as) {
             as.handleAReleaseRQ();
@@ -102,6 +107,7 @@ public enum State {
         }
     },
     Sta7("Sta7 - Awaiting A-RELEASE-RP PDU") {
+
         @Override
         public void onAReleaseRP(Association as) {
             as.handleAReleaseRP();
@@ -118,6 +124,7 @@ public enum State {
         }
     },
     Sta8("Sta8 - Awaiting local A-RELEASE response primitive") {
+
         @Override
         public void writePDataTF(Association as) throws IOException {
             as.doWritePDataTF();
@@ -125,12 +132,14 @@ public enum State {
     },
     Sta9("Sta9 - Release collision requestor side; awaiting A-RELEASE response"),
     Sta10("Sta10 - Release collision acceptor side; awaiting A-RELEASE-RP PDU") {
+
         @Override
         public void onAReleaseRP(Association as) {
             as.handleAReleaseRPCollision();
         }
     },
     Sta11("Sta11 - Release collision requestor side; awaiting A-RELEASE-RP PDU") {
+
         @Override
         public void onAReleaseRP(Association as) {
             as.handleAReleaseRP();
@@ -138,6 +147,7 @@ public enum State {
     },
     Sta12("Sta12 - Release collision acceptor side; awaiting A-RELEASE response primitive"),
     Sta13("Sta13 - Awaiting Transport Connection Close Indication") {
+
         @Override
         public void onAReleaseRP(Association as) {
             // NO OP

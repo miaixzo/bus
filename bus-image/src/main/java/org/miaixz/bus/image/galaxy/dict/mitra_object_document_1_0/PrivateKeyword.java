@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.IMPAXObjectDocument:
-            return "IMPAXObjectDocument";
-        case PrivateTag.IMPAXMarkupXMLStored:
-            return "IMPAXMarkupXMLStored";
+            case PrivateTag.IMPAXObjectDocument:
+                return "IMPAXObjectDocument";
+
+            case PrivateTag.IMPAXMarkupXMLStored:
+                return "IMPAXMarkupXMLStored";
         }
         return "";
     }

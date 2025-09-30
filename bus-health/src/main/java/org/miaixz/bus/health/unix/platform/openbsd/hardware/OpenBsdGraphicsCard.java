@@ -87,9 +87,11 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
             if (m.matches()) {
                 // Identifies start of a new device. Save previous if it's a graphics card
                 if (classCodeFound) {
-                    cardList.add(new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                            productId.isEmpty() ? "0x0000" : productId, vendorId.isEmpty() ? "0x0000" : vendorId,
-                            versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
+                    cardList.add(
+                            new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
+                                    productId.isEmpty() ? "0x0000" : productId,
+                                    vendorId.isEmpty() ? "0x0000" : vendorId,
+                                    versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
                 }
                 // Device name is the captured pattern
                 name = m.group(1);
@@ -126,9 +128,10 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
         }
         // In case we reached end before saving
         if (classCodeFound) {
-            cardList.add(new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                    productId.isEmpty() ? "0x0000" : productId, vendorId.isEmpty() ? "0x0000" : vendorId,
-                    versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
+            cardList.add(
+                    new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
+                            productId.isEmpty() ? "0x0000" : productId, vendorId.isEmpty() ? "0x0000" : vendorId,
+                            versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
         }
         return cardList;
     }

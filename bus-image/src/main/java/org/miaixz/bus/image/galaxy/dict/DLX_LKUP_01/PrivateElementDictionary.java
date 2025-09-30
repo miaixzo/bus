@@ -54,9 +54,9 @@ public class PrivateElementDictionary extends ElementDictionary {
         tag &= tmp == 0x60000000 || tmp == 0x70000000 ? 0xFFE0FFFF : 0xFFFF00FF;
         switch (tag) {
 
-        case PrivateTag.GrayPaletteColorLookupTableDescriptor:
-        case PrivateTag.GrayPaletteColorLookupTableData:
-            return VR.US;
+            case PrivateTag.GrayPaletteColorLookupTableDescriptor:
+            case PrivateTag.GrayPaletteColorLookupTableData:
+                return VR.US;
         }
         return VR.UN;
     }

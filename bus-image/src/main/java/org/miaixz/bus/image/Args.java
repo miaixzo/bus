@@ -250,10 +250,17 @@ public class Args {
 
             Device device = conn.getDevice();
             try {
-                device.setKeyManager(AnyTrustManager.createKeyManager(option.getKeystoreType(), option.getKeystoreURL(),
-                        option.getKeystorePass(), option.getKeyPass()));
-                device.setTrustManager(AnyTrustManager.createTrustManager(option.getTruststoreType(),
-                        option.getTruststoreURL(), option.getTruststorePass()));
+                device.setKeyManager(
+                        AnyTrustManager.createKeyManager(
+                                option.getKeystoreType(),
+                                option.getKeystoreURL(),
+                                option.getKeystorePass(),
+                                option.getKeyPass()));
+                device.setTrustManager(
+                        AnyTrustManager.createTrustManager(
+                                option.getTruststoreType(),
+                                option.getTruststoreURL(),
+                                option.getTruststorePass()));
                 if (remote != null) {
                     remote.setTlsProtocols(conn.getTlsProtocols());
                     remote.setTlsCipherSuites(conn.getTlsCipherSuites());

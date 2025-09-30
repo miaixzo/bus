@@ -52,11 +52,12 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ImageGraphicsFormatCode:
-            return VR.LO;
-        case PrivateTag.ImageGraphics:
-        case PrivateTag.ImageGraphicsDummy:
-            return VR.OB;
+            case PrivateTag.ImageGraphicsFormatCode:
+                return VR.LO;
+
+            case PrivateTag.ImageGraphics:
+            case PrivateTag.ImageGraphicsDummy:
+                return VR.OB;
         }
         return VR.UN;
     }

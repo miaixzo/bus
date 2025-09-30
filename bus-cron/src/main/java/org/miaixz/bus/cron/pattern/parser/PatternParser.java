@@ -93,7 +93,10 @@ public class PatternParser {
      */
     private static PatternMatcher parseSingle(final String pattern) {
         final String[] parts = pattern.split("\\s+");
-        Assert.checkBetween(parts.length, 5, 7,
+        Assert.checkBetween(
+                parts.length,
+                5,
+                7,
                 () -> new CrontabException("Pattern [{}] is invalid, it must be 5-7 parts!", pattern));
 
         // 偏移量用于兼容Quartz表达式，当表达式有6或7项时，第一项为秒

@@ -121,8 +121,14 @@ public class ShearProvider extends AbstractProvider {
             // 扭曲
             shear(g, this.width, this.height, ObjectKit.defaultIfNull(this.background, Color.WHITE));
             // 画干扰线
-            drawInterfere(g, 0, RandomKit.randomInt(this.height) + 1, this.width, RandomKit.randomInt(this.height) + 1,
-                    this.interfereCount, ColorKit.randomColor());
+            drawInterfere(
+                    g,
+                    0,
+                    RandomKit.randomInt(this.height) + 1,
+                    this.width,
+                    RandomKit.randomInt(this.height) + 1,
+                    this.interfereCount,
+                    ColorKit.randomColor());
         } finally {
             g.dispose();
         }
@@ -220,8 +226,14 @@ public class ShearProvider extends AbstractProvider {
      * @param thickness 粗细
      * @param c         颜色
      */
-    private void drawInterfere(final Graphics g, final int x1, final int y1, final int x2, final int y2,
-            final int thickness, final Color c) {
+    private void drawInterfere(
+            final Graphics g,
+            final int x1,
+            final int y1,
+            final int x2,
+            final int y2,
+            final int thickness,
+            final Color c) {
 
         // The thick line is in fact a filled polygon
         g.setColor(c);

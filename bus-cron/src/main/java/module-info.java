@@ -37,10 +37,13 @@ module bus.cron {
     requires bus.logger;
     requires bus.setting;
 
+    requires lombok;
+
     exports org.miaixz.bus.cron;
     exports org.miaixz.bus.cron.crontab;
     exports org.miaixz.bus.cron.listener;
     exports org.miaixz.bus.cron.pattern;
+    exports org.miaixz.bus.cron.tempus;
     exports org.miaixz.bus.cron.pattern.matcher;
     exports org.miaixz.bus.cron.pattern.parser;
     exports org.miaixz.bus.cron.timings;

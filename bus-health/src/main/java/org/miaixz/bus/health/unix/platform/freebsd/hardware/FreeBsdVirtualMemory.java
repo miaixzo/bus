@@ -48,17 +48,17 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
 
     private final FreeBsdGlobalMemory global;
 
-    private final Supplier<Long> used = Memoizer.memoize(FreeBsdVirtualMemory::querySwapUsed,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> used = Memoizer
+            .memoize(FreeBsdVirtualMemory::querySwapUsed, Memoizer.defaultExpiration());
 
-    private final Supplier<Long> total = Memoizer.memoize(FreeBsdVirtualMemory::querySwapTotal,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> total = Memoizer
+            .memoize(FreeBsdVirtualMemory::querySwapTotal, Memoizer.defaultExpiration());
 
-    private final Supplier<Long> pagesIn = Memoizer.memoize(FreeBsdVirtualMemory::queryPagesIn,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> pagesIn = Memoizer
+            .memoize(FreeBsdVirtualMemory::queryPagesIn, Memoizer.defaultExpiration());
 
-    private final Supplier<Long> pagesOut = Memoizer.memoize(FreeBsdVirtualMemory::queryPagesOut,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> pagesOut = Memoizer
+            .memoize(FreeBsdVirtualMemory::queryPagesOut, Memoizer.defaultExpiration());
 
     FreeBsdVirtualMemory(FreeBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;

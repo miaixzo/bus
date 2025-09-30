@@ -114,6 +114,7 @@ public class AwardEmoji implements Serializable {
     }
 
     public enum AwardableType {
+
         ISSUE, MERGE_REQUEST, NOTE, SNIPPET;
 
         private static JacksonJsonEnumHelper<AwardableType> enumHelper = new JacksonJsonEnumHelper<>(

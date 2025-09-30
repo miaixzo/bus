@@ -27,18 +27,6 @@
 */
 package org.miaixz.bus.storage.metric;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
 
@@ -51,66 +39,5 @@ import org.miaixz.bus.storage.Provider;
 public abstract class AbstractProvider implements Provider {
 
     protected Context context;
-
-    protected static String downloadFile(String fileURL, String saveDir) {
-        HttpURLConnection httpConn = null;
-        FileOutputStream outputStream = null;
-        try {
-            URL url = new URL(fileURL);
-            httpConn = (HttpURLConnection) url.openConnection();
-            int responseCode = httpConn.getResponseCode();
-
-            if (responseCode == HTTP.HTTP_OK) {
-                String fileName = Normal.EMPTY;
-                String disposition = httpConn.getHeaderField("Content-Disposition");
-
-                if (null != disposition) {
-                    int index = disposition.indexOf("filename=");
-                    if (index > 0) {
-                        fileName = disposition.substring(index + 10, disposition.length() - 1);
-                    }
-                } else {
-                    fileName = fileURL.substring(fileURL.lastIndexOf(Symbol.C_SLASH) + 1);
-                }
-                InputStream inputStream = httpConn.getInputStream();
-                String saveFilePath = saveDir + File.separator + fileName;
-
-                outputStream = new FileOutputStream(saveFilePath);
-
-                int bytesRead = -1;
-                byte[] buffer = new byte[2048];
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-
-                outputStream.close();
-                inputStream.close();
-
-                return saveFilePath;
-            } else {
-                throw new InternalException("file download failed");
-            }
-        } catch (IOException e) {
-            throw new InternalException("file download failed", e);
-        } finally {
-            try {
-                if (null != outputStream)
-                    outputStream.close();
-            } catch (Exception e2) {
-            }
-            try {
-                if (null != httpConn)
-                    httpConn.disconnect();
-            } catch (Exception e2) {
-            }
-        }
-    }
-
-    protected String getFullPath(String file) {
-        if (file.startsWith(Protocol.HTTP_PREFIX) || file.startsWith(Protocol.HTTPS_PREFIX)) {
-            return file;
-        }
-        return this.context.getPrefix() + file;
-    }
 
 }

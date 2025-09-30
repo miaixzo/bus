@@ -65,6 +65,7 @@ public class JWTSignerBuilder {
      * 双向映射，存储 JWT 签名算法标识（如 HS256）与 Java 标准算法名称（如 HmacSHA256）的对应关系。
      */
     private static final BiMap<String, String> map = new BiMap<>(new HashMap<>() {
+
         {
             // 初始化 HMAC 算法映射
             put("HS256", Algorithm.HMACSHA256.getValue());

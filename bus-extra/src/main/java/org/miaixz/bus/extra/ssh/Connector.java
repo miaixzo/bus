@@ -103,7 +103,11 @@ public class Connector {
      * @param timeout  连接超时时长，0表示默认
      * @return Connector
      */
-    public static Connector of(final String host, final int port, final String user, final String password,
+    public static Connector of(
+            final String host,
+            final int port,
+            final String user,
+            final String password,
             final long timeout) {
         return new Connector(host, port, user, password, timeout);
     }

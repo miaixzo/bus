@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.TransformationMatrix:
-            return "TransformationMatrix";
-        case PrivateTag.CenterOffset:
-            return "CenterOffset";
-        case PrivateTag.Magnification:
-            return "Magnification";
-        case PrivateTag.MagnificationType:
-            return "MagnificationType";
-        case PrivateTag.DisplayedArea:
-            return "DisplayedArea";
-        case PrivateTag.CalibrationFactor:
-            return "CalibrationFactor";
+            case PrivateTag.TransformationMatrix:
+                return "TransformationMatrix";
+
+            case PrivateTag.CenterOffset:
+                return "CenterOffset";
+
+            case PrivateTag.Magnification:
+                return "Magnification";
+
+            case PrivateTag.MagnificationType:
+                return "MagnificationType";
+
+            case PrivateTag.DisplayedArea:
+                return "DisplayedArea";
+
+            case PrivateTag.CalibrationFactor:
+                return "CalibrationFactor";
         }
         return "";
     }

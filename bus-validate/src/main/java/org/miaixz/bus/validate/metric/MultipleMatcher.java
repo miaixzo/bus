@@ -25,30 +25,46 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.validate.metric;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.miaixz.bus.core.lang.exception.NoSuchException;
+import org.miaixz.bus.validate.Context;
+import org.miaixz.bus.validate.Registry;
+import org.miaixz.bus.validate.magic.Matcher;
+import org.miaixz.bus.validate.magic.annotation.Multiple;
+
 /**
- * 多参数类型的Map实现，包括集合类型值的MultiValueMap和Table
- * <ul>
- * <li>MultiValueMap：一个键对应多个值的集合的实现，类似于树的结构。</li>
- * <li>Table：使用两个键映射到一个值，类似于表格结构。</li>
- * </ul>
- *
- * <pre>
- *                   MultiValueMap
- *                         |
- *                   AbstractCollValueMap
- *                         ||
- *   [CollectionValueMap, SetValueMap, ListValueMap]
- * </pre>
- * 
- * <pre>
- *                       Table
- *                         |
- *                      AbstractTable
- *                         ||
- *                    [RowKeyTable]
- * </pre>
+ * 多规则匹配校验
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.core.center.map.multi;
+public class MultipleMatcher implements Matcher<Object, Multiple> {
+
+    @Override
+    public boolean on(Object object, Multiple multiple, Context context) {
+        List<Matcher> validators = new ArrayList<>();
+        for (String validatorName : multiple.value()) {
+            if (!Registry.getInstance().contains(validatorName)) {
+                throw new NoSuchException("尝试使用一个不存在的校验器：" + validatorName);
+            }
+            validators.add((Matcher) Registry.getInstance().require(validatorName));
+        }
+        for (Class<? extends Matcher> clazz : multiple.classes()) {
+            if (!Registry.getInstance().contains(clazz.getSimpleName())) {
+                throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
+            }
+            validators.add((Matcher) Registry.getInstance().require(clazz.getSimpleName()));
+        }
+        for (Matcher validator : validators) {
+            if (!validator.on(object, null, context)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+}

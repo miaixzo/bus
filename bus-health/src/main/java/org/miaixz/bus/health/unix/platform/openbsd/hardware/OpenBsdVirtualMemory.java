@@ -49,8 +49,8 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
 
     private final Supplier<Triplet<Integer, Integer, Integer>> usedTotalPgin = Memoizer
             .memoize(OpenBsdVirtualMemory::queryVmstat, Memoizer.defaultExpiration());
-    private final Supplier<Integer> pgout = Memoizer.memoize(OpenBsdVirtualMemory::queryUvm,
-            Memoizer.defaultExpiration());
+    private final Supplier<Integer> pgout = Memoizer
+            .memoize(OpenBsdVirtualMemory::queryUvm, Memoizer.defaultExpiration());
 
     OpenBsdVirtualMemory(OpenBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;

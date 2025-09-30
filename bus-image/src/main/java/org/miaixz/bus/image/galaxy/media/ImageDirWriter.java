@@ -94,8 +94,8 @@ public class ImageDirWriter extends ImageDirReader {
 
     public static void createEmptyDirectory(File file, String iuid, String id, File descFile, String charset)
             throws IOException {
-        Attributes fmi = Attributes.createFileMetaInformation(iuid, UID.MediaStorageDirectoryStorage.uid,
-                UID.ExplicitVRLittleEndian.uid);
+        Attributes fmi = Attributes
+                .createFileMetaInformation(iuid, UID.MediaStorageDirectoryStorage.uid, UID.ExplicitVRLittleEndian.uid);
         createEmptyDirectory(file, fmi, id, descFile, charset);
     }
 
@@ -255,8 +255,10 @@ public class ImageDirWriter extends ImageDirReader {
     private void updateDirInfoHeader() {
         ByteKit.intToBytesLE(getOffsetOfFirstRootDirectoryRecord(), dirInfoHeader, 8);
         ByteKit.intToBytesLE(getOffsetOfLastRootDirectoryRecord(), dirInfoHeader, 20);
-        ByteKit.intToBytesLE(getEncodingOptions().undefSequenceLength ? -1 : nextRecordPos - firstRecordPos,
-                dirInfoHeader, 42);
+        ByteKit.intToBytesLE(
+                getEncodingOptions().undefSequenceLength ? -1 : nextRecordPos - firstRecordPos,
+                dirInfoHeader,
+                42);
     }
 
     private void restoreDirInfo() {

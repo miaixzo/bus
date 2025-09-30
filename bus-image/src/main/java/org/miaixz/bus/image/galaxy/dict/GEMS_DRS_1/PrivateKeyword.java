@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ReferringDepartment:
-            return "ReferringDepartment";
-        case PrivateTag.ScreenNumber:
-            return "ScreenNumber";
-        case PrivateTag.LeftOrientation:
-            return "LeftOrientation";
-        case PrivateTag.RightOrientation:
-            return "RightOrientation";
-        case PrivateTag.Inversion:
-            return "Inversion";
-        case PrivateTag.DSA:
-            return "DSA";
+            case PrivateTag.ReferringDepartment:
+                return "ReferringDepartment";
+
+            case PrivateTag.ScreenNumber:
+                return "ScreenNumber";
+
+            case PrivateTag.LeftOrientation:
+                return "LeftOrientation";
+
+            case PrivateTag.RightOrientation:
+                return "RightOrientation";
+
+            case PrivateTag.Inversion:
+                return "Inversion";
+
+            case PrivateTag.DSA:
+                return "DSA";
         }
         return "";
     }

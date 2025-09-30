@@ -72,7 +72,9 @@ public class CLAHE extends Algorithm {
     //
 
     // C++: void cv::CLAHE::setTilesGridSize(Size tileGridSize)
-    private static native void setTilesGridSize_0(long nativeObj, double tileGridSize_width,
+    private static native void setTilesGridSize_0(
+            long nativeObj,
+            double tileGridSize_width,
             double tileGridSize_height);
 
     //

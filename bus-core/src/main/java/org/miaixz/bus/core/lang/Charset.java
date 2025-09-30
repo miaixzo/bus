@@ -136,7 +136,8 @@ public class Charset {
      * @param defaultCharset 解析失败使用的默认编码
      * @return Charset
      */
-    public static java.nio.charset.Charset parse(final String charsetName,
+    public static java.nio.charset.Charset parse(
+            final String charsetName,
             final java.nio.charset.Charset defaultCharset) {
         if (StringKit.isBlank(charsetName)) {
             return defaultCharset;
@@ -161,7 +162,9 @@ public class Charset {
      * @return 转换后的字符集
      */
     public static String convert(final String source, final String srcCharset, final String destCharset) {
-        return convert(source, java.nio.charset.Charset.forName(srcCharset),
+        return convert(
+                source,
+                java.nio.charset.Charset.forName(srcCharset),
                 java.nio.charset.Charset.forName(destCharset));
     }
 
@@ -179,7 +182,9 @@ public class Charset {
      * @param destCharset 目标字符集，默认UTF-8
      * @return 转换后的字符集
      */
-    public static String convert(final String source, java.nio.charset.Charset srcCharset,
+    public static String convert(
+            final String source,
+            java.nio.charset.Charset srcCharset,
             java.nio.charset.Charset destCharset) {
         if (null == srcCharset) {
             srcCharset = ISO_8859_1;
@@ -203,7 +208,9 @@ public class Charset {
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
      */
-    public static File convert(final File file, final java.nio.charset.Charset srcCharset,
+    public static File convert(
+            final File file,
+            final java.nio.charset.Charset srcCharset,
             final java.nio.charset.Charset destCharset) {
         ;
         return FileKit.writeString(FileKit.readString(file, srcCharset), file, destCharset);
@@ -268,7 +275,9 @@ public class Charset {
      * @return 编码
      * @see CharsetDetector#detect(int, InputStream, java.nio.charset.Charset...)
      */
-    public static java.nio.charset.Charset detect(final int bufferSize, final InputStream in,
+    public static java.nio.charset.Charset detect(
+            final int bufferSize,
+            final InputStream in,
             final java.nio.charset.Charset... charsets) {
         return CharsetDetector.detect(bufferSize, in, charsets);
     }

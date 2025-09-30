@@ -320,6 +320,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     public interface Visitor<V> {
+
         boolean visit(int key, V value);
     }
 

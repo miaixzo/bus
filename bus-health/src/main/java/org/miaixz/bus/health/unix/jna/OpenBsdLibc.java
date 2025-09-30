@@ -37,6 +37,7 @@ import com.sun.jna.Structure.FieldOrder;
  * project.
  */
 public interface OpenBsdLibc extends CLibrary {
+
     OpenBsdLibc INSTANCE = Native.load(null, OpenBsdLibc.class);
 
     int CTL_KERN = 1; // "high kernel": proc, limits
@@ -96,6 +97,7 @@ public interface OpenBsdLibc extends CLibrary {
             "numwrites", "numreads", "cachehits", "busymapped", "dmapages", "highpages", "delwribufs", "kvaslots",
             "kvaslots_avail", "highflips", "highflops", "dmaflips" })
     class Bcachestats extends Structure {
+
         public long numbufs; // number of buffers allocated
         public long numbufpages; // number of pages in buffer cache
         public long numdirtypages; // number of dirty free pages
@@ -126,6 +128,7 @@ public interface OpenBsdLibc extends CLibrary {
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
+
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
     }

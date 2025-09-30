@@ -73,16 +73,16 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
         System.setProperty(Keys.FILE_ENCODING, fileEncoding);
 
         // 控制台日志
-        String patternConsole = System.getProperty(GeniusBuilder.LOGGING_PATTERN_CONSOLE,
-                context.get(GeniusBuilder.LOGGING_PATTERN_CONSOLE));
+        String patternConsole = System
+                .getProperty(GeniusBuilder.LOGGING_PATTERN_CONSOLE, context.get(GeniusBuilder.LOGGING_PATTERN_CONSOLE));
         if (StringKit.isEmpty(patternConsole)) {
             patternConsole = "%green(%d{yyyy-MM-dd HH:mm:ss.SSSXXX}) [%highlight(%5p)] %magenta(${PID:- }) %yellow(-) %highlight(%-50.50logger{50}) %yellow(%5.5L) %cyan(:) %magenta(%m%n)";
         }
         System.setProperty(GeniusBuilder.LOGGING_PATTERN_CONSOLE, patternConsole);
 
         // 文件日志
-        String patternFile = System.getProperty(GeniusBuilder.LOGGING_PATTERN_FILE,
-                context.get(GeniusBuilder.LOGGING_PATTERN_FILE));
+        String patternFile = System
+                .getProperty(GeniusBuilder.LOGGING_PATTERN_FILE, context.get(GeniusBuilder.LOGGING_PATTERN_FILE));
         if (StringKit.isEmpty(patternFile)) {
             patternFile = "%d{yyyy-MM-dd HH:mm:ss.SSSXXX} [%5p] ${PID:- } - %-50.50logger{50} %5.5L : %m%n";
         }
@@ -93,15 +93,24 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         Map<String, String> context = new HashMap<>();
-        loadLogConfiguration(GeniusBuilder.LOGGING_PATH, environment.getProperty(GeniusBuilder.LOGGING_PATH), context,
+        loadLogConfiguration(
+                GeniusBuilder.LOGGING_PATH,
+                environment.getProperty(GeniusBuilder.LOGGING_PATH),
+                context,
                 Keys.get(Keys.USER_NAME) + GeniusBuilder.BUS_LOGGING_PATH);
         loadLogConfiguration(Keys.FILE_ENCODING, environment.getProperty(Keys.FILE_ENCODING), context, null);
 
-        loadLogConfiguration(GeniusBuilder.LOGGING_PATTERN_CONSOLE,
-                environment.getProperty(GeniusBuilder.LOGGING_PATTERN_CONSOLE), context, null);
+        loadLogConfiguration(
+                GeniusBuilder.LOGGING_PATTERN_CONSOLE,
+                environment.getProperty(GeniusBuilder.LOGGING_PATTERN_CONSOLE),
+                context,
+                null);
 
-        loadLogConfiguration(GeniusBuilder.LOGGING_PATTERN_FILE,
-                environment.getProperty(GeniusBuilder.LOGGING_PATTERN_FILE), context, null);
+        loadLogConfiguration(
+                GeniusBuilder.LOGGING_PATTERN_FILE,
+                environment.getProperty(GeniusBuilder.LOGGING_PATTERN_FILE),
+                context,
+                null);
 
         keepCompatible(context, true);
     }

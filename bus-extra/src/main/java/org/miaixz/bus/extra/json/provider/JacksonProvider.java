@@ -113,6 +113,7 @@ public class JacksonProvider extends AbstractJsonProvider {
     @Override
     public <T> List<T> toList(String json, Type type) {
         TypeReference<List<T>> typeReference = new TypeReference<>() {
+
             @Override
             public Type getType() {
                 return type;

@@ -69,8 +69,10 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
         Class<?> actualEditable = target.getClass();
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
-            Assert.isTrue(copyOptions.editable.isInstance(target),
-                    "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(),
+            Assert.isTrue(
+                    copyOptions.editable.isInstance(target),
+                    "Target class [{}] not assignable to Editable class [{}]",
+                    actualEditable.getName(),
                     copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
@@ -112,7 +114,11 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
             }
 
             // 目标赋值
-            propDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
+            propDesc.setValue(
+                    this.target,
+                    sValue,
+                    copyOptions.ignoreNullValue,
+                    copyOptions.ignoreError,
                     copyOptions.override);
         });
         return this.target;

@@ -319,7 +319,10 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @param indexLimit     索引限制
      * @return this
      */
-    public ArrayWrapper<A, E> setOrPadding(final int index, final E value, final E paddingElement,
+    public ArrayWrapper<A, E> setOrPadding(
+            final int index,
+            final E value,
+            final E paddingElement,
             final int indexLimit) {
         if (index < this.length) {
             Array.set(array, index, value);

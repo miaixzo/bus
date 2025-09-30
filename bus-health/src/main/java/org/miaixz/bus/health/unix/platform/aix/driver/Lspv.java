@@ -66,13 +66,16 @@ public final class Lspv {
      * @return A list of logical volumes (partitions) on this device.
      */
     public static List<HWPartition> queryLogicalVolumes(String device, Map<String, Pair<Integer, Integer>> majMinMap) {
-        return PARTITION_CACHE.computeIfAbsent(device,
-                d -> Collections.unmodifiableList(computeLogicalVolumes(d, majMinMap).stream()
-                        .sorted(Comparator.comparing(HWPartition::getMinor).thenComparing(HWPartition::getName))
-                        .collect(Collectors.toList())));
+        return PARTITION_CACHE.computeIfAbsent(
+                device,
+                d -> Collections.unmodifiableList(
+                        computeLogicalVolumes(d, majMinMap).stream()
+                                .sorted(Comparator.comparing(HWPartition::getMinor).thenComparing(HWPartition::getName))
+                                .collect(Collectors.toList())));
     }
 
-    private static List<HWPartition> computeLogicalVolumes(String device,
+    private static List<HWPartition> computeLogicalVolumes(
+            String device,
             Map<String, Pair<Integer, Integer>> majMinMap) {
         List<HWPartition> partitions = new ArrayList<>();
         /*-

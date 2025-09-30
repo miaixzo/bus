@@ -52,15 +52,18 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.MediaType:
-        case PrivateTag.MediaLocation:
-            return VR.CS;
-        case PrivateTag.StudyOrImageSizeInMB:
-            return VR.DS;
-        case PrivateTag.EstimatedRetrieveTime:
-            return VR.IS;
-        case PrivateTag.StorageFileID:
-            return VR.ST;
+            case PrivateTag.MediaType:
+            case PrivateTag.MediaLocation:
+                return VR.CS;
+
+            case PrivateTag.StudyOrImageSizeInMB:
+                return VR.DS;
+
+            case PrivateTag.EstimatedRetrieveTime:
+                return VR.IS;
+
+            case PrivateTag.StorageFileID:
+                return VR.ST;
         }
         return VR.UN;
     }

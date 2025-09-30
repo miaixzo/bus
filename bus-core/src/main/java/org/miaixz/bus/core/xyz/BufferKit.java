@@ -109,7 +109,11 @@ public class BufferKit {
      * @param length    长度
      * @return 目标ByteBuffer
      */
-    public static ByteBuffer copy(final ByteBuffer src, final int srcStart, final ByteBuffer dest, final int destStart,
+    public static ByteBuffer copy(
+            final ByteBuffer src,
+            final int srcStart,
+            final ByteBuffer dest,
+            final int destStart,
             final int length) {
         System.arraycopy(src.array(), srcStart, dest.array(), destStart, length);
         return dest;

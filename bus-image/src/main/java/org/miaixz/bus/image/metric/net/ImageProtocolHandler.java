@@ -38,6 +38,7 @@ import org.miaixz.bus.image.metric.Connection;
  * @since Java 17+
  */
 public enum ImageProtocolHandler implements TCPProtocolHandler {
+
     INSTANCE;
 
     @Override

@@ -89,8 +89,10 @@ public class ImageWriterFactory implements Serializable {
             props.load(url.openStream());
             for (Entry<Object, Object> entry : props.entrySet()) {
                 String[] ss = Builder.split((String) entry.getValue(), ':');
-                factory.map.put((String) entry.getKey(), new ImageWriterParam(ss[0], ss[1], ss[2],
-                        ss.length > 3 ? Builder.split(ss[3], ';') : Normal.EMPTY_STRING_ARRAY));
+                factory.map.put(
+                        (String) entry.getKey(),
+                        new ImageWriterParam(ss[0], ss[1], ss[2],
+                                ss.length > 3 ? Builder.split(ss[3], ';') : Normal.EMPTY_STRING_ARRAY));
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to load Image Reader Factory configuration from: " + url.toString(), e);
@@ -119,7 +121,10 @@ public class ImageWriterFactory implements Serializable {
                 if (iter.hasNext())
                     writer = iter.next();
                 else {
-                    Logger.warn("No preferred Writer {} for format: {} - use {}", param.className, param.formatName,
+                    Logger.warn(
+                            "No preferred Writer {} for format: {} - use {}",
+                            param.className,
+                            param.formatName,
                             writer.getClass().getName());
                     break;
                 }
@@ -148,7 +153,10 @@ public class ImageWriterFactory implements Serializable {
                 if (iter.hasNext())
                     spi = iter.next();
                 else {
-                    Logger.warn("No preferred Writer {} for format: {} - use {}", param.className, param.formatName,
+                    Logger.warn(
+                            "No preferred Writer {} for format: {} - use {}",
+                            param.className,
+                            param.formatName,
                             spi.getPluginClassName());
                     break;
                 }

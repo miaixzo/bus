@@ -55,8 +55,8 @@ public class PatternKit extends RegexValidator {
     /**
      * 正则中需要被转义的关键字
      */
-    public static final Set<Character> RE_KEYS = SetKit.of('$', '(', ')', '*', '+', '.', '[', ']', '?', '\\', '^', '{',
-            '}', '|');
+    public static final Set<Character> RE_KEYS = SetKit
+            .of('$', '(', ')', '*', '+', '.', '[', ']', '?', '\\', '^', '{', '}', '|');
 
     /**
      * 获得匹配的字符串，获得正则中分组0的内容
@@ -162,7 +162,9 @@ public class PatternKit extends RegexValidator {
      * @param groupName 匹配正则的分组名称
      * @return 匹配后得到的字符串，未匹配返回null
      */
-    public static String get(final java.util.regex.Pattern pattern, final CharSequence content,
+    public static String get(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
             final String groupName) {
         if (null == content || null == pattern || null == groupName) {
             return null;
@@ -180,7 +182,9 @@ public class PatternKit extends RegexValidator {
      * @param content  被匹配的内容
      * @param consumer 匹配到的内容处理器
      */
-    public static void get(final java.util.regex.Pattern pattern, final CharSequence content,
+    public static void get(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
             final Consumer<Matcher> consumer) {
         if (null == content || null == pattern || null == consumer) {
             return;
@@ -210,7 +214,9 @@ public class PatternKit extends RegexValidator {
      * @param withGroup0 是否包括分组0，此分组表示全匹配的信息
      * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
      */
-    public static List<String> getAllGroups(final java.util.regex.Pattern pattern, final CharSequence content,
+    public static List<String> getAllGroups(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
             final boolean withGroup0) {
         return getAllGroups(pattern, content, withGroup0, false);
     }
@@ -224,8 +230,11 @@ public class PatternKit extends RegexValidator {
      * @param findAll    是否查找所有匹配到的内容，{@code false}表示只读取第一个匹配到的内容
      * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
      */
-    public static List<String> getAllGroups(final java.util.regex.Pattern pattern, final CharSequence content,
-            final boolean withGroup0, final boolean findAll) {
+    public static List<String> getAllGroups(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
+            final boolean withGroup0,
+            final boolean findAll) {
         if (null == content || null == pattern) {
             return null;
         }
@@ -259,7 +268,8 @@ public class PatternKit extends RegexValidator {
      * @param content 被匹配的内容
      * @return 命名捕获组，key为分组名，value为对应值
      */
-    public static Map<String, String> getAllGroupNames(final java.util.regex.Pattern pattern,
+    public static Map<String, String> getAllGroupNames(
+            final java.util.regex.Pattern pattern,
             final CharSequence content) {
         if (null == content || null == pattern) {
             return null;
@@ -282,7 +292,9 @@ public class PatternKit extends RegexValidator {
      * @param template 生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 新字符串
      */
-    public static String extractMulti(final java.util.regex.Pattern pattern, final CharSequence content,
+    public static String extractMulti(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
             String template) {
         if (null == content || null == pattern || null == template) {
             return null;
@@ -332,8 +344,10 @@ public class PatternKit extends RegexValidator {
      * @param template      生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 新字符串
      */
-    public static String extractMultiAndDelPre(final java.util.regex.Pattern pattern,
-            final Mutable<CharSequence> contentHolder, String template) {
+    public static String extractMultiAndDelPre(
+            final java.util.regex.Pattern pattern,
+            final Mutable<CharSequence> contentHolder,
+            String template) {
         if (null == contentHolder || null == pattern || null == template) {
             return null;
         }
@@ -361,7 +375,9 @@ public class PatternKit extends RegexValidator {
      * @param template      生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 按照template拼接后的字符串
      */
-    public static String extractMultiAndDelPre(final String regex, final Mutable<CharSequence> contentHolder,
+    public static String extractMultiAndDelPre(
+            final String regex,
+            final Mutable<CharSequence> contentHolder,
             final String template) {
         if (null == contentHolder || null == regex || null == template) {
             return null;
@@ -406,7 +422,9 @@ public class PatternKit extends RegexValidator {
      * @param replacement 替换的内容
      * @return 替换后剩余的内容
      */
-    public static String replaceFirst(final java.util.regex.Pattern pattern, final CharSequence content,
+    public static String replaceFirst(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
             final String replacement) {
         if (null == pattern || StringKit.isEmpty(content)) {
             return StringKit.toStringOrNull(content);
@@ -558,8 +576,11 @@ public class PatternKit extends RegexValidator {
      * @param collection 返回的集合类型
      * @return 结果集
      */
-    public static <T extends Collection<String>> T findAll(final String regex, final CharSequence content,
-            final int group, final T collection) {
+    public static <T extends Collection<String>> T findAll(
+            final String regex,
+            final CharSequence content,
+            final int group,
+            final T collection) {
         if (null == regex) {
             return collection;
         }
@@ -597,7 +618,9 @@ public class PatternKit extends RegexValidator {
      * @param group   正则的分组
      * @return 结果列表
      */
-    public static List<String> findAll(final java.util.regex.Pattern pattern, final CharSequence content,
+    public static List<String> findAll(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
             final int group) {
         return findAll(pattern, content, group, new ArrayList<>());
     }
@@ -612,8 +635,11 @@ public class PatternKit extends RegexValidator {
      * @param collection 返回的集合类型
      * @return 结果集
      */
-    public static <T extends Collection<String>> T findAll(final java.util.regex.Pattern pattern,
-            final CharSequence content, final int group, final T collection) {
+    public static <T extends Collection<String>> T findAll(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
+            final int group,
+            final T collection) {
         if (null == pattern || null == content) {
             return null;
         }
@@ -630,7 +656,9 @@ public class PatternKit extends RegexValidator {
      * @param content  被查找的内容
      * @param consumer 匹配结果处理函数
      */
-    public static void findAll(final java.util.regex.Pattern pattern, final CharSequence content,
+    public static void findAll(
+            final java.util.regex.Pattern pattern,
+            final CharSequence content,
             final Consumer<Matcher> consumer) {
         if (null == pattern || null == content) {
             return;
@@ -822,7 +850,9 @@ public class PatternKit extends RegexValidator {
      * @param replacementTemplate 替换的文本模板，可以使用$1类似的变量提取正则匹配出的内容
      * @return 处理后的文本
      */
-    public static String replaceAll(final CharSequence content, final java.util.regex.Pattern pattern,
+    public static String replaceAll(
+            final CharSequence content,
+            final java.util.regex.Pattern pattern,
             String replacementTemplate) {
         if (StringKit.isEmpty(content)) {
             return StringKit.toStringOrNull(content);
@@ -837,7 +867,10 @@ public class PatternKit extends RegexValidator {
         final Matcher matcher = pattern.matcher(content);
         boolean result = matcher.find();
         if (result) {
-            final Set<String> varNums = findAll(Pattern.GROUP_VAR_PATTERN, replacementTemplate, 1,
+            final Set<String> varNums = findAll(
+                    Pattern.GROUP_VAR_PATTERN,
+                    replacementTemplate,
+                    1,
                     new TreeSet<>(LengthCompare.INSTANCE.reversed()));
             final StringBuffer sb = new StringBuffer();
             do {
@@ -870,7 +903,9 @@ public class PatternKit extends RegexValidator {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的文本
      */
-    public static String replaceAll(final CharSequence text, final String regex,
+    public static String replaceAll(
+            final CharSequence text,
+            final String regex,
             final FunctionX<Matcher, String> replaceFun) {
         return replaceAll(text, java.util.regex.Pattern.compile(regex), replaceFun);
     }
@@ -888,7 +923,9 @@ public class PatternKit extends RegexValidator {
      * @param replaceFun 决定如何替换的函数,可能被多次调用（当有多个匹配时）
      * @return 替换后的字符串
      */
-    public static String replaceAll(final CharSequence text, final java.util.regex.Pattern pattern,
+    public static String replaceAll(
+            final CharSequence text,
+            final java.util.regex.Pattern pattern,
             FunctionX<Matcher, String> replaceFun) {
         if (null == pattern || StringKit.isEmpty(text)) {
             return StringKit.toStringOrNull(text);

@@ -122,8 +122,8 @@ public class RednoteMarketiProvider extends AbstractProvider {
             if (accessToken == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .data(AuthToken.builder().accessToken((String) object.get("access_token"))
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                    AuthToken.builder().accessToken((String) object.get("access_token"))
                             .refreshToken((String) object.get("refresh_token")).scope((String) object.get("scope"))
                             .expireIn((Integer) object.get("expires_in")).build())
                     .build();

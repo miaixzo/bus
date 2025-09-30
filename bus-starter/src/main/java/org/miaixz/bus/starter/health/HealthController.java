@@ -41,14 +41,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 public class HealthController extends Controller {
 
-    public HealthProviderService service;
+    public HealthService service;
 
     /**
      * 构造函数，注入 HealthProviderService。
      *
      * @param service 健康状态服务
      */
-    public HealthController(HealthProviderService service) {
+    public HealthController(HealthService service) {
         this.service = service;
     }
 

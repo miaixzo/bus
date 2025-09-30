@@ -38,50 +38,71 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.Analgesia:
-            return "Analgesia";
-        case PrivateTag.Anesthesia:
-            return "Anesthesia";
-        case PrivateTag.BedMotion:
-            return "BedMotion";
-        case PrivateTag.FoodAccess:
-            return "FoodAccess";
-        case PrivateTag.HistogramVersion:
-            return "HistogramVersion";
-        case PrivateTag.InjectionDecayCorrection:
-            return "InjectionDecayCorrection";
-        case PrivateTag.Isotope:
-            return "Isotope";
-        case PrivateTag.OtherDrugs:
-            return "OtherDrugs";
-        case PrivateTag.RebinningType:
-            return "RebinningType";
-        case PrivateTag.RebinningVersion:
-            return "RebinningVersion";
-        case PrivateTag.Reconstruction:
-            return "Reconstruction";
-        case PrivateTag.ReconstructionVersion:
-            return "ReconstructionVersion";
-        case PrivateTag.InjectedCompound:
-            return "InjectedCompound";
-        case PrivateTag.StudyModel:
-            return "StudyModel";
-        case PrivateTag.SubjectGenus:
-            return "SubjectGenus";
-        case PrivateTag.SubjectPhenotype:
-            return "SubjectPhenotype";
-        case PrivateTag.Version:
-            return "Version";
-        case PrivateTag.WaterAccess:
-            return "WaterAccess";
-        case PrivateTag.XOffset:
-            return "XOffset";
-        case PrivateTag.YOffset:
-            return "YOffset";
-        case PrivateTag.Zoom:
-            return "Zoom";
-        case PrivateTag.SubjectOrientation:
-            return "SubjectOrientation";
+            case PrivateTag.Analgesia:
+                return "Analgesia";
+
+            case PrivateTag.Anesthesia:
+                return "Anesthesia";
+
+            case PrivateTag.BedMotion:
+                return "BedMotion";
+
+            case PrivateTag.FoodAccess:
+                return "FoodAccess";
+
+            case PrivateTag.HistogramVersion:
+                return "HistogramVersion";
+
+            case PrivateTag.InjectionDecayCorrection:
+                return "InjectionDecayCorrection";
+
+            case PrivateTag.Isotope:
+                return "Isotope";
+
+            case PrivateTag.OtherDrugs:
+                return "OtherDrugs";
+
+            case PrivateTag.RebinningType:
+                return "RebinningType";
+
+            case PrivateTag.RebinningVersion:
+                return "RebinningVersion";
+
+            case PrivateTag.Reconstruction:
+                return "Reconstruction";
+
+            case PrivateTag.ReconstructionVersion:
+                return "ReconstructionVersion";
+
+            case PrivateTag.InjectedCompound:
+                return "InjectedCompound";
+
+            case PrivateTag.StudyModel:
+                return "StudyModel";
+
+            case PrivateTag.SubjectGenus:
+                return "SubjectGenus";
+
+            case PrivateTag.SubjectPhenotype:
+                return "SubjectPhenotype";
+
+            case PrivateTag.Version:
+                return "Version";
+
+            case PrivateTag.WaterAccess:
+                return "WaterAccess";
+
+            case PrivateTag.XOffset:
+                return "XOffset";
+
+            case PrivateTag.YOffset:
+                return "YOffset";
+
+            case PrivateTag.Zoom:
+                return "Zoom";
+
+            case PrivateTag.SubjectOrientation:
+                return "SubjectOrientation";
         }
         return "";
     }

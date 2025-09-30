@@ -134,4 +134,9 @@ public class Context {
      */
     private String lang = "zh";
 
+    /**
+     * 扩展属性
+     */
+    private String extension;
+
 }

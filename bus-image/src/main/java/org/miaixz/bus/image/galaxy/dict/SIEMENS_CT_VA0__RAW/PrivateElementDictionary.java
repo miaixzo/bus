@@ -52,18 +52,20 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._0021_xx50_:
-            return VR.CS;
-        case PrivateTag.CreationMask:
-        case PrivateTag.EvaluationMask:
-        case PrivateTag._0021_xx40_:
-        case PrivateTag._0021_xx41_:
-        case PrivateTag._0021_xx42_:
-        case PrivateTag._0021_xx43_:
-        case PrivateTag._0021_xx44_:
-            return VR.UL;
-        case PrivateTag.ExtendedProcessingMask:
-            return VR.US;
+            case PrivateTag._0021_xx50_:
+                return VR.CS;
+
+            case PrivateTag.CreationMask:
+            case PrivateTag.EvaluationMask:
+            case PrivateTag._0021_xx40_:
+            case PrivateTag._0021_xx41_:
+            case PrivateTag._0021_xx42_:
+            case PrivateTag._0021_xx43_:
+            case PrivateTag._0021_xx44_:
+                return VR.UL;
+
+            case PrivateTag.ExtendedProcessingMask:
+                return VR.US;
         }
         return VR.UN;
     }

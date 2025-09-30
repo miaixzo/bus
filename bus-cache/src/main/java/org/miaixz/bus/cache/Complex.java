@@ -83,7 +83,11 @@ public class Complex {
      * @return 如果缓存开关打开且满足条件则返回true，否则返回false
      */
     public static boolean isSwitchOn(Context config, Cached cached, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == EnumValue.Switch.ON, cached.expire(), cached.condition(), method,
+        return doIsSwitchOn(
+                config.getCache() == EnumValue.Switch.ON,
+                cached.expire(),
+                cached.condition(),
+                method,
                 args);
     }
 
@@ -97,7 +101,11 @@ public class Complex {
      * @return 如果缓存开关打开且满足条件则返回true，否则返回false
      */
     public static boolean isSwitchOn(Context config, Invalid invalid, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == EnumValue.Switch.ON, CacheExpire.FOREVER, invalid.condition(), method,
+        return doIsSwitchOn(
+                config.getCache() == EnumValue.Switch.ON,
+                CacheExpire.FOREVER,
+                invalid.condition(),
+                method,
                 args);
     }
 
@@ -111,8 +119,12 @@ public class Complex {
      * @return 如果缓存开关打开且满足条件则返回true，否则返回false
      */
     public static boolean isSwitchOn(Context config, CachedGet cachedGet, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == EnumValue.Switch.ON, CacheExpire.FOREVER, cachedGet.condition(),
-                method, args);
+        return doIsSwitchOn(
+                config.getCache() == EnumValue.Switch.ON,
+                CacheExpire.FOREVER,
+                cachedGet.condition(),
+                method,
+                args);
     }
 
     /**

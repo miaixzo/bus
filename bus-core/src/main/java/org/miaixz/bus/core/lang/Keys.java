@@ -340,8 +340,10 @@ public class Keys {
             value = System.getProperty(name);
         } catch (final SecurityException e) {
             if (!quiet) {
-                Console.error("Caught a SecurityException reading the system property '{}'; "
-                        + "the Keys property value will default to null.", name);
+                Console.error(
+                        "Caught a SecurityException reading the system property '{}'; "
+                                + "the Keys property value will default to null.",
+                        name);
             }
         }
 
@@ -350,8 +352,10 @@ public class Keys {
                 value = System.getenv(name);
             } catch (final SecurityException e) {
                 if (!quiet) {
-                    Console.error("Caught a SecurityException reading the system env '{}'; "
-                            + "the Keys env value will default to null.", name);
+                    Console.error(
+                            "Caught a SecurityException reading the system env '{}'; "
+                                    + "the Keys env value will default to null.",
+                            name);
                 }
             }
         }

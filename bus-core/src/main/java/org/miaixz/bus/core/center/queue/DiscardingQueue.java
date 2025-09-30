@@ -39,6 +39,7 @@ import java.util.Queue;
  * @since Java 17+
  */
 public class DiscardingQueue extends AbstractQueue<Object> {
+
     private static final DiscardingQueue INSTANCE = new DiscardingQueue();
 
     /**

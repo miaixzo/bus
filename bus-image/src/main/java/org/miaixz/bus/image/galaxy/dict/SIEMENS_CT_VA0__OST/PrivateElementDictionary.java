@@ -52,10 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.OsteoContourComment:
-            return VR.LO;
-        case PrivateTag.OsteoContourBuffer:
-            return VR.US;
+            case PrivateTag.OsteoContourComment:
+                return VR.LO;
+
+            case PrivateTag.OsteoContourBuffer:
+                return VR.US;
         }
         return VR.UN;
     }

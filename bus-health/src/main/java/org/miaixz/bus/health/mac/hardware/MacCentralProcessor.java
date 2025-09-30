@@ -116,8 +116,8 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                     if (data != null) {
                         // Byte array is null delimited
                         // Example value for M2: "apple,blizzard", "ARM,v8"
-                        compatibleStrMap.put(procId,
-                                new String(data, Charset.UTF_8).replace('\0', Symbol.C_SPACE).trim());
+                        compatibleStrMap
+                                .put(procId, new String(data, Charset.UTF_8).replace('\0', Symbol.C_SPACE).trim());
                     }
                 }
                 cpu.release();
@@ -149,15 +149,17 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                 type = ARM_CPUTYPE;
                 int mSeries = Parsing.getFirstIntValue(cpuName);
                 switch (mSeries) {
-                case 2:
-                    family = M2_CPUFAMILY;
-                    break;
-                case 3:
-                    family = M3_CPUFAMILY;
-                    break;
-                default:
-                    // Some M1 did not brand as such
-                    family = M1_CPUFAMILY;
+                    case 2:
+                        family = M2_CPUFAMILY;
+                        break;
+
+                    case 3:
+                        family = M3_CPUFAMILY;
+                        break;
+
+                    default:
+                        // Some M1 did not brand as such
+                        family = M1_CPUFAMILY;
                 }
             } else {
                 type = SysctlKit.sysctl("hw.cputype", 0);
@@ -228,23 +230,27 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         for (int i = 0; i < perflevels; i++) {
             int size = SysctlKit.sysctl("hw.perflevel" + i + ".l1icachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size,
-                        CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size,
+                                CentralProcessor.ProcessorCache.Type.INSTRUCTION));
             }
             size = SysctlKit.sysctl("hw.perflevel" + i + ".l1dcachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size,
-                        CentralProcessor.ProcessorCache.Type.DATA));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size,
+                                CentralProcessor.ProcessorCache.Type.DATA));
             }
             size = SysctlKit.sysctl("hw.perflevel" + i + ".l2cachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(2, l2associativity, linesize, size,
-                        CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(2, l2associativity, linesize, size,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
             }
             size = SysctlKit.sysctl("hw.perflevel" + i + ".l3cachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(3, 0, linesize, size,
-                        CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(
+                        new CentralProcessor.ProcessorCache(3, 0, linesize, size,
+                                CentralProcessor.ProcessorCache.Type.UNIFIED));
             }
         }
         return caches;
@@ -296,8 +302,10 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     public long[] queryCurrentFreq() {
         if (isArmCpu) {
             Map<Integer, Long> physFreqMap = new HashMap<>();
-            getPhysicalProcessors().stream().forEach(p -> physFreqMap.put(p.getPhysicalProcessorNumber(),
-                    p.getEfficiency() > 0 ? performanceCoreFrequency : efficiencyCoreFrequency));
+            getPhysicalProcessors().stream().forEach(
+                    p -> physFreqMap.put(
+                            p.getPhysicalProcessorNumber(),
+                            p.getEfficiency() > 0 ? performanceCoreFrequency : efficiencyCoreFrequency));
             return getLogicalProcessors().stream().map(CentralProcessor.LogicalProcessor::getPhysicalProcessorNumber)
                     .map(p -> physFreqMap.getOrDefault(p, performanceCoreFrequency)).mapToLong(f -> f).toArray();
         }
@@ -336,8 +344,12 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         try (ByRef.CloseableIntByReference procCount = new ByRef.CloseableIntByReference();
                 ByRef.CloseablePointerByReference procCpuLoadInfo = new ByRef.CloseablePointerByReference();
                 ByRef.CloseableIntByReference procInfoCount = new ByRef.CloseableIntByReference()) {
-            if (0 != SystemB.INSTANCE.host_processor_info(machPort, SystemB.PROCESSOR_CPU_LOAD_INFO, procCount,
-                    procCpuLoadInfo, procInfoCount)) {
+            if (0 != SystemB.INSTANCE.host_processor_info(
+                    machPort,
+                    SystemB.PROCESSOR_CPU_LOAD_INFO,
+                    procCount,
+                    procCpuLoadInfo,
+                    procInfoCount)) {
                 Logger.error("Failed to update CPU Load. Error code: {}", Native.getLastError());
                 return ticks;
             }

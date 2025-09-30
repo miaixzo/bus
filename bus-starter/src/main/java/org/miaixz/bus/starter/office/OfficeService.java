@@ -25,52 +25,27 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.starter.office;
 
-import java.io.Serial;
-import java.util.*;
-import java.util.function.Supplier;
+import org.miaixz.bus.office.Provider;
+import org.miaixz.bus.office.Registry;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
- * 值作为集合Set（LinkedHashSet）的Map实现，通过调用putValue可以在相同key时加入多个值，多个值用集合表示
+ * 文档在线预览服务提供
  *
- * @param <K> 键类型
- * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
+@Component
+@RequiredArgsConstructor
+public class OfficeService {
 
-    @Serial
-    private static final long serialVersionUID = 2852277962550L;
-
-    /**
-     * 基于{@code mapFactory}创建一个值为{@link Set}的多值映射集合
-     *
-     * @param mapFactory 创建集合的工厂反方
-     */
-    public SetValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
-        super(mapFactory);
-    }
-
-    /**
-     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
-     *
-     * @param map 提供数据的原始集合
-     */
-    public SetValueMap(final Map<K, Collection<V>> map) {
-        super(map);
-    }
-
-    /**
-     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
-     */
-    public SetValueMap() {
-    }
-
-    @Override
-    protected Set<V> createCollection() {
-        return new LinkedHashSet<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
+    public OfficeService(Provider localProvider, Provider onlineProvider) {
+        Registry.getInstance().register(Registry.LOCAL, localProvider);
+        Registry.getInstance().register(Registry.ONLINE, onlineProvider);
     }
 
 }

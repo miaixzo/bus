@@ -50,7 +50,12 @@ public class Commands {
         return rq;
     }
 
-    public static Attributes mkCStoreRQ(int msgId, String cuid, String iuid, int priority, String moveOriginatorAET,
+    public static Attributes mkCStoreRQ(
+            int msgId,
+            String cuid,
+            String iuid,
+            int priority,
+            String moveOriginatorAET,
             int moveOriginatorMsgId) {
         Attributes rq = mkCStoreRQ(msgId, cuid, iuid, priority);
         rq.setString(Tag.MoveOriginatorApplicationEntityTitle, VR.AE, moveOriginatorAET);
@@ -218,7 +223,9 @@ public class Commands {
     public static void incNumberOfSuboperations(int tag, Attributes rsp) {
         synchronized (rsp) {
             rsp.setInt(tag, VR.US, rsp.getInt(tag, 0) + 1);
-            rsp.setInt(Tag.NumberOfRemainingSuboperations, VR.US,
+            rsp.setInt(
+                    Tag.NumberOfRemainingSuboperations,
+                    VR.US,
                     rsp.getInt(Tag.NumberOfRemainingSuboperations, 1) - 1);
         }
     }

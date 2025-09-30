@@ -52,16 +52,19 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.Inversion:
-            return VR.CS;
-        case PrivateTag.ReferringDepartment:
-            return VR.LO;
-        case PrivateTag.LeftOrientation:
-        case PrivateTag.RightOrientation:
-            return VR.SH;
-        case PrivateTag.ScreenNumber:
-        case PrivateTag.DSA:
-            return VR.US;
+            case PrivateTag.Inversion:
+                return VR.CS;
+
+            case PrivateTag.ReferringDepartment:
+                return VR.LO;
+
+            case PrivateTag.LeftOrientation:
+            case PrivateTag.RightOrientation:
+                return VR.SH;
+
+            case PrivateTag.ScreenNumber:
+            case PrivateTag.DSA:
+                return VR.US;
         }
         return VR.UN;
     }

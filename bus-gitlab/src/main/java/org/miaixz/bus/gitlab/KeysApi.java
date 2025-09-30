@@ -39,6 +39,7 @@ import jakarta.ws.rs.core.Response;
  * See: <a href="https://docs.gitlab.com/ee/api/keys.html">GitLab Key API Documentaion</a>
  */
 public class KeysApi extends AbstractApi {
+
     public KeysApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }

@@ -222,6 +222,7 @@ public abstract class SegmentLock<L> {
      * 弱引用安全的读写锁实现，确保读锁和写锁持有对自身的强引用。
      */
     private static final class WeakSafeReadWriteLock implements ReadWriteLock {
+
         private final ReadWriteLock delegate;
 
         WeakSafeReadWriteLock() {
@@ -243,6 +244,7 @@ public abstract class SegmentLock<L> {
      * 弱引用安全的锁包装类，确保持有强引用。
      */
     private static final class WeakSafeLock implements java.util.concurrent.locks.Lock {
+
         private final java.util.concurrent.locks.Lock delegate;
         private final WeakSafeReadWriteLock strongReference;
 
@@ -286,6 +288,7 @@ public abstract class SegmentLock<L> {
      * 弱引用安全的条件包装类。
      */
     private static final class WeakSafeCondition implements Condition {
+
         private final Condition delegate;
 
         /** 防止垃圾回收 */
@@ -336,6 +339,7 @@ public abstract class SegmentLock<L> {
      * 抽象基类，确保段数为 2 的幂。
      */
     private abstract static class PowerOfTwoSegmentLock<L> extends SegmentLock<L> {
+
         final int mask;
 
         PowerOfTwoSegmentLock(final int stripes) {
@@ -359,6 +363,7 @@ public abstract class SegmentLock<L> {
      * 强引用实现，使用固定数组存储段。
      */
     private static class CompactSegmentLock<L> extends PowerOfTwoSegmentLock<L> {
+
         private final Object[] array;
 
         CompactSegmentLock(final int stripes, final Supplier<L> supplier) {
@@ -388,6 +393,7 @@ public abstract class SegmentLock<L> {
      * 小规模弱引用实现，使用 AtomicReferenceArray 存储段。
      */
     private static class SmallLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
+
         final AtomicReferenceArray<ArrayReference<? extends L>> locks;
         final Supplier<L> supplier;
         final int size;
@@ -437,6 +443,7 @@ public abstract class SegmentLock<L> {
         }
 
         private static final class ArrayReference<L> extends WeakReference<L> {
+
             final int index;
 
             ArrayReference(final L referent, final int index, final ReferenceQueue<L> queue) {
@@ -450,6 +457,7 @@ public abstract class SegmentLock<L> {
      * 大规模弱引用实现，使用 ConcurrentMap 存储段。
      */
     private static class LargeLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
+
         final ConcurrentMap<Integer, L> locks;
         final Supplier<L> supplier;
         final int size;
@@ -496,6 +504,7 @@ public abstract class SegmentLock<L> {
      * 填充锁，避免缓存行干扰。
      */
     private static class PaddedLock extends ReentrantLock {
+
         @Serial
         private static final long serialVersionUID = 2852280575965L;
 
@@ -512,6 +521,7 @@ public abstract class SegmentLock<L> {
      * 填充信号量，避免缓存行干扰。
      */
     private static class PaddedSemaphore extends Semaphore {
+
         @Serial
         private static final long serialVersionUID = 2852280626061L;
 

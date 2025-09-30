@@ -70,43 +70,43 @@ import com.sun.jna.platform.mac.SystemB.Statfs;
 @ThreadSafe
 public class MacFileSystem extends AbstractFileSystem {
 
-    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
+    protected static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_EXCLUDES);
-    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
+    protected static final List<PathMatcher> FS_PATH_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_INCLUDES);
-    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
+    protected static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_EXCLUDES);
-    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
+    protected static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_INCLUDES);
 
     // Regexp matcher for /dev/disk1 etc.
-    private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
+    protected static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
 
     // User specifiable flags.
-    private static final int MNT_RDONLY = 0x00000001;
-    private static final int MNT_SYNCHRONOUS = 0x00000002;
-    private static final int MNT_NOEXEC = 0x00000004;
-    private static final int MNT_NOSUID = 0x00000008;
-    private static final int MNT_NODEV = 0x00000010;
-    private static final int MNT_UNION = 0x00000020;
-    private static final int MNT_ASYNC = 0x00000040;
-    private static final int MNT_CPROTECT = 0x00000080;
-    private static final int MNT_EXPORTED = 0x00000100;
-    private static final int MNT_QUARANTINE = 0x00000400;
-    private static final int MNT_LOCAL = 0x00001000;
-    private static final int MNT_QUOTA = 0x00002000;
-    private static final int MNT_ROOTFS = 0x00004000;
-    private static final int MNT_DOVOLFS = 0x00008000;
-    private static final int MNT_DONTBROWSE = 0x00100000;
-    private static final int MNT_IGNORE_OWNERSHIP = 0x00200000;
-    private static final int MNT_AUTOMOUNTED = 0x00400000;
-    private static final int MNT_JOURNALED = 0x00800000;
-    private static final int MNT_NOUSERXATTR = 0x01000000;
-    private static final int MNT_DEFWRITE = 0x02000000;
-    private static final int MNT_MULTILABEL = 0x04000000;
-    private static final int MNT_NOATIME = 0x10000000;
+    protected static final int MNT_RDONLY = 0x00000001;
+    protected static final int MNT_SYNCHRONOUS = 0x00000002;
+    protected static final int MNT_NOEXEC = 0x00000004;
+    protected static final int MNT_NOSUID = 0x00000008;
+    protected static final int MNT_NODEV = 0x00000010;
+    protected static final int MNT_UNION = 0x00000020;
+    protected static final int MNT_ASYNC = 0x00000040;
+    protected static final int MNT_CPROTECT = 0x00000080;
+    protected static final int MNT_EXPORTED = 0x00000100;
+    protected static final int MNT_QUARANTINE = 0x00000400;
+    protected static final int MNT_LOCAL = 0x00001000;
+    protected static final int MNT_QUOTA = 0x00002000;
+    protected static final int MNT_ROOTFS = 0x00004000;
+    protected static final int MNT_DOVOLFS = 0x00008000;
+    protected static final int MNT_DONTBROWSE = 0x00100000;
+    protected static final int MNT_IGNORE_OWNERSHIP = 0x00200000;
+    protected static final int MNT_AUTOMOUNTED = 0x00400000;
+    protected static final int MNT_JOURNALED = 0x00800000;
+    protected static final int MNT_NOUSERXATTR = 0x01000000;
+    protected static final int MNT_DEFWRITE = 0x02000000;
+    protected static final int MNT_MULTILABEL = 0x04000000;
+    protected static final int MNT_NOATIME = 0x10000000;
 
-    private static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
+    protected static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
 
     static {
         OPTIONS_MAP.put(MNT_SYNCHRONOUS, "synchronous");
@@ -166,9 +166,14 @@ public class MacFileSystem extends AbstractFileSystem {
                     final int flags = fs[f].f_flags;
 
                     // Skip non-local drives if requested, and exclude pseudo file systems
-                    if ((localOnly && (flags & MNT_LOCAL) == 0) || !path.equals("/")
-                            && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
-                                    FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
+                    if ((localOnly && (flags & MNT_LOCAL) == 0)
+                            || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
+                                    path,
+                                    volume,
+                                    FS_PATH_INCLUDES,
+                                    FS_PATH_EXCLUDES,
+                                    FS_VOLUME_INCLUDES,
+                                    FS_VOLUME_EXCLUDES))) {
                         continue;
                     }
 
@@ -204,7 +209,9 @@ public class MacFileSystem extends AbstractFileSystem {
                         // Get the DiskArbitration dictionary for this disk,
                         // which has volumename
                         DADiskRef disk = DiskArbitration.INSTANCE.DADiskCreateFromBSDName(
-                                CoreFoundation.INSTANCE.CFAllocatorGetDefault(), session, volume);
+                                CoreFoundation.INSTANCE.CFAllocatorGetDefault(),
+                                session,
+                                volume);
                         if (disk != null) {
                             CFDictionaryRef diskInfo = DiskArbitration.INSTANCE.DADiskCopyDescription(disk);
                             if (diskInfo != null) {
@@ -237,9 +244,11 @@ public class MacFileSystem extends AbstractFileSystem {
                         }
                     }
 
-                    fsList.add(new MacOSFileStore(name, volume, name, path, options.toString(),
-                            uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(),
-                            file.getUsableSpace(), file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
+                    fsList.add(
+                            new MacOSFileStore(name, volume, name, path, options.toString(),
+                                    uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type,
+                                    file.getFreeSpace(), file.getUsableSpace(), file.getTotalSpace(), fs[f].f_ffree,
+                                    fs[f].f_files));
                 }
                 daVolumeNameKey.release();
                 // Close DA session

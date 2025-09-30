@@ -38,40 +38,56 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag._004B_xx13_:
-            return "_004B_xx13_";
-        case PrivateTag._004B_xx15_:
-            return "_004B_xx15_";
-        case PrivateTag.GEPrivateImageThumbnailSequence:
-            return "GEPrivateImageThumbnailSequence";
-        case PrivateTag._0009_xx12_:
-            return "_0009_xx12_";
-        case PrivateTag.ShiftCount:
-            return "ShiftCount";
-        case PrivateTag.Offset:
-            return "Offset";
-        case PrivateTag.ActualFrameNumber:
-            return "ActualFrameNumber";
-        case PrivateTag.AssigningAuthorityForPatientID:
-            return "AssigningAuthorityForPatientID";
-        case PrivateTag.OriginalStudyInstanceUID:
-            return "OriginalStudyInstanceUID";
-        case PrivateTag.OriginalSeriesInstanceUID:
-            return "OriginalSeriesInstanceUID";
-        case PrivateTag.OriginalSOPInstanceUID:
-            return "OriginalSOPInstanceUID";
-        case PrivateTag.CompressionType:
-            return "CompressionType";
-        case PrivateTag.MultiframeOffsets:
-            return "MultiframeOffsets";
-        case PrivateTag.MultiResolutionLevels:
-            return "MultiResolutionLevels";
-        case PrivateTag.SubbandRows:
-            return "SubbandRows";
-        case PrivateTag.SubbandColumns:
-            return "SubbandColumns";
-        case PrivateTag.SubbandBytecounts:
-            return "SubbandBytecounts";
+            case PrivateTag._004B_xx13_:
+                return "_004B_xx13_";
+
+            case PrivateTag._004B_xx15_:
+                return "_004B_xx15_";
+
+            case PrivateTag.GEPrivateImageThumbnailSequence:
+                return "GEPrivateImageThumbnailSequence";
+
+            case PrivateTag._0009_xx12_:
+                return "_0009_xx12_";
+
+            case PrivateTag.ShiftCount:
+                return "ShiftCount";
+
+            case PrivateTag.Offset:
+                return "Offset";
+
+            case PrivateTag.ActualFrameNumber:
+                return "ActualFrameNumber";
+
+            case PrivateTag.AssigningAuthorityForPatientID:
+                return "AssigningAuthorityForPatientID";
+
+            case PrivateTag.OriginalStudyInstanceUID:
+                return "OriginalStudyInstanceUID";
+
+            case PrivateTag.OriginalSeriesInstanceUID:
+                return "OriginalSeriesInstanceUID";
+
+            case PrivateTag.OriginalSOPInstanceUID:
+                return "OriginalSOPInstanceUID";
+
+            case PrivateTag.CompressionType:
+                return "CompressionType";
+
+            case PrivateTag.MultiframeOffsets:
+                return "MultiframeOffsets";
+
+            case PrivateTag.MultiResolutionLevels:
+                return "MultiResolutionLevels";
+
+            case PrivateTag.SubbandRows:
+                return "SubbandRows";
+
+            case PrivateTag.SubbandColumns:
+                return "SubbandColumns";
+
+            case PrivateTag.SubbandBytecounts:
+                return "SubbandBytecounts";
         }
         return "";
     }

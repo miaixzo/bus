@@ -62,10 +62,12 @@ public final class ProcessorInformation {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
         return IS_WIN7_OR_GREATER
-                ? PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class,
+                ? PerfCounterWildcardQuery.queryInstancesAndValues(
+                        ProcessorTickCountProperty.class,
                         PerfmonConsts.PROCESSOR_INFORMATION,
                         PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL)
-                : PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class,
+                : PerfCounterWildcardQuery.queryInstancesAndValues(
+                        ProcessorTickCountProperty.class,
                         PerfmonConsts.PROCESSOR,
                         PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL);
     }
@@ -76,7 +78,9 @@ public final class ProcessorInformation {
      * @return Performance Counters for the total of all processors.
      */
     public static Map<SystemTickCountProperty, Long> querySystemCounters() {
-        return PerfCounterQuery.queryValues(SystemTickCountProperty.class, PerfmonConsts.PROCESSOR,
+        return PerfCounterQuery.queryValues(
+                SystemTickCountProperty.class,
+                PerfmonConsts.PROCESSOR,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL);
     }
 
@@ -89,7 +93,8 @@ public final class ProcessorInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorUtilityTickCountProperty.class,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                ProcessorUtilityTickCountProperty.class,
                 PerfmonConsts.PROCESSOR_INFORMATION,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
     }
@@ -103,7 +108,9 @@ public final class ProcessorInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Collections.emptyMap();
         }
-        return PerfCounterQuery.queryValues(InterruptsProperty.class, PerfmonConsts.PROCESSOR,
+        return PerfCounterQuery.queryValues(
+                InterruptsProperty.class,
+                PerfmonConsts.PROCESSOR,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL);
     }
 
@@ -116,7 +123,8 @@ public final class ProcessorInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorFrequencyProperty.class,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                ProcessorFrequencyProperty.class,
                 PerfmonConsts.PROCESSOR_INFORMATION,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
     }
@@ -151,6 +159,7 @@ public final class ProcessorInformation {
      * Processor Frequency counters. Requires Win7 or greater
      */
     public enum ProcessorFrequencyProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
@@ -172,6 +181,7 @@ public final class ProcessorInformation {
      * Processor performance counters
      */
     public enum ProcessorTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
@@ -197,6 +207,7 @@ public final class ProcessorInformation {
      * Processor performance counters including utility counters
      */
     public enum ProcessorUtilityTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
@@ -228,6 +239,7 @@ public final class ProcessorInformation {
      * System performance counters
      */
     public enum SystemTickCountProperty implements PerfCounterQuery.PdhCounterProperty {
+
         PERCENTDPCTIME(PerfCounterQuery.TOTAL_INSTANCE, "% DPC Time"), //
         PERCENTINTERRUPTTIME(PerfCounterQuery.TOTAL_INSTANCE, "% Interrupt Time");
 

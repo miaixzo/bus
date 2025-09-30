@@ -52,19 +52,21 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.Rotation:
-        case PrivateTag.SmoothRotation:
-        case PrivateTag._0029_xx10_:
-        case PrivateTag._0029_xx11_:
-        case PrivateTag._0029_xx12_:
-        case PrivateTag._0029_xx13_:
-            return VR.CS;
-        case PrivateTag.Invert:
-        case PrivateTag.HasTabstop:
-            return VR.IS;
-        case PrivateTag.WindowWidth:
-        case PrivateTag.WindowCentre:
-            return VR.LO;
+            case PrivateTag.Rotation:
+            case PrivateTag.SmoothRotation:
+            case PrivateTag._0029_xx10_:
+            case PrivateTag._0029_xx11_:
+            case PrivateTag._0029_xx12_:
+            case PrivateTag._0029_xx13_:
+                return VR.CS;
+
+            case PrivateTag.Invert:
+            case PrivateTag.HasTabstop:
+                return VR.IS;
+
+            case PrivateTag.WindowWidth:
+            case PrivateTag.WindowCentre:
+                return VR.LO;
         }
         return VR.UN;
     }

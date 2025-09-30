@@ -38,52 +38,74 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ViewNative:
-            return "ViewNative";
-        case PrivateTag.OriginalSeriesNumber:
-            return "OriginalSeriesNumber";
-        case PrivateTag.OriginalImageNumber:
-            return "OriginalImageNumber";
-        case PrivateTag.WinCenter:
-            return "WinCenter";
-        case PrivateTag.WinWidth:
-            return "WinWidth";
-        case PrivateTag.WinBrightness:
-            return "WinBrightness";
-        case PrivateTag.WinContrast:
-            return "WinContrast";
-        case PrivateTag.OriginalFrameNumber:
-            return "OriginalFrameNumber";
-        case PrivateTag.OriginalMaskFrameNumber:
-            return "OriginalMaskFrameNumber";
-        case PrivateTag.Opac:
-            return "Opac";
-        case PrivateTag.OriginalNumberofFrames:
-            return "OriginalNumberofFrames";
-        case PrivateTag.OriginalSceneDuration:
-            return "OriginalSceneDuration";
-        case PrivateTag.IdentifierLOID:
-            return "IdentifierLOID";
-        case PrivateTag.OriginalSceneVFRInfo:
-            return "OriginalSceneVFRInfo";
-        case PrivateTag.OriginalFrameECGPosition:
-            return "OriginalFrameECGPosition";
-        case PrivateTag.OriginalECG1stFrameOffset:
-            return "OriginalECG1stFrameOffset";
-        case PrivateTag.ZoomFlag:
-            return "ZoomFlag";
-        case PrivateTag.FlexiblePixelShift:
-            return "FlexiblePixelShift";
-        case PrivateTag.NumberOfMaskFrames:
-            return "NumberOfMaskFrames";
-        case PrivateTag.NumberOfFillFrames:
-            return "NumberOfFillFrames";
-        case PrivateTag.SeriesNumber:
-            return "SeriesNumber";
-        case PrivateTag.ImageNumber:
-            return "ImageNumber";
-        case PrivateTag.ReadyProcessingStatus:
-            return "ReadyProcessingStatus";
+            case PrivateTag.ViewNative:
+                return "ViewNative";
+
+            case PrivateTag.OriginalSeriesNumber:
+                return "OriginalSeriesNumber";
+
+            case PrivateTag.OriginalImageNumber:
+                return "OriginalImageNumber";
+
+            case PrivateTag.WinCenter:
+                return "WinCenter";
+
+            case PrivateTag.WinWidth:
+                return "WinWidth";
+
+            case PrivateTag.WinBrightness:
+                return "WinBrightness";
+
+            case PrivateTag.WinContrast:
+                return "WinContrast";
+
+            case PrivateTag.OriginalFrameNumber:
+                return "OriginalFrameNumber";
+
+            case PrivateTag.OriginalMaskFrameNumber:
+                return "OriginalMaskFrameNumber";
+
+            case PrivateTag.Opac:
+                return "Opac";
+
+            case PrivateTag.OriginalNumberofFrames:
+                return "OriginalNumberofFrames";
+
+            case PrivateTag.OriginalSceneDuration:
+                return "OriginalSceneDuration";
+
+            case PrivateTag.IdentifierLOID:
+                return "IdentifierLOID";
+
+            case PrivateTag.OriginalSceneVFRInfo:
+                return "OriginalSceneVFRInfo";
+
+            case PrivateTag.OriginalFrameECGPosition:
+                return "OriginalFrameECGPosition";
+
+            case PrivateTag.OriginalECG1stFrameOffset:
+                return "OriginalECG1stFrameOffset";
+
+            case PrivateTag.ZoomFlag:
+                return "ZoomFlag";
+
+            case PrivateTag.FlexiblePixelShift:
+                return "FlexiblePixelShift";
+
+            case PrivateTag.NumberOfMaskFrames:
+                return "NumberOfMaskFrames";
+
+            case PrivateTag.NumberOfFillFrames:
+                return "NumberOfFillFrames";
+
+            case PrivateTag.SeriesNumber:
+                return "SeriesNumber";
+
+            case PrivateTag.ImageNumber:
+                return "ImageNumber";
+
+            case PrivateTag.ReadyProcessingStatus:
+                return "ReadyProcessingStatus";
         }
         return "";
     }

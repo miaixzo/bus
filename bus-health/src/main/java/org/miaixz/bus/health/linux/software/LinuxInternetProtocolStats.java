@@ -73,8 +73,8 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
         for (int line = 0; line < lines.size() - 1; line += 2) {
             if (lines.get(line).startsWith(tcpColon) && lines.get(line + 1).startsWith(tcpColon)) {
-                Map<TcpStat, String> parsedData = Parsing.stringToEnumMap(TcpStat.class,
-                        lines.get(line + 1).substring(tcpColon.length()).trim(), ' ');
+                Map<TcpStat, String> parsedData = Parsing
+                        .stringToEnumMap(TcpStat.class, lines.get(line + 1).substring(tcpColon.length()).trim(), ' ');
                 for (Map.Entry<TcpStat, String> entry : parsedData.entrySet()) {
                     tcpData.put(entry.getKey(), Parsing.parseLongOrDefault(entry.getValue(), 0L));
                 }
@@ -97,8 +97,8 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
         for (int line = 0; line < lines.size() - 1; line += 2) {
             if (lines.get(line).startsWith(udpColon) && lines.get(line + 1).startsWith(udpColon)) {
-                Map<UdpStat, String> parsedData = Parsing.stringToEnumMap(UdpStat.class,
-                        lines.get(line + 1).substring(udpColon.length()).trim(), ' ');
+                Map<UdpStat, String> parsedData = Parsing
+                        .stringToEnumMap(UdpStat.class, lines.get(line + 1).substring(udpColon.length()).trim(), ' ');
                 for (Map.Entry<UdpStat, String> entry : parsedData.entrySet()) {
                     udpData.put(entry.getKey(), Parsing.parseLongOrDefault(entry.getValue(), 0L));
                 }
@@ -127,24 +127,28 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
             if (lines.get(line).startsWith(udp6)) {
                 String[] parts = lines.get(line).split("\\s+");
                 switch (parts[0]) {
-                case "Udp6InDatagrams":
-                    inDatagrams = Parsing.parseLongOrDefault(parts[1], 0L);
-                    foundUDPv6StatsCount++;
-                    break;
-                case "Udp6NoPorts":
-                    noPorts = Parsing.parseLongOrDefault(parts[1], 0L);
-                    foundUDPv6StatsCount++;
-                    break;
-                case "Udp6InErrors":
-                    inErrors = Parsing.parseLongOrDefault(parts[1], 0L);
-                    foundUDPv6StatsCount++;
-                    break;
-                case "Udp6OutDatagrams":
-                    outDatagrams = Parsing.parseLongOrDefault(parts[1], 0L);
-                    foundUDPv6StatsCount++;
-                    break;
-                default:
-                    break;
+                    case "Udp6InDatagrams":
+                        inDatagrams = Parsing.parseLongOrDefault(parts[1], 0L);
+                        foundUDPv6StatsCount++;
+                        break;
+
+                    case "Udp6NoPorts":
+                        noPorts = Parsing.parseLongOrDefault(parts[1], 0L);
+                        foundUDPv6StatsCount++;
+                        break;
+
+                    case "Udp6InErrors":
+                        inErrors = Parsing.parseLongOrDefault(parts[1], 0L);
+                        foundUDPv6StatsCount++;
+                        break;
+
+                    case "Udp6OutDatagrams":
+                        outDatagrams = Parsing.parseLongOrDefault(parts[1], 0L);
+                        foundUDPv6StatsCount++;
+                        break;
+
+                    default:
+                        break;
                 }
             }
         }
@@ -174,9 +178,10 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
                     TcpState state = stateLookup(Parsing.hexStringToInt(split[3], 0));
                     Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
                     long inode = Parsing.parseLongOrDefault(split[9], 0);
-                    conns.add(new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(),
-                            fAddr.getRight(), state, txQrxQ.getLeft(), txQrxQ.getRight(),
-                            pidMap.getOrDefault(inode, -1)));
+                    conns.add(
+                            new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(),
+                                    fAddr.getRight(), state, txQrxQ.getLeft(), txQrxQ.getRight(),
+                                    pidMap.getOrDefault(inode, -1)));
                 }
             }
         }
@@ -214,31 +219,42 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
-        case 0x01:
-            return InternetProtocolStats.TcpState.ESTABLISHED;
-        case 0x02:
-            return InternetProtocolStats.TcpState.SYN_SENT;
-        case 0x03:
-            return InternetProtocolStats.TcpState.SYN_RECV;
-        case 0x04:
-            return InternetProtocolStats.TcpState.FIN_WAIT_1;
-        case 0x05:
-            return InternetProtocolStats.TcpState.FIN_WAIT_2;
-        case 0x06:
-            return InternetProtocolStats.TcpState.TIME_WAIT;
-        case 0x07:
-            return InternetProtocolStats.TcpState.CLOSED;
-        case 0x08:
-            return InternetProtocolStats.TcpState.CLOSE_WAIT;
-        case 0x09:
-            return InternetProtocolStats.TcpState.LAST_ACK;
-        case 0x0A:
-            return InternetProtocolStats.TcpState.LISTEN;
-        case 0x0B:
-            return InternetProtocolStats.TcpState.CLOSING;
-        case 0x00:
-        default:
-            return InternetProtocolStats.TcpState.UNKNOWN;
+            case 0x01:
+                return InternetProtocolStats.TcpState.ESTABLISHED;
+
+            case 0x02:
+                return InternetProtocolStats.TcpState.SYN_SENT;
+
+            case 0x03:
+                return InternetProtocolStats.TcpState.SYN_RECV;
+
+            case 0x04:
+                return InternetProtocolStats.TcpState.FIN_WAIT_1;
+
+            case 0x05:
+                return InternetProtocolStats.TcpState.FIN_WAIT_2;
+
+            case 0x06:
+                return InternetProtocolStats.TcpState.TIME_WAIT;
+
+            case 0x07:
+                return InternetProtocolStats.TcpState.CLOSED;
+
+            case 0x08:
+                return InternetProtocolStats.TcpState.CLOSE_WAIT;
+
+            case 0x09:
+                return InternetProtocolStats.TcpState.LAST_ACK;
+
+            case 0x0A:
+                return InternetProtocolStats.TcpState.LISTEN;
+
+            case 0x0B:
+                return InternetProtocolStats.TcpState.CLOSING;
+
+            case 0x00:
+            default:
+                return InternetProtocolStats.TcpState.UNKNOWN;
         }
     }
 

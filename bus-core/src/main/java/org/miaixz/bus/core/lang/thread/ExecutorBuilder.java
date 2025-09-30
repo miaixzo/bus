@@ -113,8 +113,8 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
         }
         final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory
                 : Executors.defaultThreadFactory();
-        final RejectedExecutionHandler handler = ObjectKit.defaultIfNull(builder.handler,
-                RejectPolicy.ABORT.getValue());
+        final RejectedExecutionHandler handler = ObjectKit
+                .defaultIfNull(builder.handler, RejectPolicy.ABORT.getValue());
 
         final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(//
                 corePoolSize, //

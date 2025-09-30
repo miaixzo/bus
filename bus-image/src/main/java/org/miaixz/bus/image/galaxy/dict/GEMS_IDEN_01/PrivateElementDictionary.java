@@ -52,29 +52,35 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.FullFidelity:
-            return VR.LO;
-        case PrivateTag._0009_xx17_:
-        case PrivateTag._0009_xxE2_:
-            return VR.LT;
-        case PrivateTag.SuiteId:
-        case PrivateTag.ProductId:
-        case PrivateTag._0009_xx2F_:
-        case PrivateTag.ServiceId:
-        case PrivateTag.MobileLocationNumber:
-        case PrivateTag.GenesisVersionNow:
-            return VR.SH;
-        case PrivateTag.ImageActualDate:
-        case PrivateTag.ActualSeriesDataTimeStamp:
-            return VR.SL;
-        case PrivateTag.EquipmentUID:
-            return VR.UI;
-        case PrivateTag.ExamRecordChecksum:
-        case PrivateTag.SeriesSuiteID:
-            return VR.UL;
-        case PrivateTag._0009_xx1A_:
-        case PrivateTag._0009_xx20_:
-            return VR.US;
+            case PrivateTag.FullFidelity:
+                return VR.LO;
+
+            case PrivateTag._0009_xx17_:
+            case PrivateTag._0009_xxE2_:
+                return VR.LT;
+
+            case PrivateTag.SuiteId:
+            case PrivateTag.ProductId:
+            case PrivateTag._0009_xx2F_:
+            case PrivateTag.ServiceId:
+            case PrivateTag.MobileLocationNumber:
+            case PrivateTag.GenesisVersionNow:
+                return VR.SH;
+
+            case PrivateTag.ImageActualDate:
+            case PrivateTag.ActualSeriesDataTimeStamp:
+                return VR.SL;
+
+            case PrivateTag.EquipmentUID:
+                return VR.UI;
+
+            case PrivateTag.ExamRecordChecksum:
+            case PrivateTag.SeriesSuiteID:
+                return VR.UL;
+
+            case PrivateTag._0009_xx1A_:
+            case PrivateTag._0009_xx20_:
+                return VR.US;
         }
         return VR.UN;
     }

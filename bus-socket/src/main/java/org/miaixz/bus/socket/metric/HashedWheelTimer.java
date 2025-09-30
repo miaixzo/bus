@@ -319,6 +319,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
      * 定时器分桶
      */
     private static final class HashedWheelBucket {
+
         private HashedWheelSocketTask head;
         private HashedWheelSocketTask tail;
 

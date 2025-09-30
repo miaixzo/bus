@@ -73,8 +73,8 @@ public class FieldCompare<T> extends FunctionCompare<T> {
      * @param field       字段
      */
     public FieldCompare(final boolean nullGreater, final boolean compareSelf, final Field field) {
-        super(nullGreater, compareSelf, (bean) -> (Comparable<?>) FieldKit.getFieldValue(bean,
-                Assert.notNull(field, "Field must be not null!")));
+        super(nullGreater, compareSelf, (bean) -> (Comparable<?>) FieldKit
+                .getFieldValue(bean, Assert.notNull(field, "Field must be not null!")));
     }
 
     /**

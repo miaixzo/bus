@@ -25,59 +25,63 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.basic.entity;
+package org.miaixz.bus.extra.mail;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
 
 /**
- * 许可协议属性
- *
+ * 用户名密码授权
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-public class License {
+public class MailAuthenticator extends Authenticator {
+
+    private final PasswordAuthentication auth;
 
     /**
-     * ID
+     * 创建账号密码形式的{@link java.net.Authenticator} 实现。
+     *
+     * @param user 用户名
+     * @param pass 密码
+     * @return PassAuth
      */
-    private String id;
+    public static MailAuthenticator of(final String user, final String pass) {
+        return new MailAuthenticator(user, pass);
+    }
 
     /**
-     * 名称
+     * 构造
+     *
+     * @param mailAccount 邮箱账号信息
      */
-    private String name;
+    public MailAuthenticator(final MailAccount mailAccount) {
+        this.auth = new PasswordAuthentication(mailAccount.getUser(), String.valueOf(mailAccount.getPass()));
+    }
 
     /**
-     * 证书主题
+     * 构造
+     *
+     * @param userName 用户名
+     * @param password 密码
      */
-    private String subject;
+    public MailAuthenticator(final String userName, final String password) {
+        this.auth = new PasswordAuthentication(userName, password);
+    }
 
     /**
-     * 版本
+     * 构造
+     *
+     * @param auth 密码授权信息
      */
-    private String version;
+    public MailAuthenticator(final PasswordAuthentication auth) {
+        this.auth = auth;
+    }
 
-    /**
-     * 证书生效时间
-     */
-    private String issuedTime;
-    /**
-     * 证书失效时间
-     */
-    private String expiryTime;
-
-    /**
-     * 描述信息
-     */
-    private String description;
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication() {
+        return this.auth;
+    }
 
 }

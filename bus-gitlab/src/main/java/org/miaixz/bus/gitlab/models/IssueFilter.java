@@ -520,6 +520,7 @@ public class IssueFilter implements Serializable {
     }
 
     public enum IssueField {
+
         ASSIGNEE_ID, ASSIGNEE_USERNAME, AUTHOR_ID, AUTHOR_USERNAME, IIDS, ITERATION_ID, ITERATION_TITLE, LABELS,
         MILESTONE, MILESTONE_ID;
 

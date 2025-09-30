@@ -65,8 +65,8 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
 
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<perfstat_partition_config_t> config = Memoizer.memoize(PerfstatConfig::queryConfig);
-    private final Supplier<perfstat_process_t[]> procCpu = Memoizer.memoize(PerfstatProcess::queryProcesses,
-            Memoizer.defaultExpiration());
+    private final Supplier<perfstat_process_t[]> procCpu = Memoizer
+            .memoize(PerfstatProcess::queryProcesses, Memoizer.defaultExpiration());
     private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(AixInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
@@ -246,11 +246,13 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
                 String[] serviceSplit = Pattern.SPACES_PATTERN.split(systemService.trim());
                 if (systemService.contains("active")) {
                     if (serviceSplit.length == 4) {
-                        services.add(new OSService(serviceSplit[0], Parsing.parseIntOrDefault(serviceSplit[2], 0),
-                                OSService.State.RUNNING));
+                        services.add(
+                                new OSService(serviceSplit[0], Parsing.parseIntOrDefault(serviceSplit[2], 0),
+                                        OSService.State.RUNNING));
                     } else if (serviceSplit.length == 3) {
-                        services.add(new OSService(serviceSplit[0], Parsing.parseIntOrDefault(serviceSplit[1], 0),
-                                OSService.State.RUNNING));
+                        services.add(
+                                new OSService(serviceSplit[0], Parsing.parseIntOrDefault(serviceSplit[1], 0),
+                                        OSService.State.RUNNING));
                     }
                 } else if (systemService.contains("inoperative")) {
                     services.add(new OSService(serviceSplit[0], 0, OSService.State.STOPPED));
@@ -265,8 +267,9 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
                 String installedService = Executor.getFirstAnswer(file.getAbsolutePath() + " status");
                 // Apache httpd daemon is running with PID 3997858.
                 if (installedService.contains("running")) {
-                    services.add(new OSService(file.getName(), Parsing.parseLastInt(installedService, 0),
-                            OSService.State.RUNNING));
+                    services.add(
+                            new OSService(file.getName(), Parsing.parseLastInt(installedService, 0),
+                                    OSService.State.RUNNING));
                 } else {
                     services.add(new OSService(file.getName(), 0, OSService.State.STOPPED));
                 }

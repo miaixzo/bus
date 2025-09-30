@@ -113,6 +113,7 @@ public class SyncFinisher implements Closeable {
     public SyncFinisher addRepeatWorker(final Runnable runnable) {
         for (int i = 0; i < this.threadSize; i++) {
             addWorker(new Worker() {
+
                 @Override
                 public void work() {
                     runnable.run();
@@ -130,6 +131,7 @@ public class SyncFinisher implements Closeable {
      */
     public SyncFinisher addWorker(final Runnable runnable) {
         return addWorker(new Worker() {
+
             @Override
             public void work() {
                 runnable.run();

@@ -227,6 +227,7 @@ public class HighMultiReplacer extends StringReplacer {
          * AC自动机的节点，表示Trie树中的一个状态。
          */
         private static class Node {
+
             /**
              * 终点标记，表示从根节点到此节点形成一个关键字，存储原始关键字。
              */

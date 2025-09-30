@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.OrthoViewSessionDateTime:
-            return "OrthoViewSessionDateTime";
-        case PrivateTag.OrthoViewSessionCreator:
-            return "OrthoViewSessionCreator";
-        case PrivateTag.OrthoViewSessionCompletionFlag:
-            return "OrthoViewSessionCompletionFlag";
-        case PrivateTag.OrthoViewFileSequence:
-            return "OrthoViewFileSequence";
-        case PrivateTag.OrthoViewFileName:
-            return "OrthoViewFileName";
-        case PrivateTag.OrthoViewFileContent:
-            return "OrthoViewFileContent";
+            case PrivateTag.OrthoViewSessionDateTime:
+                return "OrthoViewSessionDateTime";
+
+            case PrivateTag.OrthoViewSessionCreator:
+                return "OrthoViewSessionCreator";
+
+            case PrivateTag.OrthoViewSessionCompletionFlag:
+                return "OrthoViewSessionCompletionFlag";
+
+            case PrivateTag.OrthoViewFileSequence:
+                return "OrthoViewFileSequence";
+
+            case PrivateTag.OrthoViewFileName:
+                return "OrthoViewFileName";
+
+            case PrivateTag.OrthoViewFileContent:
+                return "OrthoViewFileContent";
         }
         return "";
     }

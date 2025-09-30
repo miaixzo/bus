@@ -48,7 +48,8 @@ public interface Factory {
      * @param propertyElementFormatter a formatter for property
      * @return an {@link Format}
      */
-    Format apply(ElementFormatter<IniComment> commentElementFormatter,
+    Format apply(
+            ElementFormatter<IniComment> commentElementFormatter,
             ElementFormatter<IniSection> sectionElementFormatter,
             ElementFormatter<IniProperty> propertyElementFormatter);
 

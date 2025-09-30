@@ -97,8 +97,10 @@ public final class ThreadPerformanceData {
                         : Integer.toUnsignedLong((Integer) addr);
                 int contextSwitches = ((Integer) threadInstanceMap.get(ThreadPerformanceProperty.CONTEXTSWITCHESPERSEC))
                         .intValue();
-                threadMap.put(tid, new PerfCounterBlock(name, tid, pid, now - upTime, user, kernel, priority,
-                        threadState, threadWaitReason, startAddr, contextSwitches));
+                threadMap.put(
+                        tid,
+                        new PerfCounterBlock(name, tid, pid, now - upTime, user, kernel, priority, threadState,
+                                threadWaitReason, startAddr, contextSwitches));
             }
         }
         return threadMap;
@@ -124,8 +126,10 @@ public final class ThreadPerformanceData {
      * @return A map with Thread ID as the key and a {@link PerfCounterBlock} object populated with performance counter
      *         information.
      */
-    public static Map<Integer, PerfCounterBlock> buildThreadMapFromPerfCounters(Collection<Integer> pids,
-            String procName, int threadNum) {
+    public static Map<Integer, PerfCounterBlock> buildThreadMapFromPerfCounters(
+            Collection<Integer> pids,
+            String procName,
+            int threadNum) {
         if (PerfmonDisabled.PERF_PROC_DISABLED) {
             return Collections.emptyMap();
         }
@@ -170,8 +174,10 @@ public final class ThreadPerformanceData {
 
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
-                threadMap.put(tid, new PerfCounterBlock(name, tid, pid, startTime, user, kernel, priority, threadState,
-                        threadWaitReason, startAddr, contextSwitches));
+                threadMap.put(
+                        tid,
+                        new PerfCounterBlock(name, tid, pid, startTime, user, kernel, priority, threadState,
+                                threadWaitReason, startAddr, contextSwitches));
             }
         }
         return threadMap;

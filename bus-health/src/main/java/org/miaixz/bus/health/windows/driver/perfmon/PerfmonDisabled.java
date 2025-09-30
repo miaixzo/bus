@@ -68,14 +68,21 @@ public final class PerfmonDisabled {
                 Object disabled = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, key, value);
                 if (disabled instanceof Integer) {
                     if ((Integer) disabled > 0) {
-                        Logger.warn("{} counters are disabled and won't return data: {}\\\\{}\\\\{} > 0.", service,
-                                "HKEY_LOCAL_MACHINE", key, value);
+                        Logger.warn(
+                                "{} counters are disabled and won't return data: {}\\\\{}\\\\{} > 0.",
+                                service,
+                                "HKEY_LOCAL_MACHINE",
+                                key,
+                                value);
                         return true;
                     }
                 } else {
                     Logger.warn(
                             "Invalid registry value type detected for {} counters. Should be REG_DWORD. Ignoring: {}\\\\{}\\\\{}.",
-                            service, "HKEY_LOCAL_MACHINE", key, value);
+                            service,
+                            "HKEY_LOCAL_MACHINE",
+                            key,
+                            value);
                 }
             }
             return false;

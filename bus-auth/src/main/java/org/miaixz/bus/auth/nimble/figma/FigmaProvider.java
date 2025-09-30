@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.auth.nimble.figma;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +34,7 @@ import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -75,9 +75,12 @@ public class FigmaProvider extends AbstractProvider {
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization",
-                "Basic ".concat(Base64.encode((this.context.getAppKey().concat(":").concat(this.context.getAppSecret()))
-                        .getBytes(StandardCharsets.UTF_8))));
+        headers.put(
+                "Authorization",
+                "Basic ".concat(
+                        Base64.encode(
+                                (this.context.getAppKey().concat(":").concat(this.context.getAppSecret()))
+                                        .getBytes(Charset.UTF_8))));
         String response = Httpx.post(super.accessTokenUrl(callback.getCode()), headers);
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -125,9 +128,10 @@ public class FigmaProvider extends AbstractProvider {
             String refreshToken = (String) dataObj.get("refresh_token");
             String scope = (String) dataObj.get("scope");
 
-            return Message
-                    .builder().errcode(ErrorCode._SUCCESS.getKey()).data(AuthToken.builder().accessToken(accessToken)
-                            .openId(openId).expireIn(expiresIn).refreshToken(refreshToken).scope(scope).build())
+            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+                    .data(
+                            AuthToken.builder().accessToken(accessToken).openId(openId).expireIn(expiresIn)
+                                    .refreshToken(refreshToken).scope(scope).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());

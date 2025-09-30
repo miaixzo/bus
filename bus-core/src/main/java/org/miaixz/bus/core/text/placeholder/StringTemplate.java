@@ -61,9 +61,12 @@ public abstract class StringTemplate {
      * 该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象
      * </p>
      */
-    protected static int globalFeatures = Feature.of(StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER,
-            StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR, StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE,
-            StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL, StringTemplate.Feature.MATCH_NULL_STR_TO_NULL);
+    protected static int globalFeatures = Feature.of(
+            StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER,
+            StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR,
+            StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE,
+            StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL,
+            StringTemplate.Feature.MATCH_NULL_STR_TO_NULL);
 
     /**
      * 全局默认值处理器，一旦修改，对所有模板对象都生效
@@ -525,13 +528,21 @@ public abstract class StringTemplate {
      * @param hasDefaultValue      是否有默认值
      * @param defaultValueSupplier 默认值提供者，根据 占位符 返回 默认值
      */
-    protected void matchesByKey(final String text, final BiConsumer<String, String> keyValueConsumer,
-            final boolean hasDefaultValue, final Function<AbstractSegment, String> defaultValueSupplier) {
+    protected void matchesByKey(
+            final String text,
+            final BiConsumer<String, String> keyValueConsumer,
+            final boolean hasDefaultValue,
+            final Function<AbstractSegment, String> defaultValueSupplier) {
         if (text == null || keyValueConsumer == null || CollKit.isEmpty(placeholderSegments)) {
             return;
         }
-        matchesRawBySegment(text,
-                (segment, value) -> matchByKey(keyValueConsumer, segment.getPlaceholder(), value, hasDefaultValue,
+        matchesRawBySegment(
+                text,
+                (segment, value) -> matchByKey(
+                        keyValueConsumer,
+                        segment.getPlaceholder(),
+                        value,
+                        hasDefaultValue,
                         // 默认值
                         () -> hasDefaultValue ? StringKit.toString(defaultValueSupplier.apply(segment)) : null));
     }
@@ -545,8 +556,12 @@ public abstract class StringTemplate {
      * @param hasDefaultValue      是否有默认值
      * @param defaultValueSupplier 默认值提供者
      */
-    private void matchByKey(final BiConsumer<String, String> keyValueConsumer, final String key, final String value,
-            final boolean hasDefaultValue, final Supplier<String> defaultValueSupplier) {
+    private void matchByKey(
+            final BiConsumer<String, String> keyValueConsumer,
+            final String key,
+            final String value,
+            final boolean hasDefaultValue,
+            final Supplier<String> defaultValueSupplier) {
         final int features = getFeatures();
 
         // 存在默认值
@@ -668,7 +683,9 @@ public abstract class StringTemplate {
      * @param list                 已保存的segment列表
      * @param newText              新的固定文本
      */
-    protected void addLiteralSegment(final boolean isLastLiteralSegment, final List<StringSegment> list,
+    protected void addLiteralSegment(
+            final boolean isLastLiteralSegment,
+            final List<StringSegment> list,
             final String newText) {
         if (newText.isEmpty()) {
             return;
@@ -716,6 +733,7 @@ public abstract class StringTemplate {
      * </p>
      */
     public enum Feature {
+
         /**
          * 格式化时，如果 占位符 没有 对应的值，则打印完整占位符 对于 变量占位符，例如"${name}"，原样打印"${name}"
          * <p>
@@ -914,6 +932,7 @@ public abstract class StringTemplate {
      * @param <TemplateChild> 模板子类
      */
     protected static abstract class AbstractBuilder<BuilderChild extends AbstractBuilder<BuilderChild, TemplateChild>, TemplateChild extends StringTemplate> {
+
         /**
          * 字符串模板
          */

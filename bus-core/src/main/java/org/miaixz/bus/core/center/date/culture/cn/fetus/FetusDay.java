@@ -114,12 +114,12 @@ public class FetusDay extends Tradition {
 
         s += Symbol.SPACE;
 
-        String directionName = direction.getName();
         if (0 == side) {
             s += "房";
         }
         s += "内";
 
+        String directionName = direction.getName();
         if (1 == side && "北南西东".contains(directionName)) {
             s += "正";
         }

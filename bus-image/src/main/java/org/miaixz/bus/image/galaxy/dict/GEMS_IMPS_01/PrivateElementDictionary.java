@@ -52,17 +52,18 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.LowerRangeOfPixels:
-        case PrivateTag.LowerRangeOfPixels1:
-        case PrivateTag.UpperRangeOfPixels1:
-        case PrivateTag.LowerRangeOfPixels2:
-        case PrivateTag.UpperRangeOfPixels2:
-        case PrivateTag.LengthOfTotalHeaderInBytes:
-        case PrivateTag.AdvantageCompOverflow:
-        case PrivateTag.AdvantageCompUnderflow:
-            return VR.SL;
-        case PrivateTag.VersionOfHeaderStructure:
-            return VR.SS;
+            case PrivateTag.LowerRangeOfPixels:
+            case PrivateTag.LowerRangeOfPixels1:
+            case PrivateTag.UpperRangeOfPixels1:
+            case PrivateTag.LowerRangeOfPixels2:
+            case PrivateTag.UpperRangeOfPixels2:
+            case PrivateTag.LengthOfTotalHeaderInBytes:
+            case PrivateTag.AdvantageCompOverflow:
+            case PrivateTag.AdvantageCompUnderflow:
+                return VR.SL;
+
+            case PrivateTag.VersionOfHeaderStructure:
+                return VR.SS;
         }
         return VR.UN;
     }

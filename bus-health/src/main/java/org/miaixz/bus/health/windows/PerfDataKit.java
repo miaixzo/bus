@@ -84,7 +84,8 @@ public final class PerfDataKit {
             }
             if (ret != WinError.ERROR_SUCCESS) {
                 if (Logger.isWarnEnabled()) {
-                    Logger.warn("Failed to update counter. Error code: {}",
+                    Logger.warn(
+                            "Failed to update counter. Error code: {}",
                             String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
                 return 0L;
@@ -117,7 +118,8 @@ public final class PerfDataKit {
         int ret = PDH.PdhOpenQuery(null, PZERO, q);
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.isErrorEnabled()) {
-                Logger.error("Failed to open PDH Query. Error code: {}",
+                Logger.error(
+                        "Failed to open PDH Query. Error code: {}",
                         String.format(Locale.ROOT, Formats.formatError(ret)));
             }
             return false;
@@ -136,7 +138,8 @@ public final class PerfDataKit {
             int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
             if (ret != WinError.ERROR_SUCCESS) {
                 if (Logger.isWarnEnabled()) {
-                    Logger.warn("Failed to get counter. Error code: {}",
+                    Logger.warn(
+                            "Failed to get counter. Error code: {}",
                             String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
                 return ret;
@@ -166,7 +169,8 @@ public final class PerfDataKit {
             int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
             if (ret != WinError.ERROR_SUCCESS) {
                 if (Logger.isWarnEnabled()) {
-                    Logger.warn("Failed to get counter. Error code: {}",
+                    Logger.warn(
+                            "Failed to get counter. Error code: {}",
                             String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
                 return ret;
@@ -189,7 +193,9 @@ public final class PerfDataKit {
                 : PDH.PdhAddCounter(query.getValue(), path, PZERO, p);
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.isWarnEnabled()) {
-                Logger.warn("Failed to add PDH Counter: {}, Error code: {}", path,
+                Logger.warn(
+                        "Failed to add PDH Counter: {}, Error code: {}",
+                        path,
                         String.format(Locale.ROOT, Formats.formatError(ret)));
             }
             return false;
@@ -212,6 +218,7 @@ public final class PerfDataKit {
      */
     @Immutable
     public static class PerfCounter {
+
         private final String object;
         private final String instance;
         private final String counter;

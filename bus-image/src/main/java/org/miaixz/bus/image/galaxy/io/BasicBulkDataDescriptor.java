@@ -69,29 +69,30 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
     static boolean isStandardBulkData(List<ItemPointer> itemPointer, int tag) {
         switch (Tag.normalizeRepeatingGroup(tag)) {
-        case Tag.PixelDataProviderURL:
-        case Tag.AudioSampleData:
-        case Tag.CurveData:
-        case Tag.SpectroscopyData:
-        case Tag.RedPaletteColorLookupTableData:
-        case Tag.GreenPaletteColorLookupTableData:
-        case Tag.BluePaletteColorLookupTableData:
-        case Tag.AlphaPaletteColorLookupTableData:
-        case Tag.LargeRedPaletteColorLookupTableData:
-        case Tag.LargeGreenPaletteColorLookupTableData:
-        case Tag.LargeBluePaletteColorLookupTableData:
-        case Tag.SegmentedRedPaletteColorLookupTableData:
-        case Tag.SegmentedGreenPaletteColorLookupTableData:
-        case Tag.SegmentedBluePaletteColorLookupTableData:
-        case Tag.SegmentedAlphaPaletteColorLookupTableData:
-        case Tag.OverlayData:
-        case Tag.EncapsulatedDocument:
-        case Tag.FloatPixelData:
-        case Tag.DoubleFloatPixelData:
-        case Tag.PixelData:
-            return itemPointer.isEmpty();
-        case Tag.WaveformData:
-            return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
+            case Tag.PixelDataProviderURL:
+            case Tag.AudioSampleData:
+            case Tag.CurveData:
+            case Tag.SpectroscopyData:
+            case Tag.RedPaletteColorLookupTableData:
+            case Tag.GreenPaletteColorLookupTableData:
+            case Tag.BluePaletteColorLookupTableData:
+            case Tag.AlphaPaletteColorLookupTableData:
+            case Tag.LargeRedPaletteColorLookupTableData:
+            case Tag.LargeGreenPaletteColorLookupTableData:
+            case Tag.LargeBluePaletteColorLookupTableData:
+            case Tag.SegmentedRedPaletteColorLookupTableData:
+            case Tag.SegmentedGreenPaletteColorLookupTableData:
+            case Tag.SegmentedBluePaletteColorLookupTableData:
+            case Tag.SegmentedAlphaPaletteColorLookupTableData:
+            case Tag.OverlayData:
+            case Tag.EncapsulatedDocument:
+            case Tag.FloatPixelData:
+            case Tag.DoubleFloatPixelData:
+            case Tag.PixelData:
+                return itemPointer.isEmpty();
+
+            case Tag.WaveformData:
+                return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
         }
         return false;
     }

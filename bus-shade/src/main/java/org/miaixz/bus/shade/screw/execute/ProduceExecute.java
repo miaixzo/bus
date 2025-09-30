@@ -56,7 +56,8 @@ public class ProduceExecute extends AbstractExecute {
             // 产生文档
             TemplateEngine produce = new EngineFactory(config.getEngineConfig()).newInstance();
             produce.produce(dataModel, getDocName(dataModel.getDatabase()));
-            Logger.debug("database document generation complete time consuming:{}ms",
+            Logger.debug(
+                    "database document generation complete time consuming:{}ms",
                     System.currentTimeMillis() - start);
         } catch (Exception e) {
             throw new InternalException(e);

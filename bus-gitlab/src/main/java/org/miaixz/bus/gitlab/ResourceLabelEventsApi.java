@@ -113,8 +113,15 @@ public class ResourceLabelEventsApi extends AbstractApi {
      */
     public LabelEvent getIssueLabelEvent(Object projectIdOrPath, Long issueIid, Long resourceLabelEventId)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues",
-                issueIid, "resource_label_events", resourceLabelEventId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "issues",
+                issueIid,
+                "resource_label_events",
+                resourceLabelEventId);
         return (response.readEntity(LabelEvent.class));
     }
 
@@ -131,7 +138,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return an Optional instance with the specified LabelEvent as the value
      * @throws GitLabApiException if any exception occurs
      */
-    public Optional<LabelEvent> getOptionalIssueLabelEvent(Object projectIdOrPath, Long issueIid,
+    public Optional<LabelEvent> getOptionalIssueLabelEvent(
+            Object projectIdOrPath,
+            Long issueIid,
             Long resourceLabelEventId) throws GitLabApiException {
 
         try {
@@ -207,8 +216,15 @@ public class ResourceLabelEventsApi extends AbstractApi {
      */
     public LabelEvent getEpicLabelEvent(Object projectIdOrPath, Long epicId, Long resourceLabelEventId)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "epics",
-                epicId, "resource_label_events", resourceLabelEventId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "epics",
+                epicId,
+                "resource_label_events",
+                resourceLabelEventId);
         return (response.readEntity(LabelEvent.class));
     }
 
@@ -225,7 +241,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return an Optional instance with the specified LabelEvent as the value
      * @throws GitLabApiException if any exception occurs
      */
-    public Optional<LabelEvent> getOptionalEpicLabelEvent(Object projectIdOrPath, Long epicId,
+    public Optional<LabelEvent> getOptionalEpicLabelEvent(
+            Object projectIdOrPath,
+            Long epicId,
             Long resourceLabelEventId) throws GitLabApiException {
 
         try {
@@ -303,8 +321,15 @@ public class ResourceLabelEventsApi extends AbstractApi {
      */
     public LabelEvent getMergeRequestLabelEvent(Object projectIdOrPath, Long mergeRequestIid, Long resourceLabelEventId)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "resource_label_events", resourceLabelEventId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "merge_requests",
+                mergeRequestIid,
+                "resource_label_events",
+                resourceLabelEventId);
         return (response.readEntity(LabelEvent.class));
     }
 
@@ -321,7 +346,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return an Optional instance with the specified LabelEvent as the value
      * @throws GitLabApiException if any exception occurs
      */
-    public Optional<LabelEvent> getOptionalMergeRequestLabelEvent(Object projectIdOrPath, Long mergeRequestIid,
+    public Optional<LabelEvent> getOptionalMergeRequestLabelEvent(
+            Object projectIdOrPath,
+            Long mergeRequestIid,
             Long resourceLabelEventId) throws GitLabApiException {
 
         try {

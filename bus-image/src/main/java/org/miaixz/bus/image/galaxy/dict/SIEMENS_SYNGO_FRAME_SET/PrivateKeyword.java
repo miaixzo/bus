@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ImageFrameSequence:
-            return "ImageFrameSequence";
-        case PrivateTag.TypeOfProgression:
-            return "TypeOfProgression";
-        case PrivateTag.RepresentationLevel:
-            return "RepresentationLevel";
-        case PrivateTag.RepresentationInformationSequence:
-            return "RepresentationInformationSequence";
-        case PrivateTag.NumberOfRepresentations:
-            return "NumberOfRepresentations";
-        case PrivateTag.RepresentationPixelOffset:
-            return "RepresentationPixelOffset";
+            case PrivateTag.ImageFrameSequence:
+                return "ImageFrameSequence";
+
+            case PrivateTag.TypeOfProgression:
+                return "TypeOfProgression";
+
+            case PrivateTag.RepresentationLevel:
+                return "RepresentationLevel";
+
+            case PrivateTag.RepresentationInformationSequence:
+                return "RepresentationInformationSequence";
+
+            case PrivateTag.NumberOfRepresentations:
+                return "NumberOfRepresentations";
+
+            case PrivateTag.RepresentationPixelOffset:
+                return "RepresentationPixelOffset";
         }
         return "";
     }

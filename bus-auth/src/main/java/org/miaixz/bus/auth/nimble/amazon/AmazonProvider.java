@@ -85,8 +85,8 @@ public class AmazonProvider extends AbstractProvider {
             String codeVerifier = Builder.codeVerifier();
             String codeChallengeMethod = "S256";
             String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
-            builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
-                    codeChallengeMethod);
+            builder.queryParam("code_challenge", codeChallenge)
+                    .queryParam("code_challenge_method", codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }

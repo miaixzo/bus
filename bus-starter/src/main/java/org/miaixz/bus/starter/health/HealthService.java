@@ -54,7 +54,7 @@ import org.springframework.context.ApplicationEventPublisher;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HealthProviderService {
+public class HealthService {
 
     /**
      * 健康状态配置属性
@@ -81,7 +81,7 @@ public class HealthProviderService {
      * @param publisher    Spring 应用事件发布器
      * @param availability Spring 应用可用性接口
      */
-    public HealthProviderService(HealthProperties properties, Provider provider, ApplicationEventPublisher publisher,
+    public HealthService(HealthProperties properties, Provider provider, ApplicationEventPublisher publisher,
             ApplicationAvailability availability) {
         this.properties = properties;
         this.provider = provider;
@@ -187,20 +187,22 @@ public class HealthProviderService {
      */
     public void append(String type, Map<String, Object> map) {
         switch (type.toLowerCase()) {
-        case TID.LIVENESS:
-            map.put(type, availability.getLivenessState());
-            break;
-        case TID.READINESS:
-            map.put(type, availability.getReadinessState());
-            break;
-        default:
-            try {
-                provider.append(type, map);
-            } catch (Exception e) {
-                Logger.error("Failed to append health data for type {}: {}", type, e.getMessage(), e);
-                map.put(type, "Error: " + e.getMessage());
-            }
-            break;
+            case TID.LIVENESS:
+                map.put(type, availability.getLivenessState());
+                break;
+
+            case TID.READINESS:
+                map.put(type, availability.getReadinessState());
+                break;
+
+            default:
+                try {
+                    provider.append(type, map);
+                } catch (Exception e) {
+                    Logger.error("Failed to append health data for type {}: {}", type, e.getMessage(), e);
+                    map.put(type, "Error: " + e.getMessage());
+                }
+                break;
         }
     }
 

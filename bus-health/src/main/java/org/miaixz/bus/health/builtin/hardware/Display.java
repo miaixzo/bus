@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  */
 @Immutable
 public interface Display {
+
     /**
      * The EDID byte array.
      *

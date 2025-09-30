@@ -58,6 +58,7 @@ public class Iteration implements Serializable {
     private Date dueDate;
 
     public enum IterationState {
+
         UPCOMMING(1), CURRENT(2), CLOSED(3);
 
         private int value;

@@ -39,6 +39,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
  */
 @ThreadSafe
 public interface PowerSource {
+
     /**
      * Estimated remaining capacity as a fraction of max capacity.
      * <p>

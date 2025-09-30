@@ -52,16 +52,20 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.PrivateEntityType:
-            return VR.CS;
-        case PrivateTag.PrivateEntityDate:
-            return VR.DA;
-        case PrivateTag.PrivateEntityNumber:
-            return VR.IS;
-        case PrivateTag.PrivateEntityLaunchCommand:
-            return VR.LO;
-        case PrivateTag.PrivateEntityTime:
-            return VR.TM;
+            case PrivateTag.PrivateEntityType:
+                return VR.CS;
+
+            case PrivateTag.PrivateEntityDate:
+                return VR.DA;
+
+            case PrivateTag.PrivateEntityNumber:
+                return VR.IS;
+
+            case PrivateTag.PrivateEntityLaunchCommand:
+                return VR.LO;
+
+            case PrivateTag.PrivateEntityTime:
+                return VR.TM;
         }
         return VR.UN;
     }

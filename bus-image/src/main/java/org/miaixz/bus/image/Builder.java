@@ -171,7 +171,9 @@ public class Builder {
                 if (delim < 0) {
                     addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, "/")));
                 } else {
-                    addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal.substring(0, delim), "/")),
+                    addAttributes(
+                            attrs,
+                            Tag.toTags(StringKit.splitToArray(optVal.substring(0, delim), "/")),
                             optVal.substring(delim + 1));
                 }
             }
@@ -271,22 +273,22 @@ public class Builder {
 
     public static boolean isVideo(String uid) {
         return switch (UID.from(uid)) {
-        case UID.MPEG2MPML, UID.MPEG2MPMLF, UID.MPEG2MPHL, UID.MPEG2MPHLF, UID.MPEG4HP41, UID.MPEG4HP41F, UID.MPEG4HP41BD, UID.MPEG4HP41BDF, UID.MPEG4HP422D, UID.MPEG4HP422DF, UID.MPEG4HP423D, UID.MPEG4HP423DF, UID.MPEG4HP42STEREO, UID.MPEG4HP42STEREOF, UID.HEVCMP51, UID.HEVCM10P51 -> true;
-        default -> false;
+            case UID.MPEG2MPML, UID.MPEG2MPMLF, UID.MPEG2MPHL, UID.MPEG2MPHLF, UID.MPEG4HP41, UID.MPEG4HP41F, UID.MPEG4HP41BD, UID.MPEG4HP41BDF, UID.MPEG4HP422D, UID.MPEG4HP422DF, UID.MPEG4HP423D, UID.MPEG4HP423DF, UID.MPEG4HP42STEREO, UID.MPEG4HP42STEREOF, UID.HEVCMP51, UID.HEVCM10P51 -> true;
+            default -> false;
         };
     }
 
     public static boolean isJpeg2000(String uid) {
         return switch (UID.from(uid)) {
-        case UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC, UID.HTJ2KLossless, UID.HTJ2KLosslessRPCL, UID.HTJ2K -> true;
-        default -> false;
+            case UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC, UID.HTJ2KLossless, UID.HTJ2KLosslessRPCL, UID.HTJ2K -> true;
+            default -> false;
         };
     }
 
     public static boolean isNative(String uid) {
         return switch (UID.from(uid)) {
-        case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian -> true;
-        default -> false;
+            case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian -> true;
+            default -> false;
         };
     }
 
@@ -416,7 +418,10 @@ public class Builder {
         return getStringArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static String[] getStringArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static String[] getStringArrayFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             String[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -435,7 +440,10 @@ public class Builder {
         return dicom.getDate(tag, defaultValue);
     }
 
-    public static Date[] getDatesFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static Date[] getDatesFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             Date[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -451,7 +459,11 @@ public class Builder {
         return getPatientAgeInPeriod(dicom, tag, null, null, computeOnlyIfNull);
     }
 
-    public static String getPatientAgeInPeriod(Attributes dicom, int tag, String privateCreatorID, String defaultValue,
+    public static String getPatientAgeInPeriod(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
+            String defaultValue,
             boolean computeOnlyIfNull) {
         if (dicom == null) {
             return defaultValue;
@@ -464,7 +476,12 @@ public class Builder {
             }
         }
 
-        Date date = getDate(dicom, Tag.ContentDate, Tag.AcquisitionDate, Tag.DateOfSecondaryCapture, Tag.SeriesDate,
+        Date date = getDate(
+                dicom,
+                Tag.ContentDate,
+                Tag.AcquisitionDate,
+                Tag.DateOfSecondaryCapture,
+                Tag.SeriesDate,
                 Tag.StudyDate);
 
         if (date != null) {
@@ -506,7 +523,10 @@ public class Builder {
         return getFloatFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static Float getFloatFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static Float getFloatFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             Float defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -523,7 +543,10 @@ public class Builder {
         return getIntegerFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static Integer getIntegerFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static Integer getIntegerFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             Integer defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -540,7 +563,10 @@ public class Builder {
         return getDoubleFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static Double getDoubleFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static Double getDoubleFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             Double defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -557,7 +583,10 @@ public class Builder {
         return getIntArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static int[] getIntArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static int[] getIntArrayFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             int[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -577,7 +606,10 @@ public class Builder {
         return getFloatArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static float[] getFloatArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static float[] getFloatArrayFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             float[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -597,7 +629,10 @@ public class Builder {
         return getDoubleArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static double[] getDoubleArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+    public static double[] getDoubleArrayFromDicomElement(
+            Attributes dicom,
+            int tag,
+            String privateCreatorID,
             double[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
@@ -623,8 +658,12 @@ public class Builder {
         return Collections.emptyList();
     }
 
-    public static boolean isImageFrameApplicableToReferencedImageSequence(List<Attributes> refImgSeq, int childTag,
-            String sopInstanceUID, int frame, boolean required) {
+    public static boolean isImageFrameApplicableToReferencedImageSequence(
+            List<Attributes> refImgSeq,
+            int childTag,
+            String sopInstanceUID,
+            int frame,
+            boolean required) {
         if (!required && (refImgSeq == null || refImgSeq.isEmpty())) {
             return true;
         }
@@ -650,6 +689,7 @@ public class Builder {
 
     public static <T, E extends Exception> SupplierEx<T, E> memoize(SupplierEx<T, E> original) {
         return new SupplierEx<>() {
+
             boolean initialized;
 
             @Override
@@ -722,8 +762,10 @@ public class Builder {
             if (shutterShape.contains("RECTANGULAR") || shutterShape.contains("RECTANGLE")) { // $NON-NLS-1$
                                                                                               // //$NON-NLS-2$
                 Rectangle2D rect = new Rectangle2D.Double();
-                rect.setFrameFromDiagonal(dcm.getInt(Tag.ShutterLeftVerticalEdge, 0),
-                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0), dcm.getInt(Tag.ShutterRightVerticalEdge, 0),
+                rect.setFrameFromDiagonal(
+                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0),
+                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0),
+                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0),
                         dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0));
                 if (rect.isEmpty()) {
                     Logger.error("Shutter rectangle has an empty area!");
@@ -737,8 +779,11 @@ public class Builder {
                     Ellipse2D ellipse = new Ellipse2D.Double();
                     double radius = dcm.getInt(Tag.RadiusOfCircularShutter, 0);
                     // Thanks DICOM for reversing x,y by row,column
-                    ellipse.setFrameFromCenter(centerOfCircularShutter[1], centerOfCircularShutter[0],
-                            centerOfCircularShutter[1] + radius, centerOfCircularShutter[0] + radius);
+                    ellipse.setFrameFromCenter(
+                            centerOfCircularShutter[1],
+                            centerOfCircularShutter[0],
+                            centerOfCircularShutter[1] + radius,
+                            centerOfCircularShutter[0] + radius);
                     if (ellipse.isEmpty()) {
                         Logger.error("Shutter ellipse has an empty area!");
                     } else {
@@ -839,7 +884,12 @@ public class Builder {
         }
     }
 
-    public static void notifyProgession(Status state, String iuid, String cuid, int status, ProgressStatus ps,
+    public static void notifyProgession(
+            Status state,
+            String iuid,
+            String cuid,
+            int status,
+            ProgressStatus ps,
             int numberOfSuboperations) {
         state.setStatus(status);
         ImageProgress p = state.getProgress();
@@ -1118,44 +1168,53 @@ public class Builder {
     public static MediaType forTransferSyntax(String ts) {
         MediaType type;
         switch (UID.from(ts)) {
-        case UID.ExplicitVRLittleEndian:
-        case UID.ImplicitVRLittleEndian:
-            return MediaType.APPLICATION_OCTET_STREAM_TYPE;
-        case UID.RLELossless:
-            return MediaType.IMAGE_DICOM_RLE_TYPE;
-        case UID.JPEGBaseline8Bit:
-        case UID.JPEGExtended12Bit:
-        case UID.JPEGLossless:
-        case UID.JPEGLosslessSV1:
-            type = MediaType.IMAGE_JPEG_TYPE;
-            break;
-        case UID.JPEGLSLossless:
-        case UID.JPEGLSNearLossless:
-            type = MediaType.IMAGE_JLS_TYPE;
-            break;
-        case UID.JPEG2000Lossless:
-        case UID.JPEG2000:
-            type = MediaType.IMAGE_JP2_TYPE;
-            break;
-        case UID.JPEG2000MCLossless:
-        case UID.JPEG2000MC:
-            type = MediaType.IMAGE_JPX_TYPE;
-            break;
-        case UID.HTJ2KLossless:
-        case UID.HTJ2KLosslessRPCL:
-        case UID.HTJ2K:
-            type = MediaType.IMAGE_JPHC_TYPE;
-            break;
-        case UID.MPEG2MPML:
-        case UID.MPEG2MPHL:
-            type = MediaType.VIDEO_MPEG_TYPE;
-            break;
-        case UID.MPEG4HP41:
-        case UID.MPEG4HP41BD:
-            type = MediaType.VIDEO_MP4_TYPE;
-            break;
-        default:
-            throw new IllegalArgumentException("ts: " + ts);
+            case UID.ExplicitVRLittleEndian:
+            case UID.ImplicitVRLittleEndian:
+                return MediaType.APPLICATION_OCTET_STREAM_TYPE;
+
+            case UID.RLELossless:
+                return MediaType.IMAGE_DICOM_RLE_TYPE;
+
+            case UID.JPEGBaseline8Bit:
+            case UID.JPEGExtended12Bit:
+            case UID.JPEGLossless:
+            case UID.JPEGLosslessSV1:
+                type = MediaType.IMAGE_JPEG_TYPE;
+                break;
+
+            case UID.JPEGLSLossless:
+            case UID.JPEGLSNearLossless:
+                type = MediaType.IMAGE_JLS_TYPE;
+                break;
+
+            case UID.JPEG2000Lossless:
+            case UID.JPEG2000:
+                type = MediaType.IMAGE_JP2_TYPE;
+                break;
+
+            case UID.JPEG2000MCLossless:
+            case UID.JPEG2000MC:
+                type = MediaType.IMAGE_JPX_TYPE;
+                break;
+
+            case UID.HTJ2KLossless:
+            case UID.HTJ2KLosslessRPCL:
+            case UID.HTJ2K:
+                type = MediaType.IMAGE_JPHC_TYPE;
+                break;
+
+            case UID.MPEG2MPML:
+            case UID.MPEG2MPHL:
+                type = MediaType.VIDEO_MPEG_TYPE;
+                break;
+
+            case UID.MPEG4HP41:
+            case UID.MPEG4HP41BD:
+                type = MediaType.VIDEO_MP4_TYPE;
+                break;
+
+            default:
+                throw new IllegalArgumentException("ts: " + ts);
         }
         return new MediaType(type.getType(), type.getSubtype(), Collections.singletonMap("transfer-syntax", ts));
     }
@@ -1168,29 +1227,34 @@ public class Builder {
         String type = bulkdataMediaType.getType().toLowerCase();
         String subtype = bulkdataMediaType.getSubtype().toLowerCase();
         switch (type) {
-        case "image":
-            switch (subtype) {
-            case "jpeg":
-                return UID.JPEGLosslessSV1.uid;
-            case "jls":
-            case "x-jls":
-                return UID.JPEGLSLossless.uid;
-            case "jp2":
-                return UID.JPEG2000Lossless.uid;
-            case "jpx":
-                return UID.JPEG2000MCLossless.uid;
-            case "x-dicom-rle":
-            case "dicom-rle":
-                return UID.RLELossless.uid;
-            }
-        case "video":
-            switch (subtype) {
-            case "mpeg":
-                return UID.MPEG2MPML.uid;
-            case "mp4":
-            case "quicktime":
-                return UID.MPEG4HP41.uid;
-            }
+            case "image":
+                switch (subtype) {
+                    case "jpeg":
+                        return UID.JPEGLosslessSV1.uid;
+
+                    case "jls":
+                    case "x-jls":
+                        return UID.JPEGLSLossless.uid;
+
+                    case "jp2":
+                        return UID.JPEG2000Lossless.uid;
+
+                    case "jpx":
+                        return UID.JPEG2000MCLossless.uid;
+
+                    case "x-dicom-rle":
+                    case "dicom-rle":
+                        return UID.RLELossless.uid;
+                }
+            case "video":
+                switch (subtype) {
+                    case "mpeg":
+                        return UID.MPEG2MPML.uid;
+
+                    case "mp4":
+                    case "quicktime":
+                        return UID.MPEG4HP41.uid;
+                }
         }
         return UID.ExplicitVRLittleEndian.uid;
     }
@@ -1204,10 +1268,12 @@ public class Builder {
                                 : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.APPLICATION_XML_TYPE)
                                         ? UID.EncapsulatedCDAStorage.uid
                                         : MediaType.isSTLType(bulkdataMediaType) ? UID.EncapsulatedSTLStorage.uid
-                                                : MediaType.equalsIgnoreParameters(bulkdataMediaType,
+                                                : MediaType.equalsIgnoreParameters(
+                                                        bulkdataMediaType,
                                                         MediaType.MODEL_OBJ_TYPE)
                                                                 ? UID.EncapsulatedOBJStorage.uid
-                                                                : MediaType.equalsIgnoreParameters(bulkdataMediaType,
+                                                                : MediaType.equalsIgnoreParameters(
+                                                                        bulkdataMediaType,
                                                                         MediaType.MODEL_MTL_TYPE)
                                                                                 ? UID.EncapsulatedMTLStorage.uid
                                                                                 : null;

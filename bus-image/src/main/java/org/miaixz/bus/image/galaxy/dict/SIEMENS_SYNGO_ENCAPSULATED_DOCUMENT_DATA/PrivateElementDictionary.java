@@ -52,10 +52,10 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.StudyModel:
-        case PrivateTag.ReportXMLSchema:
-        case PrivateTag.ReportIdentifier:
-            return VR.OB;
+            case PrivateTag.StudyModel:
+            case PrivateTag.ReportXMLSchema:
+            case PrivateTag.ReportIdentifier:
+                return VR.OB;
         }
         return VR.UN;
     }

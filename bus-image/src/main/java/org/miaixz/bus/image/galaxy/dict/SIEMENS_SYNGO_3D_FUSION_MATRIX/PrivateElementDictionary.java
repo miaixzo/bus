@@ -52,10 +52,10 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ObjectSeriesInstanceUID:
-        case PrivateTag.ModelSeriesInstanceUID:
-        case PrivateTag.MatrixReferencedSeriesInstanceUID:
-            return VR.UI;
+            case PrivateTag.ObjectSeriesInstanceUID:
+            case PrivateTag.ModelSeriesInstanceUID:
+            case PrivateTag.MatrixReferencedSeriesInstanceUID:
+                return VR.UI;
         }
         return VR.UN;
     }

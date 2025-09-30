@@ -52,10 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.RegistrationIsValidatedFlag:
-            return VR.CS;
-        case PrivateTag.RegisteredImageSequence:
-            return VR.SQ;
+            case PrivateTag.RegistrationIsValidatedFlag:
+                return VR.CS;
+
+            case PrivateTag.RegisteredImageSequence:
+                return VR.SQ;
         }
         return VR.UN;
     }

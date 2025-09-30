@@ -61,109 +61,123 @@ public enum TransferSyntaxType {
 
     public static TransferSyntaxType forUID(String uid) {
         switch (UID.from(uid)) {
-        case UID.ImplicitVRLittleEndian:
-        case UID.ExplicitVRLittleEndian:
-        case UID.ExplicitVRBigEndian:
-            return NATIVE;
-        case UID.DeflatedExplicitVRLittleEndian:
-            return DEFLATED;
-        case UID.JPEGBaseline8Bit:
-            return JPEG_BASELINE;
-        case UID.JPEGExtended12Bit:
-            return JPEG_EXTENDED;
-        case UID.JPEGSpectralSelectionNonHierarchical68:
-            return JPEG_SPECTRAL;
-        case UID.JPEGFullProgressionNonHierarchical1012:
-            return JPEG_PROGRESSIVE;
-        case UID.JPEGLossless:
-        case UID.JPEGLosslessSV1:
-            return JPEG_LOSSLESS;
-        case UID.JPEGLSLossless:
-        case UID.JPEGLSNearLossless:
-            return JPEG_LS;
-        case UID.JPEG2000Lossless:
-        case UID.JPEG2000:
-        case UID.JPEG2000MCLossless:
-        case UID.JPEG2000MC:
-        case UID.HTJ2KLossless:
-        case UID.HTJ2KLosslessRPCL:
-        case UID.HTJ2K:
-            return JPEG_2000;
-        case UID.JPIPReferenced:
-        case UID.JPIPReferencedDeflate:
-        case UID.JPIPHTJ2KReferenced:
-        case UID.JPIPHTJ2KReferencedDeflate:
-            return JPIP;
-        case UID.MPEG2MPML:
-        case UID.MPEG2MPMLF:
-        case UID.MPEG2MPHL:
-        case UID.MPEG2MPHLF:
-        case UID.MPEG4HP41:
-        case UID.MPEG4HP41F:
-        case UID.MPEG4HP41BD:
-        case UID.MPEG4HP41BDF:
-        case UID.MPEG4HP422D:
-        case UID.MPEG4HP422DF:
-        case UID.MPEG4HP423D:
-        case UID.MPEG4HP423DF:
-        case UID.MPEG4HP42STEREO:
-        case UID.MPEG4HP42STEREOF:
-        case UID.HEVCMP51:
-        case UID.HEVCM10P51:
-            return MPEG;
-        case UID.RLELossless:
-            return RLE;
-        default:
-            return UNKNOWN;
+            case UID.ImplicitVRLittleEndian:
+            case UID.ExplicitVRLittleEndian:
+            case UID.ExplicitVRBigEndian:
+                return NATIVE;
+
+            case UID.DeflatedExplicitVRLittleEndian:
+                return DEFLATED;
+
+            case UID.JPEGBaseline8Bit:
+                return JPEG_BASELINE;
+
+            case UID.JPEGExtended12Bit:
+                return JPEG_EXTENDED;
+
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+                return JPEG_SPECTRAL;
+
+            case UID.JPEGFullProgressionNonHierarchical1012:
+                return JPEG_PROGRESSIVE;
+
+            case UID.JPEGLossless:
+            case UID.JPEGLosslessSV1:
+                return JPEG_LOSSLESS;
+
+            case UID.JPEGLSLossless:
+            case UID.JPEGLSNearLossless:
+                return JPEG_LS;
+
+            case UID.JPEG2000Lossless:
+            case UID.JPEG2000:
+            case UID.JPEG2000MCLossless:
+            case UID.JPEG2000MC:
+            case UID.HTJ2KLossless:
+            case UID.HTJ2KLosslessRPCL:
+            case UID.HTJ2K:
+                return JPEG_2000;
+
+            case UID.JPIPReferenced:
+            case UID.JPIPReferencedDeflate:
+            case UID.JPIPHTJ2KReferenced:
+            case UID.JPIPHTJ2KReferencedDeflate:
+                return JPIP;
+
+            case UID.MPEG2MPML:
+            case UID.MPEG2MPMLF:
+            case UID.MPEG2MPHL:
+            case UID.MPEG2MPHLF:
+            case UID.MPEG4HP41:
+            case UID.MPEG4HP41F:
+            case UID.MPEG4HP41BD:
+            case UID.MPEG4HP41BDF:
+            case UID.MPEG4HP422D:
+            case UID.MPEG4HP422DF:
+            case UID.MPEG4HP423D:
+            case UID.MPEG4HP423DF:
+            case UID.MPEG4HP42STEREO:
+            case UID.MPEG4HP42STEREOF:
+            case UID.HEVCMP51:
+            case UID.HEVCM10P51:
+                return MPEG;
+
+            case UID.RLELossless:
+                return RLE;
+
+            default:
+                return UNKNOWN;
         }
     }
 
     public static boolean isLossyCompression(String uid) {
         switch (UID.from(uid)) {
-        case UID.JPEGBaseline8Bit:
-        case UID.JPEGExtended12Bit:
-        case UID.JPEGSpectralSelectionNonHierarchical68:
-        case UID.JPEGFullProgressionNonHierarchical1012:
-        case UID.JPEGLSNearLossless:
-        case UID.JPEG2000:
-        case UID.JPEG2000MC:
-        case UID.HTJ2K:
-        case UID.MPEG2MPML:
-        case UID.MPEG2MPMLF:
-        case UID.MPEG2MPHL:
-        case UID.MPEG2MPHLF:
-        case UID.MPEG4HP41:
-        case UID.MPEG4HP41F:
-        case UID.MPEG4HP41BD:
-        case UID.MPEG4HP41BDF:
-        case UID.MPEG4HP422D:
-        case UID.MPEG4HP422DF:
-        case UID.MPEG4HP423D:
-        case UID.MPEG4HP423DF:
-        case UID.MPEG4HP42STEREO:
-        case UID.MPEG4HP42STEREOF:
-        case UID.HEVCMP51:
-        case UID.HEVCM10P51:
-            return true;
-        default:
-            return false;
+            case UID.JPEGBaseline8Bit:
+            case UID.JPEGExtended12Bit:
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+            case UID.JPEGFullProgressionNonHierarchical1012:
+            case UID.JPEGLSNearLossless:
+            case UID.JPEG2000:
+            case UID.JPEG2000MC:
+            case UID.HTJ2K:
+            case UID.MPEG2MPML:
+            case UID.MPEG2MPMLF:
+            case UID.MPEG2MPHL:
+            case UID.MPEG2MPHLF:
+            case UID.MPEG4HP41:
+            case UID.MPEG4HP41F:
+            case UID.MPEG4HP41BD:
+            case UID.MPEG4HP41BDF:
+            case UID.MPEG4HP422D:
+            case UID.MPEG4HP422DF:
+            case UID.MPEG4HP423D:
+            case UID.MPEG4HP423DF:
+            case UID.MPEG4HP42STEREO:
+            case UID.MPEG4HP42STEREOF:
+            case UID.HEVCMP51:
+            case UID.HEVCM10P51:
+                return true;
+
+            default:
+                return false;
         }
     }
 
     public static boolean isYBRCompression(String uid) {
         switch (UID.from(uid)) {
-        case UID.JPEGBaseline8Bit:
-        case UID.JPEGExtended12Bit:
-        case UID.JPEGSpectralSelectionNonHierarchical68:
-        case UID.JPEGFullProgressionNonHierarchical1012:
-        case UID.JPEG2000Lossless:
-        case UID.JPEG2000:
-        case UID.HTJ2KLossless:
-        case UID.HTJ2KLosslessRPCL:
-        case UID.HTJ2K:
-            return true;
-        default:
-            return false;
+            case UID.JPEGBaseline8Bit:
+            case UID.JPEGExtended12Bit:
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+            case UID.JPEGFullProgressionNonHierarchical1012:
+            case UID.JPEG2000Lossless:
+            case UID.JPEG2000:
+            case UID.HTJ2KLossless:
+            case UID.HTJ2KLosslessRPCL:
+            case UID.HTJ2K:
+                return true;
+
+            default:
+                return false;
         }
     }
 

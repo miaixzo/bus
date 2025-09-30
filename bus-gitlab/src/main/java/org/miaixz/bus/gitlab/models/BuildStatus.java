@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Enum for the various Build status values.
  */
 public enum BuildStatus {
+
     CREATED, RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED, MANUAL;
 
     private static JacksonJsonEnumHelper<BuildStatus> enumHelper = new JacksonJsonEnumHelper<>(BuildStatus.class);

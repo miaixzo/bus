@@ -50,6 +50,7 @@ import com.sun.jna.ptr.PointerByReference;
 public interface ByRef {
 
     class CloseableIntByReference extends IntByReference implements AutoCloseable {
+
         public CloseableIntByReference() {
             super();
         }
@@ -65,6 +66,7 @@ public interface ByRef {
     }
 
     class CloseableLongByReference extends LongByReference implements AutoCloseable {
+
         public CloseableLongByReference() {
             super();
         }
@@ -80,6 +82,7 @@ public interface ByRef {
     }
 
     class CloseableNativeLongByReference extends NativeLongByReference implements AutoCloseable {
+
         public CloseableNativeLongByReference() {
             super();
         }
@@ -95,6 +98,7 @@ public interface ByRef {
     }
 
     class CloseablePointerByReference extends PointerByReference implements AutoCloseable {
+
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -102,6 +106,7 @@ public interface ByRef {
     }
 
     class CloseableLONGLONGByReference extends LONGLONGByReference implements AutoCloseable {
+
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -109,6 +114,7 @@ public interface ByRef {
     }
 
     class CloseableULONGptrByReference extends ULONG_PTRByReference implements AutoCloseable {
+
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -116,6 +122,7 @@ public interface ByRef {
     }
 
     class CloseableHANDLEByReference extends HANDLEByReference implements AutoCloseable {
+
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -123,6 +130,7 @@ public interface ByRef {
     }
 
     class CloseableSizeTByReference extends size_t.ByReference implements AutoCloseable {
+
         public CloseableSizeTByReference() {
             super();
         }
@@ -138,6 +146,7 @@ public interface ByRef {
     }
 
     class CloseablePROCESSENTRY32ByReference extends PROCESSENTRY32.ByReference implements AutoCloseable {
+
         @Override
         public void close() {
             Builder.freeMemory(getPointer());

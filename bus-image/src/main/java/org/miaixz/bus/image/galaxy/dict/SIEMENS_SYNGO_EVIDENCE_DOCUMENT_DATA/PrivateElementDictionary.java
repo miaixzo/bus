@@ -52,21 +52,23 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.EvidenceDocumentTemplateVersion:
-        case PrivateTag.ImplementationVersion:
-            return VR.DS;
-        case PrivateTag.EvidenceDocumentTemplateName:
-        case PrivateTag.LogicalID:
-        case PrivateTag.OwnerClinicalTaskName:
-        case PrivateTag.OwnerTaskName:
-            return VR.LO;
-        case PrivateTag.ClinicalFindingData:
-        case PrivateTag.Metadata:
-        case PrivateTag.Predecessor:
-        case PrivateTag.ApplicationData:
-        case PrivateTag.OwnerSupportedTemplates:
-        case PrivateTag.VolumeCatalog:
-            return VR.OB;
+            case PrivateTag.EvidenceDocumentTemplateVersion:
+            case PrivateTag.ImplementationVersion:
+                return VR.DS;
+
+            case PrivateTag.EvidenceDocumentTemplateName:
+            case PrivateTag.LogicalID:
+            case PrivateTag.OwnerClinicalTaskName:
+            case PrivateTag.OwnerTaskName:
+                return VR.LO;
+
+            case PrivateTag.ClinicalFindingData:
+            case PrivateTag.Metadata:
+            case PrivateTag.Predecessor:
+            case PrivateTag.ApplicationData:
+            case PrivateTag.OwnerSupportedTemplates:
+            case PrivateTag.VolumeCatalog:
+                return VR.OB;
         }
         return VR.UN;
     }

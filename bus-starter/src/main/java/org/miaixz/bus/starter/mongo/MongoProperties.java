@@ -95,6 +95,7 @@ public class MongoProperties {
      */
     @Data
     public static class Connection {
+
         private int maxSize = 100;
         private int minSize;
         private long maxWaitTimeMilliSeconds = 1000 * 60 * 2;
@@ -111,6 +112,7 @@ public class MongoProperties {
      */
     @Data
     public static class Ssl {
+
         private boolean enabled;
         private boolean invalidHostNameAllowed;
     }
@@ -122,6 +124,7 @@ public class MongoProperties {
      */
     @Data
     public static class Cluster {
+
         private ClusterConnectionMode mode;
         private ClusterType requiredClusterType = ClusterType.UNKNOWN;
         private String requiredReplicaSetName;
@@ -136,6 +139,7 @@ public class MongoProperties {
      */
     @Data
     public static class Server {
+
         private long heartbeatFrequencyMilliSeconds = 10000;
         private long minHeartbeatFrequencyMilliSeconds = 500;
     }
@@ -147,6 +151,7 @@ public class MongoProperties {
      */
     @Data
     public static class Socket {
+
         /**
          * The socket connect timeout MilliSeconds
          */

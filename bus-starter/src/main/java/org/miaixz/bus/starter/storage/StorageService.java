@@ -71,7 +71,7 @@ import org.miaixz.bus.storage.metric.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StorageProviderService {
+public class StorageService {
 
     /**
      * 存储组件缓存，用于存储已注册的存储组件。 使用ConcurrentHashMap保证线程安全。
@@ -93,7 +93,7 @@ public class StorageProviderService {
      *
      * @param properties 存储配置属性，不能为null
      */
-    public StorageProviderService(StorageProperties properties) {
+    public StorageService(StorageProperties properties) {
         this(properties, StorageCache.INSTANCE);
     }
 
@@ -103,7 +103,7 @@ public class StorageProviderService {
      * @param properties 存储配置属性，不能为null
      * @param CacheX     缓存实现，不能为null
      */
-    public StorageProviderService(StorageProperties properties, CacheX CacheX) {
+    public StorageService(StorageProperties properties, CacheX CacheX) {
         this.properties = properties;
         this.CacheX = CacheX;
     }
@@ -164,6 +164,8 @@ public class StorageProviderService {
             return new TencentCosProvider(context);
         } else if (Registry.SFTP.equals(type)) {
             return new SftpFileProvider(context);
+        } else if (Registry.SMB.equals(type)) {
+            return new SmbFileProvider(context);
         } else if (Registry.UPYUN.equals(type)) {
             return new UpyunOssProvider(context);
         } else if (Registry.WEBDAV.equals(type)) {

@@ -1002,8 +1002,13 @@ public class Builder {
      * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(final Crypto crypto, final Map<?, ?> params, final String separator,
-            final String keyValueSeparator, final boolean isIgnoreNull, final String... otherParams) {
+    public static String signParams(
+            final Crypto crypto,
+            final Map<?, ?> params,
+            final String separator,
+            final String keyValueSeparator,
+            final boolean isIgnoreNull,
+            final String... otherParams) {
         return crypto.encryptHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
     }
 
@@ -1048,7 +1053,9 @@ public class Builder {
      * @param otherParams     其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(final Algorithm digestAlgorithm, final Map<?, ?> params,
+    public static String signParams(
+            final Algorithm digestAlgorithm,
+            final Map<?, ?> params,
             final String... otherParams) {
         return signParams(digestAlgorithm, params, Normal.EMPTY, Normal.EMPTY, true, otherParams);
     }
@@ -1064,8 +1071,13 @@ public class Builder {
      * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(final Algorithm digestAlgorithm, final Map<?, ?> params, final String separator,
-            final String keyValueSeparator, final boolean isIgnoreNull, final String... otherParams) {
+    public static String signParams(
+            final Algorithm digestAlgorithm,
+            final Map<?, ?> params,
+            final String separator,
+            final String keyValueSeparator,
+            final boolean isIgnoreNull,
+            final String... otherParams) {
         return new Digester(digestAlgorithm)
                 .digestHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
     }
@@ -1551,30 +1563,36 @@ public class Builder {
      */
     public static BufferedBlockCipher wrap(BlockCipher cipher, final Algorithm.Mode mode, final Padding padding) {
         switch (mode) {
-        case CBC:
-            cipher = CBCBlockCipher.newInstance(cipher);
-            break;
-        case CFB:
-            cipher = CFBBlockCipher.newInstance(cipher, cipher.getBlockSize() * 8);
-            break;
-        case CTR:
-            cipher = SICBlockCipher.newInstance(cipher);
-            break;
-        case OFB:
-            cipher = new OFBBlockCipher(cipher, cipher.getBlockSize() * 8);
-        case CTS:
-            return new CTSBlockCipher(cipher);
+            case CBC:
+                cipher = CBCBlockCipher.newInstance(cipher);
+                break;
+
+            case CFB:
+                cipher = CFBBlockCipher.newInstance(cipher, cipher.getBlockSize() * 8);
+                break;
+
+            case CTR:
+                cipher = SICBlockCipher.newInstance(cipher);
+                break;
+
+            case OFB:
+                cipher = new OFBBlockCipher(cipher, cipher.getBlockSize() * 8);
+            case CTS:
+                return new CTSBlockCipher(cipher);
         }
 
         switch (padding) {
-        case NoPadding:
-            return new DefaultBufferedBlockCipher(cipher);
-        case PKCS5Padding:
-            return new PaddedBufferedBlockCipher(cipher);
-        case ZeroPadding:
-            return new PaddedBufferedBlockCipher(cipher, new ZeroBytePadding());
-        case ISO10126Padding:
-            return new PaddedBufferedBlockCipher(cipher, new ISO10126d2Padding());
+            case NoPadding:
+                return new DefaultBufferedBlockCipher(cipher);
+
+            case PKCS5Padding:
+                return new PaddedBufferedBlockCipher(cipher);
+
+            case ZeroPadding:
+                return new PaddedBufferedBlockCipher(cipher, new ZeroBytePadding());
+
+            case ISO10126Padding:
+                return new PaddedBufferedBlockCipher(cipher, new ISO10126d2Padding());
         }
 
         return null;

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -84,14 +84,16 @@ public class KeySqlRegistry implements Registry {
             if (mapperMethod.isAnnotationPresent(Options.class)) {
                 Options options = mapperMethod.getAnnotation(Options.class);
                 if (options.useGeneratedKeys()) {
-                    Logger.warn("Interface " + context.getMapperType().getName() + " method " + mapperMethod.getName()
-                            + " uses @Options(useGeneratedKeys = true), ignoring entity primary key strategy");
+                    Logger.warn(
+                            "Interface " + context.getMapperType().getName() + " method " + mapperMethod.getName()
+                                    + " uses @Options(useGeneratedKeys = true), ignoring entity primary key strategy");
                     return;
                 }
             }
             if (mapperMethod.isAnnotationPresent(SelectKey.class)) {
-                Logger.warn("Interface " + context.getMapperType().getName() + " method " + mapperMethod.getName()
-                        + " uses @SelectKey, ignoring entity primary key strategy");
+                Logger.warn(
+                        "Interface " + context.getMapperType().getName() + " method " + mapperMethod.getName()
+                                + " uses @SelectKey, ignoring entity primary key strategy");
                 return;
             }
             ColumnMeta id = ids.get(0);
@@ -131,7 +133,10 @@ public class KeySqlRegistry implements Registry {
      * @param executeBefore 是否在插入前执行
      * @return 配置好的 SelectKeyGenerator
      */
-    private KeyGenerator handleSelectKeyGenerator(MappedStatement ms, ColumnMeta column, String sql,
+    private KeyGenerator handleSelectKeyGenerator(
+            MappedStatement ms,
+            ColumnMeta column,
+            String sql,
             boolean executeBefore) {
         String id = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         Configuration configuration = ms.getConfiguration();

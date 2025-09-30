@@ -760,26 +760,17 @@ public class ArrayKit extends PrimitiveArray {
         if (isArray(object)) {
             try {
                 final String className = object.getClass().getComponentType().getName();
-                switch (className) {
-                case "long":
-                    return wrap((long[]) object);
-                case "int":
-                    return wrap((int[]) object);
-                case "short":
-                    return wrap((short[]) object);
-                case "char":
-                    return wrap((char[]) object);
-                case "byte":
-                    return wrap((byte[]) object);
-                case "boolean":
-                    return wrap((boolean[]) object);
-                case "float":
-                    return wrap((float[]) object);
-                case "double":
-                    return wrap((double[]) object);
-                default:
-                    return (Object[]) object;
-                }
+                return switch (className) {
+                    case "long" -> wrap((long[]) object);
+                    case "int" -> wrap((int[]) object);
+                    case "short" -> wrap((short[]) object);
+                    case "char" -> wrap((char[]) object);
+                    case "byte" -> wrap((byte[]) object);
+                    case "boolean" -> wrap((boolean[]) object);
+                    case "float" -> wrap((float[]) object);
+                    case "double" -> wrap((double[]) object);
+                    default -> (Object[]) object;
+                };
             } catch (final Exception e) {
                 throw ExceptionKit.wrapRuntime(e);
             }
@@ -861,7 +852,10 @@ public class ArrayKit extends PrimitiveArray {
      * @param suffix    每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
      */
-    public static <T> String join(final T[] array, final CharSequence delimiter, final String prefix,
+    public static <T> String join(
+            final T[] array,
+            final CharSequence delimiter,
+            final String prefix,
             final String suffix) {
         if (null == array) {
             return null;
@@ -1151,7 +1145,9 @@ public class ArrayKit extends PrimitiveArray {
      * @param <R>                 目标数组类型
      * @return 转换后的数组
      */
-    public static <T, R> R[] map(final Object array, final Class<R> targetComponentType,
+    public static <T, R> R[] map(
+            final Object array,
+            final Class<R> targetComponentType,
             final Function<? super T, ? extends R> func) {
         final int length = length(array);
         final R[] result = newArray(targetComponentType, length);
@@ -1197,7 +1193,9 @@ public class ArrayKit extends PrimitiveArray {
      * @param <R>       目标数组类型
      * @return 集合
      */
-    public static <T, R> R[] mapToArray(final T[] array, final Function<? super T, ? extends R> func,
+    public static <T, R> R[] mapToArray(
+            final T[] array,
+            final Function<? super T, ? extends R> func,
             final IntFunction<R[]> generator) {
         return Arrays.stream(array).map(func).toArray(generator);
     }

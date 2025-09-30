@@ -65,7 +65,9 @@ public class Dcm2Pdf {
             String sopCUID = attributes.getString(Tag.SOPClassUID);
             String ext = FileType.getFileExt(sopCUID);
             if (ext == null) {
-                Logger.info("DICOM file {} with {} SOP Class cannot be converted to bulkdata file", src,
+                Logger.info(
+                        "DICOM file {} with {} SOP Class cannot be converted to bulkdata file",
+                        src,
                         UID.nameOf(sopCUID));
                 return;
             }
@@ -82,6 +84,7 @@ public class Dcm2Pdf {
     }
 
     enum FileType {
+
         PDF(UID.EncapsulatedPDFStorage.uid, ".pdf"), CDA(UID.EncapsulatedCDAStorage.uid, ".xml"),
         MTL(UID.EncapsulatedMTLStorage.uid, ".mtl"), OBJ(UID.EncapsulatedOBJStorage.uid, ".obj"),
         STL(UID.EncapsulatedSTLStorage.uid, ".stl"), GENOZIP(UID.PrivateEncapsulatedGenozipStorage.uid, ".genozip"),
@@ -113,6 +116,7 @@ public class Dcm2Pdf {
     }
 
     class Dcm2PdfFileVisitor extends SimpleFileVisitor<Path> {
+
         private final Path srcPath;
         private final Path destPath;
         private final boolean destIsDir;

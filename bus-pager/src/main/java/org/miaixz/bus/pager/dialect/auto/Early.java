@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -73,7 +73,10 @@ public class Early implements AutoDialect<String> {
     }
 
     @Override
-    public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource,
+    public AbstractPaging extractDialect(
+            String dialectKey,
+            MappedStatement ms,
+            DataSource dataSource,
             Properties properties) {
         String dialectStr = PageAutoDialect.fromJdbcUrl(dialectKey);
         if (dialectStr == null) {

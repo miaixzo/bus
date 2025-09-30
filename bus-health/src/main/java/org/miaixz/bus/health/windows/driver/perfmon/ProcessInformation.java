@@ -54,7 +54,9 @@ public final class ProcessInformation {
         if (PerfmonDisabled.PERF_PROC_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessPerformanceProperty.class, PerfmonConsts.PROCESS,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                ProcessPerformanceProperty.class,
+                PerfmonConsts.PROCESS,
                 PerfmonConsts.WIN32_PERFPROC_PROCESS_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 
@@ -67,7 +69,9 @@ public final class ProcessInformation {
         if (PerfmonDisabled.PERF_PROC_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(HandleCountProperty.class, PerfmonConsts.PROCESS,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                HandleCountProperty.class,
+                PerfmonConsts.PROCESS,
                 PerfmonConsts.WIN32_PERFPROC_PROCESS);
     }
 
@@ -80,7 +84,9 @@ public final class ProcessInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(IdleProcessorTimeProperty.class, PerfmonConsts.PROCESS,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                IdleProcessorTimeProperty.class,
+                PerfmonConsts.PROCESS,
                 PerfmonConsts.WIN32_PERFPROC_PROCESS_WHERE_IDPROCESS_0);
     }
 
@@ -88,6 +94,7 @@ public final class ProcessInformation {
      * Process performance counters
      */
     public enum ProcessPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
@@ -116,6 +123,7 @@ public final class ProcessInformation {
      * Handle performance counters
      */
     public enum HandleCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.TOTAL_INSTANCE),
         // Remaining elements define counters
@@ -137,6 +145,7 @@ public final class ProcessInformation {
      * Processor performance counters
      */
     public enum IdleProcessorTimeProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.TOTAL_OR_IDLE_INSTANCES),
         // Remaining elements define counters

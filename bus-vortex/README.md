@@ -20,7 +20,7 @@
 - 权限（RBAC、校验）
 - session（单机、分布式）
 - 注解（文档生成）
-- token（jwt、accessToken）
+- principal（jwt、accessToken）
 - SDK（Java、C#、JavaScript）
 - 格式化(xml,json)
 
@@ -38,7 +38,7 @@ public class Assets {
     private String url;  //目标url
     private String method; //对应请求参数method
     private HttpMethod httpMethod;
-    private boolean token; //是否需要token (0 不需要,1需要)
+    private boolean principal; //是否需要token (0 不需要,1需要)
     private boolean sign;  //返回内容是否加密(0 不需要,1需要) 需配置开启加密
     private boolean firewall; // 防火墙,预留
     private String version; //对应请求参数v

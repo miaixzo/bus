@@ -108,6 +108,7 @@ public class Transcoder implements Closeable {
     private String pixelDataBulkDataURI;
     private byte[] buffer;
     private final ImageInputHandler imageInputHandler = new ImageInputHandler() {
+
         @Override
         public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
             int tag = dis.tag();
@@ -143,7 +144,8 @@ public class Transcoder implements Closeable {
                 dos.writeHeader(Tag.Item, null, (int) (length + 1) & ~1);
                 IoKit.copy(dis, dos, length, buffer());
                 if ((length & 1) != 0) {
-                    Logger.info("Odd length of Pixel Data Fragment: {} - append NULL byte to ensure even length",
+                    Logger.info(
+                            "Odd length of Pixel Data Fragment: {} - append NULL byte to ensure even length",
                             length);
                     dos.write(0);
                 }
@@ -329,27 +331,30 @@ public class Transcoder implements Closeable {
             return srcTransferSyntax;
         }
         switch (UID.from(dstTsuid)) {
-        case UID.JPEGBaseline8Bit:
-            return bitsStored <= 8 ? dstTsuid
-                    : !imageDescriptor.isSigned() && bitsStored <= 12 ? UID.JPEGExtended12Bit.uid
-                            : bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-        case UID.JPEGExtended12Bit:
-        case UID.JPEGSpectralSelectionNonHierarchical68:
-        case UID.JPEGFullProgressionNonHierarchical1012:
-            return !imageDescriptor.isSigned() && bitsStored <= 12 ? dstTsuid
-                    : bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-        case UID.JPEGLossless:
-        case UID.JPEGLosslessSV1:
-        case UID.JPEGLSLossless:
-        case UID.JPEGLSNearLossless:
-        case UID.JPEG2000Lossless:
-        case UID.JPEG2000:
-        case UID.HTJ2KLossless:
-        case UID.HTJ2KLosslessRPCL:
-        case UID.HTJ2K:
-            return bitsStored <= 16 ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
-        default:
-            return dstTsuid;
+            case UID.JPEGBaseline8Bit:
+                return bitsStored <= 8 ? dstTsuid
+                        : !imageDescriptor.isSigned() && bitsStored <= 12 ? UID.JPEGExtended12Bit.uid
+                                : bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+
+            case UID.JPEGExtended12Bit:
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+            case UID.JPEGFullProgressionNonHierarchical1012:
+                return !imageDescriptor.isSigned() && bitsStored <= 12 ? dstTsuid
+                        : bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+
+            case UID.JPEGLossless:
+            case UID.JPEGLosslessSV1:
+            case UID.JPEGLSLossless:
+            case UID.JPEGLSNearLossless:
+            case UID.JPEG2000Lossless:
+            case UID.JPEG2000:
+            case UID.HTJ2KLossless:
+            case UID.HTJ2KLosslessRPCL:
+            case UID.HTJ2K:
+                return bitsStored <= 16 ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
+
+            default:
+                return dstTsuid;
         }
     }
 
@@ -568,7 +573,9 @@ public class Transcoder implements Closeable {
                 dataset.setInt(Tag.PlanarConfiguration, VR.US, srcTransferSyntaxType.getPlanarConfiguration());
             } else {
                 if (srcTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
-                    Logger.info("Adjust invalid Bits Stored: {} of {} to 12", imageDescriptor.getBitsStored(),
+                    Logger.info(
+                            "Adjust invalid Bits Stored: {} of {} to 12",
+                            imageDescriptor.getBitsStored(),
                             srcTransferSyntaxType);
                 }
             }
@@ -592,7 +599,9 @@ public class Transcoder implements Closeable {
                 Logger.debug("Conversion to an RGB color model is required before compression.");
             } else {
                 if (destTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
-                    Logger.debug("Adjust Bits Stored: {} for {} to 12", imageDescriptor.getBitsStored(),
+                    Logger.debug(
+                            "Adjust Bits Stored: {} for {} to 12",
+                            imageDescriptor.getBitsStored(),
                             destTransferSyntaxType);
                 }
             }
@@ -605,8 +614,11 @@ public class Transcoder implements Closeable {
             if (lossyCompression) {
                 dataset.setString(Tag.LossyImageCompression, VR.CS, "01");
                 try {
-                    dataset.setFloat(Tag.LossyImageCompressionRatio, VR.DS, ((Number) compressParam.getClass()
-                            .getMethod("getCompressionRatiofactor").invoke(compressParam)).floatValue());
+                    dataset.setFloat(
+                            Tag.LossyImageCompressionRatio,
+                            VR.DS,
+                            ((Number) compressParam.getClass().getMethod("getCompressionRatiofactor")
+                                    .invoke(compressParam)).floatValue());
                 } catch (Exception ignore) {
                 }
             }
@@ -638,12 +650,13 @@ public class Transcoder implements Closeable {
         if (imageDescriptor.getBitsStored() < imageDescriptor.getBitsAllocated()) {
             DataBuffer db = originalBi.getRaster().getDataBuffer();
             switch (db.getDataType()) {
-            case DataBuffer.TYPE_USHORT:
-                nullifyUnusedBits(((DataBufferUShort) db).getData());
-                break;
-            case DataBuffer.TYPE_SHORT:
-                extendSignUnusedBits(((DataBufferShort) db).getData());
-                break;
+                case DataBuffer.TYPE_USHORT:
+                    nullifyUnusedBits(((DataBufferUShort) db).getData());
+                    break;
+
+                case DataBuffer.TYPE_SHORT:
+                    extendSignUnusedBits(((DataBufferShort) db).getData());
+                    break;
             }
         }
     }
@@ -661,9 +674,10 @@ public class Transcoder implements Closeable {
     }
 
     private BufferedImage decompressFrame(int frameIndex) throws IOException {
-        decompressor.setInput(decompressorParam.patchJPEGLS != null
-                ? new PatchJPEGLSInputStream(encapsulatedPixelData, decompressorParam.patchJPEGLS)
-                : encapsulatedPixelData);
+        decompressor.setInput(
+                decompressorParam.patchJPEGLS != null
+                        ? new PatchJPEGLSInputStream(encapsulatedPixelData, decompressorParam.patchJPEGLS)
+                        : encapsulatedPixelData);
         if (srcTransferSyntaxType == TransferSyntaxType.RLE)
             initBufferedImage();
         decompressParam.setDestination(originalBi);
@@ -671,7 +685,10 @@ public class Transcoder implements Closeable {
         originalBi = adjustColorModel(decompressor.read(0, decompressParam));
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug("Decompressed frame #{} in {} ms, ratio 1:{}", frameIndex + 1, end - start,
+            Logger.debug(
+                    "Decompressed frame #{} in {} ms, ratio 1:{}",
+                    frameIndex + 1,
+                    end - start,
                     (float) imageDescriptor.getFrameLength() / encapsulatedPixelData.getStreamPosition());
         encapsulatedPixelData.seekNextFrame();
         return originalBi;
@@ -703,7 +720,10 @@ public class Transcoder implements Closeable {
         long end = System.currentTimeMillis();
         int length = (int) ios.getStreamPosition();
         if (Logger.isDebugEnabled())
-            Logger.debug("Compressed frame #{} in {} ms, ratio {}:1", frameIndex + 1, end - start,
+            Logger.debug(
+                    "Compressed frame #{} in {} ms, ratio {}:1",
+                    frameIndex + 1,
+                    end - start,
                     (float) imageDescriptor.getFrameLength() / length);
         verify(ios, frameIndex);
         if ((length & 1) != 0) {
@@ -720,15 +740,17 @@ public class Transcoder implements Closeable {
         WritableRaster raster = originalBi.getRaster();
         DataBuffer dataBuffer = raster.getDataBuffer();
         switch (dataBuffer.getDataType()) {
-        case DataBuffer.TYPE_SHORT:
-            readFully(((DataBufferShort) dataBuffer).getData());
-            break;
-        case DataBuffer.TYPE_USHORT:
-            readFully(((DataBufferUShort) dataBuffer).getData());
-            break;
-        case DataBuffer.TYPE_BYTE:
-            readFully(((DataBufferByte) dataBuffer).getBankData());
-            break;
+            case DataBuffer.TYPE_SHORT:
+                readFully(((DataBufferShort) dataBuffer).getData());
+                break;
+
+            case DataBuffer.TYPE_USHORT:
+                readFully(((DataBufferUShort) dataBuffer).getData());
+                break;
+
+            case DataBuffer.TYPE_BYTE:
+                readFully(((DataBufferByte) dataBuffer).getBankData());
+                break;
         }
     }
 
@@ -783,20 +805,24 @@ public class Transcoder implements Closeable {
         SampleModel sm = raster.getSampleModel();
         DataBuffer db = raster.getDataBuffer();
         switch (db.getDataType()) {
-        case DataBuffer.TYPE_BYTE:
-            write(sm, ((DataBufferByte) db).getBankData());
-            break;
-        case DataBuffer.TYPE_USHORT:
-            write(sm, ((DataBufferUShort) db).getData());
-            break;
-        case DataBuffer.TYPE_SHORT:
-            write(sm, ((DataBufferShort) db).getData());
-            break;
-        case DataBuffer.TYPE_INT:
-            write(sm, ((DataBufferInt) db).getData());
-            break;
-        default:
-            throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
+            case DataBuffer.TYPE_BYTE:
+                write(sm, ((DataBufferByte) db).getBankData());
+                break;
+
+            case DataBuffer.TYPE_USHORT:
+                write(sm, ((DataBufferUShort) db).getData());
+                break;
+
+            case DataBuffer.TYPE_SHORT:
+                write(sm, ((DataBufferShort) db).getData());
+                break;
+
+            case DataBuffer.TYPE_INT:
+                write(sm, ((DataBufferInt) db).getData());
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
         }
     }
 
@@ -907,7 +933,10 @@ public class Transcoder implements Closeable {
         int maxDiff = maxDiff(bi.getRaster(), bi2.getRaster());
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}", index + 1, end - start,
+            Logger.debug(
+                    "Verified compressed frame #{} in {} ms - max pixel value error: {}",
+                    index + 1,
+                    end - start,
                     maxDiff);
         if (maxDiff > maxPixelValueError)
             throw new InternalException(
@@ -933,8 +962,9 @@ public class Transcoder implements Closeable {
             for (int b = 0; b < csm.getNumBands(); b++)
                 for (int y = 0; y < maxY; y += blockSize) {
                     for (int x = 0; x < maxX; x += blockSize) {
-                        if (maxDiff < (diff = Math.abs(sum(csm.getSamples(x, y, blockSize, blockSize, b, samples, db))
-                                - sum(csm2.getSamples(x, y, blockSize, blockSize, b, samples, db2)))))
+                        if (maxDiff < (diff = Math.abs(
+                                sum(csm.getSamples(x, y, blockSize, blockSize, b, samples, db))
+                                        - sum(csm2.getSamples(x, y, blockSize, blockSize, b, samples, db2)))))
                             maxDiff = diff;
                     }
                 }
@@ -997,6 +1027,7 @@ public class Transcoder implements Closeable {
     }
 
     public interface Handler {
+
         OutputStream newOutputStream(Transcoder transcoder, Attributes dataset) throws IOException;
     }
 

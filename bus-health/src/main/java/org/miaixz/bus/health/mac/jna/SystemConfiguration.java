@@ -52,6 +52,7 @@ public interface SystemConfiguration extends Library {
     CFStringRef SCNetworkInterfaceGetLocalizedDisplayName(SCNetworkInterfaceRef netint);
 
     class SCNetworkInterfaceRef extends CFTypeRef {
+
         public SCNetworkInterfaceRef() {
             super();
         }

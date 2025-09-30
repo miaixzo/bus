@@ -65,8 +65,8 @@ public class MethodLookupFactory implements LookupFactory {
     @Override
     public MethodHandles.Lookup lookup(final Class<?> callerClass) {
         try {
-            return (MethodHandles.Lookup) privateLookupInMethod.invoke(MethodHandles.class, callerClass,
-                    MethodHandles.lookup());
+            return (MethodHandles.Lookup) privateLookupInMethod
+                    .invoke(MethodHandles.class, callerClass, MethodHandles.lookup());
         } catch (final IllegalAccessException e) {
             throw new InternalException(e);
         } catch (final InvocationTargetException e) {

@@ -25,52 +25,52 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.core.center.map.multiple;
 
 import java.io.Serial;
 import java.util.*;
 import java.util.function.Supplier;
 
 /**
- * 值作为集合List的Map实现，通过调用putValue可以在相同key时加入多个值，多个值用集合表示
+ * 值作为集合Set（LinkedHashSet）的Map实现，通过调用putValue可以在相同key时加入多个值，多个值用集合表示
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
+public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852277598332L;
+    private static final long serialVersionUID = 2852277962550L;
 
     /**
-     * 基于{@code mapFactory}创建一个值为{@link List}的多值映射集合
+     * 基于{@code mapFactory}创建一个值为{@link Set}的多值映射集合
      *
      * @param mapFactory 创建集合的工厂反方
      */
-    public ListValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
+    public SetValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
         super(mapFactory);
     }
 
     /**
-     * 基于指定Map创建一个值为{@link List}的多值映射集合
+     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
      *
      * @param map 提供数据的原始集合
      */
-    public ListValueMap(final Map<K, Collection<V>> map) {
+    public SetValueMap(final Map<K, Collection<V>> map) {
         super(map);
     }
 
     /**
-     * 基于{@link HashMap}创建一个值为{@link List}的多值映射集合
+     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
      */
-    public ListValueMap() {
+    public SetValueMap() {
     }
 
     @Override
-    protected List<V> createCollection() {
-        return new ArrayList<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
+    protected Set<V> createCollection() {
+        return new LinkedHashSet<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
     }
 
 }

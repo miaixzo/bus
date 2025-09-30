@@ -83,68 +83,68 @@ public final class ServerSentEventReader {
         while (true) {
             int option = source.select(options);
             switch (option) {
-            case 0: // "\r\n"
-            case 1: // "\r"
-            case 2: // "\n"
-                completeEvent(id, type, data);
-                return true;
+                case 0: // "\r\n"
+                case 1: // "\r"
+                case 2: // "\n"
+                    completeEvent(id, type, data);
+                    return true;
 
-            case 3: // "data: "
-            case 4: // "data:"
-                readData(source, data);
-                break;
+                case 3: // "data: "
+                case 4: // "data:"
+                    readData(source, data);
+                    break;
 
-            case 5: // "data\r\n"
-            case 6: // "data\r"
-            case 7: // "data\n"
-                data.writeByte('\n');
-                break;
+                case 5: // "data\r\n"
+                case 6: // "data\r"
+                case 7: // "data\n"
+                    data.writeByte('\n');
+                    break;
 
-            case 8: // "id: "
-            case 9: // "id:"
-                String idValue = source.readUtf8LineStrict();
-                id = idValue.isEmpty() ? null : idValue;
-                break;
+                case 8: // "id: "
+                case 9: // "id:"
+                    String idValue = source.readUtf8LineStrict();
+                    id = idValue.isEmpty() ? null : idValue;
+                    break;
 
-            case 10: // "id\r\n"
-            case 11: // "id\r"
-            case 12: // "id\n"
-                id = null;
-                break;
+                case 10: // "id\r\n"
+                case 11: // "id\r"
+                case 12: // "id\n"
+                    id = null;
+                    break;
 
-            case 13: // "event: "
-            case 14: // "event:"
-                String typeValue = source.readUtf8LineStrict();
-                type = typeValue.isEmpty() ? null : typeValue;
-                break;
+                case 13: // "event: "
+                case 14: // "event:"
+                    String typeValue = source.readUtf8LineStrict();
+                    type = typeValue.isEmpty() ? null : typeValue;
+                    break;
 
-            case 15: // "event\r\n"
-            case 16: // "event\r"
-            case 17: // "event\n"
-                type = null;
-                break;
+                case 15: // "event\r\n"
+                case 16: // "event\r"
+                case 17: // "event\n"
+                    type = null;
+                    break;
 
-            case 18: // "retry: "
-            case 19: // "retry:"
-                long retryMs = readRetryMs(source);
-                if (retryMs != -1L) {
-                    callback.onRetryChange(retryMs);
-                }
-                break;
+                case 18: // "retry: "
+                case 19: // "retry:"
+                    long retryMs = readRetryMs(source);
+                    if (retryMs != -1L) {
+                        callback.onRetryChange(retryMs);
+                    }
+                    break;
 
-            case -1:
-                long lineEnd = source.indexOfElement(CRLF);
-                if (lineEnd != -1L) {
-                    // 跳过当前行和换行符
-                    source.skip(lineEnd);
-                    source.select(options);
-                } else {
-                    return false; // 没有更多换行符
-                }
-                break;
+                case -1:
+                    long lineEnd = source.indexOfElement(CRLF);
+                    if (lineEnd != -1L) {
+                        // 跳过当前行和换行符
+                        source.skip(lineEnd);
+                        source.select(options);
+                    } else {
+                        return false; // 没有更多换行符
+                    }
+                    break;
 
-            default:
-                throw new AssertionError();
+                default:
+                    throw new AssertionError();
             }
         }
     }
@@ -166,16 +166,26 @@ public final class ServerSentEventReader {
     }
 
     /** SSE 事件字段的前缀和换行符选项，用于解析事件流 */
-    private static final SegmentBuffer options = SegmentBuffer.of(/* 0 */ ByteString.encodeUtf8("\r\n"),
-            /* 1 */ ByteString.encodeUtf8("\r"), /* 2 */ ByteString.encodeUtf8("\n"),
-            /* 3 */ ByteString.encodeUtf8("data: "), /* 4 */ ByteString.encodeUtf8("data:"),
-            /* 5 */ ByteString.encodeUtf8("data\r\n"), /* 6 */ ByteString.encodeUtf8("data\r"),
-            /* 7 */ ByteString.encodeUtf8("data\n"), /* 8 */ ByteString.encodeUtf8("id: "),
-            /* 9 */ ByteString.encodeUtf8("id:"), /* 10 */ ByteString.encodeUtf8("id\r\n"),
-            /* 11 */ ByteString.encodeUtf8("id\r"), /* 12 */ ByteString.encodeUtf8("id\n"),
-            /* 13 */ ByteString.encodeUtf8("event: "), /* 14 */ ByteString.encodeUtf8("event:"),
-            /* 15 */ ByteString.encodeUtf8("event\r\n"), /* 16 */ ByteString.encodeUtf8("event\r"),
-            /* 17 */ ByteString.encodeUtf8("event\n"), /* 18 */ ByteString.encodeUtf8("retry: "),
+    private static final SegmentBuffer options = SegmentBuffer.of(
+            /* 0 */ ByteString.encodeUtf8("\r\n"),
+            /* 1 */ ByteString.encodeUtf8("\r"),
+            /* 2 */ ByteString.encodeUtf8("\n"),
+            /* 3 */ ByteString.encodeUtf8("data: "),
+            /* 4 */ ByteString.encodeUtf8("data:"),
+            /* 5 */ ByteString.encodeUtf8("data\r\n"),
+            /* 6 */ ByteString.encodeUtf8("data\r"),
+            /* 7 */ ByteString.encodeUtf8("data\n"),
+            /* 8 */ ByteString.encodeUtf8("id: "),
+            /* 9 */ ByteString.encodeUtf8("id:"),
+            /* 10 */ ByteString.encodeUtf8("id\r\n"),
+            /* 11 */ ByteString.encodeUtf8("id\r"),
+            /* 12 */ ByteString.encodeUtf8("id\n"),
+            /* 13 */ ByteString.encodeUtf8("event: "),
+            /* 14 */ ByteString.encodeUtf8("event:"),
+            /* 15 */ ByteString.encodeUtf8("event\r\n"),
+            /* 16 */ ByteString.encodeUtf8("event\r"),
+            /* 17 */ ByteString.encodeUtf8("event\n"),
+            /* 18 */ ByteString.encodeUtf8("retry: "),
             /* 19 */ ByteString.encodeUtf8("retry:"));
 
     /** 换行符（CRLF），用于定位事件流中的行结束 */
@@ -214,6 +224,7 @@ public final class ServerSentEventReader {
      * 回调接口，用于处理服务器推送事件和重试时间变化。
      */
     public interface Callback {
+
         /**
          * 当接收到新的事件时调用。
          *

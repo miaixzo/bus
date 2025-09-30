@@ -69,18 +69,23 @@ public class LdapImageWriterConfiguration extends LdapDicomConfigurationExtensio
 
     private void store(ConfigurationChanges diffs, String deviceDN, ImageWriterFactory factory) throws NamingException {
         String imageWritersDN = CN_IMAGE_WRITER_FACTORY + deviceDN;
-        config.createSubcontext(imageWritersDN,
+        config.createSubcontext(
+                imageWritersDN,
                 LdapBuilder.attrs("dcmImageWriterFactory", "cn", "Image Writer Factory"));
         for (Entry<String, ImageWriterParam> entry : factory.getEntries()) {
             String tsuid = entry.getKey();
-            ConfigurationChanges.ModifiedObject ldapObj1 = ConfigurationChanges.addModifiedObjectIfVerbose(diffs,
-                    imageWritersDN, ConfigurationChanges.ChangeType.C);
-            config.createSubcontext(dnOf(tsuid, imageWritersDN),
+            ConfigurationChanges.ModifiedObject ldapObj1 = ConfigurationChanges
+                    .addModifiedObjectIfVerbose(diffs, imageWritersDN, ConfigurationChanges.ChangeType.C);
+            config.createSubcontext(
+                    dnOf(tsuid, imageWritersDN),
                     storeTo(ldapObj1, tsuid, entry.getValue(), new BasicAttributes(true)));
         }
     }
 
-    private Attributes storeTo(ConfigurationChanges.ModifiedObject ldapObj, String tsuid, ImageWriterParam param,
+    private Attributes storeTo(
+            ConfigurationChanges.ModifiedObject ldapObj,
+            String tsuid,
+            ImageWriterParam param,
             Attributes attrs) {
         attrs.put("objectclass", "dcmImageWriter");
         attrs.put("dicomTransferSyntax", tsuid);
@@ -106,7 +111,8 @@ public class LdapImageWriterConfiguration extends LdapDicomConfigurationExtensio
             while (ne.hasMore()) {
                 SearchResult sr = ne.next();
                 Attributes attrs = sr.getAttributes();
-                factory.put(LdapBuilder.stringValue(attrs.get("dicomTransferSyntax"), null),
+                factory.put(
+                        LdapBuilder.stringValue(attrs.get("dicomTransferSyntax"), null),
                         new ImageWriterParam(LdapBuilder.stringValue(attrs.get("dcmIIOFormatName"), null),
                                 LdapBuilder.stringValue(attrs.get("dcmJavaClassName"), null),
                                 LdapBuilder.stringValue(attrs.get("dcmPatchJPEGLS"), null),
@@ -137,7 +143,10 @@ public class LdapImageWriterConfiguration extends LdapDicomConfigurationExtensio
         }
     }
 
-    private void merge(ConfigurationChanges diffs, ImageWriterFactory prev, ImageWriterFactory factory,
+    private void merge(
+            ConfigurationChanges diffs,
+            ImageWriterFactory prev,
+            ImageWriterFactory factory,
             String imageWritersDN) throws NamingException {
         for (Entry<String, ImageWriterParam> entry : prev.getEntries()) {
             String tsuid = entry.getKey();
@@ -152,25 +161,37 @@ public class LdapImageWriterConfiguration extends LdapDicomConfigurationExtensio
             String dn = dnOf(tsuid, imageWritersDN);
             ImageWriterParam prevParam = prev.get(tsuid);
             if (prevParam == null) {
-                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges.addModifiedObject(diffs, dn,
-                        ConfigurationChanges.ChangeType.C);
-                config.createSubcontext(dn, storeTo(ConfigurationChanges.nullifyIfNotVerbose(diffs, ldapObj), tsuid,
-                        entry.getValue(), new BasicAttributes(true)));
+                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
+                        .addModifiedObject(diffs, dn, ConfigurationChanges.ChangeType.C);
+                config.createSubcontext(
+                        dn,
+                        storeTo(
+                                ConfigurationChanges.nullifyIfNotVerbose(diffs, ldapObj),
+                                tsuid,
+                                entry.getValue(),
+                                new BasicAttributes(true)));
             } else {
-                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges.addModifiedObject(diffs, dn,
-                        ConfigurationChanges.ChangeType.U);
+                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
+                        .addModifiedObject(diffs, dn, ConfigurationChanges.ChangeType.U);
                 config.modifyAttributes(dn, storeDiffs(ldapObj, prevParam, entry.getValue(), new ArrayList<>()));
                 ConfigurationChanges.removeLastIfEmpty(diffs, ldapObj);
             }
         }
     }
 
-    private List<ModificationItem> storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, ImageWriterParam prevParam,
-            ImageWriterParam param, List<ModificationItem> mods) {
+    private List<ModificationItem> storeDiffs(
+            ConfigurationChanges.ModifiedObject ldapObj,
+            ImageWriterParam prevParam,
+            ImageWriterParam param,
+            List<ModificationItem> mods) {
         LdapBuilder.storeDiffObject(ldapObj, mods, "dcmIIOFormatName", prevParam.formatName, param.formatName, null);
         LdapBuilder.storeDiffObject(ldapObj, mods, "dcmJavaClassName", prevParam.className, param.className, null);
         LdapBuilder.storeDiffObject(ldapObj, mods, "dcmPatchJPEGLS", prevParam.patchJPEGLS, param.patchJPEGLS, null);
-        LdapBuilder.storeDiff(ldapObj, mods, "dcmImageWriteParam", prevParam.getImageWriteParams(),
+        LdapBuilder.storeDiff(
+                ldapObj,
+                mods,
+                "dcmImageWriteParam",
+                prevParam.getImageWriteParams(),
                 param.getImageWriteParams());
         return mods;
     }

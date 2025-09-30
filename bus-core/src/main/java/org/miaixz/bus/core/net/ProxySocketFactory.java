@@ -83,7 +83,10 @@ public class ProxySocketFactory extends SocketFactory {
     }
 
     @Override
-    public Socket createSocket(final InetAddress address, final int port, final InetAddress localAddr,
+    public Socket createSocket(
+            final InetAddress address,
+            final int port,
+            final InetAddress localAddr,
             final int localPort) throws IOException {
         if (proxy != null) {
             final Socket s = new Socket(proxy);

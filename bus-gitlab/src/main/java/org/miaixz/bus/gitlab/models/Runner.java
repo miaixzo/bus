@@ -105,6 +105,7 @@ public class Runner implements Serializable {
      * Enum to use for RunnersApi filtering on status.
      */
     public enum RunnerStatus {
+
         ACTIVE, ONLINE, PAUSED, OFFLINE;
 
         private static JacksonJsonEnumHelper<RunnerStatus> enumHelper = new JacksonJsonEnumHelper<>(RunnerStatus.class);
@@ -129,6 +130,7 @@ public class Runner implements Serializable {
      * Enum to use for RunnersApi filtering on type.
      */
     public enum RunnerType {
+
         INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE;
 
         private static JacksonJsonEnumHelper<RunnerType> enumHelper = new JacksonJsonEnumHelper<>(RunnerType.class);

@@ -42,13 +42,17 @@ public interface ContextProvider {
      *
      * @return Authorize 对象，如果无法获取则返回 null
      */
-    Authorize getAuthorize();
+    default Authorize getAuthorize() {
+        return null;
+    }
 
     /**
      * 获取租户 ID。
      *
      * @return 租户 ID 字符串，如果未找到则返回 null
      */
-    String getTenantId();
+    default String getTenantId() {
+        return null;
+    }
 
 }

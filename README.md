@@ -1,27 +1,24 @@
 <p align="center">
-  <a href="https://www.miaixz.org"><img src="LOGO.svg" width="45%"></a>
+  <a href="https://www.miaixz.org"><img src="LOGO.svg" width="40%"></a>
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.2.9-blue.svg?label=Maven%20Central" />
-  </a>
-  <a target="_blank" href="https://travis-ci.org/818000/bus">
-    <img src="https://app.travis-ci.com/818000/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
+    <img src="https://img.shields.io/badge/maven--central-v8.3.1-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://jdk.java.net/">
-    <img src="https://img.shields.io/badge/Java-17+-green.svg">
+    <img src="https://img.shields.io/badge/Java-21+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
     <img src="https://img.shields.io/badge/Spring Boot-3.5.5-brightgreen.svg">
   </a>
-  <a target="_blank" href="https://www.mysql.com">
-    <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
+  <a target="_blank" href="https://www.postgresql.org">
+    <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">
   </a>
   <a target="_blank" href="http://dubbo.apache.org">
-    <img src="https://img.shields.io/badge/dubbo-3.2.11-yellow.svg">
+    <img src="https://img.shields.io/badge/dubbo-3.3.x-yellow.svg">
   </a>
   <a target="_blank" href="http://poi.apache.org">
-    <img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
+    <img src="https://img.shields.io/badge/poi-5.4.x-blue.svg">
   </a>
   <a target="_blank" href="https://github.com/818000/bus/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg">

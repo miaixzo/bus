@@ -82,9 +82,14 @@ public class IteratorKit extends IteratorValidator {
      * @param fieldNameForValue 做为值的字段名（会通过反射获取其值）
      * @return 某个字段值与对象对应Map
      */
-    public static <K, V> Map<K, V> fieldValueAsMap(final Iterator<?> iter, final String fieldNameForKey,
+    public static <K, V> Map<K, V> fieldValueAsMap(
+            final Iterator<?> iter,
+            final String fieldNameForKey,
             final String fieldNameForValue) {
-        return MapKit.putAll(new HashMap<>(), iter, (value) -> (K) FieldKit.getFieldValue(value, fieldNameForKey),
+        return MapKit.putAll(
+                new HashMap<>(),
+                iter,
+                (value) -> (K) FieldKit.getFieldValue(value, fieldNameForKey),
                 (value) -> (V) FieldKit.getFieldValue(value, fieldNameForValue));
     }
 
@@ -144,7 +149,10 @@ public class IteratorKit extends IteratorValidator {
      * @param suffix      每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
      */
-    public static <T> String join(final Iterator<T> iterator, final CharSequence conjunction, final String prefix,
+    public static <T> String join(
+            final Iterator<T> iterator,
+            final CharSequence conjunction,
+            final String prefix,
             final String suffix) {
         return StringJoiner.of(conjunction, prefix, suffix)
                 // 每个元素都添加前后缀
@@ -160,7 +168,9 @@ public class IteratorKit extends IteratorValidator {
      * @param func        集合元素转换器，将元素转换为字符串
      * @return 连接后的字符串
      */
-    public static <T> String join(final Iterator<T> iterator, final CharSequence conjunction,
+    public static <T> String join(
+            final Iterator<T> iterator,
+            final CharSequence conjunction,
             final Function<T, ? extends CharSequence> func) {
         if (null == iterator) {
             return null;
@@ -253,7 +263,9 @@ public class IteratorKit extends IteratorValidator {
      * @param <V>         值类型
      * @return HashMap
      */
-    public static <T, K, V> Map<K, List<V>> toListMap(final Iterable<T> iterable, final Function<T, K> keyMapper,
+    public static <T, K, V> Map<K, List<V>> toListMap(
+            final Iterable<T> iterable,
+            final Function<T, K> keyMapper,
             final Function<T, V> valueMapper) {
         return toListMap(MapKit.newHashMap(), iterable, keyMapper, valueMapper);
     }
@@ -270,8 +282,11 @@ public class IteratorKit extends IteratorValidator {
      * @param <V>         值类型
      * @return HashMap
      */
-    public static <T, K, V> Map<K, List<V>> toListMap(Map<K, List<V>> resultMap, final Iterable<T> iterable,
-            final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
+    public static <T, K, V> Map<K, List<V>> toListMap(
+            Map<K, List<V>> resultMap,
+            final Iterable<T> iterable,
+            final Function<T, K> keyMapper,
+            final Function<T, V> valueMapper) {
         if (null == resultMap) {
             resultMap = MapKit.newHashMap();
         }
@@ -310,7 +325,9 @@ public class IteratorKit extends IteratorValidator {
      * @param <V>         值类型
      * @return HashMap
      */
-    public static <T, K, V> Map<K, V> toMap(final Iterable<T> iterable, final Function<T, K> keyMapper,
+    public static <T, K, V> Map<K, V> toMap(
+            final Iterable<T> iterable,
+            final Function<T, K> keyMapper,
             final Function<T, V> valueMapper) {
         return MapKit.putAll(MapKit.newHashMap(), iterable, keyMapper, valueMapper);
     }
@@ -437,7 +454,8 @@ public class IteratorKit extends IteratorValidator {
      * @param <E>       元素类型
      * @return {@link FilterIterator}
      */
-    public static <E> FilterIterator<E> filtered(final Iterator<? extends E> iterator,
+    public static <E> FilterIterator<E> filtered(
+            final Iterator<? extends E> iterator,
             final Predicate<? super E> predicate) {
         return new FilterIterator<>(iterator, predicate);
     }
@@ -462,7 +480,8 @@ public class IteratorKit extends IteratorValidator {
      * @param function 转换函数
      * @return 转换后的{@link Iterator}
      */
-    public static <F, T> Iterator<T> trans(final Iterator<F> iterator,
+    public static <F, T> Iterator<T> trans(
+            final Iterator<F> iterator,
             final Function<? super F, ? extends T> function) {
         return new TransIterator<>(iterator, function);
     }
@@ -586,8 +605,12 @@ public class IteratorKit extends IteratorValidator {
      * @param <E>       元素类型
      * @return 字符串
      */
-    public static <E> String toString(final Iterator<E> iterator, final Function<? super E, String> transFunc,
-            final String delimiter, final String prefix, final String suffix) {
+    public static <E> String toString(
+            final Iterator<E> iterator,
+            final Function<? super E, String> transFunc,
+            final String delimiter,
+            final String prefix,
+            final String suffix) {
         final StringJoiner stringJoiner = StringJoiner.of(delimiter, prefix, suffix);
         stringJoiner.append(iterator, transFunc);
         return stringJoiner.toString();

@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.StenosisCalibrationRatio:
-            return "StenosisCalibrationRatio";
-        case PrivateTag.StenosisMagnification:
-            return "StenosisMagnification";
-        case PrivateTag.CardiacCalibrationRatio:
-            return "CardiacCalibrationRatio";
+            case PrivateTag.StenosisCalibrationRatio:
+                return "StenosisCalibrationRatio";
+
+            case PrivateTag.StenosisMagnification:
+                return "StenosisMagnification";
+
+            case PrivateTag.CardiacCalibrationRatio:
+                return "CardiacCalibrationRatio";
         }
         return "";
     }

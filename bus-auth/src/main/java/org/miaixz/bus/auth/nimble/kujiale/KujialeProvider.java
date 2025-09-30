@@ -117,8 +117,9 @@ public class KujialeProvider extends AbstractProvider {
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String openId = this.getOpenId(authToken);
-        String response = Httpx.get(Builder.fromUrl(this.complex.userinfo())
-                .queryParam("access_token", authToken.getAccessToken()).queryParam("open_id", openId).build());
+        String response = Httpx.get(
+                Builder.fromUrl(this.complex.userinfo()).queryParam("access_token", authToken.getAccessToken())
+                        .queryParam("open_id", openId).build());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
             if (object == null) {
@@ -156,8 +157,9 @@ public class KujialeProvider extends AbstractProvider {
      * @return openId
      */
     private String getOpenId(AuthToken authToken) {
-        String response = Httpx.get(Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
-                .queryParam("access_token", authToken.getAccessToken()).build());
+        String response = Httpx.get(
+                Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
+                        .queryParam("access_token", authToken.getAccessToken()).build());
         Map<String, Object> accessTokenObject = checkResponse(response);
         String openId = (String) accessTokenObject.get("d");
         if (openId == null) {

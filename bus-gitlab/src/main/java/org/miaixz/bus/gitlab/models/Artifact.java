@@ -86,6 +86,7 @@ public class Artifact implements Serializable {
     }
 
     public enum FileType {
+
         ARCHIVE, METADATA, TRACE, JUNIT;
 
         private static JacksonJsonEnumHelper<FileType> enumHelper = new JacksonJsonEnumHelper<>(FileType.class);

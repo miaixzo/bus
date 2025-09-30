@@ -203,7 +203,8 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
      * @param watcher {@link Watcher}
      */
     private void doTakeAndWatch(final Watcher watcher) {
-        this.watchService.watch(watcher,
+        this.watchService.watch(
+                watcher,
                 // 对于文件监听，忽略目录下其他文件和目录的事件
                 watchEvent -> null == file || file.endsWith(watchEvent.context().toString()));
     }

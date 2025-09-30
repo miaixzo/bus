@@ -55,6 +55,7 @@ import java.util.Map;
  * @since Java 17+
  */
 public class MiProvider extends AbstractProvider {
+
     private static final String PREFIX = "&&&START&&&";
 
     public MiProvider(Context context) {
@@ -137,8 +138,10 @@ public class MiProvider extends AbstractProvider {
                     .token(authToken).source(complex.toString()).build();
 
             // 获取用户邮箱手机号等信息
-            String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}",
-                    "https://open.account.xiaomi.com/user/phoneAndEmail", context.getAppKey(),
+            String emailPhoneUrl = MessageFormat.format(
+                    "{0}?clientId={1}&token={2}",
+                    "https://open.account.xiaomi.com/user/phoneAndEmail",
+                    context.getAppKey(),
                     authToken.getAccessToken());
 
             String emailResponse = Httpx.get(emailPhoneUrl);

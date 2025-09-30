@@ -80,7 +80,9 @@ public class ThymeleafTemplate implements Template, Serializable {
      * @param charset  编码
      * @return {@code ThymeleafTemplate}
      */
-    public static ThymeleafTemplate wrap(final TemplateEngine engine, final String template,
+    public static ThymeleafTemplate wrap(
+            final TemplateEngine engine,
+            final String template,
             final java.nio.charset.Charset charset) {
         return (null == engine) ? null : new ThymeleafTemplate(engine, template, charset);
     }

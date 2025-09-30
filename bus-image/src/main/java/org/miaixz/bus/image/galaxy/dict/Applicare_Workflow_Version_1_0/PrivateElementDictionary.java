@@ -52,28 +52,31 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.OrderControl:
-        case PrivateTag.LockedByHostname:
-        case PrivateTag.LockedByUser:
-        case PrivateTag.KfEditLockUser:
-            return VR.CS;
-        case PrivateTag.ScheduledActionItemCodeMeaning:
-        case PrivateTag.RequestedActionItemCodeMeaning:
-        case PrivateTag.PerformedActionItemCodeMeaning:
-        case PrivateTag.PerformedProcedureCodeMeaning:
-            return VR.LO;
-        case PrivateTag.ScheduledActionItemCodeValue:
-        case PrivateTag.ScheduledActionItemCodingSchemeDesignator:
-        case PrivateTag.RequestedActionItemCodeValue:
-        case PrivateTag.RequestedActionItemCodingSchemeDesignator:
-        case PrivateTag.PerformedActionItemCodeValue:
-        case PrivateTag.PerformedActionItemCodingSchemeDesignator:
-        case PrivateTag.PerformedProcedureCodeValue:
-        case PrivateTag.PerformedProcedureCodingSchemeDesignator:
-            return VR.SH;
-        case PrivateTag.ReferencedImageSOPClassUID:
-        case PrivateTag.ReferencedImageSOPInstanceUID:
-            return VR.UI;
+            case PrivateTag.OrderControl:
+            case PrivateTag.LockedByHostname:
+            case PrivateTag.LockedByUser:
+            case PrivateTag.KfEditLockUser:
+                return VR.CS;
+
+            case PrivateTag.ScheduledActionItemCodeMeaning:
+            case PrivateTag.RequestedActionItemCodeMeaning:
+            case PrivateTag.PerformedActionItemCodeMeaning:
+            case PrivateTag.PerformedProcedureCodeMeaning:
+                return VR.LO;
+
+            case PrivateTag.ScheduledActionItemCodeValue:
+            case PrivateTag.ScheduledActionItemCodingSchemeDesignator:
+            case PrivateTag.RequestedActionItemCodeValue:
+            case PrivateTag.RequestedActionItemCodingSchemeDesignator:
+            case PrivateTag.PerformedActionItemCodeValue:
+            case PrivateTag.PerformedActionItemCodingSchemeDesignator:
+            case PrivateTag.PerformedProcedureCodeValue:
+            case PrivateTag.PerformedProcedureCodingSchemeDesignator:
+                return VR.SH;
+
+            case PrivateTag.ReferencedImageSOPClassUID:
+            case PrivateTag.ReferencedImageSOPInstanceUID:
+                return VR.UI;
         }
         return VR.UN;
     }

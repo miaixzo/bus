@@ -97,8 +97,8 @@ public class BannerPrinter {
         });
         String result = text;
         for (String key : props.stringPropertyNames()) {
-            result = result.replace(Symbol.DOLLAR + Symbol.BRACE_LEFT + key + Symbol.BRACE_RIGHT,
-                    props.getProperty(key));
+            result = result
+                    .replace(Symbol.DOLLAR + Symbol.BRACE_LEFT + key + Symbol.BRACE_RIGHT, props.getProperty(key));
         }
         return result;
     }

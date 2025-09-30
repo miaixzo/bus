@@ -89,8 +89,14 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
      * @param boundSql        绑定SQL
      */
     @Override
-    public void query(Object result, Executor executor, MappedStatement mappedStatement, Object parameter,
-            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    public void query(
+            Object result,
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
         MapperBoundSql mpBs = mapperBoundSql(boundSql);
         mpBs.sql(parserSingle(mpBs.sql(), mappedStatement.getId()));
     }
@@ -192,7 +198,9 @@ public class PermissionHandler extends ConditionHandler implements MapperHandler
      * @param whereSegment 权限条件片段
      * @return 组合后的权限表达式
      */
-    protected Expression getUpdateOrDeleteExpression(final Table table, final Expression where,
+    protected Expression getUpdateOrDeleteExpression(
+            final Table table,
+            final Expression where,
             final String whereSegment) {
         if (this.provider == null) {
             return null;

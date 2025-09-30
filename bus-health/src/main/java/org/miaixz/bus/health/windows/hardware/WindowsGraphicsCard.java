@@ -101,15 +101,15 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 String name = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_DESC);
                 String deviceId = "VideoController" + index++;
                 String vendor = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, VENDOR);
-                String versionInfo = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
-                        DRIVER_VERSION);
+                String versionInfo = Advapi32Util
+                        .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_VERSION);
                 long vram = 0L;
 
                 if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE)) {
                     vram = Advapi32Util.registryGetLongValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE);
                 } else if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, MEMORY_SIZE)) {
-                    Object genericValue = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
-                            MEMORY_SIZE);
+                    Object genericValue = Advapi32Util
+                            .registryGetValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, MEMORY_SIZE);
                     if (genericValue instanceof Long) {
                         vram = (long) genericValue;
                     } else if (genericValue instanceof Integer) {
@@ -119,10 +119,11 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     }
                 }
 
-                cardList.add(new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
-                        StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
-                        StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
-                        StringKit.isBlank(versionInfo) ? Normal.UNKNOWN : versionInfo, vram));
+                cardList.add(
+                        new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
+                                StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
+                                StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
+                                StringKit.isBlank(versionInfo) ? Normal.UNKNOWN : versionInfo, vram));
             } catch (Win32Exception e) {
                 if (e.getErrorCode() != WinError.ERROR_ACCESS_DENIED) {
                     // Ignore access denied errors, re-throw others
@@ -162,8 +163,9 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     versionInfo = Normal.UNKNOWN;
                 }
                 long vram = WmiKit.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
-                cardList.add(new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
-                        StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram));
+                cardList.add(
+                        new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
+                                StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram));
             }
         }
         return cardList;

@@ -104,8 +104,8 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
                 store.currentQueueLength = Parsing.parseLongOrDefault(split[5], 0L);
                 // In seconds, multiply for ms
                 store.transferTime = (long) (Parsing.parseDoubleOrDefault(split[6], 0d) * 1000);
-                store.partitionList = Collections
-                        .unmodifiableList(partitionMap.getOrDefault(split[0], Collections.emptyList()).stream()
+                store.partitionList = Collections.unmodifiableList(
+                        partitionMap.getOrDefault(split[0], Collections.emptyList()).stream()
                                 .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
                 store.timeStamp = now;
                 diskList.add(store);

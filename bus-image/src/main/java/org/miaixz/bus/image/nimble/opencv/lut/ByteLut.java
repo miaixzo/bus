@@ -80,6 +80,7 @@ public record ByteLut(String name, byte[][] lutTable) {
         }
         int border = 2;
         return new Icon() {
+
             @Override
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 if (g instanceof Graphics2D g2d) {

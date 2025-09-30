@@ -1130,6 +1130,7 @@ public class Connection implements Serializable {
     }
 
     public enum Protocol {
+
         DICOM, HL7, HL7_MLLP2, SYSLOG_TLS, SYSLOG_UDP, HTTP;
 
         public boolean isTCP() {

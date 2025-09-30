@@ -52,16 +52,17 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ListOfShadowOwnerCodes:
-        case PrivateTag.ListOfDisplayPrefix:
-        case PrivateTag.ListOfDisplayPostfix:
-        case PrivateTag.ListOfTextConcatenation:
-            return VR.LO;
-        case PrivateTag.ListOfGroupNumbers:
-        case PrivateTag.ListOfElementNumbers:
-        case PrivateTag.ListOfTotalDisplayLength:
-        case PrivateTag.ListOfTextPosition:
-            return VR.US;
+            case PrivateTag.ListOfShadowOwnerCodes:
+            case PrivateTag.ListOfDisplayPrefix:
+            case PrivateTag.ListOfDisplayPostfix:
+            case PrivateTag.ListOfTextConcatenation:
+                return VR.LO;
+
+            case PrivateTag.ListOfGroupNumbers:
+            case PrivateTag.ListOfElementNumbers:
+            case PrivateTag.ListOfTotalDisplayLength:
+            case PrivateTag.ListOfTextPosition:
+                return VR.US;
         }
         return VR.UN;
     }

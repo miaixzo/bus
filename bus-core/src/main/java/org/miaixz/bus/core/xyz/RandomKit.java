@@ -379,7 +379,10 @@ public class RandomKit {
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 随机数
      */
-    public static double randomDouble(final double minInclude, final double maxExclude, final int scale,
+    public static double randomDouble(
+            final double minInclude,
+            final double maxExclude,
+            final int scale,
             final RoundingMode roundingMode) {
         return MathKit.round(randomDouble(minInclude, maxExclude), scale, roundingMode).doubleValue();
     }

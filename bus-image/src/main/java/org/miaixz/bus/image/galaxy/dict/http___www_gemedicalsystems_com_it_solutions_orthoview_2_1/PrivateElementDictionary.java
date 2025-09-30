@@ -52,18 +52,23 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.OrthoViewSessionCompletionFlag:
-            return VR.CS;
-        case PrivateTag.OrthoViewSessionDateTime:
-            return VR.DT;
-        case PrivateTag.OrthoViewFileContent:
-            return VR.OB;
-        case PrivateTag.OrthoViewSessionCreator:
-            return VR.PN;
-        case PrivateTag.OrthoViewFileSequence:
-            return VR.SQ;
-        case PrivateTag.OrthoViewFileName:
-            return VR.ST;
+            case PrivateTag.OrthoViewSessionCompletionFlag:
+                return VR.CS;
+
+            case PrivateTag.OrthoViewSessionDateTime:
+                return VR.DT;
+
+            case PrivateTag.OrthoViewFileContent:
+                return VR.OB;
+
+            case PrivateTag.OrthoViewSessionCreator:
+                return VR.PN;
+
+            case PrivateTag.OrthoViewFileSequence:
+                return VR.SQ;
+
+            case PrivateTag.OrthoViewFileName:
+                return VR.ST;
         }
         return VR.UN;
     }

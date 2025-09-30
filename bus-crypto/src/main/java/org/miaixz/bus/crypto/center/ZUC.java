@@ -79,12 +79,13 @@ public class ZUC extends Crypto {
     private static IvParameterSpec generateIvParam(final Algorithm algorithm, byte[] iv) {
         if (null == iv) {
             switch (algorithm) {
-            case ZUC_128:
-                iv = RandomKit.randomBytes(16);
-                break;
-            case ZUC_256:
-                iv = RandomKit.randomBytes(25);
-                break;
+                case ZUC_128:
+                    iv = RandomKit.randomBytes(16);
+                    break;
+
+                case ZUC_256:
+                    iv = RandomKit.randomBytes(25);
+                    break;
             }
         }
         return new IvParameterSpec(iv);

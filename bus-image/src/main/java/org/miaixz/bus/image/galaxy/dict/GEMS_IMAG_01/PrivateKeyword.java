@@ -38,78 +38,113 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ImageArchiveFlag:
-            return "ImageArchiveFlag";
-        case PrivateTag.ScoutType:
-            return "ScoutType";
-        case PrivateTag.VmaMamp:
-            return "VmaMamp";
-        case PrivateTag.VmaPhase:
-            return "VmaPhase";
-        case PrivateTag.VmaMod:
-            return "VmaMod";
-        case PrivateTag.VmaClipOrNoiseIndexBy10:
-            return "VmaClipOrNoiseIndexBy10";
-        case PrivateTag.SmartScanOnOffFlag:
-            return "SmartScanOnOffFlag";
-        case PrivateTag.ForeignImageRevision:
-            return "ForeignImageRevision";
-        case PrivateTag.ImagingMode:
-            return "ImagingMode";
-        case PrivateTag.PulseSequence:
-            return "PulseSequence";
-        case PrivateTag.ImagingOptions:
-            return "ImagingOptions";
-        case PrivateTag.PlaneType:
-            return "PlaneType";
-        case PrivateTag.ObliquePlane:
-            return "ObliquePlane";
-        case PrivateTag.RASLetterOfImageLocation:
-            return "RASLetterOfImageLocation";
-        case PrivateTag.ImageLocation:
-            return "ImageLocation";
-        case PrivateTag.CenterRCoordOfPlaneImage:
-            return "CenterRCoordOfPlaneImage";
-        case PrivateTag.CenterACoordOfPlaneImage:
-            return "CenterACoordOfPlaneImage";
-        case PrivateTag.CenterSCoordOfPlaneImage:
-            return "CenterSCoordOfPlaneImage";
-        case PrivateTag.NormalRCoord:
-            return "NormalRCoord";
-        case PrivateTag.NormalACoord:
-            return "NormalACoord";
-        case PrivateTag.NormalSCoord:
-            return "NormalSCoord";
-        case PrivateTag.RCoordOfTopRightCorner:
-            return "RCoordOfTopRightCorner";
-        case PrivateTag.ACoordOfTopRightCorner:
-            return "ACoordOfTopRightCorner";
-        case PrivateTag.SCoordOfTopRightCorner:
-            return "SCoordOfTopRightCorner";
-        case PrivateTag.RCoordOfBottomRightCorner:
-            return "RCoordOfBottomRightCorner";
-        case PrivateTag.ACoordOfBottomRightCorner:
-            return "ACoordOfBottomRightCorner";
-        case PrivateTag.SCoordOfBottomRightCorner:
-            return "SCoordOfBottomRightCorner";
-        case PrivateTag.TableStartLocation:
-            return "TableStartLocation";
-        case PrivateTag.TableEndLocation:
-            return "TableEndLocation";
-        case PrivateTag.RASLetterForSideOfImage:
-            return "RASLetterForSideOfImage";
-        case PrivateTag.RASLetterForAnteriorPosterior:
-            return "RASLetterForAnteriorPosterior";
-        case PrivateTag.RASLetterForScoutStartLoc:
-            return "RASLetterForScoutStartLoc";
-        case PrivateTag.RASLetterForScoutEndLoc:
-            return "RASLetterForScoutEndLoc";
-        case PrivateTag.ImageDimensionX:
-            return "ImageDimensionX";
-        case PrivateTag.ImageDimensionY:
-            return "ImageDimensionY";
-        case PrivateTag.NumberOfExcitations:
-            return "NumberOfExcitations";
+            case PrivateTag.ImageArchiveFlag:
+                return "ImageArchiveFlag";
+
+            case PrivateTag.ScoutType:
+                return "ScoutType";
+
+            case PrivateTag.VmaMamp:
+                return "VmaMamp";
+
+            case PrivateTag.VmaPhase:
+                return "VmaPhase";
+
+            case PrivateTag.VmaMod:
+                return "VmaMod";
+
+            case PrivateTag.VmaClipOrNoiseIndexBy10:
+                return "VmaClipOrNoiseIndexBy10";
+
+            case PrivateTag.SmartScanOnOffFlag:
+                return "SmartScanOnOffFlag";
+
+            case PrivateTag.ForeignImageRevision:
+                return "ForeignImageRevision";
+
+            case PrivateTag.ImagingMode:
+                return "ImagingMode";
+
+            case PrivateTag.PulseSequence:
+                return "PulseSequence";
+
+            case PrivateTag.ImagingOptions:
+                return "ImagingOptions";
+
+            case PrivateTag.PlaneType:
+                return "PlaneType";
+
+            case PrivateTag.ObliquePlane:
+                return "ObliquePlane";
+
+            case PrivateTag.RASLetterOfImageLocation:
+                return "RASLetterOfImageLocation";
+
+            case PrivateTag.ImageLocation:
+                return "ImageLocation";
+
+            case PrivateTag.CenterRCoordOfPlaneImage:
+                return "CenterRCoordOfPlaneImage";
+
+            case PrivateTag.CenterACoordOfPlaneImage:
+                return "CenterACoordOfPlaneImage";
+
+            case PrivateTag.CenterSCoordOfPlaneImage:
+                return "CenterSCoordOfPlaneImage";
+
+            case PrivateTag.NormalRCoord:
+                return "NormalRCoord";
+
+            case PrivateTag.NormalACoord:
+                return "NormalACoord";
+
+            case PrivateTag.NormalSCoord:
+                return "NormalSCoord";
+
+            case PrivateTag.RCoordOfTopRightCorner:
+                return "RCoordOfTopRightCorner";
+
+            case PrivateTag.ACoordOfTopRightCorner:
+                return "ACoordOfTopRightCorner";
+
+            case PrivateTag.SCoordOfTopRightCorner:
+                return "SCoordOfTopRightCorner";
+
+            case PrivateTag.RCoordOfBottomRightCorner:
+                return "RCoordOfBottomRightCorner";
+
+            case PrivateTag.ACoordOfBottomRightCorner:
+                return "ACoordOfBottomRightCorner";
+
+            case PrivateTag.SCoordOfBottomRightCorner:
+                return "SCoordOfBottomRightCorner";
+
+            case PrivateTag.TableStartLocation:
+                return "TableStartLocation";
+
+            case PrivateTag.TableEndLocation:
+                return "TableEndLocation";
+
+            case PrivateTag.RASLetterForSideOfImage:
+                return "RASLetterForSideOfImage";
+
+            case PrivateTag.RASLetterForAnteriorPosterior:
+                return "RASLetterForAnteriorPosterior";
+
+            case PrivateTag.RASLetterForScoutStartLoc:
+                return "RASLetterForScoutStartLoc";
+
+            case PrivateTag.RASLetterForScoutEndLoc:
+                return "RASLetterForScoutEndLoc";
+
+            case PrivateTag.ImageDimensionX:
+                return "ImageDimensionX";
+
+            case PrivateTag.ImageDimensionY:
+                return "ImageDimensionY";
+
+            case PrivateTag.NumberOfExcitations:
+                return "NumberOfExcitations";
         }
         return "";
     }

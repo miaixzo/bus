@@ -87,9 +87,10 @@ public class AssociationHandler {
         ac.setIdentityAC(userIdentity);
         ApplicationEntity ae = as.getApplicationEntity().transferCapabilitiesAE();
         for (PresentationContext rqpc : rq.getPresentationContexts())
-            ac.addPresentationContext(ae != null ? ae.negotiate(rq, ac, rqpc)
-                    : new PresentationContext(rqpc.getPCID(), PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
-                            rqpc.getTransferSyntax()));
+            ac.addPresentationContext(
+                    ae != null ? ae.negotiate(rq, ac, rqpc)
+                            : new PresentationContext(rqpc.getPCID(), PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
+                                    rqpc.getTransferSyntax()));
         return ac;
     }
 

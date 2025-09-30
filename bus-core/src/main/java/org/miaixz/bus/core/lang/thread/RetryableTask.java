@@ -111,7 +111,8 @@ public class RetryableTask<T> {
      * @return 当前对象
      */
     @SafeVarargs
-    public static <T> RetryableTask<T> retryForExceptions(final Supplier<T> sup,
+    public static <T> RetryableTask<T> retryForExceptions(
+            final Supplier<T> sup,
             final Class<? extends Throwable>... ths) {
         Assert.isTrue(ths.length != 0, "exs cannot be empty");
 
@@ -133,7 +134,8 @@ public class RetryableTask<T> {
      * @param predicate 策略 {@link BiPredicate}，返回{@code true}时表示重试
      * @return 当前对象
      */
-    public static <T> RetryableTask<T> retryForPredicate(final Runnable run,
+    public static <T> RetryableTask<T> retryForPredicate(
+            final Runnable run,
             final BiPredicate<T, Throwable> predicate) {
         return retryForPredicate(() -> {
             run.run();
@@ -149,7 +151,8 @@ public class RetryableTask<T> {
      * @param predicate 策略 {@link BiPredicate}，返回{@code true}时表示重试
      * @return 当前对象
      */
-    public static <T> RetryableTask<T> retryForPredicate(final Supplier<T> sup,
+    public static <T> RetryableTask<T> retryForPredicate(
+            final Supplier<T> sup,
             final BiPredicate<T, Throwable> predicate) {
         return new RetryableTask<>(sup, predicate);
     }

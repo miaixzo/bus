@@ -123,15 +123,23 @@ public class Modality {
         }
     }
 
-    private static void scanFiles(List<String> fnames, String tmpPrefix, String tmpSuffix, File tmpDir,
-            final MppsSCU mppsscu, final StoreSCU storescu, final StgCmtSCU stgcmtscu) throws IOException {
+    private static void scanFiles(
+            List<String> fnames,
+            String tmpPrefix,
+            String tmpSuffix,
+            File tmpDir,
+            final MppsSCU mppsscu,
+            final StoreSCU storescu,
+            final StgCmtSCU stgcmtscu) throws IOException {
         printNextStepMessage("Will now scan files in " + fnames);
         File tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
         tmpFile.deleteOnExit();
         final BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)));
         try {
-            DicomFiles.scan(fnames, (f, fmi, dsPos, ds) -> mppsscu.addInstance(ds)
-                    && storescu.addFile(fileInfos, f, dsPos, fmi) && stgcmtscu.addInstance(ds));
+            DicomFiles.scan(
+                    fnames,
+                    (f, fmi, dsPos, ds) -> mppsscu.addInstance(ds) && storescu.addFile(fileInfos, f, dsPos, fmi)
+                            && stgcmtscu.addInstance(ds));
             storescu.setTmpFile(tmpFile);
         } finally {
             fileInfos.close();

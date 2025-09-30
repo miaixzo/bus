@@ -78,8 +78,10 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
         Class<?> actualEditable = target.getClass();
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
-            Assert.isTrue(copyOptions.editable.isInstance(target),
-                    "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(),
+            Assert.isTrue(
+                    copyOptions.editable.isInstance(target),
+                    "Target class [{}] not assignable to Editable class [{}]",
+                    actualEditable.getName(),
                     copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
@@ -120,7 +122,11 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
             newValue = this.copyOptions.convertField(fieldType, newValue);
 
             // 目标赋值
-            tDesc.setValue(this.target, newValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
+            tDesc.setValue(
+                    this.target,
+                    newValue,
+                    copyOptions.ignoreNullValue,
+                    copyOptions.ignoreError,
                     copyOptions.override);
         });
         return this.target;

@@ -226,7 +226,11 @@ public class SnippetsApi extends AbstractApi {
      * @return the created Snippet
      * @throws GitLabApiException if any exception occurs
      */
-    public Snippet createSnippet(String title, String fileName, String content, Visibility visibility,
+    public Snippet createSnippet(
+            String title,
+            String fileName,
+            String content,
+            Visibility visibility,
             String description) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title, true)
                 .withParam("file_name", fileName, true).withParam("content", content, true)

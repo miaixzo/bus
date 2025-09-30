@@ -47,6 +47,7 @@ import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
  * @since Java 17+
  */
 public class ZipDecryptorProvider extends EntryDecryptorProvider<ZipArchiveEntry> implements DecryptorProvider {
+
     private final int level;
 
     public ZipDecryptorProvider(DecryptorProvider xEncryptor) {

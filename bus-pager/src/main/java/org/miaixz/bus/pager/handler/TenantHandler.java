@@ -82,8 +82,14 @@ public class TenantHandler extends ConditionHandler implements MapperHandler {
      * @param boundSql        绑定 SQL
      */
     @Override
-    public void query(Object object, Executor executor, MappedStatement mappedStatement, Object parameter,
-            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    public void query(
+            Object object,
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
         // 获取 MapperBoundSql 对象
         MapperBoundSql mbs = mapperBoundSql(boundSql);
         // 解析并添加租户条件

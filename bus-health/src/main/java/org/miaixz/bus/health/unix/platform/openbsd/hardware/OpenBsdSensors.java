@@ -48,8 +48,8 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 @ThreadSafe
 final class OpenBsdSensors extends AbstractSensors {
 
-    private final Supplier<Triplet<Double, int[], Double>> tempFanVolts = Memoizer.memoize(OpenBsdSensors::querySensors,
-            Memoizer.defaultExpiration());
+    private final Supplier<Triplet<Double, int[], Double>> tempFanVolts = Memoizer
+            .memoize(OpenBsdSensors::querySensors, Memoizer.defaultExpiration());
 
     private static Triplet<Double, int[], Double> querySensors() {
         double volts = 0d;

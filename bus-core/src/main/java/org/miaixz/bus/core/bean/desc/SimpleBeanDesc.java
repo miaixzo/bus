@@ -70,8 +70,8 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
     private void init() {
         final Map<String, PropDesc> propMap = this.propMap;
 
-        final Method[] gettersAndSetters = MethodKit.getPublicMethods(this.beanClass,
-                MethodKit::isGetterOrSetterIgnoreCase);
+        final Method[] gettersAndSetters = MethodKit
+                .getPublicMethods(this.beanClass, MethodKit::isGetterOrSetterIgnoreCase);
         boolean isSetter;
         int nameIndex;
         String methodName;
@@ -79,20 +79,23 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
         for (final Method method : gettersAndSetters) {
             methodName = method.getName();
             switch (methodName.charAt(0)) {
-            case 's':
-                isSetter = true;
-                nameIndex = 3;
-                break;
-            case 'g':
-                isSetter = false;
-                nameIndex = 3;
-                break;
-            case 'i':
-                isSetter = false;
-                nameIndex = 2;
-                break;
-            default:
-                continue;
+                case 's':
+                    isSetter = true;
+                    nameIndex = 3;
+                    break;
+
+                case 'g':
+                    isSetter = false;
+                    nameIndex = 3;
+                    break;
+
+                case 'i':
+                    isSetter = false;
+                    nameIndex = 2;
+                    break;
+
+                default:
+                    continue;
             }
 
             fieldName = Introspector.decapitalize(StringKit.toStringOrNull(methodName.substring(nameIndex)));

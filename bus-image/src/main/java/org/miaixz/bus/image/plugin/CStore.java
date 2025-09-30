@@ -89,7 +89,11 @@ public class CStore {
      * @param progress    处理的进度
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Args args, Node callingNode, Node calledNode, List<String> files,
+    public static Status process(
+            Args args,
+            Node callingNode,
+            Node calledNode,
+            List<String> files,
             ImageProgress progress) {
         if (null == callingNode || null == calledNode) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
@@ -141,8 +145,11 @@ public class CStore {
                     long t3 = System.currentTimeMillis();
                     String timeMsg = MessageFormat.format(
                             "DICOM C-STORE connected in {2}ms from {0} to {1}. Stored files in {3}ms. Total size {4}",
-                            storeSCU.getAAssociateRQ().getCallingAET(), storeSCU.getAAssociateRQ().getCalledAET(),
-                            t2 - t1, t3 - t2, Builder.humanReadableByte(storeSCU.getTotalSize(), false));
+                            storeSCU.getAAssociateRQ().getCallingAET(),
+                            storeSCU.getAAssociateRQ().getCalledAET(),
+                            t2 - t1,
+                            t3 - t2,
+                            Builder.humanReadableByte(storeSCU.getTotalSize(), false));
                     dcmState = Status.buildMessage(dcmState, timeMsg, null);
                     dcmState.addProcessTime(t1, t2, t3);
                     dcmState.setBytesSize(storeSCU.getTotalSize());
@@ -161,8 +168,11 @@ public class CStore {
             }
         } catch (Exception e) {
             Logger.error("storescu", e);
-            return Status.buildMessage(new Status(Status.UnableToProcess,
-                    "DICOM Store failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null), null, e);
+            return Status.buildMessage(
+                    new Status(Status.UnableToProcess,
+                            "DICOM Store failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null),
+                    null,
+                    e);
         } finally {
             IoKit.close(storeSCU);
         }

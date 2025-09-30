@@ -96,7 +96,7 @@ public class SixtyCycleHour extends Loops {
         this.solarTime = solarTime;
         this.day = new SixtyCycleDay(solarTime.getSolarDay(),
                 new SixtyCycleMonth(SixtyCycleYear.fromYear(lunarYear.getYear()),
-                        LunarMonth.fromYm(solarYear, 1).getSixtyCycle().next((int) Math.floor(index * 1D / 2))),
+                        LunarMonth.fromYm(solarYear, 1).getSixtyCycle().next((int) Math.floor(index * 0.5))),
                 solarTime.getHour() < 23 ? d : d.next(1));
         this.hour = lunarHour.getSixtyCycle();
     }
@@ -179,7 +179,7 @@ public class SixtyCycleHour extends Loops {
     }
 
     /**
-     * 时九星
+     * 九星
      *
      * @return 九星
      */
@@ -187,14 +187,15 @@ public class SixtyCycleHour extends Loops {
         SolarDay solar = solarTime.getSolarDay();
         SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
         SolarTerms xiaZhi = dongZhi.next(12);
-        boolean asc = !solar.isBefore(dongZhi.getJulianDay().getSolarDay())
-                && solar.isBefore(xiaZhi.getJulianDay().getSolarDay());
-        int start = new int[] { 8, 5, 2 }[getDay().getEarthBranch().getIndex() % 3];
-        if (asc) {
-            start = 8 - start;
-        }
         int earthBranchIndex = getIndexInDay() % 12;
-        return NineStar.fromIndex(start + (asc ? earthBranchIndex : -earthBranchIndex));
+        int index = new int[] { 8, 5, 2 }[getDay().getEarthBranch().getIndex() % 3];
+        if (!solar.isBefore(dongZhi.getJulianDay().getSolarDay())
+                && solar.isBefore(xiaZhi.getJulianDay().getSolarDay())) {
+            index = 8 + earthBranchIndex - index;
+        } else {
+            index -= earthBranchIndex;
+        }
+        return NineStar.fromIndex(index);
     }
 
     /**

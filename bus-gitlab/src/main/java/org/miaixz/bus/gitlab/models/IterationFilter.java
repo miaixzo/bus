@@ -165,6 +165,7 @@ public class IterationFilter implements Serializable {
     }
 
     public enum IterationFilterState {
+
         OPENED, UPCOMING, CURRENT, CLOSED, ALL;
 
         private static JacksonJsonEnumHelper<IterationFilterState> enumHelper = new JacksonJsonEnumHelper<>(
@@ -187,6 +188,7 @@ public class IterationFilter implements Serializable {
     }
 
     public enum IterationFilterIn {
+
         TITLE, CADENCE_TITLE;
 
         private static JacksonJsonEnumHelper<IterationFilterIn> enumHelper = new JacksonJsonEnumHelper<>(

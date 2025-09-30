@@ -122,7 +122,10 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         this.route = route;
     }
 
-    static RealConnection testConnection(RealConnectionPool connectionPool, Route route, Socket socket,
+    static RealConnection testConnection(
+            RealConnectionPool connectionPool,
+            Route route,
+            Socket socket,
             long idleAtNanos) {
         RealConnection result = new RealConnection(connectionPool, route);
         result.socket = socket;
@@ -140,8 +143,14 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
     }
 
-    public void connect(int connectTimeout, int readTimeout, int writeTimeout, int pingIntervalMillis,
-            boolean connectionRetryEnabled, NewCall call, EventListener eventListener) {
+    public void connect(
+            int connectTimeout,
+            int readTimeout,
+            int writeTimeout,
+            int pingIntervalMillis,
+            boolean connectionRetryEnabled,
+            NewCall call,
+            EventListener eventListener) {
         if (protocol != null)
             throw new IllegalStateException("already connected");
 
@@ -226,7 +235,11 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      * @param eventListener  监听器
      * @throws IOException 异常
      */
-    private void connectTunnel(int connectTimeout, int readTimeout, int writeTimeout, NewCall call,
+    private void connectTunnel(
+            int connectTimeout,
+            int readTimeout,
+            int writeTimeout,
+            NewCall call,
             EventListener eventListener) throws IOException {
         Request tunnelRequest = createTunnelRequest();
         UnoUrl url = tunnelRequest.url();
@@ -287,7 +300,10 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
     }
 
-    private void establishProtocol(ConnectionSelector connectionSelector, int pingIntervalMillis, NewCall call,
+    private void establishProtocol(
+            ConnectionSelector connectionSelector,
+            int pingIntervalMillis,
+            NewCall call,
             EventListener eventListener) throws IOException {
         if (null == route.address().sslSocketFactory()) {
             if (route.address().protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)) {
@@ -326,8 +342,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         SSLSocket sslSocket = null;
         try {
             // 在连接的套接字上创建包装器
-            sslSocket = (SSLSocket) sslSocketFactory.createSocket(rawSocket, address.url().host(), address.url().port(),
-                    true /* autoClose */);
+            sslSocket = (SSLSocket) sslSocketFactory
+                    .createSocket(rawSocket, address.url().host(), address.url().port(), true /* autoClose */);
 
             // 配置套接字的密码、TLS版本和扩展
             ConnectionSuite connectionSuite = connectionSelector.configureSecureSocket(sslSocket);
@@ -406,25 +422,25 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             tunnelCodec.skipConnectBody(response);
 
             switch (response.code()) {
-            case HTTP.HTTP_OK:
-                if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
-                    throw new IOException("TLS tunnel buffered too many bytes!");
-                }
-                return null;
+                case HTTP.HTTP_OK:
+                    if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
+                        throw new IOException("TLS tunnel buffered too many bytes!");
+                    }
+                    return null;
 
-            case HTTP.HTTP_PROXY_AUTH:
-                tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
-                if (null == tunnelRequest) {
-                    throw new IOException("Failed to authenticate with proxy");
-                }
+                case HTTP.HTTP_PROXY_AUTH:
+                    tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
+                    if (null == tunnelRequest) {
+                        throw new IOException("Failed to authenticate with proxy");
+                    }
 
-                if ("close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
-                    return tunnelRequest;
-                }
-                break;
+                    if ("close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
+                        return tunnelRequest;
+                    }
+                    break;
 
-            default:
-                throw new IOException("Unexpected response code for CONNECT: " + response.code());
+                default:
+                    throw new IOException("Unexpected response code for CONNECT: " + response.code());
             }
         }
     }
@@ -446,8 +462,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                 .body(Builder.EMPTY_RESPONSE).sentRequestAtMillis(-1L).receivedResponseAtMillis(-1L)
                 .header(HTTP.PROXY_AUTHENTICATE, HTTP.HTTPD_PREEMPTIVE).build();
 
-        Request authenticatedRequest = route.address().proxyAuthenticator().authenticate(route,
-                fakeAuthChallengeResponse);
+        Request authenticatedRequest = route.address().proxyAuthenticator()
+                .authenticate(route, fakeAuthChallengeResponse);
 
         return null != authenticatedRequest ? authenticatedRequest : proxyConnectRequest;
     }
@@ -523,8 +539,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         // 主机不匹配,但是如果证书匹配，仍然是好的。
         if (!url.host().equals(route.address().url().host())) {
             // We have a host mismatch. But if the certificate matches, we're still good.
-            return null != handshake && AnyHostnameVerifier.INSTANCE.verify(url.host(),
-                    (X509Certificate) handshake.peerCertificates().get(0));
+            return null != handshake && AnyHostnameVerifier.INSTANCE
+                    .verify(url.host(), (X509Certificate) handshake.peerCertificates().get(0));
         }
 
         return true;
@@ -545,6 +561,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         socket.setSoTimeout(0);
         noNewExchanges();
         return new RealWebSocket.Streams(true, source, sink) {
+
             @Override
             public void close() {
                 exchange.bodyComplete(-1L, true, true, null);

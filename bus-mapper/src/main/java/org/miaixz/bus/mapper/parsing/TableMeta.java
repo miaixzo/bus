@@ -45,6 +45,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
@@ -237,8 +238,8 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             if (resultType == providerContext.getMapperMethod().getReturnType()) {
                 return true;
             }
-            Class<?> returnType = GenericTypeResolver.getReturnType(providerContext.getMapperMethod(),
-                    providerContext.getMapperType());
+            Class<?> returnType = GenericTypeResolver
+                    .getReturnType(providerContext.getMapperMethod(), providerContext.getMapperType());
             return resultType == returnType;
         }
         return false;
@@ -532,8 +533,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      */
     public Optional<String> groupByColumnList() {
         Optional<List<ColumnMeta>> groupByColumns = groupByColumns();
-        return groupByColumns.map(entityColumns -> entityColumns.stream().map(ColumnMeta::column)
-                .collect(Collectors.joining(Symbol.COMMA)));
+        return groupByColumns.map(
+                entityColumns -> entityColumns.stream().map(ColumnMeta::column)
+                        .collect(Collectors.joining(Symbol.COMMA)));
     }
 
     /**
@@ -553,8 +555,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      */
     public Optional<String> havingColumnList() {
         Optional<List<ColumnMeta>> havingColumns = havingColumns();
-        return havingColumns.map(entityColumns -> entityColumns.stream().map(ColumnMeta::column)
-                .collect(Collectors.joining(Symbol.COMMA)));
+        return havingColumns.map(
+                entityColumns -> entityColumns.stream().map(ColumnMeta::column)
+                        .collect(Collectors.joining(Symbol.COMMA)));
     }
 
     /**

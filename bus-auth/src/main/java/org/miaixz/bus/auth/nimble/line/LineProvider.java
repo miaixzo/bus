@@ -175,8 +175,9 @@ public class LineProvider extends AbstractProvider {
             String tokenType = (String) accessTokenObject.get("token_type");
 
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .data(AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
-                            .idToken(idToken).scope(scope).tokenType(tokenType).build())
+                    .data(
+                            AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
+                                    .idToken(idToken).scope(scope).tokenType(tokenType).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());

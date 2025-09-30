@@ -208,7 +208,9 @@ public class StreamKit {
      * @param <T>          元素类型
      * @return 字符串，如果stream为{@code null}，返回{@code null}
      */
-    public static <T> String join(final Stream<T> stream, final CharSequence delimiter,
+    public static <T> String join(
+            final Stream<T> stream,
+            final CharSequence delimiter,
             final Function<T, ? extends CharSequence> toStringFunc) {
         if (null == stream) {
             return null;
@@ -253,7 +255,9 @@ public class StreamKit {
      * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
      * @see HierarchyIterator
      */
-    public static <T> Stream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer,
+    public static <T> Stream<T> iterateHierarchies(
+            final T root,
+            final Function<T, Collection<T>> discoverer,
             final Predicate<T> filter) {
         return ofIter(HierarchyIterator.breadthFirst(root, discoverer, filter));
     }
@@ -380,7 +384,8 @@ public class StreamKit {
      * @param <R>            新流的元素类型
      * @return 新流
      */
-    private static <T, R> Stream<R> createStatefulNewStream(final Stream<T> source,
+    private static <T, R> Stream<R> createStatefulNewStream(
+            final Stream<T> source,
             final Spliterator<R> newSpliterator) {
         // 创建新流
         Stream<R> newStream = StreamSupport.stream(newSpliterator, source.isParallel());

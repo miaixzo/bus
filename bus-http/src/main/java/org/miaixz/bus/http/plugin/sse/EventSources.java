@@ -70,7 +70,9 @@ public final class EventSources {
             }
 
             if (!isEventStream(body)) {
-                listener.onFailure(null, new IllegalStateException("Invalid content-type: " + body.contentType()),
+                listener.onFailure(
+                        null,
+                        new IllegalStateException("Invalid content-type: " + body.contentType()),
                         response);
                 return;
             }
@@ -80,6 +82,7 @@ public final class EventSources {
 
             ServerSentEventReader reader = new ServerSentEventReader(body.source(),
                     new ServerSentEventReader.Callback() {
+
                         @Override
                         public void onEvent(String id, String type, String data) {
                             listener.onEvent(null, id, type, data);
@@ -121,6 +124,7 @@ public final class EventSources {
      * 事件源工厂实现类，负责创建 {@link RealEventSource} 实例并发起连接。
      */
     private static class FactoryImpl implements EventSource.Factory {
+
         /**
          * 用于创建 HTTP 调用的工厂
          */

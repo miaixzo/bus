@@ -91,13 +91,16 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
      * @param <A>            注解类型
      * @return 代理对象
      */
-    public static <A extends Annotation> A create(final Class<? extends A> annotationType,
+    public static <A extends Annotation> A create(
+            final Class<? extends A> annotationType,
             final AnnotationMapping<A> mapping) {
         Objects.requireNonNull(annotationType);
         Objects.requireNonNull(mapping);
         final AnnotationMappingProxy<A> invocationHandler = new AnnotationMappingProxy<>(mapping);
-        return (A) Proxy.newProxyInstance(annotationType.getClassLoader(),
-                new Class[] { annotationType, Proxied.class }, invocationHandler);
+        return (A) Proxy.newProxyInstance(
+                annotationType.getClassLoader(),
+                new Class[] { annotationType, Proxied.class },
+                invocationHandler);
     }
 
     /**
@@ -134,7 +137,8 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
         methods.put("annotationType", (method, args) -> proxyAnnotationType());
         methods.put("getMapping", (method, args) -> proxyGetMapping());
         for (final Method attribute : mapping.getAttributes()) {
-            methods.put(attribute.getName(),
+            methods.put(
+                    attribute.getName(),
                     (method, args) -> getAttributeValue(method.getName(), method.getReturnType()));
         }
     }
@@ -144,8 +148,11 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
      */
     private String proxyToString() {
         final String attributes = Stream.of(mapping.getAttributes())
-                .map(attribute -> CharsBacker.format("{}={}", attribute.getName(),
-                        getAttributeValue(attribute.getName(), attribute.getReturnType())))
+                .map(
+                        attribute -> CharsBacker.format(
+                                "{}={}",
+                                attribute.getName(),
+                                getAttributeValue(attribute.getName(), attribute.getReturnType())))
                 .collect(Collectors.joining(", "));
         return CharsBacker.format("@{}({})", mapping.annotationType().getName(), attributes);
     }
@@ -182,7 +189,8 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
      * 获取属性值
      */
     private Object getAttributeValue(final String attributeName, final Class<?> attributeType) {
-        return valueCache.computeIfAbsent(attributeName,
+        return valueCache.computeIfAbsent(
+                attributeName,
                 name -> mapping.getResolvedAttributeValue(attributeName, attributeType));
     }
 

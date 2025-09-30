@@ -116,6 +116,7 @@ public class Environment implements Serializable {
     }
 
     public enum EnvironmentState {
+
         AVAILABLE, STOPPED;
 
         private static JacksonJsonEnumHelper<EnvironmentState> enumHelper = new JacksonJsonEnumHelper<>(

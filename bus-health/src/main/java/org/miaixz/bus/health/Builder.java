@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.CharsetDecoder;
 import java.nio.file.*;
-import java.nio.file.FileSystem;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -85,7 +85,7 @@ public final class Builder {
      * @return 如果字符串匹配，或者模式以 ^ 开头且剩余部分不匹配，则返回 true
      */
     public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
+        if (!pattern.isEmpty() && pattern.charAt(0) == '^') {
             return !wildcardMatch(text, pattern.substring(1));
         }
         return text.matches(pattern.replace("?", ".?").replace(Symbol.STAR, ".*?"));
@@ -127,8 +127,13 @@ public final class Builder {
      * @param volumeExcludes 卷排除模式列表
      * @return 如果文件存储应被排除返回 true，否则返回 false
      */
-    public static boolean isFileStoreExcluded(String path, String volume, List<PathMatcher> pathIncludes,
-            List<PathMatcher> pathExcludes, List<PathMatcher> volumeIncludes, List<PathMatcher> volumeExcludes) {
+    public static boolean isFileStoreExcluded(
+            String path,
+            String volume,
+            List<PathMatcher> pathIncludes,
+            List<PathMatcher> pathExcludes,
+            List<PathMatcher> volumeIncludes,
+            List<PathMatcher> volumeExcludes) {
         Path p = Paths.get(path);
         Path v = Paths.get(volume);
         if (matches(p, pathIncludes) || matches(v, volumeIncludes)) {
@@ -194,10 +199,16 @@ public final class Builder {
      */
     public static String getManufacturerID(byte[] edid) {
         // 字节 8-9 是制造商 ID，用 3 个 5 位字符表示
-        String temp = String.format(Locale.ROOT, "%8s%8s", Integer.toBinaryString(edid[8] & 0xFF),
+        String temp = String.format(
+                Locale.ROOT,
+                "%8s%8s",
+                Integer.toBinaryString(edid[8] & 0xFF),
                 Integer.toBinaryString(edid[9] & 0xFF)).replace(Symbol.C_SPACE, '0');
         Logger.debug("Manufacurer ID: {}", temp);
-        return String.format(Locale.ROOT, "%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
+        return String.format(
+                Locale.ROOT,
+                "%s%s%s",
+                (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(6, 11), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(11, 16), 2))).replace("@", "");
     }
@@ -225,8 +236,13 @@ public final class Builder {
         if (Logger.isDebugEnabled()) {
             Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
         }
-        return String.format(Locale.ROOT, "%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
-                getAlphaNumericOrHex(edid[13]), getAlphaNumericOrHex(edid[12]));
+        return String.format(
+                Locale.ROOT,
+                "%s%s%s%s",
+                getAlphaNumericOrHex(edid[15]),
+                getAlphaNumericOrHex(edid[14]),
+                getAlphaNumericOrHex(edid[13]),
+                getAlphaNumericOrHex(edid[12]));
     }
 
     /**
@@ -352,8 +368,14 @@ public final class Builder {
      * @return 描述部分范围限制的字符串
      */
     public static String getDescriptorRangeLimits(byte[] desc) {
-        return String.format(Locale.ROOT, "Field Rate %d-%d Hz vertical, %d-%d Hz horizontal, Max clock: %d MHz",
-                desc[5], desc[6], desc[7], desc[8], desc[9] * 10);
+        return String.format(
+                Locale.ROOT,
+                "Field Rate %d-%d Hz vertical, %d-%d Hz horizontal, Max clock: %d MHz",
+                desc[5],
+                desc[6],
+                desc[7],
+                desc[8],
+                desc[9] * 10);
     }
 
     /**
@@ -420,36 +442,48 @@ public final class Builder {
         sb.append(", EDID v").append(getVersion(edid));
         int hSize = getHcm(edid);
         int vSize = getVcm(edid);
-        sb.append(String.format(Locale.ROOT, "%n  %d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54,
-                vSize / 2.54));
+        sb.append(
+                String.format(
+                        Locale.ROOT,
+                        "%n  %d x %d cm (%.1f x %.1f in)",
+                        hSize,
+                        vSize,
+                        hSize / 2.54,
+                        vSize / 2.54));
         byte[][] desc = getDescriptors(edid);
         for (byte[] b : desc) {
             switch (getDescriptorType(b)) {
-            case 0xff:
-                sb.append("\n  Serial Number: ").append(getDescriptorText(b));
-                break;
-            case 0xfe:
-                sb.append("\n  Unspecified Text: ").append(getDescriptorText(b));
-                break;
-            case 0xfd:
-                sb.append("\n  Range Limits: ").append(getDescriptorRangeLimits(b));
-                break;
-            case 0xfc:
-                sb.append("\n  Monitor Name: ").append(getDescriptorText(b));
-                break;
-            case 0xfb:
-                sb.append("\n  White Point Data: ").append(ByteKit.byteArrayToHexString(b));
-                break;
-            case 0xfa:
-                sb.append("\n  Standard Timing ID: ").append(ByteKit.byteArrayToHexString(b));
-                break;
-            default:
-                if (getDescriptorType(b) <= 0x0f && getDescriptorType(b) >= 0x00) {
-                    sb.append("\n  Manufacturer Data: ").append(ByteKit.byteArrayToHexString(b));
-                } else {
-                    sb.append("\n  Preferred Timing: ").append(getTimingDescriptor(b));
-                }
-                break;
+                case 0xff:
+                    sb.append("\n  Serial Number: ").append(getDescriptorText(b));
+                    break;
+
+                case 0xfe:
+                    sb.append("\n  Unspecified Text: ").append(getDescriptorText(b));
+                    break;
+
+                case 0xfd:
+                    sb.append("\n  Range Limits: ").append(getDescriptorRangeLimits(b));
+                    break;
+
+                case 0xfc:
+                    sb.append("\n  Monitor Name: ").append(getDescriptorText(b));
+                    break;
+
+                case 0xfb:
+                    sb.append("\n  White Point Data: ").append(ByteKit.byteArrayToHexString(b));
+                    break;
+
+                case 0xfa:
+                    sb.append("\n  Standard Timing ID: ").append(ByteKit.byteArrayToHexString(b));
+                    break;
+
+                default:
+                    if (getDescriptorType(b) <= 0x0f && getDescriptorType(b) >= 0x00) {
+                        sb.append("\n  Manufacturer Data: ").append(ByteKit.byteArrayToHexString(b));
+                    } else {
+                        sb.append("\n  Preferred Timing: ").append(getTimingDescriptor(b));
+                    }
+                    break;
             }
         }
         return sb.toString();
@@ -473,12 +507,13 @@ public final class Builder {
      * @return 表示文件每行的字符串列表，如果文件无法读取或为空则返回空列表
      */
     public static List<String> readFile(String filename, boolean reportError) {
-        if (new File(filename).canRead()) {
+        Path path = Paths.get(filename);
+        if (Files.isReadable(path)) {
             if (Logger.isDebugEnabled()) {
                 Logger.debug(READING_LOG, filename);
             }
             try {
-                return Files.readAllLines(Paths.get(filename), Charset.UTF_8);
+                return Files.readAllLines(path, Charset.UTF_8);
             } catch (IOException e) {
                 if (reportError) {
                     Logger.error("Error reading file {}. {}", filename, e.getMessage());
@@ -517,9 +552,7 @@ public final class Builder {
             if (Logger.isDebugEnabled()) {
                 Logger.debug(READING_LOG, filename);
             }
-            CharsetDecoder decoder = Charset.UTF_8.newDecoder();
-            try (Reader isr = new InputStreamReader(Files.newInputStream(file), decoder);
-                    BufferedReader reader = new BufferedReader(isr, Normal._1024)) {
+            try (BufferedReader reader = Files.newBufferedReader(file, Charset.UTF_8)) {
                 List<String> lines = new ArrayList<>(count);
                 for (int i = 0; i < count; ++i) {
                     String line = reader.readLine();
@@ -560,12 +593,13 @@ public final class Builder {
      * @return 表示文件的字节数组
      */
     public static byte[] readAllBytes(String filename, boolean reportError) {
-        if (new File(filename).canRead()) {
+        Path path = Paths.get(filename);
+        if (Files.isReadable(path)) {
             if (Logger.isDebugEnabled()) {
                 Logger.debug(READING_LOG, filename);
             }
             try {
-                return Files.readAllBytes(Paths.get(filename));
+                return Files.readAllBytes(path);
             } catch (IOException e) {
                 if (reportError) {
                     Logger.error("Error reading file {}. {}", filename, e.getMessage());

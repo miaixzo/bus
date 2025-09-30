@@ -52,8 +52,8 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.BedPosition:
-            return VR.DS;
+            case PrivateTag.BedPosition:
+                return VR.DS;
         }
         return VR.UN;
     }

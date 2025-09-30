@@ -59,6 +59,7 @@ import org.miaixz.bus.http.metric.http.HttpCodec;
  * It is possible to cancel the finding process.
  */
 final class ExchangeFinder {
+
     private final Transmitter transmitter;
     private final Address address;
     private final RealConnectionPool connectionPool;
@@ -89,8 +90,13 @@ final class ExchangeFinder {
         boolean connectionRetryEnabled = client.retryOnConnectionFailure();
 
         try {
-            RealConnection resultConnection = findHealthyConnection(connectTimeout, readTimeout, writeTimeout,
-                    pingIntervalMillis, connectionRetryEnabled, doExtensiveHealthChecks);
+            RealConnection resultConnection = findHealthyConnection(
+                    connectTimeout,
+                    readTimeout,
+                    writeTimeout,
+                    pingIntervalMillis,
+                    connectionRetryEnabled,
+                    doExtensiveHealthChecks);
             return resultConnection.newCodec(client, chain);
         } catch (RouteException e) {
             trackFailure();
@@ -105,11 +111,19 @@ final class ExchangeFinder {
      * Finds a connection and returns it if it is healthy. If it is unhealthy the process is repeated until a healthy
      * connection is found.
      */
-    private RealConnection findHealthyConnection(int connectTimeout, int readTimeout, int writeTimeout,
-            int pingIntervalMillis, boolean connectionRetryEnabled, boolean doExtensiveHealthChecks)
-            throws IOException {
+    private RealConnection findHealthyConnection(
+            int connectTimeout,
+            int readTimeout,
+            int writeTimeout,
+            int pingIntervalMillis,
+            boolean connectionRetryEnabled,
+            boolean doExtensiveHealthChecks) throws IOException {
         while (true) {
-            RealConnection candidate = findConnection(connectTimeout, readTimeout, writeTimeout, pingIntervalMillis,
+            RealConnection candidate = findConnection(
+                    connectTimeout,
+                    readTimeout,
+                    writeTimeout,
+                    pingIntervalMillis,
                     connectionRetryEnabled);
 
             // If this is a brand new connection, we can skip the extensive health checks.
@@ -134,7 +148,11 @@ final class ExchangeFinder {
      * Returns a connection to host a new stream. This prefers the existing connection if it exists, then the pool,
      * finally building a new connection.
      */
-    private RealConnection findConnection(int connectTimeout, int readTimeout, int writeTimeout, int pingIntervalMillis,
+    private RealConnection findConnection(
+            int connectTimeout,
+            int readTimeout,
+            int writeTimeout,
+            int pingIntervalMillis,
             boolean connectionRetryEnabled) throws IOException {
         boolean foundPooledConnection = false;
         RealConnection result = null;
@@ -226,7 +244,13 @@ final class ExchangeFinder {
         }
 
         // Do TCP + TLS handshakes. This is a blocking operation.
-        result.connect(connectTimeout, readTimeout, writeTimeout, pingIntervalMillis, connectionRetryEnabled, call,
+        result.connect(
+                connectTimeout,
+                readTimeout,
+                writeTimeout,
+                pingIntervalMillis,
+                connectionRetryEnabled,
+                call,
                 eventListener);
         connectionPool.routeDatabase.connected(result.route());
 

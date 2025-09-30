@@ -83,6 +83,7 @@ public class RequestCall {
     private void execute(final RequestCall requestCall, Callback callback) {
         final String id = requestCall.getHttpRequest().getId();
         requestCall.getNewCall().enqueue(new Callback() {
+
             @Override
             public void onFailure(NewCall newCall, final IOException e) {
                 HttpzState.onReqFailure(newCall.request().url().toString(), e);

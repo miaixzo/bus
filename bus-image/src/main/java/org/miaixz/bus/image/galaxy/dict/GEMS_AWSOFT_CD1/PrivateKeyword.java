@@ -38,24 +38,32 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ReferenceToStudyUID:
-            return "ReferenceToStudyUID";
-        case PrivateTag.ReferenceToSeriesUID:
-            return "ReferenceToSeriesUID";
-        case PrivateTag.ReferenceToOriginalInstance:
-            return "ReferenceToOriginalInstance";
-        case PrivateTag.DPONumber:
-            return "DPONumber";
-        case PrivateTag.DPODate:
-            return "DPODate";
-        case PrivateTag.DPOTime:
-            return "DPOTime";
-        case PrivateTag.DPOInvocationString:
-            return "DPOInvocationString";
-        case PrivateTag.DPOType:
-            return "DPOType";
-        case PrivateTag.DPOData:
-            return "DPOData";
+            case PrivateTag.ReferenceToStudyUID:
+                return "ReferenceToStudyUID";
+
+            case PrivateTag.ReferenceToSeriesUID:
+                return "ReferenceToSeriesUID";
+
+            case PrivateTag.ReferenceToOriginalInstance:
+                return "ReferenceToOriginalInstance";
+
+            case PrivateTag.DPONumber:
+                return "DPONumber";
+
+            case PrivateTag.DPODate:
+                return "DPODate";
+
+            case PrivateTag.DPOTime:
+                return "DPOTime";
+
+            case PrivateTag.DPOInvocationString:
+                return "DPOInvocationString";
+
+            case PrivateTag.DPOType:
+                return "DPOType";
+
+            case PrivateTag.DPOData:
+                return "DPOData";
         }
         return "";
     }

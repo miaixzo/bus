@@ -95,7 +95,11 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     @Override
-    public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+    public <A> void read(
+            ByteBuffer dst,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Integer, ? super A> handler) {
         throw new UnsupportedOperationException();
     }
@@ -106,13 +110,23 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     @Override
-    public <A> void read(ByteBuffer[] dsts, int offset, int length, long timeout, TimeUnit unit, A attachment,
+    public <A> void read(
+            ByteBuffer[] dsts,
+            int offset,
+            int length,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+    public <A> void write(
+            ByteBuffer src,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Integer, ? super A> handler) {
         throw new UnsupportedOperationException();
     }
@@ -123,7 +137,13 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     @Override
-    public <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment,
+    public <A> void write(
+            ByteBuffer[] srcs,
+            int offset,
+            int length,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
     }

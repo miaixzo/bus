@@ -36,6 +36,7 @@ import java.util.TimeZone;
  * @since Java 17+
  */
 enum SequenceValueType implements ValueType {
+
     SQ;
 
     @Override

@@ -49,9 +49,15 @@ public class PaletteColorModel extends ColorModel {
         int[] gDesc = lutDescriptor(ds, Tag.GreenPaletteColorLookupTableDescriptor);
         int[] bDesc = lutDescriptor(ds, Tag.BluePaletteColorLookupTableDescriptor);
         byte[] r = lutData(ds, rDesc, Tag.RedPaletteColorLookupTableData, Tag.SegmentedRedPaletteColorLookupTableData);
-        byte[] g = lutData(ds, gDesc, Tag.GreenPaletteColorLookupTableData,
+        byte[] g = lutData(
+                ds,
+                gDesc,
+                Tag.GreenPaletteColorLookupTableData,
                 Tag.SegmentedGreenPaletteColorLookupTableData);
-        byte[] b = lutData(ds, bDesc, Tag.BluePaletteColorLookupTableData,
+        byte[] b = lutData(
+                ds,
+                bDesc,
+                Tag.BluePaletteColorLookupTableData,
                 Tag.SegmentedBluePaletteColorLookupTableData);
         lut = LUT.create(bits, r, g, b, rDesc[1], gDesc[1], bDesc[1]);
     }
@@ -163,7 +169,11 @@ public class PaletteColorModel extends ColorModel {
 
     @Override
     public WritableRaster createCompatibleWritableRaster(int w, int h) {
-        return Raster.createInterleavedRaster(pixel_bits <= 8 ? DataBuffer.TYPE_BYTE : DataBuffer.TYPE_USHORT, w, h, 1,
+        return Raster.createInterleavedRaster(
+                pixel_bits <= 8 ? DataBuffer.TYPE_BYTE : DataBuffer.TYPE_USHORT,
+                w,
+                h,
+                1,
                 null);
     }
 
@@ -192,6 +202,7 @@ public class PaletteColorModel extends ColorModel {
     }
 
     private static class InflateSegmentedLut {
+
         final int[] segm;
         final byte[] data;
         int readPos;
@@ -210,21 +221,24 @@ public class PaletteColorModel extends ColorModel {
                 int op = read();
                 int n = read();
                 switch (op) {
-                case 0:
-                    y0 = discreteSegment(n);
-                    break;
-                case 1:
-                    if (writePos == 0)
-                        throw new IllegalArgumentException("Linear segment cannot be the first segment");
-                    y0 = linearSegment(n, y0, read());
-                    break;
-                case 2:
-                    if (segs >= 0)
-                        throw new IllegalArgumentException("nested indirect segment at index " + segPos);
-                    y0 = indirectSegment(n, y0);
-                    break;
-                default:
-                    throw new IllegalArgumentException("illegal op code " + op + " at index" + segPos);
+                    case 0:
+                        y0 = discreteSegment(n);
+                        break;
+
+                    case 1:
+                        if (writePos == 0)
+                            throw new IllegalArgumentException("Linear segment cannot be the first segment");
+                        y0 = linearSegment(n, y0, read());
+                        break;
+
+                    case 2:
+                        if (segs >= 0)
+                            throw new IllegalArgumentException("nested indirect segment at index " + segPos);
+                        y0 = indirectSegment(n, y0);
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("illegal op code " + op + " at index" + segPos);
                 }
             }
             return y0;

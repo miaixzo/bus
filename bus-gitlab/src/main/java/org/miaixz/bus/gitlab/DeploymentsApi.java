@@ -161,8 +161,13 @@ public class DeploymentsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Deployment getDeployment(Object projectIdOrPath, Long deploymentId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getDefaultPerPageParam(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "deployments", deploymentId);
+        Response response = get(
+                Response.Status.OK,
+                getDefaultPerPageParam(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "deployments",
+                deploymentId);
         return (response.readEntity(Deployment.class));
     }
 
@@ -201,14 +206,23 @@ public class DeploymentsApi extends AbstractApi {
      * @return a Deployment instance with info on the added deployment
      * @throws GitLabApiException if any exception occurs
      */
-    public Deployment addDeployment(Object projectIdOrPath, String environment, String sha, String ref, Boolean tag,
+    public Deployment addDeployment(
+            Object projectIdOrPath,
+            String environment,
+            String sha,
+            String ref,
+            Boolean tag,
             DeploymentStatus status) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("environment", environment, true)
                 .withParam("sha", sha, true).withParam("ref", ref, true).withParam("tag", tag, true)
                 .withParam("status", status, true);
 
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "deployments");
         return (response.readEntity(Deployment.class));
     }
@@ -235,8 +249,13 @@ public class DeploymentsApi extends AbstractApi {
 
         final Deployment deployment = new Deployment();
         deployment.setStatus(status);
-        final Response response = put(Response.Status.OK, deployment, "projects", getProjectIdOrPath(projectIdOrPath),
-                "deployments", deploymentId);
+        final Response response = put(
+                Response.Status.OK,
+                deployment,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "deployments",
+                deploymentId);
 
         return (response.readEntity(Deployment.class));
     }

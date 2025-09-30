@@ -180,7 +180,10 @@ public class CronPattern {
      * @param count   列举数量
      * @return 日期列表
      */
-    public static List<Date> matchedDates(final CronPattern pattern, final long start, final long end,
+    public static List<Date> matchedDates(
+            final CronPattern pattern,
+            final long start,
+            final long end,
             final int count) {
         Assert.isTrue(start < end, "Start date is later than end !");
 

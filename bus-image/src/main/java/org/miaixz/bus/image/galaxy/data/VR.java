@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * @since Java 17+
  */
 public enum VR {
+
     /**
      * Application Entity
      */
@@ -374,6 +375,7 @@ public enum VR {
     }
 
     public static class Holder {
+
         public VR vr;
     }
 

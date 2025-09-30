@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
@@ -40,6 +42,14 @@ import java.lang.annotation.*;
 @Target({ ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER })
 public @interface DataSource {
 
-    String value() default "dataSource";
+    /**
+     * 数据源名称，为空时使用默认数据源
+     */
+    String value() default Normal.EMPTY;
+
+    /**
+     * 是否在方法执行后清除数据源设置
+     */
+    boolean clear() default true;
 
 }

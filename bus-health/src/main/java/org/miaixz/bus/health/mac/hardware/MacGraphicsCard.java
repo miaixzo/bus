@@ -83,8 +83,10 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
                 if (prefix.equals("chipset model")) {
                     // Save previous card
                     if (cardNum++ > 0) {
-                        cardList.add(new MacGraphicsCard(name, deviceId, vendor,
-                                versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
+                        cardList.add(
+                                new MacGraphicsCard(name, deviceId, vendor,
+                                        versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
+                                        vram));
                         versionInfoList.clear();
                     }
                     name = split[1].trim();
@@ -99,8 +101,9 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
                 }
             }
         }
-        cardList.add(new MacGraphicsCard(name, deviceId, vendor,
-                versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
+        cardList.add(
+                new MacGraphicsCard(name, deviceId, vendor,
+                        versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
         return cardList;
     }
 

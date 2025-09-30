@@ -88,11 +88,12 @@ public class PostgreSQLMetrics extends AbstractMetrics {
                 }
                 HikariDataSource dataSource = new HikariDataSource(new HikariConfig(properties));
                 JdbcTemplate template = new JdbcTemplate(dataSource);
-                template.execute("CREATE TABLE IF NOT EXISTS t_cache_rate("
-                        + "id BIGINT     PRIMARY KEY AUTO_INCREMENT," + "pattern       VARCHAR(64) NOT NULL UNIQUE,"
-                        + "hit_count     BIGINT      NOT NULL     DEFAULT 0,"
-                        + "require_count BIGINT      NOT NULL     DEFAULT 0,"
-                        + "version       BIGINT      NOT NULL     DEFAULT 0)");
+                template.execute(
+                        "CREATE TABLE IF NOT EXISTS t_cache_rate(" + "id BIGINT     PRIMARY KEY AUTO_INCREMENT,"
+                                + "pattern       VARCHAR(64) NOT NULL UNIQUE,"
+                                + "hit_count     BIGINT      NOT NULL     DEFAULT 0,"
+                                + "require_count BIGINT      NOT NULL     DEFAULT 0,"
+                                + "version       BIGINT      NOT NULL     DEFAULT 0)");
                 return template;
             } catch (Exception e) {
                 throw new InternalException(e);

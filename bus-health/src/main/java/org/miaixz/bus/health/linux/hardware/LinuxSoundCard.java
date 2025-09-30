@@ -148,8 +148,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
      */
     private static String getCardName(File file) {
         String cardName = "Not Found..";
-        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(ProcPath.ASOUND + "/" + CARDS_FILE,
-                Symbol.COLON);
+        Map<String, String> cardNamePairs = Builder
+                .getKeyValueMapFromFile(ProcPath.ASOUND + "/" + CARDS_FILE, Symbol.COLON);
         String cardId = Builder.getStringFromFile(file.getPath() + "/" + ID_FILE);
         for (Map.Entry<String, String> entry : cardNamePairs.entrySet()) {
             if (entry.getKey().contains(cardId)) {

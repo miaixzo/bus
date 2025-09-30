@@ -40,8 +40,14 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  */
 public abstract class AbstractChildLimitProvider implements ChildLimitProvider {
 
-    protected ChildLimitInfo next(SolarTime birthTime, int addYear, int addMonth, int addDay, int addHour,
-            int addMinute, int addSecond) {
+    protected ChildLimitInfo next(
+            SolarTime birthTime,
+            int addYear,
+            int addMonth,
+            int addDay,
+            int addHour,
+            int addMinute,
+            int addSecond) {
         int d = birthTime.getDay() + addDay;
         int h = birthTime.getHour() + addHour;
         int mi = birthTime.getMinute() + addMinute;

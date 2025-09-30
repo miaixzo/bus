@@ -31,6 +31,7 @@ import java.util.List;
 
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
+import org.miaixz.bus.mapper.Args;
 
 /**
  * 租户：行级多租户
@@ -50,7 +51,7 @@ public interface TenantProvider {
      * @return 租户字段名，默认为 "tenant_id"
      */
     default String getColumn() {
-        return "tenant_id";
+        return Args.TENANT_TABLE_COLUMN;
     }
 
     /**

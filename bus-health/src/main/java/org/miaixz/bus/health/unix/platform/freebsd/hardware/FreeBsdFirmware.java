@@ -84,7 +84,8 @@ final class FreeBsdFirmware extends AbstractFirmware {
             }
         }
         releaseDate = Parsing.parseMmDdYyyyToYyyyMmDD(releaseDate);
-        return Triplet.of(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+        return Triplet.of(
+                StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(version) ? Normal.UNKNOWN : version,
                 StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }

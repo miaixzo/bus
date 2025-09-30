@@ -38,26 +38,35 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CRDRE:
-            return "CRDRE";
-        case PrivateTag.CRDRN:
-            return "CRDRN";
-        case PrivateTag.CRORE:
-            return "CRORE";
-        case PrivateTag.CRORN:
-            return "CRORN";
-        case PrivateTag.CRORD:
-            return "CRORD";
-        case PrivateTag.CRCassetteSize:
-            return "CRCassetteSize";
-        case PrivateTag.CRMachineID:
-            return "CRMachineID";
-        case PrivateTag.CRMachineType:
-            return "CRMachineType";
-        case PrivateTag.CRTechnicianCode:
-            return "CRTechnicianCode";
-        case PrivateTag.CREnergySubtractionParameters:
-            return "CREnergySubtractionParameters";
+            case PrivateTag.CRDRE:
+                return "CRDRE";
+
+            case PrivateTag.CRDRN:
+                return "CRDRN";
+
+            case PrivateTag.CRORE:
+                return "CRORE";
+
+            case PrivateTag.CRORN:
+                return "CRORN";
+
+            case PrivateTag.CRORD:
+                return "CRORD";
+
+            case PrivateTag.CRCassetteSize:
+                return "CRCassetteSize";
+
+            case PrivateTag.CRMachineID:
+                return "CRMachineID";
+
+            case PrivateTag.CRMachineType:
+                return "CRMachineType";
+
+            case PrivateTag.CRTechnicianCode:
+                return "CRTechnicianCode";
+
+            case PrivateTag.CREnergySubtractionParameters:
+                return "CREnergySubtractionParameters";
         }
         return "";
     }

@@ -92,7 +92,20 @@ public final class TID {
     /**
      * 所有监控类型的列表
      */
-    public static final List<String> ALL_TID = Arrays.asList(HOST, CPU, DISK, JVM, MEMORY, ALL_DISK, PROCESS, SYSTEM,
-            PROCESSOR, HARDWARE, LIVENESS, READINESS, POWERSOURCES, NETWORKIFS);
+    public static final List<String> ALL_TID = Arrays.asList(
+            HOST,
+            CPU,
+            DISK,
+            JVM,
+            MEMORY,
+            ALL_DISK,
+            PROCESS,
+            SYSTEM,
+            PROCESSOR,
+            HARDWARE,
+            LIVENESS,
+            READINESS,
+            POWERSOURCES,
+            NETWORKIFS);
 
 }

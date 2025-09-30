@@ -62,8 +62,8 @@ public class AutoValidateAdvice {
         // 如果是接口，尝试获取实现类的方法
         if (method.getDeclaringClass().isInterface()) {
             try {
-                method = joinPoint.getTarget().getClass().getDeclaredMethod(method.getName(),
-                        method.getParameterTypes());
+                method = joinPoint.getTarget().getClass()
+                        .getDeclaredMethod(method.getName(), method.getParameterTypes());
             } catch (NoSuchMethodException e) {
                 Logger.info(
                         "Cannot find the specified method in the implementation class, skipping validation, method: {}",

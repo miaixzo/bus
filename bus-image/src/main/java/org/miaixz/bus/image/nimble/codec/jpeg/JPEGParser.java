@@ -58,14 +58,16 @@ public class JPEGParser implements XPEGParser {
         seekCodeStream(channel);
         codeStreamPosition = channel.position();
         switch (readUShort(channel)) {
-        case JPEG.FF_SOI:
-            params = new JPEGParams(channel);
-            break;
-        case JPEG.FF_SOC:
-            params = new JPEG2000Params(channel);
-            break;
-        default:
-            throw new InternalException("JPEG SOI/SOC marker not found");
+            case JPEG.FF_SOI:
+                params = new JPEGParams(channel);
+                break;
+
+            case JPEG.FF_SOC:
+                params = new JPEG2000Params(channel);
+                break;
+
+            default:
+                throw new InternalException("JPEG SOI/SOC marker not found");
         }
     }
 
@@ -189,6 +191,7 @@ public class JPEGParser implements XPEGParser {
     }
 
     public interface Params {
+
         int samplesPerPixel();
 
         int rows();
@@ -207,6 +210,7 @@ public class JPEGParser implements XPEGParser {
     }
 
     private static class Segment {
+
         final int marker;
         final int contentSize;
 
@@ -309,16 +313,20 @@ public class JPEGParser implements XPEGParser {
         @Override
         public String transferSyntaxUID() throws InternalException {
             switch (sof) {
-            case JPEG.SOF0:
-                return UID.JPEGBaseline8Bit.uid;
-            case JPEG.SOF1:
-                return UID.JPEGExtended12Bit.uid;
-            case JPEG.SOF2:
-                return UID.JPEGFullProgressionNonHierarchical1012.uid;
-            case JPEG.SOF3:
-                return sosParams.get(3) == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
-            case JPEG.SOF55:
-                return sosParams.get(3) == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
+                case JPEG.SOF0:
+                    return UID.JPEGBaseline8Bit.uid;
+
+                case JPEG.SOF1:
+                    return UID.JPEGExtended12Bit.uid;
+
+                case JPEG.SOF2:
+                    return UID.JPEGFullProgressionNonHierarchical1012.uid;
+
+                case JPEG.SOF3:
+                    return sosParams.get(3) == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
+
+                case JPEG.SOF55:
+                    return sosParams.get(3) == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
             }
             throw new InternalException(String.format("JPEG SOF%d not supported", sof & 0xf));
         }
@@ -338,16 +346,18 @@ public class JPEGParser implements XPEGParser {
             do {
                 segment = nextSegment(channel);
                 switch (segment.marker) {
-                case JPEG.SIZ:
-                    channel.read(sizParams = ByteBuffer.allocate(segment.contentSize));
-                    break;
-                case JPEG.COD:
-                    channel.read(codParams = ByteBuffer.allocate(segment.contentSize));
-                    break;
-                case JPEG.TLM:
-                    tlm = true;
-                default:
-                    skip(channel, segment.contentSize);
+                    case JPEG.SIZ:
+                        channel.read(sizParams = ByteBuffer.allocate(segment.contentSize));
+                        break;
+
+                    case JPEG.COD:
+                        channel.read(codParams = ByteBuffer.allocate(segment.contentSize));
+                        break;
+
+                    case JPEG.TLM:
+                        tlm = true;
+                    default:
+                        skip(channel, segment.contentSize);
                 }
             } while (segment.marker != JPEG.SOT);
             this.sizParams = sizParams;
@@ -449,26 +459,31 @@ public class JPEGParser implements XPEGParser {
 
         private String toTransformation(int i) {
             switch (i) {
-            case 0:
-                return "9-7";
-            case 1:
-                return "5-3";
+                case 0:
+                    return "9-7";
+
+                case 1:
+                    return "5-3";
             }
             return Integer.toString(i);
         }
 
         private String toProgressionOrder(int i) {
             switch (i) {
-            case 0:
-                return "LRCP";
-            case 1:
-                return "RLCP";
-            case 2:
-                return "RPCL";
-            case 3:
-                return "PCRL";
-            case 4:
-                return "CPRL";
+                case 0:
+                    return "LRCP";
+
+                case 1:
+                    return "RLCP";
+
+                case 2:
+                    return "RPCL";
+
+                case 3:
+                    return "PCRL";
+
+                case 4:
+                    return "CPRL";
             }
             return Integer.toString(i);
         }

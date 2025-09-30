@@ -52,33 +52,38 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.RunningAttributes:
-            return VR.CS;
-        case PrivateTag.SpectrumPixelData:
-            return VR.OW;
-        case PrivateTag.NumberOfImagePerSeriesRef:
-            return VR.SL;
-        case PrivateTag.NoDateOfLastCalibration:
-        case PrivateTag.NoTimeOfLastCalibration:
-        case PrivateTag.NrOfSoftwareVersion:
-        case PrivateTag.NrOfPatientOtherNames:
-        case PrivateTag.NrOfReqRecipeOfResults:
-        case PrivateTag.NrOfSeriesOperatorsName:
-        case PrivateTag.NrOfSeriesPerfPhysiName:
-        case PrivateTag.NrOfStudyAdmittingDiagnosticDescr:
-        case PrivateTag.NrOfStudyPatientContrastAllergies:
-        case PrivateTag.NrOfStudyPatientMedicalAlerts:
-        case PrivateTag.NrOfStudyPhysiciansOfRecord:
-        case PrivateTag.NrOfStudyPhysiReadingStudy:
-        case PrivateTag.NrSCSoftwareVersions:
-        case PrivateTag.NrRunningAttributes:
-            return VR.SS;
-        case PrivateTag.DefaultImageUID:
-            return VR.UI;
-        case PrivateTag.NumberOfSOPCommon:
-        case PrivateTag.NoOfFilmConsumption:
-        case PrivateTag.NumberOfCodes:
-            return VR.UL;
+            case PrivateTag.RunningAttributes:
+                return VR.CS;
+
+            case PrivateTag.SpectrumPixelData:
+                return VR.OW;
+
+            case PrivateTag.NumberOfImagePerSeriesRef:
+                return VR.SL;
+
+            case PrivateTag.NoDateOfLastCalibration:
+            case PrivateTag.NoTimeOfLastCalibration:
+            case PrivateTag.NrOfSoftwareVersion:
+            case PrivateTag.NrOfPatientOtherNames:
+            case PrivateTag.NrOfReqRecipeOfResults:
+            case PrivateTag.NrOfSeriesOperatorsName:
+            case PrivateTag.NrOfSeriesPerfPhysiName:
+            case PrivateTag.NrOfStudyAdmittingDiagnosticDescr:
+            case PrivateTag.NrOfStudyPatientContrastAllergies:
+            case PrivateTag.NrOfStudyPatientMedicalAlerts:
+            case PrivateTag.NrOfStudyPhysiciansOfRecord:
+            case PrivateTag.NrOfStudyPhysiReadingStudy:
+            case PrivateTag.NrSCSoftwareVersions:
+            case PrivateTag.NrRunningAttributes:
+                return VR.SS;
+
+            case PrivateTag.DefaultImageUID:
+                return VR.UI;
+
+            case PrivateTag.NumberOfSOPCommon:
+            case PrivateTag.NoOfFilmConsumption:
+            case PrivateTag.NumberOfCodes:
+                return VR.UL;
         }
         return VR.UN;
     }

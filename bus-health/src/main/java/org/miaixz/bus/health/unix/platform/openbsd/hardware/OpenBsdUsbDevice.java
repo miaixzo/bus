@@ -69,9 +69,10 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
         // Top level is controllers; they won't be added to the list, but all
         // their connected devices will be
         for (UsbDevice device : devices) {
-            deviceList.add(new OpenBsdUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                    device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                    Collections.emptyList()));
+            deviceList.add(
+                    new OpenBsdUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
+                            device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
+                            Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
         return deviceList;
@@ -139,8 +140,17 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
         // Build tree and return
         List<UsbDevice> controllerDevices = new ArrayList<>();
         for (String devusb : rootHubs) {
-            controllerDevices.add(getDeviceAndChildren(devusb, "0000", "0000", nameMap, vendorMap, vendorIdMap,
-                    productIdMap, serialMap, hubMap));
+            controllerDevices.add(
+                    getDeviceAndChildren(
+                            devusb,
+                            "0000",
+                            "0000",
+                            nameMap,
+                            vendorMap,
+                            vendorIdMap,
+                            productIdMap,
+                            serialMap,
+                            hubMap));
         }
         return controllerDevices;
     }
@@ -166,16 +176,32 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
      * @param hubMap       the map of hubs
      * @return A SolarisUsbDevice corresponding to this device
      */
-    private static OpenBsdUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
-            Map<String, String> nameMap, Map<String, String> vendorMap, Map<String, String> vendorIdMap,
-            Map<String, String> productIdMap, Map<String, String> serialMap, Map<String, List<String>> hubMap) {
+    private static OpenBsdUsbDevice getDeviceAndChildren(
+            String devPath,
+            String vid,
+            String pid,
+            Map<String, String> nameMap,
+            Map<String, String> vendorMap,
+            Map<String, String> vendorIdMap,
+            Map<String, String> productIdMap,
+            Map<String, String> serialMap,
+            Map<String, List<String>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
         List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
         List<UsbDevice> usbDevices = new ArrayList<>();
         for (String path : childPaths) {
-            usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorMap, vendorIdMap,
-                    productIdMap, serialMap, hubMap));
+            usbDevices.add(
+                    getDeviceAndChildren(
+                            path,
+                            vendorId,
+                            productId,
+                            nameMap,
+                            vendorMap,
+                            vendorIdMap,
+                            productIdMap,
+                            serialMap,
+                            hubMap));
         }
         Collections.sort(usbDevices);
         return new OpenBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),

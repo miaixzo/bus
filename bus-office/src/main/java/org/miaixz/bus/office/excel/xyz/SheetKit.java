@@ -130,7 +130,9 @@ public class SheetKit {
      * @param ignoredErrorTypes 忽略的错误类型列表
      * @throws UnsupportedOperationException 如果sheet不是XSSFSheet
      */
-    public static void addIgnoredErrors(final Sheet sheet, final CellRangeAddress cellRangeAddress,
+    public static void addIgnoredErrors(
+            final Sheet sheet,
+            final CellRangeAddress cellRangeAddress,
             final IgnoredErrorType... ignoredErrorTypes) throws UnsupportedOperationException {
         if (sheet instanceof XSSFSheet) {
             ((XSSFSheet) sheet).addIgnoredErrors(cellRangeAddress, ignoredErrorTypes);

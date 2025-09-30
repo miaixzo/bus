@@ -113,30 +113,37 @@ public class TomlWriter {
 
     static void addEscaped(final char c, final StringBuilder sb) {
         switch (c) {
-        case '\b':
-            sb.append("\\b");
-            break;
-        case '\t':
-            sb.append("\\t");
-            break;
-        case '\n':
-            sb.append("\\n");
-            break;
-        case '\\':
-            sb.append("\\\\");
-            break;
-        case '\r':
-            sb.append("\\r");
-            break;
-        case '\f':
-            sb.append("\\f");
-            break;
-        case '"':
-            sb.append("\\\"");
-            break;
-        default:
-            sb.append(c);
-            break;
+            case '\b':
+                sb.append("\\b");
+                break;
+
+            case '\t':
+                sb.append("\\t");
+                break;
+
+            case '\n':
+                sb.append("\\n");
+                break;
+
+            case '\\':
+                sb.append("\\\\");
+                break;
+
+            case '\r':
+                sb.append("\\r");
+                break;
+
+            case '\f':
+                sb.append("\\f");
+                break;
+
+            case '"':
+                sb.append("\\\"");
+                break;
+
+            default:
+                sb.append(c);
+                break;
         }
     }
 

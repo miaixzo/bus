@@ -355,6 +355,7 @@ public class FindSCU implements AutoCloseable {
     }
 
     public enum InformationModel {
+
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelFind.uid, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelFind.uid, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelFind.uid, "STUDY"),
@@ -384,6 +385,7 @@ public class FindSCU implements AutoCloseable {
     }
 
     private static class MergeNested implements Visitor {
+
         private final Attributes keys;
 
         MergeNested(Attributes keys) {

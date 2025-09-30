@@ -341,6 +341,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      */
     public final void setSkipAllDicomInputHandler() {
         this.handler = new ImageInputHandler() {
+
             @Override
             public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
                 if (dis.length() == -1) {
@@ -546,29 +547,33 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         readFully(buf, 0, 8);
         encodedVR = 0;
         switch (tag = ByteKit.bytesToTag(buf, 0, bigEndian)) {
-        case Tag.Item:
-        case Tag.ItemDelimitationItem:
-        case Tag.SequenceDelimitationItem:
-            vr = null;
-            break;
-        default:
-            if (explicitVR) {
-                vr = VR.valueOf(encodedVR = ByteKit.bytesToVR(buf, 4));
-                if (vr == null) {
-                    vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
-                    if (!stopPredicate.test(this))
-                        Logger.warn("Unrecognized VR code: {}H for {} - treat as {}", Tag.shortToHexString(encodedVR),
-                                Tag.toString(tag), vr);
+            case Tag.Item:
+            case Tag.ItemDelimitationItem:
+            case Tag.SequenceDelimitationItem:
+                vr = null;
+                break;
+
+            default:
+                if (explicitVR) {
+                    vr = VR.valueOf(encodedVR = ByteKit.bytesToVR(buf, 4));
+                    if (vr == null) {
+                        vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
+                        if (!stopPredicate.test(this))
+                            Logger.warn(
+                                    "Unrecognized VR code: {}H for {} - treat as {}",
+                                    Tag.shortToHexString(encodedVR),
+                                    Tag.toString(tag),
+                                    vr);
+                    }
+                    if (vr.headerLength() == 8) {
+                        // This length can't overflow since length field is only 16 bits in this case.
+                        length = ByteKit.bytesToUShort(buf, 6, bigEndian);
+                        return;
+                    }
+                    readFully(buf, 4, 4);
+                } else {
+                    vr = VR.UN;
                 }
-                if (vr.headerLength() == 8) {
-                    // This length can't overflow since length field is only 16 bits in this case.
-                    length = ByteKit.bytesToUShort(buf, 6, bigEndian);
-                    return;
-                }
-                readFully(buf, 4, 4);
-            } else {
-                vr = VR.UN;
-            }
         }
         length = toLongOrUndefined(ByteKit.bytesToInt(buf, 4, bigEndian));
     }
@@ -692,37 +697,39 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             if (vr != null) {
                 if (vr == VR.UN) {
                     switch (tag) {
-                    case Tag.SmallestValidPixelValue:
-                    case Tag.LargestValidPixelValue:
-                    case Tag.SmallestImagePixelValue:
-                    case Tag.LargestImagePixelValue:
-                    case Tag.SmallestPixelValueInSeries:
-                    case Tag.LargestPixelValueInSeries:
-                    case Tag.SmallestImagePixelValueInPlane:
-                    case Tag.LargestImagePixelValueInPlane:
-                    case Tag.PixelPaddingValue:
-                    case Tag.PixelPaddingRangeLimit:
-                    case Tag.GrayLookupTableDescriptor:
-                    case Tag.RedPaletteColorLookupTableDescriptor:
-                    case Tag.GreenPaletteColorLookupTableDescriptor:
-                    case Tag.BluePaletteColorLookupTableDescriptor:
-                    case Tag.LargeRedPaletteColorLookupTableDescriptor:
-                    case Tag.LargeGreenPaletteColorLookupTableDescriptor:
-                    case Tag.LargeBluePaletteColorLookupTableDescriptor:
-                    case Tag.RealWorldValueLastValueMapped:
-                    case Tag.RealWorldValueFirstValueMapped:
-                    case Tag.HistogramFirstBinValue:
-                    case Tag.HistogramLastBinValue:
-                        vr = attrs.getRoot().getInt(Tag.PixelRepresentation, 0) == 0 ? VR.US : VR.SS;
-                        break;
-                    case Tag.PurposeOfReferenceCodeSequence:
-                        vr = probeObservationClass() ? VR.CS : VR.SQ;
-                        break;
-                    default:
-                        vr = ElementDictionary.vrOf(tag, attrs.getPrivateCreator(tag));
-                        if (vr == VR.UN && length == UNDEFINED_LENGTH)
-                            vr = VR.SQ; // assumes UN with undefined length are SQ,
-                        // will fail on UN fragments!
+                        case Tag.SmallestValidPixelValue:
+                        case Tag.LargestValidPixelValue:
+                        case Tag.SmallestImagePixelValue:
+                        case Tag.LargestImagePixelValue:
+                        case Tag.SmallestPixelValueInSeries:
+                        case Tag.LargestPixelValueInSeries:
+                        case Tag.SmallestImagePixelValueInPlane:
+                        case Tag.LargestImagePixelValueInPlane:
+                        case Tag.PixelPaddingValue:
+                        case Tag.PixelPaddingRangeLimit:
+                        case Tag.GrayLookupTableDescriptor:
+                        case Tag.RedPaletteColorLookupTableDescriptor:
+                        case Tag.GreenPaletteColorLookupTableDescriptor:
+                        case Tag.BluePaletteColorLookupTableDescriptor:
+                        case Tag.LargeRedPaletteColorLookupTableDescriptor:
+                        case Tag.LargeGreenPaletteColorLookupTableDescriptor:
+                        case Tag.LargeBluePaletteColorLookupTableDescriptor:
+                        case Tag.RealWorldValueLastValueMapped:
+                        case Tag.RealWorldValueFirstValueMapped:
+                        case Tag.HistogramFirstBinValue:
+                        case Tag.HistogramLastBinValue:
+                            vr = attrs.getRoot().getInt(Tag.PixelRepresentation, 0) == 0 ? VR.US : VR.SS;
+                            break;
+
+                        case Tag.PurposeOfReferenceCodeSequence:
+                            vr = probeObservationClass() ? VR.CS : VR.SQ;
+                            break;
+
+                        default:
+                            vr = ElementDictionary.vrOf(tag, attrs.getPrivateCreator(tag));
+                            if (vr == VR.UN && length == UNDEFINED_LENGTH)
+                                vr = VR.SQ; // assumes UN with undefined length are SQ,
+                            // will fail on UN fragments!
                     }
                 }
                 excludeBulkData = includeBulkData == IncludeBulkData.NO && isBulkData(attrs);

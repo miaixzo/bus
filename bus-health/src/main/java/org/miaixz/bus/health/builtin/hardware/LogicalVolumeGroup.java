@@ -42,6 +42,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  */
 @Immutable
 public interface LogicalVolumeGroup {
+
     /**
      * Gets the logical volume group name.
      *

@@ -42,7 +42,7 @@ import jakarta.annotation.Resource;
  *
  * 该类负责创建并配置以下主要组件：
  * <ul>
- * <li>{@link AuthProviderService} - 授权服务提供者工厂，用于创建各种第三方授权服务</li>
+ * <li>{@link AuthService} - 授权服务提供者工厂，用于创建各种第三方授权服务</li>
  * <li>{@link CacheX} - 授权缓存实现，默认使用{@link AuthCache}作为缓存实现</li>
  * </ul>
  * 
@@ -55,10 +55,10 @@ import jakarta.annotation.Resource;
  *
  * // 在代码中直接注入使用
  * &#64;Autowired
- * private AuthProviderService authProviderService;
+ * private AuthService authService;
  *
  * // 获取GitHub授权提供者
- * Provider githubProvider = authProviderService.require(Registry.GITHUB);
+ * Provider provider = authService.require(Registry.GITHUB);
  * </pre>
  *
  * @author Kimi Liu
@@ -77,15 +77,15 @@ public class AuthConfiguration {
      * 创建授权服务提供者工厂Bean。
      *
      * <p>
-     * 该方法创建一个{@link AuthProviderService}实例，用于管理和创建各种第三方授权服务提供者。 该实例会使用传入的缓存实现和配置属性来初始化。
+     * 该方法创建一个{@link AuthService}实例，用于管理和创建各种第三方授权服务提供者。 该实例会使用传入的缓存实现和配置属性来初始化。
      * </p>
      *
      * @param cache 缓存实现，用于存储授权过程中的临时数据
      * @return 配置好的授权服务提供者工厂实例
      */
     @Bean
-    public AuthProviderService authProviderFactory(CacheX cache) {
-        return new AuthProviderService(this.properties, cache);
+    public AuthService authProviderFactory(CacheX cache) {
+        return new AuthService(this.properties, cache);
     }
 
     /**

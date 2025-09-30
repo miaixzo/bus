@@ -71,4 +71,9 @@ public class Context {
      */
     private String nonce;
 
+    /**
+     * 扩展属性
+     */
+    private String extension;
+
 }

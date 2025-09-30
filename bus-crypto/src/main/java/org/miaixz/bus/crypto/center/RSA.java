@@ -154,7 +154,8 @@ public class RSA extends Crypto {
      * @return {@link PrivateKey}
      */
     public static PrivateKey generatePrivateKey(final BigInteger modulus, final BigInteger privateExponent) {
-        return Keeper.generatePrivateKey(Algorithm.RSA_ECB_PKCS1.getValue(),
+        return Keeper.generatePrivateKey(
+                Algorithm.RSA_ECB_PKCS1.getValue(),
                 new RSAPrivateKeySpec(modulus, privateExponent));
     }
 
@@ -166,8 +167,8 @@ public class RSA extends Crypto {
      * @return {@link PublicKey}
      */
     public static PublicKey generatePublicKey(final BigInteger modulus, final BigInteger publicExponent) {
-        return Keeper.generatePublicKey(Algorithm.RSA_ECB_PKCS1.getValue(),
-                new RSAPublicKeySpec(modulus, publicExponent));
+        return Keeper
+                .generatePublicKey(Algorithm.RSA_ECB_PKCS1.getValue(), new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     @Override

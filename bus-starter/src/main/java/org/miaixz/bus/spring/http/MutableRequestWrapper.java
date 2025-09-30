@@ -28,7 +28,6 @@
 package org.miaixz.bus.spring.http;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -202,7 +201,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public BufferedReader getReader() {
-        return new BufferedReader(new InputStreamReader(this.inputStreamWrapper, StandardCharsets.UTF_8));
+        return new BufferedReader(new InputStreamReader(this.inputStreamWrapper, Charset.UTF_8));
     }
 
     /**

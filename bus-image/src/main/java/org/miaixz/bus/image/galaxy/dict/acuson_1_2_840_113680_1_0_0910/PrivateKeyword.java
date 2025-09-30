@@ -38,18 +38,23 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag._0009_xx00_:
-            return "_0009_xx00_";
-        case PrivateTag._0009_xx01_:
-            return "_0009_xx01_";
-        case PrivateTag.PatientRegistrationCustomField1:
-            return "PatientRegistrationCustomField1";
-        case PrivateTag.PatientRegistrationCustomField2:
-            return "PatientRegistrationCustomField2";
-        case PrivateTag.Indications:
-            return "Indications";
-        case PrivateTag._0009_xx0f_:
-            return "_0009_xx0f_";
+            case PrivateTag._0009_xx00_:
+                return "_0009_xx00_";
+
+            case PrivateTag._0009_xx01_:
+                return "_0009_xx01_";
+
+            case PrivateTag.PatientRegistrationCustomField1:
+                return "PatientRegistrationCustomField1";
+
+            case PrivateTag.PatientRegistrationCustomField2:
+                return "PatientRegistrationCustomField2";
+
+            case PrivateTag.Indications:
+                return "Indications";
+
+            case PrivateTag._0009_xx0f_:
+                return "_0009_xx0f_";
         }
         return "";
     }

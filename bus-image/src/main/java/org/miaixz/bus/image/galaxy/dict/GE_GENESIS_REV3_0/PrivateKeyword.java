@@ -38,36 +38,50 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.AxialType:
-            return "AxialType";
-        case PrivateTag.SwapPhaseFrequency:
-            return "SwapPhaseFrequency";
-        case PrivateTag.PulseSequenceName:
-            return "PulseSequenceName";
-        case PrivateTag.CoilType:
-            return "CoilType";
-        case PrivateTag.SATFatWaterBone:
-            return "SATFatWaterBone";
-        case PrivateTag.BitmapOfSATSelections:
-            return "BitmapOfSATSelections";
-        case PrivateTag.SurfaceCoilIntensityCorrectionFlag:
-            return "SurfaceCoilIntensityCorrectionFlag";
-        case PrivateTag.PhaseContrastFlowAxis:
-            return "PhaseContrastFlowAxis";
-        case PrivateTag.PhaseContrastVelocityEncoding:
-            return "PhaseContrastVelocityEncoding";
-        case PrivateTag.FractionalEcho:
-            return "FractionalEcho";
-        case PrivateTag.VariableEchoFlag:
-            return "VariableEchoFlag";
-        case PrivateTag.ConcatenatedSat:
-            return "ConcatenatedSat";
-        case PrivateTag.NumberOfPhases:
-            return "NumberOfPhases";
-        case PrivateTag.DeltaStartTime:
-            return "DeltaStartTime";
-        case PrivateTag.ScanPitchRatio:
-            return "ScanPitchRatio";
+            case PrivateTag.AxialType:
+                return "AxialType";
+
+            case PrivateTag.SwapPhaseFrequency:
+                return "SwapPhaseFrequency";
+
+            case PrivateTag.PulseSequenceName:
+                return "PulseSequenceName";
+
+            case PrivateTag.CoilType:
+                return "CoilType";
+
+            case PrivateTag.SATFatWaterBone:
+                return "SATFatWaterBone";
+
+            case PrivateTag.BitmapOfSATSelections:
+                return "BitmapOfSATSelections";
+
+            case PrivateTag.SurfaceCoilIntensityCorrectionFlag:
+                return "SurfaceCoilIntensityCorrectionFlag";
+
+            case PrivateTag.PhaseContrastFlowAxis:
+                return "PhaseContrastFlowAxis";
+
+            case PrivateTag.PhaseContrastVelocityEncoding:
+                return "PhaseContrastVelocityEncoding";
+
+            case PrivateTag.FractionalEcho:
+                return "FractionalEcho";
+
+            case PrivateTag.VariableEchoFlag:
+                return "VariableEchoFlag";
+
+            case PrivateTag.ConcatenatedSat:
+                return "ConcatenatedSat";
+
+            case PrivateTag.NumberOfPhases:
+                return "NumberOfPhases";
+
+            case PrivateTag.DeltaStartTime:
+                return "DeltaStartTime";
+
+            case PrivateTag.ScanPitchRatio:
+                return "ScanPitchRatio";
         }
         return "";
     }

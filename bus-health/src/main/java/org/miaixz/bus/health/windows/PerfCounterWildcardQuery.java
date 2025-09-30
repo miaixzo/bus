@@ -53,8 +53,8 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 public final class PerfCounterWildcardQuery {
 
-    private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Config.get(Config._WINDOWS_PERF_DISABLE_ALL_ON_FAILURE,
-            false);
+    private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Config
+            .get(Config._WINDOWS_PERF_DISABLE_ALL_ON_FAILURE, false);
 
     // Use a thread safe set to cache failed pdh queries
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
@@ -73,7 +73,9 @@ public final class PerfCounterWildcardQuery {
      *         {@code propertyEnum} on success, or an empty list and empty map if both PDH and WMI queries failed.
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValues(
-            Class<T> propertyEnum, String perfObject, String perfWmiClass) {
+            Class<T> propertyEnum,
+            String perfObject,
+            String perfWmiClass) {
         return queryInstancesAndValues(propertyEnum, perfObject, perfWmiClass, null);
     }
 
@@ -92,11 +94,16 @@ public final class PerfCounterWildcardQuery {
      *         {@code propertyEnum} on success, or an empty list and empty map if both PDH and WMI queries failed.
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValues(
-            Class<T> propertyEnum, String perfObject, String perfWmiClass, String customFilter) {
+            Class<T> propertyEnum,
+            String perfObject,
+            String perfWmiClass,
+            String customFilter) {
         if (FAILED_QUERY_CACHE.isEmpty()
                 || (!PERF_DISABLE_ALL_ON_FAILURE && !FAILED_QUERY_CACHE.contains(perfObject))) {
-            Pair<List<String>, Map<T, List<Long>>> instancesAndValuesMap = queryInstancesAndValuesFromPDH(propertyEnum,
-                    perfObject, customFilter);
+            Pair<List<String>, Map<T, List<Long>>> instancesAndValuesMap = queryInstancesAndValuesFromPDH(
+                    propertyEnum,
+                    perfObject,
+                    customFilter);
             if (!instancesAndValuesMap.getLeft().isEmpty()) {
                 return instancesAndValuesMap;
             }
@@ -125,7 +132,8 @@ public final class PerfCounterWildcardQuery {
      *         {@code propertyEnum} on success, or an empty list and empty map if the PDH query failed.
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValuesFromPDH(
-            Class<T> propertyEnum, String perfObject) {
+            Class<T> propertyEnum,
+            String perfObject) {
         return queryInstancesAndValuesFromPDH(propertyEnum, perfObject, null);
     }
 
@@ -142,7 +150,9 @@ public final class PerfCounterWildcardQuery {
      *         {@code propertyEnum} on success, or an empty list and empty map if the PDH query failed.
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValuesFromPDH(
-            Class<T> propertyEnum, String perfObject, String customFilter) {
+            Class<T> propertyEnum,
+            String perfObject,
+            String customFilter) {
         T[] props = propertyEnum.getEnumConstants();
         if (props.length < 2) {
             throw new IllegalArgumentException("Enum " + propertyEnum.getName()
@@ -163,7 +173,8 @@ public final class PerfCounterWildcardQuery {
         } catch (PdhException e) {
             Logger.warn(
                     "Failed to locate performance object for {} in the registry. Performance counters may be corrupt. {}",
-                    perfObjectLocalized, e.getMessage());
+                    perfObjectLocalized,
+                    e.getMessage());
         }
         if (objectItems == null) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
@@ -180,8 +191,8 @@ public final class PerfCounterWildcardQuery {
                 T prop = props[i];
                 List<PerfDataKit.PerfCounter> counterList = new ArrayList<>(instances.size());
                 for (String instance : instances) {
-                    PerfDataKit.PerfCounter counter = PerfDataKit.createCounter(perfObject, instance,
-                            ((PdhCounterWildcardProperty) prop).getCounter());
+                    PerfDataKit.PerfCounter counter = PerfDataKit
+                            .createCounter(perfObject, instance, ((PdhCounterWildcardProperty) prop).getCounter());
                     if (!pdhQueryHandler.addCounterToQuery(counter)) {
                         return Pair.of(Collections.emptyList(), Collections.emptyMap());
                     }
@@ -216,7 +227,8 @@ public final class PerfCounterWildcardQuery {
      *         {@code propertyEnum} on success, or an empty list and empty map if the WMI query failed.
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValuesFromWMI(
-            Class<T> propertyEnum, String wmiClass) {
+            Class<T> propertyEnum,
+            String wmiClass) {
         List<String> instances = new ArrayList<>();
         EnumMap<T, List<Long>> valuesMap = new EnumMap<>(propertyEnum);
         WmiQuery<T> query = new WmiQuery<>(wmiClass, propertyEnum);
@@ -232,20 +244,24 @@ public final class PerfCounterWildcardQuery {
                     List<Long> values = new ArrayList<>();
                     for (int i = 0; i < result.getResultCount(); i++) {
                         switch (result.getCIMType(prop)) {
-                        case Wbemcli.CIM_UINT16:
-                            values.add((long) WmiKit.getUint16(result, prop, i));
-                            break;
-                        case Wbemcli.CIM_UINT32:
-                            values.add(WmiKit.getUint32asLong(result, prop, i));
-                            break;
-                        case Wbemcli.CIM_UINT64:
-                            values.add(WmiKit.getUint64(result, prop, i));
-                            break;
-                        case Wbemcli.CIM_DATETIME:
-                            values.add(WmiKit.getDateTime(result, prop, i).toInstant().toEpochMilli());
-                            break;
-                        default:
-                            throw new ClassCastException("Unimplemented CIM Type Mapping.");
+                            case Wbemcli.CIM_UINT16:
+                                values.add((long) WmiKit.getUint16(result, prop, i));
+                                break;
+
+                            case Wbemcli.CIM_UINT32:
+                                values.add(WmiKit.getUint32asLong(result, prop, i));
+                                break;
+
+                            case Wbemcli.CIM_UINT64:
+                                values.add(WmiKit.getUint64(result, prop, i));
+                                break;
+
+                            case Wbemcli.CIM_DATETIME:
+                                values.add(WmiKit.getDateTime(result, prop, i).toInstant().toEpochMilli());
+                                break;
+
+                            default:
+                                throw new ClassCastException("Unimplemented CIM Type Mapping.");
                         }
                     }
                     valuesMap.put(prop, values);
@@ -259,6 +275,7 @@ public final class PerfCounterWildcardQuery {
      * Contract for Counter Property Enums
      */
     public interface PdhCounterWildcardProperty {
+
         /**
          * @return Returns the counter. The first element of the enum will return the instance filter rather than a
          *         counter.

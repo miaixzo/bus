@@ -65,28 +65,30 @@ public class PersonName {
         while (stk.hasMoreTokens()) {
             String tk = stk.nextToken();
             switch (tk.charAt(0)) {
-            case Symbol.C_EQUAL:
-                if (++gindex > 2)
-                    if (lenient) {
-                        Logger.info("illegal PN: {} - truncate illegal component group(s)", s);
-                        return;
+                case Symbol.C_EQUAL:
+                    if (++gindex > 2)
+                        if (lenient) {
+                            Logger.info("illegal PN: {} - truncate illegal component group(s)", s);
+                            return;
+                        } else
+                            throw new IllegalArgumentException(s);
+                    cindex = 0;
+                    break;
+
+                case '^':
+                    ++cindex;
+                    break;
+
+                default:
+                    if (cindex <= 4)
+                        set(gindex, cindex, tk);
+                    else if (lenient) {
+                        if ((tk = trim(tk)) != null) {
+                            Logger.info("illegal PN: {} - subsumes {}th component in suffix", s, cindex + 1);
+                            set(gindex, 4, Builder.maskNull(get(gindex, 4), "") + ' ' + tk);
+                        }
                     } else
                         throw new IllegalArgumentException(s);
-                cindex = 0;
-                break;
-            case '^':
-                ++cindex;
-                break;
-            default:
-                if (cindex <= 4)
-                    set(gindex, cindex, tk);
-                else if (lenient) {
-                    if ((tk = trim(tk)) != null) {
-                        Logger.info("illegal PN: {} - subsumes {}th component in suffix", s, cindex + 1);
-                        set(gindex, 4, Builder.maskNull(get(gindex, 4), "") + ' ' + tk);
-                    }
-                } else
-                    throw new IllegalArgumentException(s);
             }
         }
     }

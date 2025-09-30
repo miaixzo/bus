@@ -112,7 +112,10 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
      * @return 拷贝总长度
      * @throws IOException IO异常
      */
-    private long doCopy(final ReadableByteChannel source, final WritableByteChannel target, final ByteBuffer buffer,
+    private long doCopy(
+            final ReadableByteChannel source,
+            final WritableByteChannel target,
+            final ByteBuffer buffer,
             final StreamProgress progress) throws IOException {
         long numToRead = this.count > 0 ? this.count : Long.MAX_VALUE;
         long total = 0;

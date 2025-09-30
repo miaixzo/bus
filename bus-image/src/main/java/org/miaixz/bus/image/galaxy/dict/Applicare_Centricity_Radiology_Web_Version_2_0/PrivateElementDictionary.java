@@ -52,10 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.SecondarySpineLabel:
-            return VR.CS;
-        case PrivateTag.AdditionalTagsForPresentationState:
-            return VR.IS;
+            case PrivateTag.SecondarySpineLabel:
+                return VR.CS;
+
+            case PrivateTag.AdditionalTagsForPresentationState:
+                return VR.IS;
         }
         return VR.UN;
     }

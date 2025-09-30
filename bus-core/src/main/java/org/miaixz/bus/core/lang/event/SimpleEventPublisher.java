@@ -58,8 +58,8 @@ public class SimpleEventPublisher implements EventPublisher {
     public SimpleEventPublisher(final List<Subscriber> subscribers,
             final Loader<ExecutorService> executorServiceLoader) {
         this.subscribers = ObjectKit.defaultIfNull(subscribers, ArrayList::new);
-        this.executorServiceLoader = ObjectKit.defaultIfNull(executorServiceLoader,
-                LazyFunLoader.of(ThreadKit::newExecutor));
+        this.executorServiceLoader = ObjectKit
+                .defaultIfNull(executorServiceLoader, LazyFunLoader.of(ThreadKit::newExecutor));
     }
 
     /**

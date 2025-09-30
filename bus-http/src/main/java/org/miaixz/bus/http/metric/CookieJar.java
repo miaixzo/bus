@@ -45,6 +45,7 @@ public interface CookieJar {
      * 从不接受任何cookie的设置
      */
     CookieJar NO_COOKIES = new CookieJar() {
+
         @Override
         public void saveFromResponse(UnoUrl url, List<Cookie> cookies) {
         }

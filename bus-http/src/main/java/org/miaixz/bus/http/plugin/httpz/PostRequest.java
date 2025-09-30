@@ -74,8 +74,11 @@ public class PostRequest extends HttpRequest {
                 } else if (null != file.in) {
                     fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.in);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit
-                            .defaultIfNull(FileKit.getMimeType(file.name), MediaType.APPLICATION_OCTET_STREAM)),
+                    fileBody = RequestBody.create(
+                            MediaType.valueOf(
+                                    ObjectKit.defaultIfNull(
+                                            FileKit.getMimeType(file.name),
+                                            MediaType.APPLICATION_OCTET_STREAM)),
                             file.content);
                 }
                 builder.addFormDataPart(file.part, file.name, fileBody);
@@ -115,9 +118,10 @@ public class PostRequest extends HttpRequest {
 
     private void addParam(MultipartBody.Builder builder) {
         if (null != params && !params.isEmpty()) {
-            params.forEach((k, v) -> builder.addPart(
-                    Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
-                    RequestBody.create(null, v)));
+            params.forEach(
+                    (k, v) -> builder.addPart(
+                            Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
+                            RequestBody.create(null, v)));
         }
     }
 

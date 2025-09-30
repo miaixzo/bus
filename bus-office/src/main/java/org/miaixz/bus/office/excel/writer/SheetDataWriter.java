@@ -40,7 +40,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.miaixz.bus.core.center.map.multi.Table;
+import org.miaixz.bus.core.center.map.multiple.Table;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.office.excel.RowGroup;
 import org.miaixz.bus.office.excel.cell.editors.CellEditor;
@@ -132,17 +132,18 @@ public class SheetDataWriter {
             }
 
             // 如果无子节点，则标题行占用所有行
-            final CellRangeAddress cellRangeAddresses = CellKit.of(y, y + rowCount - 1, x,
-                    x + rowGroup.maxColumnCount() - 1);
+            final CellRangeAddress cellRangeAddresses = CellKit
+                    .of(y, y + rowCount - 1, x, x + rowGroup.maxColumnCount() - 1);
             CellStyle style = rowGroup.getStyle();
             if (null == style && null != this.styleSet) {
                 style = styleSet.getStyleFor(
-                        new CellReference(cellRangeAddresses.getFirstRow(), cellRangeAddresses.getFirstColumn()), name,
+                        new CellReference(cellRangeAddresses.getFirstRow(), cellRangeAddresses.getFirstColumn()),
+                        name,
                         true);
             }
             CellKit.mergingCells(this.sheet, cellRangeAddresses, style);
-            final Cell cell = CellKit.getOrCreateCell(this.sheet, cellRangeAddresses.getFirstColumn(),
-                    cellRangeAddresses.getFirstRow());
+            final Cell cell = CellKit
+                    .getOrCreateCell(this.sheet, cellRangeAddresses.getFirstColumn(), cellRangeAddresses.getFirstRow());
             if (null != cell) {
                 CellKit.setCellValue(cell, name, style, this.config.getCellEditor());
             }
@@ -243,8 +244,12 @@ public class SheetDataWriter {
             for (final Table.Cell<?, ?, ?> cell : aliasTable) {
                 columnIndex = getColumnIndex(cell);
                 if (null != columnIndex) {
-                    CellKit.setCellValue(CellKit.getOrCreateCell(row, columnIndex), cell.getValue(), this.styleSet,
-                            false, cellEditor);
+                    CellKit.setCellValue(
+                            CellKit.getOrCreateCell(row, columnIndex),
+                            cell.getValue(),
+                            this.styleSet,
+                            false,
+                            cellEditor);
                 }
             }
         } else {

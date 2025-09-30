@@ -74,6 +74,7 @@ public class FileLoader extends ResourceLoader implements Loader {
     }
 
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
+
         private final URL context;
         private final boolean recursively;
         private final Filter filter;

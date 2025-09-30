@@ -86,7 +86,9 @@ public final class Builder {
      * @param interfaces        代理类中需要实现的被代理类的接口方法
      * @return 代理类
      */
-    public static <T> T newProxyInstance(final ClassLoader classloader, final InvocationHandler invocationHandler,
+    public static <T> T newProxyInstance(
+            final ClassLoader classloader,
+            final InvocationHandler invocationHandler,
             final Class<?>... interfaces) {
         return (T) Proxy.newProxyInstance(classloader, interfaces, invocationHandler);
     }

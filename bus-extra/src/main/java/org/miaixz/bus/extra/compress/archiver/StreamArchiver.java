@@ -41,12 +41,11 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.compress.CompressBuilder;
 
 /**
  * 数据归档封装，归档即将几个文件或目录打成一个压缩包 支持的归档文件格式为：
@@ -133,7 +132,10 @@ public class StreamArchiver implements Archiver {
     }
 
     @Override
-    public StreamArchiver add(final File file, final String path, final Function<String, String> fileNameEditor,
+    public StreamArchiver add(
+            final File file,
+            final String path,
+            final Function<String, String> fileNameEditor,
             final Predicate<File> predicate) throws InternalException {
         try {
             addInternal(file, path, fileNameEditor, predicate);
@@ -176,18 +178,17 @@ public class StreamArchiver implements Archiver {
      * @param fileNameEditor 文件名编辑器
      * @param predicate      文件过滤器，指定哪些文件或目录可以加入，当{@link Predicate#test(Object)}为{@code true}加入。
      */
-    private void addInternal(final File file, final String path, final Function<String, String> fileNameEditor,
+    private void addInternal(
+            final File file,
+            final String path,
+            final Function<String, String> fileNameEditor,
             final Predicate<File> predicate) throws IOException {
         if (null != predicate && !predicate.test(file)) {
             return;
         }
         final ArchiveOutputStream out = this.out;
 
-        String entryName = (fileNameEditor == null) ? file.getName() : fileNameEditor.apply(file.getName());
-        if (StringKit.isNotEmpty(path)) {
-            // 非空拼接路径，格式为：path/name
-            entryName = StringKit.addSuffixIfNot(path, Symbol.SLASH) + entryName;
-        }
+        final String entryName = CompressBuilder.getEntryName(file.getName(), path, fileNameEditor);
         out.putArchiveEntry(out.createArchiveEntry(file, entryName));
 
         if (file.isDirectory()) {

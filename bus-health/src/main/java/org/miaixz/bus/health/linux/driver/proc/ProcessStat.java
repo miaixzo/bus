@@ -198,24 +198,29 @@ public final class ProcessStat {
     public static OSProcess.State getState(char stateValue) {
         OSProcess.State state;
         switch (stateValue) {
-        case 'R':
-            state = OSProcess.State.RUNNING;
-            break;
-        case 'S':
-            state = OSProcess.State.SLEEPING;
-            break;
-        case 'D':
-            state = OSProcess.State.WAITING;
-            break;
-        case 'Z':
-            state = OSProcess.State.ZOMBIE;
-            break;
-        case 'T':
-            state = OSProcess.State.STOPPED;
-            break;
-        default:
-            state = OSProcess.State.OTHER;
-            break;
+            case 'R':
+                state = OSProcess.State.RUNNING;
+                break;
+
+            case 'S':
+                state = OSProcess.State.SLEEPING;
+                break;
+
+            case 'D':
+                state = OSProcess.State.WAITING;
+                break;
+
+            case 'Z':
+                state = OSProcess.State.ZOMBIE;
+                break;
+
+            case 'T':
+                state = OSProcess.State.STOPPED;
+                break;
+
+            default:
+                state = OSProcess.State.OTHER;
+                break;
         }
         return state;
     }

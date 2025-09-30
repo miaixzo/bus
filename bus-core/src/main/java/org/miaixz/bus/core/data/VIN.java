@@ -158,49 +158,58 @@ public class VIN {
      */
     private static int getVinValue(final char vinCodeChar) {
         switch (vinCodeChar) {
-        case '0':
-            return 0;
-        case '1':
-        case 'J':
-        case 'A':
-            return 1;
-        case '2':
-        case 'S':
-        case 'K':
-        case 'B':
-            return 2;
-        case '3':
-        case 'T':
-        case 'L':
-        case 'C':
-            return 3;
-        case '4':
-        case 'U':
-        case 'M':
-        case 'D':
-            return 4;
-        case '5':
-        case 'V':
-        case 'N':
-        case 'E':
-            return 5;
-        case '6':
-        case 'W':
-        case 'F':
-            return 6;
-        case '7':
-        case 'P':
-        case 'X':
-        case 'G':
-            return 7;
-        case '8':
-        case 'Y':
-        case 'H':
-            return 8;
-        case '9':
-        case 'Z':
-        case 'R':
-            return 9;
+            case '0':
+                return 0;
+
+            case '1':
+            case 'J':
+            case 'A':
+                return 1;
+
+            case '2':
+            case 'S':
+            case 'K':
+            case 'B':
+                return 2;
+
+            case '3':
+            case 'T':
+            case 'L':
+            case 'C':
+                return 3;
+
+            case '4':
+            case 'U':
+            case 'M':
+            case 'D':
+                return 4;
+
+            case '5':
+            case 'V':
+            case 'N':
+            case 'E':
+                return 5;
+
+            case '6':
+            case 'W':
+            case 'F':
+                return 6;
+
+            case '7':
+            case 'P':
+            case 'X':
+            case 'G':
+                return 7;
+
+            case '8':
+            case 'Y':
+            case 'H':
+                return 8;
+
+            case '9':
+            case 'Z':
+            case 'R':
+                return 9;
         }
         throw new IllegalArgumentException("Invalid VIN char: " + vinCodeChar);
     }

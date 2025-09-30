@@ -47,8 +47,8 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 @Immutable
 public class OSSession {
 
-    private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter.ofPattern(Fields.NORM_DATETIME_MINUTE,
-            Locale.ROOT);
+    private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter
+            .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
 
     private final String userName;
     private final String terminalDevice;

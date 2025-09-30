@@ -78,13 +78,20 @@ public abstract class SAXTransformer {
         return new SAXWriter(th);
     }
 
-    public static Attributes transform(Attributes ds, Templates templates, boolean includeNameSpaceDeclaration,
+    public static Attributes transform(
+            Attributes ds,
+            Templates templates,
+            boolean includeNameSpaceDeclaration,
             boolean includeKeword) throws SAXException, TransformerConfigurationException {
         return transform(ds, templates, includeNameSpaceDeclaration, includeKeword, null);
     }
 
-    public static Attributes transform(Attributes ds, Templates templates, boolean includeNameSpaceDeclaration,
-            boolean includeKeword, SetupTransformer setup) throws SAXException, TransformerConfigurationException {
+    public static Attributes transform(
+            Attributes ds,
+            Templates templates,
+            boolean includeNameSpaceDeclaration,
+            boolean includeKeword,
+            SetupTransformer setup) throws SAXException, TransformerConfigurationException {
         Attributes modify = new Attributes();
         SAXWriter w = SAXTransformer.getSAXWriter(templates, modify, setup);
         w.setIncludeNamespaceDeclaration(includeNameSpaceDeclaration);
@@ -98,6 +105,7 @@ public abstract class SAXTransformer {
     }
 
     public interface SetupTransformer {
+
         void setup(Transformer transformer);
     }
 

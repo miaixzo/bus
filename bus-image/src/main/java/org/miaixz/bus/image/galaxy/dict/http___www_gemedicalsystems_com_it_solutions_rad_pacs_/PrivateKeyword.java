@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ReferenceToPacsStudy:
-            return "ReferenceToPacsStudy";
-        case PrivateTag.ReferenceToPacsImage:
-            return "ReferenceToPacsImage";
-        case PrivateTag.PacsExamnotesFlag:
-            return "PacsExamnotesFlag";
+            case PrivateTag.ReferenceToPacsStudy:
+                return "ReferenceToPacsStudy";
+
+            case PrivateTag.ReferenceToPacsImage:
+                return "ReferenceToPacsImage";
+
+            case PrivateTag.PacsExamnotesFlag:
+                return "PacsExamnotesFlag";
         }
         return "";
     }

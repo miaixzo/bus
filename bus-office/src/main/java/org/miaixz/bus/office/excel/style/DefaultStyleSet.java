@@ -238,7 +238,10 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
-    public DefaultStyleSet setFont(final short color, final short fontSize, final String fontName,
+    public DefaultStyleSet setFont(
+            final short color,
+            final short fontSize,
+            final String fontName,
             final boolean ignoreHead) {
         final Font font = StyleKit.createFont(this.workbook, color, fontSize, fontName);
         return setFont(font, ignoreHead);

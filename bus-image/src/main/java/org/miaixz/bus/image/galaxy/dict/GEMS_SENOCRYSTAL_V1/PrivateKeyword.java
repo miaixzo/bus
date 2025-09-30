@@ -38,22 +38,29 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ClinicalView:
-            return "ClinicalView";
-        case PrivateTag.ExposureDose:
-            return "ExposureDose";
-        case PrivateTag.ImplantDisplacement:
-            return "ImplantDisplacement";
-        case PrivateTag.PaddleType:
-            return "PaddleType";
-        case PrivateTag.ProcessingType:
-            return "ProcessingType";
-        case PrivateTag.WindowingType:
-            return "WindowingType";
-        case PrivateTag.Saturation:
-            return "Saturation";
-        case PrivateTag.Clip:
-            return "Clip";
+            case PrivateTag.ClinicalView:
+                return "ClinicalView";
+
+            case PrivateTag.ExposureDose:
+                return "ExposureDose";
+
+            case PrivateTag.ImplantDisplacement:
+                return "ImplantDisplacement";
+
+            case PrivateTag.PaddleType:
+                return "PaddleType";
+
+            case PrivateTag.ProcessingType:
+                return "ProcessingType";
+
+            case PrivateTag.WindowingType:
+                return "WindowingType";
+
+            case PrivateTag.Saturation:
+                return "Saturation";
+
+            case PrivateTag.Clip:
+                return "Clip";
         }
         return "";
     }

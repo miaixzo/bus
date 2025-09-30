@@ -38,22 +38,29 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.NumberOfSeriesInStudy:
-            return "NumberOfSeriesInStudy";
-        case PrivateTag.NumberOfUnarchivedSeries:
-            return "NumberOfUnarchivedSeries";
-        case PrivateTag.ReferenceImageField:
-            return "ReferenceImageField";
-        case PrivateTag.SummaryImage:
-            return "SummaryImage";
-        case PrivateTag.StartTimeSecsInFirstAxial:
-            return "StartTimeSecsInFirstAxial";
-        case PrivateTag.NumberOfUpdatesToHeader:
-            return "NumberOfUpdatesToHeader";
-        case PrivateTag.IndicatesIfStudyHasCompleteInfo:
-            return "IndicatesIfStudyHasCompleteInfo";
-        case PrivateTag.HasMPPSRelatedTags:
-            return "HasMPPSRelatedTags";
+            case PrivateTag.NumberOfSeriesInStudy:
+                return "NumberOfSeriesInStudy";
+
+            case PrivateTag.NumberOfUnarchivedSeries:
+                return "NumberOfUnarchivedSeries";
+
+            case PrivateTag.ReferenceImageField:
+                return "ReferenceImageField";
+
+            case PrivateTag.SummaryImage:
+                return "SummaryImage";
+
+            case PrivateTag.StartTimeSecsInFirstAxial:
+                return "StartTimeSecsInFirstAxial";
+
+            case PrivateTag.NumberOfUpdatesToHeader:
+                return "NumberOfUpdatesToHeader";
+
+            case PrivateTag.IndicatesIfStudyHasCompleteInfo:
+                return "IndicatesIfStudyHasCompleteInfo";
+
+            case PrivateTag.HasMPPSRelatedTags:
+                return "HasMPPSRelatedTags";
         }
         return "";
     }

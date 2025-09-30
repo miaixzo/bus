@@ -66,8 +66,8 @@ public class RecordBeanDesc extends AbstractBeanDesc {
 
         final Method[] getters = MethodKit.getPublicMethods(beanClass, method -> 0 == method.getParameterCount());
         // 排除静态属性和对象子类
-        final Field[] fields = FieldKit.getFields(beanClass,
-                field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
+        final Field[] fields = FieldKit
+                .getFields(beanClass, field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
         for (final Field field : fields) {
             for (final Method getter : getters) {
                 if (field.getName().equals(getter.getName())) {

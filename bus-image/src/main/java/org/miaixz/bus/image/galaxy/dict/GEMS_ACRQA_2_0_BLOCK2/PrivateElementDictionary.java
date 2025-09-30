@@ -52,19 +52,21 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.CRGA:
-        case PrivateTag.CRGC:
-        case PrivateTag.CRGS:
-        case PrivateTag.CRRE:
-        case PrivateTag.CRDRT:
-            return VR.DS;
-        case PrivateTag.CRCShift:
-        case PrivateTag.CRGT:
-        case PrivateTag.CRRT:
-            return VR.LO;
-        case PrivateTag.CRSShift:
-        case PrivateTag.CRRN:
-            return VR.US;
+            case PrivateTag.CRGA:
+            case PrivateTag.CRGC:
+            case PrivateTag.CRGS:
+            case PrivateTag.CRRE:
+            case PrivateTag.CRDRT:
+                return VR.DS;
+
+            case PrivateTag.CRCShift:
+            case PrivateTag.CRGT:
+            case PrivateTag.CRRT:
+                return VR.LO;
+
+            case PrivateTag.CRSShift:
+            case PrivateTag.CRRN:
+                return VR.US;
         }
         return VR.UN;
     }

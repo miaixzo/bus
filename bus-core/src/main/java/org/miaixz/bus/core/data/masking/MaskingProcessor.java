@@ -246,16 +246,16 @@ public class MaskingProcessor {
         while (matcher.find()) {
             final String matched = matcher.group();
             final String replacement = switch (rule.getMasking()) {
-            case FULL ->
-                    // 完全脱敏，用脱敏字符替换整个匹配内容
-                    StringKit.repeat(rule.getMaskChar(), matched.length());
-            case PARTIAL ->
-                    // 部分脱敏，保留部分原始内容
-                    partialMask(matched, rule.getPreserveLeft(), rule.getPreserveRight(), rule.getMaskChar());
-            case REPLACE ->
-                    // 替换脱敏，用指定文本替换
-                    rule.getReplacement();
-            default -> matched;
+                case FULL ->
+                        // 完全脱敏，用脱敏字符替换整个匹配内容
+                        StringKit.repeat(rule.getMaskChar(), matched.length());
+                case PARTIAL ->
+                        // 部分脱敏，保留部分原始内容
+                        partialMask(matched, rule.getPreserveLeft(), rule.getPreserveRight(), rule.getMaskChar());
+                case REPLACE ->
+                        // 替换脱敏，用指定文本替换
+                        rule.getReplacement();
+                default -> matched;
             };
 
             // 处理正则表达式中的特殊字符

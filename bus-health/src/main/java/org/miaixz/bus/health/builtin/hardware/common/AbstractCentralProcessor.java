@@ -53,15 +53,15 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
 
     private final Supplier<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
     // Max often iterates current, intentionally making it shorter to re-memoize current
-    private final Supplier<long[]> currentFreq = Memoizer.memoize(this::queryCurrentFreq,
-            Memoizer.defaultExpiration() / 2L);
-    private final Supplier<Long> contextSwitches = Memoizer.memoize(this::queryContextSwitches,
-            Memoizer.defaultExpiration());
+    private final Supplier<long[]> currentFreq = Memoizer
+            .memoize(this::queryCurrentFreq, Memoizer.defaultExpiration() / 2L);
+    private final Supplier<Long> contextSwitches = Memoizer
+            .memoize(this::queryContextSwitches, Memoizer.defaultExpiration());
     private final Supplier<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
-    private final Supplier<long[]> systemCpuLoadTicks = Memoizer.memoize(this::querySystemCpuLoadTicks,
-            Memoizer.defaultExpiration());
-    private final Supplier<long[][]> processorCpuLoadTicks = Memoizer.memoize(this::queryProcessorCpuLoadTicks,
-            Memoizer.defaultExpiration());
+    private final Supplier<long[]> systemCpuLoadTicks = Memoizer
+            .memoize(this::querySystemCpuLoadTicks, Memoizer.defaultExpiration());
+    private final Supplier<long[][]> processorCpuLoadTicks = Memoizer
+            .memoize(this::queryProcessorCpuLoadTicks, Memoizer.defaultExpiration());
     // Logical and Physical Processor Counts
     private final int physicalPackageCount;
     private final int physicalProcessorCount;
@@ -136,98 +136,128 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         } else {
             for (String flag : flags) {
                 switch (flag) { // NOSONAR squid:S1479
-                case "fpu":
-                    processorIdBytes |= 1L << 32;
-                    break;
-                case "vme":
-                    processorIdBytes |= 1L << 33;
-                    break;
-                case "de":
-                    processorIdBytes |= 1L << 34;
-                    break;
-                case "pse":
-                    processorIdBytes |= 1L << 35;
-                    break;
-                case "tsc":
-                    processorIdBytes |= 1L << 36;
-                    break;
-                case "msr":
-                    processorIdBytes |= 1L << 37;
-                    break;
-                case "pae":
-                    processorIdBytes |= 1L << 38;
-                    break;
-                case "mce":
-                    processorIdBytes |= 1L << 39;
-                    break;
-                case "cx8":
-                    processorIdBytes |= 1L << 40;
-                    break;
-                case "apic":
-                    processorIdBytes |= 1L << 41;
-                    break;
-                case "sep":
-                    processorIdBytes |= 1L << 43;
-                    break;
-                case "mtrr":
-                    processorIdBytes |= 1L << 44;
-                    break;
-                case "pge":
-                    processorIdBytes |= 1L << 45;
-                    break;
-                case "mca":
-                    processorIdBytes |= 1L << 46;
-                    break;
-                case "cmov":
-                    processorIdBytes |= 1L << 47;
-                    break;
-                case "pat":
-                    processorIdBytes |= 1L << 48;
-                    break;
-                case "pse-36":
-                    processorIdBytes |= 1L << 49;
-                    break;
-                case "psn":
-                    processorIdBytes |= 1L << 50;
-                    break;
-                case "clfsh":
-                    processorIdBytes |= 1L << 51;
-                    break;
-                case "ds":
-                    processorIdBytes |= 1L << 53;
-                    break;
-                case "acpi":
-                    processorIdBytes |= 1L << 54;
-                    break;
-                case "mmx":
-                    processorIdBytes |= 1L << 55;
-                    break;
-                case "fxsr":
-                    processorIdBytes |= 1L << 56;
-                    break;
-                case "sse":
-                    processorIdBytes |= 1L << 57;
-                    break;
-                case "sse2":
-                    processorIdBytes |= 1L << 58;
-                    break;
-                case "ss":
-                    processorIdBytes |= 1L << 59;
-                    break;
-                case "htt":
-                    processorIdBytes |= 1L << 60;
-                    break;
-                case "tm":
-                    processorIdBytes |= 1L << 61;
-                    break;
-                case "ia64":
-                    processorIdBytes |= 1L << 62;
-                    break;
-                case "pbe":
-                    processorIdBytes |= 1L << 63;
-                    break;
-                default:
-                    break;
+                    case "fpu":
+                        processorIdBytes |= 1L << 32;
+                        break;
+
+                    case "vme":
+                        processorIdBytes |= 1L << 33;
+                        break;
+
+                    case "de":
+                        processorIdBytes |= 1L << 34;
+                        break;
+
+                    case "pse":
+                        processorIdBytes |= 1L << 35;
+                        break;
+
+                    case "tsc":
+                        processorIdBytes |= 1L << 36;
+                        break;
+
+                    case "msr":
+                        processorIdBytes |= 1L << 37;
+                        break;
+
+                    case "pae":
+                        processorIdBytes |= 1L << 38;
+                        break;
+
+                    case "mce":
+                        processorIdBytes |= 1L << 39;
+                        break;
+
+                    case "cx8":
+                        processorIdBytes |= 1L << 40;
+                        break;
+
+                    case "apic":
+                        processorIdBytes |= 1L << 41;
+                        break;
+
+                    case "sep":
+                        processorIdBytes |= 1L << 43;
+                        break;
+
+                    case "mtrr":
+                        processorIdBytes |= 1L << 44;
+                        break;
+
+                    case "pge":
+                        processorIdBytes |= 1L << 45;
+                        break;
+
+                    case "mca":
+                        processorIdBytes |= 1L << 46;
+                        break;
+
+                    case "cmov":
+                        processorIdBytes |= 1L << 47;
+                        break;
+
+                    case "pat":
+                        processorIdBytes |= 1L << 48;
+                        break;
+
+                    case "pse-36":
+                        processorIdBytes |= 1L << 49;
+                        break;
+
+                    case "psn":
+                        processorIdBytes |= 1L << 50;
+                        break;
+
+                    case "clfsh":
+                        processorIdBytes |= 1L << 51;
+                        break;
+
+                    case "ds":
+                        processorIdBytes |= 1L << 53;
+                        break;
+
+                    case "acpi":
+                        processorIdBytes |= 1L << 54;
+                        break;
+
+                    case "mmx":
+                        processorIdBytes |= 1L << 55;
+                        break;
+
+                    case "fxsr":
+                        processorIdBytes |= 1L << 56;
+                        break;
+
+                    case "sse":
+                        processorIdBytes |= 1L << 57;
+                        break;
+
+                    case "sse2":
+                        processorIdBytes |= 1L << 58;
+                        break;
+
+                    case "ss":
+                        processorIdBytes |= 1L << 59;
+                        break;
+
+                    case "htt":
+                        processorIdBytes |= 1L << 60;
+                        break;
+
+                    case "tm":
+                        processorIdBytes |= 1L << 61;
+                        break;
+
+                    case "ia64":
+                        processorIdBytes |= 1L << 62;
+                        break;
+
+                    case "pbe":
+                        processorIdBytes |= 1L << 63;
+                        break;
+
+                    default:
+                        break;
                 }
             }
         }
@@ -241,8 +271,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      * @return A list sorted by level (desc), type, and size (desc)
      */
     public static List<ProcessorCache> orderedProcCaches(Set<ProcessorCache> caches) {
-        return caches.stream().sorted(Comparator.comparing(
-                c -> -1000 * c.getLevel() + 100 * c.getType().ordinal() - Integer.highestOneBit(c.getCacheSize())))
+        return caches.stream()
+                .sorted(
+                        Comparator.comparing(
+                                c -> -1000 * c.getLevel() + 100 * c.getType().ordinal()
+                                        - Integer.highestOneBit(c.getCacheSize())))
                 .collect(Collectors.toList());
     }
 
@@ -371,7 +404,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
             throw new IllegalArgumentException("Provited tick array length " + oldTicks.length + " should have "
                     + TickType.values().length + " elements");
         }
-        long[] ticks = getSystemCpuLoadTicks();
+        return getSystemCpuLoadBetweenTicks(oldTicks, getSystemCpuLoadTicks());
+    }
+
+    @Override
+    public double getSystemCpuLoadBetweenTicks(long[] oldTicks, long[] ticks) {
         // Calculate total
         long total = 0;
         for (int i = 0; i < ticks.length; i++) {
@@ -387,7 +424,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
 
     @Override
     public double[] getProcessorCpuLoadBetweenTicks(long[][] oldTicks) {
-        long[][] ticks = getProcessorCpuLoadTicks();
+        return getProcessorCpuLoadBetweenTicks(oldTicks, getProcessorCpuLoadTicks());
+    }
+
+    @Override
+    public double[] getProcessorCpuLoadBetweenTicks(long[][] oldTicks, long[][] ticks) {
         if (oldTicks.length != ticks.length || oldTicks[0].length != TickType.values().length) {
             throw new IllegalArgumentException("Provided tick array length " + oldTicks.length + " should be "
                     + ticks.length + ", each subarray having " + TickType.values().length + " elements");
@@ -423,7 +464,8 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return this.physicalPackageCount;
     }
 
-    protected List<PhysicalProcessor> createProcListFromDmesg(List<LogicalProcessor> logProcs,
+    protected List<PhysicalProcessor> createProcListFromDmesg(
+            List<LogicalProcessor> logProcs,
             Map<Integer, String> dmesg) {
         // Check if multiple CPU types
         boolean isHybrid = dmesg.values().stream().distinct().count() > 1;
@@ -448,8 +490,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
                 physProcs.add(new PhysicalProcessor(pkgId, coreId, efficiency, idStr));
             }
         }
-        physProcs.sort(Comparator.comparingInt(PhysicalProcessor::getPhysicalPackageNumber)
-                .thenComparingInt(PhysicalProcessor::getPhysicalProcessorNumber));
+        physProcs.sort(
+                Comparator.comparingInt(PhysicalProcessor::getPhysicalPackageNumber)
+                        .thenComparingInt(PhysicalProcessor::getPhysicalProcessorNumber));
         return physProcs;
     }
 

@@ -163,14 +163,17 @@ public class Http2Connection implements Closeable {
         writerExecutor = new ScheduledThreadPoolExecutor(1,
                 org.miaixz.bus.http.Builder.threadFactory(String.format("Http %s Writer", connectionName), false));
         if (builder.pingIntervalMillis != 0) {
-            writerExecutor.scheduleAtFixedRate(new IntervalPingRunnable(), builder.pingIntervalMillis,
-                    builder.pingIntervalMillis, TimeUnit.MILLISECONDS);
+            writerExecutor.scheduleAtFixedRate(
+                    new IntervalPingRunnable(),
+                    builder.pingIntervalMillis,
+                    builder.pingIntervalMillis,
+                    TimeUnit.MILLISECONDS);
         }
 
         // Like newSingleThreadExecutor, except lazy creates the thread.
         pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
-                org.miaixz.bus.http.Builder.threadFactory(String.format("Http %s Push Observer", connectionName),
-                        true));
+                org.miaixz.bus.http.Builder
+                        .threadFactory(String.format("Http %s Push Observer", connectionName), true));
         peerSettings.set(HTTP.INITIAL_WINDOW_SIZE, HTTP.DEFAULT_INITIAL_WINDOW_SIZE);
         peerSettings.set(HTTP.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);
         bytesLeftInWriteWindow = peerSettings.getInitialWindowSize();
@@ -323,6 +326,7 @@ public class Http2Connection implements Closeable {
     void writeSynResetLater(final int streamId, final Http2ErrorCode errorCode) {
         try {
             writerExecutor.execute(new NamedRunnable("Http %s stream %d", connectionName, streamId) {
+
                 @Override
                 public void execute() {
                     try {
@@ -344,6 +348,7 @@ public class Http2Connection implements Closeable {
     void writeWindowUpdateLater(final int streamId, final long unacknowledgedBytesRead) {
         try {
             writerExecutor.execute(new NamedRunnable("Http Window Update %s stream %d", connectionName, streamId) {
+
                 @Override
                 public void execute() {
                     try {
@@ -539,6 +544,7 @@ public class Http2Connection implements Closeable {
         }
         try {
             writerExecutor.execute(new NamedRunnable("Http %s ping", connectionName) {
+
                 @Override
                 public void execute() {
                     writePing(false, DEGRADED_PING, 0);
@@ -566,6 +572,7 @@ public class Http2Connection implements Closeable {
         }
         try {
             pushExecutorExecute(new NamedRunnable("Http %s Push Request[%s]", connectionName, streamId) {
+
                 @Override
                 public void execute() {
                     boolean cancel = pushObserver.onRequest(streamId, requestHeaders);
@@ -588,6 +595,7 @@ public class Http2Connection implements Closeable {
     void pushHeadersLater(final int streamId, final List<Http2Header> requestHeaders, final boolean inFinished) {
         try {
             pushExecutorExecute(new NamedRunnable("Http %s Push Headers[%s]", connectionName, streamId) {
+
                 @Override
                 public void execute() {
                     boolean cancel = pushObserver.onHeaders(streamId, requestHeaders, inFinished);
@@ -620,6 +628,7 @@ public class Http2Connection implements Closeable {
         if (buffer.size() != byteCount)
             throw new IOException(buffer.size() + " != " + byteCount);
         pushExecutorExecute(new NamedRunnable("Http %s Push Data[%s]", connectionName, streamId) {
+
             @Override
             public void execute() {
                 try {
@@ -639,6 +648,7 @@ public class Http2Connection implements Closeable {
 
     void pushResetLater(final int streamId, final Http2ErrorCode errorCode) {
         pushExecutorExecute(new NamedRunnable("Http %s Push Reset[%s]", connectionName, streamId) {
+
             @Override
             public void execute() {
                 pushObserver.onReset(streamId, errorCode);
@@ -656,6 +666,7 @@ public class Http2Connection implements Closeable {
     }
 
     public static class Builder {
+
         Socket socket;
         String connectionName;
         BufferSource source;
@@ -714,6 +725,7 @@ public class Http2Connection implements Closeable {
     public abstract static class Listener {
 
         public static final Listener REFUSE_INCOMING_STREAMS = new Listener() {
+
             @Override
             public void onStream(Http2Stream stream) throws IOException {
                 stream.close(Http2ErrorCode.REFUSED_STREAM, null);
@@ -864,6 +876,7 @@ public class Http2Connection implements Closeable {
                     lastGoodStreamId = streamId;
                     streams.put(streamId, newStream);
                     listenerExecutor.execute(new NamedRunnable("Http %s stream %d", connectionName, streamId) {
+
                         @Override
                         public void execute() {
                             try {
@@ -901,6 +914,7 @@ public class Http2Connection implements Closeable {
         public void settings(boolean clearPrevious, Http2Settings settings) {
             try {
                 writerExecutor.execute(new NamedRunnable("Http %s ACK Settings", connectionName) {
+
                     @Override
                     public void execute() {
                         applyAndAckSettings(clearPrevious, settings);
@@ -941,6 +955,7 @@ public class Http2Connection implements Closeable {
                 }
             }
             listenerExecutor.execute(new NamedRunnable("Http %s settings", connectionName) {
+
                 @Override
                 public void execute() {
                     listener.onSettings(Http2Connection.this);
@@ -1023,7 +1038,12 @@ public class Http2Connection implements Closeable {
         }
 
         @Override
-        public void alternateService(int streamId, String origin, ByteString protocol, String host, int port,
+        public void alternateService(
+                int streamId,
+                String origin,
+                ByteString protocol,
+                String host,
+                int port,
                 long maxAge) {
         }
     }

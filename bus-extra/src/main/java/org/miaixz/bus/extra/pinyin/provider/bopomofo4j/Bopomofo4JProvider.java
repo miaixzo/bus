@@ -65,8 +65,12 @@ public class Bopomofo4JProvider implements PinyinProvider {
 
     @Override
     public String getPinyin(final char c, final boolean tone) {
-        return Bopomofo4j.pinyin(String.valueOf(c), tone ? ToneType.WITH_VOWEL_TONE : ToneType.WITHOUT_TONE, false,
-                false, Normal.EMPTY);
+        return Bopomofo4j.pinyin(
+                String.valueOf(c),
+                tone ? ToneType.WITH_VOWEL_TONE : ToneType.WITHOUT_TONE,
+                false,
+                false,
+                Normal.EMPTY);
     }
 
     @Override

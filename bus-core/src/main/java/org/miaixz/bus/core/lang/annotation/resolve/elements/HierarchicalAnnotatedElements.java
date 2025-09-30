@@ -118,7 +118,8 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
      * @return {@code HierarchicalAnnotatedElements}实例，
      *         当{@code element}也是一个{@code HierarchicalAnnotatedElements}时，返回{@code element}本身
      */
-    public static HierarchicalAnnotatedElements of(final AnnotatedElement element,
+    public static HierarchicalAnnotatedElements of(
+            final AnnotatedElement element,
             final BiFunction<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory) {
         return element instanceof HierarchicalAnnotatedElements ? (HierarchicalAnnotatedElements) element
                 : new HierarchicalAnnotatedElements(element, elementFactory);
@@ -319,8 +320,7 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
             scanHierarchy(mappings, (Class<?>) source, false, source);
         }
         // 原始元素是方法
-        else if (source instanceof Method) {
-            final Method methodSource = (Method) source;
+        else if (source instanceof final Method methodSource) {
             // 静态、私有与被final关键字修饰方法无法被子类重写，因此不可能具有层级结构
             if (Modifier.isPrivate(methodSource.getModifiers()) || Modifier.isFinal(methodSource.getModifiers())
                     || Modifier.isStatic(methodSource.getModifiers())) {
@@ -335,7 +335,10 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
     /**
      * 按广度优先，遍历{@code type}的父类以及父接口，并从类上/类中指定方法上获得所需的注解
      */
-    private void scanHierarchy(final Set<AnnotatedElement> mappings, Class<?> type, final boolean isMethod,
+    private void scanHierarchy(
+            final Set<AnnotatedElement> mappings,
+            Class<?> type,
+            final boolean isMethod,
             final AnnotatedElement source) {
         final Method methodSource = isMethod ? (Method) source : null;
         final Deque<Class<?>> deque = new LinkedList<>();

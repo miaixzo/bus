@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -77,22 +77,30 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     @Override
-    public final boolean skip(MappedStatement ms, Object parameterObject,
+    public final boolean skip(
+            MappedStatement ms,
+            Object parameterObject,
             org.apache.ibatis.session.RowBounds rowBounds) {
         // 该方法不会被调用
         return true;
     }
 
     @Override
-    public boolean beforeCount(MappedStatement ms, Object parameterObject,
+    public boolean beforeCount(
+            MappedStatement ms,
+            Object parameterObject,
             org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         return !page.isOrderByOnly() && page.isCount();
     }
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject,
-            org.apache.ibatis.session.RowBounds rowBounds, CacheKey countKey) {
+    public String getCountSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds,
+            CacheKey countKey) {
         Page<Object> page = getLocalPage();
         String countColumn = page.getCountColumn();
         if (StringKit.isNotEmpty(countColumn)) {
@@ -125,7 +133,10 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     @Override
-    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql,
+    public Object processParameterObject(
+            MappedStatement ms,
+            Object parameterObject,
+            BoundSql boundSql,
             CacheKey pageKey) {
         // 处理参数
         Page page = getLocalPage();
@@ -189,11 +200,17 @@ public abstract class AbstractPaging extends AbstractDialect {
      * @param pageKey  CacheKey
      * @return 结果
      */
-    public abstract Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page,
-            BoundSql boundSql, CacheKey pageKey);
+    public abstract Object processPageParameter(
+            MappedStatement ms,
+            Map<String, Object> paramMap,
+            Page page,
+            BoundSql boundSql,
+            CacheKey pageKey);
 
     @Override
-    public boolean beforePage(MappedStatement ms, Object parameterObject,
+    public boolean beforePage(
+            MappedStatement ms,
+            Object parameterObject,
             org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         if (page.isOrderByOnly() || page.getPageSize() > 0) {
@@ -203,8 +220,12 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject,
-            org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
+    public String getPageSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds,
+            CacheKey pageKey) {
         String sql = boundSql.getSql();
         Page page = getLocalPage();
         // 支持 order by

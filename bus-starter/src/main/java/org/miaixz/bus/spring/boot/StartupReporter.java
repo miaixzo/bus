@@ -102,8 +102,8 @@ public class StartupReporter {
     public StartupReporter() {
         this.statics = new StartupMetrics();
         this.statics.setApplicationBootTime(ManagementFactory.getRuntimeMXBean().getStartTime());
-        this.beanMetricsCustomizers = SpringFactoriesLoader.loadFactories(BeanMetricsCustomizer.class,
-                StartupReporter.class.getClassLoader());
+        this.beanMetricsCustomizers = SpringFactoriesLoader
+                .loadFactories(BeanMetricsCustomizer.class, StartupReporter.class.getClassLoader());
     }
 
     /**

@@ -52,18 +52,23 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.BAMWallThicknessSessionCompletionFlag:
-            return VR.CS;
-        case PrivateTag.BAMWallThicknessSessionDateTime:
-            return VR.DT;
-        case PrivateTag.BAMWallThicknessFileContent:
-            return VR.OB;
-        case PrivateTag.BAMWallThicknessSessionCreator:
-            return VR.PN;
-        case PrivateTag.BAMWallThicknessFileSequence:
-            return VR.SQ;
-        case PrivateTag.BAMWallThicknessFileName:
-            return VR.ST;
+            case PrivateTag.BAMWallThicknessSessionCompletionFlag:
+                return VR.CS;
+
+            case PrivateTag.BAMWallThicknessSessionDateTime:
+                return VR.DT;
+
+            case PrivateTag.BAMWallThicknessFileContent:
+                return VR.OB;
+
+            case PrivateTag.BAMWallThicknessSessionCreator:
+                return VR.PN;
+
+            case PrivateTag.BAMWallThicknessFileSequence:
+                return VR.SQ;
+
+            case PrivateTag.BAMWallThicknessFileName:
+                return VR.ST;
         }
         return VR.UN;
     }

@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.PixelDataReferences:
-            return "PixelDataReferences";
-        case PrivateTag.PixelDataReferencesTemporary:
-            return "PixelDataReferencesTemporary";
-        case PrivateTag.AutoPushTag:
-            return "AutoPushTag";
-        case PrivateTag.PPSStatus:
-            return "PPSStatus";
+            case PrivateTag.PixelDataReferences:
+                return "PixelDataReferences";
+
+            case PrivateTag.PixelDataReferencesTemporary:
+                return "PixelDataReferencesTemporary";
+
+            case PrivateTag.AutoPushTag:
+                return "AutoPushTag";
+
+            case PrivateTag.PPSStatus:
+                return "PPSStatus";
         }
         return "";
     }

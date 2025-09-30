@@ -38,24 +38,32 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CreationMask:
-            return "CreationMask";
-        case PrivateTag.EvaluationMask:
-            return "EvaluationMask";
-        case PrivateTag.ExtendedProcessingMask:
-            return "ExtendedProcessingMask";
-        case PrivateTag._0021_xx40_:
-            return "_0021_xx40_";
-        case PrivateTag._0021_xx41_:
-            return "_0021_xx41_";
-        case PrivateTag._0021_xx42_:
-            return "_0021_xx42_";
-        case PrivateTag._0021_xx43_:
-            return "_0021_xx43_";
-        case PrivateTag._0021_xx44_:
-            return "_0021_xx44_";
-        case PrivateTag._0021_xx50_:
-            return "_0021_xx50_";
+            case PrivateTag.CreationMask:
+                return "CreationMask";
+
+            case PrivateTag.EvaluationMask:
+                return "EvaluationMask";
+
+            case PrivateTag.ExtendedProcessingMask:
+                return "ExtendedProcessingMask";
+
+            case PrivateTag._0021_xx40_:
+                return "_0021_xx40_";
+
+            case PrivateTag._0021_xx41_:
+                return "_0021_xx41_";
+
+            case PrivateTag._0021_xx42_:
+                return "_0021_xx42_";
+
+            case PrivateTag._0021_xx43_:
+                return "_0021_xx43_";
+
+            case PrivateTag._0021_xx44_:
+                return "_0021_xx44_";
+
+            case PrivateTag._0021_xx50_:
+                return "_0021_xx50_";
         }
         return "";
     }

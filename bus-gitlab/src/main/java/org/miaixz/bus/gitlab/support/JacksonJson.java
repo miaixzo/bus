@@ -389,6 +389,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      * This class is used to create a thread-safe singleton instance of JacksonJson customized to be used by
      */
     private static class JacksonJsonSingletonHelper {
+
         private static final JacksonJson JACKSON_JSON = new JacksonJson();
 
         static {

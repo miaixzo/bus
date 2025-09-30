@@ -164,7 +164,9 @@ public class ImageAdapter {
      * @param paddingValueMax 要从最大值中排除的填充值
      * @return 最小/最大值结果
      */
-    private static MinMaxLocResult findMinMaxValues(PlanarImage image, Integer paddingValueMin,
+    private static MinMaxLocResult findMinMaxValues(
+            PlanarImage image,
+            Integer paddingValueMin,
             Integer paddingValueMax) {
         MinMaxLocResult val;
         if (CvType.depth(image.type()) <= CvType.CV_8S) {
@@ -546,7 +548,10 @@ public class ImageAdapter {
      * @param pr                 表现LUT对象
      * @return LUT参数
      */
-    public LutParameters getLutParameters(boolean pixelPadding, LookupTableCV mLUTSeq, boolean inversePaddingMLUT,
+    public LutParameters getLutParameters(
+            boolean pixelPadding,
+            LookupTableCV mLUTSeq,
+            boolean inversePaddingMLUT,
             PresentationLutObject pr) {
         Integer paddingValue = desc.getPixelPaddingValue();
         boolean isSigned = desc.isSigned();
@@ -596,8 +601,15 @@ public class ImageAdapter {
             minValue = (int) wl.getLevelMin();
             maxValue = (int) wl.getLevelMax();
         }
-        return RGBImageVoiLut.createVoiLut(wl.getLutShape(), wl.getWindow(), wl.getLevel(), minValue, maxValue, 8,
-                false, isPhotometricInterpretationInverse(wl.getPresentationState()));
+        return RGBImageVoiLut.createVoiLut(
+                wl.getLutShape(),
+                wl.getWindow(),
+                wl.getLevel(),
+                minValue,
+                maxValue,
+                8,
+                false,
+                isPhotometricInterpretationInverse(wl.getPresentationState()));
     }
 
 }

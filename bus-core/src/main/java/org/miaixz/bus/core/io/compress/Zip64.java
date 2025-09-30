@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.core.io.compress;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import org.miaixz.bus.core.lang.Charset;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -79,7 +79,7 @@ class Zip64 {
         writeInt(0); // uncompressed file size
         writeShort(entry.filename.length()); // filename length
         writeShort(0); // extra flags size
-        final byte[] filenameBytes = entry.filename.getBytes(US_ASCII);
+        final byte[] filenameBytes = entry.filename.getBytes(Charset.US_ASCII);
         out.write(filenameBytes); // filename characters
         return written + filenameBytes.length;
     }
@@ -112,14 +112,15 @@ class Zip64 {
         writeInt(entry.compressedSize); // compressed size
         writeInt(useZip64 ? MAX32 : entry.size); // uncompressed size
         writeShort(entry.filename.length()); // filename length
-        writeShort(useZip64 ? (2 + 2 + 8) /* short + short + long */
-                : 0); // extra field len
+        writeShort(
+                useZip64 ? (2 + 2 + 8) /* short + short + long */
+                        : 0); // extra field len
         writeShort(0); // comment length
         writeShort(0); // disk number where file starts
         writeShort(0); // internal file attributes (unused)
         writeInt(0); // external file attributes (unused)
         writeInt(entry.offset); // LFH offset
-        final byte[] filenameBytes = entry.filename.getBytes(US_ASCII);
+        final byte[] filenameBytes = entry.filename.getBytes(Charset.US_ASCII);
         out.write(filenameBytes); // filename characters
         if (useZip64) {
             // Extra field:
@@ -185,6 +186,7 @@ class Zip64 {
     }
 
     static class Entry {
+
         final String filename;
         long crc;
         long size;

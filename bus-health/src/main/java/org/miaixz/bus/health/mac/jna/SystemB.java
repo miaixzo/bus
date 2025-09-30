@@ -78,6 +78,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      */
     @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad" })
     class MacUtmpx extends Structure {
+
         public byte[] ut_user = new byte[UTX_USERSIZE]; // login name
         public byte[] ut_id = new byte[UTX_IDSIZE]; // id
         public byte[] ut_line = new byte[UTX_LINESIZE]; // tty name
@@ -93,6 +94,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      */
     @FieldOrder({ "proc_fd", "proc_fdtype" })
     class ProcFdInfo extends Structure {
+
         public int proc_fd;
         public int proc_fdtype;
     }
@@ -103,6 +105,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     @FieldOrder({ "insi_fport", "insi_lport", "insi_gencnt", "insi_flags", "insi_flow", "insi_vflag", "insi_ip_ttl",
             "rfu_1", "insi_faddr", "insi_laddr", "insi_v4", "insi_v6" })
     class InSockInfo extends Structure {
+
         public int insi_fport; /* foreign port */
         public int insi_lport; /* local port */
         public long insi_gencnt; /* generation count of this instance */
@@ -124,6 +127,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      */
     @FieldOrder({ "tcpsi_ini", "tcpsi_state", "tcpsi_timer", "tcpsi_mss", "tcpsi_flags", "rfu_1", "tcpsi_tp" })
     class TcpSockInfo extends Structure {
+
         public InSockInfo tcpsi_ini;
         public int tcpsi_state;
         public int[] tcpsi_timer = new int[TSI_T_NTIMERS];
@@ -140,6 +144,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
             "soi_linger", "soi_state", "soi_qlen", "soi_incqlen", "soi_qlimit", "soi_timeo", "soi_error", "soi_oobmark",
             "soi_rcv", "soi_snd", "soi_kind", "rfu_1", "soi_proto" })
     class SocketInfo extends Structure {
+
         public long[] soi_stat = new long[17]; // vinfo_stat
         public long soi_so; /* opaque handle of socket */
         public long soi_pcb; /* opaque handle of protocol control block */
@@ -167,6 +172,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      */
     @FieldOrder({ "fi_openflags", "fi_status", "fi_offset", "fi_type", "fi_guardflags" })
     class ProcFileInfo extends Structure {
+
         public int fi_openflags;
         public int fi_status;
         public long fi_offset;
@@ -179,6 +185,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      */
     @FieldOrder({ "pfi", "psi" })
     class SocketFdInfo extends Structure implements AutoCloseable {
+
         public ProcFileInfo pfi;
         public SocketInfo psi;
 
@@ -192,6 +199,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
      * Union for TCP or internet socket info
      */
     class Pri extends Union {
+
         public InSockInfo pri_in;
         public TcpSockInfo pri_tcp;
         // max element is 524 bytes

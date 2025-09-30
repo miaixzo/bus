@@ -260,11 +260,13 @@ public class CoverCall implements Cancelable {
             CoverTasks.Listener<CoverResult.State> listener = client.httpv.executor().getCompleteListener();
             if (null != listener) {
                 if (listener.listen(client, state) && null != client.onClosed) {
-                    client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)),
+                    client.execute(
+                            () -> client.onClosed.on(this.webSocket, toClose(state, code, reason)),
                             client.closedOnIO);
                 }
             } else if (null != client.onClosed) {
-                client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)),
+                client.execute(
+                        () -> client.onClosed.on(this.webSocket, toClose(state, code, reason)),
                         client.closedOnIO);
             }
         }

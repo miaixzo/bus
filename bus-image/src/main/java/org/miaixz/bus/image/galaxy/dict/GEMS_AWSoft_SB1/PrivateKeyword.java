@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ReferenceToStudyUID:
-            return "ReferenceToStudyUID";
-        case PrivateTag.ReferenceToSeriesUID:
-            return "ReferenceToSeriesUID";
-        case PrivateTag.ReferenceToOriginalInstance:
-            return "ReferenceToOriginalInstance";
-        case PrivateTag.PrivateEntityLaunchCommand:
-            return "PrivateEntityLaunchCommand";
+            case PrivateTag.ReferenceToStudyUID:
+                return "ReferenceToStudyUID";
+
+            case PrivateTag.ReferenceToSeriesUID:
+                return "ReferenceToSeriesUID";
+
+            case PrivateTag.ReferenceToOriginalInstance:
+                return "ReferenceToOriginalInstance";
+
+            case PrivateTag.PrivateEntityLaunchCommand:
+                return "PrivateEntityLaunchCommand";
         }
         return "";
     }

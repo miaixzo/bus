@@ -39,6 +39,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.mail.MailAuthenticator;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
@@ -175,8 +176,12 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
 
         // 正文
         final BodyPart body = new MimeBodyPart();
-        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}",
-                Material.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
+        body.setContent(
+                entity.getContent(),
+                StringKit.format(
+                        "text/{}; charset={}",
+                        Material.Type.HTML.equals(entity.getType()) ? "html" : "plain",
+                        entity.getCharset()));
         mainPart.addBodyPart(body);
 
         // 附件
@@ -199,16 +204,19 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
         msg.setContent(mainPart);
 
         // 收件人
-        msg.setRecipients(MimeMessage.RecipientType.TO,
+        msg.setRecipients(
+                MimeMessage.RecipientType.TO,
                 getAddress(StringKit.splitToArray(entity.getReceive(), Symbol.COMMA), charset));
         // 抄送人
         if (StringKit.isNotEmpty(entity.getCcs())) {
-            msg.setRecipients(MimeMessage.RecipientType.CC,
+            msg.setRecipients(
+                    MimeMessage.RecipientType.CC,
                     getAddress(StringKit.splitToArray(entity.getCcs(), Symbol.COMMA), charset));
         }
         // 密送人
         if (StringKit.isNotEmpty(entity.getBccs())) {
-            msg.setRecipients(MimeMessage.RecipientType.BCC,
+            msg.setRecipients(
+                    MimeMessage.RecipientType.BCC,
                     getAddress(StringKit.splitToArray(entity.getBccs(), Symbol.COMMA), charset));
         }
         return msg;
@@ -223,35 +231,11 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     private Session getSession(GenericMaterial template) {
         Authenticator authenticator = null;
         if (template.getAuth()) {
-            authenticator = new UserPassAuthenticator(template.getUser(), template.getPass());
+            authenticator = MailAuthenticator.of(template.getUser(), template.getPass());
         }
 
         return template.isUseGlobalSession() ? Session.getDefaultInstance(template.getSmtpProps(), authenticator)
                 : Session.getInstance(template.getSmtpProps(), authenticator);
-    }
-
-    class UserPassAuthenticator extends Authenticator {
-
-        private final String user;
-        private final String pass;
-
-        /**
-         * 构造
-         *
-         * @param user 用户名
-         * @param pass 密码
-         */
-        public UserPassAuthenticator(String user, String pass) {
-            super();
-            this.user = user;
-            this.pass = pass;
-        }
-
-        @Override
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(this.user, this.pass);
-        }
-
     }
 
 }

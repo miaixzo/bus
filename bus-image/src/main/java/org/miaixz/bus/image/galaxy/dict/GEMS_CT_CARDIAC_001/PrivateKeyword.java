@@ -38,44 +38,62 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CTCardiacSequence:
-            return "CTCardiacSequence";
-        case PrivateTag.HeartRateAtConfirm:
-            return "HeartRateAtConfirm";
-        case PrivateTag.AvgHeartRatePriorToConfirm:
-            return "AvgHeartRatePriorToConfirm";
-        case PrivateTag.MinHeartRatePriorToConfirm:
-            return "MinHeartRatePriorToConfirm";
-        case PrivateTag.MaxHeartRatePriorToConfirm:
-            return "MaxHeartRatePriorToConfirm";
-        case PrivateTag.StdDevHeartRatePriorToConfirm:
-            return "StdDevHeartRatePriorToConfirm";
-        case PrivateTag.NumHeartRateSamplesPriorToConfirm:
-            return "NumHeartRateSamplesPriorToConfirm";
-        case PrivateTag.AutoHeartRateDetectPredict:
-            return "AutoHeartRateDetectPredict";
-        case PrivateTag.SystemOptimizedHeartRate:
-            return "SystemOptimizedHeartRate";
-        case PrivateTag.EkgMonitorType:
-            return "EkgMonitorType";
-        case PrivateTag.NumReconSectors:
-            return "NumReconSectors";
-        case PrivateTag.RpeakTimeStamps:
-            return "RpeakTimeStamps";
-        case PrivateTag.EkgGatingType:
-            return "EkgGatingType";
-        case PrivateTag.EkgWaveTimeOffFirstDataPoint:
-            return "EkgWaveTimeOffFirstDataPoint";
-        case PrivateTag.TemporalAlg:
-            return "TemporalAlg";
-        case PrivateTag.PhaseLocation:
-            return "PhaseLocation";
-        case PrivateTag.PreBlendedCycle1:
-            return "PreBlendedCycle1";
-        case PrivateTag.PreBlendedCycle2:
-            return "PreBlendedCycle2";
-        case PrivateTag.CompressionAlg:
-            return "CompressionAlg";
+            case PrivateTag.CTCardiacSequence:
+                return "CTCardiacSequence";
+
+            case PrivateTag.HeartRateAtConfirm:
+                return "HeartRateAtConfirm";
+
+            case PrivateTag.AvgHeartRatePriorToConfirm:
+                return "AvgHeartRatePriorToConfirm";
+
+            case PrivateTag.MinHeartRatePriorToConfirm:
+                return "MinHeartRatePriorToConfirm";
+
+            case PrivateTag.MaxHeartRatePriorToConfirm:
+                return "MaxHeartRatePriorToConfirm";
+
+            case PrivateTag.StdDevHeartRatePriorToConfirm:
+                return "StdDevHeartRatePriorToConfirm";
+
+            case PrivateTag.NumHeartRateSamplesPriorToConfirm:
+                return "NumHeartRateSamplesPriorToConfirm";
+
+            case PrivateTag.AutoHeartRateDetectPredict:
+                return "AutoHeartRateDetectPredict";
+
+            case PrivateTag.SystemOptimizedHeartRate:
+                return "SystemOptimizedHeartRate";
+
+            case PrivateTag.EkgMonitorType:
+                return "EkgMonitorType";
+
+            case PrivateTag.NumReconSectors:
+                return "NumReconSectors";
+
+            case PrivateTag.RpeakTimeStamps:
+                return "RpeakTimeStamps";
+
+            case PrivateTag.EkgGatingType:
+                return "EkgGatingType";
+
+            case PrivateTag.EkgWaveTimeOffFirstDataPoint:
+                return "EkgWaveTimeOffFirstDataPoint";
+
+            case PrivateTag.TemporalAlg:
+                return "TemporalAlg";
+
+            case PrivateTag.PhaseLocation:
+                return "PhaseLocation";
+
+            case PrivateTag.PreBlendedCycle1:
+                return "PreBlendedCycle1";
+
+            case PrivateTag.PreBlendedCycle2:
+                return "PreBlendedCycle2";
+
+            case PrivateTag.CompressionAlg:
+                return "CompressionAlg";
         }
         return "";
     }

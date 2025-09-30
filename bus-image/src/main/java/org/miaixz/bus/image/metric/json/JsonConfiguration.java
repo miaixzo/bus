@@ -211,154 +211,199 @@ public class JsonConfiguration {
         reader.expect(JsonParser.Event.START_OBJECT);
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-            case "dicomDeviceName":
-                device.setDeviceName(reader.stringValue());
-                break;
-            case "dicomDescription":
-                device.setDescription(reader.stringValue());
-                break;
-            case "dicomDeviceUID":
-                device.setDeviceUID(reader.stringValue());
-                break;
-            case "dicomManufacturer":
-                device.setManufacturer(reader.stringValue());
-                break;
-            case "dicomManufacturerModelName":
-                device.setManufacturerModelName(reader.stringValue());
-                break;
-            case "dicomSoftwareVersion":
-                device.setSoftwareVersions(reader.stringArray());
-                break;
-            case "dicomStationName":
-                device.setStationName(reader.stringValue());
-                break;
-            case "dicomDeviceSerialNumber":
-                device.setDeviceSerialNumber(reader.stringValue());
-                break;
-            case "dicomIssuerOfPatientID":
-                device.setIssuerOfPatientID(reader.issuerValue());
-                break;
-            case "dicomIssuerOfAccessionNumber":
-                device.setIssuerOfAccessionNumber(reader.issuerValue());
-                break;
-            case "dicomOrderPlacerIdentifier":
-                device.setOrderPlacerIdentifier(reader.issuerValue());
-                break;
-            case "dicomOrderFillerIdentifier":
-                device.setOrderFillerIdentifier(reader.issuerValue());
-                break;
-            case "dicomIssuerOfAdmissionID":
-                device.setIssuerOfAdmissionID(reader.issuerValue());
-                break;
-            case "dicomIssuerOfServiceEpisodeID":
-                device.setIssuerOfServiceEpisodeID(reader.issuerValue());
-                break;
-            case "dicomIssuerOfContainerIdentifier":
-                device.setIssuerOfContainerIdentifier(reader.issuerValue());
-                break;
-            case "dicomIssuerOfSpecimenIdentifier":
-                device.setIssuerOfSpecimenIdentifier(reader.issuerValue());
-                break;
-            case "dicomInstitutionName":
-                device.setInstitutionNames(reader.stringArray());
-                break;
-            case "dicomInstitutionCode":
-                device.setInstitutionCodes(reader.codeArray());
-                break;
-            case "dicomInstitutionAddress":
-                device.setInstitutionAddresses(reader.stringArray());
-                break;
-            case "dicomInstitutionDepartmentName":
-                device.setInstitutionalDepartmentNames(reader.stringArray());
-                break;
-            case "dicomPrimaryDeviceType":
-                device.setPrimaryDeviceTypes(reader.stringArray());
-                break;
-            case "dicomRelatedDeviceReference":
-                device.setRelatedDeviceRefs(reader.stringArray());
-                break;
-            case "dicomAuthorizedNodeCertificateReference":
-                for (String ref : reader.stringArray())
-                    device.setAuthorizedNodeCertificates(ref);
-                break;
-            case "dicomThisNodeCertificateReference":
-                for (String ref : reader.stringArray())
-                    device.setThisNodeCertificates(ref);
-                break;
-            case "dicomVendorData":
-                reader.booleanValue();
-                break;
-            case "dicomInstalled":
-                device.setInstalled(reader.booleanValue());
-                break;
-            case "dcmDevice":
-                reader.next();
-                reader.expect(JsonParser.Event.START_OBJECT);
-                while (reader.next() == JsonParser.Event.KEY_NAME) {
-                    switch (reader.getString()) {
-                    case "dcmRoleSelectionNegotiationLenient":
-                        device.setRoleSelectionNegotiationLenient(reader.booleanValue());
-                        break;
-                    case "dcmLimitOpenAssociations":
-                        device.setLimitOpenAssociations(reader.intValue());
-                        break;
-                    case "dcmLimitAssociationsInitiatedBy":
-                        device.setLimitAssociationsInitiatedBy(reader.stringArray());
-                        break;
-                    case "dcmTrustStoreURL":
-                        device.setTrustStoreURL(reader.stringValue());
-                        break;
-                    case "dcmTrustStoreType":
-                        device.setTrustStoreType(reader.stringValue());
-                        break;
-                    case "dcmTrustStorePin":
-                        device.setTrustStorePin(reader.stringValue());
-                        break;
-                    case "dcmTrustStorePinProperty":
-                        device.setTrustStorePinProperty(reader.stringValue());
-                        break;
-                    case "dcmKeyStoreURL":
-                        device.setKeyStoreURL(reader.stringValue());
-                        break;
-                    case "dcmKeyStoreType":
-                        device.setKeyStoreType(reader.stringValue());
-                        break;
-                    case "dcmKeyStorePin":
-                        device.setKeyStorePin(reader.stringValue());
-                        break;
-                    case "dcmKeyStorePinProperty":
-                        device.setKeyStorePinProperty(reader.stringValue());
-                        break;
-                    case "dcmKeyStoreKeyPin":
-                        device.setKeyStoreKeyPin(reader.stringValue());
-                        break;
-                    case "dcmKeyStoreKeyPinProperty":
-                        device.setKeyStoreKeyPinProperty(reader.stringValue());
-                        break;
-                    case "dcmTimeZoneOfDevice":
-                        device.setTimeZoneOfDevice(reader.timeZoneValue());
-                        break;
-                    case "dcmWebApp":
-                        loadWebApplications(device, reader);
-                        break;
-                    case "dcmKeycloakClient":
-                        loadKeycloakClients(device, reader);
-                        break;
-                    default:
-                        if (!loadDeviceExtension(device, reader, config))
-                            reader.skipUnknownProperty();
+                case "dicomDeviceName":
+                    device.setDeviceName(reader.stringValue());
+                    break;
+
+                case "dicomDescription":
+                    device.setDescription(reader.stringValue());
+                    break;
+
+                case "dicomDeviceUID":
+                    device.setDeviceUID(reader.stringValue());
+                    break;
+
+                case "dicomManufacturer":
+                    device.setManufacturer(reader.stringValue());
+                    break;
+
+                case "dicomManufacturerModelName":
+                    device.setManufacturerModelName(reader.stringValue());
+                    break;
+
+                case "dicomSoftwareVersion":
+                    device.setSoftwareVersions(reader.stringArray());
+                    break;
+
+                case "dicomStationName":
+                    device.setStationName(reader.stringValue());
+                    break;
+
+                case "dicomDeviceSerialNumber":
+                    device.setDeviceSerialNumber(reader.stringValue());
+                    break;
+
+                case "dicomIssuerOfPatientID":
+                    device.setIssuerOfPatientID(reader.issuerValue());
+                    break;
+
+                case "dicomIssuerOfAccessionNumber":
+                    device.setIssuerOfAccessionNumber(reader.issuerValue());
+                    break;
+
+                case "dicomOrderPlacerIdentifier":
+                    device.setOrderPlacerIdentifier(reader.issuerValue());
+                    break;
+
+                case "dicomOrderFillerIdentifier":
+                    device.setOrderFillerIdentifier(reader.issuerValue());
+                    break;
+
+                case "dicomIssuerOfAdmissionID":
+                    device.setIssuerOfAdmissionID(reader.issuerValue());
+                    break;
+
+                case "dicomIssuerOfServiceEpisodeID":
+                    device.setIssuerOfServiceEpisodeID(reader.issuerValue());
+                    break;
+
+                case "dicomIssuerOfContainerIdentifier":
+                    device.setIssuerOfContainerIdentifier(reader.issuerValue());
+                    break;
+
+                case "dicomIssuerOfSpecimenIdentifier":
+                    device.setIssuerOfSpecimenIdentifier(reader.issuerValue());
+                    break;
+
+                case "dicomInstitutionName":
+                    device.setInstitutionNames(reader.stringArray());
+                    break;
+
+                case "dicomInstitutionCode":
+                    device.setInstitutionCodes(reader.codeArray());
+                    break;
+
+                case "dicomInstitutionAddress":
+                    device.setInstitutionAddresses(reader.stringArray());
+                    break;
+
+                case "dicomInstitutionDepartmentName":
+                    device.setInstitutionalDepartmentNames(reader.stringArray());
+                    break;
+
+                case "dicomPrimaryDeviceType":
+                    device.setPrimaryDeviceTypes(reader.stringArray());
+                    break;
+
+                case "dicomRelatedDeviceReference":
+                    device.setRelatedDeviceRefs(reader.stringArray());
+                    break;
+
+                case "dicomAuthorizedNodeCertificateReference":
+                    for (String ref : reader.stringArray())
+                        device.setAuthorizedNodeCertificates(ref);
+                    break;
+
+                case "dicomThisNodeCertificateReference":
+                    for (String ref : reader.stringArray())
+                        device.setThisNodeCertificates(ref);
+                    break;
+
+                case "dicomVendorData":
+                    reader.booleanValue();
+                    break;
+
+                case "dicomInstalled":
+                    device.setInstalled(reader.booleanValue());
+                    break;
+
+                case "dcmDevice":
+                    reader.next();
+                    reader.expect(JsonParser.Event.START_OBJECT);
+                    while (reader.next() == JsonParser.Event.KEY_NAME) {
+                        switch (reader.getString()) {
+                            case "dcmRoleSelectionNegotiationLenient":
+                                device.setRoleSelectionNegotiationLenient(reader.booleanValue());
+                                break;
+
+                            case "dcmLimitOpenAssociations":
+                                device.setLimitOpenAssociations(reader.intValue());
+                                break;
+
+                            case "dcmLimitAssociationsInitiatedBy":
+                                device.setLimitAssociationsInitiatedBy(reader.stringArray());
+                                break;
+
+                            case "dcmTrustStoreURL":
+                                device.setTrustStoreURL(reader.stringValue());
+                                break;
+
+                            case "dcmTrustStoreType":
+                                device.setTrustStoreType(reader.stringValue());
+                                break;
+
+                            case "dcmTrustStorePin":
+                                device.setTrustStorePin(reader.stringValue());
+                                break;
+
+                            case "dcmTrustStorePinProperty":
+                                device.setTrustStorePinProperty(reader.stringValue());
+                                break;
+
+                            case "dcmKeyStoreURL":
+                                device.setKeyStoreURL(reader.stringValue());
+                                break;
+
+                            case "dcmKeyStoreType":
+                                device.setKeyStoreType(reader.stringValue());
+                                break;
+
+                            case "dcmKeyStorePin":
+                                device.setKeyStorePin(reader.stringValue());
+                                break;
+
+                            case "dcmKeyStorePinProperty":
+                                device.setKeyStorePinProperty(reader.stringValue());
+                                break;
+
+                            case "dcmKeyStoreKeyPin":
+                                device.setKeyStoreKeyPin(reader.stringValue());
+                                break;
+
+                            case "dcmKeyStoreKeyPinProperty":
+                                device.setKeyStoreKeyPinProperty(reader.stringValue());
+                                break;
+
+                            case "dcmTimeZoneOfDevice":
+                                device.setTimeZoneOfDevice(reader.timeZoneValue());
+                                break;
+
+                            case "dcmWebApp":
+                                loadWebApplications(device, reader);
+                                break;
+
+                            case "dcmKeycloakClient":
+                                loadKeycloakClients(device, reader);
+                                break;
+
+                            default:
+                                if (!loadDeviceExtension(device, reader, config))
+                                    reader.skipUnknownProperty();
+                        }
                     }
-                }
-                reader.expect(JsonParser.Event.END_OBJECT);
-                break;
-            case "dicomNetworkConnection":
-                loadConnections(device, reader);
-                break;
-            case "dicomNetworkAE":
-                loadApplicationEntities(device, reader, config);
-                break;
-            default:
-                reader.skipUnknownProperty();
+                    reader.expect(JsonParser.Event.END_OBJECT);
+                    break;
+
+                case "dicomNetworkConnection":
+                    loadConnections(device, reader);
+                    break;
+
+                case "dicomNetworkAE":
+                    loadApplicationEntities(device, reader, config);
+                    break;
+
+                default:
+                    reader.skipUnknownProperty();
             }
         }
         reader.expect(JsonParser.Event.END_OBJECT);
@@ -423,8 +468,10 @@ public class JsonConfiguration {
             writer.writeNotDef("dcmPackPDV", conn.isPackPDV(), true);
             writer.writeNotEmpty("dcmTLSProtocol", conn.getTlsProtocols(), Connection.DEFAULT_TLS_PROTOCOLS);
             writer.writeNotDef("dcmTLSNeedClientAuth", conn.isTlsNeedClientAuth(), true);
-            writer.writeNotNullOrDef("dcmTLSEndpointIdentificationAlgorithm",
-                    conn.getTlsEndpointIdentificationAlgorithm(), null);
+            writer.writeNotNullOrDef(
+                    "dcmTLSEndpointIdentificationAlgorithm",
+                    conn.getTlsEndpointIdentificationAlgorithm(),
+                    null);
             writer.writeEnd();
         }
         writer.writeEnd();
@@ -444,122 +491,157 @@ public class JsonConfiguration {
     private void loadFrom(Connection conn, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-            case "cn":
-                conn.setCommonName(reader.stringValue());
-                break;
-            case "dicomHostname":
-                conn.setHostname(reader.stringValue());
-                break;
-            case "dicomPort":
-                conn.setPort(reader.intValue());
-                break;
-            case "dicomTLSCipherSuite":
-                conn.setTlsCipherSuites(reader.stringArray());
-                break;
-            case "dicomInstalled":
-                conn.setInstalled(reader.booleanValue());
-                break;
-            case "dcmNetworkConnection":
-                reader.next();
-                reader.expect(JsonParser.Event.START_OBJECT);
-                while (reader.next() == JsonParser.Event.KEY_NAME) {
-                    switch (reader.getString()) {
-                    case "dcmProtocol":
-                        conn.setProtocol(Connection.Protocol.valueOf(reader.stringValue()));
-                        break;
-                    case "dcmHTTPProxy":
-                        conn.setHttpProxy(reader.stringValue());
-                        break;
-                    case "dcmBlacklistedHostname":
-                        conn.setBlacklist(reader.stringArray());
-                        break;
-                    case "dcmTCPBacklog":
-                        conn.setBacklog(reader.intValue());
-                        break;
-                    case "dcmTCPConnectTimeout":
-                        conn.setConnectTimeout(reader.intValue());
-                        break;
-                    case "dcmAARQTimeout":
-                        conn.setRequestTimeout(reader.intValue());
-                        break;
-                    case "dcmAAACTimeout":
-                        conn.setAcceptTimeout(reader.intValue());
-                        break;
-                    case "dcmARRPTimeout":
-                        conn.setReleaseTimeout(reader.intValue());
-                        break;
-                    case "dcmSendTimeout":
-                        conn.setSendTimeout(reader.intValue());
-                        break;
-                    case "dcmStoreTimeout":
-                        conn.setStoreTimeout(reader.intValue());
-                        break;
-                    case "dcmResponseTimeout":
-                        conn.setResponseTimeout(reader.intValue());
-                        break;
-                    case "dcmRetrieveTimeout":
-                        conn.setRetrieveTimeout(reader.intValue());
-                        break;
-                    case "dcmRetrieveTimeoutTotal":
-                        conn.setRetrieveTimeoutTotal(reader.booleanValue());
-                        break;
-                    case "dcmIdleTimeout":
-                        conn.setIdleTimeout(reader.intValue());
-                        break;
-                    case "dcmAATimeout":
-                        conn.setAbortTimeout(reader.intValue());
-                        break;
-                    case "dcmTCPCloseDelay":
-                        conn.setSocketCloseDelay(reader.intValue());
-                        break;
-                    case "dcmTCPSendBufferSize":
-                        conn.setSendBufferSize(reader.intValue());
-                        break;
-                    case "dcmTCPReceiveBufferSize":
-                        conn.setReceiveBufferSize(reader.intValue());
-                        break;
-                    case "dcmTCPNoDelay":
-                        conn.setTcpNoDelay(reader.booleanValue());
-                        break;
-                    case "dcmBindAddress":
-                        conn.setBindAddress(reader.stringValue());
-                        break;
-                    case "dcmClientBindAddress":
-                        conn.setClientBindAddress(reader.stringValue());
-                        break;
-                    case "dcmTLSNeedClientAuth":
-                        conn.setTlsNeedClientAuth(reader.booleanValue());
-                        break;
-                    case "dcmTLSProtocol":
-                        conn.setTlsProtocols(reader.stringArray());
-                        break;
-                    case "dcmTLSEndpointIdentificationAlgorithm":
-                        conn.setTlsEndpointIdentificationAlgorithm(
-                                Connection.EndpointIdentificationAlgorithm.valueOf(reader.stringValue()));
-                        break;
-                    case "dcmSendPDULength":
-                        conn.setSendPDULength(reader.intValue());
-                        break;
-                    case "dcmReceivePDULength":
-                        conn.setReceivePDULength(reader.intValue());
-                        break;
-                    case "dcmMaxOpsPerformed":
-                        conn.setMaxOpsPerformed(reader.intValue());
-                        break;
-                    case "dcmMaxOpsInvoked":
-                        conn.setMaxOpsInvoked(reader.intValue());
-                        break;
-                    case "dcmPackPDV":
-                        conn.setPackPDV(reader.booleanValue());
-                        break;
-                    default:
-                        reader.skipUnknownProperty();
+                case "cn":
+                    conn.setCommonName(reader.stringValue());
+                    break;
+
+                case "dicomHostname":
+                    conn.setHostname(reader.stringValue());
+                    break;
+
+                case "dicomPort":
+                    conn.setPort(reader.intValue());
+                    break;
+
+                case "dicomTLSCipherSuite":
+                    conn.setTlsCipherSuites(reader.stringArray());
+                    break;
+
+                case "dicomInstalled":
+                    conn.setInstalled(reader.booleanValue());
+                    break;
+
+                case "dcmNetworkConnection":
+                    reader.next();
+                    reader.expect(JsonParser.Event.START_OBJECT);
+                    while (reader.next() == JsonParser.Event.KEY_NAME) {
+                        switch (reader.getString()) {
+                            case "dcmProtocol":
+                                conn.setProtocol(Connection.Protocol.valueOf(reader.stringValue()));
+                                break;
+
+                            case "dcmHTTPProxy":
+                                conn.setHttpProxy(reader.stringValue());
+                                break;
+
+                            case "dcmBlacklistedHostname":
+                                conn.setBlacklist(reader.stringArray());
+                                break;
+
+                            case "dcmTCPBacklog":
+                                conn.setBacklog(reader.intValue());
+                                break;
+
+                            case "dcmTCPConnectTimeout":
+                                conn.setConnectTimeout(reader.intValue());
+                                break;
+
+                            case "dcmAARQTimeout":
+                                conn.setRequestTimeout(reader.intValue());
+                                break;
+
+                            case "dcmAAACTimeout":
+                                conn.setAcceptTimeout(reader.intValue());
+                                break;
+
+                            case "dcmARRPTimeout":
+                                conn.setReleaseTimeout(reader.intValue());
+                                break;
+
+                            case "dcmSendTimeout":
+                                conn.setSendTimeout(reader.intValue());
+                                break;
+
+                            case "dcmStoreTimeout":
+                                conn.setStoreTimeout(reader.intValue());
+                                break;
+
+                            case "dcmResponseTimeout":
+                                conn.setResponseTimeout(reader.intValue());
+                                break;
+
+                            case "dcmRetrieveTimeout":
+                                conn.setRetrieveTimeout(reader.intValue());
+                                break;
+
+                            case "dcmRetrieveTimeoutTotal":
+                                conn.setRetrieveTimeoutTotal(reader.booleanValue());
+                                break;
+
+                            case "dcmIdleTimeout":
+                                conn.setIdleTimeout(reader.intValue());
+                                break;
+
+                            case "dcmAATimeout":
+                                conn.setAbortTimeout(reader.intValue());
+                                break;
+
+                            case "dcmTCPCloseDelay":
+                                conn.setSocketCloseDelay(reader.intValue());
+                                break;
+
+                            case "dcmTCPSendBufferSize":
+                                conn.setSendBufferSize(reader.intValue());
+                                break;
+
+                            case "dcmTCPReceiveBufferSize":
+                                conn.setReceiveBufferSize(reader.intValue());
+                                break;
+
+                            case "dcmTCPNoDelay":
+                                conn.setTcpNoDelay(reader.booleanValue());
+                                break;
+
+                            case "dcmBindAddress":
+                                conn.setBindAddress(reader.stringValue());
+                                break;
+
+                            case "dcmClientBindAddress":
+                                conn.setClientBindAddress(reader.stringValue());
+                                break;
+
+                            case "dcmTLSNeedClientAuth":
+                                conn.setTlsNeedClientAuth(reader.booleanValue());
+                                break;
+
+                            case "dcmTLSProtocol":
+                                conn.setTlsProtocols(reader.stringArray());
+                                break;
+
+                            case "dcmTLSEndpointIdentificationAlgorithm":
+                                conn.setTlsEndpointIdentificationAlgorithm(
+                                        Connection.EndpointIdentificationAlgorithm.valueOf(reader.stringValue()));
+                                break;
+
+                            case "dcmSendPDULength":
+                                conn.setSendPDULength(reader.intValue());
+                                break;
+
+                            case "dcmReceivePDULength":
+                                conn.setReceivePDULength(reader.intValue());
+                                break;
+
+                            case "dcmMaxOpsPerformed":
+                                conn.setMaxOpsPerformed(reader.intValue());
+                                break;
+
+                            case "dcmMaxOpsInvoked":
+                                conn.setMaxOpsInvoked(reader.intValue());
+                                break;
+
+                            case "dcmPackPDV":
+                                conn.setPackPDV(reader.booleanValue());
+                                break;
+
+                            default:
+                                reader.skipUnknownProperty();
+                        }
                     }
-                }
-                reader.expect(JsonParser.Event.END_OBJECT);
-                break;
-            default:
-                reader.skipUnknownProperty();
+                    reader.expect(JsonParser.Event.END_OBJECT);
+                    break;
+
+                default:
+                    reader.skipUnknownProperty();
             }
         }
         reader.expect(JsonParser.Event.END_OBJECT);
@@ -599,8 +681,10 @@ public class JsonConfiguration {
             writer.writeNotEmpty("dcmNoAsyncModeCalledAETitle", ae.getNoAsyncModeCalledAETitles());
             writer.writeNotEmpty("dcmMasqueradeCallingAETitle", ae.getMasqueradeCallingAETitles());
             writer.writeNotEmpty("dcmMasqueradeCalledAETitle", ae.getMasqueradeCalledAETitles());
-            writer.writeNotNullOrDef("dcmShareTransferCapabilitiesFromAETitle",
-                    ae.getShareTransferCapabilitiesFromAETitle(), null);
+            writer.writeNotNullOrDef(
+                    "dcmShareTransferCapabilitiesFromAETitle",
+                    ae.getShareTransferCapabilitiesFromAETitle(),
+                    null);
             writer.writeNotNullOrDef("hl7ApplicationName", ae.getHl7ApplicationName(), null);
             for (JsonConfigurationExtension ext : extensions)
                 ext.storeTo(ae, writer);
@@ -626,78 +710,98 @@ public class JsonConfiguration {
         List<Connection> conns = device.listConnections();
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-            case "dicomAETitle":
-                ae.setAETitle(reader.stringValue());
-                break;
-            case "dicomDescription":
-                ae.setDescription(reader.stringValue());
-                break;
-            case "dicomApplicationCluster":
-                ae.setApplicationClusters(reader.stringArray());
-                break;
-            case "dicomPreferredCallingAETitle":
-                ae.setPreferredCallingAETitles(reader.stringArray());
-                break;
-            case "dicomPreferredCalledAETitle":
-                ae.setPreferredCalledAETitles(reader.stringArray());
-                break;
-            case "dicomAssociationInitiator":
-                ae.setAssociationInitiator(reader.booleanValue());
-                break;
-            case "dicomAssociationAcceptor":
-                ae.setAssociationAcceptor(reader.booleanValue());
-                break;
-            case "dicomSupportedCharacterSet":
-                ae.setSupportedCharacterSets(reader.stringArray());
-                break;
-            case "dicomInstalled":
-                ae.setInstalled(reader.booleanValue());
-                break;
-            case "dicomNetworkConnectionReference":
-                for (String connRef : reader.stringArray())
-                    ae.addConnection(conns.get(JSONReader.toConnectionIndex(connRef)));
-                break;
-            case "dcmNetworkAE":
-                reader.next();
-                reader.expect(JsonParser.Event.START_OBJECT);
-                while (reader.next() == JsonParser.Event.KEY_NAME) {
-                    switch (reader.getString()) {
-                    case "dcmRoleSelectionNegotiationLenient":
-                        ae.setRoleSelectionNegotiationLenient(reader.booleanValue());
-                        break;
-                    case "dcmPreferredTransferSyntax":
-                        ae.setPreferredTransferSyntaxes(reader.stringArray());
-                        break;
-                    case "dcmAcceptedCallingAETitle":
-                        ae.setAcceptedCallingAETitles(reader.stringArray());
-                        break;
-                    case "dcmOtherAETitle":
-                        ae.setOtherAETitles(reader.stringArray());
-                        break;
-                    case "dcmNoAsyncModeCalledAETitle":
-                        ae.setNoAsyncModeCalledAETitles(reader.stringArray());
-                        break;
-                    case "dcmMasqueradeCallingAETitle":
-                        ae.setMasqueradeCallingAETitles(reader.stringArray());
-                        break;
-                    case "dcmShareTransferCapabilitiesFromAETitle":
-                        ae.setShareTransferCapabilitiesFromAETitle(reader.stringValue());
-                        break;
-                    case "hl7ApplicationName":
-                        ae.setHl7ApplicationName(reader.stringValue());
-                        break;
-                    default:
-                        if (!loadApplicationEntityExtension(device, ae, reader, config))
-                            reader.skipUnknownProperty();
+                case "dicomAETitle":
+                    ae.setAETitle(reader.stringValue());
+                    break;
+
+                case "dicomDescription":
+                    ae.setDescription(reader.stringValue());
+                    break;
+
+                case "dicomApplicationCluster":
+                    ae.setApplicationClusters(reader.stringArray());
+                    break;
+
+                case "dicomPreferredCallingAETitle":
+                    ae.setPreferredCallingAETitles(reader.stringArray());
+                    break;
+
+                case "dicomPreferredCalledAETitle":
+                    ae.setPreferredCalledAETitles(reader.stringArray());
+                    break;
+
+                case "dicomAssociationInitiator":
+                    ae.setAssociationInitiator(reader.booleanValue());
+                    break;
+
+                case "dicomAssociationAcceptor":
+                    ae.setAssociationAcceptor(reader.booleanValue());
+                    break;
+
+                case "dicomSupportedCharacterSet":
+                    ae.setSupportedCharacterSets(reader.stringArray());
+                    break;
+
+                case "dicomInstalled":
+                    ae.setInstalled(reader.booleanValue());
+                    break;
+
+                case "dicomNetworkConnectionReference":
+                    for (String connRef : reader.stringArray())
+                        ae.addConnection(conns.get(JSONReader.toConnectionIndex(connRef)));
+                    break;
+
+                case "dcmNetworkAE":
+                    reader.next();
+                    reader.expect(JsonParser.Event.START_OBJECT);
+                    while (reader.next() == JsonParser.Event.KEY_NAME) {
+                        switch (reader.getString()) {
+                            case "dcmRoleSelectionNegotiationLenient":
+                                ae.setRoleSelectionNegotiationLenient(reader.booleanValue());
+                                break;
+
+                            case "dcmPreferredTransferSyntax":
+                                ae.setPreferredTransferSyntaxes(reader.stringArray());
+                                break;
+
+                            case "dcmAcceptedCallingAETitle":
+                                ae.setAcceptedCallingAETitles(reader.stringArray());
+                                break;
+
+                            case "dcmOtherAETitle":
+                                ae.setOtherAETitles(reader.stringArray());
+                                break;
+
+                            case "dcmNoAsyncModeCalledAETitle":
+                                ae.setNoAsyncModeCalledAETitles(reader.stringArray());
+                                break;
+
+                            case "dcmMasqueradeCallingAETitle":
+                                ae.setMasqueradeCallingAETitles(reader.stringArray());
+                                break;
+
+                            case "dcmShareTransferCapabilitiesFromAETitle":
+                                ae.setShareTransferCapabilitiesFromAETitle(reader.stringValue());
+                                break;
+
+                            case "hl7ApplicationName":
+                                ae.setHl7ApplicationName(reader.stringValue());
+                                break;
+
+                            default:
+                                if (!loadApplicationEntityExtension(device, ae, reader, config))
+                                    reader.skipUnknownProperty();
+                        }
                     }
-                }
-                reader.expect(JsonParser.Event.END_OBJECT);
-                break;
-            case "dicomTransferCapability":
-                loadTransferCapabilities(ae, reader);
-                break;
-            default:
-                reader.skipUnknownProperty();
+                    reader.expect(JsonParser.Event.END_OBJECT);
+                    break;
+
+                case "dicomTransferCapability":
+                    loadTransferCapabilities(ae, reader);
+                    break;
+
+                default:
+                    reader.skipUnknownProperty();
             }
         }
         reader.expect(JsonParser.Event.END_OBJECT);
@@ -705,7 +809,10 @@ public class JsonConfiguration {
             throw new JsonParsingException("Missing property: dicomAETitle", reader.getLocation());
     }
 
-    private boolean loadApplicationEntityExtension(Device device, ApplicationEntity ae, JSONReader reader,
+    private boolean loadApplicationEntityExtension(
+            Device device,
+            ApplicationEntity ae,
+            JSONReader reader,
             ConfigurationDelegate config) throws InternalException {
         for (JsonConfigurationExtension ext : extensions)
             if (ext.loadApplicationEntityExtension(device, ae, reader, config))
@@ -765,82 +872,96 @@ public class JsonConfiguration {
     private void loadFrom(TransferCapability tc, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-            case "cn":
-                tc.setCommonName(reader.stringValue());
-                break;
-            case "dicomSOPClass":
-                tc.setSopClass(reader.stringValue());
-                break;
-            case "dicomTransferRole":
-                tc.setRole(TransferCapability.Role.valueOf(reader.stringValue()));
-                break;
-            case "dicomTransferSyntax":
-                tc.setTransferSyntaxes(reader.stringArray());
-                break;
-            case "dcmTransferCapability":
-                EnumSet<QueryOption> queryOpts = null;
-                StorageOptions storageOpts = null;
-                reader.next();
-                reader.expect(JsonParser.Event.START_OBJECT);
-                while (reader.next() == JsonParser.Event.KEY_NAME) {
-                    switch (reader.getString()) {
-                    case "dcmPreferredTransferSyntax":
-                        tc.setPreferredTransferSyntaxes(reader.stringArray());
-                        break;
-                    case "dcmRelationalQueries":
-                        if (reader.booleanValue()) {
-                            if (queryOpts == null)
-                                queryOpts = EnumSet.noneOf(QueryOption.class);
-                            queryOpts.add(QueryOption.RELATIONAL);
+                case "cn":
+                    tc.setCommonName(reader.stringValue());
+                    break;
+
+                case "dicomSOPClass":
+                    tc.setSopClass(reader.stringValue());
+                    break;
+
+                case "dicomTransferRole":
+                    tc.setRole(TransferCapability.Role.valueOf(reader.stringValue()));
+                    break;
+
+                case "dicomTransferSyntax":
+                    tc.setTransferSyntaxes(reader.stringArray());
+                    break;
+
+                case "dcmTransferCapability":
+                    EnumSet<QueryOption> queryOpts = null;
+                    StorageOptions storageOpts = null;
+                    reader.next();
+                    reader.expect(JsonParser.Event.START_OBJECT);
+                    while (reader.next() == JsonParser.Event.KEY_NAME) {
+                        switch (reader.getString()) {
+                            case "dcmPreferredTransferSyntax":
+                                tc.setPreferredTransferSyntaxes(reader.stringArray());
+                                break;
+
+                            case "dcmRelationalQueries":
+                                if (reader.booleanValue()) {
+                                    if (queryOpts == null)
+                                        queryOpts = EnumSet.noneOf(QueryOption.class);
+                                    queryOpts.add(QueryOption.RELATIONAL);
+                                }
+                                break;
+
+                            case "dcmCombinedDateTimeMatching":
+                                if (reader.booleanValue()) {
+                                    if (queryOpts == null)
+                                        queryOpts = EnumSet.noneOf(QueryOption.class);
+                                    queryOpts.add(QueryOption.DATETIME);
+                                }
+                                break;
+
+                            case "dcmFuzzySemanticMatching":
+                                if (reader.booleanValue()) {
+                                    if (queryOpts == null)
+                                        queryOpts = EnumSet.noneOf(QueryOption.class);
+                                    queryOpts.add(QueryOption.FUZZY);
+                                }
+                                break;
+
+                            case "dcmTimezoneQueryAdjustment":
+                                if (reader.booleanValue()) {
+                                    if (queryOpts == null)
+                                        queryOpts = EnumSet.noneOf(QueryOption.class);
+                                    queryOpts.add(QueryOption.TIMEZONE);
+                                }
+                                break;
+
+                            case "dcmStorageConformance":
+                                if (storageOpts == null)
+                                    storageOpts = new StorageOptions();
+                                storageOpts.setLevelOfSupport(StorageOptions.LevelOfSupport.valueOf(reader.intValue()));
+                                break;
+
+                            case "dcmDigitalSignatureSupport":
+                                if (storageOpts == null)
+                                    storageOpts = new StorageOptions();
+                                storageOpts.setDigitalSignatureSupport(
+                                        StorageOptions.DigitalSignatureSupport.valueOf(reader.intValue()));
+                                break;
+
+                            case "dcmDataElementCoercion":
+                                if (storageOpts == null)
+                                    storageOpts = new StorageOptions();
+                                storageOpts
+                                        .setElementCoercion(StorageOptions.ElementCoercion.valueOf(reader.intValue()));
+                                break;
+
+                            default:
+                                reader.skipUnknownProperty();
                         }
-                        break;
-                    case "dcmCombinedDateTimeMatching":
-                        if (reader.booleanValue()) {
-                            if (queryOpts == null)
-                                queryOpts = EnumSet.noneOf(QueryOption.class);
-                            queryOpts.add(QueryOption.DATETIME);
-                        }
-                        break;
-                    case "dcmFuzzySemanticMatching":
-                        if (reader.booleanValue()) {
-                            if (queryOpts == null)
-                                queryOpts = EnumSet.noneOf(QueryOption.class);
-                            queryOpts.add(QueryOption.FUZZY);
-                        }
-                        break;
-                    case "dcmTimezoneQueryAdjustment":
-                        if (reader.booleanValue()) {
-                            if (queryOpts == null)
-                                queryOpts = EnumSet.noneOf(QueryOption.class);
-                            queryOpts.add(QueryOption.TIMEZONE);
-                        }
-                        break;
-                    case "dcmStorageConformance":
-                        if (storageOpts == null)
-                            storageOpts = new StorageOptions();
-                        storageOpts.setLevelOfSupport(StorageOptions.LevelOfSupport.valueOf(reader.intValue()));
-                        break;
-                    case "dcmDigitalSignatureSupport":
-                        if (storageOpts == null)
-                            storageOpts = new StorageOptions();
-                        storageOpts.setDigitalSignatureSupport(
-                                StorageOptions.DigitalSignatureSupport.valueOf(reader.intValue()));
-                        break;
-                    case "dcmDataElementCoercion":
-                        if (storageOpts == null)
-                            storageOpts = new StorageOptions();
-                        storageOpts.setElementCoercion(StorageOptions.ElementCoercion.valueOf(reader.intValue()));
-                        break;
-                    default:
-                        reader.skipUnknownProperty();
                     }
-                }
-                reader.expect(JsonParser.Event.END_OBJECT);
-                tc.setQueryOptions(queryOpts);
-                tc.setStorageOptions(storageOpts);
-                break;
-            default:
-                reader.skipUnknownProperty();
+                    reader.expect(JsonParser.Event.END_OBJECT);
+                    tc.setQueryOptions(queryOpts);
+                    tc.setStorageOptions(storageOpts);
+                    break;
+
+                default:
+                    reader.skipUnknownProperty();
             }
         }
         reader.expect(JsonParser.Event.END_OBJECT);
@@ -888,39 +1009,49 @@ public class JsonConfiguration {
         List<Connection> conns = device.listConnections();
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-            case "dcmWebAppName":
-                webapp.setApplicationName(reader.stringValue());
-                break;
-            case "dicomDescription":
-                webapp.setDescription(reader.stringValue());
-                break;
-            case "dcmWebServicePath":
-                webapp.setServicePath(reader.stringValue());
-                break;
-            case "dcmKeycloakClientID":
-                webapp.setKeycloakClientID(reader.stringValue());
-                break;
-            case "dcmWebServiceClass":
-                webapp.setServiceClasses(reader.enumArray(WebApplication.ServiceClass.class));
-                break;
-            case "dicomAETitle":
-                webapp.setAETitle(reader.stringValue());
-                break;
-            case "dicomApplicationCluster":
-                webapp.setApplicationClusters(reader.stringArray());
-                break;
-            case "dcmProperty":
-                webapp.setProperties(reader.stringArray());
-                break;
-            case "dicomInstalled":
-                webapp.setInstalled(reader.booleanValue());
-                break;
-            case "dicomNetworkConnectionReference":
-                for (String connRef : reader.stringArray())
-                    webapp.addConnection(conns.get(JSONReader.toConnectionIndex(connRef)));
-                break;
-            default:
-                reader.skipUnknownProperty();
+                case "dcmWebAppName":
+                    webapp.setApplicationName(reader.stringValue());
+                    break;
+
+                case "dicomDescription":
+                    webapp.setDescription(reader.stringValue());
+                    break;
+
+                case "dcmWebServicePath":
+                    webapp.setServicePath(reader.stringValue());
+                    break;
+
+                case "dcmKeycloakClientID":
+                    webapp.setKeycloakClientID(reader.stringValue());
+                    break;
+
+                case "dcmWebServiceClass":
+                    webapp.setServiceClasses(reader.enumArray(WebApplication.ServiceClass.class));
+                    break;
+
+                case "dicomAETitle":
+                    webapp.setAETitle(reader.stringValue());
+                    break;
+
+                case "dicomApplicationCluster":
+                    webapp.setApplicationClusters(reader.stringArray());
+                    break;
+
+                case "dcmProperty":
+                    webapp.setProperties(reader.stringArray());
+                    break;
+
+                case "dicomInstalled":
+                    webapp.setInstalled(reader.booleanValue());
+                    break;
+
+                case "dicomNetworkConnectionReference":
+                    for (String connRef : reader.stringArray())
+                        webapp.addConnection(conns.get(JSONReader.toConnectionIndex(connRef)));
+                    break;
+
+                default:
+                    reader.skipUnknownProperty();
             }
         }
         reader.expect(JsonParser.Event.END_OBJECT);
@@ -964,35 +1095,44 @@ public class JsonConfiguration {
     private void loadFrom(KeycloakClient client, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-            case "dcmKeycloakClientID":
-                client.setKeycloakClientID(reader.stringValue());
-                break;
-            case "dcmURI":
-                client.setKeycloakServerURL(reader.stringValue());
-                break;
-            case "dcmKeycloakRealm":
-                client.setKeycloakRealm(reader.stringValue());
-                break;
-            case "dcmKeycloakGrantType":
-                client.setKeycloakGrantType(KeycloakClient.GrantType.valueOf(reader.stringValue()));
-                break;
-            case "dcmKeycloakClientSecret":
-                client.setKeycloakClientSecret(reader.stringValue());
-                break;
-            case "dcmTLSAllowAnyHostname":
-                client.setTLSAllowAnyHostname(reader.booleanValue());
-                break;
-            case "dcmTLSDisableTrustManager":
-                client.setTLSDisableTrustManager(reader.booleanValue());
-                break;
-            case "uid":
-                client.setUserID(reader.stringValue());
-                break;
-            case "userPassword":
-                client.setPassword(reader.stringValue());
-                break;
-            default:
-                reader.skipUnknownProperty();
+                case "dcmKeycloakClientID":
+                    client.setKeycloakClientID(reader.stringValue());
+                    break;
+
+                case "dcmURI":
+                    client.setKeycloakServerURL(reader.stringValue());
+                    break;
+
+                case "dcmKeycloakRealm":
+                    client.setKeycloakRealm(reader.stringValue());
+                    break;
+
+                case "dcmKeycloakGrantType":
+                    client.setKeycloakGrantType(KeycloakClient.GrantType.valueOf(reader.stringValue()));
+                    break;
+
+                case "dcmKeycloakClientSecret":
+                    client.setKeycloakClientSecret(reader.stringValue());
+                    break;
+
+                case "dcmTLSAllowAnyHostname":
+                    client.setTLSAllowAnyHostname(reader.booleanValue());
+                    break;
+
+                case "dcmTLSDisableTrustManager":
+                    client.setTLSDisableTrustManager(reader.booleanValue());
+                    break;
+
+                case "uid":
+                    client.setUserID(reader.stringValue());
+                    break;
+
+                case "userPassword":
+                    client.setPassword(reader.stringValue());
+                    break;
+
+                default:
+                    reader.skipUnknownProperty();
             }
         }
         reader.expect(JsonParser.Event.END_OBJECT);
@@ -1033,20 +1173,24 @@ public class JsonConfiguration {
     private void loadFrom(BasicBulkDataDescriptor descriptor, JSONReader reader) {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-            case "dcmBulkDataDescriptorID":
-                descriptor.setBulkDataDescriptorID(reader.stringValue());
-                break;
-            case "dcmBulkDataExcludeDefaults":
-                descriptor.excludeDefaults(reader.booleanValue());
-                break;
-            case "dcmAttributeSelector":
-                descriptor.setAttributeSelectorsFromStrings(reader.stringArray());
-                break;
-            case "dcmBulkDataVRLengthThreshold":
-                descriptor.setLengthsThresholdsFromStrings(reader.stringArray());
-                break;
-            default:
-                reader.skipUnknownProperty();
+                case "dcmBulkDataDescriptorID":
+                    descriptor.setBulkDataDescriptorID(reader.stringValue());
+                    break;
+
+                case "dcmBulkDataExcludeDefaults":
+                    descriptor.excludeDefaults(reader.booleanValue());
+                    break;
+
+                case "dcmAttributeSelector":
+                    descriptor.setAttributeSelectorsFromStrings(reader.stringArray());
+                    break;
+
+                case "dcmBulkDataVRLengthThreshold":
+                    descriptor.setLengthsThresholdsFromStrings(reader.stringArray());
+                    break;
+
+                default:
+                    reader.skipUnknownProperty();
             }
         }
         reader.expect(JsonParser.Event.END_OBJECT);

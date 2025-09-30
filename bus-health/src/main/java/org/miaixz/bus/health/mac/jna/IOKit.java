@@ -49,14 +49,20 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     /**
      * Beta/Non-API do not commit to JNA
      */
-    int IOConnectCallStructMethod(IOConnect connection, int selector, Structure inputStructure,
-            NativeLong structureInputSize, Structure outputStructure, NativeLongByReference structureOutputSize);
+    int IOConnectCallStructMethod(
+            IOConnect connection,
+            int selector,
+            Structure inputStructure,
+            NativeLong structureInputSize,
+            Structure outputStructure,
+            NativeLongByReference structureOutputSize);
 
     /**
      * Holds the return value of SMC version query.
      */
     @FieldOrder({ "major", "minor", "build", "reserved", "release" })
     class SMCKeyDataVers extends Structure {
+
         public byte major;
         public byte minor;
         public byte build;
@@ -69,6 +75,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "version", "length", "cpuPLimit", "gpuPLimit", "memPLimit" })
     class SMCKeyDataPLimitData extends Structure {
+
         public short version;
         public short length;
         public int cpuPLimit;
@@ -81,6 +88,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "dataSize", "dataType", "dataAttributes" })
     class SMCKeyDataKeyInfo extends Structure {
+
         public int dataSize;
         public int dataType;
         public byte dataAttributes;
@@ -91,6 +99,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes" })
     class SMCKeyData extends Structure implements AutoCloseable {
+
         public int key;
         public SMCKeyDataVers vers;
         public SMCKeyDataPLimitData pLimitData;
@@ -112,6 +121,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      */
     @FieldOrder({ "key", "dataSize", "dataType", "bytes" })
     class SMCVal extends Structure implements AutoCloseable {
+
         public byte[] key = new byte[5];
         public int dataSize;
         public byte[] dataType = new byte[5];

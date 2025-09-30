@@ -138,6 +138,7 @@ public class NoteEvent extends AbstractEvent {
     }
 
     public static enum NoteableType {
+
         ISSUE, MERGE_REQUEST, SNIPPET, COMMIT;
 
         private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,

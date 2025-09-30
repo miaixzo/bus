@@ -71,23 +71,27 @@ public class GitLabApiForm extends Form {
         for (Entry<String, GitLabFormValue> e : form.getFormValues().entrySet()) {
             GitLabFormValue value = e.getValue();
             switch (value.getType()) {
-            case ACCESS_LEVEL:
-                withParam(e.getKey(), (AccessLevel) value.getValue(), value.isRequired());
-                break;
-            case DATE:
-                withParam(e.getKey(), (Date) value.getValue(), value.isRequired());
-                break;
-            case LIST:
-                withParam(e.getKey(), (List<?>) value.getValue(), value.isRequired());
-                break;
-            case MAP:
-                Map<String, ?> mapValue = (Map<String, ?>) value.getValue();
-                withParam(e.getKey(), mapValue, value.isRequired());
-                break;
-            case OBJECT:
-            default:
-                withParam(e.getKey(), value.getValue(), value.isRequired());
-                break;
+                case ACCESS_LEVEL:
+                    withParam(e.getKey(), (AccessLevel) value.getValue(), value.isRequired());
+                    break;
+
+                case DATE:
+                    withParam(e.getKey(), (Date) value.getValue(), value.isRequired());
+                    break;
+
+                case LIST:
+                    withParam(e.getKey(), (List<?>) value.getValue(), value.isRequired());
+                    break;
+
+                case MAP:
+                    Map<String, ?> mapValue = (Map<String, ?>) value.getValue();
+                    withParam(e.getKey(), mapValue, value.isRequired());
+                    break;
+
+                case OBJECT:
+                default:
+                    withParam(e.getKey(), value.getValue(), value.isRequired());
+                    break;
             }
         }
     }

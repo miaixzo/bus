@@ -358,6 +358,7 @@ public abstract class AbstractMetrics implements Metrics {
      * </p>
      */
     protected static final class DataDO {
+
         /**
          * 缓存模式/分组名称
          */

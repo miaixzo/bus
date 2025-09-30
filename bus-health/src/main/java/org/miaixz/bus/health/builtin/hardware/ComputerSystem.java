@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
  */
 @Immutable
 public interface ComputerSystem {
+
     /**
      * Get the computer system manufacturer.
      *

@@ -71,8 +71,13 @@ public class ThreadExecutorBuilder {
      * @param handler         由于达到线程边界和队列容量而阻塞执行时使用的处理程序
      * @return {@link Executor}
      */
-    public static Executor newLimitedFastThread(final int corePoolSize, final int maximumPoolSize,
-            final long keepAliveTime, final TimeUnit unit, final BlockingQueue<Runnable> workQueue, final String prefix,
+    public static Executor newLimitedFastThread(
+            final int corePoolSize,
+            final int maximumPoolSize,
+            final long keepAliveTime,
+            final TimeUnit unit,
+            final BlockingQueue<Runnable> workQueue,
+            final String prefix,
             final RejectedExecutionHandler handler) {
         return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
                 new NamedThreadFactory(prefix), handler);

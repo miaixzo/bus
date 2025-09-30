@@ -126,7 +126,11 @@ public class SshjSftp extends AbstractFtp {
      * @param charset 编码
      * @return SshjSftp
      */
-    public static SshjSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass,
+    public static SshjSftp of(
+            final String sshHost,
+            final int sshPort,
+            final String sshUser,
+            final String sshPass,
             final Charset charset) {
         return new SshjSftp(new FtpConfig(Connector.of(sshHost, sshPort, sshUser, sshPass), charset));
     }

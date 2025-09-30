@@ -82,6 +82,7 @@ public class CGetForward implements AutoCloseable {
     private final Centre streamSCUService;
     private int priority;
     private final BasicCStoreSCP storageSCP = new BasicCStoreSCP("*") {
+
         @Override
         protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
@@ -156,8 +157,12 @@ public class CGetForward implements AutoCloseable {
 
                     streamSCU.cstore(cuid, iuid, priority, dataWriter, syntax.getSuitable());
                 } catch (AbortException e) {
-                    Builder.notifyProgession(streamSCU.getState(), rq.getString(Tag.AffectedSOPInstanceUID),
-                            rq.getString(Tag.AffectedSOPClassUID), Status.ProcessingFailure, ProgressStatus.FAILED,
+                    Builder.notifyProgession(
+                            streamSCU.getState(),
+                            rq.getString(Tag.AffectedSOPInstanceUID),
+                            rq.getString(Tag.AffectedSOPClassUID),
+                            Status.ProcessingFailure,
+                            ProgressStatus.FAILED,
                             streamSCU.getNumberOfSuboperations());
                     throw e;
                 } catch (Exception e) {
@@ -165,8 +170,12 @@ public class CGetForward implements AutoCloseable {
                         Thread.currentThread().interrupt();
                     }
                     Logger.error("Error when forwarding to the final destination", e);
-                    Builder.notifyProgession(streamSCU.getState(), rq.getString(Tag.AffectedSOPInstanceUID),
-                            rq.getString(Tag.AffectedSOPClassUID), Status.ProcessingFailure, ProgressStatus.FAILED,
+                    Builder.notifyProgession(
+                            streamSCU.getState(),
+                            rq.getString(Tag.AffectedSOPInstanceUID),
+                            rq.getString(Tag.AffectedSOPClassUID),
+                            Status.ProcessingFailure,
+                            ProgressStatus.FAILED,
                             streamSCU.getNumberOfSuboperations());
                 } finally {
                     IoKit.close(in);
@@ -178,6 +187,7 @@ public class CGetForward implements AutoCloseable {
         }
 
         class AbortException extends IllegalStateException {
+
             @Serial
             private static final long serialVersionUID = 2852291915160L;
 
@@ -217,7 +227,11 @@ public class CGetForward implements AutoCloseable {
      * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
      *         progression.
      */
-    public static Status processStudy(Node callingNode, Node calledNode, Node destinationNode, ImageProgress progress,
+    public static Status processStudy(
+            Node callingNode,
+            Node calledNode,
+            Node destinationNode,
+            ImageProgress progress,
             String studyUID) {
         return process(null, null, callingNode, calledNode, destinationNode, progress, "STUDY", studyUID);
     }
@@ -233,8 +247,14 @@ public class CGetForward implements AutoCloseable {
      * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
      *         progression.
      */
-    public static Status processStudy(Args args, Args forwardParams, Node callingNode, Node calledNode,
-            Node destinationNode, ImageProgress progress, String studyUID) {
+    public static Status processStudy(
+            Args args,
+            Args forwardParams,
+            Node callingNode,
+            Node calledNode,
+            Node destinationNode,
+            ImageProgress progress,
+            String studyUID) {
         return process(args, forwardParams, callingNode, calledNode, destinationNode, progress, "STUDY", studyUID);
     }
 
@@ -249,14 +269,34 @@ public class CGetForward implements AutoCloseable {
      * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
      *         progression.
      */
-    public static Status processSeries(Args getParams, Args forwardParams, Node callingNode, Node calledNode,
-            Node destinationNode, ImageProgress progress, String seriesUID) {
-        return process(getParams, forwardParams, callingNode, calledNode, destinationNode, progress, "SERIES",
+    public static Status processSeries(
+            Args getParams,
+            Args forwardParams,
+            Node callingNode,
+            Node calledNode,
+            Node destinationNode,
+            ImageProgress progress,
+            String seriesUID) {
+        return process(
+                getParams,
+                forwardParams,
+                callingNode,
+                calledNode,
+                destinationNode,
+                progress,
+                "SERIES",
                 seriesUID);
     }
 
-    private static Status process(Args args, Args forwardParams, Node callingNode, Node calledNode,
-            Node destinationNode, ImageProgress progress, String queryRetrieveLevel, String queryUID) {
+    private static Status process(
+            Args args,
+            Args forwardParams,
+            Node callingNode,
+            Node calledNode,
+            Node destinationNode,
+            ImageProgress progress,
+            String queryRetrieveLevel,
+            String queryUID) {
         if (callingNode == null || calledNode == null || destinationNode == null) {
             throw new IllegalArgumentException("callingNode, calledNode or destinationNode cannot be null!");
         }
@@ -276,7 +316,9 @@ public class CGetForward implements AutoCloseable {
 
             forward.setPriority(options.getPriority());
 
-            forward.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
+            forward.setInformationModel(
+                    getInformationModel(options),
+                    options.getTsuidOrder(),
                     options.getQueryOptions().contains(QueryOption.RELATIONAL));
 
             configureRelatedSOPClass(forward, null);
@@ -302,7 +344,9 @@ public class CGetForward implements AutoCloseable {
                 long t3 = System.currentTimeMillis();
                 String timeMsg = MessageFormat.format(
                         "DICOM C-GET connected in {2}ms from {0} to {1}. Get files in {3}ms.",
-                        forward.getAAssociateRQ().getCallingAET(), forward.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        forward.getAAssociateRQ().getCallingAET(),
+                        forward.getAAssociateRQ().getCalledAET(),
+                        t2 - t1,
                         t3 - t2);
                 return Status.buildMessage(dcmState, timeMsg, null);
             } catch (Exception e) {
@@ -483,6 +527,7 @@ public class CGetForward implements AutoCloseable {
     }
 
     public enum InformationModel {
+
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelGet.uid, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelGet.uid, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelGet.uid, "STUDY"),

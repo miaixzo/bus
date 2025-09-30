@@ -52,10 +52,10 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.VividExcelFile:
-        case PrivateTag.VividCHMFile:
-        case PrivateTag.VividPDFFile:
-            return VR.OW;
+            case PrivateTag.VividExcelFile:
+            case PrivateTag.VividCHMFile:
+            case PrivateTag.VividPDFFile:
+                return VR.OW;
         }
         return VR.UN;
     }

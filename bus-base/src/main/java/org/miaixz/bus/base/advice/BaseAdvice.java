@@ -214,7 +214,7 @@ public class BaseAdvice extends Controller {
      */
     public void defaultExceptionHandler(Exception ex) {
         try {
-            Logger.info("<==     Errors: " + ex.getMessage());
+            Logger.error("<==     Errors: " + ex.getMessage());
             Instances.singletion(ErrorAdvice.class).handler(ex);
         } catch (RuntimeException ignore) {
             // ignore

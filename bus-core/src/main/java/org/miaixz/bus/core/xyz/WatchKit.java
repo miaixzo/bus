@@ -403,7 +403,9 @@ public class WatchKit {
      * @param events    监听事件
      * @return {@link WatchKey}
      */
-    public static WatchKey register(final Watchable watchable, final WatchService watcher,
+    public static WatchKey register(
+            final Watchable watchable,
+            final WatchService watcher,
             final WatchEvent.Kind<?>... events) {
         try {
             return watchable.register(watcher, events);

@@ -49,6 +49,7 @@ import org.miaixz.bus.http.accord.platform.Platform;
  * @since Java 17+
  */
 public class RealConnectionPool {
+
     /**
      * 后台线程用于清理过期的连接。每个连接池最多运行一个线程 线程池执行器允许池本身被垃圾收集
      */
@@ -108,7 +109,10 @@ public class RealConnectionPool {
      * Attempts to acquire a recycled connection to {@code address} for {@code transmitter}. Returns true if a
      * connection was acquired.
      */
-    boolean transmitterAcquirePooledConnection(Address address, Transmitter transmitter, List<Route> routes,
+    boolean transmitterAcquirePooledConnection(
+            Address address,
+            Transmitter transmitter,
+            List<Route> routes,
             boolean requireMultiplexed) {
         assert (Thread.holdsLock(this));
         for (RealConnection connection : connections) {

@@ -69,14 +69,17 @@ public class ReferKit {
      */
     public static <T> Reference<T> of(final ReferenceType type, final T referent, final ReferenceQueue<T> queue) {
         switch (type) {
-        case SOFT:
-            return new SoftReference<>(referent, queue);
-        case WEAK:
-            return new WeakReference<>(referent, queue);
-        case PHANTOM:
-            return new PhantomReference<>(referent, queue);
-        default:
-            return null;
+            case SOFT:
+                return new SoftReference<>(referent, queue);
+
+            case WEAK:
+                return new WeakReference<>(referent, queue);
+
+            case PHANTOM:
+                return new PhantomReference<>(referent, queue);
+
+            default:
+                return null;
         }
     }
 

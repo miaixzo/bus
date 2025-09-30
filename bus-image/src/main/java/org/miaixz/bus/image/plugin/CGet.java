@@ -59,7 +59,11 @@ public class CGet {
      * @param keys        匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Node callingNode, Node calledNode, ImageProgress progress, File outputDir,
+    public static Status process(
+            Node callingNode,
+            Node calledNode,
+            ImageProgress progress,
+            File outputDir,
             ImageParam... keys) {
         return process(null, callingNode, calledNode, progress, outputDir, keys);
     }
@@ -73,7 +77,12 @@ public class CGet {
      * @param keys        匹配和返回键。没有值的keys是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args args, Node callingNode, Node calledNode, ImageProgress progress, File outputDir,
+    public static Status process(
+            Args args,
+            Node callingNode,
+            Node calledNode,
+            ImageProgress progress,
+            File outputDir,
             ImageParam... keys) {
         return process(args, callingNode, calledNode, progress, outputDir, null, keys);
     }
@@ -88,8 +97,14 @@ public class CGet {
      * @param keys        匹配和返回键。没有值的keys是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args args, Node callingNode, Node calledNode, ImageProgress progress, File outputDir,
-            URL sopClassURL, ImageParam... keys) {
+    public static Status process(
+            Args args,
+            Node callingNode,
+            Node calledNode,
+            ImageProgress progress,
+            File outputDir,
+            URL sopClassURL,
+            ImageParam... keys) {
         if (callingNode == null || calledNode == null || outputDir == null) {
             throw new IllegalArgumentException("callingNode, calledNode or outputDir cannot be null!");
         }
@@ -112,7 +127,9 @@ public class CGet {
 
             getSCU.setStorageDirectory(outputDir);
 
-            getSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
+            getSCU.setInformationModel(
+                    getInformationModel(options),
+                    options.getTsuidOrder(),
                     options.getQueryOptions().contains(QueryOption.RELATIONAL));
 
             configureRelatedSOPClass(getSCU, sopClassURL);
@@ -136,7 +153,9 @@ public class CGet {
                 long t3 = System.currentTimeMillis();
                 String timeMsg = MessageFormat.format(
                         "DICOM C-GET connected in {2}ms from {0} to {1}. Get files in {3}ms.",
-                        getSCU.getAAssociateRQ().getCallingAET(), getSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        getSCU.getAAssociateRQ().getCallingAET(),
+                        getSCU.getAAssociateRQ().getCalledAET(),
+                        t2 - t1,
                         t3 - t2);
                 dcmState = Status.buildMessage(dcmState, timeMsg, null);
                 dcmState.addProcessTime(t1, t2, t3);
@@ -155,8 +174,11 @@ public class CGet {
             }
         } catch (Exception e) {
             Logger.error("getscu", e);
-            return Status.buildMessage(new Status(Status.UnableToProcess,
-                    "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null), null, e);
+            return Status.buildMessage(
+                    new Status(Status.UnableToProcess,
+                            "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null),
+                    null,
+                    e);
         }
     }
 

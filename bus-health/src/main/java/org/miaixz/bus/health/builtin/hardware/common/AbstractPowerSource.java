@@ -104,21 +104,27 @@ public abstract class AbstractPowerSource implements PowerSource {
 
     private static List<PowerSource> getPowerSources() {
         switch (Platform.getCurrentPlatform()) {
-        case WINDOWS:
-            return WindowsPowerSource.getPowerSources();
-        case MACOS:
-            return MacPowerSource.getPowerSources();
-        case LINUX:
-            return LinuxPowerSource.getPowerSources();
-        case SOLARIS:
-            return SolarisPowerSource.getPowerSources();
-        case FREEBSD:
-            return FreeBsdPowerSource.getPowerSources();
-        case AIX:
-            return AixPowerSource.getPowerSources();
-        default:
-            throw new UnsupportedOperationException(
-                    "Operating system not supported: " + com.sun.jna.Platform.getOSType());
+            case WINDOWS:
+                return WindowsPowerSource.getPowerSources();
+
+            case MACOS:
+                return MacPowerSource.getPowerSources();
+
+            case LINUX:
+                return LinuxPowerSource.getPowerSources();
+
+            case SOLARIS:
+                return SolarisPowerSource.getPowerSources();
+
+            case FREEBSD:
+                return FreeBsdPowerSource.getPowerSources();
+
+            case AIX:
+                return AixPowerSource.getPowerSources();
+
+            default:
+                throw new UnsupportedOperationException(
+                        "Operating system not supported: " + com.sun.jna.Platform.getOSType());
         }
     }
 

@@ -138,20 +138,19 @@ public class ConnectionSuite {
      */
     private ConnectionSuite supportedSuite(SSLSocket sslSocket, boolean isFallback) {
         String[] cipherSuitesIntersection = null != cipherSuites
-                ? org.miaixz.bus.http.Builder.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(),
-                        cipherSuites)
+                ? org.miaixz.bus.http.Builder
+                        .intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
                 : sslSocket.getEnabledCipherSuites();
-        String[] tlsVersionsIntersection = null != tlsVersions
-                ? org.miaixz.bus.http.Builder.intersect(org.miaixz.bus.http.Builder.NATURAL_ORDER,
-                        sslSocket.getEnabledProtocols(), tlsVersions)
+        String[] tlsVersionsIntersection = null != tlsVersions ? org.miaixz.bus.http.Builder
+                .intersect(org.miaixz.bus.http.Builder.NATURAL_ORDER, sslSocket.getEnabledProtocols(), tlsVersions)
                 : sslSocket.getEnabledProtocols();
 
         String[] supportedCipherSuites = sslSocket.getSupportedCipherSuites();
-        int indexOfFallbackScsv = org.miaixz.bus.http.Builder.indexOf(CipherSuite.ORDER_BY_NAME, supportedCipherSuites,
-                "TLS_FALLBACK_SCSV");
+        int indexOfFallbackScsv = org.miaixz.bus.http.Builder
+                .indexOf(CipherSuite.ORDER_BY_NAME, supportedCipherSuites, "TLS_FALLBACK_SCSV");
         if (isFallback && indexOfFallbackScsv != -1) {
-            cipherSuitesIntersection = org.miaixz.bus.http.Builder.concat(cipherSuitesIntersection,
-                    supportedCipherSuites[indexOfFallbackScsv]);
+            cipherSuitesIntersection = org.miaixz.bus.http.Builder
+                    .concat(cipherSuitesIntersection, supportedCipherSuites[indexOfFallbackScsv]);
         }
 
         return new Builder(this).cipherSuites(cipherSuitesIntersection).tlsVersions(tlsVersionsIntersection).build();
@@ -170,14 +169,15 @@ public class ConnectionSuite {
             return false;
         }
 
-        if (null != tlsVersions
-                && !org.miaixz.bus.http.Builder.nonEmptyIntersection(org.miaixz.bus.http.Builder.NATURAL_ORDER,
-                        tlsVersions, socket.getEnabledProtocols())) {
+        if (null != tlsVersions && !org.miaixz.bus.http.Builder.nonEmptyIntersection(
+                org.miaixz.bus.http.Builder.NATURAL_ORDER,
+                tlsVersions,
+                socket.getEnabledProtocols())) {
             return false;
         }
 
-        if (null != cipherSuites && !org.miaixz.bus.http.Builder.nonEmptyIntersection(CipherSuite.ORDER_BY_NAME,
-                cipherSuites, socket.getEnabledCipherSuites())) {
+        if (null != cipherSuites && !org.miaixz.bus.http.Builder
+                .nonEmptyIntersection(CipherSuite.ORDER_BY_NAME, cipherSuites, socket.getEnabledCipherSuites())) {
             return false;
         }
 

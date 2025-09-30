@@ -106,7 +106,9 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
      * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
      * @return KVServiceLoader
      */
-    public static <S> MapServiceLoader<S> of(final String pathPrefix, final Class<S> serviceClass,
+    public static <S> MapServiceLoader<S> of(
+            final String pathPrefix,
+            final Class<S> serviceClass,
             final ClassLoader classLoader) {
         return new MapServiceLoader<>(pathPrefix, serviceClass, classLoader, null);
     }
@@ -119,7 +121,11 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
         // 解析同名的所有service资源
         // 按照资源加载优先级，先加载和解析的资源优先使用，后加载的同名资源丢弃
         final Properties properties = new Properties();
-        ResourceKit.loadAllTo(properties, pathPrefix + serviceClass.getName(), classLoader, charset,
+        ResourceKit.loadAllTo(
+                properties,
+                pathPrefix + serviceClass.getName(),
+                classLoader,
+                charset,
                 // 非覆盖模式
                 false);
         this.serviceProperties = properties;
@@ -153,6 +159,7 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
     @Override
     public Iterator<S> iterator() {
         return new Iterator<>() {
+
             private final Iterator<String> nameIter = serviceProperties.stringPropertyNames().iterator();
 
             @Override

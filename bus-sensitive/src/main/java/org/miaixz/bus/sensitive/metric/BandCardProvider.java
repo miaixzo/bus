@@ -47,8 +47,8 @@ public class BandCardProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String bankCard = object.toString();
-        return StringKit.left(bankCard, 4)
-                .concat(StringKit.removePrefix(
+        return StringKit.left(bankCard, 4).concat(
+                StringKit.removePrefix(
                         StringKit.padPre(StringKit.right(bankCard, 4), StringKit.length(bankCard), shield.shadow()),
                         StringKit.fill(3, shield.shadow())));
     }

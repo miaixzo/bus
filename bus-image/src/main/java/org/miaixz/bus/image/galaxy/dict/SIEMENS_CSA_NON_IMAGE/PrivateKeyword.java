@@ -38,14 +38,17 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CSADataType:
-            return "CSADataType";
-        case PrivateTag.CSADataVersion:
-            return "CSADataVersion";
-        case PrivateTag.CSADataInfo:
-            return "CSADataInfo";
-        case PrivateTag.CSAData:
-            return "CSAData";
+            case PrivateTag.CSADataType:
+                return "CSADataType";
+
+            case PrivateTag.CSADataVersion:
+                return "CSADataVersion";
+
+            case PrivateTag.CSADataInfo:
+                return "CSADataInfo";
+
+            case PrivateTag.CSAData:
+                return "CSAData";
         }
         return "";
     }

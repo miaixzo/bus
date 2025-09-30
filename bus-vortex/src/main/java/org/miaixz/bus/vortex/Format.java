@@ -99,7 +99,12 @@ public enum Format {
      * @param message   详细的错误信息
      */
     public static void error(ServerWebExchange exchange, String operation, String message) {
-        Logger.error("{}[{}] [{}] [{}] - {}", getTraceId(exchange), getMethod(exchange), getPath(exchange), operation,
+        Logger.error(
+                "{}[{}] [{}] [{}] - {}",
+                getTraceId(exchange),
+                getMethod(exchange),
+                getPath(exchange),
+                operation,
                 message);
     }
 
@@ -114,7 +119,12 @@ public enum Format {
      * @param message   详细的警告信息
      */
     public static void warn(ServerWebExchange exchange, String operation, String message) {
-        Logger.warn("{}[{}] [{}] [{}] - {}", getTraceId(exchange), getMethod(exchange), getPath(exchange), operation,
+        Logger.warn(
+                "{}[{}] [{}] [{}] - {}",
+                getTraceId(exchange),
+                getMethod(exchange),
+                getPath(exchange),
+                operation,
                 message);
     }
 
@@ -129,7 +139,12 @@ public enum Format {
      * @param message   详细的信息
      */
     public static void info(ServerWebExchange exchange, String operation, String message) {
-        Logger.info("{}[{}] [{}] [{}] - {}", getTraceId(exchange), getMethod(exchange), getPath(exchange), operation,
+        Logger.info(
+                "{}[{}] [{}] [{}] - {}",
+                getTraceId(exchange),
+                getMethod(exchange),
+                getPath(exchange),
+                operation,
                 message);
     }
 
@@ -144,7 +159,12 @@ public enum Format {
      * @param message   详细的调试信息
      */
     public static void debug(ServerWebExchange exchange, String operation, String message) {
-        Logger.debug("{}[{}] [{}] [{}] - {}", getTraceId(exchange), getMethod(exchange), getPath(exchange), operation,
+        Logger.debug(
+                "{}[{}] [{}] [{}] - {}",
+                getTraceId(exchange),
+                getMethod(exchange),
+                getPath(exchange),
+                operation,
                 message);
     }
 
@@ -159,7 +179,12 @@ public enum Format {
      * @param message   详细的跟踪信息
      */
     public static void trace(ServerWebExchange exchange, String operation, String message) {
-        Logger.trace("{}[{}] [{}] [{}] - {}", getTraceId(exchange), getMethod(exchange), getPath(exchange), operation,
+        Logger.trace(
+                "{}[{}] [{}] [{}] - {}",
+                getTraceId(exchange),
+                getMethod(exchange),
+                getPath(exchange),
+                operation,
                 message);
     }
 
@@ -202,11 +227,18 @@ public enum Format {
         if (context == null) {
             return;
         }
-        long executionTime = System.currentTimeMillis() - context.getStartTime();
+        long executionTime = System.currentTimeMillis() - context.getTimestamp();
         String path = getPath(exchange);
         String method = getMethod(exchange);
-        info(exchange, "REQUEST_END", String.format("Method: %s, Path: %s, Status: %d, ExecutionTime: %dms", method,
-                path, statusCode, executionTime));
+        info(
+                exchange,
+                "REQUEST_END",
+                String.format(
+                        "Method: %s, Path: %s, Status: %d, ExecutionTime: %dms",
+                        method,
+                        path,
+                        statusCode,
+                        executionTime));
     }
 
     /**

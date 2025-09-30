@@ -86,8 +86,13 @@ public interface MapperHandler<T> extends Handler<T> {
      * @param boundSql        绑定的 SQL 对象
      * @return 返回 true 表示继续执行查询，返回 false 表示终止查询
      */
-    default boolean isQuery(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds,
-            ResultHandler resultHandler, BoundSql boundSql) {
+    default boolean isQuery(
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
         return true;
     }
 
@@ -101,8 +106,14 @@ public interface MapperHandler<T> extends Handler<T> {
      * @param resultHandler   结果处理器
      * @param boundSql        绑定的 SQL 对象
      */
-    default void query(Object result, Executor executor, MappedStatement mappedStatement, Object parameter,
-            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    default void query(
+            Object result,
+            Executor executor,
+            MappedStatement mappedStatement,
+            Object parameter,
+            RowBounds rowBounds,
+            ResultHandler resultHandler,
+            BoundSql boundSql) {
 
     }
 

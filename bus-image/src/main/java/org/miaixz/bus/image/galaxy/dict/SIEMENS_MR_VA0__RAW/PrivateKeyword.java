@@ -38,66 +38,95 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SequenceType:
-            return "SequenceType";
-        case PrivateTag.VectorSizeOriginal:
-            return "VectorSizeOriginal";
-        case PrivateTag.VectorSizeExtended:
-            return "VectorSizeExtended";
-        case PrivateTag.AcquiredSpectralRange:
-            return "AcquiredSpectralRange";
-        case PrivateTag.VOIPosition:
-            return "VOIPosition";
-        case PrivateTag.VOISize:
-            return "VOISize";
-        case PrivateTag.CSIMatrixSizeOriginal:
-            return "CSIMatrixSizeOriginal";
-        case PrivateTag.CSIMatrixSizeExtended:
-            return "CSIMatrixSizeExtended";
-        case PrivateTag.SpatialGridShift:
-            return "SpatialGridShift";
-        case PrivateTag.SignalLimitsMinimum:
-            return "SignalLimitsMinimum";
-        case PrivateTag.SignalLimitsMaximum:
-            return "SignalLimitsMaximum";
-        case PrivateTag.SpecInfoMask:
-            return "SpecInfoMask";
-        case PrivateTag.EPITimeRateOfChangeOfMagnitude:
-            return "EPITimeRateOfChangeOfMagnitude";
-        case PrivateTag.EPITimeRateOfChangeOfXComponent:
-            return "EPITimeRateOfChangeOfXComponent";
-        case PrivateTag.EPITimeRateOfChangeOfYComponent:
-            return "EPITimeRateOfChangeOfYComponent";
-        case PrivateTag.EPITimeRateOfChangeOfZComponent:
-            return "EPITimeRateOfChangeOfZComponent";
-        case PrivateTag.EPITimeRateOfChangeLegalLimit1:
-            return "EPITimeRateOfChangeLegalLimit1";
-        case PrivateTag.EPIOperationModeFlag:
-            return "EPIOperationModeFlag";
-        case PrivateTag.EPIFieldCalculationSafetyFactor:
-            return "EPIFieldCalculationSafetyFactor";
-        case PrivateTag.EPILegalLimit1OfChangeValue:
-            return "EPILegalLimit1OfChangeValue";
-        case PrivateTag.EPILegalLimit2OfChangeValue:
-            return "EPILegalLimit2OfChangeValue";
-        case PrivateTag.EPIRiseTime:
-            return "EPIRiseTime";
-        case PrivateTag.ArrayCoilADCOffset:
-            return "ArrayCoilADCOffset";
-        case PrivateTag.ArrayCoilPreamplifierGain:
-            return "ArrayCoilPreamplifierGain";
-        case PrivateTag.SaturationType:
-            return "SaturationType";
-        case PrivateTag.SaturationNormalVector:
-            return "SaturationNormalVector";
-        case PrivateTag.SaturationPositionVector:
-            return "SaturationPositionVector";
-        case PrivateTag.SaturationThickness:
-            return "SaturationThickness";
-        case PrivateTag.SaturationWidth:
-            return "SaturationWidth";
-        case PrivateTag.SaturationDistance:
-            return "SaturationDistance";
+            case PrivateTag.SequenceType:
+                return "SequenceType";
+
+            case PrivateTag.VectorSizeOriginal:
+                return "VectorSizeOriginal";
+
+            case PrivateTag.VectorSizeExtended:
+                return "VectorSizeExtended";
+
+            case PrivateTag.AcquiredSpectralRange:
+                return "AcquiredSpectralRange";
+
+            case PrivateTag.VOIPosition:
+                return "VOIPosition";
+
+            case PrivateTag.VOISize:
+                return "VOISize";
+
+            case PrivateTag.CSIMatrixSizeOriginal:
+                return "CSIMatrixSizeOriginal";
+
+            case PrivateTag.CSIMatrixSizeExtended:
+                return "CSIMatrixSizeExtended";
+
+            case PrivateTag.SpatialGridShift:
+                return "SpatialGridShift";
+
+            case PrivateTag.SignalLimitsMinimum:
+                return "SignalLimitsMinimum";
+
+            case PrivateTag.SignalLimitsMaximum:
+                return "SignalLimitsMaximum";
+
+            case PrivateTag.SpecInfoMask:
+                return "SpecInfoMask";
+
+            case PrivateTag.EPITimeRateOfChangeOfMagnitude:
+                return "EPITimeRateOfChangeOfMagnitude";
+
+            case PrivateTag.EPITimeRateOfChangeOfXComponent:
+                return "EPITimeRateOfChangeOfXComponent";
+
+            case PrivateTag.EPITimeRateOfChangeOfYComponent:
+                return "EPITimeRateOfChangeOfYComponent";
+
+            case PrivateTag.EPITimeRateOfChangeOfZComponent:
+                return "EPITimeRateOfChangeOfZComponent";
+
+            case PrivateTag.EPITimeRateOfChangeLegalLimit1:
+                return "EPITimeRateOfChangeLegalLimit1";
+
+            case PrivateTag.EPIOperationModeFlag:
+                return "EPIOperationModeFlag";
+
+            case PrivateTag.EPIFieldCalculationSafetyFactor:
+                return "EPIFieldCalculationSafetyFactor";
+
+            case PrivateTag.EPILegalLimit1OfChangeValue:
+                return "EPILegalLimit1OfChangeValue";
+
+            case PrivateTag.EPILegalLimit2OfChangeValue:
+                return "EPILegalLimit2OfChangeValue";
+
+            case PrivateTag.EPIRiseTime:
+                return "EPIRiseTime";
+
+            case PrivateTag.ArrayCoilADCOffset:
+                return "ArrayCoilADCOffset";
+
+            case PrivateTag.ArrayCoilPreamplifierGain:
+                return "ArrayCoilPreamplifierGain";
+
+            case PrivateTag.SaturationType:
+                return "SaturationType";
+
+            case PrivateTag.SaturationNormalVector:
+                return "SaturationNormalVector";
+
+            case PrivateTag.SaturationPositionVector:
+                return "SaturationPositionVector";
+
+            case PrivateTag.SaturationThickness:
+                return "SaturationThickness";
+
+            case PrivateTag.SaturationWidth:
+                return "SaturationWidth";
+
+            case PrivateTag.SaturationDistance:
+                return "SaturationDistance";
         }
         return "";
     }

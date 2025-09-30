@@ -107,7 +107,11 @@ public class TwitterProvider extends AbstractProvider {
      * @param tokenSecret OAuth 令牌密钥
      * @return Base64 编码的签名字符串
      */
-    public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret,
+    public static String sign(
+            Map<String, String> params,
+            String method,
+            String baseUrl,
+            String apiSecret,
             String tokenSecret) {
         TreeMap<String, String> map = new TreeMap<>(params);
 
@@ -115,8 +119,8 @@ public class TwitterProvider extends AbstractProvider {
         String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND
                 + UrlEncoder.encodeAll(text);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
-        byte[] signature = Builder.sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8),
-                Algorithm.HMACSHA1.getValue());
+        byte[] signature = Builder
+                .sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
 
         return new String(Base64.encode(signature, false));
     }
@@ -169,7 +173,8 @@ public class TwitterProvider extends AbstractProvider {
         Map<String, String> headerMap = buildOauthParams();
         headerMap.put("oauth_token", callback.getOauth_token());
         headerMap.put("oauth_verifier", callback.getOauth_verifier());
-        headerMap.put("oauth_signature",
+        headerMap.put(
+                "oauth_signature",
                 sign(headerMap, "POST", this.complex.accessToken(), context.getAppSecret(), callback.getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
@@ -203,7 +208,8 @@ public class TwitterProvider extends AbstractProvider {
         params.put("include_entities", Boolean.toString(true));
         params.put("include_email", Boolean.toString(true));
 
-        form.put("oauth_signature",
+        form.put(
+                "oauth_signature",
                 sign(params, "GET", this.complex.userinfo(), context.getAppSecret(), authToken.getOauthTokenSecret()));
 
         Map<String, String> header = new HashMap<>();

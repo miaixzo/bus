@@ -57,8 +57,8 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     /**
      * String转换器的默认媒体类型，支持JSON和UTF-8编码的纯文本
      */
-    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(MediaType.APPLICATION_JSON,
-            MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
+    private static final List<MediaType> DEFAULT_MEDIA_TYPES = List
+            .of(MediaType.APPLICATION_JSON, MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
 
     /**
      * JSON序列化时的类型支持配置
@@ -95,8 +95,8 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 确保拦截器正确注册，拦截所有路径，排除静态资源、错误页面和favicon
-        registry.addInterceptor(this.handler).addPathPatterns("/**").excludePathPatterns("/static/**", "/error",
-                "/favicon.ico");
+        registry.addInterceptor(this.handler).addPathPatterns("/**")
+                .excludePathPatterns("/static/**", "/error", "/favicon.ico");
     }
 
     /**
@@ -131,7 +131,8 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      */
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix(this.prefix,
+        configurer.addPathPrefix(
+                this.prefix,
                 c -> (c.isAnnotationPresent(Controller.class) || c.isAnnotationPresent(RestController.class)));
     }
 
@@ -145,14 +146,21 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
                 .stream().peek(configurer -> {
                     try {
                         configurer.autoType(this.autoType);
-                        Logger.debug("Set autoType '{}' for custom JsonConverterConfigurer: {}", this.autoType,
+                        Logger.debug(
+                                "Set autoType '{}' for custom JsonConverterConfigurer: {}",
+                                this.autoType,
                                 configurer.name());
                     } catch (Exception e) {
-                        Logger.warn("Failed to set autoType for custom JsonConverterConfigurer {}: {}",
-                                configurer.name(), e.getMessage(), e);
+                        Logger.warn(
+                                "Failed to set autoType for custom JsonConverterConfigurer {}: {}",
+                                configurer.name(),
+                                e.getMessage(),
+                                e);
                     }
                 }).sorted(Comparator.comparingInt(JsonConverterConfigurer::order)).toList();
-        Logger.debug("Retrieved {} available custom JsonConverterConfigurer beans: {}", configurers.size(),
+        Logger.debug(
+                "Retrieved {} available custom JsonConverterConfigurer beans: {}",
+                configurers.size(),
                 configurers.stream().map(JsonConverterConfigurer::name).toList());
         return configurers;
     }
@@ -164,8 +172,10 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      * @param configurer 转换器的配置逻辑
      * @param name       转换器名称（用于日志记录）
      */
-    private void configureConverter(List<HttpMessageConverter<?>> converters,
-            Consumer<List<HttpMessageConverter<?>>> configurer, String name) {
+    private void configureConverter(
+            List<HttpMessageConverter<?>> converters,
+            Consumer<List<HttpMessageConverter<?>>> configurer,
+            String name) {
         try {
             configurer.accept(converters);
             Logger.info("Successfully configured {} message converter", name);
@@ -180,7 +190,8 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      * @param converters  要添加到的消息转换器列表
      * @param configurers 要应用的JsonConverterConfigurer实例列表
      */
-    private void configureJsonConverters(List<HttpMessageConverter<?>> converters,
+    private void configureJsonConverters(
+            List<HttpMessageConverter<?>> converters,
             List<JsonConverterConfigurer> configurers) {
         for (JsonConverterConfigurer configurer : configurers) {
             configureConverter(converters, configurer::configure, configurer.name());

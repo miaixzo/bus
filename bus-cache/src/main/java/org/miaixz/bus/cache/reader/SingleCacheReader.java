@@ -83,8 +83,8 @@ public class SingleCacheReader extends AbstractReader {
             return invokeResult;
         }
         if (this.context.isPreventOn()) {
-            this.manage.writeSingle(annoHolder.getCache(), key, PreventObjects.getPreventObject(),
-                    annoHolder.getExpire());
+            this.manage
+                    .writeSingle(annoHolder.getCache(), key, PreventObjects.getPreventObject(), annoHolder.getExpire());
         }
         return null;
     }

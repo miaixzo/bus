@@ -69,7 +69,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <K>        map中的key类型
      * @return 转化后的map
      */
-    public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final FunctionX<V, K> key,
+    public static <V, K> Map<K, V> toIdentityMap(
+            final Collection<V> collection,
+            final FunctionX<V, K> key,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
@@ -88,7 +90,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        map中的value类型
      * @return 转化后的map
      */
-    public static <E, K, V> Map<K, V> toMap(final Collection<E> collection, final Function<E, K> key,
+    public static <E, K, V> Map<K, V> toMap(
+            final Collection<E> collection,
+            final Function<E, K> key,
             final Function<E, V> value) {
         return toMap(collection, key, value, false);
     }
@@ -103,13 +107,16 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        map中的value类型
      * @return 转化后的map
      */
-    public static <E, K, V> Map<K, V> toMap(final Collection<E> collection, final Function<E, K> key,
-            final Function<E, V> value, final boolean isParallel) {
+    public static <E, K, V> Map<K, V> toMap(
+            final Collection<E> collection,
+            final Function<E, K> key,
+            final Function<E, V> value,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
-        return StreamKit.of(collection, isParallel).collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)),
-                HashMap::putAll);
+        return StreamKit.of(collection, isParallel)
+                .collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)), HashMap::putAll);
     }
 
     /**
@@ -135,7 +142,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <K>        map中的key类型
      * @return 分组后的map
      */
-    public static <E, K> Map<K, List<E>> groupByKey(final Collection<E> collection, final Function<E, K> key,
+    public static <E, K> Map<K, List<E>> groupByKey(
+            final Collection<E> collection,
+            final Function<E, K> key,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
@@ -154,8 +163,10 @@ public class CollectionStream extends CollectionValidator {
      * @param <U>        第二个map中的key类型
      * @return 分组后的map
      */
-    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(final Collection<E> collection,
-            final Function<E, K> key1, final Function<E, U> key2) {
+    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(
+            final Collection<E> collection,
+            final Function<E, K> key1,
+            final Function<E, U> key2) {
         return groupBy2Key(collection, key1, key2, false);
     }
 
@@ -171,8 +182,11 @@ public class CollectionStream extends CollectionValidator {
      * @param <U>        第二个map中的key类型
      * @return 分组后的map
      */
-    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(final Collection<E> collection,
-            final Function<E, K> key1, final Function<E, U> key2, final boolean isParallel) {
+    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(
+            final Collection<E> collection,
+            final Function<E, K> key1,
+            final Function<E, U> key2,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
@@ -190,7 +204,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <E>        collection中的泛型
      * @return 分组后的map
      */
-    public static <E, T, U> Map<T, Map<U, E>> group2Map(final Collection<E> collection, final Function<E, T> key1,
+    public static <E, T, U> Map<T, Map<U, E>> group2Map(
+            final Collection<E> collection,
+            final Function<E, T> key1,
             final Function<E, U> key2) {
         return group2Map(collection, key1, key2, false);
     }
@@ -207,8 +223,11 @@ public class CollectionStream extends CollectionValidator {
      * @param <E>        collection中的泛型
      * @return 分组后的map
      */
-    public static <E, T, U> Map<T, Map<U, E>> group2Map(final Collection<E> collection, final Function<E, T> key1,
-            final Function<E, U> key2, final boolean isParallel) {
+    public static <E, T, U> Map<T, Map<U, E>> group2Map(
+            final Collection<E> collection,
+            final Function<E, T> key1,
+            final Function<E, U> key2,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection) || key1 == null || key2 == null) {
             return MapKit.zero();
         }
@@ -226,7 +245,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        List中的value类型
      * @return 分组后的map
      */
-    public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final FunctionX<E, K> key,
+    public static <E, K, V> Map<K, List<V>> groupKeyValue(
+            final Collection<E> collection,
+            final FunctionX<E, K> key,
             final FunctionX<E, V> value) {
         return groupKeyValue(collection, key, value, false);
     }
@@ -243,12 +264,17 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        List中的value类型
      * @return 分组后的map
      */
-    public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final FunctionX<E, K> key,
-            final FunctionX<E, V> value, final boolean isParallel) {
+    public static <E, K, V> Map<K, List<V>> groupKeyValue(
+            final Collection<E> collection,
+            final FunctionX<E, K> key,
+            final FunctionX<E, V> value,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
-        return groupBy(collection, key,
+        return groupBy(
+                collection,
+                key,
                 Collectors.mapping(v -> Optional.ofNullable(v).map(value).orElse(null), Collectors.toList()),
                 isParallel);
     }
@@ -264,7 +290,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <D>        后续操作的返回值
      * @return 分组后的map
      */
-    public static <E, K, D> Map<K, D> groupBy(final Collection<E> collection, final Function<E, K> key,
+    public static <E, K, D> Map<K, D> groupBy(
+            final Collection<E> collection,
+            final Function<E, K> key,
             final Collector<E, ?, D> downstream) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
@@ -285,8 +313,11 @@ public class CollectionStream extends CollectionValidator {
      * @return 分组后的map
      * @see Collectors#groupingBy(Function, Collector)
      */
-    public static <E, K, D> Map<K, D> groupBy(final Collection<E> collection, final Function<E, K> key,
-            final Collector<E, ?, D> downstream, final boolean isParallel) {
+    public static <E, K, D> Map<K, D> groupBy(
+            final Collection<E> collection,
+            final Function<E, K> key,
+            final Collector<E, ?, D> downstream,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
@@ -316,7 +347,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <T>        List中的泛型
      * @return 转化后的list
      */
-    public static <E, T> List<T> toList(final Collection<E> collection, final Function<E, T> function,
+    public static <E, T> List<T> toList(
+            final Collection<E> collection,
+            final Function<E, T> function,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return ListKit.zero();
@@ -347,7 +380,9 @@ public class CollectionStream extends CollectionValidator {
      * @param <T>        Set中的泛型
      * @return 转化后的Set
      */
-    public static <E, T> Set<T> toSet(final Collection<E> collection, final Function<E, T> function,
+    public static <E, T> Set<T> toSet(
+            final Collection<E> collection,
+            final Function<E, T> function,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return SetKit.zero();

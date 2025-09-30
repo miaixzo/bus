@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.BusinessUnitCode:
-            return "BusinessUnitCode";
-        case PrivateTag.ApplicationType:
-            return "ApplicationType";
-        case PrivateTag.ApplicationAttributesSequence:
-            return "ApplicationAttributesSequence";
+            case PrivateTag.BusinessUnitCode:
+                return "BusinessUnitCode";
+
+            case PrivateTag.ApplicationType:
+                return "ApplicationType";
+
+            case PrivateTag.ApplicationAttributesSequence:
+                return "ApplicationAttributesSequence";
         }
         return "";
     }

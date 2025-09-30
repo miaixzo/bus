@@ -107,7 +107,9 @@ public class CollKit extends CollectionStream {
      * @param override   是否覆盖模式，如果为{@code true}，加入的新值会覆盖相同key的旧值，否则会忽略新加值
      * @return {@link List}
      */
-    public static <T, K> List<T> distinct(final Collection<T> collection, final Function<T, K> key,
+    public static <T, K> List<T> distinct(
+            final Collection<T> collection,
+            final Function<T, K> key,
             final boolean override) {
         if (isEmpty(collection)) {
             return new ArrayList<>();
@@ -445,7 +447,9 @@ public class CollKit extends CollectionStream {
      * @return 连接后的字符串
      * @see IteratorKit#join(Iterator, CharSequence, Function)
      */
-    public static <T> String join(final Iterable<T> iterable, final CharSequence conjunction,
+    public static <T> String join(
+            final Iterable<T> iterable,
+            final CharSequence conjunction,
             final Function<T, ? extends CharSequence> func) {
         return IteratorKit.join(IteratorKit.getIter(iterable), conjunction, func);
     }
@@ -476,7 +480,10 @@ public class CollKit extends CollectionStream {
      * @param suffix      每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
      */
-    public static <T> String join(final Iterable<T> iterable, final CharSequence conjunction, final String prefix,
+    public static <T> String join(
+            final Iterable<T> iterable,
+            final CharSequence conjunction,
+            final String prefix,
             final String suffix) {
         if (null == iterable) {
             return null;
@@ -878,7 +885,9 @@ public class CollKit extends CollectionStream {
      * @param predicate        用于是否移除判断的过滤器
      * @return 移除结果的集合
      */
-    public static <T extends Collection<E>, E> T removeWithAddIf(final T targetCollection, final T resultCollection,
+    public static <T extends Collection<E>, E> T removeWithAddIf(
+            final T targetCollection,
+            final T resultCollection,
             final Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         final Iterator<E> each = targetCollection.iterator();
@@ -901,7 +910,8 @@ public class CollKit extends CollectionStream {
      * @param predicate        用于是否移除判断的过滤器
      * @return 移除结果的集合
      */
-    public static <T extends Collection<E>, E> List<E> removeWithAddIf(final T targetCollection,
+    public static <T extends Collection<E>, E> List<E> removeWithAddIf(
+            final T targetCollection,
             final Predicate<? super E> predicate) {
         final List<E> removed = new ArrayList<>();
         removeWithAddIf(targetCollection, removed, predicate);
@@ -933,7 +943,9 @@ public class CollKit extends CollectionStream {
      * @return 抽取后的新列表
      * @see java.util.stream.Stream#map(Function)
      */
-    public static <T, R> List<R> map(final Iterable<T> collection, final Function<? super T, ? extends R> mapper,
+    public static <T, R> List<R> map(
+            final Iterable<T> collection,
+            final Function<? super T, ? extends R> mapper,
             final boolean ignoreNull) {
         if (ignoreNull) {
             return StreamKit.of(collection)
@@ -964,7 +976,9 @@ public class CollKit extends CollectionStream {
      * @param ignoreNull 是否忽略值为{@code null}的字段
      * @return 字段值列表
      */
-    public static List<Object> getFieldValues(final Iterable<?> collection, final String fieldName,
+    public static List<Object> getFieldValues(
+            final Iterable<?> collection,
+            final String fieldName,
             final boolean ignoreNull) {
         return map(collection, bean -> {
             if (bean instanceof Map) {
@@ -984,7 +998,9 @@ public class CollKit extends CollectionStream {
      * @param elementType 元素类型类
      * @return 字段值列表
      */
-    public static <T> List<T> getFieldValues(final Iterable<?> collection, final String fieldName,
+    public static <T> List<T> getFieldValues(
+            final Iterable<?> collection,
+            final String fieldName,
             final Class<T> elementType) {
         final Collection<Object> fieldValues = getFieldValues(collection, fieldName);
         return Convert.toList(elementType, fieldValues);
@@ -1013,7 +1029,9 @@ public class CollKit extends CollectionStream {
      * @param fieldNameForValue 做为值的字段名（会通过反射获取其值）
      * @return 某个字段值与对象对应Map
      */
-    public static <K, V> Map<K, V> fieldValueAsMap(final Iterable<?> iterable, final String fieldNameForKey,
+    public static <K, V> Map<K, V> fieldValueAsMap(
+            final Iterable<?> iterable,
+            final String fieldNameForKey,
             final String fieldNameForValue) {
         return IteratorKit.fieldValueAsMap(IteratorKit.getIter(iterable), fieldNameForKey, fieldNameForValue);
     }
@@ -1190,10 +1208,13 @@ public class CollKit extends CollectionStream {
      * @param isOrder   是否有序
      * @return Map
      */
-    public static Map<String, String> zip(final String keys, final String values, final String delimiter,
+    public static Map<String, String> zip(
+            final String keys,
+            final String values,
+            final String delimiter,
             final boolean isOrder) {
-        return ArrayKit.zip(CharsBacker.splitToArray(keys, delimiter), CharsBacker.splitToArray(values, delimiter),
-                isOrder);
+        return ArrayKit
+                .zip(CharsBacker.splitToArray(keys, delimiter), CharsBacker.splitToArray(values, delimiter), isOrder);
     }
 
     /**
@@ -1371,7 +1392,10 @@ public class CollKit extends CollectionStream {
      * @param converter   自定义元素类型转换器，{@code null}表示使用默认转换器
      * @return 被加入集合
      */
-    public static <T> Collection<T> addAll(final Collection<T> collection, final Object value, Type elementType,
+    public static <T> Collection<T> addAll(
+            final Collection<T> collection,
+            final Object value,
+            Type elementType,
             final Converter converter) {
         if (null == collection || null == value) {
             return collection;
@@ -1638,7 +1662,8 @@ public class CollKit extends CollectionStream {
      * @param comparator      {@link Comparator}
      * @return {@link LinkedList}
      */
-    public static <K, V> LinkedHashMap<K, V> sortToMap(final Collection<Map.Entry<K, V>> entryCollection,
+    public static <K, V> LinkedHashMap<K, V> sortToMap(
+            final Collection<Map.Entry<K, V>> entryCollection,
             final Comparator<Map.Entry<K, V>> comparator) {
         final List<Map.Entry<K, V>> list = new LinkedList<>(entryCollection);
         list.sort(comparator);
@@ -1659,7 +1684,8 @@ public class CollKit extends CollectionStream {
      * @param comparator {@link Comparator}
      * @return {@link LinkedList}
      */
-    public static <K, V> LinkedHashMap<K, V> sortByEntry(final Map<K, V> map,
+    public static <K, V> LinkedHashMap<K, V> sortByEntry(
+            final Map<K, V> map,
             final Comparator<Map.Entry<K, V>> comparator) {
         return sortToMap(map.entrySet(), comparator);
     }
@@ -1805,6 +1831,7 @@ public class CollKit extends CollectionStream {
      */
     public static <T> List<List<T>> groupByFunc(final Collection<T> collection, final Function<T, ?> getter) {
         return group(collection, new Hash32<>() {
+
             private final List<Object> hashValList = new ArrayList<>();
 
             @Override
@@ -2005,7 +2032,8 @@ public class CollKit extends CollectionStream {
      * @param function   转换函数
      * @return 新类型的集合
      */
-    public static <F, T> Collection<T> trans(final Collection<F> collection,
+    public static <F, T> Collection<T> trans(
+            final Collection<F> collection,
             final Function<? super F, ? extends T> function) {
         return new TransCollection<>(collection, function);
     }
@@ -2021,8 +2049,11 @@ public class CollKit extends CollectionStream {
      * @param keyGenerate 映射键生成函数
      * @param biConsumer  封装映射到的值函数 nick_wys
      */
-    public static <E, K, V> void setValueByMap(final Iterable<E> iterable, final Map<K, V> map,
-            final Function<E, K> keyGenerate, final BiConsumer<E, V> biConsumer) {
+    public static <E, K, V> void setValueByMap(
+            final Iterable<E> iterable,
+            final Map<K, V> map,
+            final Function<E, K> keyGenerate,
+            final BiConsumer<E, V> biConsumer) {
         iterable.forEach(
                 x -> Optional.ofNullable(map.get(keyGenerate.apply(x))).ifPresent(y -> biConsumer.accept(x, y)));
     }

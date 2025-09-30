@@ -46,6 +46,7 @@ import org.miaixz.bus.extra.mq.MessageHandler;
  * @since Java 17+
  */
 public class RocketMQConsumer implements Consumer {
+
     private final MQPushConsumer consumer;
 
     /**
@@ -104,6 +105,7 @@ public class RocketMQConsumer implements Consumer {
      * RocketMQ消息包装类，实现了Message接口
      */
     private static class RocketMQMessage implements Message {
+
         private final MessageExt messageExt;
 
         /**

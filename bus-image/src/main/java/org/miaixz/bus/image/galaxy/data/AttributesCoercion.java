@@ -34,6 +34,7 @@ package org.miaixz.bus.image.galaxy.data;
 public interface AttributesCoercion {
 
     AttributesCoercion NONE = new AttributesCoercion() {
+
         @Override
         public void coerce(Attributes attrs, Attributes modified) {
         }

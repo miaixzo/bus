@@ -38,8 +38,8 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.FieldOfView:
-            return "FieldOfView";
+            case PrivateTag.FieldOfView:
+                return "FieldOfView";
         }
         return "";
     }

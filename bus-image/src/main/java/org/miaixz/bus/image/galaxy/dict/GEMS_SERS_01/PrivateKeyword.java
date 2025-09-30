@@ -38,26 +38,35 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.LastPulseSequenceUsed:
-            return "LastPulseSequenceUsed";
-        case PrivateTag.ImagesInSeries:
-            return "ImagesInSeries";
-        case PrivateTag.LandmarkCounter:
-            return "LandmarkCounter";
-        case PrivateTag.NumberOfAcquisitions:
-            return "NumberOfAcquisitions";
-        case PrivateTag.IndicatesNumberOfUpdatesToHeader:
-            return "IndicatesNumberOfUpdatesToHeader";
-        case PrivateTag.SeriesCompleteFlag:
-            return "SeriesCompleteFlag";
-        case PrivateTag.NumberOfImagesArchived:
-            return "NumberOfImagesArchived";
-        case PrivateTag.LastInstanceNumberUsed:
-            return "LastInstanceNumberUsed";
-        case PrivateTag.PrimaryReceiverSuiteAndHost:
-            return "PrimaryReceiverSuiteAndHost";
-        case PrivateTag.ProtocolDataBlockCompressed:
-            return "ProtocolDataBlockCompressed";
+            case PrivateTag.LastPulseSequenceUsed:
+                return "LastPulseSequenceUsed";
+
+            case PrivateTag.ImagesInSeries:
+                return "ImagesInSeries";
+
+            case PrivateTag.LandmarkCounter:
+                return "LandmarkCounter";
+
+            case PrivateTag.NumberOfAcquisitions:
+                return "NumberOfAcquisitions";
+
+            case PrivateTag.IndicatesNumberOfUpdatesToHeader:
+                return "IndicatesNumberOfUpdatesToHeader";
+
+            case PrivateTag.SeriesCompleteFlag:
+                return "SeriesCompleteFlag";
+
+            case PrivateTag.NumberOfImagesArchived:
+                return "NumberOfImagesArchived";
+
+            case PrivateTag.LastInstanceNumberUsed:
+                return "LastInstanceNumberUsed";
+
+            case PrivateTag.PrimaryReceiverSuiteAndHost:
+                return "PrimaryReceiverSuiteAndHost";
+
+            case PrivateTag.ProtocolDataBlockCompressed:
+                return "ProtocolDataBlockCompressed";
         }
         return "";
     }

@@ -100,8 +100,8 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
         try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
                 ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(
                         vmStats.size() / SystemB.INT_SIZE)) {
-            if (0 != SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
-                    size)) {
+            if (0 != SystemB.INSTANCE
+                    .host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats, size)) {
                 Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
                 return 0L;
             }
@@ -125,8 +125,9 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
             if (line.trim().startsWith("BANK")) {
                 // Save previous bank
                 if (bank++ > 0) {
-                    pmList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, Normal.UNKNOWN,
-                            serialNumber));
+                    pmList.add(
+                            new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, Normal.UNKNOWN,
+                                    serialNumber));
                 }
                 bankLabel = line.trim();
                 int colon = bankLabel.lastIndexOf(Symbol.C_COLON);
@@ -137,26 +138,32 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
                 String[] split = line.trim().split(Symbol.COLON);
                 if (split.length == 2) {
                     switch (split[0]) {
-                    case "Size":
-                        capacity = Parsing.parseDecimalMemorySizeToBinary(split[1].trim());
-                        break;
-                    case "Type":
-                        memoryType = split[1].trim();
-                        break;
-                    case "Speed":
-                        speed = Parsing.parseHertz(split[1]);
-                        break;
-                    case "Manufacturer":
-                        manufacturer = split[1].trim();
-                        break;
-                    case "Part Number":
-                        partNumber = split[1].trim();
-                        break;
-                    case "Serial Number":
-                        serialNumber = split[1].trim();
-                        break;
-                    default:
-                        break;
+                        case "Size":
+                            capacity = Parsing.parseDecimalMemorySizeToBinary(split[1].trim());
+                            break;
+
+                        case "Type":
+                            memoryType = split[1].trim();
+                            break;
+
+                        case "Speed":
+                            speed = Parsing.parseHertz(split[1]);
+                            break;
+
+                        case "Manufacturer":
+                            manufacturer = split[1].trim();
+                            break;
+
+                        case "Part Number":
+                            partNumber = split[1].trim();
+                            break;
+
+                        case "Serial Number":
+                            serialNumber = split[1].trim();
+                            break;
+
+                        default:
+                            break;
                     }
                 }
             }

@@ -73,14 +73,14 @@ public class NotifyConfiguration {
      * 创建消息通知服务提供者工厂Bean。
      *
      * <p>
-     * 该方法创建一个{@link NotifyProviderService}实例，用于管理和创建各种消息通知服务提供者。 该实例会使用配置属性来初始化。
+     * 该方法创建一个{@link NotifyService}实例，用于管理和创建各种消息通知服务提供者。 该实例会使用配置属性来初始化。
      * </p>
      *
      * @return 配置好的消息通知服务提供者工厂实例
      */
     @Bean
-    public NotifyProviderService notifyProviderFactory() {
-        return new NotifyProviderService(this.properties);
+    public NotifyService notifyProviderFactory() {
+        return new NotifyService(this.properties);
     }
 
 }

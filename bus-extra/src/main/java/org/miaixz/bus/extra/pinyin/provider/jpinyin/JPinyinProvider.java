@@ -62,15 +62,17 @@ public class JPinyinProvider implements PinyinProvider {
 
     @Override
     public String getPinyin(final char c, final boolean tone) {
-        final String[] results = PinyinHelper.convertToPinyinArray(c,
-                tone ? PinyinFormat.WITH_TONE_MARK : PinyinFormat.WITHOUT_TONE);
+        final String[] results = PinyinHelper
+                .convertToPinyinArray(c, tone ? PinyinFormat.WITH_TONE_MARK : PinyinFormat.WITHOUT_TONE);
         return ArrayKit.isEmpty(results) ? String.valueOf(c) : results[0];
     }
 
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
         try {
-            return PinyinHelper.convertToPinyinString(str, separator,
+            return PinyinHelper.convertToPinyinString(
+                    str,
+                    separator,
                     tone ? PinyinFormat.WITH_TONE_MARK : PinyinFormat.WITHOUT_TONE);
         } catch (final PinyinException e) {
             throw new InternalException(e);

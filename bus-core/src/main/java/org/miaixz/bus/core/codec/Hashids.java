@@ -124,9 +124,17 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
                 // fill separators from alphabet
                 final int missingSeparators = minSeparatorsSize - tmpSeparators.length;
                 tmpSeparators = Arrays.copyOf(tmpSeparators, tmpSeparators.length + missingSeparators);
-                System.arraycopy(tmpAlphabet, 0, tmpSeparators, tmpSeparators.length - missingSeparators,
+                System.arraycopy(
+                        tmpAlphabet,
+                        0,
+                        tmpSeparators,
+                        tmpSeparators.length - missingSeparators,
                         missingSeparators);
-                System.arraycopy(tmpAlphabet, 0, tmpSeparators, tmpSeparators.length - missingSeparators,
+                System.arraycopy(
+                        tmpAlphabet,
+                        0,
+                        tmpSeparators,
+                        tmpSeparators.length - missingSeparators,
                         missingSeparators);
                 tmpAlphabet = Arrays.copyOfRange(tmpAlphabet, missingSeparators, tmpAlphabet.length);
             }
@@ -421,9 +429,12 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         long number = 0;
 
         final Map<Character, Integer> alphabetMapping = IntStream.range(0, alphabet.length)
-                .mapToObj(idx -> new Object[] { alphabet[idx], idx })
-                .collect(Collectors.groupingBy(arr -> (Character) arr[0], Collectors.mapping(arr -> (Integer) arr[1],
-                        Collectors.reducing(null, (a, b) -> a == null ? b : a))));
+                .mapToObj(idx -> new Object[] { alphabet[idx], idx }).collect(
+                        Collectors.groupingBy(
+                                arr -> (Character) arr[0],
+                                Collectors.mapping(
+                                        arr -> (Integer) arr[1],
+                                        Collectors.reducing(null, (a, b) -> a == null ? b : a))));
 
         for (int i = 0; i < hash.length; ++i) {
             number += alphabetMapping.computeIfAbsent(hash[i], k -> {
@@ -461,9 +472,10 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     private char[] validateAndFilterAlphabet(final char[] alphabet, final char[] separators) {
         // validate size
         if (alphabet.length < MIN_ALPHABET_LENGTH) {
-            throw new IllegalArgumentException(
-                    String.format("alphabet must contain at least %d unique " + "characters: %d", MIN_ALPHABET_LENGTH,
-                            alphabet.length));
+            throw new IllegalArgumentException(String.format(
+                    "alphabet must contain at least %d unique " + "characters: %d",
+                    MIN_ALPHABET_LENGTH,
+                    alphabet.length));
         }
 
         final Set<Character> seen = new LinkedHashSet<>(alphabet.length);

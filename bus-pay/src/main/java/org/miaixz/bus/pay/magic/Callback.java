@@ -34,6 +34,7 @@ package org.miaixz.bus.pay.magic;
  * @since Java 17+
  */
 public interface Callback {
+
     /**
      * 是否匹配
      *

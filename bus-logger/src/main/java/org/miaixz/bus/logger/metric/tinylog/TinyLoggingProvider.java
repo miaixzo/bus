@@ -155,7 +155,11 @@ public class TinyLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final org.miaixz.bus.logger.Level level, final Throwable t, final String format,
+    public void log(
+            final String fqcn,
+            final org.miaixz.bus.logger.Level level,
+            final Throwable t,
+            final String format,
             final Object... args) {
         logIfEnabled(fqcn, toTinyLevel(level), t, format, args);
     }
@@ -174,7 +178,11 @@ public class TinyLoggingProvider extends AbstractProvider {
      * @param format 日志消息模板
      * @param args   日志消息参数
      */
-    private void logIfEnabled(final String fqcn, final Level level, Throwable t, final String format,
+    private void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            Throwable t,
+            final String format,
             final Object... args) {
         if (null == t) {
             t = getLastArgumentIfThrowable(args);
@@ -191,26 +199,32 @@ public class TinyLoggingProvider extends AbstractProvider {
     private Level toTinyLevel(final org.miaixz.bus.logger.Level level) {
         final Level tinyLevel;
         switch (level) {
-        case TRACE:
-            tinyLevel = Level.TRACE;
-            break;
-        case DEBUG:
-            tinyLevel = Level.DEBUG;
-            break;
-        case INFO:
-            tinyLevel = Level.INFO;
-            break;
-        case WARN:
-            tinyLevel = Level.WARN;
-            break;
-        case ERROR:
-            tinyLevel = Level.ERROR;
-            break;
-        case OFF:
-            tinyLevel = Level.OFF;
-            break;
-        default:
-            throw new Error(StringKit.format("Can not identify level: {}", level));
+            case TRACE:
+                tinyLevel = Level.TRACE;
+                break;
+
+            case DEBUG:
+                tinyLevel = Level.DEBUG;
+                break;
+
+            case INFO:
+                tinyLevel = Level.INFO;
+                break;
+
+            case WARN:
+                tinyLevel = Level.WARN;
+                break;
+
+            case ERROR:
+                tinyLevel = Level.ERROR;
+                break;
+
+            case OFF:
+                tinyLevel = Level.OFF;
+                break;
+
+            default:
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
         return tinyLevel;
     }
@@ -222,12 +236,12 @@ public class TinyLoggingProvider extends AbstractProvider {
             return org.miaixz.bus.logger.Level.OFF;
         }
         return switch (tinyLevel) {
-        case TRACE -> org.miaixz.bus.logger.Level.TRACE;
-        case DEBUG -> org.miaixz.bus.logger.Level.DEBUG;
-        case INFO -> org.miaixz.bus.logger.Level.INFO;
-        case WARN -> org.miaixz.bus.logger.Level.WARN;
-        case ERROR -> org.miaixz.bus.logger.Level.ERROR;
-        case OFF -> org.miaixz.bus.logger.Level.OFF;
+            case TRACE -> org.miaixz.bus.logger.Level.TRACE;
+            case DEBUG -> org.miaixz.bus.logger.Level.DEBUG;
+            case INFO -> org.miaixz.bus.logger.Level.INFO;
+            case WARN -> org.miaixz.bus.logger.Level.WARN;
+            case ERROR -> org.miaixz.bus.logger.Level.ERROR;
+            case OFF -> org.miaixz.bus.logger.Level.OFF;
         };
     }
 

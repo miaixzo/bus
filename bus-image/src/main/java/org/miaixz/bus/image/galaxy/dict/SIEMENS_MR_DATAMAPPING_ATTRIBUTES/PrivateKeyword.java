@@ -38,36 +38,50 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ReprocessingInfo:
-            return "ReprocessingInfo";
-        case PrivateTag.DataRoleType:
-            return "DataRoleType";
-        case PrivateTag.DataRoleName:
-            return "DataRoleName";
-        case PrivateTag.RescanName:
-            return "RescanName";
-        case PrivateTag._0011_xx05_:
-            return "_0011_xx05_";
-        case PrivateTag.CardiacTypeName:
-            return "CardiacTypeName";
-        case PrivateTag.CardiacTypeNameL2:
-            return "CardiacTypeNameL2";
-        case PrivateTag.MiscIndicator:
-            return "MiscIndicator";
-        case PrivateTag._0011_xx09_:
-            return "_0011_xx09_";
-        case PrivateTag._0011_xx0A_:
-            return "_0011_xx0A_";
-        case PrivateTag._0011_xx0B_:
-            return "_0011_xx0B_";
-        case PrivateTag.SplitBaggingName:
-            return "SplitBaggingName";
-        case PrivateTag.SplitSubBaggingName:
-            return "SplitSubBaggingName";
-        case PrivateTag.StageSubBaggingName:
-            return "StageSubBaggingName";
-        case PrivateTag.IsInternalDataRole:
-            return "IsInternalDataRole";
+            case PrivateTag.ReprocessingInfo:
+                return "ReprocessingInfo";
+
+            case PrivateTag.DataRoleType:
+                return "DataRoleType";
+
+            case PrivateTag.DataRoleName:
+                return "DataRoleName";
+
+            case PrivateTag.RescanName:
+                return "RescanName";
+
+            case PrivateTag._0011_xx05_:
+                return "_0011_xx05_";
+
+            case PrivateTag.CardiacTypeName:
+                return "CardiacTypeName";
+
+            case PrivateTag.CardiacTypeNameL2:
+                return "CardiacTypeNameL2";
+
+            case PrivateTag.MiscIndicator:
+                return "MiscIndicator";
+
+            case PrivateTag._0011_xx09_:
+                return "_0011_xx09_";
+
+            case PrivateTag._0011_xx0A_:
+                return "_0011_xx0A_";
+
+            case PrivateTag._0011_xx0B_:
+                return "_0011_xx0B_";
+
+            case PrivateTag.SplitBaggingName:
+                return "SplitBaggingName";
+
+            case PrivateTag.SplitSubBaggingName:
+                return "SplitSubBaggingName";
+
+            case PrivateTag.StageSubBaggingName:
+                return "StageSubBaggingName";
+
+            case PrivateTag.IsInternalDataRole:
+                return "IsInternalDataRole";
         }
         return "";
     }

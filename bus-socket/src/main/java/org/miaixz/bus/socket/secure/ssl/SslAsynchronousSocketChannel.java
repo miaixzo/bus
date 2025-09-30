@@ -84,7 +84,11 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     @Override
-    public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+    public <A> void read(
+            ByteBuffer dst,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Integer, ? super A> handler) {
         // 处于握手阶段
         if (handshake) {
@@ -113,6 +117,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
 
         netBuffer.compact();
         asynchronousSocketChannel.read(netBuffer, timeout, unit, attachment, new CompletionHandler<>() {
+
             int index = 0;
 
             @Override
@@ -169,7 +174,10 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
 
     }
 
-    private <A> void handleAppBuffer(ByteBuffer dst, A attachment, CompletionHandler<Integer, ? super A> handler,
+    private <A> void handleAppBuffer(
+            ByteBuffer dst,
+            A attachment,
+            CompletionHandler<Integer, ? super A> handler,
             ByteBuffer appBuffer) {
         int pos = dst.position();
         if (appBuffer.remaining() > dst.remaining()) {
@@ -183,7 +191,11 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         handler.completed(dst.position() - pos, attachment);
     }
 
-    private <A> void doHandshake(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+    private <A> void doHandshake(
+            ByteBuffer dst,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Integer, ? super A> handler) {
         handshakeModel.setHandshakeCallback(() -> {
             handshake = false;
@@ -212,32 +224,35 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
             boolean closed = false;
             while (!closed && result.getStatus() != SSLEngineResult.Status.OK) {
                 switch (result.getStatus()) {
-                case BUFFER_OVERFLOW:
-                    if (sslService.isDebug()) {
-                        Logger.info("BUFFER_OVERFLOW error,net:" + netBuffer + " app:" + appBuffer);
-                    }
-                    break;
-                case BUFFER_UNDERFLOW:
-                    if (netBuffer.limit() == netBuffer.capacity() && !netBuffer.hasRemaining()) {
+                    case BUFFER_OVERFLOW:
                         if (sslService.isDebug()) {
-                            Logger.error("BUFFER_UNDERFLOW error");
+                            Logger.info("BUFFER_OVERFLOW error,net:" + netBuffer + " app:" + appBuffer);
                         }
-                    } else {
+                        break;
+
+                    case BUFFER_UNDERFLOW:
+                        if (netBuffer.limit() == netBuffer.capacity() && !netBuffer.hasRemaining()) {
+                            if (sslService.isDebug()) {
+                                Logger.error("BUFFER_UNDERFLOW error");
+                            }
+                        } else {
+                            if (sslService.isDebug()) {
+                                Logger.error("BUFFER_UNDERFLOW,continue read:" + netBuffer);
+                            }
+                        }
+                        return result.getStatus();
+
+                    case CLOSED:
                         if (sslService.isDebug()) {
-                            Logger.error("BUFFER_UNDERFLOW,continue read:" + netBuffer);
+                            Logger.info("doUnWrap Result:" + result.getStatus());
                         }
-                    }
-                    return result.getStatus();
-                case CLOSED:
-                    if (sslService.isDebug()) {
-                        Logger.info("doUnWrap Result:" + result.getStatus());
-                    }
-                    closed = true;
-                    break;
-                default:
-                    if (sslService.isDebug()) {
-                        Logger.info("doUnWrap Result:" + result.getStatus());
-                    }
+                        closed = true;
+                        break;
+
+                    default:
+                        if (sslService.isDebug()) {
+                            Logger.info("doUnWrap Result:" + result.getStatus());
+                        }
                 }
                 result = sslEngine.unwrap(netBuffer, appBuffer);
             }
@@ -255,13 +270,23 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     @Override
-    public <A> void read(ByteBuffer[] dsts, int offset, int length, long timeout, TimeUnit unit, A attachment,
+    public <A> void read(
+            ByteBuffer[] dsts,
+            int offset,
+            int length,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+    public <A> void write(
+            ByteBuffer src,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Integer, ? super A> handler) {
         if (handshake) {
             checkInitialized();
@@ -277,6 +302,7 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
             Logger.error("write error:" + src + " netWrite:" + netWriteBuffer.buffer());
         }
         asynchronousSocketChannel.write(netWriteBuffer.buffer(), timeout, unit, attachment, new CompletionHandler<>() {
+
             @Override
             public void completed(Integer result, A attachment) {
                 if (result == -1) {
@@ -325,22 +351,25 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
         SSLEngineResult result = sslEngine.wrap(writeBuffer, netBuffer);
         while (result.getStatus() != SSLEngineResult.Status.OK) {
             switch (result.getStatus()) {
-            case BUFFER_OVERFLOW:
-                netBuffer.clear();
-                writeBuffer.limit(writeBuffer.position() + ((writeBuffer.limit() - writeBuffer.position() >> 1)));
-                adaptiveWriteSize = writeBuffer.remaining();
-                break;
-            case BUFFER_UNDERFLOW:
-                if (sslService.isDebug()) {
-                    Logger.error("doWrap BUFFER_UNDERFLOW");
-                }
-                break;
-            case CLOSED:
-                throw new SSLException("SSLEngine has " + result.getStatus());
-            default:
-                if (sslService.isDebug()) {
-                    Logger.error("doWrap Result:" + result.getStatus());
-                }
+                case BUFFER_OVERFLOW:
+                    netBuffer.clear();
+                    writeBuffer.limit(writeBuffer.position() + ((writeBuffer.limit() - writeBuffer.position() >> 1)));
+                    adaptiveWriteSize = writeBuffer.remaining();
+                    break;
+
+                case BUFFER_UNDERFLOW:
+                    if (sslService.isDebug()) {
+                        Logger.error("doWrap BUFFER_UNDERFLOW");
+                    }
+                    break;
+
+                case CLOSED:
+                    throw new SSLException("SSLEngine has " + result.getStatus());
+
+                default:
+                    if (sslService.isDebug()) {
+                        Logger.error("doWrap Result:" + result.getStatus());
+                    }
             }
             result = sslEngine.wrap(writeBuffer, netBuffer);
         }
@@ -355,7 +384,13 @@ public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy
     }
 
     @Override
-    public <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment,
+    public <A> void write(
+            ByteBuffer[] srcs,
+            int offset,
+            int length,
+            long timeout,
+            TimeUnit unit,
+            A attachment,
             CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
     }

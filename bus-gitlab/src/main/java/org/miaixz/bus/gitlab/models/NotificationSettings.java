@@ -75,6 +75,7 @@ public class NotificationSettings implements Serializable {
 
     /** Notification level */
     public static enum Level {
+
         DISABLED, PARTICIPATING, WATCH, GLOBAL, MENTION, CUSTOM;
 
         private static JacksonJsonEnumHelper<Level> enumHelper = new JacksonJsonEnumHelper<>(Level.class);

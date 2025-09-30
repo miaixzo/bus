@@ -208,16 +208,18 @@ public class GifDecoder {
                 if (iline >= ih) {
                     pass++;
                     switch (pass) {
-                    case 2:
-                        iline = 4;
-                        break;
-                    case 3:
-                        iline = 2;
-                        inc = 4;
-                        break;
-                    case 4:
-                        iline = 1;
-                        inc = 2;
+                        case 2:
+                            iline = 4;
+                            break;
+
+                        case 3:
+                            iline = 2;
+                            inc = 4;
+                            break;
+
+                        case 4:
+                            iline = 1;
+                            inc = 2;
                     }
                 }
                 line = iline;
@@ -566,43 +568,43 @@ public class GifDecoder {
             int code = read();
             switch (code) {
 
-            case 0x2C: // image separator
-                readImage();
-                break;
-
-            case 0x21: // extension
-                code = read();
-                switch (code) {
-                case 0xf9: // graphics control extension
-                    readGraphicControlExt();
+                case 0x2C: // image separator
+                    readImage();
                     break;
 
-                case 0xff: // application extension
-                    readBlock();
-                    String app = "";
-                    for (int i = 0; i < 11; i++) {
-                        app += (char) block[i];
+                case 0x21: // extension
+                    code = read();
+                    switch (code) {
+                        case 0xf9: // graphics control extension
+                            readGraphicControlExt();
+                            break;
+
+                        case 0xff: // application extension
+                            readBlock();
+                            String app = "";
+                            for (int i = 0; i < 11; i++) {
+                                app += (char) block[i];
+                            }
+                            if (app.equals("NETSCAPE2.0")) {
+                                readNetscapeExt();
+                            } else
+                                skip(); // don't care
+                            break;
+
+                        default: // uninteresting extension
+                            skip();
                     }
-                    if (app.equals("NETSCAPE2.0")) {
-                        readNetscapeExt();
-                    } else
-                        skip(); // don't care
                     break;
 
-                default: // uninteresting extension
-                    skip();
-                }
-                break;
+                case 0x3b: // terminator
+                    done = true;
+                    break;
 
-            case 0x3b: // terminator
-                done = true;
-                break;
+                case 0x00: // bad byte, but keep going and see what happens
+                    break;
 
-            case 0x00: // bad byte, but keep going and see what happens
-                break;
-
-            default:
-                status = STATUS_FORMAT_ERROR;
+                default:
+                    status = STATUS_FORMAT_ERROR;
             }
         }
     }
@@ -769,6 +771,7 @@ public class GifDecoder {
     }
 
     static class GifFrame {
+
         public BufferedImage image;
         public int delay;
 

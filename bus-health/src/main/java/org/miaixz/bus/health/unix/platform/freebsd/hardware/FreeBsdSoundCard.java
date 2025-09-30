@@ -91,8 +91,9 @@ final class FreeBsdSoundCard extends AbstractSoundCard {
         }
         List<SoundCard> soundCards = new ArrayList<>();
         for (String s : sounds) {
-            soundCards.add(new FreeBsdSoundCard(productMap.get(s), vendorMap.get(s) + Symbol.SPACE + productMap.get(s),
-                    productMap.get(s)));
+            soundCards.add(
+                    new FreeBsdSoundCard(productMap.get(s), vendorMap.get(s) + Symbol.SPACE + productMap.get(s),
+                            productMap.get(s)));
         }
         return soundCards;
     }

@@ -52,21 +52,23 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.CRDRE:
-        case PrivateTag.CRORE:
-            return VR.DS;
-        case PrivateTag.CRCassetteSize:
-        case PrivateTag.CRMachineID:
-        case PrivateTag.CRMachineType:
-        case PrivateTag.CRTechnicianCode:
-        case PrivateTag.CREnergySubtractionParameters:
-        case PrivateTag.CRDistributionCode:
-            return VR.LO;
-        case PrivateTag.CRDRN:
-        case PrivateTag.CRORN:
-        case PrivateTag.CRORD:
-        case PrivateTag.CRShuttersApplied:
-            return VR.US;
+            case PrivateTag.CRDRE:
+            case PrivateTag.CRORE:
+                return VR.DS;
+
+            case PrivateTag.CRCassetteSize:
+            case PrivateTag.CRMachineID:
+            case PrivateTag.CRMachineType:
+            case PrivateTag.CRTechnicianCode:
+            case PrivateTag.CREnergySubtractionParameters:
+            case PrivateTag.CRDistributionCode:
+                return VR.LO;
+
+            case PrivateTag.CRDRN:
+            case PrivateTag.CRORN:
+            case PrivateTag.CRORD:
+            case PrivateTag.CRShuttersApplied:
+                return VR.US;
         }
         return VR.UN;
     }

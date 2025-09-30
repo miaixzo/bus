@@ -275,6 +275,7 @@ public class Cache implements Closeable, Flushable {
      */
     public Iterator<String> urls() throws IOException {
         return new Iterator<>() {
+
             final Iterator<DiskLruCache.Snapshot> delegate = cache.snapshots();
 
             String nextUrl;
@@ -383,6 +384,7 @@ public class Cache implements Closeable, Flushable {
     }
 
     private static class Entry {
+
         /**
          * 合成响应标头:请求发送时的本地时间
          */
@@ -587,8 +589,9 @@ public class Cache implements Closeable, Flushable {
             Request request = new Request.Builder().url(url).method(requestMethod, null).headers(varyHeaders).build();
             return new Response.Builder().request(request).protocol(protocol).code(code).message(message)
                     .headers(responseHeaders)
-                    .body(new CacheResponseBody(snapshot, responseHeaders.get(HTTP.CONTENT_TYPE),
-                            responseHeaders.get(HTTP.CONTENT_LENGTH)))
+                    .body(
+                            new CacheResponseBody(snapshot, responseHeaders.get(HTTP.CONTENT_TYPE),
+                                    responseHeaders.get(HTTP.CONTENT_LENGTH)))
                     .handshake(handshake).sentRequestAtMillis(sentRequestMillis)
                     .receivedResponseAtMillis(receivedResponseMillis).build();
         }
@@ -608,6 +611,7 @@ public class Cache implements Closeable, Flushable {
 
             Source source = snapshot.getSource(ENTRY_BODY);
             bodySource = IoKit.buffer(new AssignSource(source) {
+
                 @Override
                 public void close() throws IOException {
                     snapshot.close();
@@ -647,6 +651,7 @@ public class Cache implements Closeable, Flushable {
             this.editor = editor;
             this.cacheOut = editor.newSink(ENTRY_BODY);
             this.body = new AssignSink(cacheOut) {
+
                 @Override
                 public void close() throws IOException {
                     synchronized (Cache.this) {

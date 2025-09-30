@@ -226,7 +226,9 @@ public class ObjectValidator {
      * @param defaultValue 为空时的默认返回值
      * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回默认值
      */
-    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler,
+    public static <T, R> R defaultIfNull(
+            final T source,
+            final Function<? super T, ? extends R> handler,
             final R defaultValue) {
         return isNull(source) ? defaultValue : handler.apply(source);
     }
@@ -241,7 +243,9 @@ public class ObjectValidator {
      * @param defaultSupplier 为空时的默认值提供者
      * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
      */
-    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler,
+    public static <T, R> R defaultIfNull(
+            final T source,
+            final Function<? super T, ? extends R> handler,
             final Supplier<? extends R> defaultSupplier) {
         if (isNotNull(source)) {
             return handler.apply(source);
@@ -269,6 +273,26 @@ public class ObjectValidator {
             return ArrayKit.equals(obj1, obj2);
         }
         return Objects.equals(obj1, obj2);
+    }
+
+    /**
+     * 检查对象是否与给定对象数组中的任何一个相等。
+     *
+     * @param object  要检查的对象
+     * @param objects 要比较的对象数组
+     * @return 如果对象与数组中的任何一个对象相等，则返回true，否则返回false
+     * @throws IllegalArgumentException 如果对象数组为null或空
+     */
+    public static boolean equalsAny(Object object, Object... objects) {
+        if (objects == null || objects.length == 0) {
+            throw new IllegalArgumentException("objects must not be null or empty.");
+        }
+        for (Object o : objects) {
+            if (Objects.equals(object, o)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

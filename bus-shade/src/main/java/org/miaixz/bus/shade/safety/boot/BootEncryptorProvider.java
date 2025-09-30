@@ -65,7 +65,8 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
     static {
         map.put("org.springframework.boot.loader.JarLauncher", "org.miaixz.bus.shade.safety.boot.BootJarLauncher");
         map.put("org.springframework.boot.loader.WarLauncher", "org.miaixz.bus.shade.safety.boot.BootWarLauncher");
-        map.put("org.springframework.boot.loader.PropertiesLauncher",
+        map.put(
+                "org.springframework.boot.loader.PropertiesLauncher",
                 "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher");
     }
 

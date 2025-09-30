@@ -94,8 +94,11 @@ public final class SmcKit {
                 if (result == 0) {
                     return new IOConnect(connPtr.getValue());
                 } else if (Logger.isErrorEnabled()) {
-                    Logger.error(String.format(Locale.ROOT,
-                            "Unable to open connection to AppleSMC service. Error: 0x%08x", result));
+                    Logger.error(
+                            String.format(
+                                    Locale.ROOT,
+                                    "Unable to open connection to AppleSMC service. Error: 0x%08x",
+                                    result));
                 }
             } finally {
                 smcService.release();
@@ -232,8 +235,13 @@ public final class SmcKit {
     public static int smcCall(IOConnect conn, int index, SMCKeyData inputStructure, SMCKeyData outputStructure) {
         try (CloseableNativeLongByReference size = new CloseableNativeLongByReference(
                 new NativeLong(outputStructure.size()))) {
-            return IO.IOConnectCallStructMethod(conn, index, inputStructure, new NativeLong(inputStructure.size()),
-                    outputStructure, size);
+            return IO.IOConnectCallStructMethod(
+                    conn,
+                    index,
+                    inputStructure,
+                    new NativeLong(inputStructure.size()),
+                    outputStructure,
+                    size);
         }
     }
 

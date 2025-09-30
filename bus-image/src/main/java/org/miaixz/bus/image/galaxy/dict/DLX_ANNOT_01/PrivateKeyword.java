@@ -40,12 +40,14 @@ public class PrivateKeyword {
         int tmp = tag & 0xFFE00000;
         tag &= tmp == 0x60000000 || tmp == 0x70000000 ? 0xFFE0FFFF : 0xFFFF00FF;
         switch (tag) {
-        case PrivateTag.TextAnnotation:
-            return "TextAnnotation";
-        case PrivateTag.Box:
-            return "Box";
-        case PrivateTag.ArrowEnd:
-            return "ArrowEnd";
+            case PrivateTag.TextAnnotation:
+                return "TextAnnotation";
+
+            case PrivateTag.Box:
+                return "Box";
+
+            case PrivateTag.ArrowEnd:
+                return "ArrowEnd";
         }
         return "";
     }

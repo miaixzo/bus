@@ -374,8 +374,8 @@ public class ResultBody implements CoverResult.Body {
             fileName = fileName.substring(fileName.lastIndexOf(Symbol.SLASH) + 1);
         } else {
             try {
-                fileName = URLDecoder.decode(fileName.substring(fileName.indexOf("filename=") + 9),
-                        Charset.DEFAULT_UTF_8);
+                fileName = URLDecoder
+                        .decode(fileName.substring(fileName.indexOf("filename=") + 9), Charset.DEFAULT_UTF_8);
             } catch (UnsupportedEncodingException e) {
                 throw new InternalException("Failed to decode file name", e);
             }

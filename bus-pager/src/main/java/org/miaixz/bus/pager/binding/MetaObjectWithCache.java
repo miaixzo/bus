@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -50,7 +50,10 @@ public class MetaObjectWithCache {
 
     public static MetaObject forObject(Object object) {
         try {
-            return MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY,
+            return MetaObject.forObject(
+                    object,
+                    DEFAULT_OBJECT_FACTORY,
+                    DEFAULT_OBJECT_WRAPPER_FACTORY,
                     DEFAULT_REFLECTOR_FACTORY);
         } catch (Exception e) {
             throw new PageException(e);

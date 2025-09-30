@@ -196,10 +196,14 @@ public class PresentationLutObject implements PresentationStateLut {
         if (StringKit.hasText(seriesInstanceUID)) {
             for (Attributes refSeriesSeq : getReferencedSeriesSequence()) {
                 if (seriesInstanceUID.equals(refSeriesSeq.getString(Tag.SeriesInstanceUID))) {
-                    List<Attributes> refImgSeq = Builder.getSequence(Objects.requireNonNull(refSeriesSeq),
-                            Tag.ReferencedImageSequence);
-                    return Builder.isImageFrameApplicableToReferencedImageSequence(refImgSeq, childTag, sopInstanceUID,
-                            frame, true);
+                    List<Attributes> refImgSeq = Builder
+                            .getSequence(Objects.requireNonNull(refSeriesSeq), Tag.ReferencedImageSequence);
+                    return Builder.isImageFrameApplicableToReferencedImageSequence(
+                            refImgSeq,
+                            childTag,
+                            sopInstanceUID,
+                            frame,
+                            true);
                 }
             }
         }

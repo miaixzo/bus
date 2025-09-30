@@ -63,7 +63,10 @@ public class SpelCalculator {
      * @param defaultValue 默认值，当表达式为空时返回
      * @return 表达式计算结果
      */
-    public static Object calcSpelValueWithContext(String spel, String[] argNames, Object[] argValues,
+    public static Object calcSpelValueWithContext(
+            String spel,
+            String[] argNames,
+            Object[] argValues,
             Object defaultValue) {
         if (StringKit.isEmpty(spel)) {
             return defaultValue;

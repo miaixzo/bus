@@ -37,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Enum for the various Pipeline status values.
  */
 public enum PipelineStatus {
+
     CREATED, WAITING_FOR_RESOURCE, PREPARING, PENDING, RUNNING, SUCCESS, FAILED, CANCELED, CANCELING, SKIPPED, MANUAL,
     SCHEDULED;
 

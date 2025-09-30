@@ -81,6 +81,7 @@ public class GetSCU implements AutoCloseable {
     private DimseRSPHandler rspHandler;
     private long totalSize = 0;
     private final BasicCStoreSCP storageSCP = new BasicCStoreSCP(Symbol.STAR) {
+
         @Override
         protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
@@ -313,6 +314,7 @@ public class GetSCU implements AutoCloseable {
     }
 
     public enum InformationModel {
+
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelGet.uid, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelGet.uid, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelGet.uid, "STUDY"),

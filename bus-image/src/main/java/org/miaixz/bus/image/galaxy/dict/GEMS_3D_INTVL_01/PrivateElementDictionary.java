@@ -52,50 +52,56 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.MarkerType:
-        case PrivateTag.MarkerVisibleState:
-        case PrivateTag.MarkerPointVisibleState:
-        case PrivateTag.CutPlaneActivationFlag:
-        case PrivateTag.BMCSetting:
-        case PrivateTag.BackViewSetting:
-        case PrivateTag.SubVolumeVisibility:
-        case PrivateTag.ThreeDLandmarksVisibility:
-        case PrivateTag.AblationPointVisibility:
-            return VR.CS;
-        case PrivateTag.MarkerSize:
-        case PrivateTag.MarkerPointPosition:
-        case PrivateTag.MarkerPointSize:
-        case PrivateTag.VolumeManualRegistration:
-        case PrivateTag.CutPlaneNormalValue:
-        case PrivateTag.VolumeScalingFactor:
-        case PrivateTag.ROIToTableTopDistance:
-        case PrivateTag.VolumeTablePosition:
-        case PrivateTag.Zoom:
-            return VR.FL;
-        case PrivateTag.MarkerPointOrder:
-        case PrivateTag.VolumesThreshold:
-        case PrivateTag.CutPlanePositionValue:
-        case PrivateTag.DRRThreshold:
-        case PrivateTag.RenderingMode:
-        case PrivateTag.ThreeDObjectOpacity:
-        case PrivateTag.InvertImage:
-        case PrivateTag.EnhanceFull:
-        case PrivateTag.Roam:
-        case PrivateTag.WindowLevel:
-        case PrivateTag.WindowWidth:
-            return VR.IS;
-        case PrivateTag.MarkerLabel:
-        case PrivateTag.MarkerDescription:
-            return VR.LO;
-        case PrivateTag.MarkerID:
-        case PrivateTag.MarkerPointID:
-            return VR.SH;
-        case PrivateTag.XRayMarkerSequence:
-        case PrivateTag.MarkerPointsSequence:
-            return VR.SQ;
-        case PrivateTag.MarkerColorCIELabValue:
-        case PrivateTag.MarkerPointColorCIELabValue:
-            return VR.US;
+            case PrivateTag.MarkerType:
+            case PrivateTag.MarkerVisibleState:
+            case PrivateTag.MarkerPointVisibleState:
+            case PrivateTag.CutPlaneActivationFlag:
+            case PrivateTag.BMCSetting:
+            case PrivateTag.BackViewSetting:
+            case PrivateTag.SubVolumeVisibility:
+            case PrivateTag.ThreeDLandmarksVisibility:
+            case PrivateTag.AblationPointVisibility:
+                return VR.CS;
+
+            case PrivateTag.MarkerSize:
+            case PrivateTag.MarkerPointPosition:
+            case PrivateTag.MarkerPointSize:
+            case PrivateTag.VolumeManualRegistration:
+            case PrivateTag.CutPlaneNormalValue:
+            case PrivateTag.VolumeScalingFactor:
+            case PrivateTag.ROIToTableTopDistance:
+            case PrivateTag.VolumeTablePosition:
+            case PrivateTag.Zoom:
+                return VR.FL;
+
+            case PrivateTag.MarkerPointOrder:
+            case PrivateTag.VolumesThreshold:
+            case PrivateTag.CutPlanePositionValue:
+            case PrivateTag.DRRThreshold:
+            case PrivateTag.RenderingMode:
+            case PrivateTag.ThreeDObjectOpacity:
+            case PrivateTag.InvertImage:
+            case PrivateTag.EnhanceFull:
+            case PrivateTag.Roam:
+            case PrivateTag.WindowLevel:
+            case PrivateTag.WindowWidth:
+                return VR.IS;
+
+            case PrivateTag.MarkerLabel:
+            case PrivateTag.MarkerDescription:
+                return VR.LO;
+
+            case PrivateTag.MarkerID:
+            case PrivateTag.MarkerPointID:
+                return VR.SH;
+
+            case PrivateTag.XRayMarkerSequence:
+            case PrivateTag.MarkerPointsSequence:
+                return VR.SQ;
+
+            case PrivateTag.MarkerColorCIELabValue:
+            case PrivateTag.MarkerPointColorCIELabValue:
+                return VR.US;
         }
         return VR.UN;
     }

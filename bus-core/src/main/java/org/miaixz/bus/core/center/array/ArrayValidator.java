@@ -1223,7 +1223,11 @@ public class ArrayValidator {
      * @param length  检查长度
      * @return 是否局部匹配
      */
-    public static boolean regionMatches(final byte[] array1, final int offset1, final byte[] array2, final int offset2,
+    public static boolean regionMatches(
+            final byte[] array1,
+            final int offset1,
+            final byte[] array2,
+            final int offset2,
             final int length) {
         if (array1.length < offset1 + length) {
             throw new IndexOutOfBoundsException("[byte1] length must be >= [offset1 + length]");

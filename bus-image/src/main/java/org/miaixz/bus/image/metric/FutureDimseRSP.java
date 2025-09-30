@@ -143,6 +143,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
     }
 
     private static class Entry {
+
         final Attributes command;
         final Attributes dataset;
         Entry next;

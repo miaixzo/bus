@@ -58,14 +58,16 @@ public final class AsynchronousChannelProvider extends java.nio.channels.spi.Asy
     }
 
     @Override
-    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(int nThreads,
+    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(
+            int nThreads,
             ThreadFactory threadFactory) throws IOException {
         return new AsynchronousChannelGroup(this, new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS,
                 new ArrayBlockingQueue<>(nThreads), threadFactory), nThreads);
     }
 
     @Override
-    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(ExecutorService executor,
+    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(
+            ExecutorService executor,
             int initialSize) throws IOException {
         return new AsynchronousChannelGroup(this, executor, initialSize);
     }

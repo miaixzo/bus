@@ -47,7 +47,8 @@ public class DeploymentInfoCustomizers implements WebServerFactoryCustomizer<Und
         factory.addDeploymentInfoCustomizers(deploymentInfo -> {
             WebSocketDeploymentInfo webSocketDeploymentInfo = new WebSocketDeploymentInfo();
             webSocketDeploymentInfo.setBuffers(new DefaultByteBufferPool(false, 1024));
-            deploymentInfo.addServletContextAttribute("io.undertow.websockets.jsr.WebSocketDeploymentInfo",
+            deploymentInfo.addServletContextAttribute(
+                    "io.undertow.websockets.jsr.WebSocketDeploymentInfo",
                     webSocketDeploymentInfo);
         });
     }

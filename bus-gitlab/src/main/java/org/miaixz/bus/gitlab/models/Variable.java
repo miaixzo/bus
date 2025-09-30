@@ -139,6 +139,7 @@ public class Variable implements Serializable {
      * Enum for the various Commit build status values.
      */
     public enum Type {
+
         ENV_VAR, FILE;
 
         private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class);

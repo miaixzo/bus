@@ -56,14 +56,14 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
 
     private final WindowsGlobalMemory global;
 
-    private final Supplier<Long> used = Memoizer.memoize(WindowsVirtualMemory::querySwapUsed,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> used = Memoizer
+            .memoize(WindowsVirtualMemory::querySwapUsed, Memoizer.defaultExpiration());
 
     private final Supplier<Triplet<Long, Long, Long>> totalVmaxVused = Memoizer
             .memoize(WindowsVirtualMemory::querySwapTotalVirtMaxVirtUsed, Memoizer.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> swapInOut = Memoizer.memoize(WindowsVirtualMemory::queryPageSwaps,
-            Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> swapInOut = Memoizer
+            .memoize(WindowsVirtualMemory::queryPageSwaps, Memoizer.defaultExpiration());
 
     /**
      * Constructor for WindowsVirtualMemory.
@@ -84,14 +84,17 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
                 Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
                 return Triplet.of(0L, 0L, 0L);
             }
-            return Triplet.of(perfInfo.CommitLimit.longValue() - perfInfo.PhysicalTotal.longValue(),
-                    perfInfo.CommitLimit.longValue(), perfInfo.CommitTotal.longValue());
+            return Triplet.of(
+                    perfInfo.CommitLimit.longValue() - perfInfo.PhysicalTotal.longValue(),
+                    perfInfo.CommitLimit.longValue(),
+                    perfInfo.CommitTotal.longValue());
         }
     }
 
     private static Pair<Long, Long> queryPageSwaps() {
         Map<PageSwapProperty, Long> valueMap = MemoryInformation.queryPageSwaps();
-        return Pair.of(valueMap.getOrDefault(PageSwapProperty.PAGESINPUTPERSEC, 0L),
+        return Pair.of(
+                valueMap.getOrDefault(PageSwapProperty.PAGESINPUTPERSEC, 0L),
                 valueMap.getOrDefault(PageSwapProperty.PAGESOUTPUTPERSEC, 0L));
     }
 

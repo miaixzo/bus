@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SPIRelease:
-            return "SPIRelease";
-        case PrivateTag._0009_xx12_:
-            return "_0009_xx12_";
+            case PrivateTag.SPIRelease:
+                return "SPIRelease";
+
+            case PrivateTag._0009_xx12_:
+                return "_0009_xx12_";
         }
         return "";
     }

@@ -78,16 +78,20 @@ public class StoreSCP {
     private int[] receiveDelays;
     private int[] responseDelays;
     private final BasicCStoreSCP cstoreSCP = new BasicCStoreSCP(Symbol.STAR) {
+
         @Override
         protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
             if (authorizedCallingNodes != null && !authorizedCallingNodes.isEmpty()) {
                 Node sourceNode = Node.buildRemoteDicomNode(as);
-                boolean valid = authorizedCallingNodes.stream().anyMatch(n -> n.getAet().equals(sourceNode.getAet())
-                        && (!n.isValidateHostname() || n.equalsHostname(sourceNode.getHostname())));
+                boolean valid = authorizedCallingNodes.stream().anyMatch(
+                        n -> n.getAet().equals(sourceNode.getAet())
+                                && (!n.isValidateHostname() || n.equalsHostname(sourceNode.getHostname())));
                 if (!valid) {
                     rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
-                    Logger.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", sourceNode,
+                    Logger.error(
+                            "Refused: not authorized (124H). Source node: {}. SopUID: {}",
+                            sourceNode,
                             rq.getString(Tag.AffectedSOPInstanceUID));
                     return;
                 }

@@ -71,7 +71,8 @@ public class LdapCompressionRulesConfiguration {
 
     public void store(CompressionRules rules, String parentDN) throws NamingException {
         for (CompressionRule rule : rules)
-            config.createSubcontext(LdapBuilder.dnOf("cn", rule.getCommonName(), parentDN),
+            config.createSubcontext(
+                    LdapBuilder.dnOf("cn", rule.getCommonName(), parentDN),
                     storeTo(rule, new BasicAttributes(true)));
     }
 
@@ -111,33 +112,54 @@ public class LdapCompressionRulesConfiguration {
             String dn = LdapBuilder.dnOf("cn", cn, parentDN);
             CompressionRule prevRule = prevRules != null ? prevRules.findByCommonName(cn) : null;
             if (prevRule == null) {
-                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges.addModifiedObject(diffs, dn,
-                        ConfigurationChanges.ChangeType.C);
+                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
+                        .addModifiedObject(diffs, dn, ConfigurationChanges.ChangeType.C);
                 config.createSubcontext(dn, storeTo(rule, new BasicAttributes(true)));
             } else {
-                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges.addModifiedObject(diffs, dn,
-                        ConfigurationChanges.ChangeType.U);
+                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges
+                        .addModifiedObject(diffs, dn, ConfigurationChanges.ChangeType.U);
                 config.modifyAttributes(dn, storeDiffs(ldapObj, prevRule, rule, new ArrayList<>()));
                 ConfigurationChanges.removeLastIfEmpty(diffs, ldapObj);
             }
         }
     }
 
-    private List<ModificationItem> storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, CompressionRule prev,
-            CompressionRule rule, List<ModificationItem> mods) {
-        LdapBuilder.storeDiff(ldapObj, mods, "dcmPhotometricInterpretation", prev.getPhotometricInterpretations(),
+    private List<ModificationItem> storeDiffs(
+            ConfigurationChanges.ModifiedObject ldapObj,
+            CompressionRule prev,
+            CompressionRule rule,
+            List<ModificationItem> mods) {
+        LdapBuilder.storeDiff(
+                ldapObj,
+                mods,
+                "dcmPhotometricInterpretation",
+                prev.getPhotometricInterpretations(),
                 rule.getPhotometricInterpretations());
         LdapBuilder.storeDiffObject(ldapObj, mods, "dcmBitsStored", prev.getBitsStored(), rule.getBitsStored(), null);
-        LdapBuilder.storeDiff(ldapObj, mods, "dcmPixelRepresentation", prev.getPixelRepresentation(),
-                rule.getPixelRepresentation(), -1);
+        LdapBuilder.storeDiff(
+                ldapObj,
+                mods,
+                "dcmPixelRepresentation",
+                prev.getPixelRepresentation(),
+                rule.getPixelRepresentation(),
+                -1);
         LdapBuilder.storeDiff(ldapObj, mods, "dcmAETitle", prev.getAETitles(), rule.getAETitles());
         LdapBuilder.storeDiff(ldapObj, mods, "dcmSOPClass", prev.getSOPClasses(), rule.getSOPClasses());
-        LdapBuilder.storeDiff(ldapObj, mods, "dcmBodyPartExamined", prev.getBodyPartExamined(),
+        LdapBuilder.storeDiff(
+                ldapObj,
+                mods,
+                "dcmBodyPartExamined",
+                prev.getBodyPartExamined(),
                 rule.getBodyPartExamined());
-        LdapBuilder.storeDiffObject(ldapObj, mods, "dicomTransferSyntax", prev.getTransferSyntax(),
-                rule.getTransferSyntax(), null);
-        LdapBuilder.storeDiff(ldapObj, mods, "dcmImageWriteParam", prev.getImageWriteParams(),
-                rule.getImageWriteParams());
+        LdapBuilder.storeDiffObject(
+                ldapObj,
+                mods,
+                "dicomTransferSyntax",
+                prev.getTransferSyntax(),
+                rule.getTransferSyntax(),
+                null);
+        LdapBuilder
+                .storeDiff(ldapObj, mods, "dcmImageWriteParam", prev.getImageWriteParams(), rule.getImageWriteParams());
         return mods;
     }
 

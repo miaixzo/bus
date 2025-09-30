@@ -41,6 +41,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class Disk {
+
     /**
      * 设备名称 (如 /dev/sda1)
      */

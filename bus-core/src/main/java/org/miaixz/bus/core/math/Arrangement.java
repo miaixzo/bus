@@ -138,7 +138,10 @@ public class Arrangement implements Serializable {
      * @param resultIndex 选择索引，从0开始
      * @param result      最终结果
      */
-    private void select(final String[] datas, final String[] resultList, final int resultIndex,
+    private void select(
+            final String[] datas,
+            final String[] resultList,
+            final int resultIndex,
             final List<String[]> result) {
         if (resultIndex >= resultList.length) { // 全部选择完时，输出排列结果
             if (!result.contains(resultList)) {

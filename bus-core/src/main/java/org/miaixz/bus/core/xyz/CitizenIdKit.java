@@ -81,19 +81,21 @@ public class CitizenIdKit {
         // idCard = idCard.trim();
         final int length = idCard.length();
         switch (length) {
-        case 18:// 18位身份证
-            return isValidCard18(idCard);
-        case 15:// 15位身份证
-            try {
-                return isValidCard18(CIN.convert15To18(idCard));
-            } catch (final Exception ignore) {
-                return false;
+            case 18:// 18位身份证
+                return isValidCard18(idCard);
+
+            case 15:// 15位身份证
+                try {
+                    return isValidCard18(CIN.convert15To18(idCard));
+                } catch (final Exception ignore) {
+                    return false;
+                }
+            case 10: {// 10位身份证，港澳台地区
+                return isValidCard10(idCard);
             }
-        case 10: {// 10位身份证，港澳台地区
-            return isValidCard10(idCard);
-        }
-        default:
-            return false;
+
+            default:
+                return false;
         }
     }
 

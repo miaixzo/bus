@@ -140,7 +140,9 @@ public class ImageServiceException extends IOException {
         return this;
     }
 
-    public ImageServiceException setNumberOfCompletedFailedWarningSuboperations(int completed, int failed,
+    public ImageServiceException setNumberOfCompletedFailedWarningSuboperations(
+            int completed,
+            int failed,
             int warning) {
         rsp.setInt(Tag.NumberOfCompletedSuboperations, VR.US, completed);
         rsp.setInt(Tag.NumberOfFailedSuboperations, VR.US, failed);

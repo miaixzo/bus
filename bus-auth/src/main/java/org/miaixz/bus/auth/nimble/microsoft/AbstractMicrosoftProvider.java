@@ -173,7 +173,9 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
         return Builder.fromUrl(String.format(complex.authorize(), tenantId)).queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state)).queryParam("response_mode", "query").queryParam("scope",
+                .queryParam("state", getRealState(state)).queryParam("response_mode", "query")
+                .queryParam(
+                        "scope",
                         this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .build();
     }
@@ -190,7 +192,8 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         return Builder.fromUrl(String.format(this.complex.accessToken(), tenantId)).queryParam("code", code)
                 .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("scope",
+                .queryParam(
+                        "scope",
                         this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
@@ -218,7 +221,8 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         return Builder.fromUrl(String.format(this.complex.refresh(), tenantId))
                 .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token")
-                .queryParam("scope",
+                .queryParam(
+                        "scope",
                         this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri()).build();
     }

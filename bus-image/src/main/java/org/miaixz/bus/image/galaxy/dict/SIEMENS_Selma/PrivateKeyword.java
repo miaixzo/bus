@@ -38,28 +38,38 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag._0019_xx06_:
-            return "_0019_xx06_";
-        case PrivateTag._0019_xx07_:
-            return "_0019_xx07_";
-        case PrivateTag._0019_xx08_:
-            return "_0019_xx08_";
-        case PrivateTag._0019_xx26_:
-            return "_0019_xx26_";
-        case PrivateTag._0019_xx29_:
-            return "_0019_xx29_";
-        case PrivateTag._0019_xx30_:
-            return "_0019_xx30_";
-        case PrivateTag._0019_xx31_:
-            return "_0019_xx31_";
-        case PrivateTag._0019_xx32_:
-            return "_0019_xx32_";
-        case PrivateTag._0019_xx33_:
-            return "_0019_xx33_";
-        case PrivateTag._0019_xx34_:
-            return "_0019_xx34_";
-        case PrivateTag._0019_xx35_:
-            return "_0019_xx35_";
+            case PrivateTag._0019_xx06_:
+                return "_0019_xx06_";
+
+            case PrivateTag._0019_xx07_:
+                return "_0019_xx07_";
+
+            case PrivateTag._0019_xx08_:
+                return "_0019_xx08_";
+
+            case PrivateTag._0019_xx26_:
+                return "_0019_xx26_";
+
+            case PrivateTag._0019_xx29_:
+                return "_0019_xx29_";
+
+            case PrivateTag._0019_xx30_:
+                return "_0019_xx30_";
+
+            case PrivateTag._0019_xx31_:
+                return "_0019_xx31_";
+
+            case PrivateTag._0019_xx32_:
+                return "_0019_xx32_";
+
+            case PrivateTag._0019_xx33_:
+                return "_0019_xx33_";
+
+            case PrivateTag._0019_xx34_:
+                return "_0019_xx34_";
+
+            case PrivateTag._0019_xx35_:
+                return "_0019_xx35_";
         }
         return "";
     }

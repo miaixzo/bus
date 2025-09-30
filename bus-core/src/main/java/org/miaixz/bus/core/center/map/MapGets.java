@@ -326,7 +326,10 @@ public class MapGets extends MapValidator {
      * @param defaultValue 默认值
      * @return 值
      */
-    public static <T> T getQuietly(final Map<?, ?> map, final Object key, final TypeReference<T> type,
+    public static <T> T getQuietly(
+            final Map<?, ?> map,
+            final Object key,
+            final TypeReference<T> type,
             final T defaultValue) {
         return null == map ? defaultValue : Convert.convertQuietly(type, map.get(key), defaultValue);
     }

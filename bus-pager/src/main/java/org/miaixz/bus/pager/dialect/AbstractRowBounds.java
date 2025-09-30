@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -49,7 +49,9 @@ public abstract class AbstractRowBounds extends AbstractDialect {
     }
 
     @Override
-    public boolean beforeCount(MappedStatement ms, Object parameterObject,
+    public boolean beforeCount(
+            MappedStatement ms,
+            Object parameterObject,
             org.apache.ibatis.session.RowBounds rowBounds) {
         if (rowBounds instanceof RowBounds) {
             RowBounds pageRowBounds = (RowBounds) rowBounds;
@@ -66,20 +68,29 @@ public abstract class AbstractRowBounds extends AbstractDialect {
     }
 
     @Override
-    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql,
+    public Object processParameterObject(
+            MappedStatement ms,
+            Object parameterObject,
+            BoundSql boundSql,
             CacheKey pageKey) {
         return parameterObject;
     }
 
     @Override
-    public boolean beforePage(MappedStatement ms, Object parameterObject,
+    public boolean beforePage(
+            MappedStatement ms,
+            Object parameterObject,
             org.apache.ibatis.session.RowBounds rowBounds) {
         return true;
     }
 
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject,
-            org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
+    public String getPageSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds,
+            CacheKey pageKey) {
         String sql = boundSql.getSql();
         return getPageSql(sql, rowBounds, pageKey);
     }

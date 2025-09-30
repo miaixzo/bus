@@ -52,34 +52,39 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._0009_xx70_:
-        case PrivateTag._0009_xx71_:
-            return VR.DS;
-        case PrivateTag.ReceiverPLA:
-        case PrivateTag.ActualUser:
-        case PrivateTag._0009_xx72_:
-        case PrivateTag._0009_xx73_:
-        case PrivateTag._0009_xx74_:
-        case PrivateTag._0009_xx75_:
-        case PrivateTag._0093_xx02_:
-        case PrivateTag.ExaminationFolderID:
-        case PrivateTag.FolderReportingRadiologist:
-        case PrivateTag.SIENETISAPLA:
-        case PrivateTag._0097_xx05_:
-        case PrivateTag._00A5_xx05_:
-            return VR.LO;
-        case PrivateTag.RISPatientName:
-            return VR.PN;
-        case PrivateTag._0095_xx0C_:
-        case PrivateTag._0097_xx03_:
-        case PrivateTag.DataObjectAttributes:
-        case PrivateTag._0099_xx05_:
-            return VR.SL;
-        case PrivateTag.FolderReportedStatus:
-            return VR.UL;
-        case PrivateTag.SIENETCommandField:
-        case PrivateTag.TransferPriority:
-            return VR.US;
+            case PrivateTag._0009_xx70_:
+            case PrivateTag._0009_xx71_:
+                return VR.DS;
+
+            case PrivateTag.ReceiverPLA:
+            case PrivateTag.ActualUser:
+            case PrivateTag._0009_xx72_:
+            case PrivateTag._0009_xx73_:
+            case PrivateTag._0009_xx74_:
+            case PrivateTag._0009_xx75_:
+            case PrivateTag._0093_xx02_:
+            case PrivateTag.ExaminationFolderID:
+            case PrivateTag.FolderReportingRadiologist:
+            case PrivateTag.SIENETISAPLA:
+            case PrivateTag._0097_xx05_:
+            case PrivateTag._00A5_xx05_:
+                return VR.LO;
+
+            case PrivateTag.RISPatientName:
+                return VR.PN;
+
+            case PrivateTag._0095_xx0C_:
+            case PrivateTag._0097_xx03_:
+            case PrivateTag.DataObjectAttributes:
+            case PrivateTag._0099_xx05_:
+                return VR.SL;
+
+            case PrivateTag.FolderReportedStatus:
+                return VR.UL;
+
+            case PrivateTag.SIENETCommandField:
+            case PrivateTag.TransferPriority:
+                return VR.US;
         }
         return VR.UN;
     }

@@ -52,30 +52,36 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._0051_xx10_:
-        case PrivateTag._0051_xx20_:
-        case PrivateTag._0051_xx32_:
-        case PrivateTag._0051_xx37_:
-        case PrivateTag.PrimaryPositionerScanArc:
-        case PrivateTag.SecondaryPositionerScanArc:
-        case PrivateTag.PrimaryPositionerScanStartAngle:
-        case PrivateTag.SecondaryPositionerScanStartAngle:
-        case PrivateTag.PrimaryPositionerIncrement:
-        case PrivateTag.SecondaryPositionerIncrement:
-            return VR.DS;
-        case PrivateTag._0051_xx21_:
-        case PrivateTag.ProjectionViewDisplayString:
-            return VR.LO;
-        case PrivateTag.ReasonForTheRequestedProcedure:
-            return VR.SH;
-        case PrivateTag.DerivationDescription:
-            return VR.ST;
-        case PrivateTag._0051_xx50_:
-            return VR.UI;
-        case PrivateTag.AECCoordinates:
-            return VR.UL;
-        case PrivateTag.AECCoordinatesSize:
-            return VR.US;
+            case PrivateTag._0051_xx10_:
+            case PrivateTag._0051_xx20_:
+            case PrivateTag._0051_xx32_:
+            case PrivateTag._0051_xx37_:
+            case PrivateTag.PrimaryPositionerScanArc:
+            case PrivateTag.SecondaryPositionerScanArc:
+            case PrivateTag.PrimaryPositionerScanStartAngle:
+            case PrivateTag.SecondaryPositionerScanStartAngle:
+            case PrivateTag.PrimaryPositionerIncrement:
+            case PrivateTag.SecondaryPositionerIncrement:
+                return VR.DS;
+
+            case PrivateTag._0051_xx21_:
+            case PrivateTag.ProjectionViewDisplayString:
+                return VR.LO;
+
+            case PrivateTag.ReasonForTheRequestedProcedure:
+                return VR.SH;
+
+            case PrivateTag.DerivationDescription:
+                return VR.ST;
+
+            case PrivateTag._0051_xx50_:
+                return VR.UI;
+
+            case PrivateTag.AECCoordinates:
+                return VR.UL;
+
+            case PrivateTag.AECCoordinatesSize:
+                return VR.US;
         }
         return VR.UN;
     }

@@ -135,7 +135,10 @@ public class CsvKit {
      * @param config   写出配置，null则使用默认配置
      * @return {@link CsvWriter}
      */
-    public static CsvWriter getWriter(final File file, final Charset charset, final boolean isAppend,
+    public static CsvWriter getWriter(
+            final File file,
+            final Charset charset,
+            final boolean isAppend,
             final CsvWriteConfig config) {
         return new CsvWriter(file, charset, isAppend, config);
     }

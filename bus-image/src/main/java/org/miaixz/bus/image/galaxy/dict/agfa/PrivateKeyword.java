@@ -38,52 +38,74 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag._0009_xx10_:
-            return "_0009_xx10_";
-        case PrivateTag._0009_xx11_:
-            return "_0009_xx11_";
-        case PrivateTag._0009_xx13_:
-            return "_0009_xx13_";
-        case PrivateTag._0009_xx14_:
-            return "_0009_xx14_";
-        case PrivateTag._0009_xx15_:
-            return "_0009_xx15_";
-        case PrivateTag.CassetteDataStream:
-            return "CassetteDataStream";
-        case PrivateTag.ImageProcessingParameters:
-            return "ImageProcessingParameters";
-        case PrivateTag.IdentificationData:
-            return "IdentificationData";
-        case PrivateTag.SensitometryName:
-            return "SensitometryName";
-        case PrivateTag.WindowLevelList:
-            return "WindowLevelList";
-        case PrivateTag.DoseMonitoring:
-            return "DoseMonitoring";
-        case PrivateTag.OtherInfo:
-            return "OtherInfo";
-        case PrivateTag.ClippedExposureDeviation:
-            return "ClippedExposureDeviation";
-        case PrivateTag.LogarithmicPLTFullScale:
-            return "LogarithmicPLTFullScale";
-        case PrivateTag.TotalNumberSeries:
-            return "TotalNumberSeries";
-        case PrivateTag.SessionNumber:
-            return "SessionNumber";
-        case PrivateTag.IDStationName:
-            return "IDStationName";
-        case PrivateTag.NumberOfImagesInStudyToBeTransmitted:
-            return "NumberOfImagesInStudyToBeTransmitted";
-        case PrivateTag.TotalNumberImages:
-            return "TotalNumberImages";
-        case PrivateTag.GeometricalTransformations:
-            return "GeometricalTransformations";
-        case PrivateTag.RoamOrigin:
-            return "RoamOrigin";
-        case PrivateTag.ZoomFactor:
-            return "ZoomFactor";
-        case PrivateTag.Status:
-            return "Status";
+            case PrivateTag._0009_xx10_:
+                return "_0009_xx10_";
+
+            case PrivateTag._0009_xx11_:
+                return "_0009_xx11_";
+
+            case PrivateTag._0009_xx13_:
+                return "_0009_xx13_";
+
+            case PrivateTag._0009_xx14_:
+                return "_0009_xx14_";
+
+            case PrivateTag._0009_xx15_:
+                return "_0009_xx15_";
+
+            case PrivateTag.CassetteDataStream:
+                return "CassetteDataStream";
+
+            case PrivateTag.ImageProcessingParameters:
+                return "ImageProcessingParameters";
+
+            case PrivateTag.IdentificationData:
+                return "IdentificationData";
+
+            case PrivateTag.SensitometryName:
+                return "SensitometryName";
+
+            case PrivateTag.WindowLevelList:
+                return "WindowLevelList";
+
+            case PrivateTag.DoseMonitoring:
+                return "DoseMonitoring";
+
+            case PrivateTag.OtherInfo:
+                return "OtherInfo";
+
+            case PrivateTag.ClippedExposureDeviation:
+                return "ClippedExposureDeviation";
+
+            case PrivateTag.LogarithmicPLTFullScale:
+                return "LogarithmicPLTFullScale";
+
+            case PrivateTag.TotalNumberSeries:
+                return "TotalNumberSeries";
+
+            case PrivateTag.SessionNumber:
+                return "SessionNumber";
+
+            case PrivateTag.IDStationName:
+                return "IDStationName";
+
+            case PrivateTag.NumberOfImagesInStudyToBeTransmitted:
+                return "NumberOfImagesInStudyToBeTransmitted";
+
+            case PrivateTag.TotalNumberImages:
+                return "TotalNumberImages";
+
+            case PrivateTag.GeometricalTransformations:
+                return "GeometricalTransformations";
+
+            case PrivateTag.RoamOrigin:
+                return "RoamOrigin";
+
+            case PrivateTag.ZoomFactor:
+                return "ZoomFactor";
+
+            case PrivateTag.Status:
+                return "Status";
         }
         return "";
     }

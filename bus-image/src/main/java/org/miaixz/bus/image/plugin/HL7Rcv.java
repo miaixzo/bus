@@ -110,8 +110,10 @@ public class HL7Rcv {
 
     private UnparsedHL7Message onMessage(UnparsedHL7Message msg) throws Exception {
         if (storageDir != null)
-            storeToFile(msg.data(), new File(new File(storageDir, msg.msh().getMessageType()),
-                    useUUIDForFilename ? UUID.randomUUID().toString() : msg.msh().getField(9, "_NULL_")));
+            storeToFile(
+                    msg.data(),
+                    new File(new File(storageDir, msg.msh().getMessageType()),
+                            useUUIDForFilename ? UUID.randomUUID().toString() : msg.msh().getField(9, "_NULL_")));
         if (responseDelay > 0)
             try {
                 Thread.sleep(responseDelay);

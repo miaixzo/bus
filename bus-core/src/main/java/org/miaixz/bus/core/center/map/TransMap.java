@@ -121,7 +121,9 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
 
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
-        return super.merge(customKey(key), customValue(value),
+        return super.merge(
+                customKey(key),
+                customValue(value),
                 (v1, v2) -> remappingFunction.apply(customValue(v1), customValue(v2)));
     }
 

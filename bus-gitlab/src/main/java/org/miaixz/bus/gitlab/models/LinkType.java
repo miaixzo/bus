@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Enum to model the type of link between issues or epics
  */
 public enum LinkType {
+
     RELATES_TO, BLOCKS, IS_BLOCKED_BY;
 
     private static JacksonJsonEnumHelper<LinkType> enumHelper = new JacksonJsonEnumHelper<>(LinkType.class);

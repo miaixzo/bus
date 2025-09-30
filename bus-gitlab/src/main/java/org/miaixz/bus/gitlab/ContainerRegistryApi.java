@@ -80,8 +80,13 @@ public class ContainerRegistryApi extends AbstractApi {
      */
     public List<RegistryRepository> getRepositories(Object projectIdOrPath, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "registry", "repositories");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "registry",
+                "repositories");
         return response.readEntity(new GenericType<List<RegistryRepository>>() {
         });
     }
@@ -138,8 +143,14 @@ public class ContainerRegistryApi extends AbstractApi {
             throw new RuntimeException("repositoryId cannot be null");
         }
 
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "registry",
-                "repositories", repositoryId);
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "registry",
+                "repositories",
+                repositoryId);
     }
 
     /**
@@ -210,8 +221,16 @@ public class ContainerRegistryApi extends AbstractApi {
      */
     public RegistryRepositoryTag getRepositoryTag(Object projectIdOrPath, Long repositoryId, String tagName)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "registry",
-                "repositories", repositoryId, "tags", tagName);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "registry",
+                "repositories",
+                repositoryId,
+                "tags",
+                tagName);
         return response.readEntity(new GenericType<RegistryRepositoryTag>() {
         });
     }
@@ -228,7 +247,9 @@ public class ContainerRegistryApi extends AbstractApi {
      * @param tagName         the name of tag
      * @return the Repository Tag for the specified repository ID as the value of the Optional
      */
-    public Optional<RegistryRepositoryTag> getOptionalRepositoryTag(Object projectIdOrPath, Long repositoryId,
+    public Optional<RegistryRepositoryTag> getOptionalRepositoryTag(
+            Object projectIdOrPath,
+            Long repositoryId,
             String tagName) {
         try {
             return (Optional.ofNullable(getRepositoryTag(projectIdOrPath, repositoryId, tagName)));
@@ -256,8 +277,16 @@ public class ContainerRegistryApi extends AbstractApi {
             throw new RuntimeException("repositoryId cannot be null");
         }
 
-        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "registry",
-                "repositories", repositoryId, "tags", tagName);
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "registry",
+                "repositories",
+                repositoryId,
+                "tags",
+                tagName);
     }
 
     /**
@@ -289,14 +318,25 @@ public class ContainerRegistryApi extends AbstractApi {
      *                        <code>1h</code>, <code>1d</code>, <code>1month</code>.
      * @throws GitLabApiException if any exception occurs
      */
-    public void deleteRepositoryTags(Object projectIdOrPath, Long repositoryId, String nameRegex, Integer keepN,
+    public void deleteRepositoryTags(
+            Object projectIdOrPath,
+            Long repositoryId,
+            String nameRegex,
+            Integer keepN,
             String olderThan) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("name_regex", nameRegex, true).withParam("keep_n", keepN)
                 .withParam("older_than", olderThan);
 
-        delete(Response.Status.NO_CONTENT, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
-                "registry", "repositories", repositoryId, "tags");
+        delete(
+                Response.Status.NO_CONTENT,
+                formData.asMap(),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "registry",
+                "repositories",
+                repositoryId,
+                "tags");
     }
 
 }

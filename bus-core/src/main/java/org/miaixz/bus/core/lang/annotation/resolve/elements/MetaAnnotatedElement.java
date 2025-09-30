@@ -99,7 +99,8 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      * @return {@link AnnotatedElement}上的注解结构
      */
     public static <A extends AnnotationMapping<Annotation>> MetaAnnotatedElement<A> create(
-            final AnnotatedElement element, final BiFunction<A, Annotation, A> mappingFactory) {
+            final AnnotatedElement element,
+            final BiFunction<A, Annotation, A> mappingFactory) {
         return new MetaAnnotatedElement<>(element, mappingFactory);
     }
 

@@ -117,9 +117,13 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @return {@link SSLContext}
      * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(final String protocol, final KeyManager keyManager,
+    public static SSLContext createSSLContext(
+            final String protocol,
+            final KeyManager keyManager,
             final TrustManager trustManager) throws InternalException {
-        return createSSLContext(protocol, keyManager == null ? null : new KeyManager[] { keyManager },
+        return createSSLContext(
+                protocol,
+                keyManager == null ? null : new KeyManager[] { keyManager },
                 trustManager == null ? null : new TrustManager[] { trustManager });
     }
 
@@ -132,7 +136,8 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @throws InternalException 包装 GeneralSecurityException异常
      */
     public static SSLContext createSSLContext(final KeyStore keyStore, final char[] password) throws InternalException {
-        return createSSLContext(AnyKeyManager.getKeyManagers(keyStore, password),
+        return createSSLContext(
+                AnyKeyManager.getKeyManagers(keyStore, password),
                 AnyTrustManager.getTrustManagers(keyStore));
     }
 
@@ -158,7 +163,9 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @return {@link SSLContext}
      * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(final String protocol, final KeyManager[] keyManagers,
+    public static SSLContext createSSLContext(
+            final String protocol,
+            final KeyManager[] keyManagers,
             final TrustManager[] trustManagers) throws InternalException {
         return of().setProtocol(protocol).setKeyManagers(keyManagers).setTrustManagers(trustManagers).build();
     }

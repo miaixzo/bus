@@ -161,7 +161,10 @@ final class LinuxSensors extends AbstractSensors {
      * @param sensorFileFilter A FileFilter for detecting valid sensor files
      * @param prioritizer      A callback to prioritize between multiple sensors
      */
-    private void getSensorFilesFromPath(String sensorPath, String sensor, FileFilter sensorFileFilter,
+    private void getSensorFilesFromPath(
+            String sensorPath,
+            String sensor,
+            FileFilter sensorFileFilter,
             ToIntFunction<File[]> prioritizer) {
         String selectedPath = null;
         int selectedPriority = Integer.MAX_VALUE;
@@ -247,7 +250,10 @@ final class LinuxSensors extends AbstractSensors {
      * Iterate over all thermal_zone* directories and look for sensor files, e.g., /sys/class/thermal/thermal_zone0/temp
      */
     private void populateSensorsMapFromThermalZone() {
-        getSensorFilesFromPath(THERMAL_ZONE_PATH, TEMP, f -> f.getName().equals(TYPE) || f.getName().equals(TEMP),
+        getSensorFilesFromPath(
+                THERMAL_ZONE_PATH,
+                TEMP,
+                f -> f.getName().equals(TYPE) || f.getName().equals(TEMP),
                 files -> Stream.of(files).filter(f -> TYPE.equals(f.getName())).findFirst().map(File::getPath)
                         .map(Builder::getStringFromFile).map(THERMAL_ZONE_TYPE_PRIORITY::indexOf)
                         .filter((index) -> index >= 0).orElse(THERMAL_ZONE_TYPE_PRIORITY.size()));

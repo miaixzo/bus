@@ -48,6 +48,7 @@ import java.util.concurrent.TimeoutException;
  * @since Java 17+
  */
 public class RabbitMQProvider implements MQProvider, Closeable {
+
     private Connection connection;
 
     /**

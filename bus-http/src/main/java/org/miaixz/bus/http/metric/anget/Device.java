@@ -80,7 +80,8 @@ public class Device extends UserAgent {
     /**
      * 支持的移动平台类型
      */
-    public static final List<Device> MOBILE_DEVICE = ListKit.of(WINDOWS_PHONE, //
+    public static final List<Device> MOBILE_DEVICE = ListKit.of(
+            WINDOWS_PHONE, //
             IPAD, //
             IPOD, //
             IPHONE, //
@@ -95,7 +96,8 @@ public class Device extends UserAgent {
     /**
      * 支持的桌面平台类型
      */
-    public static final List<Device> DESKTOP_DEVICE = ListKit.of(new Device("Windows", "windows"), //
+    public static final List<Device> DESKTOP_DEVICE = ListKit.of(
+            new Device("Windows", "windows"), //
             new Device("Mac", "(macintosh|darwin)"), //
             new Device("Linux", "linux"), //
             new Device("Wii", "wii"), //

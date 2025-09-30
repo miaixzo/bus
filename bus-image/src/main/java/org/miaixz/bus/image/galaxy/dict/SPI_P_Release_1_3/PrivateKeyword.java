@@ -38,26 +38,35 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ImageEnhancementID:
-            return "ImageEnhancementID";
-        case PrivateTag.ImageEnhancement:
-            return "ImageEnhancement";
-        case PrivateTag.ConvolutionID:
-            return "ConvolutionID";
-        case PrivateTag.ConvolutionType:
-            return "ConvolutionType";
-        case PrivateTag.ConvolutionKernelSizeID:
-            return "ConvolutionKernelSizeID";
-        case PrivateTag.ConvolutionKernelSize:
-            return "ConvolutionKernelSize";
-        case PrivateTag.ConvolutionKernel:
-            return "ConvolutionKernel";
-        case PrivateTag.EnhancementGain:
-            return "EnhancementGain";
-        case PrivateTag.ImageEnhancementEnableStatus:
-            return "ImageEnhancementEnableStatus";
-        case PrivateTag.ImageEnhancementSelectStatus:
-            return "ImageEnhancementSelectStatus";
+            case PrivateTag.ImageEnhancementID:
+                return "ImageEnhancementID";
+
+            case PrivateTag.ImageEnhancement:
+                return "ImageEnhancement";
+
+            case PrivateTag.ConvolutionID:
+                return "ConvolutionID";
+
+            case PrivateTag.ConvolutionType:
+                return "ConvolutionType";
+
+            case PrivateTag.ConvolutionKernelSizeID:
+                return "ConvolutionKernelSizeID";
+
+            case PrivateTag.ConvolutionKernelSize:
+                return "ConvolutionKernelSize";
+
+            case PrivateTag.ConvolutionKernel:
+                return "ConvolutionKernel";
+
+            case PrivateTag.EnhancementGain:
+                return "EnhancementGain";
+
+            case PrivateTag.ImageEnhancementEnableStatus:
+                return "ImageEnhancementEnableStatus";
+
+            case PrivateTag.ImageEnhancementSelectStatus:
+                return "ImageEnhancementSelectStatus";
         }
         return "";
     }

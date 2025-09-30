@@ -44,7 +44,11 @@ public interface HL7ConnectionMonitor {
 
     void onMessageSent(HL7Application hl7App, Socket s, UnparsedHL7Message msg, Exception ex);
 
-    void onMessageResponse(HL7Application hl7App, Socket s, UnparsedHL7Message msg, UnparsedHL7Message rsp,
+    void onMessageResponse(
+            HL7Application hl7App,
+            Socket s,
+            UnparsedHL7Message msg,
+            UnparsedHL7Message rsp,
             Exception ex);
 
 }

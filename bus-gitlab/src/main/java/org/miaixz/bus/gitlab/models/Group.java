@@ -44,6 +44,7 @@ public class Group extends AbstractGroup<Group> {
     private static final long serialVersionUID = 2852255907217L;
 
     public class Statistics {
+
         private Long storageSize;
         private Long repositorySize;
         private Long lfsObjectsSize;

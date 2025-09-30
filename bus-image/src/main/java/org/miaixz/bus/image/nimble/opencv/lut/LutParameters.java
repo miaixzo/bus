@@ -80,8 +80,17 @@ public class LutParameters {
 
     @Override
     public int hashCode() {
-        return Objects.hash(intercept, slope, paddingMinValue, paddingMaxValue, bitsStored, signed, applyPadding,
-                outputSigned, bitsOutput, inversePaddingMLUT);
+        return Objects.hash(
+                intercept,
+                slope,
+                paddingMinValue,
+                paddingMaxValue,
+                bitsStored,
+                signed,
+                applyPadding,
+                outputSigned,
+                bitsOutput,
+                inversePaddingMLUT);
     }
 
     public double getIntercept() {

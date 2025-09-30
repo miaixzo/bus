@@ -52,11 +52,12 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.SubtractionMaskEnableStatus:
-        case PrivateTag.SubtractionMaskSelectStatus:
-            return VR.CS;
-        case PrivateTag.SubtractionMaskID:
-            return VR.LT;
+            case PrivateTag.SubtractionMaskEnableStatus:
+            case PrivateTag.SubtractionMaskSelectStatus:
+                return VR.CS;
+
+            case PrivateTag.SubtractionMaskID:
+                return VR.LT;
         }
         return VR.UN;
     }

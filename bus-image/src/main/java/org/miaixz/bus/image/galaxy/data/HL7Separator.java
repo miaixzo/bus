@@ -32,6 +32,7 @@ package org.miaixz.bus.image.galaxy.data;
  * @since Java 17+
  */
 public enum HL7Separator {
+
     FIELD("|", "\\F\\"), COMPONENT("^", "\\S\\"), SUBCOMPONENT("&", "\\T\\"), REPETITION("~", "\\R\\"),
     ESCAPE("\\", "\\E\\");
 

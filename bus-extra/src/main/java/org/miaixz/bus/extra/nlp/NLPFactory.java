@@ -49,7 +49,8 @@ public class NLPFactory {
      */
     public static NLPProvider getEngine() {
         final NLPProvider engine = Instances.get(NLPProvider.class.getName(), NLPFactory::createEngine);
-        Logger.debug("Use [{}] Tokenizer Engine As Default.",
+        Logger.debug(
+                "Use [{}] Tokenizer Engine As Default.",
                 StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }

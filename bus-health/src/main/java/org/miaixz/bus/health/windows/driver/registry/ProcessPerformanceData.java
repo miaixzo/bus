@@ -91,7 +91,8 @@ public final class ProcessPerformanceData {
                 if (upTime < 1L) {
                     upTime = 1L;
                 }
-                processMap.put(pid,
+                processMap.put(
+                        pid,
                         new PerfCounterBlock(name,
                                 (Integer) processInstanceMap.get(ProcessPerformanceProperty.CREATINGPROCESSID),
                                 (Integer) processInstanceMap.get(ProcessPerformanceProperty.PRIORITYBASE),
@@ -123,7 +124,8 @@ public final class ProcessPerformanceData {
      * @return A map with Process ID as the key and a {@link PerfCounterBlock} object populated with performance counter
      *         information.
      */
-    public static Map<Integer, PerfCounterBlock> buildProcessMapFromPerfCounters(Collection<Integer> pids,
+    public static Map<Integer, PerfCounterBlock> buildProcessMapFromPerfCounters(
+            Collection<Integer> pids,
             String procName) {
         Map<Integer, PerfCounterBlock> processMap = new HashMap<>();
         Pair<List<String>, Map<ProcessPerformanceProperty, List<Long>>> instanceValues = ProcessInformation
@@ -154,7 +156,8 @@ public final class ProcessPerformanceData {
                 if (upTime < 1L) {
                     upTime = 1L;
                 }
-                processMap.put(pid,
+                processMap.put(
+                        pid,
                         new PerfCounterBlock(instances.get(inst), ppidList.get(inst).intValue(),
                                 priorityList.get(inst).intValue(), workingSetSizeList.get(inst), ctime, upTime,
                                 ioReadList.get(inst), ioWriteList.get(inst), pageFaultsList.get(inst).intValue()));
@@ -168,6 +171,7 @@ public final class ProcessPerformanceData {
      */
     @Immutable
     public static class PerfCounterBlock {
+
         private final String name;
         private final int parentProcessID;
         private final int priority;

@@ -220,31 +220,34 @@ public class WebSocketReader {
         }
 
         switch (opcode) {
-        case WebSocketProtocol.OPCODE_CONTROL_PING:
-            frameCallback.onReadPing(controlFrameBuffer.readByteString());
-            break;
-        case WebSocketProtocol.OPCODE_CONTROL_PONG:
-            frameCallback.onReadPong(controlFrameBuffer.readByteString());
-            break;
-        case WebSocketProtocol.OPCODE_CONTROL_CLOSE:
-            int code = WebSocketProtocol.CLOSE_NO_STATUS_CODE;
-            String reason = Normal.EMPTY;
-            long bufferSize = controlFrameBuffer.size();
-            if (bufferSize == 1) {
-                throw new ProtocolException("Malformed close payload length of 1.");
-            } else if (bufferSize != 0) {
-                code = controlFrameBuffer.readShort();
-                reason = controlFrameBuffer.readUtf8();
-                String codeExceptionMessage = WebSocketProtocol.closeCodeExceptionMessage(code);
-                if (null != codeExceptionMessage) {
-                    throw new ProtocolException(codeExceptionMessage);
+            case WebSocketProtocol.OPCODE_CONTROL_PING:
+                frameCallback.onReadPing(controlFrameBuffer.readByteString());
+                break;
+
+            case WebSocketProtocol.OPCODE_CONTROL_PONG:
+                frameCallback.onReadPong(controlFrameBuffer.readByteString());
+                break;
+
+            case WebSocketProtocol.OPCODE_CONTROL_CLOSE:
+                int code = WebSocketProtocol.CLOSE_NO_STATUS_CODE;
+                String reason = Normal.EMPTY;
+                long bufferSize = controlFrameBuffer.size();
+                if (bufferSize == 1) {
+                    throw new ProtocolException("Malformed close payload length of 1.");
+                } else if (bufferSize != 0) {
+                    code = controlFrameBuffer.readShort();
+                    reason = controlFrameBuffer.readUtf8();
+                    String codeExceptionMessage = WebSocketProtocol.closeCodeExceptionMessage(code);
+                    if (null != codeExceptionMessage) {
+                        throw new ProtocolException(codeExceptionMessage);
+                    }
                 }
-            }
-            frameCallback.onReadClose(code, reason);
-            closed = true;
-            break;
-        default:
-            throw new ProtocolException("Unknown control opcode: " + Integer.toHexString(opcode));
+                frameCallback.onReadClose(code, reason);
+                closed = true;
+                break;
+
+            default:
+                throw new ProtocolException("Unknown control opcode: " + Integer.toHexString(opcode));
         }
     }
 

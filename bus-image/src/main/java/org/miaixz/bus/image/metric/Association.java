@@ -369,31 +369,51 @@ public class Association {
     }
 
     private void startRequestTimeout() {
-        startTimeout("{}: start A-ASSOCIATE-RQ timeout of {}ms", "{}: A-ASSOCIATE-RQ timeout expired",
-                "{}: stop A-ASSOCIATE-RQ timeout", conn.getRequestTimeout(), State.Sta2);
+        startTimeout(
+                "{}: start A-ASSOCIATE-RQ timeout of {}ms",
+                "{}: A-ASSOCIATE-RQ timeout expired",
+                "{}: stop A-ASSOCIATE-RQ timeout",
+                conn.getRequestTimeout(),
+                State.Sta2);
     }
 
     private void startAcceptTimeout() {
-        startTimeout("{}: start A-ASSOCIATE-AC timeout of {}ms", "{}: A-ASSOCIATE-AC timeout expired",
-                "{}: stop A-ASSOCIATE-AC timeout", conn.getAcceptTimeout(), State.Sta5);
+        startTimeout(
+                "{}: start A-ASSOCIATE-AC timeout of {}ms",
+                "{}: A-ASSOCIATE-AC timeout expired",
+                "{}: stop A-ASSOCIATE-AC timeout",
+                conn.getAcceptTimeout(),
+                State.Sta5);
     }
 
     private void startReleaseTimeout() {
-        startTimeout("{}: start A-RELEASE-RP timeout of {}ms", "{}: A-RELEASE-RP timeout expired",
-                "{}: stop A-RELEASE-RP timeout", conn.getReleaseTimeout(), State.Sta7);
+        startTimeout(
+                "{}: start A-RELEASE-RP timeout of {}ms",
+                "{}: A-RELEASE-RP timeout expired",
+                "{}: stop A-RELEASE-RP timeout",
+                conn.getReleaseTimeout(),
+                State.Sta7);
     }
 
     private void startIdleTimeout() {
-        startTimeout("{}: start idle timeout of {}ms", "{}: idle timeout expired", "{}: stop idle timeout",
-                conn.getIdleTimeout(), State.Sta6);
+        startTimeout(
+                "{}: start idle timeout of {}ms",
+                "{}: idle timeout expired",
+                "{}: stop idle timeout",
+                conn.getIdleTimeout(),
+                State.Sta6);
     }
 
     private void startSendTimeout(int timeout) {
         if (timeout > 0) {
             synchronized (this) {
                 stopTimeout();
-                this.timeout = Timeout.start(this, "{}: start send timeout of {}ms", "{}: send timeout expired",
-                        "{}: stop send timeout", timeout);
+                this.timeout = Timeout.start(
+                        this,
+                        "{}: start send timeout of {}ms",
+                        "{}: send timeout expired",
+                        "{}: stop send timeout",
+                        timeout);
             }
         }
     }
@@ -414,9 +434,14 @@ public class Association {
             synchronized (rspHandlerForMsgId) {
                 DimseRSPHandler rspHandler = rspHandlerForMsgId.get(msgID);
                 if (rspHandler != null) {
-                    rspHandler.setTimeout(Timeout.start(this, "{}: start " + msgID + ":DIMSE-RSP timeout of {}ms",
-                            "{}: " + msgID + ":DIMSE-RSP timeout expired", "{}: stop " + msgID + ":DIMSE-RSP timeout",
-                            timeout), stopOnPending);
+                    rspHandler.setTimeout(
+                            Timeout.start(
+                                    this,
+                                    "{}: start " + msgID + ":DIMSE-RSP timeout of {}ms",
+                                    "{}: " + msgID + ":DIMSE-RSP timeout expired",
+                                    "{}: stop " + msgID + ":DIMSE-RSP timeout",
+                                    timeout),
+                            stopOnPending);
                 }
             }
         }
@@ -858,7 +883,12 @@ public class Association {
         return ac.getCommonExtendedNegotiationFor(cuid);
     }
 
-    public void cstore(String cuid, String iuid, int priority, DataWriter data, String tsuid,
+    public void cstore(
+            String cuid,
+            String iuid,
+            int priority,
+            DataWriter data,
+            String tsuid,
             DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
@@ -873,16 +903,29 @@ public class Association {
         return rsp;
     }
 
-    public void cstore(String cuid, String iuid, int priority, String moveOriginatorAET, int moveOriginatorMsgId,
-            DataWriter data, String tsuid, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
+    public void cstore(
+            String cuid,
+            String iuid,
+            int priority,
+            String moveOriginatorAET,
+            int moveOriginatorMsgId,
+            DataWriter data,
+            String tsuid,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
-        Attributes cstorerq = Commands.mkCStoreRQ(rspHandler.getMessageID(), cuid, iuid, priority, moveOriginatorAET,
-                moveOriginatorMsgId);
+        Attributes cstorerq = Commands
+                .mkCStoreRQ(rspHandler.getMessageID(), cuid, iuid, priority, moveOriginatorAET, moveOriginatorMsgId);
         invoke(pc, cstorerq, data, rspHandler, conn.getStoreTimeout(), conn.getResponseTimeout());
     }
 
-    public DimseRSP cstore(String cuid, String iuid, int priority, String moveOriginatorAET, int moveOriginatorMsgId,
-            DataWriter data, String tsuid) throws IOException, InterruptedException {
+    public DimseRSP cstore(
+            String cuid,
+            String iuid,
+            int priority,
+            String moveOriginatorAET,
+            int moveOriginatorMsgId,
+            DataWriter data,
+            String tsuid) throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         cstore(cuid, iuid, priority, moveOriginatorAET, moveOriginatorMsgId, data, tsuid, rsp);
         return rsp;
@@ -930,7 +973,13 @@ public class Association {
         PresentationContext pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
         Attributes cgetrq = Commands.mkCGetRQ(rspHandler.getMessageID(), cuid, priority);
-        invoke(pc, cgetrq, new DataWriterAdapter(data), rspHandler, conn.getSendTimeout(), conn.getRetrieveTimeout(),
+        invoke(
+                pc,
+                cgetrq,
+                new DataWriterAdapter(data),
+                rspHandler,
+                conn.getSendTimeout(),
+                conn.getRetrieveTimeout(),
                 !conn.isRetrieveTimeoutTotal());
     }
 
@@ -941,12 +990,23 @@ public class Association {
         return rsp;
     }
 
-    public void cmove(String cuid, int priority, Attributes data, String tsuid, String destination,
+    public void cmove(
+            String cuid,
+            int priority,
+            Attributes data,
+            String tsuid,
+            String destination,
             DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
         Attributes cmoverq = Commands.mkCMoveRQ(rspHandler.getMessageID(), cuid, priority, destination);
-        invoke(pc, cmoverq, new DataWriterAdapter(data), rspHandler, conn.getSendTimeout(), conn.getRetrieveTimeout(),
+        invoke(
+                pc,
+                cmoverq,
+                new DataWriterAdapter(data),
+                rspHandler,
+                conn.getSendTimeout(),
+                conn.getRetrieveTimeout(),
                 !conn.isRetrieveTimeoutTotal());
     }
 
@@ -970,17 +1030,33 @@ public class Association {
         return rsp;
     }
 
-    public void neventReport(String cuid, String iuid, int eventTypeId, Attributes data, String tsuid,
+    public void neventReport(
+            String cuid,
+            String iuid,
+            int eventTypeId,
+            Attributes data,
+            String tsuid,
             DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         neventReport(cuid, cuid, iuid, eventTypeId, data, tsuid, rspHandler);
     }
 
-    public void neventReport(String asuid, String cuid, String iuid, int eventTypeId, Attributes data, String tsuid,
+    public void neventReport(
+            String asuid,
+            String cuid,
+            String iuid,
+            int eventTypeId,
+            Attributes data,
+            String tsuid,
             DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, tsuid);
         checkIsSCP(asuid);
         Attributes neventrq = Commands.mkNEventReportRQ(rspHandler.getMessageID(), cuid, iuid, eventTypeId, data);
-        invoke(pc, neventrq, DataWriterAdapter.forAttributes(data), rspHandler, conn.getSendTimeout(),
+        invoke(
+                pc,
+                neventrq,
+                DataWriterAdapter.forAttributes(data),
+                rspHandler,
+                conn.getSendTimeout(),
                 conn.getResponseTimeout());
     }
 
@@ -1064,17 +1140,33 @@ public class Association {
         return rsp;
     }
 
-    public void naction(String cuid, String iuid, int actionTypeId, Attributes data, String tsuid,
+    public void naction(
+            String cuid,
+            String iuid,
+            int actionTypeId,
+            Attributes data,
+            String tsuid,
             DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         naction(cuid, cuid, iuid, actionTypeId, data, tsuid, rspHandler);
     }
 
-    public void naction(String asuid, String cuid, String iuid, int actionTypeId, Attributes data, String tsuid,
+    public void naction(
+            String asuid,
+            String cuid,
+            String iuid,
+            int actionTypeId,
+            Attributes data,
+            String tsuid,
             DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, tsuid);
         checkIsSCU(asuid);
         Attributes nactionrq = Commands.mkNActionRQ(rspHandler.getMessageID(), cuid, iuid, actionTypeId, data);
-        invoke(pc, nactionrq, DataWriterAdapter.forAttributes(data), rspHandler, conn.getSendTimeout(),
+        invoke(
+                pc,
+                nactionrq,
+                DataWriterAdapter.forAttributes(data),
+                rspHandler,
+                conn.getSendTimeout(),
                 conn.getResponseTimeout());
     }
 
@@ -1095,12 +1187,22 @@ public class Association {
         ncreate(cuid, cuid, iuid, data, tsuid, rspHandler);
     }
 
-    public void ncreate(String asuid, String cuid, String iuid, Attributes data, String tsuid,
+    public void ncreate(
+            String asuid,
+            String cuid,
+            String iuid,
+            Attributes data,
+            String tsuid,
             DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, tsuid);
         checkIsSCU(asuid);
         Attributes ncreaterq = Commands.mkNCreateRQ(rspHandler.getMessageID(), cuid, iuid);
-        invoke(pc, ncreaterq, DataWriterAdapter.forAttributes(data), rspHandler, conn.getSendTimeout(),
+        invoke(
+                pc,
+                ncreaterq,
+                DataWriterAdapter.forAttributes(data),
+                rspHandler,
+                conn.getSendTimeout(),
                 conn.getResponseTimeout());
     }
 
@@ -1138,13 +1240,24 @@ public class Association {
         return rsp;
     }
 
-    public void invoke(PresentationContext pc, Attributes cmd, DataWriter data, DimseRSPHandler rspHandler,
-            int sendTimeout, int rspTimeout) throws IOException, InterruptedException {
+    public void invoke(
+            PresentationContext pc,
+            Attributes cmd,
+            DataWriter data,
+            DimseRSPHandler rspHandler,
+            int sendTimeout,
+            int rspTimeout) throws IOException, InterruptedException {
         invoke(pc, cmd, data, rspHandler, sendTimeout, rspTimeout, true);
     }
 
-    public void invoke(PresentationContext pc, Attributes cmd, DataWriter data, DimseRSPHandler rspHandler,
-            int sendTimeout, int rspTimeout, boolean stopOnPending) throws IOException, InterruptedException {
+    public void invoke(
+            PresentationContext pc,
+            Attributes cmd,
+            DataWriter data,
+            DimseRSPHandler rspHandler,
+            int sendTimeout,
+            int rspTimeout,
+            boolean stopOnPending) throws IOException, InterruptedException {
         stopTimeout();
         checkException();
         rspHandler.setPC(pc);

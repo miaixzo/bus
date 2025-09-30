@@ -1681,6 +1681,7 @@ public class Project implements Serializable {
 
     // Enum for the merge_method of the Project instance.
     public enum MergeMethod {
+
         MERGE, REBASE_MERGE, FF;
 
         private static JacksonJsonEnumHelper<MergeMethod> enumHelper = new JacksonJsonEnumHelper<>(MergeMethod.class);

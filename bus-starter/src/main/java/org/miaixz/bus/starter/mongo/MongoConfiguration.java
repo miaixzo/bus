@@ -57,14 +57,26 @@ public class MongoConfiguration {
     @Bean
     @Order(0)
     public MongoClientSettingsBuilderCustomizer socketSettings() {
-        return builder -> Optional.ofNullable(properties.getSocket())
-                .ifPresent(socketSettings -> builder.applyToSocketSettings((socket) -> socket
-                        .readTimeout(Long.valueOf(socketSettings.getReadTimeoutMilliSeconds()).intValue(),
-                                TimeUnit.MILLISECONDS)
-                        .connectTimeout(Long.valueOf(socketSettings.getConnectTimeoutMilliSeconds()).intValue(),
-                                TimeUnit.MILLISECONDS)
-                        .receiveBufferSize(socketSettings.getReceiveBufferSize())
-                        .sendBufferSize(socketSettings.getSendBufferSize())));
+        return builder -> Optional
+                .ofNullable(
+                        properties.getSocket())
+                .ifPresent(
+                        socketSettings -> builder
+                                .applyToSocketSettings(
+                                        (
+                                                socket) -> socket
+                                                        .readTimeout(
+                                                                Long.valueOf(
+                                                                        socketSettings.getReadTimeoutMilliSeconds())
+                                                                        .intValue(),
+                                                                TimeUnit.MILLISECONDS)
+                                                        .connectTimeout(
+                                                                Long.valueOf(
+                                                                        socketSettings.getConnectTimeoutMilliSeconds())
+                                                                        .intValue(),
+                                                                TimeUnit.MILLISECONDS)
+                                                        .receiveBufferSize(socketSettings.getReceiveBufferSize())
+                                                        .sendBufferSize(socketSettings.getSendBufferSize())));
     }
 
     /**
@@ -78,14 +90,22 @@ public class MongoConfiguration {
         return builder -> Optional
                 .ofNullable(
                         properties.getHeartbeatSocket())
-                .ifPresent(heartbeatSocketSettings -> builder.applyToSocketSettings((heartBeatSocket) -> heartBeatSocket
-                        .readTimeout(Long.valueOf(heartbeatSocketSettings.getReadTimeoutMilliSeconds()).intValue(),
-                                TimeUnit.MILLISECONDS)
-                        .connectTimeout(
-                                Long.valueOf(heartbeatSocketSettings.getConnectTimeoutMilliSeconds()).intValue(),
-                                TimeUnit.MILLISECONDS)
-                        .receiveBufferSize(heartbeatSocketSettings.getReceiveBufferSize())
-                        .sendBufferSize(heartbeatSocketSettings.getSendBufferSize())));
+                .ifPresent(
+                        heartbeatSocketSettings -> builder
+                                .applyToSocketSettings(
+                                        (heartBeatSocket) -> heartBeatSocket
+                                                .readTimeout(
+                                                        Long.valueOf(
+                                                                heartbeatSocketSettings.getReadTimeoutMilliSeconds())
+                                                                .intValue(),
+                                                        TimeUnit.MILLISECONDS)
+                                                .connectTimeout(
+                                                        Long.valueOf(
+                                                                heartbeatSocketSettings.getConnectTimeoutMilliSeconds())
+                                                                .intValue(),
+                                                        TimeUnit.MILLISECONDS)
+                                                .receiveBufferSize(heartbeatSocketSettings.getReceiveBufferSize())
+                                                .sendBufferSize(heartbeatSocketSettings.getSendBufferSize())));
     }
 
     /**
@@ -105,7 +125,8 @@ public class MongoConfiguration {
                             requiredReplicaSetName -> cluster.requiredReplicaSetName(requiredReplicaSetName));
 
                     cluster.localThreshold(clusterSettings.getLocalThresholdMilliSeconds(), TimeUnit.MILLISECONDS)
-                            .serverSelectionTimeout(clusterSettings.getServerSelectionTimeoutMilliSeconds(),
+                            .serverSelectionTimeout(
+                                    clusterSettings.getServerSelectionTimeoutMilliSeconds(),
                                     TimeUnit.MILLISECONDS);
                 }));
     }
@@ -118,11 +139,16 @@ public class MongoConfiguration {
     @Bean
     @Order(3)
     public MongoClientSettingsBuilderCustomizer serverSettings() {
-        return builder -> Optional.ofNullable(properties.getServer())
-                .ifPresent(serverSettings -> builder.applyToServerSettings((server) -> server
-                        .heartbeatFrequency(serverSettings.getHeartbeatFrequencyMilliSeconds(), TimeUnit.MILLISECONDS)
-                        .minHeartbeatFrequency(serverSettings.getMinHeartbeatFrequencyMilliSeconds(),
-                                TimeUnit.MILLISECONDS)));
+        return builder -> Optional
+                .ofNullable(
+                        properties.getServer())
+                .ifPresent(
+                        serverSettings -> builder.applyToServerSettings(
+                                (server) -> server.heartbeatFrequency(
+                                        serverSettings.getHeartbeatFrequencyMilliSeconds(),
+                                        TimeUnit.MILLISECONDS).minHeartbeatFrequency(
+                                                serverSettings.getMinHeartbeatFrequencyMilliSeconds(),
+                                                TimeUnit.MILLISECONDS)));
     }
 
     /**
@@ -133,18 +159,23 @@ public class MongoConfiguration {
     @Bean
     @Order(4)
     public MongoClientSettingsBuilderCustomizer connectionSettings() {
-        return builder -> Optional.ofNullable(properties.getConnectionPool())
-                .ifPresent(connectionSettings -> builder.applyToConnectionPoolSettings((connection) -> connection
-                        .maxSize(connectionSettings.getMaxSize()).minSize(connectionSettings.getMinSize())
-                        .maxWaitTime(connectionSettings.getMaxWaitTimeMilliSeconds(), TimeUnit.MILLISECONDS)
-                        .maxConnectionLifeTime(connectionSettings.getMaxConnectionLifeTimeMilliSeconds(),
-                                TimeUnit.MILLISECONDS)
-                        .maxConnectionIdleTime(connectionSettings.getMaxConnectionIdleTimeMilliSeconds(),
-                                TimeUnit.MILLISECONDS)
-                        .maintenanceFrequency(connectionSettings.getMaintenanceFrequencyMilliSeconds(),
-                                TimeUnit.MILLISECONDS)
-                        .maintenanceInitialDelay(connectionSettings.getMaintenanceInitialDelayMilliSeconds(),
-                                TimeUnit.MILLISECONDS)));
+        return builder -> Optional.ofNullable(properties.getConnectionPool()).ifPresent(
+                connectionSettings -> builder.applyToConnectionPoolSettings(
+                        (connection) -> connection.maxSize(connectionSettings.getMaxSize())
+                                .minSize(connectionSettings.getMinSize())
+                                .maxWaitTime(connectionSettings.getMaxWaitTimeMilliSeconds(), TimeUnit.MILLISECONDS)
+                                .maxConnectionLifeTime(
+                                        connectionSettings.getMaxConnectionLifeTimeMilliSeconds(),
+                                        TimeUnit.MILLISECONDS)
+                                .maxConnectionIdleTime(
+                                        connectionSettings.getMaxConnectionIdleTimeMilliSeconds(),
+                                        TimeUnit.MILLISECONDS)
+                                .maintenanceFrequency(
+                                        connectionSettings.getMaintenanceFrequencyMilliSeconds(),
+                                        TimeUnit.MILLISECONDS)
+                                .maintenanceInitialDelay(
+                                        connectionSettings.getMaintenanceInitialDelayMilliSeconds(),
+                                        TimeUnit.MILLISECONDS)));
     }
 
     /**
@@ -155,9 +186,10 @@ public class MongoConfiguration {
     @Bean
     @Order(5)
     public MongoClientSettingsBuilderCustomizer sslSettings() {
-        return builder -> Optional.ofNullable(properties.getSsl())
-                .ifPresent(sslSettings -> builder.applyToSslSettings((ssl) -> ssl.enabled(sslSettings.isEnabled())
-                        .invalidHostNameAllowed(sslSettings.isInvalidHostNameAllowed())));
+        return builder -> Optional.ofNullable(properties.getSsl()).ifPresent(
+                sslSettings -> builder.applyToSslSettings(
+                        (ssl) -> ssl.enabled(sslSettings.isEnabled())
+                                .invalidHostNameAllowed(sslSettings.isInvalidHostNameAllowed())));
     }
 
 }

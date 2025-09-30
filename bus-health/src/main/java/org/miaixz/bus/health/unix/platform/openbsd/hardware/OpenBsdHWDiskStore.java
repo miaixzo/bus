@@ -55,8 +55,8 @@ import org.miaixz.bus.health.unix.platform.openbsd.driver.disk.Disklabel;
 @ThreadSafe
 public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
-    private final Supplier<List<String>> iostat = Memoizer.memoize(OpenBsdHWDiskStore::querySystatIostat,
-            Memoizer.defaultExpiration());
+    private final Supplier<List<String>> iostat = Memoizer
+            .memoize(OpenBsdHWDiskStore::querySystatIostat, Memoizer.defaultExpiration());
     private final long currentQueueLength = 0L;
     private long reads = 0L;
     private long readBytes = 0L;

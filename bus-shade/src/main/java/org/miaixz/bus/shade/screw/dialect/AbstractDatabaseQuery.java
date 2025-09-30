@@ -51,6 +51,7 @@ import lombok.Getter;
  * @since Java 17+
  */
 public abstract class AbstractDatabaseQuery implements DatabaseQuery {
+
     /**
      * 缓存
      */

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -54,7 +54,11 @@ public class SqlServerRowBounds extends AbstractRowBounds {
     protected ReplaceSql replaceSql;
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+    public String getCountSql(
+            MappedStatement ms,
+            BoundSql boundSql,
+            Object parameterObject,
+            RowBounds rowBounds,
             CacheKey countKey) {
         String sql = boundSql.getSql();
         sql = replaceSql.replace(sql);
@@ -79,8 +83,11 @@ public class SqlServerRowBounds extends AbstractRowBounds {
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
-        this.sqlServerSqlParser = Builder.newInstance(properties.getProperty("sqlServerSqlParser"),
-                SqlServerSqlParser.class, properties, DefaultSqlServerSqlParser::new);
+        this.sqlServerSqlParser = Builder.newInstance(
+                properties.getProperty("sqlServerSqlParser"),
+                SqlServerSqlParser.class,
+                properties,
+                DefaultSqlServerSqlParser::new);
         String replaceSql = properties.getProperty("replaceSql");
         if (StringKit.isEmpty(replaceSql) || "simple".equalsIgnoreCase(replaceSql)) {
             this.replaceSql = new SimpleWithNolock();

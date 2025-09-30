@@ -52,23 +52,25 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.PhotometricInterpretation:
-            return VR.CS;
-        case PrivateTag.ShutterType:
-            return VR.LO;
-        case PrivateTag.RowsOfSubmatrix:
-        case PrivateTag.ColumnsOfSubmatrix:
-        case PrivateTag._0029_xx20_:
-        case PrivateTag._0029_xx21_:
-        case PrivateTag.OriginOfSubmatrix:
-        case PrivateTag._0029_xx80_:
-        case PrivateTag.RowsOfRectangularShutter:
-        case PrivateTag.ColumnsOfRectangularShutter:
-        case PrivateTag.OriginOfRectangularShutter:
-        case PrivateTag.RadiusOfCircularShutter:
-        case PrivateTag.OriginOfCircularShutter:
-        case PrivateTag.ContourOfIrregularShutter:
-            return VR.US;
+            case PrivateTag.PhotometricInterpretation:
+                return VR.CS;
+
+            case PrivateTag.ShutterType:
+                return VR.LO;
+
+            case PrivateTag.RowsOfSubmatrix:
+            case PrivateTag.ColumnsOfSubmatrix:
+            case PrivateTag._0029_xx20_:
+            case PrivateTag._0029_xx21_:
+            case PrivateTag.OriginOfSubmatrix:
+            case PrivateTag._0029_xx80_:
+            case PrivateTag.RowsOfRectangularShutter:
+            case PrivateTag.ColumnsOfRectangularShutter:
+            case PrivateTag.OriginOfRectangularShutter:
+            case PrivateTag.RadiusOfCircularShutter:
+            case PrivateTag.OriginOfCircularShutter:
+            case PrivateTag.ContourOfIrregularShutter:
+                return VR.US;
         }
         return VR.UN;
     }

@@ -191,6 +191,7 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
     }
 
     class Worker implements Runnable {
+
         /**
          * 当前Worker绑定的Selector
          */

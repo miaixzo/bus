@@ -53,6 +53,7 @@ import org.miaixz.bus.core.lang.Assert;
  * @since Java 17+
  */
 public enum Month {
+
     /**
      * 一月
      */
@@ -158,69 +159,90 @@ public enum Month {
     public static Month of(final String name) throws IllegalArgumentException {
         if (null != name && name.length() > 1) {
             switch (Character.toLowerCase(name.charAt(0))) {
-            case 'a':
-                switch (Character.toLowerCase(name.charAt(1))) {
-                case 'p':
-                    return APRIL; // april
-                case 'u':
-                    return AUGUST; // august
-                }
-                break;
-            case 'j':
-                if (Character.toLowerCase(name.charAt(1)) == 'a') {
-                    return JANUARY; // january
-                }
-                switch (Character.toLowerCase(name.charAt(2))) {
+                case 'a':
+                    switch (Character.toLowerCase(name.charAt(1))) {
+                        case 'p':
+                            return APRIL; // april
+
+                        case 'u':
+                            return AUGUST; // august
+                    }
+                    break;
+
+                case 'j':
+                    if (Character.toLowerCase(name.charAt(1)) == 'a') {
+                        return JANUARY; // january
+                    }
+                    switch (Character.toLowerCase(name.charAt(2))) {
+                        case 'n':
+                            return JUNE; // june
+
+                        case 'l':
+                            return JULY; // july
+                    }
+                    break;
+
+                case 'f':
+                    return FEBRUARY; // february
+
+                case 'm':
+                    switch (Character.toLowerCase(name.charAt(2))) {
+                        case 'r':
+                            return MARCH; // march
+
+                        case 'y':
+                            return MAY; // may
+                    }
+                    break;
+
+                case 's':
+                    return SEPTEMBER; // september
+
+                case 'o':
+                    return OCTOBER; // october
+
                 case 'n':
-                    return JUNE; // june
-                case 'l':
-                    return JULY; // july
-                }
-                break;
-            case 'f':
-                return FEBRUARY; // february
-            case 'm':
-                switch (Character.toLowerCase(name.charAt(2))) {
-                case 'r':
-                    return MARCH; // march
-                case 'y':
-                    return MAY; // may
-                }
-                break;
-            case 's':
-                return SEPTEMBER; // september
-            case 'o':
-                return OCTOBER; // october
-            case 'n':
-                return NOVEMBER; // november
-            case 'd':
-                return DECEMBER; // december
-            case '一':
-                return JANUARY;
-            case '二':
-                return FEBRUARY;
-            case '三':
-                return MARCH;
-            case '四':
-                return APRIL;
-            case '五':
-                return MAY;
-            case '六':
-                return JUNE;
-            case '七':
-                return JULY;
-            case '八':
-                return AUGUST;
-            case '九':
-                return SEPTEMBER;
-            case '十':
-                switch (Character.toLowerCase(name.charAt(1))) {
+                    return NOVEMBER; // november
+
+                case 'd':
+                    return DECEMBER; // december
+
                 case '一':
-                    return NOVEMBER;
+                    return JANUARY;
+
                 case '二':
-                    return DECEMBER;
-                }
-                return OCTOBER;
+                    return FEBRUARY;
+
+                case '三':
+                    return MARCH;
+
+                case '四':
+                    return APRIL;
+
+                case '五':
+                    return MAY;
+
+                case '六':
+                    return JUNE;
+
+                case '七':
+                    return JULY;
+
+                case '八':
+                    return AUGUST;
+
+                case '九':
+                    return SEPTEMBER;
+
+                case '十':
+                    switch (Character.toLowerCase(name.charAt(1))) {
+                        case '一':
+                            return NOVEMBER;
+
+                        case '二':
+                            return DECEMBER;
+                    }
+                    return OCTOBER;
             }
         }
 
@@ -277,15 +299,17 @@ public enum Month {
      */
     public int getLastDay(final boolean isLeapYear) {
         switch (this) {
-        case FEBRUARY:
-            return isLeapYear ? 29 : 28;
-        case APRIL:
-        case JUNE:
-        case SEPTEMBER:
-        case NOVEMBER:
-            return 30;
-        default:
-            return 31;
+            case FEBRUARY:
+                return isLeapYear ? 29 : 28;
+
+            case APRIL:
+            case JUNE:
+            case SEPTEMBER:
+            case NOVEMBER:
+                return 30;
+
+            default:
+                return 31;
         }
     }
 

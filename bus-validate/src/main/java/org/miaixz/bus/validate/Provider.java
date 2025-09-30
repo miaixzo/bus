@@ -183,14 +183,14 @@ public class Provider {
      */
     public static ValidateException resolve(Material material, Context context) {
         // 1. 确定异常类：优先使用上下文的异常类，fallback 到材料的异常类，再 fallback 到 ValidateException
-        Class<? extends ValidateException> exceptionClass = ObjectKit.defaultIfNull(material.getException(),
-                context.getException());
+        Class<? extends ValidateException> exceptionClass = ObjectKit
+                .defaultIfNull(material.getException(), context.getException());
 
         // 2. 确定错误码：优先使用材料中的错误码，如果是默认值则尝试上下文的错误码
         String errcode = ObjectKit.defaultIfNull(material.getErrcode(), context.getErrcode());
 
         // 3. 获取错误信息：从 Errors 获取，如果 key 为 null 则使用原始 errorCode
-        String errmsg = ObjectKit.defaultIfNull(material.getErrmsg(), ErrorCode.__116000.getValue());
+        String errmsg = ObjectKit.defaultIfNull(material.getErrmsg(), ErrorCode._115000.getValue());
 
         // 4. 设置材料中的错误码和错误消息
         material.setErrcode(errcode);
@@ -201,8 +201,8 @@ public class Provider {
             return new ValidateException(errcode, material.getMessage());
         }
         try {
-            Constructor<? extends ValidateException> constructor = exceptionClass.getConstructor(String.class,
-                    String.class);
+            Constructor<? extends ValidateException> constructor = exceptionClass
+                    .getConstructor(String.class, String.class);
             return constructor.newInstance(errcode, material.getMessage());
         } catch (NoSuchMethodException e) {
             throw new NoSuchException("Illegal custom validation exception, no constructor(String, String) found: "

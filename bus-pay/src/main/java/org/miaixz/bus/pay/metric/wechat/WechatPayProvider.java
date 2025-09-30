@@ -131,7 +131,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String executionByProtocol(Complex complex, Map<String, String> params, String certPath, String certPass,
+    public String executionByProtocol(
+            Complex complex,
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return doPostSslByProtocol(getUrl(complex), params, certPath, certPass, protocol);
     }
@@ -184,18 +188,31 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String executionByProtocol(Complex complex, Map<String, String> params, InputStream certFile,
-            String certPass, String protocol) {
+    public String executionByProtocol(
+            Complex complex,
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
+            String protocol) {
         return doPostSslByProtocol(getUrl(complex), params, certFile, certPass, protocol);
     }
 
-    public String execution(Complex complex, Map<String, String> params, String certPath, String certPass,
+    public String execution(
+            Complex complex,
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String filePath) {
         return doUploadSsl(getUrl(complex), params, certPath, certPass, filePath);
     }
 
-    public String executionByProtocol(Complex complex, Map<String, String> params, String certPath, String certPass,
-            String filePath, String protocol) {
+    public String executionByProtocol(
+            Complex complex,
+            Map<String, String> params,
+            String certPath,
+            String certPass,
+            String filePath,
+            String protocol) {
         return doUploadSslByProtocol(getUrl(complex), params, certPath, certPass, filePath, protocol);
     }
 
@@ -220,7 +237,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String executionByProtocol(Complex complex, Map<String, String> params, InputStream certFile,
+    public String executionByProtocol(
+            Complex complex,
+            Map<String, String> params,
+            InputStream certFile,
             String protocol) {
         return doPostSslByProtocol(getUrl(complex), params, certFile, protocol);
     }
@@ -243,10 +263,21 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            String keyPath, String body, String nonceStr, long timestamp, String authType, File file) throws Exception {
-        String authorization = WechatPayBuilder.buildAuthorization(method, suffix, mchId, serialNo, keyPath, body,
-                nonceStr, timestamp, authType);
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            String keyPath,
+            String body,
+            String nonceStr,
+            long timestamp,
+            String authType,
+            File file) throws Exception {
+        String authorization = WechatPayBuilder
+                .buildAuthorization(method, suffix, mchId, serialNo, keyPath, body, nonceStr, timestamp, authType);
 
         if (StringKit.isEmpty(platSerialNo)) {
             platSerialNo = serialNo;
@@ -284,11 +315,21 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            PrivateKey privateKey, String body, String nonceStr, long timestamp, String authType, File file)
-            throws Exception {
-        String authorization = WechatPayBuilder.buildAuthorization(method, suffix, mchId, serialNo, privateKey, body,
-                nonceStr, timestamp, authType);
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            PrivateKey privateKey,
+            String body,
+            String nonceStr,
+            long timestamp,
+            String authType,
+            File file) throws Exception {
+        String authorization = WechatPayBuilder
+                .buildAuthorization(method, suffix, mchId, serialNo, privateKey, body, nonceStr, timestamp, authType);
 
         if (StringKit.isEmpty(platSerialNo)) {
             platSerialNo = serialNo;
@@ -323,11 +364,30 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            String keyPath, String body, String authType) throws Exception {
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            String keyPath,
+            String body,
+            String authType) throws Exception {
         long timestamp = DateKit.current() / 1000;
         String nonceStr = String.valueOf(DateKit.current());
-        return v3(method, prefix, suffix, mchId, serialNo, platSerialNo, keyPath, body, nonceStr, timestamp, authType,
+        return v3(
+                method,
+                prefix,
+                suffix,
+                mchId,
+                serialNo,
+                platSerialNo,
+                keyPath,
+                body,
+                nonceStr,
+                timestamp,
+                authType,
                 null);
     }
 
@@ -345,8 +405,15 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            String keyPath, String body) throws Exception {
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            String keyPath,
+            String body) throws Exception {
         String authType = AuthType.RSA.getCode();
         return v3(method, prefix, suffix, mchId, serialNo, platSerialNo, keyPath, body, authType);
     }
@@ -365,13 +432,31 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            PrivateKey privateKey, String body) throws Exception {
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            PrivateKey privateKey,
+            String body) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = AuthType.RSA.getCode();
         String nonceStr = String.valueOf(DateKit.current());
-        return v3(method, prefix, suffix, mchId, serialNo, platSerialNo, privateKey, body, nonceStr, timestamp,
-                authType, null);
+        return v3(
+                method,
+                prefix,
+                suffix,
+                mchId,
+                serialNo,
+                platSerialNo,
+                privateKey,
+                body,
+                nonceStr,
+                timestamp,
+                authType,
+                null);
     }
 
     /**
@@ -388,8 +473,15 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            String keyPath, Map<String, String> params) throws Exception {
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            String keyPath,
+            Map<String, String> params) throws Exception {
         String authType = AuthType.RSA.getCode();
         return v3(method, prefix, suffix, mchId, serialNo, platSerialNo, keyPath, params, authType);
     }
@@ -409,14 +501,33 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            String keyPath, Map<String, String> params, String authType) throws Exception {
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            String keyPath,
+            Map<String, String> params,
+            String authType) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String nonceStr = String.valueOf(DateKit.current());
         if (null != params && !params.keySet().isEmpty()) {
             suffix = suffix.concat("?").concat(Builder.createLinkString(params, true));
         }
-        return v3(method, prefix, suffix, mchId, serialNo, platSerialNo, keyPath, "", nonceStr, timestamp, authType,
+        return v3(
+                method,
+                prefix,
+                suffix,
+                mchId,
+                serialNo,
+                platSerialNo,
+                keyPath,
+                "",
+                nonceStr,
+                timestamp,
+                authType,
                 null);
     }
 
@@ -434,15 +545,33 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String method, String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            PrivateKey privateKey, Map<String, String> params) throws Exception {
+    public Message v3(
+            String method,
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            PrivateKey privateKey,
+            Map<String, String> params) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = AuthType.RSA.getCode();
         String nonceStr = String.valueOf(DateKit.current());
         if (null != params && !params.keySet().isEmpty()) {
             suffix = suffix.concat("?").concat(Builder.createLinkString(params, true));
         }
-        return v3(method, prefix, suffix, mchId, serialNo, platSerialNo, privateKey, "", nonceStr, timestamp, authType,
+        return v3(
+                method,
+                prefix,
+                suffix,
+                mchId,
+                serialNo,
+                platSerialNo,
+                privateKey,
+                "",
+                nonceStr,
+                timestamp,
+                authType,
                 null);
     }
 
@@ -460,12 +589,30 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String prefix, String suffix, String mchId, String serialNo, String platSerialNo, String keyPath,
-            String body, File file) throws Exception {
+    public Message v3(
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            String keyPath,
+            String body,
+            File file) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = AuthType.RSA.getCode();
         String nonceStr = String.valueOf(DateKit.current());
-        return v3(null, prefix, suffix, mchId, serialNo, platSerialNo, keyPath, body, nonceStr, timestamp, authType,
+        return v3(
+                null,
+                prefix,
+                suffix,
+                mchId,
+                serialNo,
+                platSerialNo,
+                keyPath,
+                body,
+                nonceStr,
+                timestamp,
+                authType,
                 file);
     }
 
@@ -483,12 +630,30 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link Message} 请求返回的结果
      * @throws Exception 接口执行异常
      */
-    public Message v3(String prefix, String suffix, String mchId, String serialNo, String platSerialNo,
-            PrivateKey privateKey, String body, File file) throws Exception {
+    public Message v3(
+            String prefix,
+            String suffix,
+            String mchId,
+            String serialNo,
+            String platSerialNo,
+            PrivateKey privateKey,
+            String body,
+            File file) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = AuthType.RSA.getCode();
         String nonceStr = String.valueOf(DateKit.current());
-        return v3(null, prefix, suffix, mchId, serialNo, platSerialNo, privateKey, body, nonceStr, timestamp, authType,
+        return v3(
+                null,
+                prefix,
+                suffix,
+                mchId,
+                serialNo,
+                platSerialNo,
+                privateKey,
+                body,
+                nonceStr,
+                timestamp,
+                authType,
                 file);
     }
 
@@ -585,7 +750,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param certPass  证书密码
      * @return {@link String} 请求返回的结果
      */
-    public String orderRefundByProtocol(boolean isSandbox, Map<String, String> params, String certPath, String certPass,
+    public String orderRefundByProtocol(
+            boolean isSandbox,
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return executionByProtocol(PayApi.REFUND, params, certPath, certPass, protocol);
     }
@@ -613,8 +782,12 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol  协议
      * @return {@link String} 请求返回的结果
      */
-    public String orderRefundByProtocol(boolean isSandbox, Map<String, String> params, InputStream certFile,
-            String certPass, String protocol) {
+    public String orderRefundByProtocol(
+            boolean isSandbox,
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
+            String protocol) {
         return executionByProtocol(PayApi.REFUND, params, certFile, certPass, protocol);
     }
 
@@ -727,7 +900,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String transfersByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String transfersByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(TransferApi.TRANSFER, params, certFile, certPass, protocol);
     }
@@ -802,7 +978,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String payBankByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String payBankByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(TransferApi.TRANSFER_BANK, params, certFile, certPass, protocol);
     }
@@ -852,7 +1031,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String getPublicKeyByProtocol(Map<String, String> params, String certPath, String certPass,
+    public String getPublicKeyByProtocol(
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return execution(TransferApi.GET_PUBLIC_KEY, params, certPath, certPass, protocol);
     }
@@ -878,7 +1060,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String getPublicKeyByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String getPublicKeyByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(TransferApi.GET_PUBLIC_KEY, params, certFile, certPass, protocol);
     }
@@ -1402,7 +1587,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String sendRedPackByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String sendRedPackByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.SEND_RED_PACK, params, certFile, certPass, protocol);
     }
@@ -1428,7 +1616,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String sendGroupRedPackByProtocol(Map<String, String> params, String certPath, String certPass,
+    public String sendGroupRedPackByProtocol(
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.SEND_GROUP_RED_PACK, params, certPath, certPass, protocol);
     }
@@ -1454,7 +1645,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String sendGroupRedPackByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String sendGroupRedPackByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.SEND_GROUP_RED_PACK, params, certFile, certPass, protocol);
     }
@@ -1504,7 +1698,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String sendMiniProgramRedPackByProtocol(Map<String, String> params, String certPath, String certPass,
+    public String sendMiniProgramRedPackByProtocol(
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.SEND_MINI_PROGRAM_HB, params, certPath, certPass, protocol);
     }
@@ -1530,7 +1727,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String sendMiniProgramRedPackByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String sendMiniProgramRedPackByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.SEND_MINI_PROGRAM_HB, params, certFile, certPass, protocol);
     }
@@ -1556,7 +1756,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String sendWorkWxRedPackByProtocol(Map<String, String> params, String certPath, String certPass,
+    public String sendWorkWxRedPackByProtocol(
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.SEND_WORK_WX_RED_PACK, params, certPath, certPass, protocol);
     }
@@ -1582,7 +1785,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String sendWorkWxRedPackByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String sendWorkWxRedPackByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.SEND_WORK_WX_RED_PACK, params, certFile, certPass, protocol);
     }
@@ -1608,7 +1814,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String queryWorkWxRedPackByProtocol(Map<String, String> params, String certPath, String certPass,
+    public String queryWorkWxRedPackByProtocol(
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.QUERY_WORK_WX_RED_PACK, params, certPath, certPass, protocol);
     }
@@ -1634,7 +1843,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String queryWorkWxRedPackByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String queryWorkWxRedPackByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(RedPackApi.QUERY_WORK_WX_RED_PACK, params, certFile, certPass, protocol);
     }
@@ -1660,7 +1872,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String trans2pocketByProtocol(Map<String, String> params, String certPath, String certPass,
+    public String trans2pocketByProtocol(
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return executionByProtocol(TransferApi.PAY_WWS_TRANS_2_POCKET, params, certPath, certPass, protocol);
     }
@@ -1686,7 +1901,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String trans2pocketByProtocol(Map<String, String> params, InputStream certFile, String certPass,
+    public String trans2pocketByProtocol(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(TransferApi.PAY_WWS_TRANS_2_POCKET, params, certFile, certPass, protocol);
     }
@@ -1712,7 +1930,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String queryTrans2pocketByProtocol(Map<String, String> params, String certPath, String certPass,
+    public String queryTrans2pocketByProtocol(
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return executionByProtocol(TransferApi.QUERY_WWS_TRANS_2_POCKET, params, certPath, certPass, protocol);
     }
@@ -1738,7 +1959,10 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
      * @param protocol 协议
      * @return {@link String} 请求返回的结果
      */
-    public String queryTrans2pocket(Map<String, String> params, InputStream certFile, String certPass,
+    public String queryTrans2pocket(
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return executionByProtocol(TransferApi.QUERY_WWS_TRANS_2_POCKET, params, certFile, certPass, protocol);
     }
@@ -1870,7 +2094,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         return post(url, XmlKit.mapToXmlString(params), certPath, certPass, null);
     }
 
-    public String doPostSslByProtocol(String url, Map<String, String> params, String certPath, String certPass,
+    public String doPostSslByProtocol(
+            String url,
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String protocol) {
         return post(url, XmlKit.mapToXmlString(params), certPath, certPass, protocol);
     }
@@ -1911,7 +2139,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         return post(url, XmlKit.mapToXmlString(params), certFile, certPass, null);
     }
 
-    public String doPostSslByProtocol(String url, Map<String, String> params, InputStream certFile, String certPass,
+    public String doPostSslByProtocol(
+            String url,
+            Map<String, String> params,
+            InputStream certFile,
+            String certPass,
             String protocol) {
         return post(url, XmlKit.mapToXmlString(params), certFile, certPass, protocol);
     }
@@ -1924,7 +2156,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         return doUploadSsl(url, params, certPath, certPass, filePath);
     }
 
-    public String doUploadSslByProtocol(String url, Map<String, String> params, String certPath, String filePath,
+    public String doUploadSslByProtocol(
+            String url,
+            Map<String, String> params,
+            String certPath,
+            String filePath,
             String protocol) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
             throw new RuntimeException("请求参数中必须包含 mch_id，如接口参考中不包 mch_id， 请使用其他同名构造方法。");
@@ -1933,13 +2169,22 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         return doUploadSslByProtocol(url, params, certPath, certPass, filePath, protocol);
     }
 
-    public String doUploadSsl(String url, Map<String, String> params, String certPath, String certPass,
+    public String doUploadSsl(
+            String url,
+            Map<String, String> params,
+            String certPath,
+            String certPass,
             String filePath) {
         return upload(url, XmlKit.mapToXmlString(params), certPath, certPass, filePath);
     }
 
-    public String doUploadSslByProtocol(String url, Map<String, String> params, String certPath, String certPass,
-            String filePath, String protocol) {
+    public String doUploadSslByProtocol(
+            String url,
+            Map<String, String> params,
+            String certPath,
+            String certPass,
+            String filePath,
+            String protocol) {
         return upload(url, XmlKit.mapToXmlString(params), certPath, certPass, filePath, protocol);
     }
 

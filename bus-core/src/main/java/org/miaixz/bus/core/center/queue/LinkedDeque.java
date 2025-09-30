@@ -371,6 +371,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     @Override
     public Iterator<E> iterator() {
         return new AbstractLinkedIterator(first) {
+
             @Override
             E computeNext() {
                 return cursor.getNext();
@@ -381,6 +382,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     @Override
     public Iterator<E> descendingIterator() {
         return new AbstractLinkedIterator(last) {
+
             @Override
             E computeNext() {
                 return cursor.getPrevious();
@@ -389,6 +391,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     abstract class AbstractLinkedIterator implements Iterator<E> {
+
         E cursor;
 
         /**

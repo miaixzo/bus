@@ -189,6 +189,7 @@ public class CommitAction implements Serializable {
     }
 
     public enum Action {
+
         CREATE, DELETE, MOVE, UPDATE, CHMOD;
 
         private static JacksonJsonEnumHelper<Action> enumHelper = new JacksonJsonEnumHelper<>(Action.class);

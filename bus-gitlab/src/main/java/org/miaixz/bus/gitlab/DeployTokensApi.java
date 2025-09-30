@@ -167,7 +167,11 @@ public class DeployTokensApi extends AbstractApi {
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
-    public DeployToken addProjectDeployToken(Object projectIdOrPath, String name, Date expiresAt, String username,
+    public DeployToken addProjectDeployToken(
+            Object projectIdOrPath,
+            String name,
+            Date expiresAt,
+            String username,
             List<DeployTokenScope> scopes) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", expiresAt, true) // Currently documented as not required but api fails if not
@@ -175,7 +179,11 @@ public class DeployTokensApi extends AbstractApi {
                 .withParam("username", username, true) // Currently documented as not required but api fails if not
                 // provided
                 .withParam("scopes", scopes, true);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "deploy_tokens");
         return (response.readEntity(DeployToken.class));
     }
@@ -270,7 +278,11 @@ public class DeployTokensApi extends AbstractApi {
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
-    public DeployToken addGroupDeployToken(Object groupIdOrPath, String name, Date expiresAt, String username,
+    public DeployToken addGroupDeployToken(
+            Object groupIdOrPath,
+            String name,
+            Date expiresAt,
+            String username,
             List<DeployTokenScope> scopes) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", expiresAt, true) // Currently documented as not required but api fails if not
@@ -278,7 +290,11 @@ public class DeployTokensApi extends AbstractApi {
                 .withParam("username", username, true) // Currently documented as not required but api fails if not
                 // provided
                 .withParam("scopes", scopes, true);
-        Response response = post(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "groups",
+                getGroupIdOrPath(groupIdOrPath),
                 "deploy_tokens");
         return (response.readEntity(DeployToken.class));
     }

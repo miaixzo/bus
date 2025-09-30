@@ -70,7 +70,9 @@ public class RequestBodyAdvice extends BaseAdvice
      * @return true/false 是否应该调用此拦截
      */
     @Override
-    public boolean supports(MethodParameter parameter, Type type,
+    public boolean supports(
+            MethodParameter parameter,
+            Type type,
             Class<? extends HttpMessageConverter<?>> converterType) {
         Annotation[] annotations = parameter.getDeclaringClass().getAnnotations();
         if (ArrayKit.isNotEmpty(annotations)) {
@@ -93,7 +95,10 @@ public class RequestBodyAdvice extends BaseAdvice
      * @return 输入请求或新实例, 永远不会 {@code null}
      */
     @Override
-    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type type,
+    public HttpInputMessage beforeBodyRead(
+            HttpInputMessage inputMessage,
+            MethodParameter parameter,
+            Type type,
             Class<? extends HttpMessageConverter<?>> converterType) {
         if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
@@ -126,7 +131,11 @@ public class RequestBodyAdvice extends BaseAdvice
      * @return 相同的主体或新实例
      */
     @Override
-    public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type type,
+    public Object afterBodyRead(
+            Object body,
+            HttpInputMessage inputMessage,
+            MethodParameter parameter,
+            Type type,
             Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }
@@ -142,7 +151,11 @@ public class RequestBodyAdvice extends BaseAdvice
      * @return 要使用的值或{@code null},该值可能会引发{@code HttpMessageNotReadableException}.
      */
     @Override
-    public Object handleEmptyBody(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type type,
+    public Object handleEmptyBody(
+            Object body,
+            HttpInputMessage inputMessage,
+            MethodParameter parameter,
+            Type type,
             Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }

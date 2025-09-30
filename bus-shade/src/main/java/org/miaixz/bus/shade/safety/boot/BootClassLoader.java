@@ -104,6 +104,7 @@ public class BootClassLoader extends LaunchedClassLoader {
     }
 
     private class XBootEnumeration implements Enumeration<URL> {
+
         private final Enumeration<URL> enumeration;
 
         XBootEnumeration(Enumeration<URL> enumeration) {

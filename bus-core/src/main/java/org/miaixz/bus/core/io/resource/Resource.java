@@ -53,6 +53,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * </p>
  * 
  * <pre>
+ * 
  * Resource resource = new ClassPathResource("test.xml");
  * String xmlStr = resource.readString();
  * </pre>

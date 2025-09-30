@@ -77,6 +77,7 @@ public class LFUFileCache extends AbstractFileCache {
     @Override
     protected Cache<File, byte[]> initCache() {
         return new LFUCache<>(LFUFileCache.this.capacity, LFUFileCache.this.timeout) {
+
             @Serial
             private static final long serialVersionUID = 2852368337873L;
 

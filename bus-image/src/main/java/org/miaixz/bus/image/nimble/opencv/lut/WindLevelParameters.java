@@ -79,10 +79,10 @@ public class WindLevelParameters implements WlParams {
             this.window = params.getWindowWidth().orElseGet(() -> adapter.getDefaultWindow(def));
             this.level = params.getWindowCenter().orElseGet(() -> adapter.getDefaultLevel(def));
             this.lutShape = params.getVoiLutShape().orElseGet(() -> adapter.getDefaultShape(def));
-            this.levelMin = Math.min(params.getLevelMin().orElseGet(() -> level - window / 2.0),
-                    adapter.getMinValue(def));
-            this.levelMax = Math.max(params.getLevelMax().orElseGet(() -> level + window / 2.0),
-                    adapter.getMaxValue(def));
+            this.levelMin = Math
+                    .min(params.getLevelMin().orElseGet(() -> level - window / 2.0), adapter.getMinValue(def));
+            this.levelMax = Math
+                    .max(params.getLevelMax().orElseGet(() -> level + window / 2.0), adapter.getMaxValue(def));
         }
     }
 

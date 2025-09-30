@@ -52,15 +52,17 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag._0009_xx00_:
-        case PrivateTag._0009_xx01_:
-            return VR.IS;
-        case PrivateTag.PatientRegistrationCustomField1:
-        case PrivateTag.PatientRegistrationCustomField2:
-        case PrivateTag.Indications:
-            return VR.LO;
-        case PrivateTag._0009_xx0f_:
-            return VR.LT;
+            case PrivateTag._0009_xx00_:
+            case PrivateTag._0009_xx01_:
+                return VR.IS;
+
+            case PrivateTag.PatientRegistrationCustomField1:
+            case PrivateTag.PatientRegistrationCustomField2:
+            case PrivateTag.Indications:
+                return VR.LO;
+
+            case PrivateTag._0009_xx0f_:
+                return VR.LT;
         }
         return VR.UN;
     }

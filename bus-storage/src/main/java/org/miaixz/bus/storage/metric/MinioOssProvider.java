@@ -41,8 +41,10 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.http.Request;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
+import org.miaixz.bus.storage.ClientX;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
@@ -68,7 +70,14 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
  */
 public class MinioOssProvider extends AbstractProvider {
 
+    /**
+     * S3客户端实例，用于与S3服务进行交互
+     */
     private final S3Client client;
+
+    /**
+     * S3预签名URL生成器，用于创建带有时效性的访问URL
+     */
     private final S3Presigner presigner;
 
     /**
@@ -85,18 +94,24 @@ public class MinioOssProvider extends AbstractProvider {
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] cannot be blank");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] cannot be blank");
 
-        long readTimeout = this.context.getReadTimeout() != 0 ? this.context.getReadTimeout() : 10;
-        long writeTimeout = this.context.getWriteTimeout() != 0 ? this.context.getWriteTimeout() : 60;
-
         ClientOverrideConfiguration overrideConfig = ClientOverrideConfiguration.builder()
-                .apiCallTimeout(Duration.ofSeconds(writeTimeout)).apiCallAttemptTimeout(Duration.ofSeconds(readTimeout))
-                .build();
+                .apiCallTimeout(Duration.ofSeconds(this.context.getWriteTimeout()))
+                .apiCallAttemptTimeout(Duration.ofSeconds(this.context.getReadTimeout())).build();
 
-        AwsBasicCredentials credentials = AwsBasicCredentials.create(this.context.getAccessKey(),
-                this.context.getSecretKey());
+        AwsBasicCredentials credentials = AwsBasicCredentials
+                .create(this.context.getAccessKey(), this.context.getSecretKey());
+
+        // 创建自定义Client
+        ClientX clientx = new ClientX.ClientBuilder()
+                .connectTimeout(Duration.ofSeconds(this.context.getConnectTimeout()))
+                .readTimeout(Duration.ofSeconds(this.context.getReadTimeout()))
+                .writeTimeout(Duration.ofSeconds(this.context.getWriteTimeout())).addInterceptor(chain -> {
+                    Request request = chain.request();
+                    return chain.proceed(request);
+                }).build();
 
         this.client = S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
-                .endpointOverride(URI.create(this.context.getEndpoint()))
+                .endpointOverride(URI.create(this.context.getEndpoint())).httpClient(clientx)
                 .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
                 .overrideConfiguration(overrideConfig)
                 .serviceConfiguration(s -> s.pathStyleAccessEnabled(this.context.isPathStyle())).build();
@@ -104,8 +119,9 @@ public class MinioOssProvider extends AbstractProvider {
         this.presigner = S3Presigner.builder().credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .endpointOverride(URI.create(this.context.getEndpoint()))
                 .region(Region.of(StringKit.isBlank(this.context.getRegion()) ? "us-east-1" : this.context.getRegion()))
-                .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(this.context.isPathStyle())
-                        .chunkedEncodingEnabled(false).build())
+                .serviceConfiguration(
+                        S3Configuration.builder().pathStyleAccessEnabled(this.context.isPathStyle())
+                                .chunkedEncodingEnabled(false).build())
                 .build();
     }
 
@@ -163,8 +179,13 @@ public class MinioOssProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {} to local file: {}, error: {}", fileName, bucket,
-                    file.getAbsolutePath(), e.getMessage(), e);
+            Logger.error(
+                    "Failed to download file: {} from bucket: {} to local file: {}, error: {}",
+                    fileName,
+                    bucket,
+                    file.getAbsolutePath(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -190,8 +211,9 @@ public class MinioOssProvider extends AbstractProvider {
     public Message list() {
         try {
             ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(context.getBucket())
-                    .prefix(StringKit.isBlank(context.getPrefix()) ? null
-                            : Builder.buildNormalizedPrefix(context.getPrefix()) + "/")
+                    .prefix(
+                            StringKit.isBlank(context.getPrefix()) ? null
+                                    : Builder.buildNormalizedPrefix(context.getPrefix()) + "/")
                     .build();
             ListObjectsV2Response response = client.listObjectsV2(request);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
@@ -266,8 +288,14 @@ public class MinioOssProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to rename file from {} to {} in bucket: {} with path: {}, error: {}", oldName, newName,
-                    bucket, path, e.getMessage(), e);
+            Logger.error(
+                    "Failed to rename file from {} to {} in bucket: {} with path: {}, error: {}",
+                    oldName,
+                    newName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -363,8 +391,13 @@ public class MinioOssProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).url(presignedUrl).path(objectKey).build()).build();
         } catch (Exception e) {
-            Logger.error("Failed to upload file: {} to bucket: {} with path: {}, error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to upload file: {} to bucket: {} with path: {}, error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -409,8 +442,13 @@ public class MinioOssProvider extends AbstractProvider {
             client.deleteObject(request);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to delete file: {} from bucket: {} with path: {}, error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to delete file: {} from bucket: {} with path: {}, error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }

@@ -36,6 +36,7 @@ import javax.crypto.Cipher;
  * @since Java 17+
  */
 public enum KeyType {
+
     /**
      * 公钥
      */

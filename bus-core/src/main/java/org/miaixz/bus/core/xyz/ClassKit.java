@@ -229,7 +229,8 @@ public class ClassKit {
      * @return 类集合
      * @see ClassScanner#scanPackageByAnnotation(String, Class)
      */
-    public static Set<Class<?>> scanPackageByAnnotation(final String packageName,
+    public static Set<Class<?>> scanPackageByAnnotation(
+            final String packageName,
             final Class<? extends Annotation> annotationClass) {
         return ClassScanner.scanPackageByAnnotation(packageName, annotationClass);
     }
@@ -856,7 +857,9 @@ public class ClassKit {
      * @param filter     过滤器，被过滤的类及其层级结构中的类与接口将被忽略
      * @param terminator 对遍历到的每个类与接口执行的校验，若为{@code false}则立刻中断遍历
      */
-    public static void traverseTypeHierarchyWhile(final Class<?> root, final Predicate<Class<?>> filter,
+    public static void traverseTypeHierarchyWhile(
+            final Class<?> root,
+            final Predicate<Class<?>> filter,
             final Predicate<Class<?>> terminator) {
         EasyStream.iterateHierarchies(root, ClassKit::getNextTypeHierarchies, filter).takeWhile(terminator).exec();
     }
@@ -874,8 +877,11 @@ public class ClassKit {
      * @param consumer    对遍历到的每个类与接口执行的操作，每个类和接口都只会被访问一次
      * @param includeRoot 是否包括根类
      */
-    public static void traverseTypeHierarchy(final Class<?> root, final Predicate<Class<?>> filter,
-            final Consumer<Class<?>> consumer, final boolean includeRoot) {
+    public static void traverseTypeHierarchy(
+            final Class<?> root,
+            final Predicate<Class<?>> filter,
+            final Consumer<Class<?>> consumer,
+            final boolean includeRoot) {
         Objects.requireNonNull(root);
         Objects.requireNonNull(filter);
         Objects.requireNonNull(consumer);

@@ -59,13 +59,25 @@ public class LineSegmentDetector extends Algorithm {
 
     // C++: void cv::LineSegmentDetector::detect(Mat image, Mat& lines, Mat& width = Mat(), Mat& prec = Mat(), Mat& nfa
     // = Mat())
-    private static native void detect_0(long nativeObj, long image_nativeObj, long lines_nativeObj,
-            long width_nativeObj, long prec_nativeObj, long nfa_nativeObj);
+    private static native void detect_0(
+            long nativeObj,
+            long image_nativeObj,
+            long lines_nativeObj,
+            long width_nativeObj,
+            long prec_nativeObj,
+            long nfa_nativeObj);
 
-    private static native void detect_1(long nativeObj, long image_nativeObj, long lines_nativeObj,
-            long width_nativeObj, long prec_nativeObj);
+    private static native void detect_1(
+            long nativeObj,
+            long image_nativeObj,
+            long lines_nativeObj,
+            long width_nativeObj,
+            long prec_nativeObj);
 
-    private static native void detect_2(long nativeObj, long image_nativeObj, long lines_nativeObj,
+    private static native void detect_2(
+            long nativeObj,
+            long image_nativeObj,
+            long lines_nativeObj,
             long width_nativeObj);
 
     private static native void detect_3(long nativeObj, long image_nativeObj, long lines_nativeObj);
@@ -82,11 +94,20 @@ public class LineSegmentDetector extends Algorithm {
     //
 
     // C++: int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& image = Mat())
-    private static native int compareSegments_0(long nativeObj, double size_width, double size_height,
-            long lines1_nativeObj, long lines2_nativeObj, long image_nativeObj);
+    private static native int compareSegments_0(
+            long nativeObj,
+            double size_width,
+            double size_height,
+            long lines1_nativeObj,
+            long lines2_nativeObj,
+            long image_nativeObj);
 
-    private static native int compareSegments_1(long nativeObj, double size_width, double size_height,
-            long lines1_nativeObj, long lines2_nativeObj);
+    private static native int compareSegments_1(
+            long nativeObj,
+            double size_width,
+            double size_height,
+            long lines1_nativeObj,
+            long lines2_nativeObj);
 
     // native support for deleting native object
     private static native void delete(long nativeObj);
@@ -214,7 +235,12 @@ public class LineSegmentDetector extends Algorithm {
      * @return automatically generated
      */
     public int compareSegments(Size size, Mat lines1, Mat lines2, Mat image) {
-        return compareSegments_0(nativeObj, size.width, size.height, lines1.nativeObj, lines2.nativeObj,
+        return compareSegments_0(
+                nativeObj,
+                size.width,
+                size.height,
+                lines1.nativeObj,
+                lines2.nativeObj,
                 image.nativeObj);
     }
 

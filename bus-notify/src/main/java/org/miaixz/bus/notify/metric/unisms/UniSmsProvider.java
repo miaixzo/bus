@@ -100,7 +100,8 @@ public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
                     sb.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append("=")
                             .append(((Map.Entry<?, ?>) stringObjectEntry).getValue());
                 }
-                query.put("signature",
+                query.put(
+                        "signature",
                         Builder.hmacSha256(this.context.getAppSecret().getBytes()).digest(sb.toString()));
             }
             url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey() + "&algorithm="

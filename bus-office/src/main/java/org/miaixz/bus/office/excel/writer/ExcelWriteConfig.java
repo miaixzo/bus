@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.miaixz.bus.core.center.map.TableMap;
-import org.miaixz.bus.core.center.map.multi.RowKeyTable;
-import org.miaixz.bus.core.center.map.multi.Table;
+import org.miaixz.bus.core.center.map.multiple.RowKeyTable;
+import org.miaixz.bus.core.center.map.multiple.Table;
 import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;

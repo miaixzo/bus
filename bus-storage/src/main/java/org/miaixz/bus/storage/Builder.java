@@ -28,6 +28,7 @@
 package org.miaixz.bus.storage;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -46,16 +47,16 @@ public class Builder {
     public static String buildObjectKey(String prefix, String path, String fileName) {
         String normalizedPrefix = buildNormalizedPrefix(prefix);
         String normalizedPath = StringKit.isBlank(path) ? Normal.EMPTY
-                : path.replaceAll("/{2,}", "/").replaceAll("^/|/$", Normal.EMPTY);
+                : path.replaceAll("/{2,}", Symbol.SLASH).replaceAll("^/|/$", Normal.EMPTY);
 
         if (StringKit.isBlank(normalizedPrefix) && StringKit.isBlank(normalizedPath)) {
             return fileName;
         } else if (StringKit.isBlank(normalizedPrefix)) {
-            return normalizedPath + "/" + fileName;
+            return normalizedPath + Symbol.SLASH + fileName;
         } else if (StringKit.isBlank(normalizedPath)) {
-            return normalizedPrefix + "/" + fileName;
+            return normalizedPrefix + Symbol.SLASH + fileName;
         } else {
-            return normalizedPrefix + "/" + normalizedPath + "/" + fileName;
+            return normalizedPrefix + Symbol.SLASH + normalizedPath + Symbol.SLASH + fileName;
         }
     }
 
@@ -67,7 +68,7 @@ public class Builder {
      */
     public static String buildNormalizedPrefix(String prefix) {
         return StringKit.isBlank(prefix) ? Normal.EMPTY
-                : prefix.replaceAll("/{2,}", "/").replaceAll("^/|/$", Normal.EMPTY);
+                : prefix.replaceAll("/{2,}", Symbol.SLASH).replaceAll("^/|/$", Normal.EMPTY);
     }
 
 }

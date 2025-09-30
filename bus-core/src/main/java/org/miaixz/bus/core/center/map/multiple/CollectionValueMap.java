@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.map.multi;
+package org.miaixz.bus.core.center.map.multiple;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -37,9 +37,9 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
- * {@link MultiValueMap}的通用实现，可视为值为{@link Collection}集合的{@link Map}集合。
+ * {@link MultipleValueMap}的通用实现，可视为值为{@link Collection}集合的{@link Map}集合。
  * 构建时指定一个工厂方法用于生成原始的{@link Map}集合，然后再指定一个工厂方法用于生成自定义类型的值集合。
- * 当调用{@link MultiValueMap}中格式为“putXXX”的方法时，将会为key创建值集合，并将key相同的值追加到集合中
+ * 当调用{@link MultipleValueMap}中格式为“putXXX”的方法时，将会为key创建值集合，并将key相同的值追加到集合中
  *
  * @param <K> 键类型
  * @param <V> 值类型

@@ -99,7 +99,11 @@ public class ImportExportApi extends AbstractApi {
      *                         Default is PUT
      * @throws GitLabApiException if any exception occurs
      */
-    public void scheduleExport(Object projectIdOrPath, String description, Map<String, String> upload, String uploadUrl,
+    public void scheduleExport(
+            Object projectIdOrPath,
+            String description,
+            Map<String, String> upload,
+            String uploadUrl,
             String uploadHttpMethod) throws GitLabApiException {
 
         Form formData = new GitLabApiForm().withParam("description", description).withParam("upload", upload)
@@ -157,8 +161,14 @@ public class ImportExportApi extends AbstractApi {
      */
     public File downloadExport(Object projectIdOrPath, File directory, String filename) throws GitLabApiException {
 
-        Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD, "projects",
-                getProjectIdOrPath(projectIdOrPath), "export", "download");
+        Response response = getWithAccepts(
+                Response.Status.OK,
+                null,
+                MediaType.MEDIA_TYPE_WILDCARD,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "export",
+                "download");
 
         if (directory == null) {
             directory = new File(System.getProperty("java.io.tmpdir"));
@@ -249,7 +259,11 @@ public class ImportExportApi extends AbstractApi {
      * @return an Importstatus instance with info for the project being imported to
      * @throws GitLabApiException if any exception occurs
      */
-    public ImportStatus startImport(Object namespaceIdOrPath, File exportFile, String path, Boolean overwrite,
+    public ImportStatus startImport(
+            Object namespaceIdOrPath,
+            File exportFile,
+            String path,
+            Boolean overwrite,
             Project overrideParams) throws GitLabApiException {
 
         URL url;
@@ -275,15 +289,18 @@ public class ImportExportApi extends AbstractApi {
                     .withParam("shared_runners_enabled", overrideParams.getSharedRunnersEnabled())
                     .withParam("public_jobs", overrideParams.getPublicJobs())
                     .withParam("visibility_level", overrideParams.getVisibilityLevel())
-                    .withParam("only_allow_merge_if_pipeline_succeeds",
+                    .withParam(
+                            "only_allow_merge_if_pipeline_succeeds",
                             overrideParams.getOnlyAllowMergeIfPipelineSucceeds())
-                    .withParam("only_allow_merge_if_all_discussions_are_resolved",
+                    .withParam(
+                            "only_allow_merge_if_all_discussions_are_resolved",
                             overrideParams.getOnlyAllowMergeIfAllDiscussionsAreResolved())
                     .withParam("lfs_enabled", overrideParams.getLfsEnabled())
                     .withParam("request_access_enabled", overrideParams.getRequestAccessEnabled())
                     .withParam("repository_storage", overrideParams.getRepositoryStorage())
                     .withParam("approvals_before_merge", overrideParams.getApprovalsBeforeMerge())
-                    .withParam("printing_merge_request_link_enabled",
+                    .withParam(
+                            "printing_merge_request_link_enabled",
                             overrideParams.getPrintingMergeRequestLinkEnabled())
                     .withParam("resolve_outdated_diff_discussions", overrideParams.getResolveOutdatedDiffDiscussions())
                     .withParam("initialize_with_readme", overrideParams.getInitializeWithReadme())

@@ -38,7 +38,12 @@ import org.opencv.imgproc.Imgproc;
  */
 public class TiledProcessor {
 
-    static void copyTileFromSource(Mat sourceImage, Mat tileInput, Rect tile, int mBorderType, int borderX,
+    static void copyTileFromSource(
+            Mat sourceImage,
+            Mat tileInput,
+            Rect tile,
+            int mBorderType,
+            int borderX,
             int borderY) {
         int tx = 0;
         int ty = 0;
@@ -117,7 +122,10 @@ public class TiledProcessor {
                 Rect dstTile = new Rect(colTile * tileSize, rowTile * tileSize, tileSize, tileSize);
                 copyTileFromSource(sourceImage, tileInput, srcTile, boderType, 0, 0);
                 processTileImpl(tileInput, tileOutput);
-                copyTileToResultImage(tileOutput, resultImage, new Rect(mPadding, mPadding, tileSize, tileSize),
+                copyTileToResultImage(
+                        tileOutput,
+                        resultImage,
+                        new Rect(mPadding, mPadding, tileSize, tileSize),
                         dstTile);
             }
         }

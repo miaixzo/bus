@@ -37,7 +37,11 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public class PixelAspectRatio {
 
     public static float forImage(Attributes attrs) {
-        return forImage(attrs, Tag.PixelAspectRatio, Tag.PixelSpacing, Tag.ImagerPixelSpacing,
+        return forImage(
+                attrs,
+                Tag.PixelAspectRatio,
+                Tag.PixelSpacing,
+                Tag.ImagerPixelSpacing,
                 Tag.NominalScannedPixelSpacing);
     }
 

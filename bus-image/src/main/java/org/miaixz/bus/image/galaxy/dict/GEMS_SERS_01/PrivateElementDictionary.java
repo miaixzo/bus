@@ -52,20 +52,23 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ProtocolDataBlockCompressed:
-            return VR.OB;
-        case PrivateTag.PrimaryReceiverSuiteAndHost:
-            return VR.SH;
-        case PrivateTag.ImagesInSeries:
-        case PrivateTag.LandmarkCounter:
-        case PrivateTag.IndicatesNumberOfUpdatesToHeader:
-        case PrivateTag.SeriesCompleteFlag:
-        case PrivateTag.NumberOfImagesArchived:
-        case PrivateTag.LastInstanceNumberUsed:
-            return VR.SL;
-        case PrivateTag.LastPulseSequenceUsed:
-        case PrivateTag.NumberOfAcquisitions:
-            return VR.SS;
+            case PrivateTag.ProtocolDataBlockCompressed:
+                return VR.OB;
+
+            case PrivateTag.PrimaryReceiverSuiteAndHost:
+                return VR.SH;
+
+            case PrivateTag.ImagesInSeries:
+            case PrivateTag.LandmarkCounter:
+            case PrivateTag.IndicatesNumberOfUpdatesToHeader:
+            case PrivateTag.SeriesCompleteFlag:
+            case PrivateTag.NumberOfImagesArchived:
+            case PrivateTag.LastInstanceNumberUsed:
+                return VR.SL;
+
+            case PrivateTag.LastPulseSequenceUsed:
+            case PrivateTag.NumberOfAcquisitions:
+                return VR.SS;
         }
         return VR.UN;
     }

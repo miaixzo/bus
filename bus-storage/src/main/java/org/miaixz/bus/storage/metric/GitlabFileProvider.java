@@ -141,8 +141,13 @@ public class GitlabFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to download file: {} from bucket: {} to local file: {}. Error: {}", fileName, bucket,
-                    file.getAbsolutePath(), e.getMessage(), e);
+            Logger.error(
+                    "Failed to download file: {} from bucket: {} to local file: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    file.getAbsolutePath(),
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to download file").build();
         }
     }
@@ -158,18 +163,19 @@ public class GitlabFileProvider extends AbstractProvider {
             String prefix = StringKit.isBlank(context.getPrefix()) ? null
                     : Builder.buildNormalizedPrefix(context.getPrefix()) + "/";
             // 使用 getTree 方法获取存储库树，分支为 "master"
-            List<TreeItem> treeItems = client.getRepositoryApi().getTree(this.context.getBucket(), prefix, "master",
-                    true);
+            List<TreeItem> treeItems = client.getRepositoryApi()
+                    .getTree(this.context.getBucket(), prefix, "master", true);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(treeItems.stream()
-                            // 过滤文件类型（假设 TreeItem 有 getType 方法，值为 "blob" 表示文件）
-                            .filter(item -> "blob".equals(item.getType())).map(item -> {
-                                Map<String, Object> extend = new HashMap<>();
-                                // 由于 getCommitId 不存在，暂时将 lastModified 设置为 null
-                                // 若需最后提交 ID，可通过 RepositoryFileApi 或 CommitsApi 获取
-                                extend.put("lastModified", null);
-                                return Material.builder().name(item.getPath()).size("0").extend(extend).build();
-                            }).collect(Collectors.toList()))
+                    .data(
+                            treeItems.stream()
+                                    // 过滤文件类型（假设 TreeItem 有 getType 方法，值为 "blob" 表示文件）
+                                    .filter(item -> "blob".equals(item.getType())).map(item -> {
+                                        Map<String, Object> extend = new HashMap<>();
+                                        // 由于 getCommitId 不存在，暂时将 lastModified 设置为 null
+                                        // 若需最后提交 ID，可通过 RepositoryFileApi 或 CommitsApi 获取
+                                        extend.put("lastModified", null);
+                                        return Material.builder().name(item.getPath()).size("0").extend(extend).build();
+                                    }).collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {
             Logger.error("Failed to list files in bucket: {}. Error: {}", this.context.getBucket(), e.getMessage(), e);
@@ -227,8 +233,14 @@ public class GitlabFileProvider extends AbstractProvider {
             }
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to rename file: from {} to {} in bucket: {} path: {}. Error: {}", oldName, newName,
-                    bucket, path, e.getMessage(), e);
+            Logger.error(
+                    "Failed to rename file: from {} to {} in bucket: {} path: {}. Error: {}",
+                    oldName,
+                    newName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -320,8 +332,13 @@ public class GitlabFileProvider extends AbstractProvider {
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(Material.builder().name(fileName).url(url).path(objectKey).build()).build();
         } catch (Exception e) {
-            Logger.error("Failed to upload file: {} to bucket: {} path: {}. Error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to upload file: {} to bucket: {} path: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
@@ -365,8 +382,13 @@ public class GitlabFileProvider extends AbstractProvider {
             client.getRepositoryFileApi().deleteFile(bucket, objectKey, "master", "delete");
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
         } catch (Exception e) {
-            Logger.error("Failed to delete file: {} from bucket: {} path: {}. Error: {}", fileName, bucket, path,
-                    e.getMessage(), e);
+            Logger.error(
+                    "Failed to delete file: {} from bucket: {} path: {}. Error: {}",
+                    fileName,
+                    bucket,
+                    path,
+                    e.getMessage(),
+                    e);
             return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }

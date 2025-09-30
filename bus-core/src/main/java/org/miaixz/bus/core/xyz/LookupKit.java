@@ -136,7 +136,10 @@ public class LookupKit {
      * @param argTypes    返回类型和参数类型列表
      * @return 方法句柄 {@link MethodHandle}，{@code null}表示未找到方法
      */
-    public static MethodHandle findMethod(final Class<?> callerClass, final String name, final Class<?> returnType,
+    public static MethodHandle findMethod(
+            final Class<?> callerClass,
+            final String name,
+            final Class<?> returnType,
             final Class<?>... argTypes) {
         return findMethod(callerClass, name, MethodType.methodType(returnType, argTypes));
     }

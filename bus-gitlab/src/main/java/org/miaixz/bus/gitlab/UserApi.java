@@ -90,8 +90,9 @@ public class UserApi extends AbstractApi {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning("Fetching all users from " + url
-                    + " may take many minutes to complete, use Pager<User> getUsers(int) instead.");
+            GitLabApi.getLogger().warning(
+                    "Fetching all users from " + url
+                            + " may take many minutes to complete, use Pager<User> getUsers(int) instead.");
         }
 
         return (getUsers(getDefaultPerPage()).all());
@@ -110,7 +111,9 @@ public class UserApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public List<User> getUsers(int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage, customAttributesEnabled),
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage, customAttributesEnabled),
                 "users");
         return (response.readEntity(new GenericType<List<User>>() {
         }));
@@ -917,9 +920,13 @@ public class UserApi extends AbstractApi {
      */
     public List<ImpersonationToken> getImpersonationTokens(Object userIdOrUsername, ImpersonationState state)
             throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm().withParam("state", state).withParam(PER_PAGE_PARAM,
-                getDefaultPerPage());
-        Response response = get(Response.Status.OK, formData.asMap(), "users", getUserIdOrUsername(userIdOrUsername),
+        GitLabApiForm formData = new GitLabApiForm().withParam("state", state)
+                .withParam(PER_PAGE_PARAM, getDefaultPerPage());
+        Response response = get(
+                Response.Status.OK,
+                formData.asMap(),
+                "users",
+                getUserIdOrUsername(userIdOrUsername),
                 "impersonation_tokens");
         return (response.readEntity(new GenericType<List<ImpersonationToken>>() {
         }));
@@ -943,8 +950,13 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("tokenId cannot be null");
         }
 
-        Response response = get(Response.Status.OK, null, "users", getUserIdOrUsername(userIdOrUsername),
-                "impersonation_tokens", tokenId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "users",
+                getUserIdOrUsername(userIdOrUsername),
+                "impersonation_tokens",
+                tokenId);
         return (response.readEntity(ImpersonationToken.class));
     }
 
@@ -981,7 +993,10 @@ public class UserApi extends AbstractApi {
      * @return the created ImpersonationToken instance
      * @throws GitLabApiException if any exception occurs
      */
-    public ImpersonationToken createImpersonationToken(Object userIdOrUsername, String name, Date expiresAt,
+    public ImpersonationToken createImpersonationToken(
+            Object userIdOrUsername,
+            String name,
+            Date expiresAt,
             Scope[] scopes) throws GitLabApiException {
         return createPersonalAccessTokenOrImpersonationToken(userIdOrUsername, name, null, expiresAt, scopes, true);
     }
@@ -1003,7 +1018,12 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("tokenId cannot be null");
         }
 
-        delete(Response.Status.NO_CONTENT, null, "users", getUserIdOrUsername(userIdOrUsername), "impersonation_tokens",
+        delete(
+                Response.Status.NO_CONTENT,
+                null,
+                "users",
+                getUserIdOrUsername(userIdOrUsername),
+                "impersonation_tokens",
                 tokenId);
     }
 
@@ -1022,9 +1042,18 @@ public class UserApi extends AbstractApi {
      * @return the created PersonalAccessToken instance
      * @throws GitLabApiException if any exception occurs
      */
-    public ImpersonationToken createPersonalAccessToken(Object userIdOrUsername, String name, String description,
-            Date expiresAt, Scope[] scopes) throws GitLabApiException {
-        return createPersonalAccessTokenOrImpersonationToken(userIdOrUsername, name, description, expiresAt, scopes,
+    public ImpersonationToken createPersonalAccessToken(
+            Object userIdOrUsername,
+            String name,
+            String description,
+            Date expiresAt,
+            Scope[] scopes) throws GitLabApiException {
+        return createPersonalAccessTokenOrImpersonationToken(
+                userIdOrUsername,
+                name,
+                description,
+                expiresAt,
+                scopes,
                 false);
     }
 
@@ -1048,8 +1077,13 @@ public class UserApi extends AbstractApi {
 
     // as per https://docs.gitlab.com/ee/api/README.html#impersonation-tokens, impersonation tokens are a type of
     // personal access token
-    private ImpersonationToken createPersonalAccessTokenOrImpersonationToken(Object userIdOrUsername, String name,
-            String description, Date expiresAt, Scope[] scopes, boolean impersonation) throws GitLabApiException {
+    private ImpersonationToken createPersonalAccessTokenOrImpersonationToken(
+            Object userIdOrUsername,
+            String name,
+            String description,
+            Date expiresAt,
+            Scope[] scopes,
+            boolean impersonation) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -1066,7 +1100,11 @@ public class UserApi extends AbstractApi {
 
         Response response;
         if (userIdOrUsername != null) {
-            response = post(Response.Status.CREATED, formData, "users", getUserIdOrUsername(userIdOrUsername),
+            response = post(
+                    Response.Status.CREATED,
+                    formData,
+                    "users",
+                    getUserIdOrUsername(userIdOrUsername),
                     tokenTypePathArg);
         } else {
             response = post(Response.Status.CREATED, formData, "user", tokenTypePathArg);
@@ -1168,8 +1206,13 @@ public class UserApi extends AbstractApi {
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("value", value);
-        Response response = put(Response.Status.OK, formData.asMap(), "users", getUserIdOrUsername(userIdOrUsername),
-                "custom_attributes", key);
+        Response response = put(
+                Response.Status.OK,
+                formData.asMap(),
+                "users",
+                getUserIdOrUsername(userIdOrUsername),
+                "custom_attributes",
+                key);
         return (response.readEntity(CustomAttribute.class));
     }
 
@@ -1262,7 +1305,11 @@ public class UserApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public User setUserAvatar(final Object userIdOrUsername, File avatarFile) throws GitLabApiException {
-        Response response = putUpload(Response.Status.OK, "avatar", avatarFile, "users",
+        Response response = putUpload(
+                Response.Status.OK,
+                "avatar",
+                avatarFile,
+                "users",
                 getUserIdOrUsername(userIdOrUsername));
         return (response.readEntity(User.class));
     }
@@ -1349,9 +1396,13 @@ public class UserApi extends AbstractApi {
     public Email addEmail(final Object userIdOrUsername, String email, Boolean skipConfirmation)
             throws GitLabApiException {
 
-        GitLabApiForm formData = new GitLabApiForm().withParam("email", email, true).withParam("skip_confirmation ",
-                skipConfirmation);
-        Response response = post(Response.Status.CREATED, formData, "users", getUserIdOrUsername(userIdOrUsername),
+        GitLabApiForm formData = new GitLabApiForm().withParam("email", email, true)
+                .withParam("skip_confirmation ", skipConfirmation);
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "users",
+                getUserIdOrUsername(userIdOrUsername),
                 "emails");
         return (response.readEntity(Email.class));
     }
@@ -1581,7 +1632,9 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("username cannot be null");
         }
         try {
-            Response response = get(Response.Status.OK, null,
+            Response response = get(
+                    Response.Status.OK,
+                    null,
                     getApiClient().getUrlWithBase("users", username, "exists"));
             return response.readEntity(Exists.class).getExists();
         } catch (IOException e) {

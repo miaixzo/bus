@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag._0047_xxE9_:
-            return "_0047_xxE9_";
-        case PrivateTag._0047_xxEA_:
-            return "_0047_xxEA_";
-        case PrivateTag._0047_xxEB_:
-            return "_0047_xxEB_";
-        case PrivateTag._0047_xxEC_:
-            return "_0047_xxEC_";
-        case PrivateTag._0047_xxED_:
-            return "_0047_xxED_";
+            case PrivateTag._0047_xxE9_:
+                return "_0047_xxE9_";
+
+            case PrivateTag._0047_xxEA_:
+                return "_0047_xxEA_";
+
+            case PrivateTag._0047_xxEB_:
+                return "_0047_xxEB_";
+
+            case PrivateTag._0047_xxEC_:
+                return "_0047_xxEC_";
+
+            case PrivateTag._0047_xxED_:
+                return "_0047_xxED_";
         }
         return "";
     }

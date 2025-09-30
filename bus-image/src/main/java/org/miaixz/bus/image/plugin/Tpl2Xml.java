@@ -142,9 +142,10 @@ public class Tpl2Xml {
         if (keywords.add(dictElement.getKeyword()) && tags.add(dictElement.getTag()))
             return false;
 
-        System.out.println("Ignoring duplicate tag or keyword entry: [tag=" + dictElement.getTag() + ", keyword="
-                + dictElement.getKeyword() + ", vr=" + dictElement.getVr() + ", vm=" + dictElement.getVm() + ", value="
-                + dictElement.getValue() + "]");
+        System.out.println(
+                "Ignoring duplicate tag or keyword entry: [tag=" + dictElement.getTag() + ", keyword="
+                        + dictElement.getKeyword() + ", vr=" + dictElement.getVr() + ", vm=" + dictElement.getVm()
+                        + ", value=" + dictElement.getValue() + "]");
         return true;
     }
 
@@ -166,6 +167,7 @@ public class Tpl2Xml {
     }
 
     static class DictionaryElement {
+
         private final String vr;
         private final String vm;
         private final String value;
@@ -218,26 +220,35 @@ public class Tpl2Xml {
 
         private String wordForFirstDigit(String keyword) {
             switch (keyword.charAt(0)) {
-            case '0':
-                return "Zero";
-            case '1':
-                return "One";
-            case '2':
-                return "Two";
-            case '3':
-                return "Three";
-            case '4':
-                return "Four";
-            case '5':
-                return "Five";
-            case '6':
-                return "Six";
-            case '7':
-                return "Seven";
-            case '8':
-                return "Eight";
-            case '9':
-                return "Nine";
+                case '0':
+                    return "Zero";
+
+                case '1':
+                    return "One";
+
+                case '2':
+                    return "Two";
+
+                case '3':
+                    return "Three";
+
+                case '4':
+                    return "Four";
+
+                case '5':
+                    return "Five";
+
+                case '6':
+                    return "Six";
+
+                case '7':
+                    return "Seven";
+
+                case '8':
+                    return "Eight";
+
+                case '9':
+                    return "Nine";
             }
             return null;
         }

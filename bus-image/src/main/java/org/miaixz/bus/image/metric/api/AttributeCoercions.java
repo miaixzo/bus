@@ -77,7 +77,10 @@ public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializ
         return null;
     }
 
-    public AttributeCoercion findAttributeCoercion(String sopClass, Dimse dimse, TransferCapability.Role role,
+    public AttributeCoercion findAttributeCoercion(
+            String sopClass,
+            Dimse dimse,
+            TransferCapability.Role role,
             String aeTitle) {
         for (AttributeCoercion ac : list)
             if (ac.matchesCondition(sopClass, dimse, role, aeTitle))

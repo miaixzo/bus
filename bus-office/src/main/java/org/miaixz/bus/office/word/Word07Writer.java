@@ -192,8 +192,12 @@ public class Word07Writer implements Closeable {
      * @param height   高度
      * @return this
      */
-    public Word07Writer addPicture(final InputStream in, final PictureType picType, final String fileName,
-            final int width, final int height) {
+    public Word07Writer addPicture(
+            final InputStream in,
+            final PictureType picType,
+            final String fileName,
+            final int width,
+            final int height) {
         return addPicture(in, picType, fileName, width, height, ParagraphAlignment.CENTER);
     }
 
@@ -208,8 +212,13 @@ public class Word07Writer implements Closeable {
      * @param align    图片的对齐方式
      * @return this
      */
-    public Word07Writer addPicture(final InputStream in, final PictureType picType, final String fileName,
-            final int width, final int height, final ParagraphAlignment align) {
+    public Word07Writer addPicture(
+            final InputStream in,
+            final PictureType picType,
+            final String fileName,
+            final int width,
+            final int height,
+            final ParagraphAlignment align) {
         final XWPFParagraph paragraph = doc.createParagraph();
         paragraph.setAlignment(align);
         final XWPFRun run = paragraph.createRun();
@@ -268,7 +277,8 @@ public class Word07Writer implements Closeable {
      * @throws InternalException IO异常
      */
     public Word07Writer flush(final File destFile) throws InternalException {
-        Assert.notNull(destFile,
+        Assert.notNull(
+                destFile,
                 "[destFile] is null, and you must call setDestFile(File) first or call flush(OutputStream).");
         return flush(FileKit.getOutputStream(destFile), true);
     }

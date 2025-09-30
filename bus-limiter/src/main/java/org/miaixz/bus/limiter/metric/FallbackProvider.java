@@ -67,8 +67,10 @@ public class FallbackProvider implements Provider {
         }
 
         if (ObjectKit.isNull(fallbackMethod)) {
-            throw new RuntimeException(StringKit.format("Can't find fallback method [{}] in bean [{}]",
-                    fallbackMethodName, bean.getClass().getName()));
+            throw new RuntimeException(StringKit.format(
+                    "Can't find fallback method [{}] in bean [{}]",
+                    fallbackMethodName,
+                    bean.getClass().getName()));
         }
 
         return MethodKit.invoke(bean, fallbackMethod, args);

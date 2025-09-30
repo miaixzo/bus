@@ -125,8 +125,8 @@ public class AioClient {
      * @throws IOException
      */
     public <A> void start(A attachment, CompletionHandler<Session, ? super A> handler) throws IOException {
-        this.asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(2,
-                Thread::new);
+        this.asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory)
+                .openAsynchronousChannelGroup(2, Thread::new);
         start(asynchronousChannelGroup, attachment, handler);
     }
 
@@ -139,7 +139,9 @@ public class AioClient {
      * @param <A>                      附件对象类型
      * @throws IOException
      */
-    public <A> void start(AsynchronousChannelGroup asynchronousChannelGroup, A attachment,
+    public <A> void start(
+            AsynchronousChannelGroup asynchronousChannelGroup,
+            A attachment,
             CompletionHandler<Session, ? super A> handler) throws IOException {
         AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open(asynchronousChannelGroup);
         if (connectTimeout > 0) {
@@ -166,8 +168,11 @@ public class AioClient {
         if (localAddress != null) {
             socketChannel.bind(localAddress);
         }
-        socketChannel.connect(new InetSocketAddress(context.getHost(), context.getPort()), socketChannel,
+        socketChannel.connect(
+                new InetSocketAddress(context.getHost(), context.getPort()),
+                socketChannel,
                 new CompletionHandler<Void, AsynchronousSocketChannel>() {
+
                     @Override
                     public void completed(Void result, AsynchronousSocketChannel socketChannel) {
                         try {
@@ -214,6 +219,7 @@ public class AioClient {
     public Session start(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
         CompletableFuture<Session> future = new CompletableFuture<>();
         start(asynchronousChannelGroup, future, new CompletionHandler<>() {
+
             @Override
             public void completed(Session session, CompletableFuture<Session> future) {
                 if (future.isDone() || future.isCancelled()) {
@@ -249,8 +255,8 @@ public class AioClient {
      * @see AioClient#start(AsynchronousChannelGroup)
      */
     public Session start() throws IOException {
-        this.asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(2,
-                Thread::new);
+        this.asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory)
+                .openAsynchronousChannelGroup(2, Thread::new);
         return start(asynchronousChannelGroup);
     }
 

@@ -84,6 +84,10 @@ public enum Registry {
      */
     SFTP,
     /**
+     * SMB
+     */
+    SMB,
+    /**
      * 腾讯云 COS
      */
     TENCENT,

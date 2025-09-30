@@ -136,12 +136,13 @@ public class EnglishNumberFormatter {
         final String[] a = new String[5]; // 定义5个字串变量来存放解析出来的叁位一组的字串
 
         switch (lstrrev.length() % 3) {
-        case 1:
-            lstrrev += "00";
-            break;
-        case 2:
-            lstrrev += "0";
-            break;
+            case 1:
+                lstrrev += "00";
+                break;
+
+            case 2:
+                lstrrev += "0";
+                break;
         }
         StringBuilder lm = new StringBuilder(); // 用来存放转换后的整数部分
         for (int i = 0; i < lstrrev.length() / 3; i++) {

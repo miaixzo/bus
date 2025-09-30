@@ -166,8 +166,11 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 if (firstLineFieldCount < 0) {
                     firstLineFieldCount = fieldCount;
                 } else if (fieldCount != firstLineFieldCount) {
-                    throw new InternalException(String.format("Line %d has %d fields, but first line has %d fields",
-                            lineNo, fieldCount, firstLineFieldCount));
+                    throw new InternalException(String.format(
+                            "Line %d has %d fields, but first line has %d fields",
+                            lineNo,
+                            fieldCount,
+                            firstLineFieldCount));
                 }
             }
 

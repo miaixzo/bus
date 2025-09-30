@@ -52,49 +52,56 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.AcquisitionType:
-        case PrivateTag.OverrideMode:
-        case PrivateTag.ImageNumberInPasting:
-        case PrivateTag.ReceptorType:
-        case PrivateTag._0011_xx59_:
-        case PrivateTag._0011_xx60_:
-            return VR.CS;
-        case PrivateTag.ImageDose:
-        case PrivateTag.DetectorARCGain:
-        case PrivateTag.FilmSpeedSelection:
-        case PrivateTag.DetectorExposureIndex:
-        case PrivateTag.CompensatedDetectorExposure:
-        case PrivateTag.UncompensatedDetectorExposure:
-        case PrivateTag.MedianAnatomyCountValue:
-        case PrivateTag.DEILowerAndUpperLimitValues:
-        case PrivateTag._0011_xx47_:
-        case PrivateTag._0011_xx6D_:
-            return VR.DS;
-        case PrivateTag.StudyDose:
-        case PrivateTag.StudyDAP:
-            return VR.FL;
-        case PrivateTag.DetectedFieldOfView:
-        case PrivateTag.AdjustedFieldOfView:
-        case PrivateTag.SubImageCollimatorVertices:
-        case PrivateTag.KeystoneCoordinates:
-            return VR.IS;
-        case PrivateTag.ViewIP:
-        case PrivateTag._0011_xx46_:
-            return VR.LO;
-        case PrivateTag.ROI:
-        case PrivateTag.PatientSizeString:
-        case PrivateTag.ProcessingDebugInfo:
-            return VR.LT;
-        case PrivateTag.NonDigitalExposures:
-        case PrivateTag.TotalExposures:
-        case PrivateTag.ShiftVectorForPasting:
-        case PrivateTag.PastingOverlap:
-            return VR.SL;
-        case PrivateTag.ProcessedSeriesUID:
-        case PrivateTag.AcquisitionUID:
-        case PrivateTag.SPSUID:
-        case PrivateTag._0011_xx14_:
-            return VR.UI;
+            case PrivateTag.AcquisitionType:
+            case PrivateTag.OverrideMode:
+            case PrivateTag.ImageNumberInPasting:
+            case PrivateTag.ReceptorType:
+            case PrivateTag._0011_xx59_:
+            case PrivateTag._0011_xx60_:
+                return VR.CS;
+
+            case PrivateTag.ImageDose:
+            case PrivateTag.DetectorARCGain:
+            case PrivateTag.FilmSpeedSelection:
+            case PrivateTag.DetectorExposureIndex:
+            case PrivateTag.CompensatedDetectorExposure:
+            case PrivateTag.UncompensatedDetectorExposure:
+            case PrivateTag.MedianAnatomyCountValue:
+            case PrivateTag.DEILowerAndUpperLimitValues:
+            case PrivateTag._0011_xx47_:
+            case PrivateTag._0011_xx6D_:
+                return VR.DS;
+
+            case PrivateTag.StudyDose:
+            case PrivateTag.StudyDAP:
+                return VR.FL;
+
+            case PrivateTag.DetectedFieldOfView:
+            case PrivateTag.AdjustedFieldOfView:
+            case PrivateTag.SubImageCollimatorVertices:
+            case PrivateTag.KeystoneCoordinates:
+                return VR.IS;
+
+            case PrivateTag.ViewIP:
+            case PrivateTag._0011_xx46_:
+                return VR.LO;
+
+            case PrivateTag.ROI:
+            case PrivateTag.PatientSizeString:
+            case PrivateTag.ProcessingDebugInfo:
+                return VR.LT;
+
+            case PrivateTag.NonDigitalExposures:
+            case PrivateTag.TotalExposures:
+            case PrivateTag.ShiftVectorForPasting:
+            case PrivateTag.PastingOverlap:
+                return VR.SL;
+
+            case PrivateTag.ProcessedSeriesUID:
+            case PrivateTag.AcquisitionUID:
+            case PrivateTag.SPSUID:
+            case PrivateTag._0011_xx14_:
+                return VR.UI;
         }
         return VR.UN;
     }

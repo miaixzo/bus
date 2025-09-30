@@ -38,24 +38,32 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.RejectImageFlag:
-            return "RejectImageFlag";
-        case PrivateTag.SignificantFlag:
-            return "SignificantFlag";
-        case PrivateTag.ConfidentialFlag:
-            return "ConfidentialFlag";
-        case PrivateTag._0903_xx20_:
-            return "_0903_xx20_";
-        case PrivateTag.PrefetchAlgorithm:
-            return "PrefetchAlgorithm";
-        case PrivateTag.LimitRecentStudies:
-            return "LimitRecentStudies";
-        case PrivateTag.LimitOldestStudies:
-            return "LimitOldestStudies";
-        case PrivateTag.LimitRecentMonths:
-            return "LimitRecentMonths";
-        case PrivateTag.ExcludeStudyUIDs:
-            return "ExcludeStudyUIDs";
+            case PrivateTag.RejectImageFlag:
+                return "RejectImageFlag";
+
+            case PrivateTag.SignificantFlag:
+                return "SignificantFlag";
+
+            case PrivateTag.ConfidentialFlag:
+                return "ConfidentialFlag";
+
+            case PrivateTag._0903_xx20_:
+                return "_0903_xx20_";
+
+            case PrivateTag.PrefetchAlgorithm:
+                return "PrefetchAlgorithm";
+
+            case PrivateTag.LimitRecentStudies:
+                return "LimitRecentStudies";
+
+            case PrivateTag.LimitOldestStudies:
+                return "LimitOldestStudies";
+
+            case PrivateTag.LimitRecentMonths:
+                return "LimitRecentMonths";
+
+            case PrivateTag.ExcludeStudyUIDs:
+                return "ExcludeStudyUIDs";
         }
         return "";
     }

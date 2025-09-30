@@ -50,7 +50,8 @@ public class TakeWhileSpliterator<T> implements Spliterator<T> {
         this.predicate = predicate;
     }
 
-    public static <T> TakeWhileSpliterator<T> create(final Spliterator<T> source,
+    public static <T> TakeWhileSpliterator<T> create(
+            final Spliterator<T> source,
             final Predicate<? super T> predicate) {
         return new TakeWhileSpliterator<>(source, predicate);
     }

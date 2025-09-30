@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -63,6 +63,7 @@ public interface ColumnSchemaBuilder extends ORDER {
      * 工厂链接口，用于链式调用列信息创建逻辑
      */
     interface Chain {
+
         /**
          * 创建列信息，一个字段可能不是列，也可能是列，还可能对应多个列（如 ValueObject 对象）
          *

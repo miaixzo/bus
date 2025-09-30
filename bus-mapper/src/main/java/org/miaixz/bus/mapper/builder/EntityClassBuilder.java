@@ -238,7 +238,8 @@ public class EntityClassBuilder {
      * @param <T>             注解类型
      * @return 注解列表
      */
-    private static <T extends Annotation> List<T> getAnnotationsFromTableMeta(TableMeta tableMeta,
+    private static <T extends Annotation> List<T> getAnnotationsFromTableMeta(
+            TableMeta tableMeta,
             Class<T> annotationClass) {
         List<T> annotations = new ArrayList<>();
         if (tableMeta != null && tableMeta.entityClass().isAnnotationPresent(annotationClass)) {
@@ -258,7 +259,8 @@ public class EntityClassBuilder {
      * @param <T>             注解类型
      * @return 注解列表
      */
-    private static <T extends Annotation> List<T> getAnnotationsFromColumnMetas(List<ColumnMeta> columnMetas,
+    private static <T extends Annotation> List<T> getAnnotationsFromColumnMetas(
+            List<ColumnMeta> columnMetas,
             Class<T> annotationClass) {
         List<T> annotations = new ArrayList<>();
         for (ColumnMeta columnMeta : columnMetas) {

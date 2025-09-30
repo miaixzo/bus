@@ -100,7 +100,9 @@ public class ImageWriter implements Flushable {
      * @param quality       质量，范围0~1
      * @return {@link ImageWriteParam} or {@code null}
      */
-    private static ImageWriteParam buildParam(final RenderedImage renderedImage, final javax.imageio.ImageWriter writer,
+    private static ImageWriteParam buildParam(
+            final RenderedImage renderedImage,
+            final javax.imageio.ImageWriter writer,
             final float quality) {
         // 设置质量
         ImageWriteParam imgWriteParams = null;

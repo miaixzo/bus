@@ -38,16 +38,20 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.MediaType:
-            return "MediaType";
-        case PrivateTag.MediaLocation:
-            return "MediaLocation";
-        case PrivateTag.StorageFileID:
-            return "StorageFileID";
-        case PrivateTag.StudyOrImageSizeInMB:
-            return "StudyOrImageSizeInMB";
-        case PrivateTag.EstimatedRetrieveTime:
-            return "EstimatedRetrieveTime";
+            case PrivateTag.MediaType:
+                return "MediaType";
+
+            case PrivateTag.MediaLocation:
+                return "MediaLocation";
+
+            case PrivateTag.StorageFileID:
+                return "StorageFileID";
+
+            case PrivateTag.StudyOrImageSizeInMB:
+                return "StudyOrImageSizeInMB";
+
+            case PrivateTag.EstimatedRetrieveTime:
+                return "EstimatedRetrieveTime";
         }
         return "";
     }

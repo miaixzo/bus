@@ -69,14 +69,18 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
      * @param map       被转换的map
      * @return Entry
      */
-    private Triplet<?, ?, ?> mapToTriple(final Type leftType, final Type middleType, final Type rightType,
+    private Triplet<?, ?, ?> mapToTriple(
+            final Type leftType,
+            final Type middleType,
+            final Type rightType,
             final Map map) {
 
         final Object left = map.get("left");
         final Object middle = map.get("middle");
         final Object right = map.get("right");
 
-        return Triplet.of(TypeKit.isUnknown(leftType) ? left : converter.convert(leftType, left),
+        return Triplet.of(
+                TypeKit.isUnknown(leftType) ? left : converter.convert(leftType, left),
                 TypeKit.isUnknown(middleType) ? middle : converter.convert(middleType, middle),
                 TypeKit.isUnknown(rightType) ? right : converter.convert(rightType, right));
     }
@@ -103,7 +107,10 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
      * @return 转换后的Map
      * @throws ConvertException 转换异常或不支持的类型
      */
-    public Triplet<?, ?, ?> convert(final Type leftType, final Type middleType, final Type rightType,
+    public Triplet<?, ?, ?> convert(
+            final Type leftType,
+            final Type middleType,
+            final Type rightType,
             final Object value) throws ConvertException {
         Map map = null;
         if (value instanceof Map) {

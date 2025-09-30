@@ -44,6 +44,7 @@ import org.miaixz.bus.core.center.function.Consumer3X;
  * </p>
  * 
  * <pre>
+ * 
  * Box box = GenericBuilder.of(Box::new).with(Box::setId, 1024L).with(Box::setTitle, "Hello World!")
  *         .with(Box::setLength, 9).with(Box::setWidth, 8).with(Box::setHeight, 7).build();
  *
@@ -54,6 +55,7 @@ import org.miaixz.bus.core.center.function.Consumer3X;
  * </p>
  * 
  * <pre>
+ * 
  * Box boxModified = GenericBuilder.of(() -&gt; box).with(Box::setTitle, "Hello Friend!").with(Box::setLength, 3)
  *         .with(Box::setWidth, 4).with(Box::setHeight, 5).build();
  * </pre>
@@ -62,6 +64,7 @@ import org.miaixz.bus.core.center.function.Consumer3X;
  * </p>
  * 
  * <pre>
+ * 
  * Box box1 = GenericBuilder.of(Box::new, 2048L, "Hello Partner!", 222, 333, 444).with(Box::alis).build();
  * </pre>
  * <p>

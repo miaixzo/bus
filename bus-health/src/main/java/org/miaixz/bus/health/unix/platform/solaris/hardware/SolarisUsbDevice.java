@@ -72,9 +72,10 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
         // Top level is controllers; they won't be added to the list, but all
         // their connected devices will be
         for (UsbDevice device : devices) {
-            deviceList.add(new SolarisUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                    device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                    Collections.emptyList()));
+            deviceList.add(
+                    new SolarisUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
+                            device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
+                            Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
         return deviceList;
@@ -176,8 +177,13 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
      * @param hubMap       the map of hubs
      * @return A SolarisUsbDevice corresponding to this device
      */
-    private static SolarisUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
-            Map<String, String> nameMap, Map<String, String> vendorIdMap, Map<String, String> productIdMap,
+    private static SolarisUsbDevice getDeviceAndChildren(
+            String devPath,
+            String vid,
+            String pid,
+            Map<String, String> nameMap,
+            Map<String, String> vendorIdMap,
+            Map<String, String> productIdMap,
             Map<String, List<String>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);

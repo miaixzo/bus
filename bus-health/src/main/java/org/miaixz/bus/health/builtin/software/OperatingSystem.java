@@ -136,7 +136,10 @@ public interface OperatingSystem {
      *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
      *         during iteration.
      */
-    List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
+    List<OSProcess> getChildProcesses(
+            int parentPid,
+            Predicate<OSProcess> filter,
+            Comparator<OSProcess> sort,
             int limit);
 
     /**
@@ -167,7 +170,10 @@ public interface OperatingSystem {
      *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
      *         during iteration.
      */
-    List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
+    List<OSProcess> getDescendantProcesses(
+            int parentPid,
+            Predicate<OSProcess> filter,
+            Comparator<OSProcess> sort,
             int limit);
 
     /**
@@ -322,6 +328,7 @@ public interface OperatingSystem {
      * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
     final class ProcessFiltering {
+
         /**
          * No filtering.
          */
@@ -353,6 +360,7 @@ public interface OperatingSystem {
      * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
     final class ProcessSorting {
+
         /**
          * No sorting
          */
@@ -387,8 +395,8 @@ public interface OperatingSystem {
         /**
          * Sort by Process Name (case insensitive)
          */
-        public static final Comparator<OSProcess> NAME_ASC = Comparator.comparing(OSProcess::getName,
-                String.CASE_INSENSITIVE_ORDER);
+        public static final Comparator<OSProcess> NAME_ASC = Comparator
+                .comparing(OSProcess::getName, String.CASE_INSENSITIVE_ORDER);
 
         private ProcessSorting() {
         }
@@ -399,6 +407,7 @@ public interface OperatingSystem {
      */
     @Immutable
     class OSVersionInfo {
+
         private final String version;
         private final String codeName;
         private final String buildNumber;

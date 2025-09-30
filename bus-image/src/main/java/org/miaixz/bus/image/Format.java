@@ -31,7 +31,6 @@ import static java.time.temporal.ChronoField.*;
 
 import java.io.Serial;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.FieldPosition;
@@ -52,6 +51,7 @@ import java.util.function.UnaryOperator;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -222,7 +222,8 @@ public class Format extends java.text.Format {
      * @return 来自UTC的时区偏移量，格式为{@code (+|i)HHMM}
      */
     public static String formatTimezoneOffsetFromUTC(TimeZone tz, Date date) {
-        return appendZZZZZ(tz.getOffset(date == null ? System.currentTimeMillis() : date.getTime()),
+        return appendZZZZZ(
+                tz.getOffset(date == null ? System.currentTimeMillis() : date.getTime()),
                 new StringBuilder(5)).toString();
     }
 
@@ -285,8 +286,10 @@ public class Format extends java.text.Format {
         if (!(length == 8 || length == 10 && !Character.isDigit(s.charAt(4)) && s.charAt(7) == s.charAt(4)))
             throw new IllegalArgumentException(s);
         int pos = 0;
-        cal.set(Calendar.YEAR, parseDigit(s, pos++) * 1000 + parseDigit(s, pos++) * 100 + parseDigit(s, pos++) * 10
-                + parseDigit(s, pos++));
+        cal.set(
+                Calendar.YEAR,
+                parseDigit(s, pos++) * 1000 + parseDigit(s, pos++) * 100 + parseDigit(s, pos++) * 10
+                        + parseDigit(s, pos++));
         if (length == 10)
             pos++;
         cal.set(Calendar.MONTH, parseDigit(s, pos++) * 10 + parseDigit(s, pos++) - 1);
@@ -543,8 +546,10 @@ public class Format extends java.text.Format {
         int pos = 0;
         if (pos + 4 > length)
             throw new IllegalArgumentException(s);
-        cal.set(precision.lastField = Calendar.YEAR, parseDigit(s, pos++) * 1000 + parseDigit(s, pos++) * 100
-                + parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+        cal.set(
+                precision.lastField = Calendar.YEAR,
+                parseDigit(s, pos++) * 1000 + parseDigit(s, pos++) * 100 + parseDigit(s, pos++) * 10
+                        + parseDigit(s, pos++));
         if (pos < length) {
             if (!Character.isDigit(s.charAt(pos)))
                 pos++;
@@ -701,25 +706,25 @@ public class Format extends java.text.Format {
 
     private static long nanosToAdd(int length) {
         return switch (length) {
-        case 2 -> 3599999999999L;
-        case 4 -> 59999999999L;
-        case 6, 7 -> 999999999L;
-        case 8 -> 99999999L;
-        case 9 -> 9999999L;
-        case 10 -> 999999L;
-        case 11 -> 99999L;
-        case 12 -> 9999L;
-        case 13 -> 999L;
-        default -> throw new IllegalArgumentException("length: " + length);
+            case 2 -> 3599999999999L;
+            case 4 -> 59999999999L;
+            case 6, 7 -> 999999999L;
+            case 8 -> 99999999L;
+            case 9 -> 9999999L;
+            case 10 -> 999999L;
+            case 11 -> 99999L;
+            case 12 -> 9999L;
+            case 13 -> 999L;
+            default -> throw new IllegalArgumentException("length: " + length);
         };
     }
 
     private static ChronoUnit yearsMonthsDays(int length) {
         return switch (length) {
-        case 4 -> ChronoUnit.YEARS;
-        case 6 -> ChronoUnit.MONTHS;
-        case 8 -> ChronoUnit.DAYS;
-        default -> throw new IllegalArgumentException("length: " + length);
+            case 4 -> ChronoUnit.YEARS;
+            case 6 -> ChronoUnit.MONTHS;
+            case 8 -> ChronoUnit.DAYS;
+            default -> throw new IllegalArgumentException("length: " + length);
         };
     }
 
@@ -880,37 +885,39 @@ public class Format extends java.text.Format {
                     throw new IllegalArgumentException(pattern);
                 }
                 switch (types[i]) {
-                case number:
-                case date:
-                case time:
-                case choice:
-                    formatBuilder.append(',').append(types[i]).append(tagStr.substring(typeEnd));
-                    break;
-                case offset:
-                    try {
-                        offsets[i] = Integer.parseInt(tagStr.substring(typeEnd + 1));
-                    } catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException(pattern);
-                    }
-                case slice:
-                    try {
-                        slices[i] = new Slice(tagStr.substring(typeEnd + 1));
-                    } catch (RuntimeException e) {
-                        throw new IllegalArgumentException(pattern);
-                    }
+                    case number:
+                    case date:
+                    case time:
+                    case choice:
+                        formatBuilder.append(',').append(types[i]).append(tagStr.substring(typeEnd));
+                        break;
+
+                    case offset:
+                        try {
+                            offsets[i] = Integer.parseInt(tagStr.substring(typeEnd + 1));
+                        } catch (IllegalArgumentException e) {
+                            throw new IllegalArgumentException(pattern);
+                        }
+                    case slice:
+                        try {
+                            slices[i] = new Slice(tagStr.substring(typeEnd + 1));
+                        } catch (RuntimeException e) {
+                            throw new IllegalArgumentException(pattern);
+                        }
                 }
             } else {
                 types[i] = Type.none;
             }
             if (rnd) {
                 switch (types[i]) {
-                case none:
-                    types[i] = Type.rnd;
-                case uuid:
-                case uid:
-                    break;
-                default:
-                    throw new IllegalArgumentException(pattern);
+                    case none:
+                        types[i] = Type.rnd;
+                    case uuid:
+                    case uid:
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException(pattern);
                 }
             }
             formatBuilder.append('}');
@@ -960,44 +967,81 @@ public class Format extends java.text.Format {
     }
 
     private enum Type {
+
         none {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return attrs.getString(tag, index, "");
             }
         },
         upper {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return attrs.getString(tag, index, "").toUpperCase();
             }
         },
         slice {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> slice) {
                 return slice.apply(attrs.getString(tag, index));
             }
         },
         number {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
         offset {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return Integer.toString(attrs.getInt(tag, index, 0) + offset);
             }
         },
         date {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
                 if (!(dateTimeOffset instanceof Period dateOffset))
@@ -1011,8 +1055,14 @@ public class Format extends java.text.Format {
             }
         },
         time {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
                 if (!(dateTimeOffset instanceof Duration timeOffset))
@@ -1024,53 +1074,95 @@ public class Format extends java.text.Format {
             }
         },
         choice {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
         hash {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? Tag.toHexString(s.hashCode()) : null;
             }
         },
         md5 {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? getMD5String(s) : null;
             }
         },
         urlencoded {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
-                return s != null ? URLEncoder.encode(s, StandardCharsets.UTF_8) : null;
+                return s != null ? URLEncoder.encode(s, Charset.UTF_8) : null;
             }
         },
         rnd {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return Tag.toHexString(ThreadLocalRandom.current().nextInt());
             }
         },
         uuid {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return UUID.randomUUID();
             }
         },
         uid {
+
             @Override
-            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+            Object toArg(
+                    Attributes attrs,
+                    int tag,
+                    int index,
+                    int offset,
+                    Object dateTimeOffset,
                     UnaryOperator<String> splice) {
                 return UID.createUID();
             }
@@ -1104,13 +1196,18 @@ public class Format extends java.text.Format {
             return l;
         }
 
-        abstract Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+        abstract Object toArg(
+                Attributes attrs,
+                int tag,
+                int index,
+                int offset,
+                Object dateTimeOffset,
                 UnaryOperator<String> splice);
 
         String getMD5String(String s) {
             try {
                 MessageDigest digest = MessageDigest.getInstance("MD5");
-                digest.update(s == null ? new byte[0] : s.getBytes(StandardCharsets.UTF_8));
+                digest.update(s == null ? new byte[0] : s.getBytes(Charset.UTF_8));
                 return toString32(digest.digest());
             } catch (NoSuchAlgorithmException e) {
                 return s;
@@ -1119,6 +1216,7 @@ public class Format extends java.text.Format {
     }
 
     private class Slice implements UnaryOperator<String> {
+
         final int beginIndex;
         final int endIndex;
 
@@ -1140,7 +1238,8 @@ public class Format extends java.text.Format {
             try {
                 int l = s.length();
                 return endIndex == 0 ? s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex)
-                        : s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
+                        : s.substring(
+                                beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
                                 endIndex < 0 ? l + endIndex : Math.min(l, endIndex));
             } catch (RuntimeException e) {
                 return "";

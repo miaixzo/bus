@@ -239,11 +239,9 @@ public class LunarDay extends Loops {
     public NineStar getNineStar() {
         SolarDay d = getSolarDay();
         SolarTerms dongZhi = SolarTerms.fromIndex(d.getYear(), 0);
-        SolarTerms xiaZhi = dongZhi.next(12);
-        SolarTerms dongZhi2 = dongZhi.next(24);
         SolarDay dongZhiSolar = dongZhi.getJulianDay().getSolarDay();
-        SolarDay xiaZhiSolar = xiaZhi.getJulianDay().getSolarDay();
-        SolarDay dongZhiSolar2 = dongZhi2.getJulianDay().getSolarDay();
+        SolarDay xiaZhiSolar = dongZhi.next(12).getJulianDay().getSolarDay();
+        SolarDay dongZhiSolar2 = dongZhi.next(24).getJulianDay().getSolarDay();
         int dongZhiIndex = dongZhiSolar.getLunarDay().getSixtyCycle().getIndex();
         int xiaZhiIndex = xiaZhiSolar.getLunarDay().getSixtyCycle().getIndex();
         int dongZhiIndex2 = dongZhiSolar2.getLunarDay().getSixtyCycle().getIndex();

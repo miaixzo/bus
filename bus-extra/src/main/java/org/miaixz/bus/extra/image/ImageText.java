@@ -75,7 +75,11 @@ public class ImageText implements Serializable {
      * @param alpha 透明度
      * @return DisplayText
      */
-    public static ImageText of(final String text, final Color color, final Font font, final Point point,
+    public static ImageText of(
+            final String text,
+            final Color color,
+            final Font font,
+            final Point point,
             final float alpha) {
         return new ImageText(text, color, font, point, alpha);
     }

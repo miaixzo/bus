@@ -169,8 +169,8 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
                     .queryParam("access_token", accessToken).build();
             Map<String, Object> param = new HashMap<>();
             param.put("user_ticket", userTicket);
-            String userDetailResponse = Httpx.post(userDetailUrl, JsonKit.toJsonString(param),
-                    MediaType.APPLICATION_JSON);
+            String userDetailResponse = Httpx
+                    .post(userDetailUrl, JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
             Map<String, Object> userDetail = checkResponse(userDetailResponse);
 
             userInfo.putAll(userDetail);

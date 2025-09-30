@@ -38,26 +38,35 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.CRSShift:
-            return "CRSShift";
-        case PrivateTag.CRCShift:
-            return "CRCShift";
-        case PrivateTag.CRGT:
-            return "CRGT";
-        case PrivateTag.CRGA:
-            return "CRGA";
-        case PrivateTag.CRGC:
-            return "CRGC";
-        case PrivateTag.CRGS:
-            return "CRGS";
-        case PrivateTag.CRRT:
-            return "CRRT";
-        case PrivateTag.CRRE:
-            return "CRRE";
-        case PrivateTag.CRRN:
-            return "CRRN";
-        case PrivateTag.CRDRT:
-            return "CRDRT";
+            case PrivateTag.CRSShift:
+                return "CRSShift";
+
+            case PrivateTag.CRCShift:
+                return "CRCShift";
+
+            case PrivateTag.CRGT:
+                return "CRGT";
+
+            case PrivateTag.CRGA:
+                return "CRGA";
+
+            case PrivateTag.CRGC:
+                return "CRGC";
+
+            case PrivateTag.CRGS:
+                return "CRGS";
+
+            case PrivateTag.CRRT:
+                return "CRRT";
+
+            case PrivateTag.CRRE:
+                return "CRRE";
+
+            case PrivateTag.CRRN:
+                return "CRRN";
+
+            case PrivateTag.CRDRT:
+                return "CRDRT";
         }
         return "";
     }

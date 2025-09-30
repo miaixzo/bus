@@ -41,19 +41,23 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * @since Java 17+
  */
 public enum Photometric {
+
     MONOCHROME1(true, true, false, false) {
+
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createMonochromeColorModel(bits, dataType);
         }
     },
     MONOCHROME2(true, false, false, false) {
+
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createMonochromeColorModel(bits, dataType);
         }
     },
     PALETTE_COLOR(false, false, false, false) {
+
         @Override
         public String toString() {
             return "PALETTE COLOR";
@@ -65,6 +69,7 @@ public enum Photometric {
         }
     },
     RGB(false, false, false, false) {
+
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createRGBColorModel(bits, dataType, cspace);
@@ -73,32 +78,37 @@ public enum Photometric {
         @Override
         public Photometric compress(String tsuid) {
             switch (UID.from(tsuid)) {
-            case UID.JPEGBaseline8Bit:
-            case UID.JPEGExtended12Bit:
-                return YBR_FULL_422;
-            case UID.JPEGSpectralSelectionNonHierarchical68:
-            case UID.JPEGFullProgressionNonHierarchical1012:
-                return YBR_FULL;
-            case UID.JPEG2000Lossless:
-            case UID.JPEG2000MCLossless:
-            case UID.HTJ2KLossless:
-            case UID.HTJ2KLosslessRPCL:
-                return YBR_RCT;
-            case UID.JPEG2000:
-            case UID.JPEG2000MC:
-            case UID.HTJ2K:
-                return YBR_ICT;
+                case UID.JPEGBaseline8Bit:
+                case UID.JPEGExtended12Bit:
+                    return YBR_FULL_422;
+
+                case UID.JPEGSpectralSelectionNonHierarchical68:
+                case UID.JPEGFullProgressionNonHierarchical1012:
+                    return YBR_FULL;
+
+                case UID.JPEG2000Lossless:
+                case UID.JPEG2000MCLossless:
+                case UID.HTJ2KLossless:
+                case UID.HTJ2KLosslessRPCL:
+                    return YBR_RCT;
+
+                case UID.JPEG2000:
+                case UID.JPEG2000MC:
+                case UID.HTJ2K:
+                    return YBR_ICT;
             }
             return this;
         }
     },
     YBR_FULL(false, false, true, false) {
+
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createYBRFullColorModel(bits, dataType, new YBRColorSpace(cspace, YBR.FULL));
         }
     },
     YBR_FULL_422(false, false, true, true) {
+
         @Override
         public int frameLength(int w, int h, int samples, int bitsAllocated) {
             return ColorSubsampling.YBR_XXX_422.frameLength(w, h);
@@ -106,7 +116,10 @@ public enum Photometric {
 
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
-            return ColorModelFactory.createYBRColorModel(bits, dataType, new YBRColorSpace(cspace, YBR.PARTIAL),
+            return ColorModelFactory.createYBRColorModel(
+                    bits,
+                    dataType,
+                    new YBRColorSpace(cspace, YBR.PARTIAL),
                     ColorSubsampling.YBR_XXX_422);
         }
 
@@ -116,6 +129,7 @@ public enum Photometric {
         }
     },
     YBR_ICT(false, false, true, false) {
+
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             throw new UnsupportedOperationException();
@@ -123,6 +137,7 @@ public enum Photometric {
 
     },
     YBR_PARTIAL_420(false, false, true, true) {
+
         @Override
         public int frameLength(int w, int h, int samples, int bitsAllocated) {
             return ColorSubsampling.YBR_XXX_420.frameLength(w, h);
@@ -130,7 +145,10 @@ public enum Photometric {
 
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
-            return ColorModelFactory.createYBRColorModel(bits, dataType, new YBRColorSpace(cspace, YBR.PARTIAL),
+            return ColorModelFactory.createYBRColorModel(
+                    bits,
+                    dataType,
+                    new YBRColorSpace(cspace, YBR.PARTIAL),
                     ColorSubsampling.YBR_XXX_420);
         }
 
@@ -140,6 +158,7 @@ public enum Photometric {
         }
     },
     YBR_PARTIAL_422(false, false, true, true) {
+
         @Override
         public int frameLength(int w, int h, int samples, int bitsAllocated) {
             return ColorSubsampling.YBR_XXX_422.frameLength(w, h);
@@ -147,7 +166,10 @@ public enum Photometric {
 
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
-            return ColorModelFactory.createYBRColorModel(bits, dataType, new YBRColorSpace(cspace, YBR.PARTIAL),
+            return ColorModelFactory.createYBRColorModel(
+                    bits,
+                    dataType,
+                    new YBRColorSpace(cspace, YBR.PARTIAL),
                     ColorSubsampling.YBR_XXX_422);
         }
 
@@ -157,6 +179,7 @@ public enum Photometric {
         }
     },
     YBR_RCT(false, false, true, false) {
+
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             throw new UnsupportedOperationException();

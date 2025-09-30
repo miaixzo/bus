@@ -96,9 +96,9 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
                         bootstrapContext, bootstrapApplication, event.getArgs(), bootstrapEnvironment);
 
                 application.getListeners().stream()
-                        .filter(listener -> listener instanceof EnvironmentPostProcessorApplicationListener)
-                        .forEach(listener -> ((EnvironmentPostProcessorApplicationListener) listener)
-                                .onApplicationEvent(bootstrapEvent));
+                        .filter(listener -> listener instanceof EnvironmentPostProcessorApplicationListener).forEach(
+                                listener -> ((EnvironmentPostProcessorApplicationListener) listener)
+                                        .onApplicationEvent(bootstrapEvent));
 
                 logSetting(bootstrapEnvironment);
                 requireProperties(bootstrapEnvironment);
@@ -124,8 +124,8 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
      */
     private void requireProperties(ConfigurableEnvironment environment) {
         if (StringKit.hasText(environment.getProperty(GeniusBuilder.APP_NAME))) {
-            HIGH_PRIORITY_CONFIG.getSource().put(GeniusBuilder.APP_NAME,
-                    environment.getProperty(GeniusBuilder.APP_NAME));
+            HIGH_PRIORITY_CONFIG.getSource()
+                    .put(GeniusBuilder.APP_NAME, environment.getProperty(GeniusBuilder.APP_NAME));
         }
     }
 

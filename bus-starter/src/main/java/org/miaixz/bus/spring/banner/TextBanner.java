@@ -76,8 +76,13 @@ public class TextBanner extends AbstractBanner implements Banner {
             padding.append(Symbol.SPACE);
         }
 
-        builder.append(AnsiOutput.toString(AnsiColor.BRIGHT_MAGENTA, springVersion, padding.toString(),
-                AnsiColor.BRIGHT_MAGENTA, busVersion));
+        builder.append(
+                AnsiOutput.toString(
+                        AnsiColor.BRIGHT_MAGENTA,
+                        springVersion,
+                        padding.toString(),
+                        AnsiColor.BRIGHT_MAGENTA,
+                        busVersion));
         return builder.toString();
     }
 

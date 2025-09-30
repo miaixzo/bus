@@ -47,6 +47,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
  */
 @Immutable
 public class OpenBsdFirmware extends AbstractFirmware {
+
     private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer
             .memoize(OpenBsdFirmware::readDmesg);
 
@@ -66,7 +67,8 @@ public class OpenBsdFirmware extends AbstractFirmware {
                 vendor = line.split("vendor")[1].trim();
             }
         }
-        return Triplet.of(StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
+        return Triplet.of(
+                StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
                 StringKit.isBlank(version) ? Normal.UNKNOWN : version,
                 StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }

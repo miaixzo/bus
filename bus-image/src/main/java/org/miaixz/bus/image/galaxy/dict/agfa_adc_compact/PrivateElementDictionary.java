@@ -52,22 +52,25 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.ImageQuality:
-            return VR.CS;
-        case PrivateTag.IDStationName:
-        case PrivateTag.OperationCode:
-            return VR.SH;
-        case PrivateTag.DataStreamFromCassette:
-        case PrivateTag.SetOfDestinationIds:
-        case PrivateTag.SetOfProcessingCodes:
-            return VR.ST;
-        case PrivateTag.NumberOfSeriesInStudy:
-        case PrivateTag.SessionNumber:
-        case PrivateTag.NumberOfImagesInSeries:
-        case PrivateTag.BreakCondition:
-        case PrivateTag.WaitOrHoldFlag:
-        case PrivateTag.ScanResFlag:
-            return VR.US;
+            case PrivateTag.ImageQuality:
+                return VR.CS;
+
+            case PrivateTag.IDStationName:
+            case PrivateTag.OperationCode:
+                return VR.SH;
+
+            case PrivateTag.DataStreamFromCassette:
+            case PrivateTag.SetOfDestinationIds:
+            case PrivateTag.SetOfProcessingCodes:
+                return VR.ST;
+
+            case PrivateTag.NumberOfSeriesInStudy:
+            case PrivateTag.SessionNumber:
+            case PrivateTag.NumberOfImagesInSeries:
+            case PrivateTag.BreakCondition:
+            case PrivateTag.WaitOrHoldFlag:
+            case PrivateTag.ScanResFlag:
+                return VR.US;
         }
         return VR.UN;
     }

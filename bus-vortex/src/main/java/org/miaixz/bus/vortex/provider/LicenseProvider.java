@@ -25,67 +25,34 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.validate.magic.annotation;
+package org.miaixz.bus.vortex.provider;
 
-import java.lang.annotation.*;
-
-import org.miaixz.bus.validate.Builder;
-import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.magic.Matcher;
-import org.miaixz.bus.validate.metric.MultiMatcher;
+import org.miaixz.bus.core.lang.exception.LicenseException;
 
 /**
- * 多重校验器, 可以配置多个校验器
- *
- * @author Kimi Liu
- * @since Java 17+
+ * 许可证校验提供者接口。
+ * <p>
+ * 定义了校验许可证有效性的核心功能。实现此接口的服务应包含具体的许可证校验逻辑， 例如检查有效期、绑定的硬件信息、域名等。
+ * </p>
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
-@Complex(value = Builder._MULTI, clazz = MultiMatcher.class)
-public @interface Multi {
+public interface LicenseProvider {
 
     /**
-     * 校验器名称数组,优先使用校验器名称中的校验器,并忽略校验器类中的校验器
+     * 执行许可证验证操作。
+     * <p>
+     * <b>实现约定:</b>
+     * <ul>
+     * <li>如果许可证对给定的验证主体有效，此方法应正常返回，不执行任何操作。</li>
+     * <li>如果许可证无效（如过期、主体不匹配、签名错误等），此方法应抛出 {@link LicenseException} 或其他运行时异常来中断操作。</li>
+     * </ul>
      *
-     * @return the array
+     * @param principal 用于验证许可证的实体标识，例如域名 (e.g., "example.com:443") * 或公司名称 (e.g., "Acme Corporation")。
+     * @throws LicenseException 如果许可证校验失败。
      */
-    String[] value() default {};
-
-    /**
-     * 校验器类数组, 当校验器名称数组为空时,使用校验器类数组中的校验器
-     *
-     * @return the object
-     */
-    Class<? extends Matcher>[] classes() default {};
-
-    /**
-     * 默认使用的异常码
-     *
-     * @return the string
-     */
-    String errcode() default ErrorCode._116000;
-
-    /**
-     * 默认使用的异常信息
-     *
-     * @return the string
-     */
-    String errmsg() default "${field}参数校验失败";
-
-    /**
-     * 校验器组
-     *
-     * @return the array
-     */
-    String[] group() default {};
-
-    /**
-     * 被校验字段名称
-     *
-     * @return the string
-     */
-    String field() default Builder.DEFAULT_FIELD;
+    default boolean validate(String principal) {
+        // 默认实现为空，允许在某些环境中禁用许可证检查。
+        // 具体的校验逻辑应由实现类提供。
+        return true;
+    }
 
 }

@@ -89,6 +89,7 @@ public class SimpleScheduler<T> {
      * @param <T> 结果类型
      */
     public interface Job<T> extends Runnable {
+
         /**
          * 获取执行结果
          *

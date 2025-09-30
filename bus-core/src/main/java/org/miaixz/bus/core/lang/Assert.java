@@ -341,7 +341,8 @@ public class Assert {
      * @throws X if the collection is {@code null} or has no elements
      * @see CollKit#isNotEmpty(Iterable)
      */
-    public static <E, T extends Iterable<E>, X extends Throwable> T notEmpty(final T collection,
+    public static <E, T extends Iterable<E>, X extends Throwable> T notEmpty(
+            final T collection,
             final Supplier<X> errorSupplier) throws X {
         if (CollKit.isEmpty(collection)) {
             throw errorSupplier.get();
@@ -383,7 +384,8 @@ public class Assert {
      * @throws IllegalArgumentException if the collection is {@code null} or has no elements
      */
     public static <E, T extends Iterable<E>> T notEmpty(final T collection) throws IllegalArgumentException {
-        return notEmpty(collection,
+        return notEmpty(
+                collection,
                 "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
     }
 
@@ -407,7 +409,8 @@ public class Assert {
      * @throws X if the map is {@code null} or has no entries
      * @see MapKit#isNotEmpty(Map)
      */
-    public static <K, V, T extends Map<K, V>, X extends Throwable> T notEmpty(final T map,
+    public static <K, V, T extends Map<K, V>, X extends Throwable> T notEmpty(
+            final T map,
             final Supplier<X> errorSupplier) throws X {
         if (MapKit.isEmpty(map)) {
             throw errorSupplier.get();
@@ -472,7 +475,8 @@ public class Assert {
      * @throws X 被检查字符串为空抛出此异常
      * @see StringKit#isNotEmpty(CharSequence)
      */
-    public static <T extends CharSequence, X extends Throwable> T notEmpty(final T text,
+    public static <T extends CharSequence, X extends Throwable> T notEmpty(
+            final T text,
             final Supplier<X> errorSupplier) throws X {
         if (StringKit.isEmpty(text)) {
             throw errorSupplier.get();
@@ -514,7 +518,8 @@ public class Assert {
      * @see StringKit#isNotEmpty(CharSequence)
      */
     public static <T extends CharSequence> T notEmpty(final T text) throws IllegalArgumentException {
-        return notEmpty(text,
+        return notEmpty(
+                text,
                 "[Assertion failed] - this String argument must have length; it must not be null or empty");
     }
 
@@ -536,7 +541,8 @@ public class Assert {
      * @throws X 被检查字符串为空白
      * @see StringKit#isNotBlank(CharSequence)
      */
-    public static <T extends CharSequence, X extends Throwable> T notBlank(final T text,
+    public static <T extends CharSequence, X extends Throwable> T notBlank(
+            final T text,
             final Supplier<X> errorMsgSupplier) throws X {
         if (StringKit.isBlank(text)) {
             throw errorMsgSupplier.get();
@@ -578,7 +584,8 @@ public class Assert {
      * @see StringKit#isNotBlank(CharSequence)
      */
     public static <T extends CharSequence> T notBlank(final T text) throws IllegalArgumentException {
-        return notBlank(text,
+        return notBlank(
+                text,
                 "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
     }
 
@@ -601,8 +608,10 @@ public class Assert {
      * @throws X 非子串抛出异常
      * @see StringKit#contains(CharSequence, CharSequence)
      */
-    public static <T extends CharSequence, X extends Throwable> T notContain(final CharSequence textToSearch,
-            final T substring, final Supplier<X> errorSupplier) throws X {
+    public static <T extends CharSequence, X extends Throwable> T notContain(
+            final CharSequence textToSearch,
+            final T substring,
+            final Supplier<X> errorSupplier) throws X {
         if (StringKit.contains(textToSearch, substring)) {
             throw errorSupplier.get();
         }
@@ -623,7 +632,10 @@ public class Assert {
      * @return 被检查的子串
      * @throws IllegalArgumentException 非子串抛出异常
      */
-    public static String notContain(final String textToSearch, final String subString, final String format,
+    public static String notContain(
+            final String textToSearch,
+            final String subString,
+            final String format,
             final Object... args) throws IllegalArgumentException {
         return notContain(textToSearch, subString, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
@@ -642,8 +654,11 @@ public class Assert {
      * @throws IllegalArgumentException 非子串抛出异常
      */
     public static String notContain(final String textToSearch, final String subString) throws IllegalArgumentException {
-        return notContain(textToSearch, subString,
-                "[Assertion failed] - this String argument must not contain the substring [{}]", subString);
+        return notContain(
+                textToSearch,
+                subString,
+                "[Assertion failed] - this String argument must not contain the substring [{}]",
+                subString);
     }
 
     /**
@@ -821,7 +836,10 @@ public class Assert {
      * @param args      参数列表
      * @throws IllegalArgumentException 如果子类非继承父类，抛出此异常
      */
-    public static void isAssignable(final Class<?> superType, final Class<?> subType, final String format,
+    public static void isAssignable(
+            final Class<?> superType,
+            final Class<?> subType,
+            final String format,
             final Object... args) throws IllegalArgumentException {
         notNull(superType, "Type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
@@ -908,6 +926,25 @@ public class Assert {
      * 0 &le; index &lt; size
      * </pre>
      *
+     * @param index 下标
+     * @param size  长度
+     * @return 检查后的下标
+     * @throws IllegalArgumentException  如果size &lt; 0 抛出此异常
+     * @throws IndexOutOfBoundsException 如果index &lt; 0或者 index &ge; size 抛出此异常
+     * @see java.util.Objects#checkIndex(long, long)
+     */
+    public static long checkIndex(final long index, final long size)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+        return checkIndex(index, size, "[Assertion failed]");
+    }
+
+    /**
+     * 检查下标（数组、集合、字符串）是否符合要求，下标必须满足：
+     *
+     * <pre>
+     * 0 &le; index &lt; size
+     * </pre>
+     *
      * @param index  下标
      * @param size   长度
      * @param format 异常时的消息模板
@@ -919,7 +956,30 @@ public class Assert {
     public static int checkIndex(final int index, final int size, final String format, final Object... args)
             throws IllegalArgumentException, IndexOutOfBoundsException {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException(badIndexMsg(index, size, format, args));
+            throw new IndexOutOfBoundsException(badIndex(index, size, format, args));
+        }
+        return index;
+    }
+
+    /**
+     * 检查下标（数组、集合、字符串）是否符合要求，下标必须满足：
+     *
+     * <pre>
+     * 0 &le; index &lt; size
+     * </pre>
+     *
+     * @param index  下标
+     * @param size   长度
+     * @param format 异常时的消息模板
+     * @param args   参数列表
+     * @return 检查后的下标
+     * @throws IllegalArgumentException  如果size &lt; 0 抛出此异常
+     * @throws IndexOutOfBoundsException 如果index &lt; 0或者 index &ge; size 抛出此异常
+     */
+    public static long checkIndex(final long index, final long size, final String format, final Object... args)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException(badIndex(index, size, format, args));
         }
         return index;
     }
@@ -935,7 +995,10 @@ public class Assert {
      * @return 经过检查后的值
      * @throws X if value is out of bound
      */
-    public static <X extends Throwable> int checkBetween(final int value, final int min, final int max,
+    public static <X extends Throwable> int checkBetween(
+            final int value,
+            final int min,
+            final int max,
             final Supplier<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
@@ -954,7 +1017,11 @@ public class Assert {
      * @param args   异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static int checkBetween(final int value, final int min, final int max, final String format,
+    public static int checkBetween(
+            final int value,
+            final int min,
+            final int max,
+            final String format,
             final Object... args) {
         return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
@@ -982,7 +1049,10 @@ public class Assert {
      * @return 经过检查后的值
      * @throws X if value is out of bound
      */
-    public static <X extends Throwable> long checkBetween(final long value, final long min, final long max,
+    public static <X extends Throwable> long checkBetween(
+            final long value,
+            final long min,
+            final long max,
             final Supplier<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
@@ -1001,7 +1071,11 @@ public class Assert {
      * @param args   异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static long checkBetween(final long value, final long min, final long max, final String format,
+    public static long checkBetween(
+            final long value,
+            final long min,
+            final long max,
+            final String format,
             final Object... args) {
         return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
@@ -1029,7 +1103,10 @@ public class Assert {
      * @return 经过检查后的值
      * @throws X if value is out of bound
      */
-    public static <X extends Throwable> double checkBetween(final double value, final double min, final double max,
+    public static <X extends Throwable> double checkBetween(
+            final double value,
+            final double min,
+            final double max,
             final Supplier<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
@@ -1048,7 +1125,11 @@ public class Assert {
      * @param args   异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static double checkBetween(final double value, final double min, final double max, final String format,
+    public static double checkBetween(
+            final double value,
+            final double min,
+            final double max,
+            final String format,
             final Object... args) {
         return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(format, args)));
     }
@@ -1128,7 +1209,9 @@ public class Assert {
      * @param <X>           异常类型
      * @throws X obj1 must be not equals obj2
      */
-    public static <X extends Throwable> void notEquals(final Object obj1, final Object obj2,
+    public static <X extends Throwable> void notEquals(
+            final Object obj1,
+            final Object obj2,
             final Supplier<X> errorSupplier) throws X {
         if (ObjectKit.equals(obj1, obj2)) {
             throw errorSupplier.get();
@@ -1177,7 +1260,9 @@ public class Assert {
      * @param <X>           异常类型
      * @throws X obj1 must be equals obj2
      */
-    public static <X extends Throwable> void equals(final Object obj1, final Object obj2,
+    public static <X extends Throwable> void equals(
+            final Object obj1,
+            final Object obj2,
             final Supplier<X> errorSupplier) throws X {
         if (ObjectKit.notEquals(obj1, obj2)) {
             throw errorSupplier.get();
@@ -1193,7 +1278,7 @@ public class Assert {
      * @param args  参数列表
      * @return 消息
      */
-    private static String badIndexMsg(final int index, final int size, final String desc, final Object... args) {
+    private static String badIndex(final long index, final long size, final String desc, final Object... args) {
         if (index < 0) {
             return StringKit.format("{} ({}) must not be negative", StringKit.format(desc, args), index);
         } else if (size < 0) {

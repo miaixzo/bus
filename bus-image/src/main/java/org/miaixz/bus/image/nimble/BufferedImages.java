@@ -174,8 +174,9 @@ public class BufferedImages {
     }
 
     public static BufferedImage convertColor(BufferedImage bi, ColorModel colorModel) {
-        BufferedImage dest = new BufferedImage(colorModel, Raster.createWritableRaster(
-                colorModel.createCompatibleSampleModel(bi.getWidth(), bi.getHeight()), null), false, null);
+        BufferedImage dest = new BufferedImage(colorModel, Raster
+                .createWritableRaster(colorModel.createCompatibleSampleModel(bi.getWidth(), bi.getHeight()), null),
+                false, null);
         new ColorConvertOp(null).filter(bi, dest);
         return dest;
     }
@@ -200,12 +201,14 @@ public class BufferedImages {
         int rows = raster.getHeight();
         int columns = raster.getWidth();
         switch (cs.getType()) {
-        case ColorSpace.TYPE_GRAY:
-            return toImagePixelModule(1, "MONOCHROME2", rows, columns, toMonochrome2PixelData(raster), attrs);
-        case ColorSpace.TYPE_RGB:
-            return toImagePixelModule(3, "RGB", rows, columns, toRGBPixelData(raster), attrs);
-        default:
-            throw new UnsupportedOperationException(toString(cs));
+            case ColorSpace.TYPE_GRAY:
+                return toImagePixelModule(1, "MONOCHROME2", rows, columns, toMonochrome2PixelData(raster), attrs);
+
+            case ColorSpace.TYPE_RGB:
+                return toImagePixelModule(3, "RGB", rows, columns, toRGBPixelData(raster), attrs);
+
+            default:
+                throw new UnsupportedOperationException(toString(cs));
         }
     }
 
@@ -257,8 +260,11 @@ public class BufferedImages {
 
     private static void mergeFrame(Graphics graphics, BufferedImage src, Node metadata) throws IIOInvalidTreeException {
         Node imageDescriptor = getChildNode(metadata, "ImageDescriptor");
-        graphics.drawImage(src, getIntAttribute(imageDescriptor, "imageLeftPosition"),
-                getIntAttribute(imageDescriptor, "imageTopPosition"), null);
+        graphics.drawImage(
+                src,
+                getIntAttribute(imageDescriptor, "imageLeftPosition"),
+                getIntAttribute(imageDescriptor, "imageTopPosition"),
+                null);
     }
 
     private static Node getMetadata(IIOImage iioImage) {
@@ -396,7 +402,12 @@ public class BufferedImages {
         return (ComponentSampleModel) sb;
     }
 
-    private static Attributes toImagePixelModule(int samples, String pmi, int rows, int columns, byte[] pixelData,
+    private static Attributes toImagePixelModule(
+            int samples,
+            String pmi,
+            int rows,
+            int columns,
+            byte[] pixelData,
             Attributes attrs) {
         if (attrs == null) {
             attrs = new Attributes(13);

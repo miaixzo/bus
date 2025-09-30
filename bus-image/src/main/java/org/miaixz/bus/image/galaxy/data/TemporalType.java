@@ -39,7 +39,9 @@ import org.miaixz.bus.image.Format;
  * @since Java 17+
  */
 enum TemporalType {
+
     DA {
+
         @Override
         public Temporal parseTemporal(String s, DatePrecision precision) {
             precision.lastField = Calendar.DAY_OF_MONTH;
@@ -58,6 +60,7 @@ enum TemporalType {
         }
     },
     DT {
+
         public Temporal parseTemporal(String s, DatePrecision precision) {
             return Format.parseTemporalDT(s, precision);
         }
@@ -73,6 +76,7 @@ enum TemporalType {
         }
     },
     TM {
+
         @Override
         public Temporal parseTemporal(String s, DatePrecision precision) {
             return Format.parseLocalTM(s, precision);

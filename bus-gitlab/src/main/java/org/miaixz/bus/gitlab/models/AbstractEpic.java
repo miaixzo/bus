@@ -178,6 +178,7 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
     }
 
     public enum EpicState {
+
         OPENED, CLOSED, ALL;
 
         private static JacksonJsonEnumHelper<EpicState> enumHelper = new JacksonJsonEnumHelper<>(EpicState.class);

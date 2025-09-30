@@ -211,6 +211,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
         // 先关闭之前的监听
         IoKit.closeQuietly(this.watchMonitor);
         this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new DelayWatcher(new SimpleWatcher() {
+
             @Serial
             private static final long serialVersionUID = 2852560512835L;
 

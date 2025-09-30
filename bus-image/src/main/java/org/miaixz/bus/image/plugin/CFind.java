@@ -103,8 +103,13 @@ public class CFind {
      * @param keys        用于匹配和返回键。 没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args args, Node callingNode, Node calledNode, int cancelAfter,
-            QueryRetrieveLevel level, ImageParam... keys) {
+    public static Status process(
+            Args args,
+            Node callingNode,
+            Node calledNode,
+            int cancelAfter,
+            QueryRetrieveLevel level,
+            ImageParam... keys) {
         if (callingNode == null || calledNode == null) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
@@ -122,7 +127,9 @@ public class CFind {
             options.configure(conn);
             options.configureTLS(conn, remote);
 
-            findSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
+            findSCU.setInformationModel(
+                    getInformationModel(options),
+                    options.getTsuidOrder(),
                     options.getQueryOptions());
             if (level != null) {
                 findSCU.addLevel(level.name());
@@ -149,7 +156,9 @@ public class CFind {
                 long t3 = System.currentTimeMillis();
                 String timeMsg = MessageFormat.format(
                         "DICOM C-Find connected in {2}ms from {0} to {1}. Query in {3}ms.",
-                        findSCU.getAAssociateRQ().getCallingAET(), findSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        findSCU.getAAssociateRQ().getCallingAET(),
+                        findSCU.getAAssociateRQ().getCalledAET(),
+                        t2 - t1,
                         t3 - t2);
                 dcmState = Status.buildMessage(dcmState, timeMsg, null);
                 dcmState.addProcessTime(t1, t2, t3);
@@ -170,8 +179,11 @@ public class CFind {
                 Thread.currentThread().interrupt();
             }
             Logger.error("findscu", e);
-            return Status.buildMessage(new Status(Status.UnableToProcess,
-                    "DICOM Find failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null), null, e);
+            return Status.buildMessage(
+                    new Status(Status.UnableToProcess,
+                            "DICOM Find failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null),
+                    null,
+                    e);
         }
     }
 

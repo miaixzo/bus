@@ -104,7 +104,8 @@ public class Emf2sf {
         Attributes sf = extractor.extract(src, frame);
         ImageOutputStream out = new ImageOutputStream(new File(outDir, fname(file, frame + 1)));
         try {
-            out.writeDataset(fmi != null ? sf.createFileMetaInformation(fmi.getString(Tag.TransferSyntaxUID)) : null,
+            out.writeDataset(
+                    fmi != null ? sf.createFileMetaInformation(fmi.getString(Tag.TransferSyntaxUID)) : null,
                     sf);
         } finally {
             IoKit.close(out);

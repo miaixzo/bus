@@ -54,7 +54,9 @@ public final class PhysicalDisk {
         if (PerfmonDisabled.PERF_DISK_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(PhysicalDiskProperty.class, PerfmonConsts.PHYSICAL_DISK,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(
+                PhysicalDiskProperty.class,
+                PerfmonConsts.PHYSICAL_DISK,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NAME_NOT_TOTAL);
     }
 
@@ -62,6 +64,7 @@ public final class PhysicalDisk {
      * Physical Disk performance counters.
      */
     public enum PhysicalDiskProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCE),
         // Remaining elements define counters

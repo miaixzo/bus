@@ -60,7 +60,8 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * @param <R>    合并后的结果对象类型
      * @return 合并后的结果对象的流
      */
-    default <U, R> EasyStream<R> zip(final Iterable<U> other,
+    default <U, R> EasyStream<R> zip(
+            final Iterable<U> other,
             final BiFunction<? super T, ? super U, ? extends R> zipper) {
         Objects.requireNonNull(zipper);
         final Map<Integer, T> idxIdentityMap = mapIdx((e, idx) -> MapKit.entry(idx, e))
@@ -386,6 +387,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
      * 
      * <pre>{@code
+     * 
      * EasyStream<Long> ids = EasyStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
@@ -417,6 +419,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
      * 
      * <pre>{@code
+     * 
      * EasyStream<Long> ids = EasyStream.of(users).flat(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
@@ -446,6 +449,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * 将树递归扁平化为集合，内置一个小递归 这是一个无状态中间操作 eg:
      * 
      * <pre>{@code
+     * 
      * List<Student> students = EasyStream.of(studentTree).flatTree(Student::getChildren, Student::setChildren)
      *         .toList();
      * }</pre>

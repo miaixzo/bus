@@ -228,6 +228,7 @@ public class BCCipher implements Cipher, Wrapper<Object> {
      * BouncyCastle库的{@link CipherParameters}封装
      */
     public static class BCParameters implements Parameters {
+
         /**
          * 算法的参数
          */

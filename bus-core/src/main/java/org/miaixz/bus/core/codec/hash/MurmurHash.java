@@ -163,18 +163,18 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
         final int idx = offset + (nblocks << 2);
         int k1 = 0;
         switch (offset + length - idx) {
-        case 3:
-            k1 ^= (data[idx + 2] & 0xff) << 16;
-        case 2:
-            k1 ^= (data[idx + 1] & 0xff) << 8;
-        case 1:
-            k1 ^= (data[idx] & 0xff);
+            case 3:
+                k1 ^= (data[idx + 2] & 0xff) << 16;
+            case 2:
+                k1 ^= (data[idx + 1] & 0xff) << 8;
+            case 1:
+                k1 ^= (data[idx] & 0xff);
 
-            // mix functions
-            k1 *= C1_32;
-            k1 = Integer.rotateLeft(k1, R1_32);
-            k1 *= C2_32;
-            hash ^= k1;
+                // mix functions
+                k1 *= C1_32;
+                k1 = Integer.rotateLeft(k1, R1_32);
+                k1 *= C2_32;
+                hash ^= k1;
         }
 
         // finalization
@@ -232,24 +232,24 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
         long k1 = 0;
         final int tailStart = nblocks << 3;
         switch (length - tailStart) {
-        case 7:
-            k1 ^= ((long) data[tailStart + 6] & 0xff) << 48;
-        case 6:
-            k1 ^= ((long) data[tailStart + 5] & 0xff) << 40;
-        case 5:
-            k1 ^= ((long) data[tailStart + 4] & 0xff) << 32;
-        case 4:
-            k1 ^= ((long) data[tailStart + 3] & 0xff) << 24;
-        case 3:
-            k1 ^= ((long) data[tailStart + 2] & 0xff) << 16;
-        case 2:
-            k1 ^= ((long) data[tailStart + 1] & 0xff) << 8;
-        case 1:
-            k1 ^= ((long) data[tailStart] & 0xff);
-            k1 *= C1;
-            k1 = Long.rotateLeft(k1, R1);
-            k1 *= C2;
-            hash ^= k1;
+            case 7:
+                k1 ^= ((long) data[tailStart + 6] & 0xff) << 48;
+            case 6:
+                k1 ^= ((long) data[tailStart + 5] & 0xff) << 40;
+            case 5:
+                k1 ^= ((long) data[tailStart + 4] & 0xff) << 32;
+            case 4:
+                k1 ^= ((long) data[tailStart + 3] & 0xff) << 24;
+            case 3:
+                k1 ^= ((long) data[tailStart + 2] & 0xff) << 16;
+            case 2:
+                k1 ^= ((long) data[tailStart + 1] & 0xff) << 8;
+            case 1:
+                k1 ^= ((long) data[tailStart] & 0xff);
+                k1 *= C1;
+                k1 = Long.rotateLeft(k1, R1);
+                k1 *= C2;
+                hash ^= k1;
         }
 
         // finalization
@@ -339,45 +339,45 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
         long k2 = 0;
         final int tailStart = offset + (nblocks << 4);
         switch (offset + length - tailStart) {
-        case 15:
-            k2 ^= (long) (data[tailStart + 14] & 0xff) << 48;
-        case 14:
-            k2 ^= (long) (data[tailStart + 13] & 0xff) << 40;
-        case 13:
-            k2 ^= (long) (data[tailStart + 12] & 0xff) << 32;
-        case 12:
-            k2 ^= (long) (data[tailStart + 11] & 0xff) << 24;
-        case 11:
-            k2 ^= (long) (data[tailStart + 10] & 0xff) << 16;
-        case 10:
-            k2 ^= (long) (data[tailStart + 9] & 0xff) << 8;
-        case 9:
-            k2 ^= data[tailStart + 8] & 0xff;
-            k2 *= C2;
-            k2 = Long.rotateLeft(k2, R3);
-            k2 *= C1;
-            h2 ^= k2;
+            case 15:
+                k2 ^= (long) (data[tailStart + 14] & 0xff) << 48;
+            case 14:
+                k2 ^= (long) (data[tailStart + 13] & 0xff) << 40;
+            case 13:
+                k2 ^= (long) (data[tailStart + 12] & 0xff) << 32;
+            case 12:
+                k2 ^= (long) (data[tailStart + 11] & 0xff) << 24;
+            case 11:
+                k2 ^= (long) (data[tailStart + 10] & 0xff) << 16;
+            case 10:
+                k2 ^= (long) (data[tailStart + 9] & 0xff) << 8;
+            case 9:
+                k2 ^= data[tailStart + 8] & 0xff;
+                k2 *= C2;
+                k2 = Long.rotateLeft(k2, R3);
+                k2 *= C1;
+                h2 ^= k2;
 
-        case 8:
-            k1 ^= (long) (data[tailStart + 7] & 0xff) << 56;
-        case 7:
-            k1 ^= (long) (data[tailStart + 6] & 0xff) << 48;
-        case 6:
-            k1 ^= (long) (data[tailStart + 5] & 0xff) << 40;
-        case 5:
-            k1 ^= (long) (data[tailStart + 4] & 0xff) << 32;
-        case 4:
-            k1 ^= (long) (data[tailStart + 3] & 0xff) << 24;
-        case 3:
-            k1 ^= (long) (data[tailStart + 2] & 0xff) << 16;
-        case 2:
-            k1 ^= (long) (data[tailStart + 1] & 0xff) << 8;
-        case 1:
-            k1 ^= data[tailStart] & 0xff;
-            k1 *= C1;
-            k1 = Long.rotateLeft(k1, R1);
-            k1 *= C2;
-            h1 ^= k1;
+            case 8:
+                k1 ^= (long) (data[tailStart + 7] & 0xff) << 56;
+            case 7:
+                k1 ^= (long) (data[tailStart + 6] & 0xff) << 48;
+            case 6:
+                k1 ^= (long) (data[tailStart + 5] & 0xff) << 40;
+            case 5:
+                k1 ^= (long) (data[tailStart + 4] & 0xff) << 32;
+            case 4:
+                k1 ^= (long) (data[tailStart + 3] & 0xff) << 24;
+            case 3:
+                k1 ^= (long) (data[tailStart + 2] & 0xff) << 16;
+            case 2:
+                k1 ^= (long) (data[tailStart + 1] & 0xff) << 8;
+            case 1:
+                k1 ^= data[tailStart] & 0xff;
+                k1 *= C1;
+                k1 = Long.rotateLeft(k1, R1);
+                k1 *= C2;
+                h1 ^= k1;
         }
 
         // finalization

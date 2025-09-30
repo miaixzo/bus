@@ -54,11 +54,11 @@ public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
             super.init();
         } catch (UnsatisfiedLinkError e) {
             try {
-                Loaders.nat()
-                        .load(Symbol.SLASH + Normal.LIB_PROTOCOL_JAR + Symbol.SLASH
+                Loaders.nat().load(
+                        Symbol.SLASH + Normal.LIB_PROTOCOL_JAR + Symbol.SLASH
                                 + Platform.getNativeLibraryResourcePrefix() + Symbol.SLASH
                                 + System.mapLibraryName(Core.NATIVE_LIBRARY_NAME),
-                                org.opencv.osgi.OpenCVNativeLoader.class);
+                        org.opencv.osgi.OpenCVNativeLoader.class);
             } catch (IOException ie) {
                 Logger.error("Failed to load the native OpenCV library.");
             }

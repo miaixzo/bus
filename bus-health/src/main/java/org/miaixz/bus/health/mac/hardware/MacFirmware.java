@@ -68,37 +68,40 @@ final class MacFirmware extends AbstractFirmware {
                 IORegistryEntry entry = iter.next();
                 while (entry != null) {
                     switch (entry.getName()) {
-                    case "rom":
-                        data = entry.getByteArrayProperty("vendor");
-                        if (data != null) {
-                            manufacturer = Native.toString(data, Charset.UTF_8);
-                        }
-                        data = entry.getByteArrayProperty("version");
-                        if (data != null) {
-                            version = Native.toString(data, Charset.UTF_8);
-                        }
-                        data = entry.getByteArrayProperty("release-date");
-                        if (data != null) {
-                            releaseDate = Native.toString(data, Charset.UTF_8);
-                        }
-                        break;
-                    case "chosen":
-                        data = entry.getByteArrayProperty("booter-name");
-                        if (data != null) {
-                            name = Native.toString(data, Charset.UTF_8);
-                        }
-                        break;
-                    case "efi":
-                        data = entry.getByteArrayProperty("firmware-abi");
-                        if (data != null) {
-                            description = Native.toString(data, Charset.UTF_8);
-                        }
-                        break;
-                    default:
-                        if (StringKit.isBlank(name)) {
-                            name = entry.getStringProperty("IONameMatch");
-                        }
-                        break;
+                        case "rom":
+                            data = entry.getByteArrayProperty("vendor");
+                            if (data != null) {
+                                manufacturer = Native.toString(data, Charset.UTF_8);
+                            }
+                            data = entry.getByteArrayProperty("version");
+                            if (data != null) {
+                                version = Native.toString(data, Charset.UTF_8);
+                            }
+                            data = entry.getByteArrayProperty("release-date");
+                            if (data != null) {
+                                releaseDate = Native.toString(data, Charset.UTF_8);
+                            }
+                            break;
+
+                        case "chosen":
+                            data = entry.getByteArrayProperty("booter-name");
+                            if (data != null) {
+                                name = Native.toString(data, Charset.UTF_8);
+                            }
+                            break;
+
+                        case "efi":
+                            data = entry.getByteArrayProperty("firmware-abi");
+                            if (data != null) {
+                                description = Native.toString(data, Charset.UTF_8);
+                            }
+                            break;
+
+                        default:
+                            if (StringKit.isBlank(name)) {
+                                name = entry.getStringProperty("IONameMatch");
+                            }
+                            break;
                     }
                     entry.release();
                     entry = iter.next();

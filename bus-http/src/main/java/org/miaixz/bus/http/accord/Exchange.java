@@ -53,6 +53,7 @@ import org.miaixz.bus.http.socket.RealWebSocket;
  * {@link HttpCodec}, which handles the actual I/O.
  */
 public final class Exchange {
+
     final Transmitter transmitter;
     final NewCall call;
     final EventListener eventListener;
@@ -225,6 +226,7 @@ public final class Exchange {
      * A request body that fires events when it completes.
      */
     private final class RequestBodySink extends AssignSink {
+
         private boolean completed;
         /**
          * The exact number of bytes to be written, or -1L if that is unknown.
@@ -291,6 +293,7 @@ public final class Exchange {
      * A response body that fires events when it completes.
      */
     final class ResponseBodySource extends AssignSource {
+
         private final long contentLength;
         private long bytesReceived;
         private boolean completed;

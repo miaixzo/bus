@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ECATMainHeader:
-            return "ECATMainHeader";
-        case PrivateTag.ECATImageSubheader:
-            return "ECATImageSubheader";
+            case PrivateTag.ECATMainHeader:
+                return "ECATMainHeader";
+
+            case PrivateTag.ECATImageSubheader:
+                return "ECATImageSubheader";
         }
         return "";
     }

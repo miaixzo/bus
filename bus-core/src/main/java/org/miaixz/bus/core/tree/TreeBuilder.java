@@ -217,6 +217,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
         final NodeConfig config = this.root.getConfig();
         final Iterator<T> iterator = list.iterator();
         return append(new Iterator<>() {
+
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();

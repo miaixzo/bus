@@ -484,6 +484,7 @@ public final class RealSink implements BufferSink {
     @Override
     public OutputStream outputStream() {
         return new OutputStream() {
+
             @Override
             public void write(int b) throws IOException {
                 if (closed)

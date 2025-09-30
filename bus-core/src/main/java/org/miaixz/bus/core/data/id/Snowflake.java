@@ -264,7 +264,9 @@ public class Snowflake implements Serializable {
      * @param ignoreCenterAndWorker 是否忽略数据中心和机器节点的占位，忽略后可获得分布式环境全局可信赖的起终点。
      * @return data-ID起点，Value-ID终点
      */
-    public Pair<Long, Long> getIdScopeByTimestamp(final long timestampStart, final long timestampEnd,
+    public Pair<Long, Long> getIdScopeByTimestamp(
+            final long timestampStart,
+            final long timestampEnd,
             final boolean ignoreCenterAndWorker) {
         final long startTimeMinId = (timestampStart - twepoch) << TIMESTAMP_LEFT_SHIFT;
         final long endTimeMinId = (timestampEnd - twepoch) << TIMESTAMP_LEFT_SHIFT;

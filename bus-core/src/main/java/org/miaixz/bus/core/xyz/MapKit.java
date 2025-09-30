@@ -235,6 +235,7 @@ public class MapKit extends MapGets {
      * </p>
      *
      * <pre>
+     * 
      * LinkedHashMap map = MapKit.ofKvs(false, "RED", "#FF0000", "GREEN", "#00FF00", "BLUE", "#0000FF");
      * </pre>
      *
@@ -317,6 +318,7 @@ public class MapKit extends MapGets {
      * </pre>
      *
      * <pre>
+     * 
      * Map&lt;Object, Object&gt; colorMap = MapKit
      *         .of(new String[][] { { "RED", "#FF0000" }, { "GREEN", "#00FF00" }, { "BLUE", "#0000FF" } });
      * </pre>
@@ -358,7 +360,8 @@ public class MapKit extends MapGets {
                 }
             } else {
                 throw new IllegalArgumentException(StringKit.format(
-                        "Array element {}, '{}', is not type of Map.Entry or Array or Iterable or Iterator", i,
+                        "Array element {}, '{}', is not type of Map.Entry or Array or Iterable or Iterator",
+                        i,
                         object));
             }
         }
@@ -510,7 +513,10 @@ public class MapKit extends MapGets {
      * @param args              其它附加参数字符串（例如密钥）
      * @return 连接字符串
      */
-    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
+    public static <K, V> String join(
+            final Map<K, V> map,
+            final String separator,
+            final String keyValueSeparator,
             final String... args) {
         return join(map, separator, keyValueSeparator, false, args);
     }
@@ -525,8 +531,12 @@ public class MapKit extends MapGets {
      * @param args              其它附加参数字符串（例如密钥）
      * @return 签名字符串
      */
-    public static String sortJoin(final Map<?, ?> params, final String separator, final String keyValueSeparator,
-            final boolean isIgnoreNull, final String... args) {
+    public static String sortJoin(
+            final Map<?, ?> params,
+            final String separator,
+            final String keyValueSeparator,
+            final boolean isIgnoreNull,
+            final String... args) {
         return join(sort(params), separator, keyValueSeparator, isIgnoreNull, args);
     }
 
@@ -541,8 +551,11 @@ public class MapKit extends MapGets {
      * @param args              其它附加参数字符串（例如密钥）
      * @return 连接后的字符串
      */
-    public static <K, V> String joinIgnoreNull(final Map<K, V> map, final String separator,
-            final String keyValueSeparator, final String... args) {
+    public static <K, V> String joinIgnoreNull(
+            final Map<K, V> map,
+            final String separator,
+            final String keyValueSeparator,
+            final String... args) {
         return join(map, separator, keyValueSeparator, true, args);
     }
 
@@ -558,10 +571,18 @@ public class MapKit extends MapGets {
      * @param args              其它附加参数字符串（例如密钥）
      * @return 连接后的字符串，map和args为空返回""
      */
-    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
-            final boolean isIgnoreNull, final String... args) {
-        return join(map, separator, keyValueSeparator,
-                (entry) -> !isIgnoreNull || entry.getKey() != null && entry.getValue() != null, args);
+    public static <K, V> String join(
+            final Map<K, V> map,
+            final String separator,
+            final String keyValueSeparator,
+            final boolean isIgnoreNull,
+            final String... args) {
+        return join(
+                map,
+                separator,
+                keyValueSeparator,
+                (entry) -> !isIgnoreNull || entry.getKey() != null && entry.getValue() != null,
+                args);
     }
 
     /**
@@ -576,8 +597,12 @@ public class MapKit extends MapGets {
      * @param args              其它附加参数字符串（例如密钥）
      * @return 连接后的字符串，map和args为空返回""
      */
-    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
-            final Predicate<Entry<K, V>> predicate, final String... args) {
+    public static <K, V> String join(
+            final Map<K, V> map,
+            final String separator,
+            final String keyValueSeparator,
+            final Predicate<Entry<K, V>> predicate,
+            final String... args) {
         return MapJoiner.of(separator, keyValueSeparator).append(map, predicate).append(args).toString();
     }
 
@@ -771,7 +796,8 @@ public class MapKit extends MapGets {
      * @param isDesc 是否倒序
      * @return 排序后新的Map
      */
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map,
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
+            final Map<K, V> map,
             final boolean isDesc) {
         final Map<K, V> result = new LinkedHashMap<>();
         Comparator<Entry<K, V>> entryComparator = Entry.comparingByValue();
@@ -1106,7 +1132,9 @@ public class MapKit extends MapGets {
      * @param <V>       值类型
      * @return HashMap
      */
-    public static <K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterable<V> iterable,
+    public static <K, V> Map<K, V> putAll(
+            final Map<K, V> resultMap,
+            final Iterable<V> iterable,
             final Function<V, K> keyMapper) {
         return putAll(resultMap, iterable, keyMapper, Function.identity());
     }
@@ -1123,8 +1151,11 @@ public class MapKit extends MapGets {
      * @param <V>         值类型
      * @return HashMap
      */
-    public static <T, K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterable<T> iterable,
-            final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
+    public static <T, K, V> Map<K, V> putAll(
+            final Map<K, V> resultMap,
+            final Iterable<T> iterable,
+            final Function<T, K> keyMapper,
+            final Function<T, V> valueMapper) {
         return putAll(resultMap, IteratorKit.getIter(iterable), keyMapper, valueMapper);
     }
 
@@ -1138,7 +1169,9 @@ public class MapKit extends MapGets {
      * @param <V>       值类型
      * @return HashMap
      */
-    public static <K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterator<V> iterator,
+    public static <K, V> Map<K, V> putAll(
+            final Map<K, V> resultMap,
+            final Iterator<V> iterator,
             final Function<V, K> keyMapper) {
         return putAll(resultMap, iterator, keyMapper, Function.identity());
     }
@@ -1155,8 +1188,11 @@ public class MapKit extends MapGets {
      * @param <V>         值类型
      * @return HashMap
      */
-    public static <T, K, V> Map<K, V> putAll(Map<K, V> resultMap, final Iterator<T> iterator,
-            final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
+    public static <T, K, V> Map<K, V> putAll(
+            Map<K, V> resultMap,
+            final Iterator<T> iterator,
+            final Function<T, K> keyMapper,
+            final Function<T, V> valueMapper) {
         if (null == resultMap) {
             resultMap = MapKit.newHashMap();
         }
@@ -1314,6 +1350,40 @@ public class MapKit extends MapGets {
         });
 
         return flatMap;
+    }
+
+    /**
+     * 从Map中获取第一个非null值
+     * <p>
+     * 该方法按优先级顺序检查Map中的多个键，返回第一个非null值。 根据键的数量自动选择顺序流或并行流以优化性能。
+     * </p>
+     *
+     * @param <K>  键的类型
+     * @param <V>  值的类型
+     * @param map  参数Map，可以为null
+     * @param keys 要检查的键列表，按优先级顺序，可以为null
+     * @return 第一个非null值，如果没有找到或参数无效则返回null
+     */
+    public static <K, V> V getFirstNonNull(final Map<K, V> map, final K... keys) {
+        // 快速失败：如果map为null或keys为null或空，直接返回null
+        if (map == null || keys == null || keys.length == 0) {
+            return null;
+        }
+
+        // 优化：如果map为空，直接返回null
+        if (map.isEmpty()) {
+            return null;
+        }
+
+        // 对于少量键，使用顺序流更高效
+        if (keys.length < 10) {
+            return Arrays.stream(keys).filter(Objects::nonNull).map(map::get).filter(Objects::nonNull).findFirst()
+                    .orElse(null);
+        }
+
+        // 对于大量键，使用并行流
+        return Arrays.stream(keys).parallel().filter(Objects::nonNull).map(map::get).filter(Objects::nonNull)
+                .findFirst().orElse(null);
     }
 
 }

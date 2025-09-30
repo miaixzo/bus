@@ -52,12 +52,13 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.Padding:
-        case PrivateTag.VolumePayload:
-        case PrivateTag.AfterPayload:
-            return VR.OB;
-        case PrivateTag.VolumeVersionID:
-            return VR.UI;
+            case PrivateTag.Padding:
+            case PrivateTag.VolumePayload:
+            case PrivateTag.AfterPayload:
+                return VR.OB;
+
+            case PrivateTag.VolumeVersionID:
+                return VR.UI;
         }
         return VR.UN;
     }

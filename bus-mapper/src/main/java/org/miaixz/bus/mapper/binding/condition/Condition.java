@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -245,8 +245,9 @@ public class Condition<T> {
         }
         TableMeta table = fns[0].toEntityColumn().tableMeta();
         Set<String> excludeColumnSet = Arrays.stream(fns).map(Fn::toColumn).collect(Collectors.toSet());
-        selectColumns(table.selectColumns().stream().filter(c -> !excludeColumnSet.contains(c.column()))
-                .collect(Collectors.toList()));
+        selectColumns(
+                table.selectColumns().stream().filter(c -> !excludeColumnSet.contains(c.column()))
+                        .collect(Collectors.toList()));
         return this;
     }
 

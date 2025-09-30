@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.syngoReportData:
-            return "syngoReportData";
-        case PrivateTag.syngoReportPresentation:
-            return "syngoReportPresentation";
+            case PrivateTag.syngoReportData:
+                return "syngoReportData";
+
+            case PrivateTag.syngoReportPresentation:
+                return "syngoReportPresentation";
         }
         return "";
     }

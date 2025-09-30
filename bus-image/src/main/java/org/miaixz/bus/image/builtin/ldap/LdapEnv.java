@@ -42,7 +42,8 @@ public class LdapEnv extends Hashtable<String, Object> {
     private static final long serialVersionUID = 2852257380532L;
 
     public LdapEnv() {
-        put(Context.INITIAL_CONTEXT_FACTORY,
+        put(
+                Context.INITIAL_CONTEXT_FACTORY,
                 System.getProperty("org.miaixz.bus.image.builtin.ldap", "com.sun.jndi.ldap.LdapCtxFactory"));
         put("java.naming.ldap.attributes.binary", "dicomVendorData");
     }

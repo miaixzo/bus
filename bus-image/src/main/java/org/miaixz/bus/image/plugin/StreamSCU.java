@@ -72,6 +72,7 @@ public class StreamSCU {
     private boolean relExtNeg;
     private Association as;
     private final TimerTask closeAssociationTask = new TimerTask() {
+
         @Override
         public void run() {
             close(false);
@@ -99,38 +100,43 @@ public class StreamSCU {
             ProgressStatus ps;
 
             switch (status) {
-            case Status.Success:
-                ps = ProgressStatus.COMPLETED;
-                break;
-            case Status.CoercionOfDataElements:
-            case Status.ElementsDiscarded:
+                case Status.Success:
+                    ps = ProgressStatus.COMPLETED;
+                    break;
 
-            case Status.DataSetDoesNotMatchSOPClassWarning:
-                ps = ProgressStatus.WARNING;
-                if (lastStatusCode != status && nbStatusLog < 3) {
-                    nbStatusLog++;
-                    lastStatusCode = status;
-                    if (Logger.isDebugEnabled()) {
-                        Logger.warn("Received C-STORE-RSP with Status {}H{}", Tag.shortToHexString(status),
-                                "\r\n" + cmd);
-                    } else {
-                        Logger.warn("Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
-                    }
-                }
-                break;
+                case Status.CoercionOfDataElements:
+                case Status.ElementsDiscarded:
 
-            default:
-                ps = ProgressStatus.FAILED;
-                if (lastStatusCode != status && nbStatusLog < 3) {
-                    nbStatusLog++;
-                    lastStatusCode = status;
-                    if (Logger.isDebugEnabled()) {
-                        Logger.error("Received C-STORE-RSP with Status {}H{}", Tag.shortToHexString(status),
-                                "\r\n" + cmd);
-                    } else {
-                        Logger.error("Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
+                case Status.DataSetDoesNotMatchSOPClassWarning:
+                    ps = ProgressStatus.WARNING;
+                    if (lastStatusCode != status && nbStatusLog < 3) {
+                        nbStatusLog++;
+                        lastStatusCode = status;
+                        if (Logger.isDebugEnabled()) {
+                            Logger.warn(
+                                    "Received C-STORE-RSP with Status {}H{}",
+                                    Tag.shortToHexString(status),
+                                    "\r\n" + cmd);
+                        } else {
+                            Logger.warn("Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
+                        }
                     }
-                }
+                    break;
+
+                default:
+                    ps = ProgressStatus.FAILED;
+                    if (lastStatusCode != status && nbStatusLog < 3) {
+                        nbStatusLog++;
+                        lastStatusCode = status;
+                        if (Logger.isDebugEnabled()) {
+                            Logger.error(
+                                    "Received C-STORE-RSP with Status {}H{}",
+                                    Tag.shortToHexString(status),
+                                    "\r\n" + cmd);
+                        } else {
+                            Logger.error("Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
+                        }
+                    }
             }
             Builder.notifyProgession(state.getProgress(), cmd, ps, numberOfSuboperations);
         }
@@ -331,12 +337,14 @@ public class StreamSCU {
                 rq.addCommonExtendedNegotiation(relSOPClasses.getCommonExtended(cuid));
             }
             if (!tsuid.equals(UID.ExplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
-                        UID.ExplicitVRLittleEndian.uid));
+                rq.addPresentationContext(
+                        new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                                UID.ExplicitVRLittleEndian.uid));
             }
             if (!tsuid.equals(UID.ImplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
-                        UID.ImplicitVRLittleEndian.uid));
+                rq.addPresentationContext(
+                        new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                                UID.ImplicitVRLittleEndian.uid));
             }
         }
         rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid, tsuid));
@@ -454,6 +462,7 @@ public class StreamSCU {
 
     @FunctionalInterface
     public interface RSPHandlerFactory {
+
         DimseRSPHandler createDimseRSPHandler();
     }
 

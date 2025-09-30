@@ -38,34 +38,47 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.GroupName:
-            return "GroupName";
-        case PrivateTag.FunctionName:
-            return "FunctionName";
-        case PrivateTag.Bias:
-            return "Bias";
-        case PrivateTag.Scale:
-            return "Scale";
-        case PrivateTag.ParameterCount:
-            return "ParameterCount";
-        case PrivateTag.Parameters:
-            return "Parameters";
-        case PrivateTag.Version:
-            return "Version";
-        case PrivateTag.ColorRampIndex:
-            return "ColorRampIndex";
-        case PrivateTag.WindowWidth:
-            return "WindowWidth";
-        case PrivateTag.WindowLevel:
-            return "WindowLevel";
-        case PrivateTag.BValue:
-            return "BValue";
-        case PrivateTag.WizardStateDataSize:
-            return "WizardStateDataSize";
-        case PrivateTag.WizardState:
-            return "WizardState";
-        case PrivateTag._0051_xx0E_:
-            return "_0051_xx0E_";
+            case PrivateTag.GroupName:
+                return "GroupName";
+
+            case PrivateTag.FunctionName:
+                return "FunctionName";
+
+            case PrivateTag.Bias:
+                return "Bias";
+
+            case PrivateTag.Scale:
+                return "Scale";
+
+            case PrivateTag.ParameterCount:
+                return "ParameterCount";
+
+            case PrivateTag.Parameters:
+                return "Parameters";
+
+            case PrivateTag.Version:
+                return "Version";
+
+            case PrivateTag.ColorRampIndex:
+                return "ColorRampIndex";
+
+            case PrivateTag.WindowWidth:
+                return "WindowWidth";
+
+            case PrivateTag.WindowLevel:
+                return "WindowLevel";
+
+            case PrivateTag.BValue:
+                return "BValue";
+
+            case PrivateTag.WizardStateDataSize:
+                return "WizardStateDataSize";
+
+            case PrivateTag.WizardState:
+                return "WizardState";
+
+            case PrivateTag._0051_xx0E_:
+                return "_0051_xx0E_";
         }
         return "";
     }

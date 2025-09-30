@@ -63,7 +63,8 @@ public class FormatManager {
 
         // 预设格式：秒时间戳
         registerFormatter(Fields.FORMAT_SECONDS, (date) -> String.valueOf(Math.floorDiv(date.getTime(), 1000L)));
-        registerParser(Fields.FORMAT_SECONDS,
+        registerParser(
+                Fields.FORMAT_SECONDS,
                 (dateStr) -> DateKit.date(Math.multiplyExact(Long.parseLong(dateStr.toString()), 1000L)));
 
         // 预设格式：毫秒时间戳
@@ -179,6 +180,7 @@ public class FormatManager {
      * 单例持有类，实现延迟加载。
      */
     private static class SingletonHolder {
+
         /** 静态单例实例，由JVM保证线程安全 */
         private static final FormatManager INSTANCE = new FormatManager();
     }

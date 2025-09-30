@@ -130,7 +130,12 @@ public class HL7Segment implements Serializable {
         return new HL7Segment(s, s.charAt(3), s.substring(4, 8));
     }
 
-    static HL7Segment parse(byte[] b, int size, ParsePosition pos, char fieldSeparator, String encodingCharacters,
+    static HL7Segment parse(
+            byte[] b,
+            int size,
+            ParsePosition pos,
+            char fieldSeparator,
+            String encodingCharacters,
             String charsetName) {
         String s = parse(b, size, pos, charsetName);
         return s != null ? new HL7Segment(s, fieldSeparator, encodingCharacters) : null;

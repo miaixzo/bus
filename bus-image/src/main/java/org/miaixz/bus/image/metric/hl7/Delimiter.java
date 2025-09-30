@@ -32,31 +32,37 @@ package org.miaixz.bus.image.metric.hl7;
  * @since Java 17+
  */
 public enum Delimiter {
+
     field {
+
         @Override
         Delimiter parent() {
             return null;
         }
     },
     component {
+
         @Override
         Delimiter parent() {
             return repeat;
         }
     },
     repeat {
+
         @Override
         Delimiter parent() {
             return field;
         }
     },
     escape {
+
         @Override
         Delimiter parent() {
             return subcomponent;
         }
     },
     subcomponent {
+
         @Override
         Delimiter parent() {
             return component;

@@ -70,6 +70,7 @@ public interface SqlScriptWrapper extends ORDER {
      * 实例持有类，管理 {@link SqlScriptWrapper} 的 SPI 实现
      */
     class Holder {
+
         /**
          * 通过 SPI 加载的 {@link SqlScriptWrapper} 实现列表
          */

@@ -49,6 +49,7 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 17+
  */
 public class Module {
+
     /**
      * 缓存复合操作实例
      */
@@ -182,7 +183,9 @@ public class Module {
             throw new IllegalStateException("CacheFactory not initialized");
         }
         CacheX cache = caches.get(name);
-        Logger.debug("Retrieved cache: {} for name: {}", cache != null ? cache.getClass().getSimpleName() : "null",
+        Logger.debug(
+                "Retrieved cache: {} for name: {}",
+                cache != null ? cache.getClass().getSimpleName() : "null",
                 name);
         return cache;
     }
@@ -234,6 +237,7 @@ public class Module {
      * </p>
      */
     private static class ModuleHolder {
+
         /**
          * Module单例实例
          */

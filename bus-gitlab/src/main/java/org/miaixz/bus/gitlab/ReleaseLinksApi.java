@@ -111,8 +111,16 @@ public class ReleaseLinksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Link getLink(Object projectIdOrPath, String tagName, Integer linkId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "releases",
-                urlEncode(tagName), "assets", "links", linkId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "releases",
+                urlEncode(tagName),
+                "assets",
+                "links",
+                linkId);
         return (response.readEntity(Link.class));
     }
 
@@ -166,8 +174,15 @@ public class ReleaseLinksApi extends AbstractApi {
             throw new RuntimeException("params.url cannot be null or empty");
         }
 
-        Response response = post(Response.Status.CREATED, params, "projects", getProjectIdOrPath(projectIdOrPath),
-                "releases", urlEncode(tagName), "assets", "links");
+        Response response = post(
+                Response.Status.CREATED,
+                params,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "releases",
+                urlEncode(tagName),
+                "assets",
+                "links");
         return (response.readEntity(Link.class));
     }
 
@@ -194,8 +209,16 @@ public class ReleaseLinksApi extends AbstractApi {
             throw new RuntimeException("linkId cannot be null");
         }
 
-        Response response = put(Response.Status.OK, params, "projects", getProjectIdOrPath(projectIdOrPath), "releases",
-                urlEncode(tagName), "assets", "links", linkId);
+        Response response = put(
+                Response.Status.OK,
+                params,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "releases",
+                urlEncode(tagName),
+                "assets",
+                "links",
+                linkId);
         return (response.readEntity(Link.class));
     }
 
@@ -212,8 +235,16 @@ public class ReleaseLinksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteLink(Object projectIdOrPath, String tagName, Integer linkId) throws GitLabApiException {
-        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "releases",
-                urlEncode(tagName), "assets", "links", linkId);
+        delete(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "releases",
+                urlEncode(tagName),
+                "assets",
+                "links",
+                linkId);
     }
 
 }

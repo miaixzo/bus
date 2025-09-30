@@ -31,7 +31,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.starter.Nexus;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
@@ -46,6 +48,7 @@ import org.springframework.core.type.classreading.MetadataReader;
  * @since Java 17+
  */
 @ComponentScan("org.miaixz.**")
+@Conditional(Nexus.class)
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SpringHolder {
 

@@ -51,6 +51,7 @@ import freemarker.template.TemplateException;
  * @since Java 17+
  */
 public class FreemarkerEngine extends AbstractEngine {
+
     /**
      * freemarker 配置实例化
      */

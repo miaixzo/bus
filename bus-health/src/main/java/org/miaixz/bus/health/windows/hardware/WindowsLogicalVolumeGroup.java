@@ -112,8 +112,11 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                     pdObjectId = m.group(1);
                 }
                 // Store key with PD
-                pdMap.put(pdObjectId, Pair.of(WmiKit.getString(pds, PhysicalDiskProperty.FRIENDLYNAME, i),
-                        WmiKit.getString(pds, PhysicalDiskProperty.PHYSICALLOCATION, i)));
+                pdMap.put(
+                        pdObjectId,
+                        Pair.of(
+                                WmiKit.getString(pds, PhysicalDiskProperty.FRIENDLYNAME, i),
+                                WmiKit.getString(pds, PhysicalDiskProperty.PHYSICALLOCATION, i)));
             }
 
             // Get the Storage Pool to Physical Disk mappping

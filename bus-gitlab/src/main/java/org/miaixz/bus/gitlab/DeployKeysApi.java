@@ -139,8 +139,12 @@ public class DeployKeysApi extends AbstractApi {
      */
     public List<DeployKey> getProjectDeployKeys(Object projectIdOrPath, int page, int perPage)
             throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
-                getProjectIdOrPath(projectIdOrPath), "deploy_keys");
+        Response response = get(
+                Response.Status.OK,
+                getPageQueryParams(page, perPage),
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "deploy_keys");
         return (response.readEntity(new GenericType<List<DeployKey>>() {
         }));
     }
@@ -196,8 +200,13 @@ public class DeployKeysApi extends AbstractApi {
             throw new RuntimeException("keyId cannot be null");
         }
 
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "deploy_keys", keyId);
+        Response response = get(
+                Response.Status.OK,
+                null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "deploy_keys",
+                keyId);
         return (response.readEntity(DeployKey.class));
     }
 
@@ -239,7 +248,11 @@ public class DeployKeysApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title, true).withParam("key", key, true)
                 .withParam("can_push", canPush);
-        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
+        Response response = post(
+                Response.Status.CREATED,
+                formData,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
                 "deploy_keys");
         return (response.readEntity(DeployKey.class));
     }
@@ -268,8 +281,13 @@ public class DeployKeysApi extends AbstractApi {
         final DeployKey key = new DeployKey();
         key.setCanPush(canPush);
         key.setTitle(title);
-        final Response response = put(Response.Status.OK, key, "projects", getProjectIdOrPath(projectIdOrPath),
-                "deploy_keys", deployKeyId);
+        final Response response = put(
+                Response.Status.OK,
+                key,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "deploy_keys",
+                deployKeyId);
 
         return (response.readEntity(DeployKey.class));
     }
@@ -313,8 +331,14 @@ public class DeployKeysApi extends AbstractApi {
             throw new RuntimeException("keyId cannot be null");
         }
 
-        Response response = post(Response.Status.CREATED, (Form) null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "deploy_keys", keyId, "enable");
+        Response response = post(
+                Response.Status.CREATED,
+                (Form) null,
+                "projects",
+                getProjectIdOrPath(projectIdOrPath),
+                "deploy_keys",
+                keyId,
+                "enable");
         return (response.readEntity(DeployKey.class));
     }
 

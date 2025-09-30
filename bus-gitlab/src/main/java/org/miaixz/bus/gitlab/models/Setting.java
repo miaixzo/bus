@@ -2025,8 +2025,11 @@ public enum Setting {
             }
         }
 
-        String errorMsg = String.format("'%s' value is of incorrect type, is %s, should be %s", toValue(),
-                value.getClass().getSimpleName(), shouldBe.toString());
+        String errorMsg = String.format(
+                "'%s' value is of incorrect type, is %s, should be %s",
+                toValue(),
+                value.getClass().getSimpleName(),
+                shouldBe.toString());
         throw new IllegalStateException(errorMsg);
     }
 

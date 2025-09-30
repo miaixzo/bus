@@ -38,12 +38,14 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.ExtractedMRHeaderInformationSequence:
-            return "ExtractedMRHeaderInformationSequence";
-        case PrivateTag.ExtractedMRHeaderCreatorIdentificationCode:
-            return "ExtractedMRHeaderCreatorIdentificationCode";
-        case PrivateTag.ExtractedMRHeaderTag:
-            return "ExtractedMRHeaderTag";
+            case PrivateTag.ExtractedMRHeaderInformationSequence:
+                return "ExtractedMRHeaderInformationSequence";
+
+            case PrivateTag.ExtractedMRHeaderCreatorIdentificationCode:
+                return "ExtractedMRHeaderCreatorIdentificationCode";
+
+            case PrivateTag.ExtractedMRHeaderTag:
+                return "ExtractedMRHeaderTag";
         }
         return "";
     }

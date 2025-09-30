@@ -47,6 +47,7 @@ import org.miaixz.bus.shade.screw.metadata.Table;
  * @since Java 17+
  */
 public class Db2DataBaseQuery extends AbstractDatabaseQuery {
+
     /**
      * 构造函数
      *

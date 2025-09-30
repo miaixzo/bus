@@ -38,8 +38,8 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SeriesWorkFlowStatus:
-            return "SeriesWorkFlowStatus";
+            case PrivateTag.SeriesWorkFlowStatus:
+                return "SeriesWorkFlowStatus";
         }
         return "";
     }

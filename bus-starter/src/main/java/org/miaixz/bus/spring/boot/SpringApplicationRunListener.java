@@ -109,7 +109,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     public SpringApplicationRunListener(org.springframework.boot.SpringApplication springApplication) {
         this.application = springApplication;
         this.startupReporter = new StartupReporter();
-        Logger.debug("Initialized SpringApplicationRunListener for application: {}",
+        Logger.debug(
+                "Initialized SpringApplicationRunListener for application: {}",
                 springApplication.getMainApplicationClass());
     }
 
@@ -140,7 +141,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      * @param environment      可配置的环境
      */
     @Override
-    public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
+    public void environmentPrepared(
+            ConfigurableBootstrapContext bootstrapContext,
             ConfigurableEnvironment environment) {
         environmentPrepareStage = new BaseMetrics();
         environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
@@ -187,7 +189,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             statisticsList.clear();
         }
 
-        Logger.debug("Application context preparation stage completed in {} ms",
+        Logger.debug(
+                "Application context preparation stage completed in {} ms",
                 applicationContextPrepareStage.getCost());
     }
 

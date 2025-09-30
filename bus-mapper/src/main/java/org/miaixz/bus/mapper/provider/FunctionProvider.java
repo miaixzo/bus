@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -50,18 +50,23 @@ public class FunctionProvider {
      */
     public static String updateByPrimaryKeySelectiveWithForceFields(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
-                return "UPDATE " + entity.tableName()
-                        + set(() -> entity.updateColumns().stream()
-                                .map(column -> choose(() -> whenTest(
-                                        "fns != null and fns.fieldNames().contains('" + column.property() + "')",
-                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)
-                                        + whenTest(column.notNullTest("entity."),
-                                                () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)))
+                return "UPDATE " + entity.tableName() + set(
+                        () -> entity.updateColumns().stream().map(
+                                column -> choose(
+                                        () -> whenTest(
+                                                "fns != null and fns.fieldNames().contains('" + column.property()
+                                                        + "')",
+                                                () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)
+                                                + whenTest(
+                                                        column.notNullTest("entity."),
+                                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)))
                                 .collect(Collectors.joining(Symbol.LF)))
-                        + where(() -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
-                                .collect(Collectors.joining(" AND ")));
+                        + where(
+                                () -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
+                                        .collect(Collectors.joining(" AND ")));
             }
         });
     }
@@ -74,16 +79,21 @@ public class FunctionProvider {
      */
     public static String updateForFieldListByPrimaryKey(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
-                return "UPDATE " + entity.tableName()
-                        + set(() -> entity.updateColumns().stream()
-                                .map(column -> choose(() -> whenTest(
-                                        "fns != null and fns.fieldNames().contains('" + column.property() + "')",
-                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)))
+                return "UPDATE " + entity.tableName() + set(
+                        () -> entity.updateColumns().stream()
+                                .map(
+                                        column -> choose(
+                                                () -> whenTest(
+                                                        "fns != null and fns.fieldNames().contains('"
+                                                                + column.property() + "')",
+                                                        () -> column.columnEqualsProperty("entity.") + Symbol.COMMA)))
                                 .collect(Collectors.joining(Symbol.LF)))
-                        + where(() -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
-                                .collect(Collectors.joining(" AND ")));
+                        + where(
+                                () -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
+                                        .collect(Collectors.joining(" AND ")));
             }
         });
     }
@@ -96,18 +106,21 @@ public class FunctionProvider {
      */
     public static String selectColumns(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
+
             @Override
             public String getSql(TableMeta entity) {
-                return "SELECT "
-                        + choose(
-                                () -> whenTest("fns != null and fns.isNotEmpty()",
-                                        () -> "${fns.baseColumnAsPropertyList()}")
-                                        + otherwise(() -> entity.baseColumnAsPropertyList()))
+                return "SELECT " + choose(
+                        () -> whenTest("fns != null and fns.isNotEmpty()", () -> "${fns.baseColumnAsPropertyList()}")
+                                + otherwise(() -> entity.baseColumnAsPropertyList()))
                         + " FROM " + entity.tableName()
-                        + ifParameterNotNull(() -> where(() -> entity.whereColumns().stream()
-                                .map(column -> ifTest(column.notNullTest("entity."),
-                                        () -> "AND " + column.columnEqualsProperty("entity.")))
-                                .collect(Collectors.joining(Symbol.LF))))
+                        + ifParameterNotNull(
+                                () -> where(
+                                        () -> entity.whereColumns().stream()
+                                                .map(
+                                                        column -> ifTest(
+                                                                column.notNullTest("entity."),
+                                                                () -> "AND " + column.columnEqualsProperty("entity.")))
+                                                .collect(Collectors.joining(Symbol.LF))))
                         + entity.groupByColumn().orElse("") + entity.havingColumn().orElse("")
                         + entity.orderByColumn().orElse("");
             }

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -62,7 +62,8 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     @Override
     @Lang(Caching.class)
     @UpdateProvider(type = LogicalProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
-    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(@Param("entity") S entity,
+    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(
+            @Param("entity") S entity,
             @Param("fns") Fn.FnArray<T> fields);
 
     /**
@@ -144,7 +145,7 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     @Override
     @Lang(Caching.class)
     @SelectProvider(type = LogicalProvider.class, method = "selectByPrimaryKey")
-    Optional<T> selectByPrimaryKey(I id);
+    T selectByPrimaryKey(I id);
 
     /**
      * 根据实体字段条件查询唯一实体
@@ -155,7 +156,7 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     @Override
     @Lang(Caching.class)
     @SelectProvider(type = LogicalProvider.class, method = "select")
-    Optional<T> selectOne(T entity);
+    T selectOne(T entity);
 
     /**
      * 根据实体字段条件批量查询

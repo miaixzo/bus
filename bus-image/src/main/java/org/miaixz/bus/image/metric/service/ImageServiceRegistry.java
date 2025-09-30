@@ -73,13 +73,20 @@ public class ImageServiceRegistry implements DimseRQHandler {
         try {
             lookupService(as, dimse, cmd).onDimseRQ(as, pc, dimse, cmd, data);
         } catch (ImageServiceException e) {
-            Logger.info("{}: processing {} failed. Caused by:\t", as,
-                    dimse.toString(cmd, pc.getPCID(), pc.getTransferSyntax()), e);
+            Logger.info(
+                    "{}: processing {} failed. Caused by:\t",
+                    as,
+                    dimse.toString(cmd, pc.getPCID(), pc.getTransferSyntax()),
+                    e);
             rspForDimseRQException(as, pc, dimse, cmd, e);
         }
     }
 
-    private void rspForDimseRQException(Association as, PresentationContext pc, Dimse dimse, Attributes cmd,
+    private void rspForDimseRQException(
+            Association as,
+            PresentationContext pc,
+            Dimse dimse,
+            Attributes cmd,
             ImageServiceException e) {
         Attributes rsp = e.mkRSP(dimse.commandFieldOfRSP(), cmd.getInt(Tag.MessageID, 0));
         as.tryWriteDimseRSP(pc, rsp, e.getDataset());

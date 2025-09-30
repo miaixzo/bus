@@ -93,7 +93,7 @@ module bus.core {
     exports org.miaixz.bus.core.center.list;
     exports org.miaixz.bus.core.center.map;
     exports org.miaixz.bus.core.center.map.concurrent;
-    exports org.miaixz.bus.core.center.map.multi;
+    exports org.miaixz.bus.core.center.map.multiple;
     exports org.miaixz.bus.core.center.map.reference;
     exports org.miaixz.bus.core.center.object;
     exports org.miaixz.bus.core.center.queue;

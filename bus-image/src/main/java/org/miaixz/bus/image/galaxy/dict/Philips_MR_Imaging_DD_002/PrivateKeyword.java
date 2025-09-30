@@ -38,52 +38,74 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.UserName:
-            return "UserName";
-        case PrivateTag.PassWord:
-            return "PassWord";
-        case PrivateTag.ServerName:
-            return "ServerName";
-        case PrivateTag.DataBaseName:
-            return "DataBaseName";
-        case PrivateTag.RootName:
-            return "RootName";
-        case PrivateTag.DMIApplicationName:
-            return "DMIApplicationName";
-        case PrivateTag.RootId:
-            return "RootId";
-        case PrivateTag.BlobDataObjectArray:
-            return "BlobDataObjectArray";
-        case PrivateTag.SeriesTransactionUID:
-            return "SeriesTransactionUID";
-        case PrivateTag.ParentID:
-            return "ParentID";
-        case PrivateTag.ParentType:
-            return "ParentType";
-        case PrivateTag.BlobName:
-            return "BlobName";
-        case PrivateTag.ApplicationName:
-            return "ApplicationName";
-        case PrivateTag.TypeName:
-            return "TypeName";
-        case PrivateTag.VersionStr:
-            return "VersionStr";
-        case PrivateTag.CommentStr:
-            return "CommentStr";
-        case PrivateTag.BlobInFile:
-            return "BlobInFile";
-        case PrivateTag.ActualBlobSize:
-            return "ActualBlobSize";
-        case PrivateTag.BlobData:
-            return "BlobData";
-        case PrivateTag.BlobFilename:
-            return "BlobFilename";
-        case PrivateTag.BlobOffset:
-            return "BlobOffset";
-        case PrivateTag.BlobFlag:
-            return "BlobFlag";
-        case PrivateTag.NumberOfRequestExcerpts:
-            return "NumberOfRequestExcerpts";
+            case PrivateTag.UserName:
+                return "UserName";
+
+            case PrivateTag.PassWord:
+                return "PassWord";
+
+            case PrivateTag.ServerName:
+                return "ServerName";
+
+            case PrivateTag.DataBaseName:
+                return "DataBaseName";
+
+            case PrivateTag.RootName:
+                return "RootName";
+
+            case PrivateTag.DMIApplicationName:
+                return "DMIApplicationName";
+
+            case PrivateTag.RootId:
+                return "RootId";
+
+            case PrivateTag.BlobDataObjectArray:
+                return "BlobDataObjectArray";
+
+            case PrivateTag.SeriesTransactionUID:
+                return "SeriesTransactionUID";
+
+            case PrivateTag.ParentID:
+                return "ParentID";
+
+            case PrivateTag.ParentType:
+                return "ParentType";
+
+            case PrivateTag.BlobName:
+                return "BlobName";
+
+            case PrivateTag.ApplicationName:
+                return "ApplicationName";
+
+            case PrivateTag.TypeName:
+                return "TypeName";
+
+            case PrivateTag.VersionStr:
+                return "VersionStr";
+
+            case PrivateTag.CommentStr:
+                return "CommentStr";
+
+            case PrivateTag.BlobInFile:
+                return "BlobInFile";
+
+            case PrivateTag.ActualBlobSize:
+                return "ActualBlobSize";
+
+            case PrivateTag.BlobData:
+                return "BlobData";
+
+            case PrivateTag.BlobFilename:
+                return "BlobFilename";
+
+            case PrivateTag.BlobOffset:
+                return "BlobOffset";
+
+            case PrivateTag.BlobFlag:
+                return "BlobFlag";
+
+            case PrivateTag.NumberOfRequestExcerpts:
+                return "NumberOfRequestExcerpts";
         }
         return "";
     }

@@ -38,32 +38,44 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.PatientUID:
-            return "PatientUID";
-        case PrivateTag.PatientID:
-            return "PatientID";
-        case PrivateTag.PatientRegistrationDate:
-            return "PatientRegistrationDate";
-        case PrivateTag.PatientRegistrationTime:
-            return "PatientRegistrationTime";
-        case PrivateTag.PatientnameRIS:
-            return "PatientnameRIS";
-        case PrivateTag.PatientprenameRIS:
-            return "PatientprenameRIS";
-        case PrivateTag.PatientHospitalStatus:
-            return "PatientHospitalStatus";
-        case PrivateTag.MedicalAlerts:
-            return "MedicalAlerts";
-        case PrivateTag.ContrastAllergies:
-            return "ContrastAllergies";
-        case PrivateTag.RequestUID:
-            return "RequestUID";
-        case PrivateTag.RequestingPhysician:
-            return "RequestingPhysician";
-        case PrivateTag.RequestedPhysician:
-            return "RequestedPhysician";
-        case PrivateTag.PatientStudyUID:
-            return "PatientStudyUID";
+            case PrivateTag.PatientUID:
+                return "PatientUID";
+
+            case PrivateTag.PatientID:
+                return "PatientID";
+
+            case PrivateTag.PatientRegistrationDate:
+                return "PatientRegistrationDate";
+
+            case PrivateTag.PatientRegistrationTime:
+                return "PatientRegistrationTime";
+
+            case PrivateTag.PatientnameRIS:
+                return "PatientnameRIS";
+
+            case PrivateTag.PatientprenameRIS:
+                return "PatientprenameRIS";
+
+            case PrivateTag.PatientHospitalStatus:
+                return "PatientHospitalStatus";
+
+            case PrivateTag.MedicalAlerts:
+                return "MedicalAlerts";
+
+            case PrivateTag.ContrastAllergies:
+                return "ContrastAllergies";
+
+            case PrivateTag.RequestUID:
+                return "RequestUID";
+
+            case PrivateTag.RequestingPhysician:
+                return "RequestingPhysician";
+
+            case PrivateTag.RequestedPhysician:
+                return "RequestedPhysician";
+
+            case PrivateTag.PatientStudyUID:
+                return "PatientStudyUID";
         }
         return "";
     }

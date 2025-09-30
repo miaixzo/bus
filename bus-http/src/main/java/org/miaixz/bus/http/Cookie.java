@@ -242,11 +242,11 @@ public class Cookie {
 
         pos = cookiePairEnd + 1;
         while (pos < limit) {
-            int attributePairEnd = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, limit,
-                    Symbol.C_SEMICOLON);
+            int attributePairEnd = org.miaixz.bus.http.Builder
+                    .delimiterOffset(setCookie, pos, limit, Symbol.C_SEMICOLON);
 
-            int attributeEqualsSign = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, attributePairEnd,
-                    Symbol.C_EQUAL);
+            int attributeEqualsSign = org.miaixz.bus.http.Builder
+                    .delimiterOffset(setCookie, pos, attributePairEnd, Symbol.C_EQUAL);
             String attributeName = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pos, attributeEqualsSign);
             String attributeValue = attributeEqualsSign < attributePairEnd
                     ? org.miaixz.bus.http.Builder.trimSubstring(setCookie, attributeEqualsSign + 1, attributePairEnd)

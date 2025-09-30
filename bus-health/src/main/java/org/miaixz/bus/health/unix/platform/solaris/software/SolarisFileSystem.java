@@ -119,8 +119,13 @@ public class SolarisFileSystem extends AbstractFileSystem {
 
             // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type))
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
-                            FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
+                            path,
+                            volume,
+                            FS_PATH_INCLUDES,
+                            FS_PATH_EXCLUDES,
+                            FS_VOLUME_INCLUDES,
+                            FS_VOLUME_EXCLUDES))) {
                 continue;
             }
 
@@ -149,10 +154,11 @@ public class SolarisFileSystem extends AbstractFileSystem {
                 description = "Mount Point";
             }
 
-            fsList.add(new SolarisOSFileStore(name, volume, name, path, options, Normal.EMPTY, Normal.EMPTY,
-                    description, type, freeSpace, usableSpace, totalSpace,
-                    inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
-                    inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
+            fsList.add(
+                    new SolarisOSFileStore(name, volume, name, path, options, Normal.EMPTY, Normal.EMPTY, description,
+                            type, freeSpace, usableSpace, totalSpace,
+                            inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
+                            inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
         }
         return fsList;
     }

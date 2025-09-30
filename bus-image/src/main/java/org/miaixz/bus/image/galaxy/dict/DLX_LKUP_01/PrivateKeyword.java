@@ -40,10 +40,11 @@ public class PrivateKeyword {
         int tmp = tag & 0xFFE00000;
         tag &= tmp == 0x60000000 || tmp == 0x70000000 ? 0xFFE0FFFF : 0xFFFF00FF;
         switch (tag) {
-        case PrivateTag.GrayPaletteColorLookupTableDescriptor:
-            return "GrayPaletteColorLookupTableDescriptor";
-        case PrivateTag.GrayPaletteColorLookupTableData:
-            return "GrayPaletteColorLookupTableData";
+            case PrivateTag.GrayPaletteColorLookupTableDescriptor:
+                return "GrayPaletteColorLookupTableDescriptor";
+
+            case PrivateTag.GrayPaletteColorLookupTableData:
+                return "GrayPaletteColorLookupTableData";
         }
         return "";
     }

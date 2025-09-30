@@ -79,6 +79,7 @@ public abstract class ConfigurationCache<C, T> {
     protected abstract T find(C conf, String key) throws InternalException;
 
     private static final class CacheEntry<T> {
+
         final T value;
         final long fetchTime;
 

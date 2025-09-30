@@ -67,12 +67,12 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 @ThreadSafe
 public class AixOSProcess extends AbstractOSProcess {
 
-    private final Supplier<Long> affinityMask = Memoizer.memoize(PerfstatCpu::queryCpuAffinityMask,
-            Memoizer.defaultExpiration());
+    private final Supplier<Long> affinityMask = Memoizer
+            .memoize(PerfstatCpu::queryCpuAffinityMask, Memoizer.defaultExpiration());
     private final AixOperatingSystem os;
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
-    private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer.memoize(this::queryPsInfo,
-            Memoizer.defaultExpiration());
+    private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer
+            .memoize(this::queryPsInfo, Memoizer.defaultExpiration());
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
             .memoize(this::queryCommandlineEnvironment);
     // Memoized copy from OperatingSystem
@@ -115,29 +115,35 @@ public class AixOSProcess extends AbstractOSProcess {
     static OSProcess.State getStateFromOutput(char stateValue) {
         OSProcess.State state;
         switch (stateValue) {
-        case 'O':
-            state = OSProcess.State.INVALID;
-            break;
-        case 'R':
-        case 'A':
-            state = OSProcess.State.RUNNING;
-            break;
-        case 'I':
-            state = OSProcess.State.WAITING;
-            break;
-        case 'S':
-        case 'W':
-            state = OSProcess.State.SLEEPING;
-            break;
-        case 'Z':
-            state = OSProcess.State.ZOMBIE;
-            break;
-        case 'T':
-            state = OSProcess.State.STOPPED;
-            break;
-        default:
-            state = OSProcess.State.OTHER;
-            break;
+            case 'O':
+                state = OSProcess.State.INVALID;
+                break;
+
+            case 'R':
+            case 'A':
+                state = OSProcess.State.RUNNING;
+                break;
+
+            case 'I':
+                state = OSProcess.State.WAITING;
+                break;
+
+            case 'S':
+            case 'W':
+                state = OSProcess.State.SLEEPING;
+                break;
+
+            case 'Z':
+                state = OSProcess.State.ZOMBIE;
+                break;
+
+            case 'T':
+                state = OSProcess.State.STOPPED;
+                break;
+
+            default:
+                state = OSProcess.State.OTHER;
+                break;
         }
         return state;
     }

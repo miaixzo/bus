@@ -179,6 +179,7 @@ public interface CLibrary extends LibCAPI, Library {
 
     @FieldOrder({ "sa_family", "sa_data" })
     class Sockaddr extends Structure {
+
         public short sa_family;
         public byte[] sa_data = new byte[14];
 
@@ -187,6 +188,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     class BsdTcpstat {
+
         public int tcps_connattempt; // 0
         public int tcps_accepts; // 4
         public int tcps_drops; // 12
@@ -201,6 +203,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     class BsdUdpstat {
+
         public int udps_ipackets; // 0
         public int udps_hdrops; // 4
         public int udps_badsum; // 8
@@ -212,6 +215,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     class BsdIpstat {
+
         public int ips_total; // 0
         public int ips_badsum; // 4
         public int ips_tooshort; // 8
@@ -222,6 +226,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     class BsdIp6stat {
+
         public long ip6s_total; // 0
         public long ip6s_localout; // 88
     }
@@ -229,6 +234,7 @@ public interface CLibrary extends LibCAPI, Library {
     @FieldOrder({ "ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
             "ai_next" })
     class Addrinfo extends Structure implements AutoCloseable {
+
         public int ai_flags;
         public int ai_family;
         public int ai_socktype;

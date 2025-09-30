@@ -87,9 +87,10 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
 
     private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
         for (UsbDevice device : list) {
-            deviceList.add(new WindowsUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                    device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                    Collections.emptyList()));
+            deviceList.add(
+                    new WindowsUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
+                            device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
+                            Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
     }
@@ -104,8 +105,15 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         List<UsbDevice> usbDevices = new ArrayList<>();
         // recursively build results
         for (Integer controllerDevice : (Set<Integer>) controllerDevices.get(0)) {
-            WindowsUsbDevice deviceAndChildren = queryDeviceAndChildren(controllerDevice, parentMap, nameMap,
-                    deviceIdMap, mfgMap, "0000", "0000", Normal.EMPTY);
+            WindowsUsbDevice deviceAndChildren = queryDeviceAndChildren(
+                    controllerDevice,
+                    parentMap,
+                    nameMap,
+                    deviceIdMap,
+                    mfgMap,
+                    "0000",
+                    "0000",
+                    Normal.EMPTY);
             if (deviceAndChildren != null) {
                 usbDevices.add(deviceAndChildren);
             }
@@ -113,9 +121,15 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         return usbDevices;
     }
 
-    private static WindowsUsbDevice queryDeviceAndChildren(Integer device, Map<Integer, Integer> parentMap,
-            Map<Integer, String> nameMap, Map<Integer, String> deviceIdMap, Map<Integer, String> mfgMap, String vid,
-            String pid, String parentSerial) {
+    private static WindowsUsbDevice queryDeviceAndChildren(
+            Integer device,
+            Map<Integer, Integer> parentMap,
+            Map<Integer, String> nameMap,
+            Map<Integer, String> deviceIdMap,
+            Map<Integer, String> mfgMap,
+            String vid,
+            String pid,
+            String parentSerial) {
         // Parse vendor and product IDs from the device ID
         // If this doesn't work, use the IDs from the parent
         String vendorId = vid;
@@ -137,8 +151,15 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         // Recursively find those children and put in a list
         List<UsbDevice> childDevices = new ArrayList<>();
         for (Integer child : childDeviceSet) {
-            WindowsUsbDevice deviceAndChildren = queryDeviceAndChildren(child, parentMap, nameMap, deviceIdMap, mfgMap,
-                    vendorId, productId, serial);
+            WindowsUsbDevice deviceAndChildren = queryDeviceAndChildren(
+                    child,
+                    parentMap,
+                    nameMap,
+                    deviceIdMap,
+                    mfgMap,
+                    vendorId,
+                    productId,
+                    serial);
             if (deviceAndChildren != null) {
                 childDevices.add(deviceAndChildren);
             }

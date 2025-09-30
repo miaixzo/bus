@@ -86,7 +86,9 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
      * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
      * @return {@link X509TrustManager} or {@code null}
      */
-    public static X509TrustManager getTrustManager(final KeyStore keyStore, final String algorithm,
+    public static X509TrustManager getTrustManager(
+            final KeyStore keyStore,
+            final String algorithm,
             final Provider provider) {
         final TrustManager[] tms = getTrustManagers(keyStore, algorithm, provider);
         for (final TrustManager tm : tms) {
@@ -125,7 +127,9 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
      * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
      * @return {@link TrustManager} or {@code null}
      */
-    public static TrustManager[] getTrustManagers(final KeyStore keyStore, final String algorithm,
+    public static TrustManager[] getTrustManagers(
+            final KeyStore keyStore,
+            final String algorithm,
             final Provider provider) {
         return getTrustManagerFactory(keyStore, algorithm, provider).getTrustManagers();
     }
@@ -138,7 +142,9 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
      * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
      * @return {@link TrustManager} or {@code null}
      */
-    public static TrustManagerFactory getTrustManagerFactory(final KeyStore keyStore, String algorithm,
+    public static TrustManagerFactory getTrustManagerFactory(
+            final KeyStore keyStore,
+            String algorithm,
             final Provider provider) {
         final TrustManagerFactory tmf;
 
@@ -268,12 +274,16 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
     }
 
     @Override
-    public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s,
+    public void checkClientTrusted(
+            final X509Certificate[] x509Certificates,
+            final String s,
             final SSLEngine sslEngine) {
     }
 
     @Override
-    public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s,
+    public void checkServerTrusted(
+            final X509Certificate[] x509Certificates,
+            final String s,
             final SSLEngine sslEngine) {
     }
 

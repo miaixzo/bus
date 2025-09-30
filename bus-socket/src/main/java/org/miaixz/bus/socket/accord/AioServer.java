@@ -117,7 +117,8 @@ public class AioServer {
      */
     public void start() throws IOException {
         asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(
-                context.getThreadNum(), r -> new Thread(r, "Socket:Thread-" + (threadSeqNumber++)));
+                context.getThreadNum(),
+                r -> new Thread(r, "Socket:Thread-" + (threadSeqNumber++)));
         start(asynchronousChannelGroup);
     }
 
@@ -144,8 +145,8 @@ public class AioServer {
             }
             // 绑定主机
             if (context.getHost() != null) {
-                serverSocketChannel.bind(new InetSocketAddress(context.getHost(), context.getPort()),
-                        context.getBacklog());
+                serverSocketChannel
+                        .bind(new InetSocketAddress(context.getHost(), context.getPort()), context.getBacklog());
             } else {
                 serverSocketChannel.bind(new InetSocketAddress(context.getPort()), context.getBacklog());
             }
@@ -161,6 +162,7 @@ public class AioServer {
         Supplier<VirtualBuffer> readBufferSupplier = () -> readBufferPool.allocateBufferPage()
                 .allocate(context.getReadBufferSize());
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
+
             @Override
             public void completed(AsynchronousSocketChannel channel, Void attachment) {
                 try {

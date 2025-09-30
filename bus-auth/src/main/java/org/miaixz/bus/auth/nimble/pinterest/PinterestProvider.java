@@ -139,8 +139,11 @@ public class PinterestProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state)).queryParam("scope",
-                this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(PinterestScope.values()))).build();
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam(
+                        "scope",
+                        this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(PinterestScope.values())))
+                .build();
     }
 
     /**

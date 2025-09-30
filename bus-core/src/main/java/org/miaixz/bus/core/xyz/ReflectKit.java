@@ -557,8 +557,8 @@ public class ReflectKit {
      */
     public static <T> Constructor<T>[] getConstructors(final Class<T> beanClass) throws SecurityException {
         Assert.notNull(beanClass);
-        return (Constructor<T>[]) CONSTRUCTORS_CACHE.computeIfAbsent(beanClass,
-                (key) -> getConstructorsDirectly(beanClass));
+        return (Constructor<T>[]) CONSTRUCTORS_CACHE
+                .computeIfAbsent(beanClass, (key) -> getConstructorsDirectly(beanClass));
     }
 
     /**

@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.SecondarySpineLabel:
-            return "SecondarySpineLabel";
-        case PrivateTag.AdditionalTagsForPresentationState:
-            return "AdditionalTagsForPresentationState";
+            case PrivateTag.SecondarySpineLabel:
+                return "SecondarySpineLabel";
+
+            case PrivateTag.AdditionalTagsForPresentationState:
+                return "AdditionalTagsForPresentationState";
         }
         return "";
     }

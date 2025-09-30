@@ -641,8 +641,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                             httpv.executor().doMsgConvert(bodyType, null).contentType + "; charset=" + charset.name()),
                     body);
         }
-        CoverTasks.Executor.Data<byte[]> data = httpv.executor().doMsgConvert(bodyType,
-                (Convertor c) -> c.serialize(object, dateFormat, charset));
+        CoverTasks.Executor.Data<byte[]> data = httpv.executor()
+                .doMsgConvert(bodyType, (Convertor c) -> c.serialize(object, dateFormat, charset));
         return RequestBody.create(MediaType.valueOf(data.contentType + "; charset=" + charset.name()), data.data);
     }
 
@@ -1041,6 +1041,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         private GiveCall executeCall(NewCall call) {
             OkGiveCall httpCall = new OkGiveCall(call);
             call.enqueue(new Callback() {
+
                 @Override
                 public void onFailure(NewCall call, IOException error) {
                     CoverResult.State state = toState(error);

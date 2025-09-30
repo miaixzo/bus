@@ -233,25 +233,29 @@ public class Strength {
     public static PASSWD_LEVEL getLevel(final String passwd) {
         final int level = check(passwd);
         switch (level) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-            return PASSWD_LEVEL.EASY;
-        case 4:
-        case 5:
-        case 6:
-            return PASSWD_LEVEL.MEDIUM;
-        case 7:
-        case 8:
-        case 9:
-            return PASSWD_LEVEL.STRONG;
-        case 10:
-        case 11:
-        case 12:
-            return PASSWD_LEVEL.VERY_STRONG;
-        default:
-            return PASSWD_LEVEL.EXTREMELY_STRONG;
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                return PASSWD_LEVEL.EASY;
+
+            case 4:
+            case 5:
+            case 6:
+                return PASSWD_LEVEL.MEDIUM;
+
+            case 7:
+            case 8:
+            case 9:
+                return PASSWD_LEVEL.STRONG;
+
+            case 10:
+            case 11:
+            case 12:
+                return PASSWD_LEVEL.VERY_STRONG;
+
+            default:
+                return PASSWD_LEVEL.EXTREMELY_STRONG;
         }
     }
 

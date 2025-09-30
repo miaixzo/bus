@@ -66,8 +66,8 @@ public class OGNL {
     /**
      * SQL 注释截断检查正则，匹配包含单引号、注释或分号的 SQL 语句
      */
-    public static final Pattern SQL_COMMENT_PATTERN = Pattern.compile("'.*(or|union|--|#|/\\*|;)",
-            Pattern.CASE_INSENSITIVE);
+    public static final Pattern SQL_COMMENT_PATTERN = Pattern
+            .compile("'.*(or|union|--|#|/\\*|;)", Pattern.CASE_INSENSITIVE);
 
     /**
      * SQL 语法关键字
@@ -328,8 +328,12 @@ public class OGNL {
      * @param suffixOverrides 要移除的后缀
      * @return 包含 trim 标签的 SQL 脚本
      */
-    public static String convertTrim(final String sqlScript, final String prefix, final String suffix,
-            final String prefixOverrides, final String suffixOverrides) {
+    public static String convertTrim(
+            final String sqlScript,
+            final String prefix,
+            final String suffix,
+            final String prefixOverrides,
+            final String suffixOverrides) {
         StringBuilder sb = new StringBuilder("<trim");
         if (StringKit.isNotBlank(prefix)) {
             sb.append(" prefix=\"").append(prefix).append(Symbol.SINGLE_QUOTE);
@@ -370,8 +374,12 @@ public class OGNL {
      * @param separator  分隔符
      * @return 包含 foreach 标签的 SQL 脚本
      */
-    public static String convertForeach(final String sqlScript, final String collection, final String index,
-            final String item, final String separator) {
+    public static String convertForeach(
+            final String sqlScript,
+            final String collection,
+            final String index,
+            final String item,
+            final String separator) {
         StringBuilder sb = new StringBuilder("<foreach");
         if (StringKit.isNotBlank(collection)) {
             sb.append(" collection=\"").append(collection).append(Symbol.SINGLE_QUOTE);
@@ -491,7 +499,9 @@ public class OGNL {
      * @param numericScale 数字精度
      * @return 组合的映射配置字符串，若所有参数为 null 则返回 null
      */
-    public static String convertParamMapping(Class<? extends TypeHandler<?>> typeHandler, JdbcType jdbcType,
+    public static String convertParamMapping(
+            Class<? extends TypeHandler<?>> typeHandler,
+            JdbcType jdbcType,
             Integer numericScale) {
         if (typeHandler == null && jdbcType == null && numericScale == null) {
             return null;

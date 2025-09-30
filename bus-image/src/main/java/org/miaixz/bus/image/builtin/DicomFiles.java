@@ -121,6 +121,7 @@ public abstract class DicomFiles {
     }
 
     public interface Callback {
+
         boolean dicomFile(File f, Attributes fmi, long dsPos, Attributes ds) throws Exception;
     }
 

@@ -75,8 +75,13 @@ class SOFSegment {
 
     @Override
     public String toString() {
-        return String.format("SOF%d[%04x, precision: %d, lines: %d, samples/line: %d]", marker & 0xff - 0xc0, marker,
-                samplePrecision, lines, samplesPerLine);
+        return String.format(
+                "SOF%d[%04x, precision: %d, lines: %d, samples/line: %d]",
+                marker & 0xff - 0xc0,
+                marker,
+                samplePrecision,
+                lines,
+                samplesPerLine);
     }
 
 }

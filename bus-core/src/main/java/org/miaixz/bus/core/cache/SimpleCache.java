@@ -218,6 +218,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
         return new TransIterator<>(this.rawMap.entrySet().iterator(), (entry) -> new Map.Entry<>() {
+
             @Override
             public K getKey() {
                 return entry.getKey().get();

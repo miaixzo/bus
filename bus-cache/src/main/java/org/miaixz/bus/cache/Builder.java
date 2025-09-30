@@ -192,8 +192,11 @@ public class Builder {
      * @param argValues               参数值数组
      * @return 生成的缓存键
      */
-    private static String doGenerateKey(Map<Integer, CacheKey> parameterIndex2CacheKey, String prefix,
-            String[] argNames, Object[] argValues) {
+    private static String doGenerateKey(
+            Map<Integer, CacheKey> parameterIndex2CacheKey,
+            String prefix,
+            String[] argNames,
+            Object[] argValues) {
         StringBuilder sb = new StringBuilder(prefix);
         for (Map.Entry<Integer, CacheKey> entry : parameterIndex2CacheKey.entrySet()) {
             int argIndex = entry.getKey();
@@ -264,8 +267,11 @@ public class Builder {
      * @param prevent              防击穿开关
      * @return 键值映射
      */
-    public static Map<String, Object> mapToKeyValue(Map proceedEntryValueMap, Set<String> missKeys,
-            Map<Object, String> multiEntry2Key, EnumValue.Switch prevent) {
+    public static Map<String, Object> mapToKeyValue(
+            Map proceedEntryValueMap,
+            Set<String> missKeys,
+            Map<Object, String> multiEntry2Key,
+            EnumValue.Switch prevent) {
         Map<String, Object> keyValueMap = new HashMap<>(proceedEntryValueMap.size());
         proceedEntryValueMap.forEach((multiArgEntry, value) -> {
             String key = multiEntry2Key.get(multiArgEntry);
@@ -296,8 +302,12 @@ public class Builder {
      * @param prevent           防击穿开关
      * @return 键值映射
      */
-    public static Map<String, Object> collectionToKeyValue(Collection proceedCollection, String idSpel,
-            Set<String> missKeys, Map<Object, String> id2Key, EnumValue.Switch prevent) {
+    public static Map<String, Object> collectionToKeyValue(
+            Collection proceedCollection,
+            String idSpel,
+            Set<String> missKeys,
+            Map<Object, String> id2Key,
+            EnumValue.Switch prevent) {
         Map<String, Object> keyValueMap = new HashMap<>(proceedCollection.size());
         for (Object value : proceedCollection) {
             Object id = SpelCalculator.calcSpelWithNoContext(idSpel, value);

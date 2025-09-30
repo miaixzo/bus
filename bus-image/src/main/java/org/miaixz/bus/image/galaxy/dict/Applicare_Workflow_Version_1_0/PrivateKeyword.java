@@ -38,42 +38,59 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.OrderControl:
-            return "OrderControl";
-        case PrivateTag.ScheduledActionItemCodeValue:
-            return "ScheduledActionItemCodeValue";
-        case PrivateTag.ScheduledActionItemCodingSchemeDesignator:
-            return "ScheduledActionItemCodingSchemeDesignator";
-        case PrivateTag.ScheduledActionItemCodeMeaning:
-            return "ScheduledActionItemCodeMeaning";
-        case PrivateTag.RequestedActionItemCodeValue:
-            return "RequestedActionItemCodeValue";
-        case PrivateTag.RequestedActionItemCodingSchemeDesignator:
-            return "RequestedActionItemCodingSchemeDesignator";
-        case PrivateTag.RequestedActionItemCodeMeaning:
-            return "RequestedActionItemCodeMeaning";
-        case PrivateTag.PerformedActionItemCodeValue:
-            return "PerformedActionItemCodeValue";
-        case PrivateTag.PerformedActionItemCodingSchemeDesignator:
-            return "PerformedActionItemCodingSchemeDesignator";
-        case PrivateTag.PerformedActionItemCodeMeaning:
-            return "PerformedActionItemCodeMeaning";
-        case PrivateTag.PerformedProcedureCodeValue:
-            return "PerformedProcedureCodeValue";
-        case PrivateTag.PerformedProcedureCodingSchemeDesignator:
-            return "PerformedProcedureCodingSchemeDesignator";
-        case PrivateTag.PerformedProcedureCodeMeaning:
-            return "PerformedProcedureCodeMeaning";
-        case PrivateTag.ReferencedImageSOPClassUID:
-            return "ReferencedImageSOPClassUID";
-        case PrivateTag.ReferencedImageSOPInstanceUID:
-            return "ReferencedImageSOPInstanceUID";
-        case PrivateTag.LockedByHostname:
-            return "LockedByHostname";
-        case PrivateTag.LockedByUser:
-            return "LockedByUser";
-        case PrivateTag.KfEditLockUser:
-            return "KfEditLockUser";
+            case PrivateTag.OrderControl:
+                return "OrderControl";
+
+            case PrivateTag.ScheduledActionItemCodeValue:
+                return "ScheduledActionItemCodeValue";
+
+            case PrivateTag.ScheduledActionItemCodingSchemeDesignator:
+                return "ScheduledActionItemCodingSchemeDesignator";
+
+            case PrivateTag.ScheduledActionItemCodeMeaning:
+                return "ScheduledActionItemCodeMeaning";
+
+            case PrivateTag.RequestedActionItemCodeValue:
+                return "RequestedActionItemCodeValue";
+
+            case PrivateTag.RequestedActionItemCodingSchemeDesignator:
+                return "RequestedActionItemCodingSchemeDesignator";
+
+            case PrivateTag.RequestedActionItemCodeMeaning:
+                return "RequestedActionItemCodeMeaning";
+
+            case PrivateTag.PerformedActionItemCodeValue:
+                return "PerformedActionItemCodeValue";
+
+            case PrivateTag.PerformedActionItemCodingSchemeDesignator:
+                return "PerformedActionItemCodingSchemeDesignator";
+
+            case PrivateTag.PerformedActionItemCodeMeaning:
+                return "PerformedActionItemCodeMeaning";
+
+            case PrivateTag.PerformedProcedureCodeValue:
+                return "PerformedProcedureCodeValue";
+
+            case PrivateTag.PerformedProcedureCodingSchemeDesignator:
+                return "PerformedProcedureCodingSchemeDesignator";
+
+            case PrivateTag.PerformedProcedureCodeMeaning:
+                return "PerformedProcedureCodeMeaning";
+
+            case PrivateTag.ReferencedImageSOPClassUID:
+                return "ReferencedImageSOPClassUID";
+
+            case PrivateTag.ReferencedImageSOPInstanceUID:
+                return "ReferencedImageSOPInstanceUID";
+
+            case PrivateTag.LockedByHostname:
+                return "LockedByHostname";
+
+            case PrivateTag.LockedByUser:
+                return "LockedByUser";
+
+            case PrivateTag.KfEditLockUser:
+                return "KfEditLockUser";
         }
         return "";
     }

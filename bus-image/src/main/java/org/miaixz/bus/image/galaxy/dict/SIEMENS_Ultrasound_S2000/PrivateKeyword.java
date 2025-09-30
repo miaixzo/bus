@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.NipplePosition:
-            return "NipplePosition";
-        case PrivateTag.ABVSClipDerivedFromVolume:
-            return "ABVSClipDerivedFromVolume";
+            case PrivateTag.NipplePosition:
+                return "NipplePosition";
+
+            case PrivateTag.ABVSClipDerivedFromVolume:
+                return "ABVSClipDerivedFromVolume";
         }
         return "";
     }

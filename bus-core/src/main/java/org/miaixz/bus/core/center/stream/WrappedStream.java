@@ -267,6 +267,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * 返回一个包含此流元素的指定的数组，例如以下代码编译正常，但运行时会抛出 {@link ArrayStoreException}
      * 
      * <pre>{@code
+     * 
      * String[] strings = Stream.<Integer>builder().add(1).build().toArray(String[]::new);
      * }</pre>
      *
@@ -285,12 +286,14 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * 对元素进行聚合，并返回聚合后的值，相当于在for循环里写sum=sum+ints[i] 这是一个终端操作 求和、最小值、最大值、平均值和转换成一个String字符串均为聚合操作 例如这里对int进行求和可以写成：
      *
      * <pre>{@code
+     * 
      * Integer sum = integers.reduce(0, (a, b) -> a + b);
      * }</pre>
      * <p>
      * 或者写成:
      *
      * <pre>{@code
+     * 
      * Integer sum = integers.reduce(0, Integer::sum);
      * }</pre>
      *
@@ -324,6 +327,7 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * 但它不局限于顺序执行，例如并行流等情况下 这是一个终端操作 例如以下场景抛出 NPE ：
      * 
      * <pre>{@code
+     * 
      * Optional<Integer> reduce = Stream.<Integer>builder().add(1).add(1).build().reduce((a, b) -> null);
      * }</pre>
      *
@@ -352,7 +356,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * @see #reduce(Object, BinaryOperator)
      */
     @Override
-    default <U> U reduce(final U identity, final BiFunction<U, ? super T, U> accumulator,
+    default <U> U reduce(
+            final U identity,
+            final BiFunction<U, ? super T, U> accumulator,
             final BinaryOperator<U> combiner) {
         Objects.requireNonNull(accumulator);
         Objects.requireNonNull(combiner);
@@ -373,7 +379,9 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * }</pre>
      */
     @Override
-    default <R> R collect(final Supplier<R> supplier, final BiConsumer<R, ? super T> accumulator,
+    default <R> R collect(
+            final Supplier<R> supplier,
+            final BiConsumer<R, ? super T> accumulator,
             final BiConsumer<R, R> combiner) {
         Objects.requireNonNull(supplier);
         Objects.requireNonNull(accumulator);

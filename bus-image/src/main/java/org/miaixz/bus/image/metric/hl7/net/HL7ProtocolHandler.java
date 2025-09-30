@@ -44,6 +44,7 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 17+
  */
 public enum HL7ProtocolHandler implements TCPProtocolHandler {
+
     INSTANCE;
 
     @Override

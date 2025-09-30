@@ -319,7 +319,9 @@ public class Loader {
      * @return {@link Format}
      */
     protected Format getFormatter() {
-        return formatterFactory.apply(commentElementFormatterSupplier.get(), sectionElementFormatterSupplier.get(),
+        return formatterFactory.apply(
+                commentElementFormatterSupplier.get(),
+                sectionElementFormatterSupplier.get(),
                 propertyElementFormatterSupplier.get());
     }
 
@@ -475,6 +477,7 @@ public class Loader {
      */
     @FunctionalInterface
     public interface ValueEditor {
+
         /**
          * 编辑值
          *

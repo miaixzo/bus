@@ -38,8 +38,8 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.PrivateTaskDatamodel:
-            return "PrivateTaskDatamodel";
+            case PrivateTag.PrivateTaskDatamodel:
+                return "PrivateTaskDatamodel";
         }
         return "";
     }

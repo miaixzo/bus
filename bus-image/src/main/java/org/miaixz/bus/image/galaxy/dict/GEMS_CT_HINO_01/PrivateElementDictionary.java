@@ -52,11 +52,12 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.BeamThickess:
-        case PrivateTag.RTime:
-            return VR.DS;
-        case PrivateTag.HBCNumber:
-            return VR.IS;
+            case PrivateTag.BeamThickess:
+            case PrivateTag.RTime:
+                return VR.DS;
+
+            case PrivateTag.HBCNumber:
+                return VR.IS;
         }
         return VR.UN;
     }

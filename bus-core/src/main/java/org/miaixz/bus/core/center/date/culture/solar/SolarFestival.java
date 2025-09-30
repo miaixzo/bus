@@ -94,8 +94,12 @@ public class SolarFestival extends Loops {
         }
         int startYear = Integer.parseInt(data.substring(8), 10);
         return year < startYear ? null
-                : new SolarFestival(type, SolarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10),
-                        Integer.parseInt(data.substring(6, 8), 10)), startYear, data);
+                : new SolarFestival(type,
+                        SolarDay.fromYmd(
+                                year,
+                                Integer.parseInt(data.substring(4, 6), 10),
+                                Integer.parseInt(data.substring(6, 8), 10)),
+                        startYear, data);
     }
 
     public static SolarFestival fromYmd(int year, int month, int day) {

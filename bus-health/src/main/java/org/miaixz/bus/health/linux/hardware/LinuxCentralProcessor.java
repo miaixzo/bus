@@ -114,7 +114,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
         Map<Integer, String> modAliasMap = new HashMap<>();
         try {
-            try (Stream<Path> cpuFiles = Files.find(Paths.get(SysPath.CPU), Integer.MAX_VALUE,
+            try (Stream<Path> cpuFiles = Files.find(
+                    Paths.get(SysPath.CPU),
+                    Integer.MAX_VALUE,
                     (path, basicFileAttributes) -> path.toFile().getName().matches("cpu\\d+"))) {
                 cpuFiles.forEach(cpu -> {
                     String syspath = cpu.toString(); // /sys/devices/system/cpu/cpuX
@@ -132,8 +134,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }
 
-    private static CentralProcessor.LogicalProcessor getLogicalProcessorFromSyspath(String syspath,
-            Set<CentralProcessor.ProcessorCache> caches, String modAlias, Map<Integer, Integer> coreEfficiencyMap,
+    private static CentralProcessor.LogicalProcessor getLogicalProcessorFromSyspath(
+            String syspath,
+            Set<CentralProcessor.ProcessorCache> caches,
+            String modAlias,
+            Map<Integer, Integer> coreEfficiencyMap,
             Map<Integer, String> modAliasMap) {
         int processor = Parsing.getFirstIntValue(syspath);
         int coreId = Builder.getIntFromFile(syspath + "/topology/core_id");
@@ -198,8 +203,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     first = false;
                 } else {
                     // add from the previous iteration
-                    logProcs.add(new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
-                            numaNodeMap.getOrDefault(currentProcessor, 0)));
+                    logProcs.add(
+                            new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
+                                    numaNodeMap.getOrDefault(currentProcessor, 0)));
                     // Count unique combinations of core id and physical id.
                     coreEfficiencyMap.put((currentPackage << 16) + currentCore, 0);
                 }
@@ -211,8 +217,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 currentPackage = Parsing.parseLastInt(cpu, 0);
             }
         }
-        logProcs.add(new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
-                numaNodeMap.getOrDefault(currentProcessor, 0)));
+        logProcs.add(
+                new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
+                        numaNodeMap.getOrDefault(currentProcessor, 0)));
         coreEfficiencyMap.put((currentPackage << 16) + currentCore, 0);
         return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, Collections.emptyMap());
     }
@@ -230,7 +237,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             if (!line.startsWith(Symbol.HASH)) {
                 int pos = line.indexOf(Symbol.C_COMMA);
                 if (pos > 0 && pos < line.length()) {
-                    numaNodeMap.put(Parsing.parseIntOrDefault(line.substring(0, pos), 0),
+                    numaNodeMap.put(
+                            Parsing.parseIntOrDefault(line.substring(0, pos), 0),
                             Parsing.parseIntOrDefault(line.substring(pos + 1), 0));
                 }
             }
@@ -408,53 +416,62 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 continue;
             }
             switch (splitLine[0].toLowerCase(Locale.ROOT)) {
-            case "vendor_id":
-            case "cpu implementer":
-                cpuVendor = splitLine[1];
-                break;
-            case "model name":
-            case "processor": // some ARM chips
-                // Ignore processor number
-                if (!splitLine[1].matches("[0-9]+")) {
-                    cpuName = splitLine[1];
-                }
-                break;
-            case "flags":
-                flags = splitLine[1].toLowerCase(Locale.ROOT).split(Symbol.SPACE);
-                for (String flag : flags) {
-                    if ("lm".equals(flag)) {
-                        cpu64bit = true;
-                        break;
+                case "vendor_id":
+                case "cpu implementer":
+                    cpuVendor = splitLine[1];
+                    break;
+
+                case "model name":
+                case "processor": // some ARM chips
+                    // Ignore processor number
+                    if (!splitLine[1].matches("[0-9]+")) {
+                        cpuName = splitLine[1];
                     }
-                }
-                break;
-            case "stepping":
-                cpuStepping = splitLine[1];
-                break;
-            case "cpu variant":
-                if (!armStepping.toString().startsWith("r")) {
-                    // CPU variant format always starts with 0x
-                    int rev = Parsing.parseLastInt(splitLine[1], 0);
-                    armStepping.insert(0, "r" + rev);
-                }
-                break;
-            case "cpu revision":
-                if (!armStepping.toString().contains("p")) {
-                    armStepping.append('p').append(splitLine[1]);
-                }
-                break;
-            case "model":
-            case "cpu part":
-                cpuModel = splitLine[1];
-                break;
-            case "cpu family":
-                cpuFamily = splitLine[1];
-                break;
-            case "cpu mhz":
-                cpuFreq = Parsing.parseHertz(splitLine[1]);
-                break;
-            default:
-                // Do nothing
+                    break;
+
+                case "flags":
+                    flags = splitLine[1].toLowerCase(Locale.ROOT).split(Symbol.SPACE);
+                    for (String flag : flags) {
+                        if ("lm".equals(flag)) {
+                            cpu64bit = true;
+                            break;
+                        }
+                    }
+                    break;
+
+                case "stepping":
+                    cpuStepping = splitLine[1];
+                    break;
+
+                case "cpu variant":
+                    if (!armStepping.toString().startsWith("r")) {
+                        // CPU variant format always starts with 0x
+                        int rev = Parsing.parseLastInt(splitLine[1], 0);
+                        armStepping.insert(0, "r" + rev);
+                    }
+                    break;
+
+                case "cpu revision":
+                    if (!armStepping.toString().contains("p")) {
+                        armStepping.append('p').append(splitLine[1]);
+                    }
+                    break;
+
+                case "model":
+                case "cpu part":
+                    cpuModel = splitLine[1];
+                    break;
+
+                case "cpu family":
+                    cpuFamily = splitLine[1];
+                    break;
+
+                case "cpu mhz":
+                    cpuFreq = Parsing.parseHertz(splitLine[1]);
+                    break;
+
+                default:
+                    // Do nothing
             }
         }
         if (cpuName.isEmpty()) {

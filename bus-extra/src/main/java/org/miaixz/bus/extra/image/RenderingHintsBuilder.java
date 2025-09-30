@@ -250,6 +250,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_ANTIALIAS_DEFAULT
      */
     public enum Antialias {
+
         /**
          * 使用抗锯齿
          */
@@ -287,6 +288,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_TEXT_ANTIALIAS_DEFAULT
      */
     public enum TextAntialias {
+
         /**
          * 使用抗锯齿呈现文本
          */
@@ -344,6 +346,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_COLOR_RENDER_DEFAULT
      */
     public enum ColorRender {
+
         /**
          * 追求速度
          */
@@ -381,6 +384,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_RENDER_DEFAULT
      */
     public enum Render {
+
         /**
          * 追求速度
          */
@@ -418,6 +422,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_DITHER_DEFAULT
      */
     public enum Dither {
+
         /**
          * 抖动
          */
@@ -455,6 +460,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_FRACTIONALMETRICS_DEFAULT
      */
     public enum FractionalMetrics {
+
         /**
          * 启用字体规格
          */
@@ -492,6 +498,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_INTERPOLATION_NEAREST_NEIGHBOR
      */
     public enum Interpolation {
+
         /**
          * 双三次插值
          */
@@ -529,6 +536,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_ALPHA_INTERPOLATION_DEFAULT
      */
     public enum AlphaInterpolation {
+
         /**
          * 追求速度
          */
@@ -566,6 +574,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
      * @see RenderingHints#VALUE_STROKE_DEFAULT
      */
     public enum StrokeControl {
+
         /**
          * 追求速度
          */

@@ -121,7 +121,10 @@ public class SheetDataSaxHandler extends DefaultHandler {
      * 读到一个xml开始标签时的回调处理方法
      */
     @Override
-    public void startElement(final String uri, final String localName, final String qName,
+    public void startElement(
+            final String uri,
+            final String localName,
+            final String qName,
             final Attributes attributes) {
         if ("sheetData".equals(qName)) {
             this.isInSheetData = true;
@@ -138,14 +141,15 @@ public class SheetDataSaxHandler extends DefaultHandler {
 
         if (null != name) {
             switch (name) {
-            case row:
-                // 行开始
-                startRow(attributes);
-                break;
-            case c:
-                // 单元格元素
-                startCell(attributes);
-                break;
+                case row:
+                    // 行开始
+                    startRow(attributes);
+                    break;
+
+                case c:
+                    // 单元格元素
+                    startCell(attributes);
+                    break;
             }
         }
     }
@@ -185,14 +189,15 @@ public class SheetDataSaxHandler extends DefaultHandler {
         final ElementName elementName = this.curElementName;
         if (null != elementName) {
             switch (elementName) {
-            case v:
-                // 得到单元格内容的值
-                lastContent.append(ch, start, length);
-                break;
-            case f:
-                // 得到单元格内容的值
-                lastFormula.append(ch, start, length);
-                break;
+                case v:
+                    // 得到单元格内容的值
+                    lastContent.append(ch, start, length);
+                    break;
+
+                case f:
+                    // 得到单元格内容的值
+                    lastFormula.append(ch, start, length);
+                    break;
             }
         } else {
             // 按理说内容应该为"<v>内容</v>"，但是某些特别的XML内容不在v或f标签中，此处做一些兼容
@@ -333,7 +338,8 @@ public class SheetDataSaxHandler extends DefaultHandler {
                 this.xssfCellStyle = stylesTable.getStyleAt(Integer.parseInt(xfIndexStr));
                 // 单元格存储格式的索引，对应style.xml中的numFmts元素的子元素索引
                 final int numFmtIndex = xssfCellStyle.getDataFormat();
-                this.numFmtString = ObjectKit.defaultIfNull(xssfCellStyle.getDataFormatString(),
+                this.numFmtString = ObjectKit.defaultIfNull(
+                        xssfCellStyle.getDataFormatString(),
                         () -> BuiltinFormats.getBuiltinFormat(numFmtIndex));
 
                 // 日期格式的单元格可能没有t元素

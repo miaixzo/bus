@@ -77,15 +77,15 @@ public final class HkeyUserData {
                             String subKeyPath = keyPath + PATH_DELIMITER + subKey;
                             // Check for session and client name
                             if (Advapi32Util.registryValueExists(WinReg.HKEY_USERS, subKeyPath, SESSIONNAME)) {
-                                String session = Advapi32Util.registryGetStringValue(WinReg.HKEY_USERS, subKeyPath,
-                                        SESSIONNAME);
+                                String session = Advapi32Util
+                                        .registryGetStringValue(WinReg.HKEY_USERS, subKeyPath, SESSIONNAME);
                                 if (!session.isEmpty()) {
                                     device = session;
                                 }
                             }
                             if (Advapi32Util.registryValueExists(WinReg.HKEY_USERS, subKeyPath, CLIENTNAME)) {
-                                String client = Advapi32Util.registryGetStringValue(WinReg.HKEY_USERS, subKeyPath,
-                                        CLIENTNAME);
+                                String client = Advapi32Util
+                                        .registryGetStringValue(WinReg.HKEY_USERS, subKeyPath, CLIENTNAME);
                                 if (!client.isEmpty() && !DEFAULT_DEVICE.equals(client)) {
                                     host = client;
                                 }

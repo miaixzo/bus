@@ -47,8 +47,8 @@ public class MobileProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String value = object.toString();
-        return StringKit.left(value, 3)
-                .concat(StringKit.removePrefix(
+        return StringKit.left(value, 3).concat(
+                StringKit.removePrefix(
                         StringKit.padPre(StringKit.right(value, 4), StringKit.length(value), shield.shadow()),
                         StringKit.fill(3, shield.shadow())));
     }

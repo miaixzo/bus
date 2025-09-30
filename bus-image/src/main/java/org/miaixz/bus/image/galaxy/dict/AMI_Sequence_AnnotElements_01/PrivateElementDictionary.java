@@ -52,10 +52,11 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.AnnotationElementPosition:
-            return VR.DS;
-        case PrivateTag.AnnotationElementText:
-            return VR.LT;
+            case PrivateTag.AnnotationElementPosition:
+                return VR.DS;
+
+            case PrivateTag.AnnotationElementText:
+                return VR.LT;
         }
         return VR.UN;
     }

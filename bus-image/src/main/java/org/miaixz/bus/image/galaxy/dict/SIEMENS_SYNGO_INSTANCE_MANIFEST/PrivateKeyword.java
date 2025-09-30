@@ -38,10 +38,11 @@ public class PrivateKeyword {
     public static String valueOf(int tag) {
 
         switch (tag & 0xFFFF00FF) {
-        case PrivateTag.TemporaryOriginalHeaderSequence:
-            return "TemporaryOriginalHeaderSequence";
-        case PrivateTag.syngoIndexSourceAETitle:
-            return "syngoIndexSourceAETitle";
+            case PrivateTag.TemporaryOriginalHeaderSequence:
+                return "TemporaryOriginalHeaderSequence";
+
+            case PrivateTag.syngoIndexSourceAETitle:
+                return "syngoIndexSourceAETitle";
         }
         return "";
     }

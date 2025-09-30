@@ -52,14 +52,15 @@ public class PrivateElementDictionary extends ElementDictionary {
 
         switch (tag & 0xFFFF00FF) {
 
-        case PrivateTag.MagnificationType:
-            return VR.CS;
-        case PrivateTag.TransformationMatrix:
-        case PrivateTag.CenterOffset:
-        case PrivateTag.Magnification:
-        case PrivateTag.DisplayedArea:
-        case PrivateTag.CalibrationFactor:
-            return VR.DS;
+            case PrivateTag.MagnificationType:
+                return VR.CS;
+
+            case PrivateTag.TransformationMatrix:
+            case PrivateTag.CenterOffset:
+            case PrivateTag.Magnification:
+            case PrivateTag.DisplayedArea:
+            case PrivateTag.CalibrationFactor:
+                return VR.DS;
         }
         return VR.UN;
     }

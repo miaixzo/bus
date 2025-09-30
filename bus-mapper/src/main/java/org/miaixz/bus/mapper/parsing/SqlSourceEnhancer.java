@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mapper.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -46,6 +46,7 @@ public interface SqlSourceEnhancer {
      * 默认 SPI 实现，加载并依次调用所有 KeySqlSource 实现类
      */
     SqlSourceEnhancer SPI = new SqlSourceEnhancer() {
+
         /**
          * 通过 SPI 加载的定制化 KeySqlSource 实现列表
          */

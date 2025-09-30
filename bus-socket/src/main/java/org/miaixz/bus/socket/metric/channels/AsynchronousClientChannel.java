@@ -74,7 +74,9 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
         return connectFuture;
     }
 
-    public <A> void doConnect(SocketAddress remote, A attachment,
+    public <A> void doConnect(
+            SocketAddress remote,
+            A attachment,
             CompletionHandler<Void, ? super A> completionHandler) {
         try {
             // 此前通过Future调用,且触发了cancel
@@ -93,7 +95,9 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
             } else {
                 group.commonWorker.addRegister(selector -> {
                     try {
-                        channel.register(selector, SelectionKey.OP_CONNECT,
+                        channel.register(
+                                selector,
+                                SelectionKey.OP_CONNECT,
                                 (Runnable) () -> doConnect(remote, attachment, completionHandler));
                     } catch (ClosedChannelException e) {
                         completionHandler.failed(e, attachment);

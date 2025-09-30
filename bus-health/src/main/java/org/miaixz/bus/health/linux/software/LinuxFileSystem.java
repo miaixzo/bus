@@ -74,7 +74,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
     private static final String UNICODE_SPACE = "\\040";
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap,
+    private static List<OSFileStore> getFileStoreMatching(
+            String nameToMatch,
+            Map<String, String> uuidMap,
             boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
@@ -106,8 +108,13 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
             // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type))
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
-                            FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
+                            path,
+                            volume,
+                            FS_PATH_INCLUDES,
+                            FS_PATH_EXCLUDES,
+                            FS_VOLUME_INCLUDES,
+                            FS_VOLUME_EXCLUDES))) {
                 continue;
             }
 
@@ -163,7 +170,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
                     usableSpace = vfsStat.f_bavail.longValue() * vfsStat.f_frsize.longValue();
                     freeSpace = vfsStat.f_bfree.longValue() * vfsStat.f_frsize.longValue();
                 } else {
-                    Logger.warn("Failed to get information to use statvfs. path: {}, Error code: {}", path,
+                    Logger.warn(
+                            "Failed to get information to use statvfs. path: {}, Error code: {}",
+                            path,
                             Native.getLastError());
                 }
             } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
@@ -177,8 +186,10 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 freeSpace = tmpFile.getFreeSpace();
             }
 
-            fsList.add(new LinuxOSFileStore(name, volume, labelMap.getOrDefault(path, name), path, options, uuid,
-                    logicalVolume, description, type, freeSpace, usableSpace, totalSpace, freeInodes, totalInodes));
+            fsList.add(
+                    new LinuxOSFileStore(name, volume, labelMap.getOrDefault(path, name), path, options, uuid,
+                            logicalVolume, description, type, freeSpace, usableSpace, totalSpace, freeInodes,
+                            totalInodes));
         }
         return fsList;
     }

@@ -257,6 +257,7 @@ public class DiskLruCache implements Closeable, Flushable {
     private BufferSink newJournalWriter() throws FileNotFoundException {
         Sink fileSink = diskFile.appendingSink(journalFile);
         Sink faultHidingSink = new FaultHideSink(fileSink) {
+
             @Override
             protected void onException(IOException e) {
                 assert (Thread.holdsLock(DiskLruCache.this));
@@ -647,6 +648,7 @@ public class DiskLruCache implements Closeable, Flushable {
     public synchronized Iterator<Snapshot> snapshots() throws IOException {
         initialize();
         return new Iterator<>() {
+
             /**
              * 迭代条目的副本以防止并发修改错误
              */
@@ -732,6 +734,7 @@ public class DiskLruCache implements Closeable, Flushable {
          * The host machine's local file system.
          */
         DiskFile SYSTEM = new DiskFile() {
+
             @Override
             public Source source(File file) throws FileNotFoundException {
                 return IoKit.source(file);
@@ -971,6 +974,7 @@ public class DiskLruCache implements Closeable, Flushable {
                     return IoKit.blackhole();
                 }
                 return new FaultHideSink(sink) {
+
                     @Override
                     protected void onException(IOException e) {
                         synchronized (DiskLruCache.this) {
@@ -1133,6 +1137,7 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     private final Runnable cleanupRunnable = new Runnable() {
+
         public void run() {
             synchronized (DiskLruCache.this) {
                 if (!initialized | closed) {

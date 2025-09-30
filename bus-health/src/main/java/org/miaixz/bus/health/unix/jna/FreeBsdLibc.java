@@ -39,6 +39,7 @@ import com.sun.jna.ptr.NativeLongByReference;
  * project.
  */
 public interface FreeBsdLibc extends CLibrary {
+
     FreeBsdLibc INSTANCE = Native.load("libc", FreeBsdLibc.class);
 
     int UTX_USERSIZE = 32;
@@ -111,6 +112,7 @@ public interface FreeBsdLibc extends CLibrary {
      */
     @FieldOrder({ "ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare" })
     class FreeBsdUtmpx extends Structure {
+
         public short ut_type; // type of entry
         public Timeval ut_tv; // time entry was made
         public byte[] ut_id = new byte[UTX_IDSIZE]; // etc/inittab id (usually line #)
@@ -126,6 +128,7 @@ public interface FreeBsdLibc extends CLibrary {
      */
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
+
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
     }
@@ -135,6 +138,7 @@ public interface FreeBsdLibc extends CLibrary {
      */
     @FieldOrder({ "cpu_ticks" })
     class CpTime extends Structure implements AutoCloseable {
+
         public long[] cpu_ticks = new long[CPUSTATES];
 
         @Override

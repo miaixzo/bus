@@ -190,7 +190,8 @@ public interface RepeatableAnnotationCollector {
          * @return 空集合
          */
         @Override
-        public <T extends Annotation> List<T> getRepeatableAnnotations(final Annotation annotation,
+        public <T extends Annotation> List<T> getRepeatableAnnotations(
+                final Annotation annotation,
                 final Class<T> annotationType) {
             if (Objects.isNull(annotation)) {
                 return Collections.emptyList();
@@ -240,18 +241,23 @@ public interface RepeatableAnnotationCollector {
          * @return 容器注解中的可重复注解
          */
         @Override
-        public <T extends Annotation> List<T> getRepeatableAnnotations(final Annotation annotation,
+        public <T extends Annotation> List<T> getRepeatableAnnotations(
+                final Annotation annotation,
                 final Class<T> annotationType) {
-            final List<Annotation> annotations = find(annotation,
-                    t -> Objects.equals(t.annotationType(), annotationType), false);
+            final List<Annotation> annotations = find(
+                    annotation,
+                    t -> Objects.equals(t.annotationType(), annotationType),
+                    false);
             return annotations.stream().map(annotationType::cast).collect(Collectors.toList());
         }
 
         /**
          * 递归遍历注解，将其平铺
          */
-        private List<Annotation> find(final Annotation annotation,
-                final java.util.function.Predicate<Annotation> condition, final boolean accumulate) {
+        private List<Annotation> find(
+                final Annotation annotation,
+                final java.util.function.Predicate<Annotation> condition,
+                final boolean accumulate) {
             if (Objects.isNull(annotation)) {
                 return Collections.emptyList();
             }
@@ -346,8 +352,8 @@ public interface RepeatableAnnotationCollector {
          */
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
-            final Object cache = repeatableMethodCache.computeIfAbsent(annotation.annotationType(),
-                    this::resolveRepeatableMethodFromType);
+            final Object cache = repeatableMethodCache
+                    .computeIfAbsent(annotation.annotationType(), this::resolveRepeatableMethodFromType);
             return (cache == NONE) ? null : Collections.singletonList((Method) cache);
         }
 
@@ -451,8 +457,8 @@ public interface RepeatableAnnotationCollector {
          */
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
-            final Object cache = repeatableMethodCache.computeIfAbsent(annotation.annotationType(),
-                    this::resolveRepeatableMethodFromType);
+            final Object cache = repeatableMethodCache
+                    .computeIfAbsent(annotation.annotationType(), this::resolveRepeatableMethodFromType);
             return (cache == NONE) ? null : (List<Method>) cache;
         }
 
